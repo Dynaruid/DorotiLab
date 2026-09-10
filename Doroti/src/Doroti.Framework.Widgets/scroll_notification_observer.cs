@@ -123,7 +123,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
         {
             try
             {
-                if ((((DartLinkedList<_ListenerEntry__scroll_notification_observer>?)((dynamic)entry).list) is not null))
+                if ((((DartLinkedList<_ListenerEntry__scroll_notification_observer>?)entry.list) is not null))
                 {
                     entry.listener(notification);
                 }

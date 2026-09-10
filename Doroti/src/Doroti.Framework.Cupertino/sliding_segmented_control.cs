@@ -1403,7 +1403,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T> : global::Dor
                 }
             }
             double delta = (childLocation switch { _SegmentLocation__sliding_segmented_control.leftmost => (unscaledThumbRect.width - (unscaledThumbRect.width * this.thumbScale)), _SegmentLocation__sliding_segmented_control.rightmost => ((unscaledThumbRect.width * this.thumbScale) - unscaledThumbRect.width), _SegmentLocation__sliding_segmented_control.inbetween => 0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            var thumbRect = global::Doroti.Ui.Rect.fromCenter(center: (((Offset)((dynamic)unscaledThumbRect).center) - new global::Doroti.Ui.Offset((delta / 2L), 0)), width: (unscaledThumbRect.width * this.thumbScale), height: (unscaledThumbRect.height * this.thumbScale));
+            var thumbRect = global::Doroti.Ui.Rect.fromCenter(center: (((Offset)(unscaledThumbRect).center) - new global::Doroti.Ui.Offset((delta / 2L), 0)), width: (unscaledThumbRect.width * this.thumbScale), height: (unscaledThumbRect.height * this.thumbScale));
             _paintThumb(context, offset, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbRect)));
         }
         else

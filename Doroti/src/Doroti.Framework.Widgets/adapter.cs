@@ -119,7 +119,7 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
     {
         try
         {
-            _child = updateChild(this._child, ((Widget?)((dynamic)(((RenderObjectToWidgetAdapter<T>?)(object?)this.widget)!)).child), _rootChildSlot);
+            _child = updateChild(this._child, ((Widget?)((((RenderObjectToWidgetAdapter<T>?)(object?)this.widget)!)).child), _rootChildSlot);
         }
         catch (Exception exceptionLocal)
         {
@@ -135,8 +135,8 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(slot, _rootChildSlot)));
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)this.renderObject).debugValidateChild(child)));
-        ((dynamic)this.renderObject).child = ((T?)(object?)child)!;
+        DartRuntimePrimitives.Assert(() => ((bool)((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)this.renderObject).debugValidateChild(child)));
+        ((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)this.renderObject).child = ((T?)(object?)child)!;
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -147,7 +147,7 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => object.Equals(((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)this.renderObject).child, child));
-        ((dynamic)this.renderObject).child = default(T);
+        ((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)this.renderObject).child = default(T);
     }
 
     public virtual void assignOwner(BuildOwner owner)

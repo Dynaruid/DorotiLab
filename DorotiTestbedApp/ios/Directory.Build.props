@@ -1,11 +1,13 @@
 <Project>
   <Import Project="..\Directory.Build.props" />
+  <Import Project="../../Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props" />
   <PropertyGroup>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
     <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
     <BaseOutputPath Condition="'$(ArtifactsPath)' == ''">bin\$(RuntimeIdentifier)\</BaseOutputPath>
     <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;bin\**</DefaultItemExcludes>
-    <NuGetLockFilePath>packages.$(RuntimeIdentifier).lock.json</NuGetLockFilePath>
+    <NuGetLockFilePath Condition="'$(ArtifactsPath)' == ''">packages.$(RuntimeIdentifier).lock.json</NuGetLockFilePath>
+    <NuGetLockFilePath Condition="'$(ArtifactsPath)' != ''">$(ArtifactsPath)/locks/$(MSBuildProjectName)/packages.$(RuntimeIdentifier).lock.json</NuGetLockFilePath>
   </PropertyGroup>
 </Project>

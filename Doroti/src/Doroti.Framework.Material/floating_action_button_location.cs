@@ -144,7 +144,7 @@ internal class _StartTopFabLocation__floating_action_button_location : StandardF
     public override string ToString() => "FloatingActionButtonLocation.startTop";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -172,7 +172,7 @@ internal class _MiniStartTopFabLocation__floating_action_button_location : Stand
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -254,7 +254,7 @@ internal class _EndTopFabLocation__floating_action_button_location : StandardFab
     public override string ToString() => "FloatingActionButtonLocation.endTop";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -282,7 +282,7 @@ internal class _MiniEndTopFabLocation__floating_action_button_location : Standar
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -309,7 +309,7 @@ internal class _StartFloatFabLocation__floating_action_button_location : Standar
     public override string ToString() => "FloatingActionButtonLocation.startFloat";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -347,7 +347,7 @@ internal class _MiniStartFloatFabLocation__floating_action_button_location : Sta
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -459,7 +459,7 @@ internal class _EndFloatFabLocation__floating_action_button_location : StandardF
     public override string ToString() => "FloatingActionButtonLocation.endFloat";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -497,7 +497,7 @@ internal class _MiniEndFloatFabLocation__floating_action_button_location : Stand
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -534,7 +534,7 @@ internal class _StartDockedFabLocation__floating_action_button_location : Standa
     public override string ToString() => "FloatingActionButtonLocation.startDocked";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -590,7 +590,7 @@ internal class _MiniStartDockedFabLocation__floating_action_button_location : St
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -756,7 +756,7 @@ internal class _EndDockedFabLocation__floating_action_button_location : Standard
     public override string ToString() => "FloatingActionButtonLocation.endDocked";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -812,7 +812,7 @@ internal class _MiniEndDockedFabLocation__floating_action_button_location : Stan
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -867,7 +867,7 @@ internal class _EndContainedFabLocation__floating_action_button_location : Stand
     public override string ToString() => "FloatingActionButtonLocation.endContained";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)((dynamic)scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

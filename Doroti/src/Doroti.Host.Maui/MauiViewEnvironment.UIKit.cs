@@ -89,7 +89,9 @@ internal sealed partial class MauiViewEnvironment
                 Rect.fromLTWH(native.Bounds.X, native.Bounds.Y, native.Bounds.Width, native.Bounds.Height),
                 Rect.fromLTWH(keyboard.X, keyboard.Y, keyboard.Width, keyboard.Height)), scale);
         }
-        TextScale = UIFont.GetPreferredFontForTextStyle(UIFontTextStyle.Body).PointSize / 17.0;
+        using var preferredBodyFont = UIFont.GetPreferredFontForTextStyle(UIFontTextStyle.Body)
+            ?? throw new InvalidOperationException("UIKit did not provide its preferred body font.");
+        TextScale = preferredBodyFont.PointSize / 17.0;
         Accessibility = new(UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning, UIAccessibility.IsInvertColorsEnabled,
             false, UIAccessibility.IsBoldTextEnabled,
             UIAccessibility.DarkerSystemColorsEnabled, UIAccessibility.IsOnOffSwitchLabelsEnabled, false,

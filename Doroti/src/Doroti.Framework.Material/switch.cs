@@ -29,9 +29,9 @@ public class Switch : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual Color? activeTrackColor { get; private set; }
     public virtual Color? inactiveThumbColor { get; private set; }
     public virtual Color? inactiveTrackColor { get; private set; }
-    public virtual dynamic activeThumbImage { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider activeThumbImage { get; private set; } = default!;
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError { get; private set; }
-    public virtual dynamic inactiveThumbImage { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider inactiveThumbImage { get; private set; } = default!;
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError { get; private set; }
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor { get; private set; }
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor { get; private set; }
@@ -52,7 +52,7 @@ public class Switch : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual bool autofocus { get; private set; } = default!;
     public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
 
-    public Switch(global::Doroti.Framework.Foundation.Key? key = null, bool value = default!, global::System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, dynamic activeThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, dynamic inactiveThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackOutlineColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? trackOutlineWidth = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null) : base(key: key)
+    public Switch(global::Doroti.Framework.Foundation.Key? key = null, bool value = default!, global::System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, global::Doroti.Framework.Painting.IImageProvider activeThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, global::Doroti.Framework.Painting.IImageProvider inactiveThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackOutlineColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? trackOutlineWidth = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null) : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -87,7 +87,7 @@ public class Switch : global::Doroti.Framework.Widgets.StatelessWidget
         System.Diagnostics.Debug.Assert(((inactiveThumbImage is not null) || (onInactiveThumbImageError is null)));
     }
 
-    public static Switch CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, bool value = default!, global::System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, dynamic activeThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, dynamic inactiveThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackOutlineColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? trackOutlineWidth = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Icon?>? thumbIcon = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool? applyCupertinoTheme = null)
+    public static Switch CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, bool value = default!, global::System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, global::Doroti.Framework.Painting.IImageProvider activeThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, global::Doroti.Framework.Painting.IImageProvider inactiveThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackOutlineColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? trackOutlineWidth = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Icon?>? thumbIcon = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool? applyCupertinoTheme = null)
     {
         var __instance = new Switch(key: key, value: value, onChanged: onChanged, activeColor: activeColor, activeThumbColor: activeThumbColor, activeTrackColor: activeTrackColor, inactiveThumbColor: inactiveThumbColor, inactiveTrackColor: inactiveTrackColor, activeThumbImage: activeThumbImage, onActiveThumbImageError: onActiveThumbImageError, inactiveThumbImage: inactiveThumbImage, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, trackOutlineWidth: trackOutlineWidth, thumbIcon: thumbIcon, materialTapTargetSize: materialTapTargetSize, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, padding: padding);
         __instance.value = value;
@@ -192,9 +192,9 @@ public class _MaterialSwitch__switch : global::Doroti.Framework.Widgets.Stateful
     public virtual Color? activeTrackColor { get; private set; }
     public virtual Color? inactiveThumbColor { get; private set; }
     public virtual Color? inactiveTrackColor { get; private set; }
-    public virtual dynamic activeThumbImage { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider activeThumbImage { get; private set; } = default!;
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError { get; private set; }
-    public virtual dynamic inactiveThumbImage { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider inactiveThumbImage { get; private set; } = default!;
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError { get; private set; }
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor { get; private set; }
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor { get; private set; }
@@ -215,7 +215,7 @@ public class _MaterialSwitch__switch : global::Doroti.Framework.Widgets.Stateful
     public virtual bool? applyCupertinoTheme { get; private set; }
     public virtual _SwitchType__switch switchType { get; private set; } = default!;
 
-    internal _MaterialSwitch__switch(bool value, global::System.Action<bool>? onChanged, Size size, _SwitchType__switch switchType, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, dynamic activeThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, dynamic inactiveThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackOutlineColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? trackOutlineWidth = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, bool? applyCupertinoTheme = null)
+    internal _MaterialSwitch__switch(bool value, global::System.Action<bool>? onChanged, Size size, _SwitchType__switch switchType, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, global::Doroti.Framework.Painting.IImageProvider activeThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, global::Doroti.Framework.Painting.IImageProvider inactiveThumbImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackOutlineColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? trackOutlineWidth = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, bool? applyCupertinoTheme = null)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -507,7 +507,7 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
         SwitchThemeData switchTheme = SwitchTheme.of(context);
         global::Doroti.Ui.Color cupertinoPrimaryColor = ((global::Doroti.Ui.Color)(object?)(theme.cupertinoOverrideTheme?.primaryColor ?? theme.colorScheme.primary));
         _SwitchConfig__switch switchConfig = default!;
-        dynamic defaults = default!;
+        SwitchThemeData defaults = default!;
         var applyCupertinoThemeLocal = false;
         double disabledOpacity = 1;
         switch (((_MaterialSwitch__switch)this.widget).switchType)
@@ -822,7 +822,7 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                     break;
                 }
         }
-        ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        (this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
     }
 
     public virtual void _handleTapEnd(global::Doroti.Framework.Gestures.TapUpDetails? __unused0 = null)
@@ -908,9 +908,9 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     internal virtual Size? _transitionalThumbSize { get; set; } = default;
     internal virtual double? _trackHeight { get; set; } = default;
     internal virtual double? _trackWidth { get; set; } = default;
-    internal virtual dynamic _activeThumbImage { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.IImageProvider _activeThumbImage { get; set; } = default!;
     internal virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? _onActiveThumbImageError { get; set; } = default;
-    internal virtual dynamic _inactiveThumbImage { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.IImageProvider _inactiveThumbImage { get; set; } = default!;
     internal virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? _onInactiveThumbImageError { get; set; } = default;
     internal virtual Color? _activeTrackColor { get; set; } = default;
     internal virtual Color? _activeTrackOutlineColor { get; set; } = default;
@@ -927,7 +927,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     internal virtual List<global::Doroti.Framework.Painting.BoxShadow>? _thumbShadow { get; set; } = default;
     internal virtual global::Doroti.Framework.Painting.TextPainter _textPainter { get; private set; } = new global::Doroti.Framework.Painting.TextPainter();
     internal virtual Color? _cachedThumbColor { get; set; } = default;
-    internal virtual dynamic _cachedThumbImage { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.IImageProvider _cachedThumbImage { get; set; } = default!;
     internal virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? _cachedThumbErrorListener { get; set; } = default;
     internal virtual global::Doroti.Framework.Painting.BoxPainter? _cachedThumbPainter { get; set; } = default;
     internal virtual bool _isPainting { get; set; } = false;
@@ -1148,7 +1148,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
             notifyListeners();
         }
     }
-    public virtual dynamic activeThumbImage
+    public virtual global::Doroti.Framework.Painting.IImageProvider activeThumbImage
     {
         get => this._activeThumbImage;
         set
@@ -1176,7 +1176,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
             notifyListeners();
         }
     }
-    public virtual dynamic inactiveThumbImage
+    public virtual global::Doroti.Framework.Painting.IImageProvider inactiveThumbImage
     {
         get => this._inactiveThumbImage;
         set
@@ -1386,7 +1386,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
             notifyListeners();
         }
     }
-    internal virtual global::Doroti.Framework.Painting.ShapeDecoration _createDefaultThumbDecoration(Color color, dynamic image, global::System.Action<object, global::System.Diagnostics.StackTrace?>? errorListener)
+    internal virtual global::Doroti.Framework.Painting.ShapeDecoration _createDefaultThumbDecoration(Color color, global::Doroti.Framework.Painting.IImageProvider image, global::System.Action<object, global::System.Diagnostics.StackTrace?>? errorListener)
     {
         return new global::Doroti.Framework.Painting.ShapeDecoration(color: color, image: ((image is null) ? null : new global::Doroti.Framework.Painting.DecorationImage(image: image, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)errorListener)), shape: new global::Doroti.Framework.Painting.StadiumBorder(), shadows: (this.isCupertino ? null : this.thumbShadow));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1515,7 +1515,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         }
         global::Doroti.Ui.Color thumbColor = ((global::Doroti.Ui.Color)(object?)Dart_uiLibrary.Color.alphaBlend(lerpedThumbColor, this.surfaceColor));
         global::Doroti.Framework.Widgets.Icon? thumbIcon = ((currentValue < 0.5) ? this.inactiveIcon : this.activeIcon);
-        dynamic thumbImage = ((currentValue < 0.5) ? this.inactiveThumbImage : this.activeThumbImage);
+        global::Doroti.Framework.Painting.IImageProvider thumbImage = ((currentValue < 0.5) ? this.inactiveThumbImage : this.activeThumbImage);
         global::System.Action<object, global::System.Diagnostics.StackTrace?>? thumbErrorListener = ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((currentValue < 0.5) ? this.onInactiveThumbImageError : this.onActiveThumbImageError));
         var paintLocal = ((Func<Paint>)(() =>
 {
@@ -1589,7 +1589,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         }
     }
 
-    internal virtual void _paintThumbWith(Offset thumbPaintOffset, Canvas canvas, double currentValue, Color thumbColor, dynamic thumbImage, global::System.Action<object, global::System.Diagnostics.StackTrace?>? thumbErrorListener, global::Doroti.Framework.Widgets.Icon? thumbIcon, Size thumbSize, double inset)
+    internal virtual void _paintThumbWith(Offset thumbPaintOffset, Canvas canvas, double currentValue, Color thumbColor, global::Doroti.Framework.Painting.IImageProvider thumbImage, global::System.Action<object, global::System.Diagnostics.StackTrace?>? thumbErrorListener, global::Doroti.Framework.Widgets.Icon? thumbIcon, Size thumbSize, double inset)
     {
         try
         {

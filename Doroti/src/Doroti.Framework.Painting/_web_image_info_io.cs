@@ -16,13 +16,13 @@ namespace Doroti.Framework.Painting;
 
 public class WebImageInfoIo : ImageInfo
 {
-    public override ImageInfo clone() => _unsupported();
-    public override string? debugLabel => _unsupported();
-    public override void dispose() => _unsupported();
-    public override Image image => _unsupported();
-    public override bool isCloneOf(ImageInfo other) => _unsupported();
-    public override double scale => _unsupported();
-    public override long sizeBytes => _unsupported();
-    internal virtual dynamic _unsupported() => throw new NotSupportedException("WebImageInfo should never be instantiated in a non-web context.");
+    public override ImageInfo clone() => throw _unsupported();
+    public override string? debugLabel => throw _unsupported();
+    public override void dispose() => throw _unsupported();
+    public override Image image => throw _unsupported();
+    public override bool isCloneOf(ImageInfo other) => throw _unsupported();
+    public override double scale => throw _unsupported();
+    public override long sizeBytes => throw _unsupported();
+    internal virtual NotSupportedException _unsupported() => new NotSupportedException("WebImageInfo should never be instantiated in a non-web context.");
 }
 

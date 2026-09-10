@@ -3,6 +3,7 @@
     <AssemblyName>Doroti.Framework.Rendering</AssemblyName>
     <PackageId>Doroti.Framework.Rendering</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Framework.Widgets.Widgets" />

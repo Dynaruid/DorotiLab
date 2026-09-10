@@ -1,3 +1,10 @@
+# Apply the same mode/output selection to restore, build, publish and every identity query.
+function Get-DorotiCompilationArguments([string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
+    $result = @("-p:DorotiCompilationMode=$CompilationMode")
+    if ($CompilationArtifacts) { $result += "-p:ArtifactsPath=$CompilationArtifacts" }
+    return $result
+}
+
 # Content identities for safe -NoBuild reuse. Dot-sourced by doroti.ps1 and contract tests.
 function Get-DorotiInputFiles([string[]] $Roots) {
     $excluded = @('bin', 'obj', '.doroti', 'artifacts', '.git', '.gradle', '.idea', 'node_modules', '.vs')
@@ -43,7 +50,7 @@ function Get-DorotiContentFingerprint([object[]] $Files, [string] $Selection) {
     } finally { $hash.Dispose() }
 }
 
-function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory) {
+function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory, [string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
     $collector = Join-Path $PSScriptRoot 'launch-inputs.targets'
     Push-Location $WorkingDirectory
     try {
@@ -51,13 +58,15 @@ function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configura
             $arguments = @('msbuild', $project, '-nologo', "-p:Configuration=$Configuration",
                 "-p:CustomAfterMicrosoftCommonTargets=$collector", '-getTargetResult:DorotiCollectLaunchInputs')
             if ($Rid) { $arguments += "-p:RuntimeIdentifier=$Rid" }
+            $arguments += Get-DorotiCompilationArguments $CompilationMode $CompilationArtifacts
             $json = & dotnet @arguments
             if ($LASTEXITCODE -ne 0) { throw "Cannot establish evaluated build inputs: $project" }
             $result = ($json -join "`n" | ConvertFrom-Json -Depth 100).TargetResults.DorotiCollectLaunchInputs
             if ($result.Result -ne 'Success') { throw "Build input discovery failed: $project" }
             foreach ($item in $result.Items) {
                 $path = $item.Identity
-                if ($path -match '[\\/](bin|obj|node_modules|\.doroti|artifacts)[\\/]') { continue }
+                $relative = [IO.Path]::GetRelativePath($WorkingDirectory, $path)
+                if ($relative -match '(^|[\\/])(bin|obj|node_modules|\.doroti|artifacts)[\\/]') { continue }
                 # MSBuild includes hidden inputs such as .gitignore on Unix.
                 if (Test-Path -LiteralPath $path -PathType Leaf) { Get-Item -LiteralPath $path -Force }
             }
@@ -65,13 +74,14 @@ function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configura
     } finally { Pop-Location }
 }
 
-function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory) {
+function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory, [string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
     $collector = Join-Path $PSScriptRoot 'launch-inputs.targets'
     $arguments = @('msbuild', $Runner, '-nologo', "-p:Configuration=$Configuration",
         "-p:CustomAfterMicrosoftCommonTargets=$collector", '-getTargetResult:DorotiCollectLaunchDependencies')
     if ($Rid) { $arguments += "-p:RuntimeIdentifier=$Rid" }
     Push-Location $WorkingDirectory
     try {
+        $arguments += Get-DorotiCompilationArguments $CompilationMode $CompilationArtifacts
         $json = & dotnet @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Cannot establish restored dependency identity. Restore/build before using -NoBuild.' }
         $result = ($json -join "`n" | ConvertFrom-Json -Depth 100).TargetResults.DorotiCollectLaunchDependencies
@@ -84,12 +94,12 @@ function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration,
             }
             Get-Item -LiteralPath $item.Identity -Force
         }
-        Get-DorotiContentFingerprint @($files) "$Runner|$Configuration|$Rid"
+        Get-DorotiContentFingerprint @($files) "$Runner|$Configuration|$Rid|$CompilationMode|$CompilationArtifacts"
     } finally { Pop-Location }
 }
 
 function Test-DorotiDependencyRebuild($State, [string] $Dependencies, [string] $Toolchain) {
-    !$State -or $State.schemaVersion -cne 'doroti.launch-state/v3' -or
+    !$State -or $State.schemaVersion -cne 'doroti.launch-state/v4' -or
         $State.dependencies -cne $Dependencies -or $State.toolchain -cne $Toolchain
 }
 
@@ -98,6 +108,12 @@ function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
     try {
         $info = (& dotnet --info 2>&1 | Out-String)
         if ($LASTEXITCODE -ne 0) { throw 'Cannot establish dotnet SDK/workload identity.' }
+        if ($IsMacOS) {
+            $info += (& xcode-select -p 2>&1 | Out-String)
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot establish selected Xcode identity.' }
+            $info += (& xcodebuild -version 2>&1 | Out-String)
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot establish Xcode version.' }
+        }
         # Tool paths and bytes catch replacement at the same SDK/native-tool version.
         $tools = foreach ($name in @('dotnet','node','cmake','ninja','java','clang','cl','msbuild')) {
             $command = Get-Command $name -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -107,12 +123,13 @@ function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
     } finally { Pop-Location }
 }
 
-function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory = (Get-Location).Path) {
+function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory = (Get-Location).Path, [string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
     $arguments = @('msbuild', $Runner, '-nologo', "-p:Configuration=$Configuration",
-        '-getProperty:TargetDir,TargetPath,RuntimeIdentifier,TargetFramework,IntermediateOutputPath')
+        '-getProperty:TargetDir,TargetPath,RuntimeIdentifier,TargetFramework,IntermediateOutputPath,DorotiCompilationMode,PublishAot,TrimMode,MtouchInterpreter,DorotiTrimPreserveDynamicMembers')
     if ($Rid) { $arguments += "-p:RuntimeIdentifier=$Rid" }
     Push-Location $WorkingDirectory
     try {
+        $arguments += Get-DorotiCompilationArguments $CompilationMode $CompilationArtifacts
         $json = & dotnet @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Cannot evaluate artifact identity.' }
     } finally { Pop-Location }
@@ -144,7 +161,7 @@ function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [
         })
     }
     $allFiles = @(@($files) + @($manifests) + @($assets) | Sort-Object { $_.path } -Unique)
-    [ordered]@{ outputRoot=$outputRoot; targetPath=$properties.TargetPath; rid=$properties.RuntimeIdentifier; framework=$properties.TargetFramework; files=$allFiles }
+    [ordered]@{ outputRoot=$outputRoot; targetPath=$properties.TargetPath; rid=$properties.RuntimeIdentifier; framework=$properties.TargetFramework; compilationMode=$properties.DorotiCompilationMode; publishAot=$properties.PublishAot; trimMode=$properties.TrimMode; interpreter=$properties.MtouchInterpreter; preserveDynamicMembers=$properties.DorotiTrimPreserveDynamicMembers; files=$allFiles }
 }
 
 function Assert-DorotiArtifactIdentity($Expected, $Actual) {

@@ -3,6 +3,7 @@
     <AssemblyName>Doroti.Framework.Cupertino</AssemblyName>
     <PackageId>Doroti.Framework.Cupertino</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
     <NoWarn>$(NoWarn);CS0219;CS8524;CS8846</NoWarn>
   </PropertyGroup>
   <ItemGroup>

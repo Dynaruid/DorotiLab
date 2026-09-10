@@ -1,0 +1,18 @@
+<Project>
+  <Target Name="DorotiPrepareNativeLinkEvidence" BeforeTargets="_ComputeLinkNativeExecutableInputs">
+    <PropertyGroup>
+      <DorotiNativeLinkMap>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'native-link.map'))</DorotiNativeLinkMap>
+    </PropertyGroup>
+    <ItemGroup>
+      <LinkerArgument Include="-Wl,-map,$(DorotiNativeLinkMap)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="DorotiWriteNativeLinkEvidence" AfterTargets="_LinkNativeExecutable">
+    <ItemGroup>
+      <_DorotiNativeEvidence Include="TargetFramework=$(TargetFramework);RuntimeIdentifier=$(RuntimeIdentifier);PublishAot=$(PublishAot);UseNativeAot=$(_UseNativeAot);UseMonoRuntime=$(UseMonoRuntime);MtouchInterpreter=$(MtouchInterpreter);RuntimeFrameworkVersion=$(RuntimeFrameworkVersion);Xcode=$(_SdkDevPath);NativeObject=$(NativeObject);NativeExecutable=$(_IntermediateNativeLibraryDir)$(_NativeExecutableName);LinkMap=$(DorotiNativeLinkMap)" />
+      <_DorotiNativeEvidence Include="@(_NativeExecutableObjectFiles->'Object=%(Identity)');@(_XamarinMainLibraries->'RuntimeLibrary=%(Identity)');@(_BindingLibraryLinkWith->'BindingLibrary=%(Identity)');@(_MainLinkWith->'MainLibrary=%(Identity)');@(_NativeReferences->'NativeReference=%(Identity)');@(_AllLinkerFlags->'LinkerFlag=%(Identity)');@(_NativeExecutableFrameworks->'Framework=%(Identity)');@(_BindingLibraryFrameworks->'BindingFramework=%(Identity)')" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(IntermediateOutputPath)native-link-inputs.txt" Lines="@(_DorotiNativeEvidence)" Overwrite="true" />
+    <Message Importance="High" Text="Doroti native link evidence: $(IntermediateOutputPath)native-link-inputs.txt; map=$(DorotiNativeLinkMap)" />
+  </Target>
+</Project>

@@ -59,7 +59,13 @@ public static partial class RouteLibrary
     internal static global::Doroti.Framework.Animation.Animatable<Offset> _kBottomUpTween = ((global::Doroti.Framework.Animation.Animatable<Offset>)(object?)new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(0.0, 1.0), end: Offset.zero));
 }
 
-public interface CupertinoRouteTransitionMixin<T>
+public interface ICupertinoRouteTitle
+{
+    string? title { get; }
+    global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle { get; }
+}
+
+public interface CupertinoRouteTransitionMixin<T> : ICupertinoRouteTitle
 {
     global::Doroti.Framework.Foundation.ValueNotifier<string?>? _previousTitle { get; set; }
     public static Duration kTransitionDuration = Duration.Create(milliseconds: 500L);
@@ -131,7 +137,7 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
 
     public override void didChangePrevious(dynamic previousRoute)
     {
-        string? previousTitleString = ((previousRoute is CupertinoRouteTransitionMixin<object>) ? ((CupertinoRouteTransitionMixin<object>)previousRoute).title : null);
+        string? previousTitleString = ((previousRoute is ICupertinoRouteTitle) ? ((ICupertinoRouteTitle)(object)previousRoute).title : null);
         if ((this._previousTitle is null))
         {
             this._previousTitle = new global::Doroti.Framework.Foundation.ValueNotifier<string?>(previousTitleString);
@@ -148,15 +154,15 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
     public override string? barrierLabel => DartRuntimePrimitives.ConvertValue<string>(null);
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.PageRoute<T>)) || !((global::Doroti.Framework.Widgets.PageRoute<T>)nextRoute).fullscreenDialog);
-        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.ModalRoute<T>) && (((global::Doroti.Framework.Widgets.ModalRoute<T>)nextRoute).delegatedTransition is not null));
-        return (nextRouteIsNotFullscreen && ((((nextRoute is CupertinoRouteTransitionMixin<object>)) || nextRouteHasDelegatedTransition)));
+        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
+        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null));
+        return (nextRouteIsNotFullscreen && ((((nextRoute is ICupertinoRouteTitle)) || nextRouteHasDelegatedTransition)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
-        return ((previousRoute is PageRoute<object>) && !this.fullscreenDialog);
+        return ((previousRoute is IPageRoute) && !this.fullscreenDialog);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -208,7 +214,7 @@ internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework
 
     public override void didChangePrevious(dynamic previousRoute)
     {
-        string? previousTitleString = ((previousRoute is CupertinoRouteTransitionMixin<object>) ? ((CupertinoRouteTransitionMixin<object>)previousRoute).title : null);
+        string? previousTitleString = ((previousRoute is ICupertinoRouteTitle) ? ((ICupertinoRouteTitle)(object)previousRoute).title : null);
         if ((this._previousTitle is null))
         {
             this._previousTitle = new global::Doroti.Framework.Foundation.ValueNotifier<string?>(previousTitleString);
@@ -225,15 +231,15 @@ internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework
     public override string? barrierLabel => DartRuntimePrimitives.ConvertValue<string>(null);
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.PageRoute<T>)) || !((global::Doroti.Framework.Widgets.PageRoute<T>)nextRoute).fullscreenDialog);
-        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.ModalRoute<T>) && (((global::Doroti.Framework.Widgets.ModalRoute<T>)nextRoute).delegatedTransition is not null));
-        return (nextRouteIsNotFullscreen && ((((nextRoute is CupertinoRouteTransitionMixin<object>)) || nextRouteHasDelegatedTransition)));
+        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
+        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null));
+        return (nextRouteIsNotFullscreen && ((((nextRoute is ICupertinoRouteTitle)) || nextRouteHasDelegatedTransition)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
-        return ((previousRoute is PageRoute<object>) && !this.fullscreenDialog);
+        return ((previousRoute is IPageRoute) && !this.fullscreenDialog);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -646,7 +652,11 @@ public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Pa
         }
         DartRuntimePrimitives.Assert(() => ((((_CupertinoEdgeShadowDecoration__route)b)._colors is not null) || (((_CupertinoEdgeShadowDecoration__route)a)._colors is not null)));
         DartRuntimePrimitives.Assert(() => (((((_CupertinoEdgeShadowDecoration__route)b)._colors is null) || (((_CupertinoEdgeShadowDecoration__route)a)._colors is null)) || (checked((long)(((_CupertinoEdgeShadowDecoration__route)a)._colors.Count)) == checked((long)(((_CupertinoEdgeShadowDecoration__route)b)._colors.Count)))));
-        return new _CupertinoEdgeShadowDecoration__route(((Func<List<global::Doroti.Ui.Color>>)(() => { var __collection33897 = new List<global::Doroti.Ui.Color>(); for (long i = 0L; (i < checked((long)(((_CupertinoEdgeShadowDecoration__route)b)._colors!.Count))); i += 1L) { __collection33897.Add(Dart_uiLibrary.Color.lerp(((_CupertinoEdgeShadowDecoration__route)a)._colors[(int)(i)], ((_CupertinoEdgeShadowDecoration__route)b)._colors[(int)(i)], t)!); } return __collection33897; }))());
+        var colors = new List<Color>();
+        int count = b._colors?.Count ?? a._colors?.Count ?? 0;
+        for (var i = 0; i < count; i++)
+            colors.Add(Dart_uiLibrary.Color.lerp(a._colors?[i], b._colors?[i], t)!);
+        return new _CupertinoEdgeShadowDecoration__route(colors);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -157,7 +157,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderViewport?)(object?)base.renderObject)!);
+    public override global::Doroti.Framework.Rendering.RenderViewport renderObject => (global::Doroti.Framework.Rendering.RenderViewport)base.renderObject;
     public override void mount(Element? parent, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => !this._doingMountOrUpdate);
@@ -189,7 +189,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
             {
                 if ((object.Equals(((Element)e).widget.key, ((Viewport)viewport).center)))
                 {
-                    ((dynamic)this.renderObject).center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject)!;
+                    this.renderObject.center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject)!;
                     break;
                 }
                 elementIndex++;
@@ -201,12 +201,12 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         {
             if (System.Linq.Enumerable.Any(this.children))
             {
-                ((dynamic)this.renderObject).center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)this.children.First().renderObject)!;
+                this.renderObject.center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)this.children.First().renderObject)!;
                 _centerSlotIndex = 0L;
             }
             else
             {
-                ((dynamic)this.renderObject).center = null;
+                this.renderObject.center = null;
                 _centerSlotIndex = null;
             }
         }
@@ -218,7 +218,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         base.insertRenderObjectChild(child, __slot);
         if ((!this._doingMountOrUpdate && (((IndexedSlot<Element?>)__slot).index == this._centerSlotIndex)))
         {
-            ((dynamic)this.renderObject).center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)child)!;
+            this.renderObject.center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)child)!;
         }
     }
 
@@ -235,7 +235,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         base.removeRenderObjectChild(child, slot);
         if ((!this._doingMountOrUpdate && (object.Equals(((global::Doroti.Framework.Rendering.RenderViewport)this.renderObject).center, child))))
         {
-            ((dynamic)this.renderObject).center = null;
+            this.renderObject.center = null;
         }
     }
 

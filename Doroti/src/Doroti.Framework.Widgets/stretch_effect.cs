@@ -181,6 +181,7 @@ internal class _StretchEffectShader__stretch_effect
             return;
         }
         _initCalled = true;
+        global::Doroti.Ui.FrameworkShaderLoader.RegisterResourceOwner(typeof(Widget).Assembly);
         global::Doroti.Ui.FrameworkShaderLoader.BeginLoad(
             "widgets.stretch-effect",
             program =>

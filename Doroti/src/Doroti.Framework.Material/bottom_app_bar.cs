@@ -103,7 +103,7 @@ internal class _BottomAppBarClipper__bottom_app_bar : global::Doroti.Framework.R
                 return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(bottomNavigationBarTop__9605__value9677));
             }
             var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.materialKey).currentContext?.findRenderObject())!;
-            return ((Offset)((dynamic)box)?.localToGlobal(Offset.zero)).dy;
+            return ((Offset)(box)?.localToGlobal(Offset.zero)).dy;
             return default!;
         }
     }

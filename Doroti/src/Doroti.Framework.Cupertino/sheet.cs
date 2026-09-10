@@ -783,7 +783,7 @@ public class _CupertinoSheetScrollPosition__sheet : global::Doroti.Framework.Wid
         if ((((_CupertinoSheetScrollPosition__sheet)((_CupertinoSheetScrollPosition__sheet)other))._dragCancelCallback is not null))
         {
             _dragCancelCallback = (global::System.Action)((_CupertinoSheetScrollPosition__sheet)((_CupertinoSheetScrollPosition__sheet)other))._dragCancelCallback;
-            ((dynamic)other)._dragCancelCallback = null;
+            ((_CupertinoSheetScrollPosition__sheet)other)._dragCancelCallback = null;
         }
     }
 

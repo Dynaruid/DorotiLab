@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net11.0-ios</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.NativeAot.iOSNet11</AssemblyName>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <AppBundleManifest>Info.plist</AppBundleManifest>
+    <PublishAot>true</PublishAot>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <ApplicationId>dev.doroti.nativeaot.probe</ApplicationId>
+    <ApplicationTitle>Doroti NativeAOT .NET 11 Probe</ApplicationTitle>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
+    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+    <DorotiProbeMauiVersion>11.0.0-rc.1.26451.6</DorotiProbeMauiVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Doroti.Host.Maui/Doroti.Host.Maui.csproj"
+                      AdditionalProperties="RuntimeIdentifier=ios-arm64;DorotiIosTargetFramework=$(TargetFramework);DorotiIosMauiVersion=$(DorotiProbeMauiVersion)" />
+    <ProjectReference Include="../../../../DorotiTestbedApp/ios/binding/DorotiTestbedApp.iOS.Native.csproj"
+                      AdditionalProperties="DorotiIosTargetFramework=$(TargetFramework)" />
+    <PackageReference Include="Microsoft.Maui.Controls" VersionOverride="$(DorotiProbeMauiVersion)" />
+    <Compile Include="../ios-probe/Program.cs" Link="Program.cs" />
+    <EmbeddedResource Include="../ios-probe/application-manifest.json" LogicalName="Doroti.Application.Manifest" />
+  </ItemGroup>
+  <Import Project="../native-evidence.targets" />
+</Project>

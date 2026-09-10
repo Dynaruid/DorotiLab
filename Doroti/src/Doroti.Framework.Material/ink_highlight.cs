@@ -88,7 +88,7 @@ public class InkHighlight : InteractiveInkFeature
         {
             case global::Doroti.Framework.Painting.BoxShape.circle:
                 {
-                    canvas.drawCircle(((Offset)((dynamic)rect).center), (this._radius ?? Material.defaultSplashRadius), paint);
+                    canvas.drawCircle(((Offset)(rect).center), (this._radius ?? Material.defaultSplashRadius), paint);
                     break;
                 }
             case global::Doroti.Framework.Painting.BoxShape.rectangle:

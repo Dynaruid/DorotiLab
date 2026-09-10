@@ -14,7 +14,7 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate Widget RadioBuilder(BuildContext context, dynamic state);
+public delegate Widget RadioBuilder(BuildContext context, IToggleableState state);
 
 public class RawRadio<T> : StatefulWidget
 {
@@ -23,11 +23,11 @@ public class RawRadio<T> : StatefulWidget
     public virtual bool toggleable { get; private set; } = default!;
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, dynamic, Widget> builder { get; private set; } = default!;
+    public virtual global::System.Func<BuildContext, IToggleableState, Widget> builder { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
     public virtual RadioGroupRegistry<T>? groupRegistry { get; private set; }
 
-    public RawRadio(global::Doroti.Framework.Foundation.Key? key = null, T value = default!, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor = default!, bool toggleable = default!, FocusNode focusNode = default!, bool autofocus = default!, RadioGroupRegistry<T>? groupRegistry = default!, bool enabled = default!, global::System.Func<BuildContext, dynamic, Widget> builder = default!) : base(key: key)
+    public RawRadio(global::Doroti.Framework.Foundation.Key? key = null, T value = default!, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor = default!, bool toggleable = default!, FocusNode focusNode = default!, bool autofocus = default!, RadioGroupRegistry<T>? groupRegistry = default!, bool enabled = default!, global::System.Func<BuildContext, IToggleableState, Widget> builder = default!) : base(key: key)
     {
         this.value = value;
         this.mouseCursor = mouseCursor;
@@ -306,7 +306,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
                     break;
                 }
         }
-        ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        (this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
     }
 
     public virtual void _handleTapEnd(global::Doroti.Framework.Gestures.TapUpDetails? __unused0 = null)

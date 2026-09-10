@@ -94,15 +94,15 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header : global::Dor
     public virtual double childExtent => ((this.child is null) ? 0 : boxExtent(this.child!));
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
-        if ((((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child).parentData) is not global::Doroti.Framework.Rendering.SliverPhysicalParentData))
+        if ((((global::Doroti.Framework.Rendering.ParentData?)(child).parentData) is not global::Doroti.Framework.Rendering.SliverPhysicalParentData))
         {
-            ((dynamic)child).parentData = new global::Doroti.Framework.Rendering.SliverPhysicalParentData();
+            (child).parentData = new global::Doroti.Framework.Rendering.SliverPhysicalParentData();
         }
     }
 
     public virtual void setChildParentData(global::Doroti.Framework.Rendering.RenderObject child, global::Doroti.Framework.Rendering.SliverConstraints constraints, global::Doroti.Framework.Rendering.SliverGeometry geometry)
     {
-        var childParentData = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child).parentData)!)!;
+        var childParentData = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(child).parentData)!)!;
         global::Doroti.Framework.Painting.AxisDirection direction = global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((global::Doroti.Framework.Rendering.SliverConstraints)constraints).axisDirection, ((global::Doroti.Framework.Rendering.SliverConstraints)constraints).growthDirection);
         childParentData.paintOffset = (direction switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, -((((global::Doroti.Framework.Rendering.SliverGeometry)geometry).scrollExtent - ((((global::Doroti.Framework.Rendering.SliverGeometry)geometry).paintExtent + ((global::Doroti.Framework.Rendering.SliverConstraints)constraints).scrollOffset))))), global::Doroti.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(-((global::Doroti.Framework.Rendering.SliverConstraints)constraints).scrollOffset, 0.0), global::Doroti.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0.0, -((global::Doroti.Framework.Rendering.SliverConstraints)constraints).scrollOffset), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(-((((global::Doroti.Framework.Rendering.SliverGeometry)geometry).scrollExtent - ((((global::Doroti.Framework.Rendering.SliverGeometry)geometry).paintExtent + ((global::Doroti.Framework.Rendering.SliverConstraints)constraints).scrollOffset)))), 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
@@ -140,7 +140,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header : global::Dor
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        var childParentData = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child).parentData)!)!;
+        var childParentData = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(child).parentData)!)!;
         childParentData.applyPaintTransform(transform);
     }
 
@@ -189,7 +189,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header : global::Dor
         base.attach(owner);
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).attach(owner);
+            (child).attach(owner);
         }
     }
 
@@ -198,7 +198,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header : global::Dor
         base.detach();
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).detach();
+            (child).detach();
         }
     }
 

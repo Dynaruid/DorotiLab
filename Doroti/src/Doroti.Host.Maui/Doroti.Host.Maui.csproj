@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework></TargetFramework>
+    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == ''">net10.0-ios</DorotiIosTargetFramework>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == '' and '$(DorotiHostMacOnly)' == 'true'">net10.0-maccatalyst;net10.0-macos</TargetFrameworks>
-    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == '' and '$(DorotiHostMacOnly)' != 'true' and '$(DorotiHostTargetFrameworks)' == ''">net10.0-windows10.0.19041.0;net10.0-maccatalyst;net10.0-macos;net10.0-ios;net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == '' and '$(DorotiHostMacOnly)' != 'true' and '$(DorotiHostTargetFrameworks)' == ''">net10.0-windows10.0.19041.0;net10.0-maccatalyst;net10.0-macos;$(DorotiIosTargetFramework);net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == '' and '$(DorotiHostTargetFrameworks)' != ''">$(DorotiHostTargetFrameworks)</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'win-x64'">net10.0-windows10.0.19041.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'maccatalyst-arm64'">net10.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">net10.0-macos</TargetFrameworks>
-    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64'">net10.0-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64'">$(DorotiIosTargetFramework)</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-arm64'">net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-x64'">net10.0-android</TargetFrameworks>
     <AssemblyName>Doroti.Host.Maui</AssemblyName>
@@ -32,7 +33,8 @@
     <None Include="buildTransitive\Doroti.Host.Maui.targets" Pack="true" PackagePath="buildTransitive\" />
     <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
-    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="Microsoft.Maui.Controls" Condition="'$(DorotiIosMauiVersion)' == '' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'ios'" />
+    <PackageReference Include="Microsoft.Maui.Controls" VersionOverride="$(DorotiIosMauiVersion)" Condition="'$(DorotiIosMauiVersion)' != '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" />
     <PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'macos'" />
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />

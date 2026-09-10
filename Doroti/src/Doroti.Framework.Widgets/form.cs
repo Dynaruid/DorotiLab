@@ -78,17 +78,30 @@ public class Form : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new FormState());
 }
 
+/// <summary>Value-independent operations used by a form to manage its fields.</summary>
+public interface IFormFieldState : IState
+{
+    bool hasError { get; }
+    bool hasInteractedByUser { get; }
+    string? errorText { get; }
+    FocusNode focusNode { get; }
+    void save();
+    void reset();
+    bool validate();
+    void clearErrorInternal();
+}
+
 public class FormState : State<Form>
 {
     internal virtual long _generation { get; set; } = 0L;
     internal virtual bool _hasInteractedByUser { get; set; } = false;
-    internal virtual HashSet<dynamic> _fields { get; private set; } = new HashSet<dynamic>();
+    internal virtual HashSet<IFormFieldState> _fields { get; private set; } = new HashSet<IFormFieldState>();
 
-    public virtual IEnumerable<object> fields => DartRuntimePrimitives.ConvertValue<IEnumerable<object>>(this._fields);
+    public virtual IEnumerable<object> fields => this._fields;
     internal virtual void _fieldDidChange()
     {
         ((Form)(object)this.widget).onChanged?.Invoke();
-        _hasInteractedByUser = this._fields.any(((field) => ((RestorableBool)((dynamic)field)._hasInteractedByUser).value));
+        _hasInteractedByUser = this._fields.any(field => field.hasInteractedByUser);
         _forceRebuild();
     }
 
@@ -100,19 +113,19 @@ public class FormState : State<Form>
         })));
     }
 
-    internal virtual void _register(dynamic field)
+    internal virtual void _register(IFormFieldState field)
     {
         this._fields.Add(field);
     }
 
-    internal virtual void _unregister(dynamic field)
+    internal virtual void _unregister(IFormFieldState field)
     {
         this._fields.Remove(field);
     }
 
     public override Widget build(BuildContext context)
     {
-        bool hasErrorLocal = this._fields.any(((field) => ((bool)((dynamic)field).hasError)));
+        bool hasErrorLocal = this._fields.any(field => field.hasError);
         switch (((Form)(object)this.widget).autovalidateMode)
         {
             case AutovalidateMode.always:
@@ -157,17 +170,17 @@ public class FormState : State<Form>
 
     public virtual void save()
     {
-        foreach (dynamic @field in this._fields)
+        foreach (IFormFieldState @field in this._fields)
         {
-            ((dynamic)@field).save();
+            @field.save();
         }
     }
 
     public virtual void reset()
     {
-        foreach (dynamic @field in this._fields)
+        foreach (IFormFieldState @field in this._fields)
         {
-            ((dynamic)@field).reset();
+            @field.reset();
         }
         _hasInteractedByUser = false;
         _fieldDidChange();
@@ -175,9 +188,9 @@ public class FormState : State<Form>
 
     public virtual void clearError()
     {
-        foreach (dynamic @field in this._fields)
+        foreach (IFormFieldState @field in this._fields)
         {
-            ((dynamic)@field)._clearErrorInternal();
+            @field.clearErrorInternal();
         }
         _fieldDidChange();
     }
@@ -192,7 +205,7 @@ public class FormState : State<Form>
 
     public virtual HashSet<object> validateGranularly()
     {
-        var invalidFields = new HashSet<dynamic>();
+        var invalidFields = new HashSet<object>();
         _hasInteractedByUser = true;
         _forceRebuild();
         _validate(View.of(this.context), invalidFields);
@@ -200,21 +213,21 @@ public class FormState : State<Form>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _validate(DorotiView view, HashSet<dynamic>? invalidFields = null)
+    internal virtual bool _validate(DorotiView view, HashSet<object>? invalidFields = null)
     {
         var hasError = false;
         var errorMessage = "";
         var validateOnFocusChange = (object.Equals(((Form)(object)this.widget).autovalidateMode, AutovalidateMode.onUnfocus));
-        foreach (dynamic @field in this._fields)
+        foreach (IFormFieldState @field in this._fields)
         {
-            bool hasFocusLocal = ((FocusNode)((dynamic)@field)._focusNode).hasFocus;
+            bool hasFocusLocal = ((FocusNode)@field.focusNode).hasFocus;
             if (((!validateOnFocusChange || !hasFocusLocal) || ((validateOnFocusChange && hasFocusLocal))))
             {
-                bool isFieldValid = ((bool)((dynamic)@field).validate());
+                bool isFieldValid = ((bool)@field.validate());
                 hasError |= !isFieldValid;
                 if ((errorMessage.Length == 0))
                 {
-                    errorMessage = (((string?)((dynamic)@field).errorText) ?? "");
+                    errorMessage = (((string?)@field.errorText) ?? "");
                 }
                 if (((invalidFields is not null) && !isFieldValid))
                 {
@@ -309,8 +322,10 @@ public class FormField<T> : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new FormFieldState<T>());
 }
 
-public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField<T>>
+public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField<T>>, IFormFieldState
 {
+    FocusNode IFormFieldState.focusNode => this._focusNode;
+    void IFormFieldState.clearErrorInternal() => _clearErrorInternal();
     private bool __late__value_initialized;
     private T? __late__value = default!;
     internal virtual T? _value
@@ -330,8 +345,8 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     internal virtual RestorableBool _hasInteractedByUser { get; private set; } = new RestorableBool(false);
     internal virtual FocusNode _focusNode { get; private set; } = new FocusNode();
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -487,9 +502,9 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         this._errorText.dispose();
         this._focusNode.dispose();
         this._hasInteractedByUser.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -558,13 +573,13 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -578,9 +593,9 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -592,10 +607,10 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -692,7 +707,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -700,19 +715,19 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>

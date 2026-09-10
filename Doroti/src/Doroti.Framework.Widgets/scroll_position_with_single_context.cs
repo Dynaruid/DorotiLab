@@ -55,7 +55,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         {
             _currentDrag = ((ScrollPositionWithSingleContext)((ScrollPositionWithSingleContext)other))._currentDrag;
             this._currentDrag!.updateDelegate(this);
-            ((dynamic)other)._currentDrag = null;
+            ((ScrollPositionWithSingleContext)other)._currentDrag = null;
         }
     }
 

@@ -113,7 +113,7 @@ public static class DartAsyncRuntime
         foreach (var future in futures)
         {
             var value = await future.asObjectTask().ConfigureAwait(false);
-            values.Add(value is T typed ? typed : default!);
+            values.Add((T)value!);
         }
         return values;
     }
@@ -219,28 +219,16 @@ public static class DartAsyncRuntime
     public static async Task<T> AwaitFutureOrValue<T>(object? value)
     {
         if (value is Future<T> future) return await future;
-        if (value is T typed) return typed;
-        return default!;
+        if (value is Future untyped) value = await untyped.asObjectTask();
+        // Future<T> is invariant in the CLR. Await its common result bridge
+        // before checking the consumer's type (e.g. Future<List<T>> -> IEnumerable<T>).
+        return (T)value!;
     }
 
     public static Task<object?> AwaitObject(Future future) => future.asObjectTask();
 
-    internal static async Task InvokeErrorHandlerAsync(Delegate handler, Exception error)
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-        var result = handler.Method.GetParameters().Length > 1
-            ? handler.DynamicInvoke(error, new System.Diagnostics.StackTrace())
-            : handler.DynamicInvoke(error);
-        switch (result)
-        {
-            case Future future:
-                await future.asTask().ConfigureAwait(false);
-                break;
-            case Task task:
-                await task.ConfigureAwait(false);
-                break;
-        }
-    }
+    internal static Task InvokeErrorHandlerAsync(Delegate handler, Exception error) =>
+        DartErrorHandlers.Observe(handler, error);
 
     private sealed class MicrotaskSchedulerScope(Action<Action>? previous) : IDisposable
     {
@@ -436,8 +424,7 @@ public class Future<T> : Future
         }
         catch (Exception error) when (onError is not null)
         {
-            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
-            return default!;
+            return await DartErrorHandlers.Recover<TResult>(onError, error).ConfigureAwait(false);
         }
     }
 
@@ -460,8 +447,7 @@ public class Future<T> : Future
         }
         catch (Exception error) when (onError is not null)
         {
-            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
-            return default!;
+            return await DartErrorHandlers.Recover<TResult>(onError, error).ConfigureAwait(false);
         }
     }
 
@@ -487,14 +473,7 @@ public class Future<T> : Future
         }
         catch (Exception error) when (test?.Invoke(error) ?? true)
         {
-            var recovered = onError.DynamicInvoke(error);
-            return recovered switch
-            {
-                Future<T> future => await future,
-                Task<T> recoveredTask => await recoveredTask.ConfigureAwait(false),
-                T value => value,
-                _ => default!,
-            };
+            return await DartErrorHandlers.Recover<T>(onError, error).ConfigureAwait(false);
         }
     }
 
@@ -672,8 +651,7 @@ public class Future
         }
         catch (Exception error) when (onError is not null)
         {
-            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
-            return default!;
+            return await DartErrorHandlers.Recover<TResult>(onError, error).ConfigureAwait(false);
         }
     }
 
@@ -685,17 +663,7 @@ public class Future
         }
         catch (Exception error) when (test?.Invoke(error) ?? true)
         {
-            var recovered = onError.Method.GetParameters().Length > 1
-                ? onError.DynamicInvoke(error, new System.Diagnostics.StackTrace())
-                : onError.DynamicInvoke(error);
-            if (recovered is Future future)
-            {
-                await future.asTask().ConfigureAwait(false);
-            }
-            else if (recovered is Task recoveredTask)
-            {
-                await recoveredTask.ConfigureAwait(false);
-            }
+            await DartErrorHandlers.Observe(onError, error).ConfigureAwait(false);
         }
     }
 }

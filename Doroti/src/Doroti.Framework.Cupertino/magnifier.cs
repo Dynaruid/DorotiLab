@@ -110,7 +110,7 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
     internal virtual void _determineMagnifierPositionAndFocalPoint()
     {
         global::Doroti.Framework.Widgets.MagnifierInfo textEditingContext = ((CupertinoTextMagnifier)this.widget).magnifierInfo.value;
-        double verticalCenterOfCurrentLine = ((Offset)((dynamic)((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).caretRect).center).dy;
+        double verticalCenterOfCurrentLine = ((Offset)(((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).caretRect).center).dy;
         if (((verticalCenterOfCurrentLine - ((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).globalGesturePosition.dy) < -((CupertinoTextMagnifier)this.widget).hideBelowThreshold))
         {
             if (((CupertinoTextMagnifier)this.widget).controller.shown)

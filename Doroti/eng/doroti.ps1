@@ -26,6 +26,9 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string] $Configuration = 'Release',
 
+    [ValidateSet('Mono', 'NativeAot')]
+    [string] $CompilationMode = 'Mono',
+
     [switch] $NoBuild,
 
     [switch] $NoRestore,
@@ -186,6 +189,16 @@ function Invoke-WorkspaceDotNet {
         }
         $runner = [IO.Path]::GetFullPath($mauiBackend[0])
     }
+    if ($CompilationMode -eq 'NativeAot' -and ($Platform -ne 'ios' -or $Rid -ne 'ios-arm64')) {
+        throw 'NativeAot currently requires -Platform ios -Rid ios-arm64.'
+    }
+    if ($CompilationMode -eq 'NativeAot' -and $Verb -eq 'run') {
+        throw 'NativeAot requires publish and installation of the signed .app; dotnet run is not a NativeAot publish.'
+    }
+    # Keep every project, generated bootstrap, restore graph and native binding
+    # under a mode/RID-specific root, including the explicit Mono recovery path.
+    $compilationArtifacts = if ($Platform -eq 'ios') { Join-Path $workspace.Root ".doroti/cache/compilation/$CompilationMode/$(if ($Rid) { $Rid } else { 'default-rid' })" } else { '' }
+    $compilationArguments = @(Get-DorotiCompilationArguments $CompilationMode $compilationArtifacts)
     $effectiveNoBuild = $NoBuild -or $LastSuccessful
     $effectiveNoRestore = $NoRestore -or $effectiveNoBuild
     if (($effectiveNoBuild -or $effectiveNoRestore -or $LastSuccessful) -and $Verb -cne 'run') {
@@ -196,15 +209,16 @@ function Invoke-WorkspaceDotNet {
     if (-not $effectiveNoRestore) {
         $restoreArguments = @('restore', $runner, '--nologo', "-p:Configuration=$Configuration")
         if ($Rid) { $restoreArguments += "-p:RuntimeIdentifier=$Rid" }
+        $restoreArguments += $compilationArguments
         Invoke-Checked 'dotnet' $restoreArguments $workspace.Root
     }
     $fingerprintWatch = [Diagnostics.Stopwatch]::StartNew()
-    $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner
+    $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner $compilationArtifacts
     $toolchain = Get-DorotiToolchainIdentity $workspace.Root
-    $dependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root
+    $dependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts
     $fingerprintWatch.Stop()
     $stateDirectory = Join-Path $workspace.Root '.doroti/launch-state'
-    $stateKey = @($Platform, $WindowsBackend, $Configuration, $(if ([string]::IsNullOrWhiteSpace($Rid)) { 'default-rid' } else { $Rid })) -join '-'
+    $stateKey = @($Platform, $WindowsBackend, $Configuration, $CompilationMode, $(if ([string]::IsNullOrWhiteSpace($Rid)) { 'default-rid' } else { $Rid })) -join '-'
     $stateKey = $stateKey -replace '[^A-Za-z0-9_.-]', '_'
     $statePath = Join-Path $stateDirectory "$stateKey.json"
     $state = if (Test-Path -LiteralPath $statePath -PathType Leaf) {
@@ -218,6 +232,7 @@ function Invoke-WorkspaceDotNet {
         if ($rebuildDependencies -or
             $state.runner -cne $runner -or
             $state.configuration -cne $Configuration -or
+            $state.compilationMode -cne $CompilationMode -or
             $state.rid -cne $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid }) -or
             $state.fingerprint -cne $launchFingerprint -or
             $state.toolchain -cne $toolchain) {
@@ -225,10 +240,11 @@ function Invoke-WorkspaceDotNet {
         }
     }
     if ($effectiveNoBuild) {
-        Assert-DorotiArtifactIdentity $state.artifact (Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root)
+        Assert-DorotiArtifactIdentity $state.artifact (Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts)
     }
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
+    $arguments += $compilationArguments
     if ($effectiveNoBuild) { $arguments += '--no-build' }
     $arguments += '--no-restore'
     # A long-lived compiler may retain metadata for an older package at the
@@ -258,13 +274,14 @@ function Invoke-WorkspaceDotNet {
         Write-Host "Doroti steps: build=$(if ($effectiveNoBuild) { 'reused' } else { 'execute' }) restore=$(if ($effectiveNoRestore) { 'reused' } else { 'execute' }) deploy=$(if ($Verb -ceq 'run') { 'execute' } else { 'not-requested' }) launch=$(if ($Verb -ceq 'run') { 'execute' } else { 'not-requested' })"
         Write-Host "Doroti fingerprint/toolchain check: $($fingerprintWatch.Elapsed.TotalMilliseconds.ToString('F1')) ms"
         # Save a build artifact before launching a long-running application.
-        if (($Verb -ceq 'run' -and -not $effectiveNoBuild) -or ($Verb -ceq 'publish' -and $rebuildDependencies)) {
+        if (($Verb -ceq 'run' -and -not $effectiveNoBuild) -or ($Verb -ceq 'publish' -and $rebuildDependencies -and $CompilationMode -ne 'NativeAot')) {
             $buildArguments = @('build', $runner, '--configuration', $Configuration, '--nologo', '--no-restore', '-p:UseSharedCompilation=false')
             if ($rebuildDependencies) {
                 Write-Host 'Doroti dependencies/toolchain changed or untracked: rebuilding before recording success.'
                 $buildArguments += @('-t:Rebuild', '-p:DorotiRebuildDependencies=true')
             }
             if ($Rid) { $buildArguments += "-p:RuntimeIdentifier=$Rid" }
+            $buildArguments += $compilationArguments
             Invoke-Checked 'dotnet' $buildArguments $workspace.Root
             if ($Verb -ceq 'run') { $arguments += '--no-build' }
         }
@@ -276,7 +293,7 @@ function Invoke-WorkspaceDotNet {
             Invoke-Checked 'dotnet' $arguments $workspace.Root
         }
         if (-not $effectiveNoBuild) {
-            $builtDependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root
+            $builtDependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts
             if ($builtDependencies -cne $dependencies) {
                 throw 'Dependencies changed during the build; the artifact cannot be recorded or launched. Build again.'
             }
@@ -284,14 +301,15 @@ function Invoke-WorkspaceDotNet {
         if ($Verb -in @('run', 'build') -and -not $effectiveNoBuild) {
             [IO.Directory]::CreateDirectory($stateDirectory) | Out-Null
             $state = [ordered]@{
-                schemaVersion = 'doroti.launch-state/v3'
+                schemaVersion = 'doroti.launch-state/v4'
                 runner = $runner
                 configuration = $Configuration
+                compilationMode = $CompilationMode
                 rid = $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid })
                 fingerprint = $launchFingerprint
                 toolchain = $toolchain
                 dependencies = $dependencies
-                artifact = Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root
+                artifact = Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts
                 buildCompletedUtc = [DateTime]::UtcNow.ToString('O')
             }
             $temporaryStatePath = "$statePath.tmp-$PID"
@@ -312,15 +330,16 @@ function Invoke-WorkspaceDotNet {
 function Get-DorotiLaunchFingerprint {
     param(
         [Parameter(Mandatory)] $Workspace,
-        [Parameter(Mandatory)] [string] $Runner
+        [Parameter(Mandatory)] [string] $Runner,
+        [string] $CompilationArtifacts
     )
 
     $roots = @($Workspace.Root, (Join-Path $dorotiRoot 'src'), (Join-Path $dorotiRoot 'eng'))
     $files = @(Get-DorotiInputFiles $roots)
     $files += @(Get-DorotiInheritedInputs ($roots + @([IO.Path]::GetDirectoryName($Runner))))
-    $files += @(Get-DorotiEvaluatedInputFiles @($Workspace.ApplicationProject, $Runner) $Configuration $Rid $Workspace.Root)
+    $files += @(Get-DorotiEvaluatedInputFiles @($Workspace.ApplicationProject, $Runner) $Configuration $Rid $Workspace.Root $CompilationMode $CompilationArtifacts)
     $files += Get-Item -LiteralPath $Workspace.Manifest, $Workspace.ApplicationProject, $Runner
-    Get-DorotiContentFingerprint $files "$Runner|$Platform|$WindowsBackend|$Configuration|$Rid"
+    Get-DorotiContentFingerprint $files "$Runner|$Platform|$WindowsBackend|$Configuration|$Rid|$CompilationMode|$CompilationArtifacts"
 
 }
 

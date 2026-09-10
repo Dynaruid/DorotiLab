@@ -1532,7 +1532,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         base.attach(owner);
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).attach(owner);
+            (child).attach(owner);
         }
     }
 
@@ -1541,7 +1541,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         base.detach();
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).detach();
+            (child).detach();
         }
     }
 

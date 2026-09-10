@@ -16,13 +16,13 @@ namespace Doroti.Framework.Widgets;
 
 public class ImageIcon : StatelessWidget
 {
-    public virtual dynamic image { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider image { get; private set; } = default!;
     public virtual double? size { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual string? semanticLabel { get; private set; }
     public virtual bool useOriginalColors { get; private set; } = default!;
 
-    public ImageIcon(dynamic image, global::Doroti.Framework.Foundation.Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
+    public ImageIcon(global::Doroti.Framework.Painting.IImageProvider image, global::Doroti.Framework.Foundation.Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
     {
         this.image = image;
         this.size = size;

@@ -41,7 +41,7 @@ public class AnimatedIcon : global::Doroti.Framework.Widgets.StatelessWidget
         global::Doroti.Framework.Widgets.IconThemeData iconTheme = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)IconTheme.of(context));
         DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).isConcrete);
         double iconSize = (size ?? DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).size));
-        global::Doroti.Ui.TextDirection textDirectionLocal = ((((TextDirection?)((dynamic)this).textDirection) ?? (TextDirection)Directionality.of(context)));
+        global::Doroti.Ui.TextDirection textDirectionLocal = ((((TextDirection?)(this).textDirection) ?? (TextDirection)Directionality.of(context)));
         double iconOpacity = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).opacity);
         global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)(object?)(color ?? ((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).color!));
         if ((iconOpacity != 1.0))

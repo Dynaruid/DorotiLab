@@ -26,8 +26,9 @@ public enum SmartQuotesType
     enabled
 }
 
-public class TextInputType
+public class TextInputType : IDartEnumIndex
 {
+    long IDartEnumIndex.DartEnumIndex => index;
     public virtual long index { get; private set; } = default!;
     public virtual bool? signed { get; private set; }
     public virtual bool? @decimal { get; private set; }

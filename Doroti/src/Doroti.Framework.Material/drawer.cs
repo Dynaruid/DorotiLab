@@ -214,11 +214,11 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
     {
         if ((this._historyEntry is null))
         {
-            dynamic route = global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(this.context);
+            global::Doroti.Framework.Widgets.IModalRoute? route = global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(this.context);
             if ((route is not null))
             {
                 _historyEntry = new global::Doroti.Framework.Widgets.LocalHistoryEntry(onRemove: () => this._handleHistoryEntryRemoved(), impliesAppBarDismissal: false);
-                ((dynamic)route).addLocalHistoryEntry(this._historyEntry!);
+                route.addLocalHistoryEntry(this._historyEntry!);
                 FocusScope.of(this.context).setFirstFocus(this._focusScopeNode);
             }
         }

@@ -1551,7 +1551,7 @@ internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Framewor
 
     internal virtual void _measureLabelMetrics()
     {
-        ((dynamic)this.textPainter).textDirection = this.textDirection;
+        this.textPainter.textDirection = this.textDirection;
         global::Doroti.Framework.Painting.TextStyle textStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)_textStyleFrom(this.context, Date_pickerLibrary._kTimerPickerMagnification));
         double maxWidth = double.NegativeInfinity;
         string? widestNumber = default!;

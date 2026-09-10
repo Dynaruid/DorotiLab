@@ -106,6 +106,17 @@ public sealed record FrameworkShaderDiagnostic(
 /// </summary>
 public static partial class FrameworkShaderLoader
 {
+    private static readonly ConcurrentDictionary<string, Assembly> ResourceOwners = new(StringComparer.Ordinal);
+
+    /// <summary>Register an embedded-resource owner using typeof(Owner).Assembly before loading its shaders.</summary>
+    public static void RegisterResourceOwner(Assembly assembly)
+    {
+        ArgumentNullException.ThrowIfNull(assembly);
+        var name = assembly.GetName().Name ?? throw new ArgumentException("A resource owner must have an assembly name.", nameof(assembly));
+        if (!ReferenceEquals(ResourceOwners.GetOrAdd(name, assembly), assembly))
+            throw new InvalidOperationException($"Shader resource owner '{name}' is already registered by another assembly.");
+    }
+
     private static readonly ConcurrentDictionary<string, Lazy<Task<FragmentProgram>>> ProgramCache =
         new(StringComparer.Ordinal);
     private static readonly ConcurrentQueue<FrameworkShaderDiagnostic> DiagnosticLog = [];
@@ -191,9 +202,9 @@ public static partial class FrameworkShaderLoader
     }
 
     private static Assembly ResolveAssembly(string name) =>
-        AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly =>
-            string.Equals(assembly.GetName().Name, name, StringComparison.Ordinal))
-        ?? Assembly.Load(new AssemblyName(name));
+        ResourceOwners.TryGetValue(name, out var assembly) ? assembly :
+            throw new InvalidOperationException(
+                $"Shader resource owner '{name}' is not registered. Call FrameworkShaderLoader.RegisterResourceOwner(typeof(Owner).Assembly) before loading it.");
 
     private static void ValidateAbi(FrameworkShaderAsset asset, string source)
     {

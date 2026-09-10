@@ -324,7 +324,7 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
         global::Doroti.Ui.Rect? targetRect = default!;
         if (((targetRenderObject is not null) && (!object.Equals(targetRenderObject, @object))))
         {
-            targetRect = MatrixUtils.transformRect(((Matrix4)((dynamic)targetRenderObject).getTransformTo(@object)), ((global::Doroti.Framework.Rendering.RenderObject)@object).paintBounds.intersect(((global::Doroti.Framework.Rendering.RenderObject)targetRenderObject).paintBounds));
+            targetRect = MatrixUtils.transformRect(((Matrix4)(targetRenderObject).getTransformTo(@object)), ((global::Doroti.Framework.Rendering.RenderObject)@object).paintBounds.intersect(((global::Doroti.Framework.Rendering.RenderObject)targetRenderObject).paintBounds));
         }
         double target = default!;
         switch (_applyAxisDirectionToAlignmentPolicy(alignmentPolicy))

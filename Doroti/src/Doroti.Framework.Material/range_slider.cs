@@ -1086,7 +1086,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         var (startVisualPosition, endVisualPosition) = (this.textDirection switch { TextDirection.rtl => (((double, double))(((1.0 - startValue), (1.0 - endValue)))),TextDirection.ltr => (((double, double))((startValue, endValue))),_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Ui.Rect trackRect = ((global::Doroti.Ui.Rect)(object?)this._sliderTheme.rangeTrackShape!.getPreferredRect(parentBox: this, offset: offset, sliderTheme: this._sliderTheme, isDiscrete: this.isDiscrete));
         double padding = (this._sliderTheme.rangeTrackShape!.isRounded ? trackRect.height : 0.0);
-        double thumbYOffset = ((Offset)((dynamic)trackRect).center).dy;
+        double thumbYOffset = ((Offset)(trackRect).center).dy;
         double startThumbPosition = (this.isDiscrete ? ((trackRect.left + (startVisualPosition * ((trackRect.width - padding)))) + (padding / 2L)) : (trackRect.left + (startVisualPosition * trackRect.width)));
         double endThumbPosition = (this.isDiscrete ? ((trackRect.left + (endVisualPosition * ((trackRect.width - padding)))) + (padding / 2L)) : (trackRect.left + (endVisualPosition * trackRect.width)));
         global::Doroti.Ui.Size thumbPreferredSize = ((global::Doroti.Ui.Size)(object?)this._sliderTheme.rangeThumbShape!.getPreferredSize(this.isEnabled, this.isDiscrete));
@@ -1146,7 +1146,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
             double adjustedTrackWidth = (trackRect.width - discreteTrackPadding);
             if (((adjustedTrackWidth / DartRuntimePrimitives.RequireValue(this.divisions)) >= (3.0 * tickMarkWidth)))
             {
-                double dyLocal = ((Offset)((dynamic)trackRect).center).dy;
+                double dyLocal = ((Offset)(trackRect).center).dy;
                 for (var i = 0L; (i <= DartRuntimePrimitives.RequireValue(this.divisions)); i++)
                 {
                     double valueLocal = (i / (double)DartRuntimePrimitives.RequireValue(this.divisions));
@@ -1200,7 +1200,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
     {
         var config = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
         config.isEnabled = this.isEnabled;
-        ((dynamic)config).textDirection = this.textDirection;
+        (config).textDirection = this.textDirection;
         config.isSlider = true;
         config.isFocusable = true;
         config.isFocused = focused;
@@ -1305,7 +1305,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
     {
         get
         {
-            double increasedStartValue = Dart_coreLibrary.parse(((((RangeValues)this.values).start + this._semanticActionUnit)).toStringAsFixed(2L));
+            double increasedStartValue = double.Parse(((((RangeValues)this.values).start + this._semanticActionUnit)).toStringAsFixed(2L), System.Globalization.CultureInfo.InvariantCulture);
             return ((increasedStartValue <= (((RangeValues)this.values).end - this._minThumbSeparationValue)) ? increasedStartValue : ((RangeValues)this.values).start);
             return default!;
         }

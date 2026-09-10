@@ -1,0 +1,3 @@
+<Project>
+  <Import Project="../../src/Doroti.Runner.Sdk/Sdk/Doroti.NativeAot.Evidence.targets" />
+</Project>

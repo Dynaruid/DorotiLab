@@ -870,7 +870,7 @@ public class RenderIndexedStack : RenderStack
     }
     internal virtual RenderBox? _childAtIndex()
     {
-        long? index = FoundationRuntimePorts.EnumIndex(this);
+        long? index = this.index;
         if ((index is null))
         {
             return null;

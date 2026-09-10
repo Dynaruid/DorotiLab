@@ -135,7 +135,7 @@ internal class _DropdownMenuFormFieldState__dropdown_menu_form_field<T> : global
     internal virtual void _registerRestorableController()
     {
         DartRuntimePrimitives.Assert(() => (this._restorableController is not null));
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._restorableController!), "controller");
+        registerForRestoration(this._restorableController!, "controller");
     }
 
     internal virtual T? _findValueByLabel(string label)

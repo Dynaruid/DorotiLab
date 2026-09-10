@@ -262,12 +262,12 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
         AppBarThemeData appBarTheme = AppBarTheme.of(context);
         AppBarThemeData defaults = ((new _AppBarDefaultsM3__app_bar(context)));
         ScaffoldState? scaffold = Scaffold.maybeOf(context);
-        dynamic parentRoute = global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(context);
+        global::Doroti.Framework.Widgets.IModalRoute? parentRoute = global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(context);
         FlexibleSpaceBarSettings? settings = ((FlexibleSpaceBarSettings?)(object?)context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>());
         var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection37017 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((settings?.isScrolledUnder ?? this._scrolledUnder)) { __collection37017.Add(global::Doroti.Framework.Widgets.WidgetState.scrolledUnder); } return __collection37017; }))();
         bool hasDrawerLocal = (scaffold?.hasDrawer ?? false);
         bool hasEndDrawerLocal = (scaffold?.hasEndDrawer ?? false);
-        bool useCloseButton = (((bool?)((dynamic)parentRoute)?.fullscreenDialog) ?? false);
+        bool useCloseButton = (((bool?)parentRoute?.fullscreenDialog) ?? false);
         double toolbarHeightLocal = ((((AppBar)this.widget).toolbarHeight ?? appBarTheme.toolbarHeight) ?? ConstantsLibrary.kToolbarHeight);
         global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)_resolveColor(states, ((AppBar)this.widget).backgroundColor, appBarTheme.backgroundColor, (defaults.backgroundColor ?? Theme.of(context).colorScheme.surface)));
         global::Doroti.Ui.Color scrolledUnderBackground = ((global::Doroti.Ui.Color)(object?)_resolveColor(states, ((AppBar)this.widget).backgroundColor, appBarTheme.backgroundColor, Theme.of(context).colorScheme.surfaceContainer));
@@ -304,7 +304,7 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
             }
             else
             {
-                if ((((bool?)((dynamic)parentRoute)?.impliesAppBarDismissal) ?? false))
+                if ((((bool?)parentRoute?.impliesAppBarDismissal) ?? false))
                 {
                     leadingLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>((useCloseButton ? new CloseButton() : new BackButton()));
                 }
@@ -891,7 +891,7 @@ internal class _AppBarTitleBox__app_bar : global::Doroti.Framework.Widgets.Singl
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderAppBarTitleBox__app_bar)(object)renderObject;
-        ((dynamic)__renderObject).textDirection = Directionality.of(context);
+        (__renderObject).textDirection = Directionality.of(context);
     }
 
 }
@@ -913,7 +913,7 @@ public class _RenderAppBarTitleBox__app_bar : global::Doroti.Framework.Rendering
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
         global::Doroti.Framework.Rendering.BoxConstraints innerConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.copyWith(maxHeight: double.PositiveInfinity));
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;
@@ -1063,28 +1063,28 @@ public class _RenderExpandedTitleBox__app_bar : global::Doroti.Framework.Renderi
     }
     public override double computeMaxIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         return ((childLocal is null) ? 0.0 : (childLocal.getMaxIntrinsicHeight(Math.Max(0, (width - this.padding.horizontal))) + this.padding.vertical));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         return ((childLocal is null) ? 0.0 : (childLocal.getMaxIntrinsicWidth(double.PositiveInfinity) + this.padding.horizontal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         return ((childLocal is null) ? 0.0 : (childLocal.getMinIntrinsicHeight(Math.Max(0, (width - this.padding.horizontal))) + this.padding.vertical));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         return ((childLocal is null) ? 0.0 : (childLocal.getMinIntrinsicWidth(double.PositiveInfinity) + this.padding.horizontal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1104,7 +1104,7 @@ public class _RenderExpandedTitleBox__app_bar : global::Doroti.Framework.Renderi
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;
@@ -1117,7 +1117,7 @@ public class _RenderExpandedTitleBox__app_bar : global::Doroti.Framework.Renderi
 
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).smallest;

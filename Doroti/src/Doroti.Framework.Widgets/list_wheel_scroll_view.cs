@@ -473,7 +473,7 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderListWheelViewport?)(object?)base.renderObject)!);
+    public override global::Doroti.Framework.Rendering.RenderListWheelViewport renderObject => (global::Doroti.Framework.Rendering.RenderListWheelViewport)base.renderObject;
     public override void update(Widget newWidget)
     {
         var __newWidget = (ListWheelViewport)(object)newWidget;
@@ -540,7 +540,7 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
 
     public virtual void removeChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        long index = DartRuntimePrimitives.ConvertValue<long>(((long)((dynamic)this.renderObject).indexOf(child)));
+        long index = DartRuntimePrimitives.ConvertValue<long>(((long)this.renderObject.indexOf(child)));
         this.owner!.buildScope(this, ((global::System.Action)(() =>
         {
             DartRuntimePrimitives.Assert(() => this._childElements.ContainsKey(index));
@@ -553,9 +553,9 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
 
     public override Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
     {
-        var oldParentData = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child?.renderObject)?.parentData))!;
+        var oldParentData = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(child?.renderObject)?.parentData))!;
         Element? newChild = ((Element?)(object?)base.updateChild(child, newWidget, newSlot));
-        var newParentData = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)newChild?.renderObject)?.parentData))!;
+        var newParentData = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(newChild?.renderObject)?.parentData))!;
         if ((newParentData is not null))
         {
             newParentData.index = ((long)newSlot!);
@@ -572,7 +572,7 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
         global::Doroti.Framework.Rendering.RenderListWheelViewport renderObjectLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderListWheelViewport>(this.renderObject);
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)renderObjectLocal).debugValidateChild(child)));
+        DartRuntimePrimitives.Assert(() => ((bool)renderObjectLocal.debugValidateChild(child)));
         renderObjectLocal.insert(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, after: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._childElements.GetValueOrDefault((__slot - 1L))?.renderObject)!);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
@@ -589,7 +589,7 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
         DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, this.renderObject)));
-        ((dynamic)this.renderObject).remove(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!);
+        this.renderObject.remove(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!);
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)

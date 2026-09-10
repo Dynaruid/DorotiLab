@@ -266,12 +266,12 @@ public static partial class Widget_inspectorLibrary
     internal static Rect _calculateSubtreeBoundsHelper(global::Doroti.Framework.Rendering.RenderObject @object, Matrix4 transform)
     {
         global::Doroti.Ui.Rect bounds = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds));
-        ((dynamic)@object).visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((child) =>
+        (@object).visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((child) =>
         {
             Matrix4 childTransform = transform.clone();
-            ((dynamic)@object).applyPaintTransform(child, childTransform);
+            (@object).applyPaintTransform(child, childTransform);
             global::Doroti.Ui.Rect childBounds = ((global::Doroti.Ui.Rect)(object?)Widget_inspectorLibrary._calculateSubtreeBoundsHelper(child, childTransform));
-            global::Doroti.Ui.Rect? paintClip = ((global::Doroti.Ui.Rect?)(object?)((Rect?)((dynamic)@object).describeApproximatePaintClip(child)));
+            global::Doroti.Ui.Rect? paintClip = ((global::Doroti.Ui.Rect?)(object?)((Rect?)(@object).describeApproximatePaintClip(child)));
             if ((paintClip is not null))
             {
                 Rect paintClip__9652__value9716 = DartRuntimePrimitives.RequireValue(paintClip);
@@ -521,7 +521,7 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Fra
             global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = true;
             try
             {
-                ((dynamic)renderObject).debugPaint(context, ((_ScreenshotData__widget_inspector)data).screenshotOffset);
+                (renderObject).debugPaint(context, ((_ScreenshotData__widget_inspector)data).screenshotOffset);
             }
             finally
             {
@@ -649,7 +649,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         registerExtension(name: $"inspector.{name}", callback: callback);
     }
 
-    public virtual void _registerSignalServiceExtension(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension)
+    public virtual void _registerSignalServiceExtension<TResult>(string name, global::System.Func<TResult> callback, RegisterServiceExtensionCallback registerExtension)
     {
         registerServiceExtension(name: name, callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
         {
@@ -658,7 +658,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         })), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
     }
 
-    public virtual void _registerObjectGroupServiceExtension(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension)
+    public virtual void _registerObjectGroupServiceExtension<TResult>(string name, global::System.Func<string, TResult> callback, RegisterServiceExtensionCallback registerExtension)
     {
         registerServiceExtension(name: name, callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
         {
@@ -687,7 +687,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         postEvent("Flutter.ServiceExtensionStateChanged", new DartMap<string, object> { ["extension"] = $"ext.flutter.inspector.{name}", ["value"] = value }.cast<object, object>());
     }
 
-    public virtual void _registerServiceExtensionWithArg(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension)
+    public virtual void _registerServiceExtensionWithArg<TResult>(string name, global::System.Func<string?, string, TResult> callback, RegisterServiceExtensionCallback registerExtension)
     {
         registerServiceExtension(name: name, callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
         {
@@ -828,8 +828,8 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     global::Doroti.Framework.Rendering.DebugLibrary.debugOnProfilePaint = this._onPaint;
                     void markTreeNeedsPaint(global::Doroti.Framework.Rendering.RenderObject renderObject)
                     {
-                        ((dynamic)renderObject).markNeedsPaint();
-                        ((dynamic)renderObject).visitChildren((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)markTreeNeedsPaint);
+                        (renderObject).markNeedsPaint();
+                        (renderObject).visitChildren((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)markTreeNeedsPaint);
                     }
                     global::Doroti.Framework.Rendering.RendererBinding.instance.renderViews.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)markTreeNeedsPaint)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
                 }
@@ -852,7 +852,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             return null;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
-        _registerSignalServiceExtension(name: WidgetInspectorServiceExtensions.isWidgetTreeReady.ToString(), callback: (global::System.Func<string?, bool>)this.isWidgetTreeReady, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
+        _registerSignalServiceExtension(name: WidgetInspectorServiceExtensions.isWidgetTreeReady.ToString(), callback: () => this.isWidgetTreeReady(null), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.disposeId.ToString(), callback: ((global::System.Func<string?, string, object>)((objectId, objectGroup) =>
         {
             disposeId(objectId, objectGroup);
@@ -885,14 +885,14 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildrenSummaryTree.ToString(), callback: (global::System.Func<string?, string, List<object>>)this._getChildrenSummaryTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildrenDetailsSubtree.ToString(), callback: (global::System.Func<string?, string, List<object>>)this._getChildrenDetailsSubtree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidget.ToString(), callback: (global::System.Func<string, DartMap<string, object>?>)this._getRootWidget, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
-        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTree.ToString(), callback: (global::System.Func<string, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?, DartMap<string, object>?>)this._getRootWidgetSummaryTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
+        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTree.ToString(), callback: (string group) => this._getRootWidgetSummaryTree(group, null), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         registerServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTreeWithPreviews.ToString(), callback: (global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)this._getRootWidgetSummaryTreeWithPreviews, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         registerServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetTree.ToString(), callback: (global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)this._getRootWidgetTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         registerServiceExtension(name: WidgetInspectorServiceExtensions.getDetailsSubtree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
         {
             DartRuntimePrimitives.Assert(() => parameters.ContainsKey("objectGroup"));
             string? subtreeDepth = parameters.GetValueOrDefault("subtreeDepth");
-            return new DartMap<string, object> { ["result"] = _getDetailsSubtree(parameters.GetValueOrDefault("arg"), parameters.GetValueOrDefault("objectGroup"), ((subtreeDepth is not null) ? Dart_coreLibrary.parse(subtreeDepth) : 2L)) };
+            return new DartMap<string, object> { ["result"] = _getDetailsSubtree(parameters.GetValueOrDefault("arg"), parameters.GetValueOrDefault("objectGroup"), ((subtreeDepth is not null) ? long.Parse(subtreeDepth, System.Globalization.CultureInfo.InvariantCulture) : 2L)) };
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getSelectedWidget.ToString(), callback: (global::System.Func<string?, string, DartMap<string, object>?>)this._getSelectedWidget, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
@@ -903,7 +903,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             DartRuntimePrimitives.Assert(() => parameters.ContainsKey("id"));
             DartRuntimePrimitives.Assert(() => parameters.ContainsKey("width"));
             DartRuntimePrimitives.Assert(() => parameters.ContainsKey("height"));
-            global::Doroti.Ui.Image? image = await screenshot(toObject(parameters.GetValueOrDefault("id")), width: Dart_coreLibrary.parse(parameters.GetValueOrDefault("width")!), height: Dart_coreLibrary.parse(parameters.GetValueOrDefault("height")!), margin: (parameters.ContainsKey("margin") ? Dart_coreLibrary.parse(parameters.GetValueOrDefault("margin")!) : 0.0), maxPixelRatio: (parameters.ContainsKey("maxPixelRatio") ? Dart_coreLibrary.parse(parameters.GetValueOrDefault("maxPixelRatio")!) : 1.0), debugPaint: (parameters.GetValueOrDefault("debugPaint") == "true"));
+            global::Doroti.Ui.Image? image = await screenshot(toObject(parameters.GetValueOrDefault("id")), width: double.Parse(parameters.GetValueOrDefault("width")!, System.Globalization.CultureInfo.InvariantCulture), height: double.Parse(parameters.GetValueOrDefault("height")!, System.Globalization.CultureInfo.InvariantCulture), margin: (parameters.ContainsKey("margin") ? double.Parse(parameters.GetValueOrDefault("margin")!, System.Globalization.CultureInfo.InvariantCulture) : 0.0), maxPixelRatio: (parameters.ContainsKey("maxPixelRatio") ? double.Parse(parameters.GetValueOrDefault("maxPixelRatio")!, System.Globalization.CultureInfo.InvariantCulture) : 1.0), debugPaint: (parameters.GetValueOrDefault("debugPaint") == "true"));
             if ((image is null))
             {
                 return new DartMap<string, object> { ["result"] = null };
@@ -1125,7 +1125,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         global::Doroti.Runtime.CreationLocation? location = ((global::Doroti.Runtime.CreationLocation?)(object?)_getSelectedWidgetLocation(restrictToSummaryTree: restrictToProjectFiles));
         if ((location is not null))
         {
-            postEvent("navigate", new DartMap<string, object> { ["fileUri"] = ((object)((dynamic)location).file), ["line"] = ((object)((dynamic)location).line), ["column"] = ((object)((dynamic)location).column), ["source"] = "flutter.inspector" }.cast<object, object>(), stream: "ToolEvent");
+            postEvent("navigate", new DartMap<string, object> { ["fileUri"] = ((object)(location).file), ["line"] = ((object)(location).line), ["column"] = ((object)(location).column), ["source"] = "flutter.inspector" }.cast<object, object>(), stream: "ToolEvent");
         }
     }
 
@@ -1162,7 +1162,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri is not null));
         DartUri uri = DartUri.parse(global::Doroti.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString()).replace(queryParameters: new DartMap<string, string> { ["uri"] = global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri.ToString(), ["inspectorRef"] = inspectorRef });
         var devToolsInspectorUriLocal = uri.ToString();
-        long startQueryParamIndex = ((long)((dynamic)devToolsInspectorUriLocal).IndexOf("?"));
+        long startQueryParamIndex = ((long)devToolsInspectorUriLocal.IndexOf("?"));
         DartRuntimePrimitives.Assert(() => (startQueryParamIndex != -1L));
         return $"{devToolsInspectorUriLocal.substring(0L, startQueryParamIndex)}" + "/#/inspector" + $"{devToolsInspectorUriLocal.substring(startQueryParamIndex)}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1247,7 +1247,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return false;
         }
-        return _isLocalCreationLocation(((string)(object)((object)((dynamic)creationLocation).file)));
+        return _isLocalCreationLocation(((string)(object)((object)(creationLocation).file)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1590,7 +1590,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     public virtual Future<DartMap<string, object>> _getLayoutExplorerNode(DartMap<string, string> parameters)
     {
         string? diagnosticableId = parameters.GetValueOrDefault("id");
-        long subtreeDepthLocal = Dart_coreLibrary.parse(parameters.GetValueOrDefault("subtreeDepth")!);
+        long subtreeDepthLocal = long.Parse(parameters.GetValueOrDefault("subtreeDepth")!, System.Globalization.CultureInfo.InvariantCulture);
         string? groupNameLocal = parameters.GetValueOrDefault("groupName");
         DartMap<string, object>? result = new DartMap<string, object>().cast<string, object>();
         global::Doroti.Framework.Foundation.DiagnosticsNode? root = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
@@ -1689,12 +1689,12 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             Element @object__85909__as85983 = (Element)@object;
             global::Doroti.Framework.Rendering.RenderObject? render = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__85909__as85983)));
-            global::Doroti.Framework.Rendering.ParentData? parentDataLocal = ((global::Doroti.Framework.Rendering.ParentData?)((dynamic)render)?.parentData);
+            global::Doroti.Framework.Rendering.ParentData? parentDataLocal = ((global::Doroti.Framework.Rendering.ParentData?)(render)?.parentData);
             if ((parentDataLocal is global::Doroti.Framework.Rendering.FlexParentData))
             {
                 global::Doroti.Framework.Rendering.FlexParentData parentData__86092__as86135 = (global::Doroti.Framework.Rendering.FlexParentData)parentDataLocal;
                 parentData__86092__as86135.fit = flexFit;
-                ((dynamic)render!).markNeedsLayout();
+                (render!).markNeedsLayout();
                 succeed = true;
             }
         }
@@ -1706,19 +1706,19 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         string? id = parameters.GetValueOrDefault("id");
         string flexFactor = parameters.GetValueOrDefault("flexFactor")!;
-        long? factor = ((flexFactor == "null") ? null : Dart_coreLibrary.parse(flexFactor));
-        dynamic @object = toObject(id);
+        long? factor = ((flexFactor == "null") ? null : long.Parse(flexFactor, System.Globalization.CultureInfo.InvariantCulture));
+        object? @object = toObject(id);
         var succeed = false;
         if (((@object is not null) && (@object is Element)))
         {
             Element @object__86635__as86709 = (Element)@object;
             global::Doroti.Framework.Rendering.RenderObject? render = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__86635__as86709)));
-            global::Doroti.Framework.Rendering.ParentData? parentDataLocal = ((global::Doroti.Framework.Rendering.ParentData?)((dynamic)render)?.parentData);
+            global::Doroti.Framework.Rendering.ParentData? parentDataLocal = ((global::Doroti.Framework.Rendering.ParentData?)(render)?.parentData);
             if ((parentDataLocal is global::Doroti.Framework.Rendering.FlexParentData))
             {
                 global::Doroti.Framework.Rendering.FlexParentData parentData__86818__as86861 = (global::Doroti.Framework.Rendering.FlexParentData)parentDataLocal;
                 parentData__86818__as86861.flex = factor;
-                ((dynamic)render!).markNeedsLayout();
+                (render!).markNeedsLayout();
                 succeed = true;
             }
         }
@@ -1940,11 +1940,11 @@ public interface WidgetInspectorService
     }
     public bool isSelectMode { set; }
     public void registerServiceExtension(string name, global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>> callback, RegisterServiceExtensionCallback registerExtension);
-    public void _registerSignalServiceExtension(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension);
-    public void _registerObjectGroupServiceExtension(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension);
+    public void _registerSignalServiceExtension<TResult>(string name, global::System.Func<TResult> callback, RegisterServiceExtensionCallback registerExtension);
+    public void _registerObjectGroupServiceExtension<TResult>(string name, global::System.Func<string, TResult> callback, RegisterServiceExtensionCallback registerExtension);
     public void _registerBoolServiceExtension(string name, global::System.Func<Future<bool>> getter, global::System.Func<bool, Future> setter, RegisterServiceExtensionCallback registerExtension);
     public void _postExtensionStateChangedEvent(string name, object? value);
-    public void _registerServiceExtensionWithArg(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension);
+    public void _registerServiceExtensionWithArg<TResult>(string name, global::System.Func<string?, string, TResult> callback, RegisterServiceExtensionCallback registerExtension);
     public void _registerServiceExtensionVarArgs(string name, global::System.Func<List<string>, object> callback, RegisterServiceExtensionCallback registerExtension);
     public Future forceRebuild();
     public void _reportStructuredError(global::Doroti.Framework.Foundation.FlutterErrorDetails details);
@@ -2087,7 +2087,7 @@ public class _ElementLocationStatsTracker__widget_inspector
             {
                 this._stats.Add(((_LocationCount__widget_inspector)(object)null));
             }
-            entry = new _LocationCount__widget_inspector(location: locationLocal, id: idLocal, local: WidgetInspectorService.instance._isLocalCreationLocation(((string)(object)((object)((dynamic)locationLocal).file))));
+            entry = new _LocationCount__widget_inspector(location: locationLocal, id: idLocal, local: WidgetInspectorService.instance._isLocalCreationLocation(((string)(object)((object)(locationLocal).file))));
             if (((_LocationCount__widget_inspector)entry).local)
             {
                 this.newLocations.Add(entry);
@@ -2133,13 +2133,13 @@ public class _ElementLocationStatsTracker__widget_inspector
             foreach (_LocationCount__widget_inspector entry in this.newLocations)
             {
                 global::Doroti.Runtime.CreationLocation locationLocal = ((global::Doroti.Runtime.CreationLocation)(object?)((_LocationCount__widget_inspector)entry).location);
-                List<long> jsonForFile = locationsJson.putIfAbsent(((string)(object)((object)((dynamic)locationLocal).file)), (() => new List<long>())).ToList();
+                List<long> jsonForFile = locationsJson.putIfAbsent(((string)(object)((object)(locationLocal).file)), (() => new List<long>())).ToList();
                 DartRuntimePrimitives.Ignore(((Func<List<long>>)(() =>
 {
     var __cascade = jsonForFile;
     __cascade.Add(((_LocationCount__widget_inspector)entry).id);
-    __cascade.Add(((long)(object)((object)((dynamic)locationLocal).line)));
-    __cascade.Add(((long)(object)((object)((dynamic)locationLocal).column)));
+    __cascade.Add(((long)(object)((object)(locationLocal).line)));
+    __cascade.Add(((long)(object)((object)(locationLocal).column)));
     return __cascade;
 }))());
             }
@@ -2151,10 +2151,10 @@ public class _ElementLocationStatsTracker__widget_inspector
             foreach (_LocationCount__widget_inspector entryLocal in this.newLocations)
             {
                 global::Doroti.Runtime.CreationLocation locationAlternate = ((global::Doroti.Runtime.CreationLocation)(object?)((_LocationCount__widget_inspector)entryLocal).location);
-                DartMap<string, List<object?>> locations = fileLocationsMap.putIfAbsent(((string)(object)((object)((dynamic)locationAlternate).file)), (() => new DartMap<string, List<object>> { ["ids"] = new List<long>().Cast<object>().ToList(), ["lines"] = new List<long>().Cast<object>().ToList(), ["columns"] = new List<long>().Cast<object>().ToList(), ["names"] = new List<string?>().Cast<object>().ToList() })).cast<string, List<object?>>();
+                DartMap<string, List<object?>> locations = fileLocationsMap.putIfAbsent(((string)(object)((object)(locationAlternate).file)), (() => new DartMap<string, List<object>> { ["ids"] = new List<long>().Cast<object>().ToList(), ["lines"] = new List<long>().Cast<object>().ToList(), ["columns"] = new List<long>().Cast<object>().ToList(), ["names"] = new List<string?>().Cast<object>().ToList() })).cast<string, List<object?>>();
                 locations.GetValueOrDefault("ids")!.Add(((_LocationCount__widget_inspector)entryLocal).id);
-                locations.GetValueOrDefault("lines")!.Add(((object)((dynamic)locationAlternate).line));
-                locations.GetValueOrDefault("columns")!.Add(((object)((dynamic)locationAlternate).column));
+                locations.GetValueOrDefault("lines")!.Add(((object)(locationAlternate).line));
+                locations.GetValueOrDefault("columns")!.Add(((object)(locationAlternate).column));
                 locations.GetValueOrDefault("names")!.Add(locationAlternate.ToString());
             }
             json["locations"] = fileLocationsMap;
@@ -2240,7 +2240,7 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
             return false;
         }
         global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(inverse, position));
-        List<global::Doroti.Framework.Foundation.DiagnosticsNode> children = ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)((dynamic)@object).debugDescribeChildren()));
+        List<global::Doroti.Framework.Foundation.DiagnosticsNode> children = ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(@object).debugDescribeChildren()));
         for (long i = (checked((long)(children.Count)) - 1L); (i >= 0L); i -= 1L)
         {
             global::Doroti.Framework.Foundation.DiagnosticsNode diagnostics = children[(int)(i)];
@@ -2249,14 +2249,14 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
                 continue;
             }
             var child = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)((global::Doroti.Framework.Foundation.DiagnosticsNode)diagnostics).value!)!;
-            global::Doroti.Ui.Rect? paintClip = ((global::Doroti.Ui.Rect?)(object?)((Rect?)((dynamic)@object).describeApproximatePaintClip(child)));
+            global::Doroti.Ui.Rect? paintClip = ((global::Doroti.Ui.Rect?)(object?)((Rect?)(@object).describeApproximatePaintClip(child)));
             if (((paintClip is not null) && !DartRuntimePrimitives.RequireValue(paintClip).contains(localPosition)))
             {
                 Rect paintClip__106714__value106780 = DartRuntimePrimitives.RequireValue(paintClip);
                 continue;
             }
             Matrix4 childTransform = transform.clone();
-            ((dynamic)@object).applyPaintTransform(child, childTransform);
+            (@object).applyPaintTransform(child, childTransform);
             if (_hitTestHelper(hits, edgeHits, position, child, childTransform))
             {
                 hit = true;
@@ -2283,7 +2283,7 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
     {
         var regularHits = new List<global::Doroti.Framework.Rendering.RenderObject>();
         var edgeHits = new List<global::Doroti.Framework.Rendering.RenderObject>();
-        _hitTestHelper(regularHits, edgeHits, position, root, ((Matrix4)((dynamic)root).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))));
+        _hitTestHelper(regularHits, edgeHits, position, root, ((Matrix4)(root).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))));
         double area(global::Doroti.Framework.Rendering.RenderObject @object)
         {
             global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.size);
@@ -2303,7 +2303,7 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
             return;
         }
         var ignorePointer = ((global::Doroti.Framework.Rendering.RenderIgnorePointer?)(object?)((GlobalKey<IState>)this._ignorePointerKey).currentContext!.findRenderObject()!)!;
-        global::Doroti.Framework.Rendering.RenderObject userRender = ((global::Doroti.Framework.Rendering.RenderObject)(object?)((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)ignorePointer).child)!);
+        global::Doroti.Framework.Rendering.RenderObject userRender = ((global::Doroti.Framework.Rendering.RenderObject)(object?)((global::Doroti.Framework.Rendering.RenderBox?)(ignorePointer).child)!);
         List<global::Doroti.Framework.Rendering.RenderObject> selected = ((List<global::Doroti.Framework.Rendering.RenderObject>)(object?)hitTest(position, userRender));
         this.selection.candidates = Widget_inspectorLibrary._filterInspectorHitCandidatesToModalRouteScope(selected);
     }
@@ -2562,7 +2562,7 @@ public class InspectorSelection : ChangeNotifier
         if ((this._index < checked((long)(this.candidates.Count))))
         {
             _current = this.candidates[(int)(this.index)];
-            _currentElement = (((DebugCreator?)(object?)((dynamic)this._current)?.debugCreator)!)?.element;
+            _currentElement = (((DebugCreator?)(object?)(this._current)?.debugCreator)!)?.element;
             notifyListeners();
         }
         else
@@ -2573,7 +2573,7 @@ public class InspectorSelection : ChangeNotifier
         }
     }
 
-    public virtual bool active => DartRuntimePrimitives.ConvertValue<bool>(((this._current is not null) && ((bool)((dynamic)this._current!).attached)));
+    public virtual bool active => DartRuntimePrimitives.ConvertValue<bool>(((this._current is not null) && ((bool)(this._current!).attached)));
 }
 
 internal class _InspectorOverlay__widget_inspector : LeafRenderObjectWidget
@@ -2645,7 +2645,7 @@ public class _TransformedRect__widget_inspector
     internal _TransformedRect__widget_inspector(global::Doroti.Framework.Rendering.RenderObject @object, global::Doroti.Framework.Rendering.RenderObject? ancestor)
     {
         this.rect = ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds;
-        this.transform = ((Matrix4)((dynamic)@object).getTransformTo(ancestor));
+        this.transform = ((Matrix4)(@object).getTransformTo(ancestor));
     }
 
     public override bool Equals(object? other)
@@ -2717,7 +2717,7 @@ public static partial class Widget_inspectorLibrary
 {
     internal static Element? _elementForRenderObject(global::Doroti.Framework.Rendering.RenderObject? @object)
     {
-        object? creator = ((dynamic)@object)?.debugCreator;
+        object? creator = (@object)?.debugCreator;
         if ((creator is DebugCreator))
         {
             DebugCreator creator__124233__as124271 = (DebugCreator)creator;
@@ -2730,14 +2730,14 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static dynamic _modalRouteForRenderObject(global::Doroti.Framework.Rendering.RenderObject? @object)
+    internal static IModalRoute? _modalRouteForRenderObject(global::Doroti.Framework.Rendering.RenderObject? @object)
     {
         Element? element = Widget_inspectorLibrary._elementForRenderObject(@object);
         if ((element is null))
         {
             return null;
         }
-        return ModalRoute<object>.of<object?>(element);
+        return ModalRoute<object>.untypedOf(element);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -2754,12 +2754,12 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static dynamic _inspectorScopeRouteForHits(List<global::Doroti.Framework.Rendering.RenderObject> hits)
+    internal static IModalRoute? _inspectorScopeRouteForHits(List<global::Doroti.Framework.Rendering.RenderObject> hits)
     {
         foreach (var hit in hits)
         {
-            dynamic route = Widget_inspectorLibrary._modalRouteForRenderObject(hit);
-            if ((((bool?)((dynamic)route)?.isCurrent) ?? false))
+            IModalRoute? route = Widget_inspectorLibrary._modalRouteForRenderObject(hit);
+            if (route?.isCurrent ?? false)
             {
                 return route;
             }
@@ -2768,7 +2768,7 @@ public static partial class Widget_inspectorLibrary
         double smallestArea = double.PositiveInfinity;
         foreach (var hitLocal in hits)
         {
-            dynamic routeLocal = Widget_inspectorLibrary._modalRouteForRenderObject(hitLocal);
+            IModalRoute? routeLocal = Widget_inspectorLibrary._modalRouteForRenderObject(hitLocal);
             if ((routeLocal is null))
             {
                 continue;
@@ -2799,15 +2799,15 @@ public static partial class Widget_inspectorLibrary
         }
         List<global::Doroti.Framework.Rendering.RenderObject> onstageHits = hits.where(((hit) =>
         {
-            dynamic route = Widget_inspectorLibrary._modalRouteForRenderObject(hit);
-            return ((route is null) || !((bool)((dynamic)route).offstage));
+            IModalRoute? route = Widget_inspectorLibrary._modalRouteForRenderObject(hit);
+            return ((route is null) || !route.offstage);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })).ToList().ToList();
         if (!System.Linq.Enumerable.Any(onstageHits))
         {
             return onstageHits;
         }
-        dynamic scopeRoute = Widget_inspectorLibrary._inspectorScopeRouteForHits(onstageHits);
+        IModalRoute? scopeRoute = Widget_inspectorLibrary._inspectorScopeRouteForHits(onstageHits);
         List<global::Doroti.Framework.Rendering.RenderObject> scopedHits = onstageHits.where(((hit) => DartRuntimePrimitives.Identical(Widget_inspectorLibrary._modalRouteForRenderObject(hit), scopeRoute))).ToList().ToList();
         scopedHits.sort(((a, b) => Widget_inspectorLibrary._inspectorHitArea(a).CompareTo(Widget_inspectorLibrary._inspectorHitArea(b))));
         return scopedHits;
@@ -2921,7 +2921,7 @@ internal class _InspectorOverlayLayer__widget_inspector : global::Doroti.Framewo
         global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(((_InspectorOverlayRenderState__widget_inspector)state).selected.transform, ((_InspectorOverlayRenderState__widget_inspector)state).selected.rect));
         if (!targetRect.hasNaN)
         {
-            var target = new global::Doroti.Ui.Offset(targetRect.left, ((Offset)((dynamic)targetRect).center).dy);
+            var target = new global::Doroti.Ui.Offset(targetRect.left, ((Offset)(targetRect).center).dy);
             var offsetFromWidget = 9.0;
             double verticalOffset = ((targetRect.height / 2L) + offsetFromWidget);
             _paintDescription(canvas, ((_InspectorOverlayRenderState__widget_inspector)state).tooltip, ((_InspectorOverlayRenderState__widget_inspector)state).textDirection, target, verticalOffset, sizeLocal, targetRect);
@@ -3450,7 +3450,7 @@ public static partial class Widget_inspectorLibrary
                 global::Doroti.Runtime.CreationLocation? location = ((global::Doroti.Runtime.CreationLocation?)(object?)Widget_inspectorLibrary._getCreationLocation(@object));
                 if ((location is not null))
                 {
-                    isLocal = WidgetInspectorService.instance._isLocalCreationLocation(((string)(object)((object)((dynamic)location).file)));
+                    isLocal = WidgetInspectorService.instance._isLocalCreationLocation(((string)(object)((object)(location).file)));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -3465,7 +3465,7 @@ public static partial class Widget_inspectorLibrary
     public static bool debugIsWidgetLocalCreation(Widget widget)
     {
         global::Doroti.Runtime.CreationLocation? location = ((global::Doroti.Runtime.CreationLocation?)(object?)global::Doroti.Runtime.CreationLocation.of(widget));
-        return ((location is not null) && WidgetInspectorService.instance._isLocalCreationLocation(((string)(object)((object)((dynamic)location).file))));
+        return ((location is not null) && WidgetInspectorService.instance._isLocalCreationLocation(((string)(object)((object)(location).file))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -3475,7 +3475,7 @@ public static partial class Widget_inspectorLibrary
     internal static string? _describeCreationLocation(object @object)
     {
         global::Doroti.Runtime.CreationLocation? location = ((global::Doroti.Runtime.CreationLocation?)(object?)Widget_inspectorLibrary._getCreationLocation(@object));
-        return ((string?)((dynamic)location)?.ToString());
+        return location?.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -3492,17 +3492,17 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static DartMap<object, long> _locationToId = new DartMap<object, long>();
+    internal static DartMap<global::Doroti.Runtime.CreationLocation, long> _locationToId = new();
 }
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static List<object> _locations = new List<global::Doroti.Runtime.CreationLocation>().Cast<object>().ToList();
+    internal static List<global::Doroti.Runtime.CreationLocation> _locations = new();
 }
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static long _toLocationId(object location)
+    internal static long _toLocationId(global::Doroti.Runtime.CreationLocation location)
     {
         long? id = DartCollectionRuntime.NullableMapValue<long>(Widget_inspectorLibrary._locationToId, location);
         if ((id is not null))
@@ -3530,13 +3530,13 @@ public static partial class Widget_inspectorLibrary
         foreach (var entry in Widget_inspectorLibrary._locationToId.entries)
         {
             global::Doroti.Runtime.CreationLocation location = ((global::Doroti.Runtime.CreationLocation)(object?)entry.key);
-            DartMap<string, List<object?>> locations = fileLocationsMap.putIfAbsent(((string)(object)((object)((dynamic)location).file)), (() => new DartMap<string, List<object>> { [idsKey] = new List<long>().Cast<object>().ToList(), [linesKey] = new List<long>().Cast<object>().ToList(), [columnsKey] = new List<long>().Cast<object>().ToList(), [namesKey] = new List<string?>().Cast<object>().ToList() })).cast<string, List<object?>>();
+            DartMap<string, List<object?>> locations = fileLocationsMap.putIfAbsent(((string)(object)((object)(location).file)), (() => new DartMap<string, List<object>> { [idsKey] = new List<long>().Cast<object>().ToList(), [linesKey] = new List<long>().Cast<object>().ToList(), [columnsKey] = new List<long>().Cast<object>().ToList(), [namesKey] = new List<string?>().Cast<object>().ToList() })).cast<string, List<object?>>();
             locations.GetValueOrDefault(idsKey)!.Add(entry.value);
-            locations.GetValueOrDefault(linesKey)!.Add(((object)((dynamic)location).line));
-            locations.GetValueOrDefault(columnsKey)!.Add(((object)((dynamic)location).column));
-            locations.GetValueOrDefault(namesKey)!.Add(location.ToString());
+            locations.GetValueOrDefault(linesKey)!.Add(((object)(location).line));
+            locations.GetValueOrDefault(columnsKey)!.Add(((object)(location).column));
+            locations.GetValueOrDefault(namesKey)!.Add(location.name);
         }
-        return ((DartMap<string, object>)(object?)fileLocationsMap);
+        return fileLocationsMap.cast<string, object>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -3586,9 +3586,9 @@ public class InspectorSerializationDelegate : global::Doroti.Framework.Foundatio
             if (fullDetails)
             {
                 result["locationId"] = Widget_inspectorLibrary._toLocationId(creationLocation);
-                result["creationLocation"] = ((object)((dynamic)creationLocation).toJsonMap());
+                result["creationLocation"] = ((object)creationLocation.toJsonMap());
             }
-            if (this.service._isLocalCreationLocation(((string)(object)((object)((dynamic)creationLocation).file))))
+            if (this.service._isLocalCreationLocation(((string)(object)((object)(creationLocation).file))))
             {
                 this._nodesCreatedByLocalProject.Add(node);
                 result["createdByLocalProject"] = true;

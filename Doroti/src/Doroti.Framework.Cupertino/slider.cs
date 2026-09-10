@@ -579,7 +579,7 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
         config.isSlider = true;
         if (this.isInteractive)
         {
-            ((dynamic)config).textDirection = this.textDirection;
+            config.textDirection = this.textDirection;
             config.onIncrease = (global::System.Action)this._increaseAction;
             config.onDecrease = (global::System.Action)this._decreaseAction;
             config.value = $"{((this.value * 100L)).round()}%";

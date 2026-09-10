@@ -71,7 +71,7 @@ internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : 
         if ((((_CupertinoTextFieldState__text_field)this._state)._clearGlobalKey.currentContext is not null))
         {
             var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((_CupertinoTextFieldState__text_field)this._state)._clearGlobalKey.currentContext!.findRenderObject()!)!;
-            global::Doroti.Ui.Offset localOffset = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)renderBox).globalToLocal(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition)));
+            global::Doroti.Ui.Offset localOffset = ((global::Doroti.Ui.Offset)(object?)((Offset)(renderBox).globalToLocal(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition)));
             if (renderBox.hitTest(new global::Doroti.Framework.Rendering.BoxHitTestResult(), position: localOffset))
             {
                 return;
@@ -453,8 +453,8 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
     internal virtual _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field _selectionGestureDetectorBuilder { get; set; } = default!;
     public virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.EditableTextState> editableTextKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.EditableTextState>.Create();
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
@@ -516,7 +516,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
     internal virtual void _registerController()
     {
         DartRuntimePrimitives.Assert(() => (this._controller is not null));
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._controller!), "controller");
+        registerForRestoration(this._controller!, "controller");
         this._controller!.value.addListener(this.updateKeepAlive);
     }
 
@@ -536,9 +536,9 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         this._effectiveFocusNode.removeListener(this._handleFocusChanged);
         this._focusNode?.dispose();
         this._controller?.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -809,13 +809,13 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -829,9 +829,9 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -842,10 +842,10 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -915,7 +915,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<dynamic, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {((dynamic)property)._restorationId}")))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -958,7 +958,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -966,19 +966,19 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
@@ -1288,7 +1288,7 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         base.attach(owner);
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).attach(owner);
+            child.attach(owner);
         }
     }
 
@@ -1297,7 +1297,7 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         base.detach();
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).detach();
+            child.detach();
         }
     }
 

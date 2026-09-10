@@ -66,6 +66,8 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject renderObject => base.renderObject;
+    private RenderAbstractLayoutBuilderMixin<LayoutInfoType, RenderObject> layoutBuilder =>
+        (RenderAbstractLayoutBuilderMixin<LayoutInfoType, RenderObject>)renderObject;
     public override BuildScope buildScope => this._buildScope;
     internal virtual void _scheduleRebuild()
     {
@@ -76,7 +78,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
         bool deferMarkNeedsLayout = (global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase switch { global::Doroti.Framework.Scheduler.SchedulerPhase.idle => true, global::Doroti.Framework.Scheduler.SchedulerPhase.postFrameCallbacks => true, global::Doroti.Framework.Scheduler.SchedulerPhase.transientCallbacks or global::Doroti.Framework.Scheduler.SchedulerPhase.midFrameMicrotasks => false, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if (!deferMarkNeedsLayout)
         {
-            ((dynamic)this.renderObject).scheduleLayoutCallback();
+            this.renderObject.scheduleLayoutCallback();
             return;
         }
         _deferredCallbackScheduled = true;
@@ -88,7 +90,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
         _deferredCallbackScheduled = false;
         if (this.mounted)
         {
-            ((dynamic)this.renderObject).scheduleLayoutCallback();
+            this.renderObject.scheduleLayoutCallback();
         }
     }
 
@@ -110,7 +112,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        ((dynamic)this.renderObject)._updateCallback((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)this._rebuildWithConstraints);
+        this.layoutBuilder._updateCallback((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)this._rebuildWithConstraints);
     }
 
     public override void update(Widget newWidget)
@@ -120,42 +122,42 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
         var oldWidget = ((AbstractLayoutBuilder<LayoutInfoType>?)(object?)this.widget)!;
         base.update(__newWidget);
         DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
-        ((dynamic)this.renderObject)._updateCallback((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)this._rebuildWithConstraints);
+        this.layoutBuilder._updateCallback((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)this._rebuildWithConstraints);
         if (__newWidget.updateShouldRebuild(oldWidget))
         {
             _needsBuild = true;
-            ((dynamic)this.renderObject).scheduleLayoutCallback();
+            this.renderObject.scheduleLayoutCallback();
         }
     }
 
     public override void markNeedsBuild()
     {
-        ((dynamic)this.renderObject).scheduleLayoutCallback();
+        this.renderObject.scheduleLayoutCallback();
         _needsBuild = true;
     }
 
     public override void performRebuild()
     {
-        ((dynamic)this.renderObject).scheduleLayoutCallback();
+        this.renderObject.scheduleLayoutCallback();
         _needsBuild = true;
         base.performRebuild();
     }
 
     public override void unmount()
     {
-        ((dynamic)this.renderObject)._callback = null;
+        this.layoutBuilder._callback = null;
         base.unmount();
     }
 
     internal virtual void _rebuildWithConstraints(global::Doroti.Framework.Rendering.Constraints __unused0)
     {
-        LayoutInfoType layoutInfoLocal = DartRuntimePrimitives.ConvertValue<LayoutInfoType>(((dynamic)this.renderObject).layoutInfo);
+        LayoutInfoType layoutInfoLocal = DartRuntimePrimitives.ConvertValue<LayoutInfoType>(this.layoutBuilder.layoutInfo);
         void updateChildCallback()
         {
             Widget built = default!;
             try
             {
-                DartRuntimePrimitives.Assert(() => EqualityComparer<LayoutInfoType>.Default.Equals(layoutInfoLocal, ((dynamic)this.renderObject).layoutInfo));
+                DartRuntimePrimitives.Assert(() => EqualityComparer<LayoutInfoType>.Default.Equals(layoutInfoLocal, this.layoutBuilder.layoutInfo));
                 built = (((AbstractLayoutBuilder<LayoutInfoType>?)(object?)this.widget)!).builder(this, layoutInfoLocal);
                 global::Doroti.Framework.Widgets.DebugLibrary.debugWidgetBuilderValue(this.widget, built);
             }
@@ -205,7 +207,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
 
 }
 
-public interface RenderAbstractLayoutBuilderMixin<LayoutInfoType, ChildType> where ChildType : global::Doroti.Framework.Rendering.RenderObject
+public interface RenderAbstractLayoutBuilderMixin<LayoutInfoType, out ChildType> where ChildType : global::Doroti.Framework.Rendering.RenderObject
 {
     global::System.Action<global::Doroti.Framework.Rendering.Constraints>? _callback { get; set; }
 
@@ -328,7 +330,7 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
             {
                 if ((child is not RenderBox))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -357,13 +359,13 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        ((dynamic)this._child)?.attach(owner);
+        this._child?.attach(owner);
     }
 
     public override void detach()
     {
         base.detach();
-        ((dynamic)this._child)?.detach();
+        this._child?.detach();
     }
 
     public override void redepthChildren()

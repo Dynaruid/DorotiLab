@@ -16,10 +16,10 @@ namespace Doroti.Framework.Widgets;
 
 internal class _Pending__localizations
 {
-    public virtual dynamic @delegate { get; private set; } = default!;
+    public virtual ILocalizationsDelegate @delegate { get; private set; } = default!;
     public virtual Future<object> futureValue { get; private set; } = default!;
 
-    internal _Pending__localizations(dynamic @delegate, Future<object> futureValue)
+    internal _Pending__localizations(ILocalizationsDelegate @delegate, Future<object> futureValue)
     {
         this.@delegate = @delegate;
         this.futureValue = futureValue;
@@ -29,24 +29,27 @@ internal class _Pending__localizations
 
 public static partial class LocalizationsLibrary
 {
-    internal static Future<DartMap<Type, object>> _loadAll(Locale locale, IEnumerable<dynamic> allDelegates)
+    internal static ILocalizationsDelegate RequireDelegate(object value) => value as ILocalizationsDelegate
+        ?? throw new ArgumentException("Localization delegates must implement ILocalizationsDelegate (normally through LocalizationsDelegate<T>).", nameof(value));
+
+    internal static Future<DartMap<Type, object>> _loadAll(Locale locale, IEnumerable<object> allDelegates)
     {
         var output = new DartMap<Type, object>();
         List<_Pending__localizations>? pendingList = default!;
         var types = new HashSet<Type>();
-        var delegates = new List<object>();
-        foreach (var delegateLocal in allDelegates)
+        var delegates = new List<ILocalizationsDelegate>();
+        foreach (var delegateLocal in allDelegates.Select(RequireDelegate))
         {
-            if ((!types.Contains(((Type)((dynamic)delegateLocal).type)) && ((bool)((dynamic)delegateLocal).isSupported(locale))))
+            if ((!types.Contains(delegateLocal.type) && delegateLocal.isSupported(locale)))
             {
-                types.Add(((Type)((dynamic)delegateLocal).type));
+                types.Add(delegateLocal.type);
                 delegates.Add(delegateLocal);
             }
         }
         foreach (var delegateAlternate in delegates)
         {
-            Future inputValue = (Future)((dynamic)delegateAlternate).load(locale);
-            dynamic completedValue = default!;
+            Future inputValue = delegateAlternate.loadUntyped(locale);
+            object completedValue = default!;
             Future<object> futureValueLocal = inputValue.then<object>((object? value) =>
             {
                 return completedValue = value;
@@ -54,7 +57,7 @@ public static partial class LocalizationsLibrary
             });
             if ((completedValue is not null))
             {
-                Type typeLocal = ((Type)((dynamic)delegateAlternate).type);
+                Type typeLocal = delegateAlternate.type;
                 DartRuntimePrimitives.Assert(() => !output.ContainsKey(typeLocal));
                 output[typeLocal] = completedValue;
             }
@@ -73,7 +76,7 @@ public static partial class LocalizationsLibrary
             DartRuntimePrimitives.Assert(() => (checked((long)(values.Count)) == checked((long)(pendingList!.Count))));
             for (var i = 0L; (i < checked((long)(values.Count))); i += 1L)
             {
-                Type typeAlternate = ((Type)((dynamic)pendingList![(int)(i)].@delegate).type);
+                Type typeAlternate = pendingList![(int)(i)].@delegate.type;
                 DartRuntimePrimitives.Assert(() => !output.ContainsKey(typeAlternate));
                 output[typeAlternate] = values[(int)(i)];
             }
@@ -84,11 +87,24 @@ public static partial class LocalizationsLibrary
     }
 }
 
-public abstract class LocalizationsDelegate<T>
+/// <summary>Heterogeneous localization operations; generic results remain owned by the delegate.</summary>
+public interface ILocalizationsDelegate
+{
+    Type type { get; }
+    bool isSupported(Locale locale);
+    Future loadUntyped(Locale locale);
+    bool shouldReload(ILocalizationsDelegate old);
+}
+
+public abstract class LocalizationsDelegate<T> : ILocalizationsDelegate
 {
     protected LocalizationsDelegate()
     {
     }
+
+    Future ILocalizationsDelegate.loadUntyped(Locale locale) => load(locale);
+    bool ILocalizationsDelegate.shouldReload(ILocalizationsDelegate old) =>
+        old is not LocalizationsDelegate<T> typed || old.GetType() != GetType() || shouldReload(typed);
 
     public abstract bool isSupported(Locale locale);
     public abstract Future<T> load(Locale locale);
@@ -309,9 +325,9 @@ internal class _LocalizationsState__localizations : State<Localizations>
         List<object> oldDelegates = ((Localizations)old).delegates.ToList().Cast<object>().ToList();
         for (var i = 0L; (i < checked((long)(delegatesLocal.Count))); i += 1L)
         {
-            dynamic @delegate = delegatesLocal[(int)(i)];
-            dynamic oldDelegate = oldDelegates[(int)(i)];
-            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(@delegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || ((bool)((dynamic)@delegate).shouldReload(oldDelegate))))
+            ILocalizationsDelegate @delegate = LocalizationsLibrary.RequireDelegate(delegatesLocal[(int)(i)]);
+            ILocalizationsDelegate oldDelegate = LocalizationsLibrary.RequireDelegate(oldDelegates[(int)(i)]);
+            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(@delegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || @delegate.shouldReload(oldDelegate)))
             {
                 return true;
             }
@@ -447,10 +463,10 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
     {
         get
         {
-            var delegates = new List<object>();
+            var delegates = new List<ILocalizationsDelegate>();
             if (this._localizationsDelegates is not null)
             {
-                delegates.AddRange(this._localizationsDelegates.Cast<object>());
+                delegates.AddRange(this._localizationsDelegates.Cast<object>().Select(LocalizationsLibrary.RequireDelegate));
             }
             delegates.Add(DefaultWidgetsLocalizations.@delegate);
             return delegates;
@@ -504,16 +520,16 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                HashSet<Type> unsupportedTypes = this.localizationsDelegates.map<dynamic, Type>(((@delegate) => ((Type)((dynamic)@delegate).type))).toSet();
-                foreach (dynamic delegateLocal in this.localizationsDelegates)
+                HashSet<Type> unsupportedTypes = this.localizationsDelegates.Cast<object>().Select(LocalizationsLibrary.RequireDelegate).Select(item => item.type).ToHashSet();
+                foreach (ILocalizationsDelegate delegateLocal in this.localizationsDelegates.Cast<object>().Select(LocalizationsLibrary.RequireDelegate))
                 {
-                    if (!unsupportedTypes.Contains(((Type)((dynamic)delegateLocal).type)))
+                    if (!unsupportedTypes.Contains(delegateLocal.type))
                     {
                         continue;
                     }
-                    if (((bool)((dynamic)delegateLocal).isSupported(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)))))
+                    if (delegateLocal.isSupported(locale))
                     {
-                        unsupportedTypes.Remove(((Type)((dynamic)delegateLocal).type));
+                        unsupportedTypes.Remove(delegateLocal.type);
                     }
                 }
                 if (!System.Linq.Enumerable.Any(unsupportedTypes))

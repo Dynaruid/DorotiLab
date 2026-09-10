@@ -1,3 +1,6 @@
+#if IOS && !MACCATALYST
+using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
+#endif
 #if ANDROID || IOS || MACCATALYST
 using SkiaSharp.Views.Maui.Controls;
 

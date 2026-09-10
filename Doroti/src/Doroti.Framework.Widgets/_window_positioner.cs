@@ -46,7 +46,7 @@ public static class WindowPositionerAnchorIoMembers
     }
     internal static Offset _anchorPositionFor(this WindowPositionerAnchorIo value, Rect rect)
     {
-        return (value switch { WindowPositionerAnchorIo.center => ((Offset)((dynamic)rect).center), WindowPositionerAnchorIo.top => rect.topCenter, WindowPositionerAnchorIo.bottom => rect.bottomCenter, WindowPositionerAnchorIo.left => rect.centerLeft, WindowPositionerAnchorIo.right => rect.centerRight, WindowPositionerAnchorIo.topLeft => rect.topLeft, WindowPositionerAnchorIo.bottomLeft => rect.bottomLeft, WindowPositionerAnchorIo.topRight => rect.topRight, WindowPositionerAnchorIo.bottomRight => rect.bottomRight, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (value switch { WindowPositionerAnchorIo.center => ((Offset)(rect).center), WindowPositionerAnchorIo.top => rect.topCenter, WindowPositionerAnchorIo.bottom => rect.bottomCenter, WindowPositionerAnchorIo.left => rect.centerLeft, WindowPositionerAnchorIo.right => rect.centerRight, WindowPositionerAnchorIo.topLeft => rect.topLeft, WindowPositionerAnchorIo.bottomLeft => rect.bottomLeft, WindowPositionerAnchorIo.topRight => rect.topRight, WindowPositionerAnchorIo.bottomRight => rect.bottomRight, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

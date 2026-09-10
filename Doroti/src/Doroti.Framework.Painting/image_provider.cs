@@ -128,11 +128,36 @@ internal delegate Future<Codec> _SimpleDecoderCallback__image_provider(Immutable
 
 public delegate Future<Codec> ImageDecoderCallback(ImmutableBuffer buffer, Func<long, long, TargetImageSize>? getTargetSize = null);
 
-public abstract class ImageProvider<T>
+/// <summary>Key-independent image operations, including providers defined by consumer apps.</summary>
+public interface IImageProvider
+{
+    ImageStream resolve(ImageConfiguration configuration);
+    ImageStream createStream(ImageConfiguration configuration);
+    Future<ImageCacheStatus?> obtainCacheStatus(ImageConfiguration configuration, Action<object, global::System.Diagnostics.StackTrace?>? handleError = null);
+    Future<bool> evict(ImageCache? cache = null, ImageConfiguration configuration = default!);
+    Future<object> obtainKeyObject(ImageConfiguration configuration);
+    void resolveStreamForKeyObject(ImageConfiguration configuration, ImageStream stream, object key, Action<object, global::System.Diagnostics.StackTrace?> handleError);
+    ImageStreamCompleter loadBufferObject(object key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode);
+    ImageStreamCompleter loadImageObject(object key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode);
+}
+
+public abstract class ImageProvider<T> : IImageProvider
 {
     protected ImageProvider()
     {
     }
+
+    Future<object> IImageProvider.obtainKeyObject(ImageConfiguration configuration) =>
+        obtainKey(configuration).then<object>((Func<T, object>)(key => key!));
+
+    void IImageProvider.resolveStreamForKeyObject(ImageConfiguration configuration, ImageStream stream, object key, Action<object, global::System.Diagnostics.StackTrace?> handleError) =>
+        resolveStreamForKey(configuration, stream, (T)key, handleError);
+
+    ImageStreamCompleter IImageProvider.loadBufferObject(object key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) =>
+        loadBuffer((T)key, decode);
+
+    ImageStreamCompleter IImageProvider.loadImageObject(object key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) =>
+        loadImage((T)key, decode);
 
     public virtual ImageStream resolve(ImageConfiguration configuration)
     {
@@ -430,13 +455,13 @@ public enum ResizeImagePolicy
 
 public class ResizeImage : ImageProvider<ResizeImageKey>
 {
-    public virtual dynamic imageProvider { get; private set; } = default!;
+    public virtual IImageProvider imageProvider { get; private set; } = default!;
     public virtual long? width { get; private set; }
     public virtual long? height { get; private set; }
     public virtual ResizeImagePolicy policy { get; private set; } = default!;
     public virtual bool allowUpscaling { get; private set; } = default!;
 
-    public ResizeImage(dynamic imageProvider, long? width = null, long? height = null, ResizeImagePolicy policy = ResizeImagePolicy.exact, bool allowUpscaling = false)
+    public ResizeImage(IImageProvider imageProvider, long? width = null, long? height = null, ResizeImagePolicy policy = ResizeImagePolicy.exact, bool allowUpscaling = false)
     {
         this.imageProvider = imageProvider;
         this.width = width;
@@ -446,7 +471,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
         System.Diagnostics.Debug.Assert(((width is not null) || (height is not null)));
     }
 
-    public static dynamic resizeIfNeeded(long? cacheWidth, long? cacheHeight, dynamic provider)
+    public static IImageProvider resizeIfNeeded(long? cacheWidth, long? cacheHeight, IImageProvider provider)
     {
         if (((cacheWidth is not null) || (cacheHeight is not null)))
         {
@@ -460,11 +485,11 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
     {
         Future<Codec> decodeResize(ImmutableBuffer buffer, long? cacheWidth = null, long? cacheHeight = null, bool? allowUpscaling = null)
         {
-            DartRuntimePrimitives.Assert(() => (((cacheWidth is null) && (cacheHeight is null)) && (allowUpscaling is null)));
+            DartRuntimePrimitives.Assert(() => (((cacheWidth is null) && (cacheHeight is null)) && (allowUpscaling is not true)));
             return decode(buffer, this.allowUpscaling, this.height, this.width);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ImageStreamCompleter completer = this.imageProvider.loadBuffer((dynamic)key._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheWidth, __cacheHeight) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
+        ImageStreamCompleter completer = this.imageProvider.loadBufferObject(key._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheHeight, __cacheWidth) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             completer.debugLabel = $"{((ImageStreamCompleter)completer).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
@@ -550,7 +575,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ImageStreamCompleter completer = this.imageProvider.loadImage((dynamic)key._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
+        ImageStreamCompleter completer = this.imageProvider.loadImageObject(key._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             completer.debugLabel = $"{((ImageStreamCompleter)completer).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
@@ -572,7 +597,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
     }
 
     public override Future<ResizeImageKey> obtainKey(ImageConfiguration configuration) =>
-        WrapKey(this.imageProvider.obtainKey(configuration));
+        WrapKey(this.imageProvider.obtainKeyObject(configuration));
 
     private Future<ResizeImageKey> WrapKey<T>(Future<T> pending)
     {
@@ -613,7 +638,7 @@ public enum WebHtmlElementStrategy
     prefer
 }
 
-public interface NetworkImage
+public interface NetworkImage : IImageProvider
 {
     public static NetworkImage Create(string url, double scale = default!, DartMap<string, string>? headers = null, WebHtmlElementStrategy webHtmlElementStrategy = default!)
         => new NetworkImageIo(url, scale, headers, webHtmlElementStrategy);

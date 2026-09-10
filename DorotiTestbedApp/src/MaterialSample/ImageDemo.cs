@@ -26,7 +26,7 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
     private int _revision, _reload;
     private string? _error;
     private M.ColorScheme? _light, _dark;
-    private object Provider() => _url ? new NetworkImageIo(Url) : new MemoryImage(LocalBytes.Value);
+    private IImageProvider Provider() => _url ? new NetworkImageIo(Url) : new MemoryImage(LocalBytes.Value);
     private void SelectSource(bool url)
     {
         if (_url == url) return;
@@ -35,7 +35,7 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
     private async void RetryImage()
     {
         var revision = _revision;
-        await ((dynamic)Provider()).evict();
+        await Provider().evict(configuration: ImageConfiguration.empty);
         if (mounted && revision == _revision) setState(() => _reload++);
     }
     private async void Load()

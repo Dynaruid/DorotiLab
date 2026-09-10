@@ -86,7 +86,7 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
 
     public virtual TextSelectionToolbarTextButton copyWith(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onPressed = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null)
     {
-        return new TextSelectionToolbarTextButton(onPressed: ((onPressed ?? (global::System.Action)this.onPressed)), padding: (padding ?? this.padding), alignment: (alignment ?? this.alignment), child: (child ?? ((global::Doroti.Framework.Widgets.Widget)((dynamic)this).child)));
+        return new TextSelectionToolbarTextButton(onPressed: ((onPressed ?? (global::System.Action)this.onPressed)), padding: (padding ?? this.padding), alignment: (alignment ?? this.alignment), child: (child ?? ((global::Doroti.Framework.Widgets.Widget)(this).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

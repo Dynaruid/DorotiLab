@@ -324,7 +324,7 @@ internal class _ChildOverflowBox__floating_action_button : global::Doroti.Framew
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderChildOverflowBox__floating_action_button)(object)renderObject;
-        ((dynamic)__renderObject).textDirection = Directionality.of(context);
+        (__renderObject).textDirection = Directionality.of(context);
     }
 
 }

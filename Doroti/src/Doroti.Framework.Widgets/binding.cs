@@ -189,7 +189,7 @@ public static partial class BindingLibrary
         buffer.writeln($"{DartRuntimePrimitives.RuntimeType(WidgetsBinding.instance)} - {mode}");
         if ((WidgetsBinding.instance.rootElement is not null))
         {
-            buffer.writeln(((string)((dynamic)WidgetsBinding.instance.rootElement!).toStringDeep()));
+            buffer.writeln(((string)(WidgetsBinding.instance.rootElement!).toStringDeep()));
         }
         else
         {

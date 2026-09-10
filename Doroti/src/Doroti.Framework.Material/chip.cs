@@ -1635,7 +1635,7 @@ public class _RenderEnsureMinSemanticsSize__chip : global::Doroti.Framework.Rend
     {
         get
         {
-            return global::Doroti.Ui.Rect.fromCenter(center: ((Offset)((dynamic)this.paintBounds).center), width: Math.Max(this._semanticSize.width, this.size.width), height: Math.Max(this._semanticSize.height, this.size.height));
+            return global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(this.paintBounds).center), width: Math.Max(this._semanticSize.width, this.size.width), height: Math.Max(this._semanticSize.height, this.size.height));
             return default!;
         }
     }

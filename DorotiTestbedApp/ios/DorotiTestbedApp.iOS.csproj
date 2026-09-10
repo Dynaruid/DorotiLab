@@ -2,6 +2,7 @@
   <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
   <PropertyGroup>
     <TargetFramework>net10.0-ios</TargetFramework>
+    <TargetFramework Condition="'$(DorotiIosTargetFramework)' != ''">$(DorotiIosTargetFramework)</TargetFramework>
     <AssemblyName>DorotiTestbedApp.iOS</AssemblyName>
     <RootNamespace>DorotiTestbedApp.iOS</RootNamespace>
     <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
@@ -13,19 +14,19 @@
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TrimMode)' == 'full' and '$(DorotiTrimPreserveDynamicMembers)' != 'false'">
+  <ItemGroup Condition="'$(PublishAot)' != 'true' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(TrimMode)' == 'full' and '$(DorotiTrimPreserveDynamicMembers)' != 'false'">
     <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
   </ItemGroup>
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTestbedApp.iOS.Native.csproj" />
     <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main"
-        RuntimeIdentifier="iossimulator-x64" TargetFramework="net10.0-ios"
+        RuntimeIdentifier="iossimulator-x64" TargetFramework="$(TargetFramework)"
         TargetPackage="Doroti.Target.iOS.Maui.iossimulator-x64" Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'" />
     <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main"
-        RuntimeIdentifier="iossimulator-arm64" TargetFramework="net10.0-ios"
+        RuntimeIdentifier="iossimulator-arm64" TargetFramework="$(TargetFramework)"
         TargetPackage="Doroti.Target.iOS.Maui.iossimulator-arm64" Condition="'$(RuntimeIdentifier)' == 'iossimulator-arm64'" />
     <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main"
-        RuntimeIdentifier="ios-arm64" TargetFramework="net10.0-ios"
+        RuntimeIdentifier="ios-arm64" TargetFramework="$(TargetFramework)"
         TargetPackage="Doroti.Target.iOS.Maui.ios-arm64" Condition="'$(RuntimeIdentifier)' == 'ios-arm64'" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Target.iOS.Maui.iossimulator-x64\Doroti.Target.iOS.Maui.iossimulator-x64.csproj"
         AdditionalProperties="RuntimeIdentifier=iossimulator-x64" Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'" />

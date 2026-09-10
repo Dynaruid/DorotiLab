@@ -3,10 +3,13 @@
     <AssemblyName>Doroti.Framework.Widgets</AssemblyName>
     <PackageId>Doroti.Framework.Widgets</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Validation.Fcr6Semantics" />
     <InternalsVisibleTo Include="Doroti.Validation.Fcr7MaterialWidget" />
+    <InternalsVisibleTo Include="Doroti.Validation.NativeAot.Localizations" />
+    <InternalsVisibleTo Include="Doroti.Validation.NativeAot.Forms" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />

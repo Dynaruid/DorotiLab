@@ -606,7 +606,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
     {
         MaterialInkController inkController = ((MaterialInkController)(object?)Material.of(this.context));
         var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset positionLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)referenceBoxLocal).globalToLocal(globalPosition)));
+        global::Doroti.Ui.Offset positionLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)(referenceBoxLocal).globalToLocal(globalPosition)));
         global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? ((_InkResponseStateWidget__ink_well)this.widget).splashColor) ?? Theme.of(this.context).splashColor));
         global::System.Func<Rect>? rectCallbackLocal = ((global::System.Func<Rect>)(((_InkResponseStateWidget__ink_well)this.widget).containedInkWell ? ((_InkResponseStateWidget__ink_well)this.widget).getRectCallback!(referenceBoxLocal) : null));
         global::Doroti.Framework.Painting.BorderRadius? borderRadiusLocal = ((_InkResponseStateWidget__ink_well)this.widget).borderRadius;
@@ -696,7 +696,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             var referenceBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
             DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).hasSize, () => (object?)"InkResponse must be done with layout before starting a splash.");
-            globalPositionLocal = ((Offset)((dynamic)referenceBox).localToGlobal(((Offset)((dynamic)((global::Doroti.Framework.Rendering.RenderBox)referenceBox).paintBounds).center)));
+            globalPositionLocal = ((Offset)(referenceBox).localToGlobal(((Offset)(((global::Doroti.Framework.Rendering.RenderBox)referenceBox).paintBounds).center)));
         }
         else
         {

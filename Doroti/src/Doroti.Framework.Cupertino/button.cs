@@ -240,7 +240,7 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
             _animate();
         }
         var renderObject = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)renderObject).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)@event).globalPosition))));
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)(renderObject).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)@event).globalPosition))));
         if (((global::Doroti.Framework.Rendering.RenderBox)renderObject).paintBounds.inflate(CupertinoButton.tapMoveSlop()).contains(localPosition))
         {
             _handleTap();
@@ -263,7 +263,7 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
     internal virtual void _handleTapMove(global::Doroti.Framework.Gestures.TapMoveDetails @event)
     {
         var renderObject = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)renderObject).globalToLocal(((global::Doroti.Framework.Gestures.TapMoveDetails)@event).globalPosition))));
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)(renderObject).globalToLocal(((global::Doroti.Framework.Gestures.TapMoveDetails)@event).globalPosition))));
         bool buttonShouldHeldDown = DartRuntimePrimitives.ConvertValue<bool>(((global::Doroti.Framework.Rendering.RenderBox)renderObject).paintBounds.inflate(CupertinoButton.tapMoveSlop()).contains(localPosition));
         if ((this._tapInProgress && (buttonShouldHeldDown != this._buttonHeldDown)))
         {
@@ -277,7 +277,7 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
         if ((((CupertinoButton)this.widget).onPressed is not null))
         {
             ((CupertinoButton)this.widget).onPressed!();
-            ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+            (this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
         }
     }
 

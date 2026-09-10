@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0-ios</TargetFramework>
+    <TargetFramework Condition="'$(DorotiIosTargetFramework)' != ''">$(DorotiIosTargetFramework)</TargetFramework>
     <AssemblyName>DorotiTemplateApp.iOS.Native</AssemblyName>
     <RootNamespace>DorotiTemplateApp.iOS.Native</RootNamespace>
     <Nullable>enable</Nullable>

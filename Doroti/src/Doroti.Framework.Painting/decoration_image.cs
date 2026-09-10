@@ -24,7 +24,7 @@ public enum ImageRepeat
 
 public class DecorationImage
 {
-    public virtual dynamic image { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider image { get; private set; } = default!;
     public virtual Action<object, global::System.Diagnostics.StackTrace?>? onError { get; private set; }
     public virtual ColorFilter? colorFilter { get; private set; }
     public virtual BoxFit? fit { get; private set; }
@@ -40,7 +40,7 @@ public class DecorationImage
     public DecorationImage() { }
 
 
-    public DecorationImage(dynamic image, Action<object, global::System.Diagnostics.StackTrace?>? onError = null, ColorFilter? colorFilter = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double scale = 1.0, double opacity = 1.0, FilterQuality filterQuality = FilterQuality.medium, bool invertColors = false, bool isAntiAlias = false)
+    public DecorationImage(global::Doroti.Framework.Painting.IImageProvider image, Action<object, global::System.Diagnostics.StackTrace?>? onError = null, ColorFilter? colorFilter = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double scale = 1.0, double opacity = 1.0, FilterQuality filterQuality = FilterQuality.medium, bool invertColors = false, bool isAntiAlias = false)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.image = image;
@@ -226,7 +226,7 @@ public static partial class Decoration_imageLibrary
     public static void paintImage(Canvas canvas, Rect rect, Image image, string? debugImageLabel = null, double scale = 1.0, double opacity = 1.0, ColorFilter? colorFilter = null, BoxFit? fit = null, Alignment alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool flipHorizontally = false, bool invertColors = false, FilterQuality filterQuality = FilterQuality.medium, bool isAntiAlias = false, BlendMode blendMode = BlendMode.srcOver)
     {
         alignment ??= Alignment.center;
-        DartRuntimePrimitives.Assert(() => ((((long?)(global::Doroti.Ui.Image.debugGetOpenHandleStackTraces()?.Count)) is { } __count19740 ? __count19740 != 0 : (bool?)null) ?? true));
+        DartRuntimePrimitives.Assert(() => !image.debugDisposed);
         if (rect.isEmpty)
         {
             return;
@@ -425,7 +425,7 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
         System.Diagnostics.Debug.Assert(((a is not null) || (b is not null)));
     }
 
-    public override dynamic image => (this.b?.image ?? this.a!.image);
+    public override global::Doroti.Framework.Painting.IImageProvider image => (this.b?.image ?? this.a!.image);
     public override Action<object, global::System.Diagnostics.StackTrace?>? onError => (this.b?.onError ?? this.a!.onError);
     public override ColorFilter? colorFilter => (this.b?.colorFilter ?? this.a!.colorFilter);
     public override BoxFit? fit => (this.b?.fit ?? this.a!.fit);

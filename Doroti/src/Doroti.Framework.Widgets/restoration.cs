@@ -53,8 +53,8 @@ public class RestorationScope : StatefulWidget
 internal class _RestorationScopeState__restoration : State<RestorationScope>, RestorationMixin<RestorationScope>
 {
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -75,13 +75,13 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -95,9 +95,9 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -109,10 +109,10 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -233,7 +233,7 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -241,19 +241,19 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
@@ -268,9 +268,9 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
 
     public override void dispose()
     {
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -399,11 +399,27 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
 
 }
 
-public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundation.ChangeNotifier
+/// <summary>Restoration lifecycle and serialization independent of the property's value type.</summary>
+public interface IRestorableProperty : global::Doroti.Framework.Foundation.Listenable
+{
+    bool _disposed { get; }
+    string? _restorationId { get; }
+    RestorationPropertyOwner? _owner { get; }
+    bool enabled { get; }
+    bool isRegistered { get; }
+    object? createDefaultValueObject();
+    object? fromPrimitivesObject(object? data);
+    void initWithValueObject(object? value);
+    object? toPrimitives();
+    void _register(string restorationId, RestorationPropertyOwner owner);
+    void _unregister();
+}
+
+public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundation.ChangeNotifier, IRestorableProperty
 {
     public virtual bool _disposed { get; set; } = false;
     public virtual string? _restorationId { get; set; } = default;
-    public virtual dynamic _owner { get; set; } = default!;
+    public virtual RestorationPropertyOwner? _owner { get; set; }
 
     protected RestorableProperty()
     {
@@ -413,23 +429,19 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
     public abstract T fromPrimitives(object? data);
     public abstract void initWithValue(T value);
     public abstract object? toPrimitives();
+    object? IRestorableProperty.createDefaultValueObject() => createDefaultValue();
+    object? IRestorableProperty.fromPrimitivesObject(object? data) => fromPrimitives(data);
+    void IRestorableProperty.initWithValueObject(object? value) => initWithValue((T)value!);
     public virtual bool enabled => true;
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
-        if (this._owner is RestorationPropertyOwner owner)
-        {
-            owner._unregister(this);
-        }
-        else
-        {
-            ((dynamic)this._owner)?._unregister(this);
-        }
+        this._owner?._unregister(this);
         base.dispose();
         _disposed = true;
     }
 
-    public virtual void _register(string restorationId, dynamic owner)
+    public virtual void _register(string restorationId, RestorationPropertyOwner owner)
     {
         DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
         _restorationId = restorationId;
@@ -468,14 +480,14 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
 
 public interface RestorationPropertyOwner
 {
-    public void _unregister(dynamic property);
+    public void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property);
 }
 
 public interface RestorationMixin<S> : RestorationPropertyOwner where S : StatefulWidget
 {
     global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; }
-    DartMap<dynamic, global::System.Action> _properties { get; }
-    List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; }
+    DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; }
+    List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; }
     bool _firstRestorePending { get; set; }
     global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; }
 
@@ -491,7 +503,7 @@ public interface RestorationMixin<S> : RestorationPropertyOwner where S : Statef
     public void _doRestore(global::Doroti.Framework.Services.RestorationBucket? oldBucket);
     public bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending);
     public bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending);
-    public void _updateProperty(dynamic property);
-    public void _unregister(dynamic property);
+    public void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property);
+    public void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property);
     public void dispose();
 }

@@ -19,6 +19,8 @@ DorotiSkiaRuntimeEffects.Validate(source, "runtime-shader-contract");
 if (FrameworkShaderManifest.SchemaVersion != "doroti.framework-shader-manifest/v1" ||
     FrameworkShaderManifest.Assets.Count != 2)
     throw new InvalidOperationException("The closed framework shader manifest is incomplete.");
+FrameworkShaderLoader.RegisterResourceOwner(typeof(Doroti.Framework.Material.InkSparkle).Assembly);
+FrameworkShaderLoader.RegisterResourceOwner(typeof(Doroti.Framework.Widgets.Widget).Assembly);
 var inkSparkleProgram = await FrameworkShaderLoader.LoadProgram("material.ink-sparkle").asTask();
 DorotiSkiaRuntimeEffects.Validate(inkSparkleProgram.source, "shaders/ink_sparkle.frag");
 var offsetTween = new Doroti.Framework.Animation.Tween<System.Numerics.Vector2>(

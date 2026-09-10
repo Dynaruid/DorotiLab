@@ -1,4 +1,9 @@
+#if IOS && !MACCATALYST
+using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
+#endif
 using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Runtime.Versioning;
 using Doroti.Hosting;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
@@ -10,6 +15,15 @@ namespace Doroti.Host.Maui;
 
 public sealed class MauiFrameworkHost : IDisposable
 {
+    // Inspect only known assembly metadata; do not report stale hardcoded SDK/package versions.
+    private static readonly string BuildFrameworkIdentity =
+        (typeof(MauiFrameworkHost).Assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName ?? "unknown") + "/" +
+        (typeof(MauiFrameworkHost).Assembly.GetCustomAttribute<TargetPlatformAttribute>()?.PlatformName ?? "unknown");
+    private static readonly string MauiPackageIdentity =
+        typeof(Microsoft.Maui.Controls.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "unknown";
+    private static readonly string SkiaPackageIdentity =
+        typeof(SkiaSharp.SKCanvas).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "unknown";
+
     private readonly string _targetIdentity;
     private readonly Dictionary<ulong, (DorotiView View, MauiHostAdapter Host, MauiSkiaCapabilities Graphics)> _views = [];
     private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
@@ -174,19 +188,7 @@ public sealed class MauiFrameworkHost : IDisposable
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
         return new(applicationSource, bootstrapSource,
-#if WINDOWS
-            ".NETCoreApp,Version=v10.0/Windows,Version=10.0.19041.0",
-#elif MACCATALYST
-            ".NETCoreApp,Version=v10.0/MacCatalyst,Version=15.0",
-#elif IOS
-            ".NETCoreApp,Version=v10.0/iOS,Version=15.0",
-#elif ANDROID
-            ".NETCoreApp,Version=v10.0/Android,Version=24.0",
-#elif MACOS
-            ".NETCoreApp,Version=v10.0/macOS,Version=14.0",
-#else
-#error Doroti.Host.Maui requires an explicit target framework identity.
-#endif
+            BuildFrameworkIdentity,
 #if WINDOWS
             "win-x64",
 #elif MACCATALYST
@@ -200,7 +202,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #else
 #error Doroti.Host.Maui requires an explicit runtime identifier.
 #endif
-            "10.0.90", "4.154.0-preview.1.26454.9", value.Host.Snapshot, value.Graphics.Diagnostics,
+            MauiPackageIdentity, SkiaPackageIdentity, value.Host.Snapshot, value.Graphics.Diagnostics,
             value.Host.InvalidationsRequested, value.Host.InvalidationsCoalesced,
             value.Host.NativePointerEvents, value.Host.FrameRequestsCoalesced,
             value.Host.SemanticsDiagnostics, 0);

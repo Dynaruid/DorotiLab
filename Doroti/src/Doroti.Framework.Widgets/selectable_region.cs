@@ -1142,7 +1142,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         bool adjustingSelectionExtend = _determineIsAdjustingSelectionEnd(forward);
         global::Doroti.Framework.Rendering.SelectionPoint baseLinePoint = (adjustingSelectionExtend ? this._selectionDelegate.value.endSelectionPoint! : this._selectionDelegate.value.startSelectionPoint!);
         _directionalHorizontalBaseline ??= ((global::Doroti.Framework.Rendering.SelectionPoint)baseLinePoint).localPosition.dx;
-        global::Doroti.Ui.Offset globalSelectionPointOffset = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)this.context.findRenderObject()!).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(this._directionalHorizontalBaseline), 0)));
+        global::Doroti.Ui.Offset globalSelectionPointOffset = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)(this.context.findRenderObject()!).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(this._directionalHorizontalBaseline), 0)));
         this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent(isEnd: DartRuntimePrimitives.RequireValue(this._adjustingSelectionEnd), direction: (forward ? global::Doroti.Framework.Rendering.SelectionExtendDirection.nextLine : global::Doroti.Framework.Rendering.SelectionExtendDirection.previousLine), dx: globalSelectionPointOffset.dx));
         _updateSelectedContentIfNeeded();
         this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
@@ -1425,9 +1425,9 @@ internal abstract class _NonOverrideAction__selectable_region<T> : ContextAction
     public abstract object? invokeAction(T intent, BuildContext? context = null);
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        if (this.callingAction is object callingActionLocal)
+        if (this.callingAction is Action<T> callingActionLocal)
         {
-            return ((dynamic)callingActionLocal).invoke(intent);
+            return callingActionLocal.invoke(intent);
         }
         return invokeAction(intent, context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1877,7 +1877,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     internal virtual void _removeSelectable(global::Doroti.Framework.Rendering.Selectable selectable)
     {
         DartRuntimePrimitives.Assert(() => this.selectables.Contains(selectable), () => (object?)"The selectable is not in this registrar.");
-        long index = ((long)((dynamic)this.selectables).IndexOf(selectable));
+        long index = ((long)this.selectables.IndexOf(selectable));
         this.selectables.removeAt(index);
         if ((index <= this.currentSelectionEndIndex))
         {

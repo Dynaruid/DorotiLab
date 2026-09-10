@@ -354,7 +354,7 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
         ThemeData theme = Theme.of(context);
         SliderThemeData sliderThemeLocal = SliderTheme.of(context);
         bool year2023Local = ((((Slider)this.widget).year2023 ?? sliderThemeLocal.year2023) ?? true);
-        dynamic defaults = (((year2023Local ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context))));
+        SliderThemeData defaults = (((year2023Local ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context))));
         ShowValueIndicator defaultShowValueIndicator = ShowValueIndicator.onlyForDiscrete;
         SliderInteraction defaultAllowedInteraction = SliderInteraction.tapAndSlide;
         var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection31364 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._hovering) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); } if (this._focused) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } if (this._dragging) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.dragged); } return __collection31364; }))();
@@ -1240,7 +1240,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
             global::Doroti.Ui.Size overlaySize = ((global::Doroti.Ui.Size)(object?)this.sliderTheme.overlayShape!.getPreferredSize(this.isInteractive, false));
             overlayRect = global::Doroti.Ui.Rect.fromCircle(center: thumbCenterLocal, radius: (overlaySize.width / 2.0));
         }
-        global::Doroti.Ui.Offset? secondaryOffsetLocal = ((global::Doroti.Ui.Offset?)(object?)(((secondaryVisualPosition is not null)) ? new global::Doroti.Ui.Offset((trackRectLocal.left + (DartRuntimePrimitives.RequireValue(secondaryVisualPosition) * trackRectLocal.width)), ((Offset)((dynamic)trackRectLocal).center).dy) : null));
+        global::Doroti.Ui.Offset? secondaryOffsetLocal = ((global::Doroti.Ui.Offset?)(object?)(((secondaryVisualPosition is not null)) ? new global::Doroti.Ui.Offset((trackRectLocal.left + (DartRuntimePrimitives.RequireValue(secondaryVisualPosition) * trackRectLocal.width)), ((Offset)(trackRectLocal).center).dy) : null));
         double? thumbWidth = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.width;
         double? thumbHeight = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.height;
         double? trackGapLocal = this._sliderTheme.trackGap;
@@ -1273,7 +1273,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
             double adjustedTrackWidth = (trackRectLocal.width - discreteTrackPadding);
             if (((adjustedTrackWidth / DartRuntimePrimitives.RequireValue(this.divisions)) >= (3.0 * tickMarkWidth)))
             {
-                double dyLocal = ((Offset)((dynamic)trackRectLocal).center).dy;
+                double dyLocal = ((Offset)(trackRectLocal).center).dy;
                 for (var i = 0L; (i <= DartRuntimePrimitives.RequireValue(this.divisions)); i++)
                 {
                     double valueLocal = (i / (double)DartRuntimePrimitives.RequireValue(this.divisions));
@@ -1306,7 +1306,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
         double thumbPosition = (this.isDiscrete ? ((trackRect.left + (visualPosition * ((trackRect.width - padding)))) + (padding / 2L)) : (trackRect.left + (visualPosition * trackRect.width)));
         global::Doroti.Ui.Size thumbPreferredSize = ((global::Doroti.Ui.Size)(object?)this._sliderTheme.thumbShape!.getPreferredSize(this.isInteractive, this.isDiscrete));
         double thumbPadding = ((padding > (thumbPreferredSize.width / 2L)) ? (padding / 2L) : 0);
-        return new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(thumbPosition, (trackRect.left + thumbPadding), (trackRect.right - thumbPadding)), ((Offset)((dynamic)trackRect).center).dy);
+        return new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(thumbPosition, (trackRect.left + thumbPadding), (trackRect.right - thumbPadding)), ((Offset)(trackRect).center).dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1340,7 +1340,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
         {
             config.onDidGainAccessibilityFocus = (global::System.Action)this.onDidGainAccessibilityFocus;
         }
-        ((dynamic)config).textDirection = this.textDirection;
+        (config).textDirection = this.textDirection;
         if (this.isInteractive)
         {
             config.onIncrease = (global::System.Action)this.increaseAction;

@@ -343,7 +343,14 @@ public static class DartCoreExtensions
         values.ExceptWith(other);
 
     private static bool InvokePredicate<T>(Delegate predicate, T value) =>
-        predicate.DynamicInvoke(value) is true;
+        predicate switch
+        {
+            Func<T, bool> callback => callback(value),
+            Predicate<T> callback => callback(value),
+            Func<object, bool> callback => callback(value!),
+            Predicate<object> callback => callback(value!),
+            _ => throw new ArgumentException("Use Func<T, bool> or Predicate<T>; adapt custom delegates with a typed lambda.", nameof(predicate)),
+        };
 
     public static T _merge<T>(this T value, T other) where T : struct, Enum =>
         Convert.ToInt64(value, CultureInfo.InvariantCulture) >= Convert.ToInt64(other, CultureInfo.InvariantCulture)

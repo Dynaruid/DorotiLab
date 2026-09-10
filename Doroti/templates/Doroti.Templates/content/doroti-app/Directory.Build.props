@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="ios/Doroti.IosNativeAot.props" />
   <PropertyGroup>
     <ApplicationTitle>DorotiTemplateApp</ApplicationTitle>
     <ApplicationId>__DOROTI_APPLICATION_ID__</ApplicationId>

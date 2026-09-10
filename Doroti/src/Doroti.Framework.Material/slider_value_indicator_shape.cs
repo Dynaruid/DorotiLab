@@ -141,7 +141,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         var edgePadding = 8.0;
         double rectangleWidth = _upperRectangleWidth(labelPainter, scale, textScaleFactor);
-        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
+        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)(parentBox).localToGlobal(center)));
         double overflowLeft = Math.Max(0, (((rectangleWidth / 2L) - globalCenter.dx) + edgePadding));
         double overflowRight = Math.Max(0, ((rectangleWidth / 2L) - (((sizeWithOverflow.width - globalCenter.dx) - edgePadding))));
         if ((rectangleWidth < sizeWithOverflow.width))

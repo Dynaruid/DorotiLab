@@ -68,7 +68,7 @@ public class RawAutocomplete<T> : StatefulWidget
 
     public static string defaultStringForOption(object? option)
     {
-        return ((string)((dynamic)option).ToString());
+        return option!.ToString()!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

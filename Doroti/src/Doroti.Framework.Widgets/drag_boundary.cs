@@ -78,7 +78,7 @@ public class DragBoundary : InheritedWidget
         }
         var rb = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)element.findRenderObject())!;
         DartRuntimePrimitives.Assert(() => ((rb is not null) && ((global::Doroti.Framework.Rendering.RenderBox)rb).hasSize), () => (object?)"DragBoundary is not available");
-        global::Doroti.Ui.Rect boundary = ((global::Doroti.Ui.Rect)(object?)(useGlobalPosition ? global::Doroti.Ui.Rect.fromPoints(((Offset)((dynamic)rb!).localToGlobal(Offset.zero)), ((Offset)((dynamic)rb).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)rb).size.bottomRight(Offset.zero)))) : (Offset.zero & rb!.size)));
+        global::Doroti.Ui.Rect boundary = ((global::Doroti.Ui.Rect)(object?)(useGlobalPosition ? global::Doroti.Ui.Rect.fromPoints(((Offset)(rb!).localToGlobal(Offset.zero)), ((Offset)(rb).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)rb).size.bottomRight(Offset.zero)))) : (Offset.zero & rb!.size)));
         return ((DragBoundaryDelegate<global::Doroti.Ui.Rect>?)(object?)new _DragBoundaryDelegateForRect__drag_boundary(boundary));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

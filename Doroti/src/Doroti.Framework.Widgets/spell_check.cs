@@ -88,7 +88,7 @@ public static partial class Spell_checkLibrary
             long spanLength = (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end - ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start);
             string escapedText = Dart_coreLibrary.escape(currentSpanText);
             var currentSpanTextRegexp = new RegExp($"\\b{escapedText}\\b");
-            long foundIndex = ((long)((dynamic)newText.substring(searchStart)).IndexOf(currentSpanTextRegexp));
+            long foundIndex = (currentSpanTextRegexp.allMatches(newText.substring(searchStart)).FirstOrDefault()?.start ?? -1L);
             var currentSpanFoundExactly = (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start == (foundIndex + searchStart));
             var currentSpanFoundExactlyWithOffset = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start + offset) == (foundIndex + searchStart));
             bool currentSpanFoundElsewhere = (foundIndex >= 0L);

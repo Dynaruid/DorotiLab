@@ -620,7 +620,7 @@ public class _RenderInputPadding__time_picker : global::Doroti.Framework.Renderi
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;
@@ -1090,7 +1090,7 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
         DartRuntimePrimitives.Assert(() => !this._dragging);
         _dragging = true;
         var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        _position = ((Offset)((dynamic)box).globalToLocal(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition));
+        _position = ((Offset)(box).globalToLocal(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition));
         _dialSize = ((global::Doroti.Framework.Rendering.RenderBox)box).size;
         _center = DartRuntimePrimitives.RequireValue(this._dialSize).center(Offset.zero);
         _updateThetaForPan();
@@ -1121,7 +1121,7 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     internal virtual void _handleTapUp(global::Doroti.Framework.Gestures.TapUpDetails details)
     {
         var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        _position = ((Offset)((dynamic)box).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)details).globalPosition));
+        _position = ((Offset)(box).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)details).globalPosition));
         _center = ((global::Doroti.Framework.Rendering.RenderBox)box).size.center(Offset.zero);
         _dialSize = ((global::Doroti.Framework.Rendering.RenderBox)box).size;
         _updateThetaForPan(roundMinutes: true);
@@ -1416,8 +1416,8 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
     public virtual global::Doroti.Framework.Widgets.RestorableBool hourHasError { get; private set; } = new global::Doroti.Framework.Widgets.RestorableBool(false);
     public virtual global::Doroti.Framework.Widgets.RestorableBool minuteHasError { get; private set; } = new global::Doroti.Framework.Widgets.RestorableBool(false);
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -1426,9 +1426,9 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         this._selectedTime.dispose();
         this.hourHasError.dispose();
         this.minuteHasError.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -1441,9 +1441,9 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
     public virtual string? restorationId => ((_TimePickerInput__time_picker)this.widget).restorationId;
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._selectedTime), "selected_time");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this.hourHasError), "hour_has_error");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this.minuteHasError), "minute_has_error");
+        registerForRestoration(this._selectedTime, "selected_time");
+        registerForRestoration(this.hourHasError, "hour_has_error");
+        registerForRestoration(this.minuteHasError, "minute_has_error");
     }
 
     internal virtual long? _parseHour(string? value)
@@ -1526,7 +1526,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         if ((newMinute is not null))
         {
             long newMinute__63120__value63161 = DartRuntimePrimitives.RequireValue(newMinute);
-            this._selectedTime.value = new TimeOfDay(hour: this._selectedTime.value.hour, minute: Dart_coreLibrary.parse(value!));
+            this._selectedTime.value = new TimeOfDay(hour: this._selectedTime.value.hour, minute: long.Parse(value!, System.Globalization.CultureInfo.InvariantCulture));
             _TimePickerModel__time_picker.setSelectedTime(this.context, this._selectedTime.value);
             FocusScope.of(this.context).unfocus();
         }
@@ -1579,13 +1579,13 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -1599,9 +1599,9 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -1612,10 +1612,10 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -1691,7 +1691,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<dynamic, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {((dynamic)property)._restorationId}")))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -1734,7 +1734,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -1742,19 +1742,19 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
@@ -1874,8 +1874,8 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
     public virtual global::Doroti.Framework.Widgets.RestorableBool controllerHasBeenSet { get; private set; } = new global::Doroti.Framework.Widgets.RestorableBool(false);
     public virtual global::Doroti.Framework.Widgets.FocusNode focusNode { get; set; } = default!;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -1928,9 +1928,9 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         this.controller.dispose();
         this.controllerHasBeenSet.dispose();
         this.focusNode.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -1943,8 +1943,8 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
     public virtual string? restorationId => ((_HourMinuteTextField__time_picker)this.widget).restorationId;
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this.controller), "text_editing_controller");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this.controllerHasBeenSet), "has_controller_been_set");
+        registerForRestoration(this.controller, "text_editing_controller");
+        registerForRestoration(this.controllerHasBeenSet, "has_controller_been_set");
     }
 
     internal virtual string _formattedValue
@@ -1984,13 +1984,13 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -2004,9 +2004,9 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -2017,10 +2017,10 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -2078,7 +2078,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<dynamic, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {((dynamic)property)._restorationId}")))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -2121,7 +2121,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -2129,19 +2129,19 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
@@ -2249,8 +2249,8 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
     internal static Size _kTimePickerMinLandscapeSize = new global::Doroti.Ui.Size(416, 248);
     internal static Size _kTimePickerMinInputSize = new global::Doroti.Ui.Size(312, 196);
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -2260,9 +2260,9 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
         this._entryMode.dispose();
         this._autovalidateMode.dispose();
         this._orientation.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -2275,10 +2275,10 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
     public virtual string? restorationId => ((TimePickerDialog)this.widget).restorationId;
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._selectedTime), "selected_time");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._entryMode), "entry_mode");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._autovalidateMode), "autovalidate_mode");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._orientation), "orientation");
+        registerForRestoration(this._selectedTime, "selected_time");
+        registerForRestoration(this._entryMode, "entry_mode");
+        registerForRestoration(this._autovalidateMode, "autovalidate_mode");
+        registerForRestoration(this._orientation, "orientation");
     }
 
     internal virtual void _handleTimeChanged(TimeOfDay value)
@@ -2506,13 +2506,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -2526,9 +2526,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -2539,10 +2539,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -2618,7 +2618,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<dynamic, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {((dynamic)property)._restorationId}")))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -2661,7 +2661,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -2669,19 +2669,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
@@ -2772,8 +2772,8 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         }
     }
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -2788,9 +2788,9 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         this._lastModeAnnounced.dispose();
         this._autofocusHour.dispose();
         this._autofocusMinute.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -2841,12 +2841,12 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
     public virtual string? restorationId => ((_TimePicker__time_picker)this.widget).restorationId;
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._hourMinuteMode), "hour_minute_mode");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._lastModeAnnounced), "last_mode_announced");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._autofocusHour), "autofocus_hour");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._autofocusMinute), "autofocus_minute");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._selectedTime), "selected_time");
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._orientation), "orientation");
+        registerForRestoration(this._hourMinuteMode, "hour_minute_mode");
+        registerForRestoration(this._lastModeAnnounced, "last_mode_announced");
+        registerForRestoration(this._autofocusHour, "autofocus_hour");
+        registerForRestoration(this._autofocusMinute, "autofocus_minute");
+        registerForRestoration(this._selectedTime, "selected_time");
+        registerForRestoration(this._orientation, "orientation");
     }
 
     internal virtual void _vibrate()
@@ -2995,13 +2995,13 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
 
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -3015,9 +3015,9 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -3028,10 +3028,10 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -3083,7 +3083,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<dynamic, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {((dynamic)property)._restorationId}")))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -3126,7 +3126,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -3134,19 +3134,19 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>

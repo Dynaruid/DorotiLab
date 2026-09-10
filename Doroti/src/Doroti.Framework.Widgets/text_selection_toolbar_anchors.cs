@@ -38,7 +38,7 @@ public class TextSelectionToolbarAnchors
 
     internal static global::Doroti.Ui.Rect _getEditingRegion(global::Doroti.Framework.Rendering.RenderBox renderBox)
     {
-        return global::Doroti.Ui.Rect.fromPoints(((Offset)((dynamic)renderBox).localToGlobal(Offset.zero)), ((Offset)((dynamic)renderBox).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBox).size.bottomRight(Offset.zero))));
+        return global::Doroti.Ui.Rect.fromPoints(((Offset)(renderBox).localToGlobal(Offset.zero)), ((Offset)(renderBox).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBox).size.bottomRight(Offset.zero))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -395,7 +395,7 @@ public abstract class InkFeature
             if ((fromDepth >= toDepth))
             {
                 global::Doroti.Framework.Rendering.RenderObject? fromParent = ((global::Doroti.Framework.Rendering.RenderObject)@from).parent;
-                if (((!((bool)((dynamic)fromParent).paintsChild(@from)))))
+                if (((!((bool)fromParent.paintsChild(@from)))))
                 {
                     return null;
                 }
@@ -405,7 +405,7 @@ public abstract class InkFeature
             if ((fromDepth <= toDepth))
             {
                 global::Doroti.Framework.Rendering.RenderObject? toParent = ((global::Doroti.Framework.Rendering.RenderObject)to).parent;
-                if (((!((bool)((dynamic)toParent).paintsChild(to)))))
+                if (((!((bool)toParent.paintsChild(to)))))
                 {
                     return null;
                 }
@@ -418,11 +418,11 @@ public abstract class InkFeature
         var inverseTransform = Matrix4.identity();
         for (long index = (checked((long)(toPath.Count)) - 1L); (index > 0L); index -= 1L)
         {
-            ((dynamic)toPath[(int)(index)]).applyPaintTransform(toPath[(int)((index - 1L))], transform);
+            (toPath[(int)(index)]).applyPaintTransform(toPath[(int)((index - 1L))], transform);
         }
         for (long indexLocal = (checked((long)(fromPath.Count)) - 1L); (indexLocal > 0L); indexLocal -= 1L)
         {
-            ((dynamic)fromPath[(int)(indexLocal)]).applyPaintTransform(fromPath[(int)((indexLocal - 1L))], inverseTransform);
+            (fromPath[(int)(indexLocal)]).applyPaintTransform(fromPath[(int)((indexLocal - 1L))], inverseTransform);
         }
         double det = inverseTransform.invert();
         return ((det != 0L) ? (((Func<Matrix4>)(() =>

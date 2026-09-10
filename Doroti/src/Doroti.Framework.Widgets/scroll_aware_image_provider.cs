@@ -16,10 +16,10 @@ namespace Doroti.Framework.Widgets;
 
 public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.ImageProvider<T>
 {
-    public virtual dynamic context { get; private set; } = default!;
+    public virtual IDisposableBuildContext context { get; private set; } = default!;
     public virtual global::Doroti.Framework.Painting.ImageProvider<T> imageProvider { get; private set; } = default!;
 
-    public ScrollAwareImageProvider(dynamic context, global::Doroti.Framework.Painting.ImageProvider<T> imageProvider)
+    public ScrollAwareImageProvider(IDisposableBuildContext context, global::Doroti.Framework.Painting.ImageProvider<T> imageProvider)
     {
         this.context = context;
         this.imageProvider = imageProvider;
@@ -32,7 +32,7 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
             this.imageProvider.resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError);
             return;
         }
-        BuildContext? buildContext = ((dynamic)this.context).context;
+        BuildContext? buildContext = this.context.context;
         if (buildContext is null)
         {
             return;
@@ -50,6 +50,8 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
 
     public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(T key, DecoderBufferCallback decode) => this.imageProvider.loadBuffer(key, (DecoderBufferCallback)decode);
     public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(T key, ImageDecoderCallback decode) => this.imageProvider.loadImage(key, (ImageDecoderCallback)decode);
+    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(T key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) => this.imageProvider.loadBuffer(key, decode);
+    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(T key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) => this.imageProvider.loadImage(key, decode);
     public override Future<T> obtainKey(global::Doroti.Framework.Painting.ImageConfiguration configuration) => this.imageProvider.obtainKey(configuration);
     public override bool Equals(object? other)
     {
@@ -67,4 +69,22 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.context, this.imageProvider));
+}
+
+/// <summary>Scroll-aware wrapper for providers with an application-defined key type.</summary>
+public class ScrollAwareImageProvider : ScrollAwareImageProvider<object>
+{
+    public ScrollAwareImageProvider(IDisposableBuildContext context, global::Doroti.Framework.Painting.IImageProvider imageProvider)
+        : base(context, new ErasedProvider(imageProvider)) { }
+
+    private sealed class ErasedProvider(global::Doroti.Framework.Painting.IImageProvider provider) : global::Doroti.Framework.Painting.ImageProvider<object>
+    {
+        public override Future<object> obtainKey(global::Doroti.Framework.Painting.ImageConfiguration configuration) => provider.obtainKeyObject(configuration);
+        public override void resolveStreamForKey(global::Doroti.Framework.Painting.ImageConfiguration configuration, global::Doroti.Framework.Painting.ImageStream stream, object key, Action<object, StackTrace?> handleError) => provider.resolveStreamForKeyObject(configuration, stream, key, handleError);
+        public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(object key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) => provider.loadBufferObject(key, decode);
+        public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(object key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) => provider.loadImageObject(key, decode);
+        public override bool Equals(object? other) => other is ErasedProvider erased && Equals(provider, erased.Provider);
+        public override int GetHashCode() => provider.GetHashCode();
+        private global::Doroti.Framework.Painting.IImageProvider Provider => provider;
+    }
 }

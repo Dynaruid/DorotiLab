@@ -64,7 +64,7 @@ public class ScrollableDetails
         {
             if ((value is not null))
             {
-                description.Add((prefix + ((string)((dynamic)value).ToString())));
+                description.Add((prefix + value.ToString()));
             }
         }
         addIfNonNull("scroll controller: ", this.controller);

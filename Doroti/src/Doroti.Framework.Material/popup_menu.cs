@@ -510,7 +510,7 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
             }
         }
         var wantedPosition = new global::Doroti.Ui.Offset(x, y);
-        global::Doroti.Ui.Offset originCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)this.position.toRect((Offset.zero & size))).center));
+        global::Doroti.Ui.Offset originCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)(this.position.toRect((Offset.zero & size))).center));
         IEnumerable<global::Doroti.Ui.Rect> subScreens = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)DisplayFeatureSubScreen.subScreensInBounds((Offset.zero & size), this.avoidBounds));
         global::Doroti.Ui.Rect subScreen = ((global::Doroti.Ui.Rect)(object?)_closestScreen(subScreens.Cast<Rect>(), originCenter));
         return _fitInsideScreen(subScreen, childSize, wantedPosition);
@@ -522,7 +522,7 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
         global::Doroti.Ui.Rect closest = ((global::Doroti.Ui.Rect)(object?)screens.First());
         foreach (var screen in screens)
         {
-            if ((((((Offset)((dynamic)screen).center) - point)).distance < ((((Offset)((dynamic)closest).center) - point)).distance))
+            if ((((((Offset)(screen).center) - point)).distance < ((((Offset)(closest).center) - point)).distance))
             {
                 closest = screen;
             }
@@ -875,7 +875,7 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
                     break;
                 }
         }
-        var positionLocal = global::Doroti.Framework.Rendering.RelativeRect.CreateFromRect(global::Doroti.Ui.Rect.fromPoints(((Offset)((dynamic)button).localToGlobal(offsetLocal, ancestor: overlay)), ((Offset)((dynamic)button).localToGlobal((((global::Doroti.Framework.Rendering.RenderBox)button).size.bottomRight(Offset.zero) + offsetLocal), ancestor: overlay))), (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)overlay).size));
+        var positionLocal = global::Doroti.Framework.Rendering.RelativeRect.CreateFromRect(global::Doroti.Ui.Rect.fromPoints(((Offset)(button).localToGlobal(offsetLocal, ancestor: overlay)), ((Offset)(button).localToGlobal((((global::Doroti.Framework.Rendering.RenderBox)button).size.bottomRight(Offset.zero) + offsetLocal), ancestor: overlay))), (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)overlay).size));
         return _lastPosition = positionLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

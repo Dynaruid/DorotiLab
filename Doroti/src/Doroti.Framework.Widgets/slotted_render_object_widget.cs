@@ -173,7 +173,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
     {
         var __child = (ChildType)(object)child;
         var __slot = (SlotType)(object)slot;
-        ((dynamic)this.renderObject)._setChild(__child, __slot);
+        ((SlottedContainerRenderObjectMixin<SlotType, ChildType>)this.renderObject)._setChild(__child, __slot);
         DartRuntimePrimitives.Assert(() => EqualityComparer<ChildType>.Default.Equals(((SlottedContainerRenderObjectMixin<SlotType, ChildType>)this.renderObject)._slotToChild.GetValueOrDefault(__slot), __child));
     }
 
@@ -183,7 +183,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
         var __slot = (SlotType)(object)slot;
         if (EqualityComparer<ChildType>.Default.Equals(((SlottedContainerRenderObjectMixin<SlotType, ChildType>)this.renderObject)._slotToChild.GetValueOrDefault(__slot), __child))
         {
-            ((dynamic)this.renderObject)._setChild(default(ChildType)!, __slot);
+            ((SlottedContainerRenderObjectMixin<SlotType, ChildType>)this.renderObject)._setChild(default(ChildType)!, __slot);
             DartRuntimePrimitives.Assert(() => (!((SlottedContainerRenderObjectMixin<SlotType, ChildType>)this.renderObject)._slotToChild.ContainsKey(__slot)));
         }
     }
@@ -193,7 +193,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
         var __child = (ChildType)(object)child;
         var __oldSlot = (SlotType)(object)oldSlot;
         var __newSlot = (SlotType)(object)newSlot;
-        ((dynamic)this.renderObject)._moveChild(__child, __newSlot, __oldSlot);
+        ((SlottedContainerRenderObjectMixin<SlotType, ChildType>)this.renderObject)._moveChild(__child, __newSlot, __oldSlot);
     }
 
 }

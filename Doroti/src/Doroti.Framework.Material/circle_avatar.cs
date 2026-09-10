@@ -19,8 +19,8 @@ public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? foregroundColor { get; private set; }
-    public virtual dynamic backgroundImage { get; private set; } = default!;
-    public virtual dynamic foregroundImage { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider backgroundImage { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider foregroundImage { get; private set; } = default!;
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onBackgroundImageError { get; private set; }
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onForegroundImageError { get; private set; }
     public virtual double? radius { get; private set; }
@@ -30,7 +30,7 @@ public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
     internal const double _defaultMinRadius = 0.0;
     internal static double _defaultMaxRadius = double.PositiveInfinity;
 
-    public CircleAvatar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, Color? backgroundColor = null, dynamic backgroundImage = null, dynamic foregroundImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onBackgroundImageError = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onForegroundImageError = null, Color? foregroundColor = null, double? radius = null, double? minRadius = null, double? maxRadius = null) : base(key: key)
+    public CircleAvatar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, Color? backgroundColor = null, global::Doroti.Framework.Painting.IImageProvider backgroundImage = null, global::Doroti.Framework.Painting.IImageProvider foregroundImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onBackgroundImageError = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onForegroundImageError = null, Color? foregroundColor = null, double? radius = null, double? minRadius = null, double? maxRadius = null) : base(key: key)
     {
         this.child = child;
         this.backgroundColor = backgroundColor;

@@ -224,7 +224,7 @@ public class _RenderBadge__badge : global::Doroti.Framework.Rendering.RenderAlig
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;
@@ -323,7 +323,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
 
     internal virtual global::Doroti.Ui.Size _computeSize(global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild, global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child)!;
+        global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child)!;
         global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)layoutChild(childLocal, _childConstraints(childLocal, constraints)));
         if ((childSize.height > childSize.width))
         {
@@ -341,7 +341,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child)!;
+        global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child)!;
         return childLocal.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

@@ -69,7 +69,7 @@ public static partial class Context_menuLibrary
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.GlobalKey<IState>)globalKey).currentContext is not null));
         var renderBoxContainer = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)globalKey).currentContext!.findRenderObject()!)!;
-        return global::Doroti.Ui.Rect.fromPoints(((Offset)((dynamic)renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.topLeft)), ((Offset)((dynamic)renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.bottomRight)));
+        return global::Doroti.Ui.Rect.fromPoints(((Offset)(renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.topLeft)), ((Offset)(renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.bottomRight)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -165,12 +165,12 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
             double screenWidth = MediaQuery.widthOf(this.context);
             double centerLocal = (screenWidth / 2L);
             bool centerDividesChild = ((childRect.left < centerLocal) && (childRect.right > centerLocal));
-            double distanceFromCenter = ((centerLocal - ((Offset)((dynamic)childRect).center).dx)).abs();
+            double distanceFromCenter = ((centerLocal - ((Offset)(childRect).center).dx)).abs();
             if ((centerDividesChild && (distanceFromCenter <= (childRect.width / 4L))))
             {
                 return _ContextMenuLocation__context_menu.center;
             }
-            if ((((Offset)((dynamic)childRect).center).dx > centerLocal))
+            if ((((Offset)(childRect).center).dx > centerLocal))
             {
                 return _ContextMenuLocation__context_menu.right;
             }
@@ -180,10 +180,10 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
     }
     internal static double _getScaleFactor(Rect childRect, global::Doroti.Framework.Painting.EdgeInsets padding, Size size)
     {
-        double leftMaxScale = ((2L * ((((Offset)((dynamic)childRect).center).dx - ((global::Doroti.Framework.Painting.EdgeInsets)padding).left))) / childRect.width);
-        double topMaxScale = ((2L * ((((Offset)((dynamic)childRect).center).dy - ((global::Doroti.Framework.Painting.EdgeInsets)padding).top))) / childRect.height);
-        double rightMaxScale = ((2L * (((size.width - ((global::Doroti.Framework.Painting.EdgeInsets)padding).right) - ((Offset)((dynamic)childRect).center).dx))) / childRect.width);
-        double bottomMaxScale = ((2L * (((size.height - ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom) - ((Offset)((dynamic)childRect).center).dy))) / childRect.height);
+        double leftMaxScale = ((2L * ((((Offset)(childRect).center).dx - ((global::Doroti.Framework.Painting.EdgeInsets)padding).left))) / childRect.width);
+        double topMaxScale = ((2L * ((((Offset)(childRect).center).dy - ((global::Doroti.Framework.Painting.EdgeInsets)padding).top))) / childRect.height);
+        double rightMaxScale = ((2L * (((size.width - ((global::Doroti.Framework.Painting.EdgeInsets)padding).right) - ((Offset)(childRect).center).dx))) / childRect.width);
+        double bottomMaxScale = ((2L * (((size.height - ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom) - ((Offset)(childRect).center).dy))) / childRect.height);
         double minWidth = Math.Min(leftMaxScale, rightMaxScale);
         double minHeight = Math.Min(topMaxScale, bottomMaxScale);
         return Dart_uiLibrary.clampDouble(Math.Min(minWidth, minHeight), Context_menuLibrary._kMinScaleFactor, Context_menuLibrary._kOpenScale);
@@ -260,7 +260,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
             case global::Doroti.Framework.Animation.AnimationStatus.forward:
             case global::Doroti.Framework.Animation.AnimationStatus.reverse:
                 {
-                    if (!((bool)((dynamic)global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(this.context)!).isCurrent))
+                    if (!((bool)(global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(this.context)!).isCurrent))
                     {
                         _removeContextMenuDecoy();
                     }
@@ -319,7 +319,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
         })));
         global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)Context_menuLibrary._getRect(this._childGlobalKey));
         _scaleFactor = _CupertinoContextMenuState__context_menu._getScaleFactor(childRect, MediaQuery.paddingOf(this.context), MediaQuery.sizeOf(this.context));
-        _decoyChildEndRect = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)((dynamic)childRect).center), width: (childRect.width * this._scaleFactor), height: (childRect.height * this._scaleFactor));
+        _decoyChildEndRect = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(childRect).center), width: (childRect.width * this._scaleFactor), height: (childRect.height * this._scaleFactor));
         _lastOverlayEntry = new global::Doroti.Framework.Widgets.OverlayEntry(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DecoyChild__context_menu(beginRect: childRect, controller: this._openController, endRect: this._decoyChildEndRect, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((CupertinoContextMenu)(object)this.widget).builder, child: ((CupertinoContextMenu)(object)this.widget).child));
@@ -680,7 +680,7 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
         global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)((this._scale is null) ? Context_menuLibrary._getRect(this._childGlobalKey) : _ContextMenuRoute__context_menu<T>._getScaledRect(this._childGlobalKey, DartRuntimePrimitives.RequireValue(this._scale))));
         _rectTween.begin = this._previousChildRect;
         _rectTween.end = childRect;
-        var childRectOriginal = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)((dynamic)this._previousChildRect).center), width: (this._previousChildRect.width / this._scaleFactor), height: (this._previousChildRect.height / this._scaleFactor));
+        var childRectOriginal = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(this._previousChildRect).center), width: (this._previousChildRect.width / this._scaleFactor), height: (this._previousChildRect.height / this._scaleFactor));
         global::Doroti.Ui.Rect sheetRect = ((global::Doroti.Ui.Rect)(object?)Context_menuLibrary._getRect(this._sheetGlobalKey));
         global::Doroti.Ui.Rect sheetRectBegin = ((global::Doroti.Ui.Rect)(object?)_ContextMenuRoute__context_menu<T>._getSheetRectBegin(this._lastOrientation, this._contextMenuLocation, childRectOriginal, sheetRect));
         _sheetRectTween.begin = sheetRectBegin;
@@ -1177,8 +1177,8 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : global::Dorot
                     menuBeforeChild = false;
                     double totalHeight = ((childSize.height + menuSize.height) + _ContextMenuRouteStaticState__context_menu._kPadding);
                     double totalWidth = (childSize.width + _ContextMenuRouteStaticState__context_menu._kPadding);
-                    initialChildLeft = (((Offset)((dynamic)this.targetRect).center).dx - (childSize.width / 2L));
-                    initialChildTop = (((Offset)((dynamic)this.targetRect).center).dy - childSize.height);
+                    initialChildLeft = (((Offset)(this.targetRect).center).dx - (childSize.width / 2L));
+                    initialChildTop = (((Offset)(this.targetRect).center).dy - childSize.height);
                     double secondChildDx = (this.contextMenuLocation switch { _ContextMenuLocation__context_menu.center => ((childSize.width / 2L) - (menuSize.width / 2L)), _ContextMenuLocation__context_menu.left => 0.0, _ContextMenuLocation__context_menu.right => (childSize.width - menuSize.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                     secondChildOffset = new global::Doroti.Ui.Offset(secondChildDx, (childSize.height + _ContextMenuRouteStaticState__context_menu._kPadding));
                     maxClampedLeft = (this.screenBounds.right - totalWidth);
@@ -1189,8 +1189,8 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : global::Dorot
                 {
                     menuBeforeChild = (object.Equals(this.contextMenuLocation, _ContextMenuLocation__context_menu.right));
                     double totalWidthLocal = ((childSize.width + menuSize.width) + _ContextMenuRouteStaticState__context_menu._kPadding);
-                    initialChildLeft = (((Offset)((dynamic)this.screenBounds).center).dx - (totalWidthLocal / 2L));
-                    initialChildTop = (((Offset)((dynamic)this.screenBounds).center).dy - (Math.Max(childSize.height, menuSize.height) / 2L));
+                    initialChildLeft = (((Offset)(this.screenBounds).center).dx - (totalWidthLocal / 2L));
+                    initialChildTop = (((Offset)(this.screenBounds).center).dy - (Math.Max(childSize.height, menuSize.height) / 2L));
                     double secondChildDxLocal = (menuBeforeChild ? menuSize.width : childSize.width);
                     secondChildOffset = new global::Doroti.Ui.Offset((secondChildDxLocal + _ContextMenuRouteStaticState__context_menu._kPadding), 0.0);
                     maxClampedLeft = (this.screenBounds.right - totalWidthLocal);

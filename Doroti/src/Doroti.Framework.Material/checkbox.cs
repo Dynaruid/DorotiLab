@@ -241,7 +241,7 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
         }
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         CheckboxThemeData checkboxTheme = CheckboxTheme.of(context);
-        dynamic defaults = ((new _CheckboxDefaultsM3__checkbox(context)));
+        CheckboxThemeData defaults = ((new _CheckboxDefaultsM3__checkbox(context)));
         MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme.materialTapTargetSize ?? defaults.materialTapTargetSize);
         VisualDensity effectiveVisualDensity = ((((Checkbox)this.widget).visualDensity ?? checkboxTheme.visualDensity) ?? defaults.visualDensity!);
         global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize switch { var __constant18361 when (object.Equals(__constant18361, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, ConstantsLibrary.kMinInteractiveDimension), var __constant18488 when (object.Equals(__constant18488, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0), (ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
@@ -491,7 +491,7 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
                     break;
                 }
         }
-        ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        (this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
     }
 
     public virtual void _handleTapEnd(global::Doroti.Framework.Gestures.TapUpDetails? __unused0 = null)

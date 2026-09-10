@@ -95,20 +95,20 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
         global::Doroti.Ui.Rect screenRect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & MediaQuery.sizeOf(this.context)));
         var basicMagnifierOffset = new global::Doroti.Ui.Offset((Magnifier.kDefaultMagnifierSize.width / 2L), (Magnifier.kDefaultMagnifierSize.height + Magnifier.kStandardVerticalFocalPointShift));
         double magnifierX = Dart_uiLibrary.clampDouble(((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).globalGesturePosition.dx, ((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).currentLineBoundaries.left, ((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).currentLineBoundaries.right);
-        global::Doroti.Ui.Rect unadjustedMagnifierRect = ((global::Doroti.Ui.Rect)(object?)((new global::Doroti.Ui.Offset(magnifierX, ((Offset)((dynamic)((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).caretRect).center).dy) - basicMagnifierOffset) & Magnifier.kDefaultMagnifierSize));
+        global::Doroti.Ui.Rect unadjustedMagnifierRect = ((global::Doroti.Ui.Rect)(object?)((new global::Doroti.Ui.Offset(magnifierX, ((Offset)(((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).caretRect).center).dy) - basicMagnifierOffset) & Magnifier.kDefaultMagnifierSize));
         global::Doroti.Ui.Rect screenBoundsAdjustedMagnifierRect = ((global::Doroti.Ui.Rect)(object?)MagnifierController.shiftWithinBounds(bounds: screenRect, rect: unadjustedMagnifierRect));
         global::Doroti.Ui.Offset finalMagnifierPosition = ((global::Doroti.Ui.Offset)(object?)screenBoundsAdjustedMagnifierRect.topLeft);
         double horizontalMaxFocalPointEdgeInsets = (((Magnifier.kDefaultMagnifierSize.width / 2L)) / Magnifier._magnification);
         double newGlobalFocalPointX = default!;
         if ((((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds.width < (horizontalMaxFocalPointEdgeInsets * 2L)))
         {
-            newGlobalFocalPointX = ((Offset)((dynamic)((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds).center).dx;
+            newGlobalFocalPointX = ((Offset)(((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds).center).dx;
         }
         else
         {
-            newGlobalFocalPointX = Dart_uiLibrary.clampDouble(((Offset)((dynamic)screenBoundsAdjustedMagnifierRect).center).dx, (((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds.left + horizontalMaxFocalPointEdgeInsets), (((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds.right - horizontalMaxFocalPointEdgeInsets));
+            newGlobalFocalPointX = Dart_uiLibrary.clampDouble(((Offset)(screenBoundsAdjustedMagnifierRect).center).dx, (((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds.left + horizontalMaxFocalPointEdgeInsets), (((global::Doroti.Framework.Widgets.MagnifierInfo)selectionInfo).fieldBounds.right - horizontalMaxFocalPointEdgeInsets));
         }
-        double newRelativeFocalPointX = (newGlobalFocalPointX - ((Offset)((dynamic)screenBoundsAdjustedMagnifierRect).center).dx);
+        double newRelativeFocalPointX = (newGlobalFocalPointX - ((Offset)(screenBoundsAdjustedMagnifierRect).center).dx);
         var focalPointAdjustmentForScreenBoundsAdjustment = new global::Doroti.Ui.Offset(newRelativeFocalPointX, (unadjustedMagnifierRect.top - screenBoundsAdjustedMagnifierRect.top));
         Timer? positionShouldBeAnimated = this._positionShouldBeAnimatedTimer;
         if (((this._magnifierPosition is not null) && (finalMagnifierPosition.dy != DartRuntimePrimitives.RequireValue(this._magnifierPosition).dy)))

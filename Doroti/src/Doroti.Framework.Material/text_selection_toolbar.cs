@@ -373,7 +373,7 @@ public class _TextSelectionToolbarItemsLayoutElement__text_selection_toolbar : g
 
     internal static bool _shouldPaint(global::Doroti.Framework.Widgets.Element child)
     {
-        return (((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)((global::Doroti.Framework.Widgets.Element)child).renderObject!).parentData)!)!).shouldPaint;
+        return (((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(((global::Doroti.Framework.Widgets.Element)child).renderObject!).parentData)!)!).shouldPaint;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -889,7 +889,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).attach(owner);
+            (child).attach(owner);
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -901,7 +901,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).detach();
+            (child).detach();
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }

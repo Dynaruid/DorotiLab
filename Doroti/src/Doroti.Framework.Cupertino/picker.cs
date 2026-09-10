@@ -371,7 +371,7 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
     {
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = true;
-        ((dynamic)config).textDirection = this.textDirection;
+        config.textDirection = this.textDirection;
     }
 
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)

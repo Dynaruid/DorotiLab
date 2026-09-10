@@ -238,7 +238,7 @@ internal class _RawViewElement__view : RenderTreeRootElement
         (((_RawViewInternal__view?)(object?)this.widget)!).view.updateSemantics(update);
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderView?)(object?)base.renderObject)!);
+    public override global::Doroti.Framework.Rendering.RenderView renderObject => (global::Doroti.Framework.Rendering.RenderView)base.renderObject;
     internal virtual void _updateChild()
     {
         try
@@ -263,7 +263,7 @@ internal class _RawViewElement__view : RenderTreeRootElement
         this._effectivePipelineOwner.rootNode = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(this.renderObject);
         _attachView();
         _updateChild();
-        ((dynamic)this.renderObject).prepareInitialFrame();
+        this.renderObject.prepareInitialFrame();
         if ((((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).semanticsOwner is not null))
         {
             this.renderObject.scheduleInitialSemantics();
@@ -353,8 +353,8 @@ internal class _RawViewElement__view : RenderTreeRootElement
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         DartRuntimePrimitives.Assert(() => (slot is null));
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)this.renderObject).debugValidateChild(__child)));
-        ((dynamic)this.renderObject).child = __child;
+        DartRuntimePrimitives.Assert(() => ((bool)this.renderObject.debugValidateChild(__child)));
+        this.renderObject.child = __child;
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -365,8 +365,8 @@ internal class _RawViewElement__view : RenderTreeRootElement
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => (slot is null));
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this.renderObject).child), child)));
-        ((dynamic)this.renderObject).child = null;
+        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderBox?)this.renderObject.child), child)));
+        this.renderObject.child = null;
     }
 
     public override void unmount()

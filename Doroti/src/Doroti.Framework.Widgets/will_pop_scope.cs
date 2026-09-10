@@ -30,19 +30,19 @@ public class WillPopScope : StatefulWidget
 
 internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
 {
-    internal virtual dynamic _route { get; set; } = default!;
+    internal virtual IModalRoute? _route { get; set; } = default!;
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
         if ((((WillPopScope)this.widget).onWillPop is not null))
         {
-            ((dynamic)this._route)?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+            this._route?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
         }
         _route = ModalRoute<object>.untypedOf(this.context);
         if ((((WillPopScope)this.widget).onWillPop is not null))
         {
-            ((dynamic)this._route)?.addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+            this._route?.addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
         }
     }
 
@@ -53,11 +53,11 @@ internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
         {
             if ((((WillPopScope)oldWidget).onWillPop is not null))
             {
-                ((dynamic)this._route!).removeScopedWillPopCallback(((WillPopScope)oldWidget).onWillPop!);
+                this._route!.removeScopedWillPopCallback(((WillPopScope)oldWidget).onWillPop!);
             }
             if ((((WillPopScope)this.widget).onWillPop is not null))
             {
-                ((dynamic)this._route!).addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+                this._route!.addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
             }
         }
     }
@@ -66,7 +66,7 @@ internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
     {
         if ((((WillPopScope)this.widget).onWillPop is not null))
         {
-            ((dynamic)this._route)?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+            this._route?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
         }
         base.dispose();
     }

@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "dev.doroti.nativeaot.probe",
+  "targetRid": "ios-arm64",
+  "resources": [],
+  "plugins": []
+}

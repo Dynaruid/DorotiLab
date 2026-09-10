@@ -1,6 +1,11 @@
 <Project>
+  <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <!-- Apple runtime selection happens while Microsoft.NET.Sdk targets are imported. -->
+    <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
+    <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot'">false</UseMonoRuntime>
+    <UseMonoRuntime Condition="('$(DorotiCompilationMode)' == 'Mono' or ('$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'true')) and ($([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('ios-')) or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('iossimulator-')))">true</UseMonoRuntime>
     <IsPackable>false</IsPackable>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -18,6 +23,7 @@
     <SingleProject Condition="'$(UseMaui)' == 'true'">true</SingleProject>
     <MauiEnablePlatformUsings Condition="'$(UseMaui)' == 'true'">true</MauiEnablePlatformUsings>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+    <MauiVersion Condition="'$(MauiVersion)' == '' and '$(DorotiIosMauiVersion)' != ''">$(DorotiIosMauiVersion)</MauiVersion>
     <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
     <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.2.0-beta</DorotiVersion>
     <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.154.0-preview.1.26454.9</SkiaSharpVersion>

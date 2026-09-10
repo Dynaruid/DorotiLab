@@ -148,16 +148,17 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
         this.floating = floating;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header?)(object?)base.renderObject)!);
+    public override global::Doroti.Framework.Rendering.RenderSliverPersistentHeader renderObject => (global::Doroti.Framework.Rendering.RenderSliverPersistentHeader)base.renderObject;
+    private _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header header => (_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header)renderObject;
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        ((dynamic)this.renderObject)._element = this;
+        this.header._element = this;
     }
 
     public override void unmount()
     {
-        ((dynamic)this.renderObject)._element = null;
+        this.header._element = null;
         base.unmount();
     }
 
@@ -171,15 +172,15 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
         if (((!object.Equals(newDelegate, oldDelegate)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
         {
             _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header renderObjectLocal = DartRuntimePrimitives.ConvertValue<_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header>(this.renderObject);
-            _updateChild(newDelegate, ((double)((dynamic)renderObjectLocal).lastShrinkOffset), ((bool)((dynamic)renderObjectLocal).lastOverlapsContent));
-            ((dynamic)renderObjectLocal).triggerRebuild();
+            _updateChild(newDelegate, ((double)renderObjectLocal.lastShrinkOffset), ((bool)renderObjectLocal.lastOverlapsContent));
+            renderObjectLocal.triggerRebuild();
         }
     }
 
     public override void performRebuild()
     {
         base.performRebuild();
-        ((dynamic)this.renderObject).triggerRebuild();
+        this.header.triggerRebuild();
     }
 
     internal virtual void _updateChild(SliverPersistentHeaderDelegate @delegate, double shrinkOffset, bool overlapsContent)
@@ -199,16 +200,16 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
 
     public override void forgetChild(Element child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((Element?)((dynamic)this).child))));
-        ((dynamic)this).child = null;
+        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((Element?)(this).child))));
+        (this).child = null;
         base.forgetChild(child);
     }
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)this.renderObject).debugValidateChild(__child)));
-        ((dynamic)this.renderObject).child = __child;
+        DartRuntimePrimitives.Assert(() => ((bool)this.renderObject.debugValidateChild(__child)));
+        this.renderObject.child = __child;
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -218,7 +219,7 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        ((dynamic)this.renderObject).child = null;
+        this.renderObject.child = null;
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
@@ -256,6 +257,8 @@ public interface _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent
 {
     _SliverPersistentHeaderElement__sliver_persistent_header? _element { get; set; }
 
+    public double lastShrinkOffset { get; }
+    public bool lastOverlapsContent { get; }
     public double minExtent { get; }
     public double maxExtent { get; }
     public void updateChild(double shrinkOffset, bool overlapsContent);

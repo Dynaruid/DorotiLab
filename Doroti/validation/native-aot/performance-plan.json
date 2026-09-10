@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "doroti.nativeaot-performance-plan/v1",
+  "frozenUtc": "2026-09-10T13:53:32.187799+00:00",
+  "candidateMeasured": false,
+  "device": "iPhone 12",
+  "rid": "ios-arm64",
+  "renderer": "Graphite-Metal",
+  "baselineProfile": "Mono partial trim, same .NET 11/MAUI 11 version and source snapshot as NativeAOT",
+  "coldLaunchCount": 5,
+  "interactionScenarioRepeatCount": 3,
+  "warmLaunchCount": 5,
+  "conditions": [
+    "Record OS, thermal state and refresh rate before each series",
+    "Same resources, signing, diagnostic flags and scenario order",
+    "Foreground-only input; no concurrent installs/compilations during timing collection",
+    "Cold process launch means terminated process, not a reboot or guaranteed cold filesystem cache"
+  ],
+  "maximumRegressionRatio": {
+    "meaningfulFirstPresentedFrameMedian": 1.2,
+    "frameP95": 1.2,
+    "inputToPresentedSceneP95": 1.2,
+    "peakResidentBytes": 1.2
+  },
+  "hardFailures": {
+    "crashes": 0,
+    "unhandledErrors": 0,
+    "missedInputs": 0,
+    "softwareFallbackFrames": 0
+  },
+  "longFrameThresholdMilliseconds": 33.333333,
+  "longFrameFractionMaximumAbsoluteIncrease": 0.01,
+  "requireSizeReduction": true,
+  "excludedClaims": [
+    "Internal scene presentation timing is not optical display latency",
+    "Bundle bytes and IPA compression are not installed or App Store transfer size"
+  ],
+  "status": "measurementPending"
+}

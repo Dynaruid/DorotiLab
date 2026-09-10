@@ -4,9 +4,14 @@ using System.Globalization;
 namespace Doroti.Runtime;
 
 /// <summary>
-/// Dart language/VM primitives consumed by reviewed Foundation source.
-/// Flutter diagnostics, allocation, and platform behavior deliberately live outside Runtime.
+/// Explicit index contract for enum-shaped values outside the CLR enum type system.
 /// </summary>
+public interface IDartEnumIndex
+{
+    long DartEnumIndex { get; }
+}
+
+/// <summary>Dart language primitives; framework diagnostics and platform behavior live outside Runtime.</summary>
 public static class FoundationRuntimePorts
 {
     public static Duration kLongPressTimeout => Duration.Create(milliseconds: 500);
@@ -25,17 +30,7 @@ public static class FoundationRuntimePorts
     public static long EnumIndex(object? value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        var type = value.GetType();
-        var explicitIndex = type.GetProperty("index")?.GetValue(value);
-        if (explicitIndex is not null)
-        {
-            return Convert.ToInt64(explicitIndex, CultureInfo.InvariantCulture);
-        }
-        if (type.FullName == "Doroti.Ui.FontWeight" &&
-            type.GetProperty("value")?.GetValue(value) is { } weight)
-        {
-            return (Convert.ToInt64(weight, CultureInfo.InvariantCulture) / 100) - 1;
-        }
+        if (value is IDartEnumIndex indexed) return indexed.DartEnumIndex;
         return Convert.ToInt64(value, CultureInfo.InvariantCulture);
     }
 

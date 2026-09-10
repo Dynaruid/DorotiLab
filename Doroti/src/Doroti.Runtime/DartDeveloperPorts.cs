@@ -14,6 +14,12 @@ public sealed record Flow(long id)
 public sealed record CreationLocation(string file, long line, long column, string? name = null)
 {
     public static CreationLocation? of(object? value) => value as CreationLocation;
+    public DartMap<string, object?> toJsonMap()
+    {
+        var result = new DartMap<string, object?> { ["file"] = file, ["line"] = line, ["column"] = column };
+        if (name is not null) result["name"] = name;
+        return result;
+    }
     public override string ToString() => name is null
         ? $"{file}:{line}:{column}"
         : $"{name} ({file}:{line}:{column})";

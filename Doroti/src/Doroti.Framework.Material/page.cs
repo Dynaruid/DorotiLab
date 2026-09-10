@@ -77,15 +77,15 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
     public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => MaterialRouteTransitionMixin<T>._delegatedTransition;
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.PageRoute<T>)) || !((global::Doroti.Framework.Widgets.PageRoute<T>)nextRoute).fullscreenDialog);
-        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.ModalRoute<T>) && (((global::Doroti.Framework.Widgets.ModalRoute<T>)nextRoute).delegatedTransition is not null));
-        return (nextRouteIsNotFullscreen && ((((nextRoute is MaterialRouteTransitionMixin<object>)) || nextRouteHasDelegatedTransition)));
+        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
+        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null));
+        return (nextRouteIsNotFullscreen && ((((nextRoute is IMaterialRouteTransition)) || nextRouteHasDelegatedTransition)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
-        return ((previousRoute is PageRoute<object>) && !this.fullscreenDialog);
+        return ((previousRoute is IPageRoute) && !this.fullscreenDialog);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -105,7 +105,9 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
 
 }
 
-public interface MaterialRouteTransitionMixin<T>
+public interface IMaterialRouteTransition { }
+
+public interface MaterialRouteTransitionMixin<T> : IMaterialRouteTransition
 {
     public global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context);
     public Duration transitionDuration { get; }
@@ -194,15 +196,15 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
     public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => MaterialRouteTransitionMixin<T>._delegatedTransition;
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.PageRoute<T>)) || !((global::Doroti.Framework.Widgets.PageRoute<T>)nextRoute).fullscreenDialog);
-        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.ModalRoute<T>) && (((global::Doroti.Framework.Widgets.ModalRoute<T>)nextRoute).delegatedTransition is not null));
-        return (nextRouteIsNotFullscreen && ((((nextRoute is MaterialRouteTransitionMixin<object>)) || nextRouteHasDelegatedTransition)));
+        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
+        bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null));
+        return (nextRouteIsNotFullscreen && ((((nextRoute is IMaterialRouteTransition)) || nextRouteHasDelegatedTransition)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
-        return ((previousRoute is PageRoute<object>) && !this.fullscreenDialog);
+        return ((previousRoute is IPageRoute) && !this.fullscreenDialog);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

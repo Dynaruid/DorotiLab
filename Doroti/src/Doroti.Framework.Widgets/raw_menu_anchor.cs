@@ -140,10 +140,10 @@ public class RawMenuAnchor : StatefulWidget
 
 }
 
-internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor
+internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
 {
-    List<dynamic> _anchorChildren { get; }
-    dynamic _parent { get; set; }
+    List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; }
+    _RawMenuAnchorBaseMixin__raw_menu_anchor? _parent { get; set; }
     ScrollPosition? _scrollPosition { get; set; }
     Size? _viewSize { get; set; }
 
@@ -154,8 +154,8 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor
     public void initState();
     public void didChangeDependencies();
     public void dispose();
-    public void _addChild(dynamic child);
-    public void _removeChild(dynamic child);
+    public void _addChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child);
+    public void _removeChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child);
     public void _handleScroll();
     public void _childChangedOpenState();
     public void open(Offset? position = null);
@@ -175,8 +175,8 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"));
     internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"));
     internal virtual Offset? _menuPosition { get; set; } = default;
-    public virtual List<dynamic> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>().Cast<dynamic>().ToList();
-    public virtual dynamic _parent { get; set; } = default!;
+    public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
+    public virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _parent { get; set; } = default!;
     public virtual ScrollPosition? _scrollPosition { get; set; } = default;
     public virtual Size? _viewSize { get; set; } = default;
 
@@ -217,10 +217,10 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             close();
         }
         DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Opening {this} at {(position ?? Offset.zero)}"));
-        ((dynamic)this._parent)?.requestChildrenClose();
+        (this._parent)?.requestChildrenClose();
         DartRuntimePrimitives.Assert(() => !((OverlayPortalController)this._overlayController).isShowing);
         _menuPosition = position;
-        ((dynamic)this._parent)?._childChangedOpenState();
+        (this._parent)?._childChangedOpenState();
         this._overlayController.show();
         if (this._isRootOverlayAnchor)
         {
@@ -256,7 +256,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         }
         if (!inDispose)
         {
-            ((dynamic)this._parent)?._childChangedOpenState();
+            (this._parent)?._childChangedOpenState();
             ((RawMenuAnchor)(object)this.widget).onClose?.Invoke();
             if ((this.mounted && (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks))))
             {
@@ -299,14 +299,14 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         Matrix4 transform = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform;
         global::Doroti.Ui.Size anchorSize = ((global::Doroti.Ui.Size)(object?)((OverlayChildLayoutInfo)layoutInfo).childSize);
         global::Doroti.Ui.Rect anchorRectLocal = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, (Offset.zero & anchorSize)));
-        var info = new RawMenuOverlayInfo(anchorRect: anchorRectLocal, overlaySize: ((OverlayChildLayoutInfo)layoutInfo).overlaySize, position: this._menuPosition, tapRegionGroupId: ((MenuController)((dynamic)this.root).menuController));
+        var info = new RawMenuOverlayInfo(anchorRect: anchorRectLocal, overlaySize: ((OverlayChildLayoutInfo)layoutInfo).overlaySize, position: this._menuPosition, tapRegionGroupId: ((MenuController)(this.root).menuController));
         return this.widget.overlayBuilder(context, info);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        Widget childLocal = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), consumeOutsideTaps: (((bool)((dynamic)this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        Widget childLocal = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)(this.root).menuController), consumeOutsideTaps: (((bool)(this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
             return (((((RawMenuAnchor)(object)this.widget).builder is null ? ((RawMenuAnchor)(object)this.widget).child : ((RawMenuAnchor)(object)this.widget).builder.Invoke(context, this.menuController, ((RawMenuAnchor)(object)this.widget).child))) ?? new SizedBox());
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -326,10 +326,10 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     {
         get
         {
-            dynamic anchor = this;
-            while ((((dynamic)((dynamic)anchor)._parent) is not null))
+            _RawMenuAnchorBaseMixin__raw_menu_anchor anchor = this;
+            while ((anchor._parent is not null))
             {
-                anchor = ((dynamic)((dynamic)anchor)._parent)!;
+                anchor = anchor._parent!;
             }
             return anchor;
             return default!;
@@ -348,9 +348,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         if ((!object.Equals(newParent, this._parent)))
         {
             DartRuntimePrimitives.Assert(() => (!object.Equals(newParent, this)), () => (object?)"A MenuController should only be attached to one anchor at a time.");
-            ((dynamic)this._parent)?._removeChild(this);
+            (this._parent)?._removeChild(this);
             this._parent = newParent;
-            ((dynamic)this._parent)?._addChild(this);
+            (this._parent)?._addChild(this);
         }
         if (this.isRoot)
         {
@@ -378,29 +378,29 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = null;
         }
-        ((dynamic)this._parent)?._removeChild(this);
+        (this._parent)?._removeChild(this);
         this._parent = null;
         this._anchorChildren.Clear();
         this.menuController._detach(this);
         base.dispose();
     }
 
-    public virtual void _addChild(dynamic child)
+    public virtual void _addChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
         DartRuntimePrimitives.Assert(() => (this.isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Added root child: {child}")));
         DartRuntimePrimitives.Assert(() => !this._anchorChildren.Contains(child));
         this._anchorChildren.Add(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{((string)((dynamic)((StatefulWidget)((dynamic)child).widget)).toStringDeep())}"));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)((dynamic)this.widget).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{((string)(((StatefulWidget)(child).widget)).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)(this.widget).toStringDeep())}"));
     }
 
-    public virtual void _removeChild(dynamic child)
+    public virtual void _removeChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
         DartRuntimePrimitives.Assert(() => (this.isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Removed root child: {child}")));
         DartRuntimePrimitives.Assert(() => this._anchorChildren.Contains(child));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{((string)((dynamic)((StatefulWidget)((dynamic)child).widget)).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{((string)(((StatefulWidget)(child).widget)).toStringDeep())}"));
         this._anchorChildren.Remove(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)((dynamic)this.widget).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)(this.widget).toStringDeep())}"));
     }
 
     public virtual void _handleScroll()
@@ -413,7 +413,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public virtual void _childChangedOpenState()
     {
-        ((dynamic)this._parent)?._childChangedOpenState();
+        (this._parent)?._childChangedOpenState();
         if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             setState(((global::System.Action)(() =>
@@ -437,7 +437,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(this._anchorChildren));
         foreach (var child in children)
         {
-            ((dynamic)child).close(inDispose: inDispose);
+            (child).close(inDispose: inDispose);
         }
     }
 
@@ -447,7 +447,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(this._anchorChildren));
         foreach (var child in children)
         {
-            ((dynamic)child).handleCloseRequest();
+            (child).handleCloseRequest();
         }
     }
 
@@ -490,12 +490,12 @@ public class RawMenuAnchorGroup : StatefulWidget
 
 internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGroup>, _RawMenuAnchorBaseMixin__raw_menu_anchor
 {
-    public virtual List<dynamic> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>().Cast<dynamic>().ToList();
-    public virtual dynamic _parent { get; set; } = default!;
+    public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
+    public virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _parent { get; set; } = default!;
     public virtual ScrollPosition? _scrollPosition { get; set; } = default;
     public virtual Size? _viewSize { get; set; } = default;
 
-    public virtual bool isOpen => this._anchorChildren.any(((child) => ((bool)((dynamic)child).isOpen)));
+    public virtual bool isOpen => this._anchorChildren.any(((child) => ((bool)(child).isOpen)));
     public virtual MenuController menuController => ((RawMenuAnchorGroup)(object)this.widget).controller;
     public override void didUpdateWidget(RawMenuAnchorGroup oldWidget)
     {
@@ -557,7 +557,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        return ((Widget)(object?)new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: ((RawMenuAnchorGroup)(object)this.widget).child));
+        return ((Widget)(object?)new TapRegion(groupId: ((MenuController)(this.root).menuController), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: ((RawMenuAnchorGroup)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -566,10 +566,10 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
     {
         get
         {
-            dynamic anchor = this;
-            while ((((dynamic)((dynamic)anchor)._parent) is not null))
+            _RawMenuAnchorBaseMixin__raw_menu_anchor anchor = this;
+            while ((anchor._parent is not null))
             {
-                anchor = ((dynamic)((dynamic)anchor)._parent)!;
+                anchor = anchor._parent!;
             }
             return anchor;
             return default!;
@@ -588,9 +588,9 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         if ((!object.Equals(newParent, this._parent)))
         {
             DartRuntimePrimitives.Assert(() => (!object.Equals(newParent, this)), () => (object?)"A MenuController should only be attached to one anchor at a time.");
-            ((dynamic)this._parent)?._removeChild(this);
+            (this._parent)?._removeChild(this);
             this._parent = newParent;
-            ((dynamic)this._parent)?._addChild(this);
+            (this._parent)?._addChild(this);
         }
         if (this.isRoot)
         {
@@ -618,29 +618,29 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
             this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = null;
         }
-        ((dynamic)this._parent)?._removeChild(this);
+        (this._parent)?._removeChild(this);
         this._parent = null;
         this._anchorChildren.Clear();
         this.menuController._detach(this);
         base.dispose();
     }
 
-    public virtual void _addChild(dynamic child)
+    public virtual void _addChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
         DartRuntimePrimitives.Assert(() => (this.isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Added root child: {child}")));
         DartRuntimePrimitives.Assert(() => !this._anchorChildren.Contains(child));
         this._anchorChildren.Add(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{((string)((dynamic)((StatefulWidget)((dynamic)child).widget)).toStringDeep())}"));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)((dynamic)this.widget).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Added:\n{((string)(((StatefulWidget)(child).widget)).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)(this.widget).toStringDeep())}"));
     }
 
-    public virtual void _removeChild(dynamic child)
+    public virtual void _removeChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child)
     {
         DartRuntimePrimitives.Assert(() => (this.isRoot || Raw_menu_anchorLibrary._debugMenuInfo($"Removed root child: {child}")));
         DartRuntimePrimitives.Assert(() => this._anchorChildren.Contains(child));
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{((string)((dynamic)((StatefulWidget)((dynamic)child).widget)).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Removing:\n{((string)(((StatefulWidget)(child).widget)).toStringDeep())}"));
         this._anchorChildren.Remove(child);
-        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)((dynamic)this.widget).toStringDeep())}"));
+        DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tree:\n{((string)(this.widget).toStringDeep())}"));
     }
 
     public virtual void _handleScroll()
@@ -653,7 +653,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual void _childChangedOpenState()
     {
-        ((dynamic)this._parent)?._childChangedOpenState();
+        (this._parent)?._childChangedOpenState();
         if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             setState(((global::System.Action)(() =>
@@ -677,7 +677,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(this._anchorChildren));
         foreach (var child in children)
         {
-            ((dynamic)child).close(inDispose: inDispose);
+            (child).close(inDispose: inDispose);
         }
     }
 
@@ -687,7 +687,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         var children = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>(DartRuntimePrimitives.ConvertEnumerable<_RawMenuAnchorBaseMixin__raw_menu_anchor>(this._anchorChildren));
         foreach (var child in children)
         {
-            ((dynamic)child).handleCloseRequest();
+            (child).handleCloseRequest();
         }
     }
 
@@ -711,32 +711,32 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
 public class MenuController
 {
-    internal virtual dynamic _anchor { get; set; } = default!;
+    internal virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _anchor { get; set; } = default!;
 
-    public virtual bool isOpen => DartRuntimePrimitives.ConvertValue<bool>((((bool?)((dynamic)this._anchor)?.isOpen) ?? false));
+    public virtual bool isOpen => DartRuntimePrimitives.ConvertValue<bool>((((bool?)(this._anchor)?.isOpen) ?? false));
     public virtual void open(Offset? position = null)
     {
         DartRuntimePrimitives.Assert(() => (this._anchor is not null));
-        ((dynamic)this._anchor!).handleOpenRequest(position: position);
+        (this._anchor!).handleOpenRequest(position: position);
     }
 
     public virtual void close()
     {
-        ((dynamic)this._anchor)?.handleCloseRequest();
+        (this._anchor)?.handleCloseRequest();
     }
 
     public virtual void closeChildren()
     {
         DartRuntimePrimitives.Assert(() => (this._anchor is not null));
-        ((dynamic)this._anchor!).requestChildrenClose();
+        (this._anchor!).requestChildrenClose();
     }
 
-    internal virtual void _attach(dynamic anchor)
+    internal virtual void _attach(_RawMenuAnchorBaseMixin__raw_menu_anchor anchor)
     {
         _anchor = anchor;
     }
 
-    internal virtual void _detach(dynamic anchor)
+    internal virtual void _detach(_RawMenuAnchorBaseMixin__raw_menu_anchor anchor)
     {
         if ((object.Equals(this._anchor, anchor)))
         {
@@ -770,7 +770,7 @@ public class DismissMenuAction : DismissAction
 
     public override object? invoke(DismissIntent intent, BuildContext? context = null)
     {
-        ((dynamic)((dynamic)((dynamic)((MenuController)this.controller)._anchor!).root)).handleCloseRequest();
+        (((MenuController)this.controller)._anchor!.root).handleCloseRequest();
         return null;
     }
 

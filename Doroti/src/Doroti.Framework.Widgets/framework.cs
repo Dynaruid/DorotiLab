@@ -2662,7 +2662,7 @@ public class ErrorWidget : LeafRenderObjectWidget
     {
         try
         {
-            return ((string)((dynamic)exception).ToString());
+            return exception is null ? "Error" : exception.ToString()!;
         }
         catch (Exception error)
         {

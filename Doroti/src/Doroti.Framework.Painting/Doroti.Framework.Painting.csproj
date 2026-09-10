@@ -3,6 +3,7 @@
     <AssemblyName>Doroti.Framework.Painting</AssemblyName>
     <PackageId>Doroti.Framework.Painting</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />

@@ -91,10 +91,10 @@ public class Hero : StatefulWidget
                 }
                 else
                 {
-                    dynamic heroRoute = ModalRoute<object>.of<object>(heroLocal);
-                    if ((((heroRoute is not null) && (heroRoute is PageRoute<object>)) && ((bool)((dynamic)heroRoute).isCurrent)))
+                    IModalRoute? heroRoute = ModalRoute<object>.untypedOf(heroLocal);
+                    if ((((heroRoute is not null) && (heroRoute is IPageRoute)) && ((bool)(heroRoute).isCurrent)))
                     {
-                        dynamic heroRoute__14091__as14159 = (dynamic)heroRoute;
+                        var heroRoute__14091__as14159 = heroRoute;
                         inviteHero(heroLocal, tagLocal);
                     }
                 }
@@ -179,8 +179,8 @@ public class _HeroFlightManifest__heroes
     public virtual HeroFlightDirection type { get; private set; } = default!;
     public virtual OverlayState overlay { get; private set; } = default!;
     public virtual Size navigatorSize { get; private set; } = default!;
-    public virtual dynamic fromRoute { get; private set; } = default!;
-    public virtual dynamic toRoute { get; private set; } = default!;
+    public virtual IPageRoute fromRoute { get; private set; } = default!;
+    public virtual IPageRoute toRoute { get; private set; } = default!;
     public virtual _HeroState__heroes fromHero { get; private set; } = default!;
     public virtual _HeroState__heroes toHero { get; private set; } = default!;
     public virtual global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween { get; private set; }
@@ -196,7 +196,7 @@ public class _HeroFlightManifest__heroes
         {
             if (!__late_fromHeroLocation_initialized)
             {
-                __late_fromHeroLocation = ((global::Doroti.Ui.Rect)(object?)_HeroFlightManifest__heroes._boundingBoxFor(this.fromHero.context, ((BuildContext?)((dynamic)this.fromRoute).subtreeContext)));
+                __late_fromHeroLocation = ((global::Doroti.Ui.Rect)(object?)_HeroFlightManifest__heroes._boundingBoxFor(this.fromHero.context, ((BuildContext?)(this.fromRoute).subtreeContext)));
                 __late_fromHeroLocation_initialized = true;
             }
             return __late_fromHeroLocation;
@@ -210,7 +210,7 @@ public class _HeroFlightManifest__heroes
         {
             if (!__late_toHeroLocation_initialized)
             {
-                __late_toHeroLocation = ((global::Doroti.Ui.Rect)(object?)_HeroFlightManifest__heroes._boundingBoxFor(this.toHero.context, ((BuildContext?)((dynamic)this.toRoute).subtreeContext)));
+                __late_toHeroLocation = ((global::Doroti.Ui.Rect)(object?)_HeroFlightManifest__heroes._boundingBoxFor(this.toHero.context, ((BuildContext?)(this.toRoute).subtreeContext)));
                 __late_toHeroLocation_initialized = true;
             }
             return __late_toHeroLocation;
@@ -231,7 +231,7 @@ public class _HeroFlightManifest__heroes
         }
     }
 
-    internal _HeroFlightManifest__heroes(HeroFlightDirection type, OverlayState overlay, Size navigatorSize, dynamic fromRoute, dynamic toRoute, _HeroState__heroes fromHero, _HeroState__heroes toHero, global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder, bool isUserGestureTransition, bool isDiverted)
+    internal _HeroFlightManifest__heroes(HeroFlightDirection type, OverlayState overlay, Size navigatorSize, IPageRoute fromRoute, IPageRoute toRoute, _HeroState__heroes fromHero, _HeroState__heroes toHero, global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder, bool isUserGestureTransition, bool isDiverted)
     {
         this.type = type;
         this.overlay = overlay;
@@ -259,14 +259,14 @@ public class _HeroFlightManifest__heroes
             {
                 case HeroFlightDirection.push:
                     {
-                        parentLocal = ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)this.toRoute).animation)!;
+                        parentLocal = ((global::Doroti.Framework.Animation.Animation<double>?)(this.toRoute).animation)!;
                         curveLocal = this.toHero.widget.curve;
                         reverseCurveLocal = ((this.toHero.widget.reverseCurve ?? (global::Doroti.Framework.Animation.Curve)((global::Doroti.Framework.Animation.Curve)curveLocal).flipped));
                         break;
                     }
                 case HeroFlightDirection.pop:
                     {
-                        parentLocal = ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)this.fromRoute).animation)!;
+                        parentLocal = ((global::Doroti.Framework.Animation.Animation<double>?)(this.fromRoute).animation)!;
                         curveLocal = this.fromHero.widget.curve;
                         reverseCurveLocal = ((this.fromHero.widget.reverseCurve ?? (global::Doroti.Framework.Animation.Curve)((global::Doroti.Framework.Animation.Curve)curveLocal).flipped));
                         break;
@@ -294,7 +294,7 @@ public class _HeroFlightManifest__heroes
 
     public override string ToString()
     {
-        return $"_HeroFlightManifest({this.type} tag: {this.tag} from route: {((RouteSettings)((dynamic)this.fromRoute).settings)} " + $"to route: {((RouteSettings)((dynamic)this.toRoute).settings)} with hero: {this.fromHero} to {this.toHero}){(this.isValid ? "" : ", INVALID")}";
+        return $"_HeroFlightManifest({this.type} tag: {this.tag} from route: {((RouteSettings)(this.fromRoute).settings)} " + $"to route: {((RouteSettings)(this.toRoute).settings)} with hero: {this.fromHero} to {this.toHero}){(this.isValid ? "" : ", INVALID")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -311,7 +311,7 @@ internal class _HeroFlight__heroes
     public virtual global::Doroti.Framework.Animation.Tween<Rect?> heroRectTween { get; set; } = default!;
     public virtual Widget? shuttle { get; set; } = default;
     internal virtual global::Doroti.Framework.Animation.Animation<double> _heroOpacity { get; set; } = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation;
-    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _proxyAnimation { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _proxyAnimation { get; set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
     internal virtual _HeroFlightManifest__heroes? _manifest { get; set; } = default;
     public virtual OverlayEntry? overlayEntry { get; set; } = default;
     internal virtual bool _aborted { get; set; } = false;
@@ -365,7 +365,7 @@ internal class _HeroFlight__heroes
 
     internal virtual void _handleAnimationUpdate(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if ((((NavigatorState?)((dynamic)((_HeroFlightManifest__heroes)this.manifest).fromRoute).navigator)?.userGestureInProgress != true))
+        if ((((NavigatorState?)(((_HeroFlightManifest__heroes)this.manifest).fromRoute).navigator)?.userGestureInProgress != true))
         {
             _performAnimationUpdate(status);
             return;
@@ -374,7 +374,7 @@ internal class _HeroFlight__heroes
         {
             return;
         }
-        NavigatorState navigatorLocal = ((NavigatorState?)((dynamic)((_HeroFlightManifest__heroes)this.manifest).fromRoute).navigator)!;
+        NavigatorState navigatorLocal = ((NavigatorState?)(((_HeroFlightManifest__heroes)this.manifest).fromRoute).navigator)!;
         void delayedPerformAnimationUpdate()
         {
             DartRuntimePrimitives.Assert(() => !((NavigatorState)navigatorLocal).userGestureInProgress);
@@ -406,7 +406,7 @@ internal class _HeroFlight__heroes
     public virtual void onTick()
     {
         global::Doroti.Framework.Rendering.RenderBox? toHeroBox = (((!this._aborted && ((_HeroFlightManifest__heroes)this.manifest).toHero.mounted)) ? ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((_HeroFlightManifest__heroes)this.manifest).toHero.context.findRenderObject())! : null);
-        global::Doroti.Ui.Offset? toHeroOrigin = ((global::Doroti.Ui.Offset?)(object?)((((toHeroBox is not null) && toHeroBox.attached) && ((global::Doroti.Framework.Rendering.RenderBox)toHeroBox).hasSize) ? ((Offset)((dynamic)toHeroBox).localToGlobal(Offset.zero, ancestor: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((BuildContext?)((dynamic)((_HeroFlightManifest__heroes)this.manifest).toRoute).subtreeContext)?.findRenderObject())!)) : null));
+        global::Doroti.Ui.Offset? toHeroOrigin = ((global::Doroti.Ui.Offset?)(object?)((((toHeroBox is not null) && toHeroBox.attached) && ((global::Doroti.Framework.Rendering.RenderBox)toHeroBox).hasSize) ? ((Offset)(toHeroBox).localToGlobal(Offset.zero, ancestor: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((BuildContext?)(((_HeroFlightManifest__heroes)this.manifest).toRoute).subtreeContext)?.findRenderObject())!)) : null));
         if (((toHeroOrigin is not null) && DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite))
         {
             Offset toHeroOrigin__26130__value26392 = DartRuntimePrimitives.RequireValue(toHeroOrigin);
@@ -535,8 +535,8 @@ internal class _HeroFlight__heroes
 
     public override string ToString()
     {
-        RouteSettings @from = ((RouteSettings)((dynamic)((_HeroFlightManifest__heroes)this.manifest).fromRoute).settings);
-        RouteSettings to = ((RouteSettings)((dynamic)((_HeroFlightManifest__heroes)this.manifest).toRoute).settings);
+        RouteSettings @from = ((RouteSettings)(((_HeroFlightManifest__heroes)this.manifest).fromRoute).settings);
+        RouteSettings to = ((RouteSettings)(((_HeroFlightManifest__heroes)this.manifest).toRoute).settings);
         object tagLocal = ((_HeroFlightManifest__heroes)this.manifest).tag;
         return $"HeroFlight(for: {tagLocal}, from: {@from}, to: {to} {(((global::Doroti.Framework.Animation.ProxyAnimation)this._proxyAnimation).parent)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -556,7 +556,7 @@ public class HeroController : NavigatorObserver
 
     public override void didChangeTop(dynamic topRoute, dynamic previousTopRoute)
     {
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)topRoute).isCurrent));
+        DartRuntimePrimitives.Assert(() => ((bool)((RouteBase)(object)topRoute).isCurrent));
         DartRuntimePrimitives.Assert(() => (this.navigator is not null));
         if ((previousTopRoute is null))
         {
@@ -564,14 +564,14 @@ public class HeroController : NavigatorObserver
         }
         if (!this.navigator!.userGestureInProgress)
         {
-            _maybeStartHeroTransition(fromRoute: previousTopRoute, toRoute: topRoute, isUserGestureTransition: false);
+            _maybeStartHeroTransition(fromRouteValue: (object?)previousTopRoute, toRouteValue: (object?)topRoute, isUserGestureTransition: false);
         }
     }
 
     public override void didStartUserGesture(dynamic route, dynamic previousRoute)
     {
         DartRuntimePrimitives.Assert(() => (this.navigator is not null));
-        _maybeStartHeroTransition(fromRoute: route, toRoute: previousRoute, isUserGestureTransition: true);
+        _maybeStartHeroTransition(fromRouteValue: (object?)route, toRouteValue: (object?)previousRoute, isUserGestureTransition: true);
     }
 
     public override void didStopUserGesture()
@@ -592,14 +592,14 @@ public class HeroController : NavigatorObserver
         }
     }
 
-    internal virtual void _maybeStartHeroTransition(dynamic fromRoute, dynamic toRoute, bool isUserGestureTransition)
+    internal virtual void _maybeStartHeroTransition(object? fromRouteValue, object? toRouteValue, bool isUserGestureTransition)
     {
-        if ((((object.Equals(toRoute, fromRoute)) || (toRoute is not PageRoute<dynamic>)) || (fromRoute is not PageRoute<dynamic>)))
+        if (fromRouteValue is not IPageRoute fromRoute || toRouteValue is not IPageRoute toRoute || ReferenceEquals(toRoute, fromRoute))
         {
             return;
         }
-        global::Doroti.Framework.Animation.Animation<double> newRouteAnimation = ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)toRoute).animation)!;
-        global::Doroti.Framework.Animation.Animation<double> oldRouteAnimation = ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)fromRoute).animation)!;
+        global::Doroti.Framework.Animation.Animation<double> newRouteAnimation = ((global::Doroti.Framework.Animation.Animation<double>?)(toRoute).animation)!;
+        global::Doroti.Framework.Animation.Animation<double> oldRouteAnimation = ((global::Doroti.Framework.Animation.Animation<double>?)(fromRoute).animation)!;
         HeroFlightDirection? flightType = default!;
         switch ((isUserGestureTransition, ((global::Doroti.Framework.Animation.Animation<double>)oldRouteAnimation).status, ((global::Doroti.Framework.Animation.Animation<double>)newRouteAnimation).status))
         {
@@ -627,7 +627,7 @@ public class HeroController : NavigatorObserver
             {
                 case HeroFlightDirection.pop:
                     {
-                        if ((((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)fromRoute).animation)!.value == 0.0))
+                        if ((((global::Doroti.Framework.Animation.Animation<double>?)(fromRoute).animation)!.value == 0.0))
                         {
                             return;
                         }
@@ -635,7 +635,7 @@ public class HeroController : NavigatorObserver
                     }
                 case HeroFlightDirection.push:
                     {
-                        if ((((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)toRoute).animation)!.value == 1.0))
+                        if ((((global::Doroti.Framework.Animation.Animation<double>?)(toRoute).animation)!.value == 1.0))
                         {
                             return;
                         }
@@ -643,18 +643,18 @@ public class HeroController : NavigatorObserver
                     }
             }
         }
-        var fromRouteRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((BuildContext?)((dynamic)toRoute).subtreeContext)?.findRenderObject())!;
+        var fromRouteRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((BuildContext?)(toRoute).subtreeContext)?.findRenderObject())!;
         bool hasValidSize = (((fromRouteRenderBox?.hasSize ?? false)) && fromRouteRenderBox!.size.isFinite);
-        if ((((isUserGestureTransition && (object.Equals(flightType, HeroFlightDirection.pop))) && ((bool)((dynamic)toRoute).maintainState)) && hasValidSize))
+        if ((((isUserGestureTransition && (object.Equals(flightType, HeroFlightDirection.pop))) && ((bool)(toRoute).maintainState)) && hasValidSize))
         {
             _startHeroTransition(fromRoute, toRoute, flightType, isUserGestureTransition);
         }
         else
         {
-            ((dynamic)toRoute).offstage = (((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)toRoute).animation)!.value == 0.0);
+            (toRoute).offstage = (((global::Doroti.Framework.Animation.Animation<double>?)(toRoute).animation)!.value == 0.0);
             WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((value) =>
             {
-                if (((((NavigatorState?)((dynamic)fromRoute).navigator) is null) || (((NavigatorState?)((dynamic)toRoute).navigator) is null)))
+                if (((((NavigatorState?)(fromRoute).navigator) is null) || (((NavigatorState?)(toRoute).navigator) is null)))
                 {
                     return;
                 }
@@ -663,9 +663,9 @@ public class HeroController : NavigatorObserver
         }
     }
 
-    internal virtual void _startHeroTransition(dynamic from, dynamic to, HeroFlightDirection? flightType, bool isUserGestureTransition)
+    internal virtual void _startHeroTransition(IPageRoute from, IPageRoute to, HeroFlightDirection? flightType, bool isUserGestureTransition)
     {
-        ((dynamic)to).offstage = false;
+        (to).offstage = false;
         NavigatorState? navigatorLocal = this.navigator;
         OverlayState? overlayLocal = navigatorLocal?.overlay;
         if (((navigatorLocal is null) || (overlayLocal is null)))
@@ -679,9 +679,9 @@ public class HeroController : NavigatorObserver
             return;
         }
         DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)navigatorRenderObject)).hasSize);
-        BuildContext? fromSubtreeContext = ((BuildContext?)((dynamic)from).subtreeContext);
+        BuildContext? fromSubtreeContext = ((BuildContext?)(from).subtreeContext);
         DartMap<object, _HeroState__heroes> fromHeroes = ((fromSubtreeContext is not null) ? Hero._allHeroesFor(fromSubtreeContext, isUserGestureTransition, navigatorLocal) : new DartMap<object, _HeroState__heroes>());
-        BuildContext? toSubtreeContext = ((BuildContext?)((dynamic)to).subtreeContext);
+        BuildContext? toSubtreeContext = ((BuildContext?)(to).subtreeContext);
         DartMap<object, _HeroState__heroes> toHeroes = ((toSubtreeContext is not null) ? Hero._allHeroesFor(toSubtreeContext, isUserGestureTransition, navigatorLocal) : new DartMap<object, _HeroState__heroes>());
         foreach (MapEntry<object, _HeroState__heroes> fromHeroEntry in fromHeroes.entries)
         {

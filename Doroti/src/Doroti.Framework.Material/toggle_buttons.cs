@@ -832,7 +832,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
 
     internal virtual global::Doroti.Ui.Size _computeSize(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             var horizontalSize = new global::Doroti.Ui.Size((((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width + ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width), (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width * 2.0));
@@ -1312,7 +1312,7 @@ public class _RenderInputPadding__toggle_buttons : global::Doroti.Framework.Rend
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;

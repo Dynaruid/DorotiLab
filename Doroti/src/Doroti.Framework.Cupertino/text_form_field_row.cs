@@ -82,7 +82,7 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
     internal virtual void _registerController()
     {
         DartRuntimePrimitives.Assert(() => (this._controller is not null));
-        registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._controller!), "controller");
+        registerForRestoration(this._controller!, "controller");
     }
 
     internal virtual void _createLocalController(global::Doroti.Framework.Services.TextEditingValue? value = null)

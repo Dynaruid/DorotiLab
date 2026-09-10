@@ -231,7 +231,7 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
         if ((((CarouselView)this.widget).flexWeights is not null))
         {
             long maxWeight = ((CarouselView)this.widget).flexWeights!.max();
-            long firstMaxWeightIndex = ((long)((dynamic)((CarouselView)this.widget).flexWeights!).IndexOf(maxWeight));
+            long firstMaxWeightIndex = ((long)((CarouselView)this.widget).flexWeights!.IndexOf(maxWeight));
             return Math.Max((((CarouselController)this._controller).initialItem - firstMaxWeightIndex), 0L);
         }
         return ((CarouselController)this._controller).initialItem;
@@ -1131,7 +1131,7 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
             long leadingItem = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension)).toInt();
             if ((this.consumeMaxWeight && (this.flexWeights is not null)))
             {
-                leadingItem = Math.Max((leadingItem - ((long)((dynamic)this.flexWeights!).IndexOf(this.flexWeights!.max()))), 0L);
+                leadingItem = Math.Max((leadingItem - ((long)this.flexWeights!.IndexOf(this.flexWeights!.max()))), 0L);
             }
             if (((this.infinite && (this.itemCount is not null)) && (DartRuntimePrimitives.RequireValue(this.itemCount) > 0L)))
             {
@@ -1148,7 +1148,7 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
         if ((this.hasPixels && (this.flexWeights is not null)))
         {
             double leadingItem = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension));
-            maxItem = (this.consumeMaxWeight ? leadingItem : (leadingItem + ((long)((dynamic)this.flexWeights!).IndexOf(this.flexWeights!.max()))));
+            maxItem = (this.consumeMaxWeight ? leadingItem : (leadingItem + ((long)this.flexWeights!.IndexOf(this.flexWeights!.max()))));
         }
         else
         {
@@ -1388,7 +1388,7 @@ public class CarouselController : global::Doroti.Framework.Widgets.ScrollControl
         List<long> weights = ((_CarouselViewState__carousel)carouselState)._flexWeights!.ToList();
         long totalWeight = weights.reduce(((a, b) => (a + b)));
         double dimension = position.viewportDimension;
-        long maxWeightIndex = ((long)((dynamic)weights).IndexOf(weights.max()));
+        long maxWeightIndex = ((long)weights.IndexOf(weights.max()));
         long leadingIndex = (((_CarouselViewState__carousel)carouselState)._consumeMaxWeight ? index : (index - maxWeightIndex));
         if ((carouselState.widget.itemBuilder is not null))
         {

@@ -1273,7 +1273,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
             return default!;
         }
     }
-    public virtual bool shouldAnnounceChangeToNext(dynamic nextRoute)
+    public virtual bool shouldAnnounceChangeToNext(object? nextRoute)
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(nextRoute, this.lastAnnouncedNextRoute)));
         return !(((nextRoute is null) && (object.Equals(DartCoreExtensions.weakTarget(this.lastAnnouncedPoppedNextRoute), this.lastAnnouncedNextRoute))));
@@ -1517,8 +1517,8 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
     public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
-    public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
+    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
@@ -1635,7 +1635,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             {
                 this._history.addAll(this.widget.onGenerateInitialRoutes(this, (((Navigator)(object)this.widget).initialRoute ?? Navigator.defaultRouteName)).map<dynamic, _RouteEntry__navigator>(((route) =>
                 {
-                    RouteBase typedRoute = Navigator._requireRoute(route);
+                    RouteBase typedRoute = Navigator._requireRoute((object?)route);
                     return new _RouteEntry__navigator(typedRoute, pageBased: false, initialState: _RouteLifecycle__navigator.add, restorationInformation: ((typedRoute.settings.ToString() is not null) ? _RestorationInformation__navigator.CreateNamed(name: typedRoute.settings.ToString()!, arguments: null, restorationScopeId: this._nextPagelessRestorationScopeId) : null));
                 })).Cast<_RouteEntry__navigator>());
             }
@@ -1881,9 +1881,9 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         global::Doroti.Framework.Services.ServicesBinding.instance.accessibilityFocus.removeListener(this._recordLastFocus);
         this._history.removeListener(this._handleHistoryChanged);
         this._history.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
         {
-            if (!((dynamic)property)._disposed)
+            if (!property._disposed)
             {
                 property.removeListener(listener);
             }
@@ -3173,13 +3173,13 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
     }
 
     public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => this._bucket;
-    public virtual void registerForRestoration(dynamic property, string restorationId)
+    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
-        if (!((dynamic)property).isRegistered)
+        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
@@ -3193,9 +3193,9 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue);
-        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        property.initWithValueObject(initialValue);
+        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -3207,10 +3207,10 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             });
     }
 
-    public virtual void unregisterFromRestoration(dynamic property)
+    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)property)._owner, this)));
-        this._bucket?.remove<object?>(((dynamic)property)._restorationId!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
@@ -3307,7 +3307,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             if ((this._bucket is not null))
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
+                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -3315,19 +3315,19 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(dynamic property)
+    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        if (((dynamic)property).enabled)
+        if (property.enabled)
         {
-            this._bucket?.write(((dynamic)property)._restorationId!, property.toPrimitives());
+            this._bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(((dynamic)property)._restorationId!);
+            this._bucket?.remove<object>(property._restorationId!);
         }
     }
 
-    public virtual void _unregister(dynamic property)
+    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
         global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>

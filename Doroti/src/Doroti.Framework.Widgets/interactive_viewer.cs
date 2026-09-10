@@ -758,7 +758,7 @@ internal class _InteractiveViewerBuilt__interactive_viewer : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget childLocal = ((Widget)(object?)new Transform(transform: this.matrix, alignment: this.alignment, child: new KeyedSubtree(key: this.childKey, child: ((Widget)((dynamic)this).child))));
+        Widget childLocal = ((Widget)(object?)new Transform(transform: this.matrix, alignment: this.alignment, child: new KeyedSubtree(key: this.childKey, child: ((Widget)(this).child))));
         if (!this.constrained)
         {
             childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new OverflowBox(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, minWidth: 0.0, minHeight: 0.0, maxWidth: double.PositiveInfinity, maxHeight: double.PositiveInfinity, child: childLocal));
@@ -872,7 +872,7 @@ public static partial class Interactive_viewerLibrary
 {
     internal static Offset _round(Offset offset)
     {
-        return new global::Doroti.Ui.Offset(Dart_coreLibrary.parse(offset.dx.toStringAsFixed(9L)), Dart_coreLibrary.parse(offset.dy.toStringAsFixed(9L)));
+        return new global::Doroti.Ui.Offset(double.Parse(offset.dx.toStringAsFixed(9L), System.Globalization.CultureInfo.InvariantCulture), double.Parse(offset.dy.toStringAsFixed(9L), System.Globalization.CultureInfo.InvariantCulture));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

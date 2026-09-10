@@ -330,7 +330,7 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
             var childParentData = ((SliverGridParentData?)(object?)child.parentData!)!;
             childParentData.layoutOffset = ((SliverGridGeometry)gridGeometry).scrollOffset;
             childParentData.crossAxisOffset = ((SliverGridGeometry)gridGeometry).crossAxisOffset;
-            DartRuntimePrimitives.Assert(() => (FoundationRuntimePorts.EnumIndex(childParentData) == indexLocal));
+            DartRuntimePrimitives.Assert(() => (childParentData.index == indexLocal));
             trailingChildWithLayout ??= child;
             trailingScrollOffsetLocal = Math.Max(trailingScrollOffsetLocal, ((SliverGridGeometry)gridGeometry).trailingScrollOffset);
         }
@@ -364,7 +364,7 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
             var childParentDataAlternate = ((SliverGridParentData?)(object?)childLocal.parentData!)!;
             childParentDataAlternate.layoutOffset = ((SliverGridGeometry)gridGeometryLocal).scrollOffset;
             childParentDataAlternate.crossAxisOffset = ((SliverGridGeometry)gridGeometryLocal).crossAxisOffset;
-            DartRuntimePrimitives.Assert(() => (FoundationRuntimePorts.EnumIndex(childParentDataAlternate) == indexAlternate));
+            DartRuntimePrimitives.Assert(() => (childParentDataAlternate.index == indexAlternate));
             trailingScrollOffsetLocal = Math.Max(trailingScrollOffsetLocal, ((SliverGridGeometry)gridGeometryLocal).trailingScrollOffset);
         }
         long lastIndexLocal = indexOf(lastChild!);

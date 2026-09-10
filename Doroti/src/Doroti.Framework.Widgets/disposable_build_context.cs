@@ -14,7 +14,12 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Widgets;
 
-public class DisposableBuildContext<T> where T : IState
+public interface IDisposableBuildContext
+{
+    BuildContext? context { get; }
+}
+
+public class DisposableBuildContext<T> : IDisposableBuildContext where T : IState
 {
     internal virtual T? _state { get; set; } = default;
 

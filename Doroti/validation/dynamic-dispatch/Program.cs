@@ -5,6 +5,7 @@ using Doroti.Framework.Widgets;
 using Doroti.Runtime;
 
 VerifyRenderChildContracts();
+LayoutCallbackContract.Run();
 await VerifyTypedRouteResults();
 VerifyActionsContracts();
 VerifySelectedOwnersHaveNoCallSites();
@@ -132,6 +133,10 @@ static void VerifySelectedOwnersHaveNoCallSites()
         typeof(ActionListener),
         typeof(ActionDispatcher),
         typeof(Actions),
+        typeof(LocalizationsLibrary),
+        typeof(LocalizationsDelegate<>),
+        typeof(LocalizationsResolver),
+        typeof(ErrorWidget),
     ];
 
     foreach (Type owner in owners)
@@ -145,7 +150,12 @@ static void VerifySelectedOwnersHaveNoCallSites()
 
     Type routeEntry = widgetsAssembly.GetType("Doroti.Framework.Widgets._RouteEntry__navigator", throwOnError: true)!;
     Type defaultTransitionDelegate = typeof(DefaultTransitionDelegate<>);
-    foreach (Type owner in new[] { routeEntry, defaultTransitionDelegate })
+    Type rawView = widgetsAssembly.GetType("Doroti.Framework.Widgets._RawViewElement__view", throwOnError: true)!;
+    Type localizationState = widgetsAssembly.GetType("Doroti.Framework.Widgets._LocalizationsState__localizations", throwOnError: true)!;
+    Type layoutElement = widgetsAssembly.GetType("Doroti.Framework.Widgets._LayoutBuilderElement__layout_builder`1", throwOnError: true)!;
+    Type boxLayout = widgetsAssembly.GetType("Doroti.Framework.Widgets._RenderLayoutBuilder__layout_builder", throwOnError: true)!;
+    Type sliverLayout = widgetsAssembly.GetType("Doroti.Framework.Widgets._RenderSliverLayoutBuilder__sliver_layout_builder", throwOnError: true)!;
+    foreach (Type owner in new[] { routeEntry, defaultTransitionDelegate, rawView, localizationState, layoutElement, boxLayout, sliverLayout })
     {
         int count = widgetsAssembly.GetTypes()
             .Where(type => IsNestedUnder(type, owner))

@@ -373,7 +373,7 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : global::Do
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints) => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest;
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;
@@ -404,7 +404,7 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : global::Do
     public override void performLayout()
     {
         size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).biggest;
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return;

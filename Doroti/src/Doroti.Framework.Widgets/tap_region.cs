@@ -121,7 +121,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         {
             return;
         }
-        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)DartRuntimePrimitives.RequireValue(globalRect)).center));
+        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)(DartRuntimePrimitives.RequireValue(globalRect)).center));
         global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)globalToLocal(globalCenter));
         var hitResult = new global::Doroti.Framework.Rendering.BoxHitTestResult();
         if (!hitTest(hitResult, position: localPosition))

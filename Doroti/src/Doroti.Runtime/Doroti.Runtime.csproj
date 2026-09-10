@@ -3,6 +3,7 @@
     <AssemblyName>Doroti.Runtime</AssemblyName>
     <PackageId>Doroti.Runtime</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MaterialColorUtilities" />

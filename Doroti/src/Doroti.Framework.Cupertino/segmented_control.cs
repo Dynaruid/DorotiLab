@@ -1068,7 +1068,7 @@ public class _RenderSegmentedControl__segmented_control<T> : global::Doroti.Fram
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).attach(owner);
+            child.attach(owner);
             var childParentData = ((ContainerBoxParentData<RenderBox>?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -1080,7 +1080,7 @@ public class _RenderSegmentedControl__segmented_control<T> : global::Doroti.Fram
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).detach();
+            child.detach();
             var childParentData = ((ContainerBoxParentData<RenderBox>?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }

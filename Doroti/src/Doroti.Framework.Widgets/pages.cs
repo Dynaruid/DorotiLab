@@ -14,7 +14,7 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Widgets;
 
-public abstract class PageRoute<T> : ModalRoute<T>
+public abstract class PageRoute<T> : ModalRoute<T>, IPageRoute
 {
     private bool __field_fullscreenDialog = default!;
     public override bool fullscreenDialog { get => __field_fullscreenDialog; }
@@ -31,8 +31,8 @@ public abstract class PageRoute<T> : ModalRoute<T>
 
     public override bool opaque => true;
     public override bool barrierDismissible => this._barrierDismissible;
-    public override bool canTransitionTo(dynamic nextRoute) => (nextRoute is PageRoute<T>);
-    public override bool canTransitionFrom(dynamic previousRoute) => (previousRoute is PageRoute<T>);
+    public override bool canTransitionTo(dynamic nextRoute) => (nextRoute is IPageRoute);
+    public override bool canTransitionFrom(dynamic previousRoute) => (previousRoute is IPageRoute);
     public override bool popGestureEnabled
     {
         get

@@ -24,7 +24,12 @@ public static partial class ToggleableLibrary
     public static Duration _kReactionFadeDuration = Duration.Create(milliseconds: 50L);
 }
 
-public interface ToggleableStateMixin<S> where S : StatefulWidget
+public interface ToggleableStateMixin<S> : IToggleableState where S : StatefulWidget
+{
+}
+
+/// <summary>State and animation contract shared by toggle controls of any value type.</summary>
+public interface IToggleableState : IState
 {
     global::Doroti.Framework.Animation.AnimationController _positionController { get; set; }
     global::Doroti.Framework.Animation.CurvedAnimation _position { get; set; }

@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <DorotiIosNativeAotProfileImported>true</DorotiIosNativeAotProfileImported>
+  </PropertyGroup>
+  <!-- Selected before target-framework discovery, including RID-less restore.
+       PublishAot belongs on the executable and is deliberately not set here. -->
+  <PropertyGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot'">
+    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == ''">net11.0-ios</DorotiIosTargetFramework>
+    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.0-rc.1.26451.6</DorotiIosMauiVersion>
+  </PropertyGroup>
+</Project>

@@ -109,11 +109,11 @@ public class WidgetsApp : StatefulWidget
     public virtual global::System.Func<RouteSettings, dynamic>? onGenerateRoute { get; private set; }
     public virtual global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes { get; private set; }
     public virtual PageRouteFactory? pageRouteBuilder { get; private set; }
-    public virtual dynamic routeInformationParser { get; private set; } = default!;
-    public virtual dynamic routerDelegate { get; private set; } = default!;
+    public virtual object? routeInformationParser { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.IRouterDelegate? routerDelegate { get; private set; } = default!;
     public virtual BackButtonDispatcher? backButtonDispatcher { get; private set; }
     public virtual RouteInformationProvider? routeInformationProvider { get; private set; }
-    public virtual RouterConfig<object>? routerConfig { get; private set; }
+    public virtual IRouterConfig? routerConfig { get; private set; }
     public virtual Widget? home { get; private set; }
     public virtual DartMap<string, global::System.Func<BuildContext, Widget>>? routes { get; private set; }
     public virtual global::System.Func<RouteSettings, dynamic>? onUnknownRoute { get; private set; }
@@ -206,7 +206,7 @@ public class WidgetsApp : StatefulWidget
         System.Diagnostics.Debug.Assert(System.Linq.Enumerable.Any(__supportedLocales));
     }
 
-    public static WidgetsApp CreateRouter(global::Doroti.Framework.Foundation.Key? key = null, RouteInformationProvider? routeInformationProvider = null, dynamic routeInformationParser = null, dynamic routerDelegate = null, RouterConfig<object>? routerConfig = null, BackButtonDispatcher? backButtonDispatcher = null, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false)
+    public static WidgetsApp CreateRouter(global::Doroti.Framework.Foundation.Key? key = null, RouteInformationProvider? routeInformationProvider = null, object? routeInformationParser = null, global::Doroti.Framework.Widgets.IRouterDelegate? routerDelegate = null, IRouterConfig? routerConfig = null, BackButtonDispatcher? backButtonDispatcher = null, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false)
     {
         var __instance = new WidgetsApp(key, default!, default!, default!, default!, onNavigationNotification, default!, default!, default!, default!, default!, builder, title, onGenerateTitle, textStyle, color, locale, localizationsDelegates, localeListResolutionCallback, localeResolutionCallback, supportedLocales, showPerformanceOverlay, showSemanticsDebugger, debugShowWidgetInspector, debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder, shortcuts, actions, restorationScopeId, useInheritedMediaQuery);
         IEnumerable<Locale> __supportedLocales = supportedLocales ?? new List<Locale> { new Locale("en", "US") };
@@ -523,7 +523,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
         Widget? routing = default!;
         if (this._usesRouterWithDelegates)
         {
-            routing = DartRuntimePrimitives.ConvertValue<Widget>(new Router<object>(restorationScopeId: "router", routeInformationProvider: this._effectiveRouteInformationProvider, routeInformationParser: ((WidgetsApp)this.widget).routeInformationParser, routerDelegate: ((WidgetsApp)this.widget).routerDelegate!, backButtonDispatcher: this._effectiveBackButtonDispatcher));
+            routing = DartRuntimePrimitives.ConvertValue<Widget>(this.widget.routerDelegate!.createRouterWidget(this._effectiveRouteInformationProvider, this.widget.routeInformationParser, this._effectiveBackButtonDispatcher, "router"));
         }
         else
         {
@@ -540,7 +540,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             {
                 if (this._usesRouterWithConfig)
                 {
-                    routing = DartRuntimePrimitives.ConvertValue<Widget>(Router<object>.CreateWithConfig(restorationScopeId: "router", config: ((WidgetsApp)this.widget).routerConfig!));
+                    routing = DartRuntimePrimitives.ConvertValue<Widget>(this.widget.routerConfig!.createRouterWidget(restorationScopeId: "router"));
                 }
             }
         }

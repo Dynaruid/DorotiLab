@@ -75,14 +75,14 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             if (!((SelectionContainer)oldWidget)._disabled)
             {
                 ((SelectionContainer)oldWidget).@delegate!._selectionContainerContext = null;
-                this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)((dynamic)((SelectionContainer)oldWidget).@delegate!).removeListener))(__arg0));
+                this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)(((SelectionContainer)oldWidget).@delegate!).removeListener))(__arg0));
             }
             if (!((SelectionContainer)this.widget)._disabled)
             {
                 ((SelectionContainer)this.widget).@delegate!._selectionContainerContext = this.context;
-                this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)((dynamic)((SelectionContainer)this.widget).@delegate!).addListener))(__arg0));
+                this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)(((SelectionContainer)this.widget).@delegate!).addListener))(__arg0));
             }
-            if ((!object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)oldWidget).@delegate)?.value), ((global::Doroti.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)this.widget).@delegate)?.value))))
+            if ((!object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry?)(((SelectionContainer)oldWidget).@delegate)?.value), ((global::Doroti.Framework.Rendering.SelectionGeometry?)(((SelectionContainer)this.widget).@delegate)?.value))))
             {
                 foreach (global::System.Action listener in this._listeners.ToList())
                 {
@@ -162,18 +162,18 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             {
                 return _SelectionContainerState__selection_container._disabledGeometry;
             }
-            return ((global::Doroti.Framework.Rendering.SelectionGeometry)((dynamic)((SelectionContainer)this.widget).@delegate!).value);
+            return ((global::Doroti.Framework.Rendering.SelectionGeometry)(((SelectionContainer)this.widget).@delegate!).value);
             return default!;
         }
     }
     public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
-        return ((Matrix4)(object?)((Matrix4)((dynamic)this.context.findRenderObject()!).getTransformTo(ancestor)));
+        return ((Matrix4)(object?)((Matrix4)(this.context.findRenderObject()!).getTransformTo(ancestor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long contentLength => ((long)((dynamic)((SelectionContainer)this.widget).@delegate!).contentLength);
+    public virtual long contentLength => ((long)(((SelectionContainer)this.widget).@delegate!).contentLength);
     public virtual Size size => (((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!).size;
     public virtual List<Rect> boundingBoxes => new List<global::Doroti.Ui.Rect> { (((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!).paintBounds };
     public override void dispose()
@@ -181,7 +181,7 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
         if (!((SelectionContainer)this.widget)._disabled)
         {
             ((SelectionContainer)this.widget).@delegate!._selectionContainerContext = null;
-            this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)((dynamic)((SelectionContainer)this.widget).@delegate!).removeListener))(__arg0));
+            this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)(((SelectionContainer)this.widget).@delegate!).removeListener))(__arg0));
         }
         _removeSelectionRegistrarSubscription();
         base.dispose();

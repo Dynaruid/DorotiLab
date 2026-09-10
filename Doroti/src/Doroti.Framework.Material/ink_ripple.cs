@@ -189,7 +189,7 @@ public class InkRipple : InteractiveInkFeature
     return __cascade;
 }))();
         global::Doroti.Ui.Rect? rect = ((global::Doroti.Ui.Rect?)(object?)this._clipCallback?.Invoke());
-        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect is not null) ? ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(rect)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), global::Doroti.Framework.Animation.Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect is not null) ? ((Offset)(DartRuntimePrimitives.RequireValue(rect)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), global::Doroti.Framework.Animation.Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
         paintInkCircle(canvas: canvas, transform: transform, paint: paintLocal, center: centerLocal, textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);
     }
 

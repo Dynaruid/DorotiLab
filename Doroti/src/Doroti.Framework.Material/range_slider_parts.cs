@@ -469,19 +469,19 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
         var stopIndicatorRadius = 2.0;
         double stopIndicatorTrailingSpace = (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
-        var startStopIndicatorOffset = new global::Doroti.Ui.Offset((trackRect.centerLeft.dx + stopIndicatorTrailingSpace), ((Offset)((dynamic)trackRect).center).dy);
-        var endStopIndicatorOffset = new global::Doroti.Ui.Offset((trackRect.centerRight.dx - stopIndicatorTrailingSpace), ((Offset)((dynamic)trackRect).center).dy);
+        var startStopIndicatorOffset = new global::Doroti.Ui.Offset((trackRect.centerLeft.dx + stopIndicatorTrailingSpace), ((Offset)(trackRect).center).dy);
+        var endStopIndicatorOffset = new global::Doroti.Ui.Offset((trackRect.centerRight.dx - stopIndicatorTrailingSpace), ((Offset)(trackRect).center).dy);
         bool showStartStopIndicator = (startThumbCenter.dx > startStopIndicatorOffset.dx);
         if ((showStartStopIndicator && !isDiscrete))
         {
             var stopIndicatorRect = global::Doroti.Ui.Rect.fromCircle(center: startStopIndicatorOffset, radius: stopIndicatorRadius);
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(((Offset)((dynamic)stopIndicatorRect).center), stopIndicatorRadius, activePaint);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(((Offset)(stopIndicatorRect).center), stopIndicatorRadius, activePaint);
         }
         bool showEndStopIndicator = (endThumbCenter.dx < endStopIndicatorOffset.dx);
         if ((showEndStopIndicator && !isDiscrete))
         {
             var stopIndicatorRectLocal = global::Doroti.Ui.Rect.fromCircle(center: endStopIndicatorOffset, radius: stopIndicatorRadius);
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(((Offset)((dynamic)stopIndicatorRectLocal).center), stopIndicatorRadius, activePaint);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(((Offset)(stopIndicatorRectLocal).center), stopIndicatorRadius, activePaint);
         }
     }
 
@@ -623,7 +623,7 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__range_slider_parts
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         var edgePadding = 8.0;
         double rectangleWidth = _upperRectangleWidth(labelPainter, scale);
-        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
+        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)(parentBox).localToGlobal(center)));
         double overflowLeft = Math.Max(0, (((rectangleWidth / 2L) - globalCenter.dx) + edgePadding));
         double overflowRight = Math.Max(0, ((rectangleWidth / 2L) - (((sizeWithOverflow.width - globalCenter.dx) - edgePadding))));
         if ((rectangleWidth < sizeWithOverflow.width))
@@ -723,7 +723,7 @@ internal class _DropSliderValueIndicatorPathPainter__range_slider_parts
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         var edgePadding = 8.0;
         double rectangleWidth = _upperRectangleWidth(labelPainter, scale);
-        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
+        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)(parentBox).localToGlobal(center)));
         double overflowLeft = Math.Max(0, (((rectangleWidth / 2L) - globalCenter.dx) + edgePadding));
         double overflowRight = Math.Max(0, ((rectangleWidth / 2L) - (((sizeWithOverflow.width - globalCenter.dx) - edgePadding))));
         if ((rectangleWidth < sizeWithOverflow.width))

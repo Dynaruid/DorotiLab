@@ -1367,9 +1367,9 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         }
         string selectedGraphemes = selectionLocal.textInside(currText);
         long firstSelectedGraphemeExtent = selectedGraphemes.characters().first.Length;
-        global::Doroti.Ui.Rect? startCharacterRect = ((global::Doroti.Ui.Rect?)(object?)((Rect?)((dynamic)this.renderEditable).getRectForComposingRange(new global::Doroti.Ui.TextRange(start: selectionLocal.start, end: (selectionLocal.start + firstSelectedGraphemeExtent)))));
+        global::Doroti.Ui.Rect? startCharacterRect = ((global::Doroti.Ui.Rect?)(object?)((Rect?)(this.renderEditable).getRectForComposingRange(new global::Doroti.Ui.TextRange(start: selectionLocal.start, end: (selectionLocal.start + firstSelectedGraphemeExtent)))));
         long lastSelectedGraphemeExtent = selectedGraphemes.characters().last.Length;
-        global::Doroti.Ui.Rect? endCharacterRect = ((global::Doroti.Ui.Rect?)(object?)((Rect?)((dynamic)this.renderEditable).getRectForComposingRange(new global::Doroti.Ui.TextRange(start: (selectionLocal.end - lastSelectedGraphemeExtent), end: selectionLocal.end))));
+        global::Doroti.Ui.Rect? endCharacterRect = ((global::Doroti.Ui.Rect?)(object?)((Rect?)(this.renderEditable).getRectForComposingRange(new global::Doroti.Ui.TextRange(start: (selectionLocal.end - lastSelectedGraphemeExtent), end: selectionLocal.end))));
         return (startGlyphHeight: ((startCharacterRect?.height ?? (double)((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight)), endGlyphHeight: ((endCharacterRect?.height ?? (double)((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1384,7 +1384,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             }
             var (startGlyphHeightLocal, endGlyphHeightLocal) = getGlyphHeights();
             global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-            List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(object?)((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)((dynamic)this.renderEditable).getEndpointsForSelection(selectionLocal)));
+            List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(object?)((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(this.renderEditable).getEndpointsForSelection(selectionLocal)));
             return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: this.renderEditable, startGlyphHeight: startGlyphHeightLocal, endGlyphHeight: endGlyphHeightLocal, selectionEndpoints: points);
             return default!;
         }
@@ -1914,7 +1914,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     {
                         shouldResetOriginLocal = true;
                         currentTextPosition = new global::Doroti.Ui.TextPosition(offset: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.baseOffset, affinity: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.affinity);
-                        startCaretCenter = ((Offset)((dynamic)this.renderEditable.getLocalRectForCaret(currentTextPosition)).center);
+                        startCaretCenter = ((Offset)(this.renderEditable.getLocalRectForCaret(currentTextPosition)).center);
                     }
                     _startCaretCenter = startCaretCenter;
                     _lastBoundedOffset = this.renderEditable.calculateBoundedFloatingCursorOffset((DartRuntimePrimitives.RequireValue(this._startCaretCenter) - this._floatingCursorOffset), shouldResetOrigin: shouldResetOriginLocal);
@@ -1927,7 +1927,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     global::Doroti.Ui.Offset centeredPoint = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).offset) - DartRuntimePrimitives.RequireValue(this._pointOffsetOrigin)));
                     global::Doroti.Ui.Offset rawCursorOffset = ((global::Doroti.Ui.Offset)(object?)((DartRuntimePrimitives.RequireValue(this._startCaretCenter) + centeredPoint) - this._floatingCursorOffset));
                     _lastBoundedOffset = this.renderEditable.calculateBoundedFloatingCursorOffset(rawCursorOffset);
-                    _lastTextPosition = ((TextPosition)((dynamic)this.renderEditable).getPositionForPoint(((Offset)((dynamic)this.renderEditable).localToGlobal((DartRuntimePrimitives.RequireValue(this._lastBoundedOffset) + this._floatingCursorOffset)))));
+                    _lastTextPosition = ((TextPosition)(this.renderEditable).getPositionForPoint(((Offset)(this.renderEditable).localToGlobal((DartRuntimePrimitives.RequireValue(this._lastBoundedOffset) + this._floatingCursorOffset)))));
                     this.renderEditable.setFloatingCursor(((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).state, DartRuntimePrimitives.RequireValue(this._lastBoundedOffset), this._lastTextPosition!);
                     break;
                 }
@@ -2089,13 +2089,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         global::Doroti.Ui.Offset unitOffset = default!;
         if (!this._isMultiline)
         {
-            additionalOffset = ((rect.width >= editableSize.width) ? ((editableSize.width / 2L) - ((Offset)((dynamic)rect).center).dx) : Dart_uiLibrary.clampDouble(0.0, (rect.right - editableSize.width), rect.left));
+            additionalOffset = ((rect.width >= editableSize.width) ? ((editableSize.width / 2L) - ((Offset)(rect).center).dx) : Dart_uiLibrary.clampDouble(0.0, (rect.right - editableSize.width), rect.left));
             unitOffset = new global::Doroti.Ui.Offset(1, 0);
         }
         else
         {
-            var expandedRect = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)((dynamic)rect).center), width: rect.width, height: Math.Max(rect.height, ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight));
-            additionalOffset = ((expandedRect.height >= editableSize.height) ? ((editableSize.height / 2L) - ((Offset)((dynamic)expandedRect).center).dy) : Dart_uiLibrary.clampDouble(0.0, (expandedRect.bottom - editableSize.height), expandedRect.top));
+            var expandedRect = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(rect).center), width: rect.width, height: Math.Max(rect.height, ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight));
+            additionalOffset = ((expandedRect.height >= editableSize.height) ? ((editableSize.height / 2L) - ((Offset)(expandedRect).center).dy) : Dart_uiLibrary.clampDouble(0.0, (expandedRect.bottom - editableSize.height), expandedRect.top));
             unitOffset = new global::Doroti.Ui.Offset(0, 1);
         }
         double targetOffset = Dart_uiLibrary.clampDouble((additionalOffset + ((ScrollController)this._scrollController).offset), ((ScrollController)this._scrollController).position.minScrollExtent, ((ScrollController)this._scrollController).position.maxScrollExtent);
@@ -2952,7 +2952,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         global::Doroti.Ui.TextRange composingRange = ((global::Doroti.Ui.TextRange)(object?)((global::Doroti.Framework.Services.TextEditingValue)this._value).composing);
         DartRuntimePrimitives.Assert(() => this.mounted);
-        global::Doroti.Ui.Rect? composingRect = ((global::Doroti.Ui.Rect?)(object?)((Rect?)((dynamic)this.renderEditable).getRectForComposingRange(composingRange)));
+        global::Doroti.Ui.Rect? composingRect = ((global::Doroti.Ui.Rect?)(object?)((Rect?)(this.renderEditable).getRectForComposingRange(composingRange)));
         if ((composingRect is null))
         {
             long offsetLocal = (composingRange.isValid ? composingRange.start : 0L);
@@ -3905,7 +3905,7 @@ public class _ScribbleFocusableState__editable_text : State<_ScribbleFocusable__
         }
         global::Doroti.Ui.Rect intersection = ((global::Doroti.Ui.Rect)(object?)calculatedBounds.intersect(rect));
         var result = new global::Doroti.Framework.Gestures.HitTestResult();
-        WidgetsBinding.instance.hitTestInView(result, ((Offset)((dynamic)intersection).center), checked((long)View.of(this.context).viewId));
+        WidgetsBinding.instance.hitTestInView(result, ((Offset)(intersection).center), checked((long)View.of(this.context).viewId));
         return ((global::Doroti.Framework.Gestures.HitTestResult)result).path.any(((entry) => (object.Equals(((global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>)entry).target, this.renderEditable))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

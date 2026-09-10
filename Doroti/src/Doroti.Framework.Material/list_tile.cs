@@ -828,7 +828,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         base.attach(owner);
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).attach(owner);
+            (child).attach(owner);
         }
     }
 
@@ -837,7 +837,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         base.detach();
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            ((dynamic)child).detach();
+            (child).detach();
         }
     }
 

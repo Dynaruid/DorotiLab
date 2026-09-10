@@ -234,6 +234,7 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
             return;
         }
         _initCalled = true;
+        global::Doroti.Ui.FrameworkShaderLoader.RegisterResourceOwner(typeof(InkSparkle).Assembly);
         global::Doroti.Ui.FrameworkShaderLoader.BeginLoad(
             "material.ink-sparkle",
             program =>

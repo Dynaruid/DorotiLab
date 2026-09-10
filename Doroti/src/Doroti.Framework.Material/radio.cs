@@ -181,7 +181,7 @@ internal class _RadioState__radio<T> : global::Doroti.Framework.Widgets.State<Ra
             return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Radio<T>)(object)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)radioTheme.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable, states))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((Radio<T>)(object)this.widget).value, mouseCursor: effectiveMouseCursor, toggleable: ((Radio<T>)(object)this.widget).toggleable, focusNode: this._focusNode, autofocus: ((Radio<T>)(object)this.widget).autofocus, groupRegistry: this._effectiveRegistry, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, dynamic, global::Doroti.Framework.Widgets.Widget>)((context, state) =>
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((Radio<T>)(object)this.widget).value, mouseCursor: effectiveMouseCursor, toggleable: ((Radio<T>)(object)this.widget).toggleable, focusNode: this._focusNode, autofocus: ((Radio<T>)(object)this.widget).autofocus, groupRegistry: this._effectiveRegistry, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IToggleableState, global::Doroti.Framework.Widgets.Widget>)((context, state) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new _RadioPaint__radio(toggleableState: state, activeColor: ((Radio<T>)(object)this.widget).activeColor, fillColor: ((Radio<T>)(object)this.widget).fillColor, hoverColor: ((Radio<T>)(object)this.widget).hoverColor, focusColor: ((Radio<T>)(object)this.widget).focusColor, overlayColor: ((Radio<T>)(object)this.widget).overlayColor, splashRadius: ((Radio<T>)(object)this.widget).splashRadius, visualDensity: ((Radio<T>)(object)this.widget).visualDensity, materialTapTargetSize: ((Radio<T>)(object)this.widget).materialTapTargetSize, backgroundColor: ((Radio<T>)(object)this.widget).backgroundColor, side: ((Radio<T>)(object)this.widget).side, innerRadius: ((Radio<T>)(object)this.widget).innerRadius));
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -214,7 +214,7 @@ internal class _RadioRegistry__radio<T> : global::Doroti.Framework.Widgets.Radio
 
 internal class _RadioPaint__radio : global::Doroti.Framework.Widgets.StatefulWidget
 {
-    public virtual dynamic toggleableState { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.IToggleableState toggleableState { get; private set; } = default!;
     public virtual Color? activeColor { get; private set; }
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor { get; private set; }
     public virtual Color? hoverColor { get; private set; }
@@ -227,7 +227,7 @@ internal class _RadioPaint__radio : global::Doroti.Framework.Widgets.StatefulWid
     public virtual global::Doroti.Framework.Painting.BorderSide? side { get; private set; }
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? innerRadius { get; private set; }
 
-    internal _RadioPaint__radio(dynamic toggleableState, Color? activeColor, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor, Color? hoverColor, Color? focusColor, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor, double? splashRadius, VisualDensity? visualDensity, MaterialTapTargetSize? materialTapTargetSize, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? backgroundColor, global::Doroti.Framework.Painting.BorderSide? side, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? innerRadius)
+    internal _RadioPaint__radio(global::Doroti.Framework.Widgets.IToggleableState toggleableState, Color? activeColor, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor, Color? hoverColor, Color? focusColor, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor, double? splashRadius, VisualDensity? visualDensity, MaterialTapTargetSize? materialTapTargetSize, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? backgroundColor, global::Doroti.Framework.Painting.BorderSide? side, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? innerRadius)
     {
         this.toggleableState = toggleableState;
         this.activeColor = activeColor;
@@ -294,16 +294,16 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         RadioThemeData radioTheme = RadioTheme.of(context);
-        dynamic defaults = ((new _RadioDefaultsM3__radio(context)));
+        RadioThemeData defaults = new _RadioDefaultsM3__radio(context);
         HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
         HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states);
     __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
@@ -315,14 +315,14 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
         global::Doroti.Ui.Color inactiveBackgroundColorLocal = ((global::Doroti.Ui.Color)(object?)(((((_RadioPaint__radio)(object)this.widget).backgroundColor?.resolve(inactiveStates) ?? (Color)radioTheme.backgroundColor?.resolve(inactiveStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.backgroundColor).resolve(inactiveStates)!));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
     return __cascade;
 }))();
         global::Doroti.Ui.Color effectiveFocusOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(focusedStates) ?? ((_RadioPaint__radio)(object)this.widget).focusColor) ?? (Color)radioTheme.overlayColor?.resolve(focusedStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(focusedStates)!));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+    var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
     return __cascade;
 }))();
@@ -341,10 +341,10 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
     return __cascade;
 }))();
         global::Doroti.Ui.Color effectiveInactivePressedOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(inactivePressedStates) ?? (Color)radioTheme.overlayColor?.resolve(inactivePressedStates))) ?? inactiveColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(inactivePressedStates)!));
-        if ((((Offset?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).downPosition) is not null))
+        if ((((Offset?)(((_RadioPaint__radio)this.widget).toggleableState).downPosition) is not null))
         {
-            effectiveHoverOverlayColor = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
-            effectiveFocusOverlayColor = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
+            effectiveHoverOverlayColor = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
+            effectiveFocusOverlayColor = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
         }
         MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme.materialTapTargetSize ?? defaults.materialTapTargetSize);
         VisualDensity effectiveVisualDensity = ((((_RadioPaint__radio)(object)this.widget).visualDensity ?? radioTheme.visualDensity) ?? defaults.visualDensity!);
@@ -356,18 +356,18 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomPaint(size: sizeLocal, painter: ((Func<_RadioPainter__radio>)(() =>
 {
     var __cascade = this._painter;
-    __cascade.position = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).position);
-    __cascade.reaction = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reaction);
-    __cascade.reactionFocusFade = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reactionFocusFade);
-    __cascade.reactionHoverFade = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reactionHoverFade);
+    __cascade.position = ((global::Doroti.Framework.Animation.CurvedAnimation)(((_RadioPaint__radio)this.widget).toggleableState).position);
+    __cascade.reaction = ((global::Doroti.Framework.Animation.CurvedAnimation)(((_RadioPaint__radio)this.widget).toggleableState).reaction);
+    __cascade.reactionFocusFade = ((global::Doroti.Framework.Animation.CurvedAnimation)(((_RadioPaint__radio)this.widget).toggleableState).reactionFocusFade);
+    __cascade.reactionHoverFade = ((global::Doroti.Framework.Animation.CurvedAnimation)(((_RadioPaint__radio)this.widget).toggleableState).reactionHoverFade);
     __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor;
     __cascade.reactionColor = effectiveActivePressedOverlayColor;
     __cascade.hoverColor = effectiveHoverOverlayColor;
     __cascade.focusColor = effectiveFocusOverlayColor;
     __cascade.splashRadius = ((((_RadioPaint__radio)(object)this.widget).splashRadius ?? radioTheme.splashRadius) ?? ConstantsLibrary.kRadialReactionRadius);
-    __cascade.downPosition = ((Offset?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).downPosition);
-    __cascade.isFocused = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
-    __cascade.isHovered = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
+    __cascade.downPosition = ((Offset?)(((_RadioPaint__radio)this.widget).toggleableState).downPosition);
+    __cascade.isFocused = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
+    __cascade.isHovered = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)(((_RadioPaint__radio)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
     __cascade.activeColor = effectiveActiveColor;
     __cascade.inactiveColor = effectiveInactiveColor;
     __cascade.activeBackgroundColor = activeBackgroundColorLocal;
@@ -463,7 +463,7 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
     {
         paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
         global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
-        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)rect).center));
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)(rect).center));
         global::Doroti.Ui.Rect effectiveRect = ((global::Doroti.Ui.Rect)(object?)((centerLocal & new global::Doroti.Ui.Size((RadioLibrary._kOuterRadius * 2L)))).translate(-RadioLibrary._kOuterRadius, -RadioLibrary._kOuterRadius));
         var backgroundPaint = ((Func<Paint>)(() =>
 {

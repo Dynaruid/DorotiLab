@@ -1096,7 +1096,7 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).attach(owner);
+            (child).attach(owner);
             var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -1108,7 +1108,7 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).detach();
+            (child).detach();
             var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }

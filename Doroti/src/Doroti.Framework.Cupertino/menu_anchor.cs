@@ -734,7 +734,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         }
         else
         {
-            anchorMidpoint = ((Offset)((dynamic)((_MenuOverlay__menu_anchor)this.widget).anchorRect).center);
+            anchorMidpoint = ((Offset)(((_MenuOverlay__menu_anchor)this.widget).anchorRect).center);
         }
         double xMidpointRatio = (anchorMidpoint.dx / ((_MenuOverlay__menu_anchor)this.widget).overlaySize.width);
         double yMidpointRatio = (anchorMidpoint.dy / ((_MenuOverlay__menu_anchor)this.widget).overlaySize.height);
@@ -1012,9 +1012,9 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         double finalHeight = Math.Min((childSize.height * inverseHeightFactor), size.height);
         var finalSize = new global::Doroti.Ui.Size(childSize.width, finalHeight);
         global::Doroti.Ui.Offset desiredPosition = ((global::Doroti.Ui.Offset)(object?)(this.attachmentPoint - this.menuAlignment.alongSize(finalSize)));
-        global::Doroti.Ui.Rect screen = ((global::Doroti.Ui.Rect)(object?)_findClosestScreen(size, ((Offset)((dynamic)this.anchorRect).center), this.avoidBounds));
+        global::Doroti.Ui.Rect screen = ((global::Doroti.Ui.Rect)(object?)_findClosestScreen(size, ((Offset)(this.anchorRect).center), this.avoidBounds));
         global::Doroti.Ui.Offset finalPosition = ((global::Doroti.Ui.Offset)(object?)_positionChild(screen, finalSize, desiredPosition, this.anchorRect));
-        bool growsUp = ((finalPosition.dy + finalSize.height) <= ((Offset)((dynamic)this.anchorRect).center).dy);
+        bool growsUp = ((finalPosition.dy + finalSize.height) <= ((Offset)(this.anchorRect).center).dy);
         if (growsUp)
         {
             double dyLocal = (finalHeight - childSize.height);
@@ -1058,7 +1058,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         {
             if (overLeftEdge(xLocal))
             {
-                double flipX = (((((Offset)((dynamic)anchor).center).dx * 2L) - position.dx) - childSize.width);
+                double flipX = (((((Offset)(anchor).center).dx * 2L) - position.dx) - childSize.width);
                 hasHorizontalAnchorOverlap = overRightEdge(flipX);
                 if ((hasHorizontalAnchorOverlap || overLeftEdge(flipX)))
                 {
@@ -1073,7 +1073,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
             {
                 if (overRightEdge(xLocal))
                 {
-                    double flipXLocal = (((((Offset)((dynamic)anchor).center).dx * 2L) - position.dx) - childSize.width);
+                    double flipXLocal = (((((Offset)(anchor).center).dx * 2L) - position.dx) - childSize.width);
                     hasHorizontalAnchorOverlap = overLeftEdge(flipXLocal);
                     if ((hasHorizontalAnchorOverlap || overRightEdge(flipXLocal)))
                     {
@@ -1108,7 +1108,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         }
         if (overTopEdge(yLocal))
         {
-            double flipY = (((((Offset)((dynamic)anchor).center).dy * 2L) - position.dy) - childSize.height);
+            double flipY = (((((Offset)(anchor).center).dy * 2L) - position.dy) - childSize.height);
             if ((overTopEdge(flipY) || overBottomEdge(flipY)))
             {
                 yLocal = (screen.top + ((global::Doroti.Framework.Painting.EdgeInsets)this.overlayPadding).top);
@@ -1122,7 +1122,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         {
             if (overBottomEdge(yLocal))
             {
-                double flipYLocal = (((((Offset)((dynamic)anchor).center).dy * 2L) - position.dy) - childSize.height);
+                double flipYLocal = (((((Offset)(anchor).center).dy * 2L) - position.dy) - childSize.height);
                 if ((overTopEdge(flipYLocal) || overBottomEdge(flipYLocal)))
                 {
                     yLocal = ((screen.bottom - childSize.height) - ((global::Doroti.Framework.Painting.EdgeInsets)this.overlayPadding).bottom);

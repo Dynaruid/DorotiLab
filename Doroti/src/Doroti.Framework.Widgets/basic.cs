@@ -83,7 +83,7 @@ public class Directionality : _UbiquitousInheritedWidget__basic
     public static global::Doroti.Ui.TextDirection? maybeOf(BuildContext context)
     {
         Directionality? widget = ((Directionality?)(object?)context.dependOnInheritedWidgetOfExactType<Directionality>());
-        return ((TextDirection?)((dynamic)widget)?.textDirection);
+        return ((TextDirection?)(widget)?.textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1083,7 +1083,7 @@ public class LayoutId : ParentDataWidget<global::Doroti.Framework.Rendering.Mult
         if ((!object.Equals(((global::Doroti.Framework.Rendering.MultiChildLayoutParentData)parentDataLocal).id, this.id)))
         {
             parentDataLocal.id = this.id;
-            ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
     }
 
@@ -2016,7 +2016,7 @@ public class Positioned : ParentDataWidget<global::Doroti.Framework.Rendering.St
         }
         if (needsLayout)
         {
-            ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
     }
 
@@ -2200,7 +2200,7 @@ public class Flexible : ParentDataWidget<global::Doroti.Framework.Rendering.Flex
         }
         if (needsLayout)
         {
-            ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
     }
 
@@ -2458,7 +2458,7 @@ public class RawImage : LeafRenderObjectWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => (((!this.matchTextDirection && (this.alignment is global::Doroti.Framework.Painting.Alignment))) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Ui.Image.debugGetOpenHandleStackTraces() is { } __items265689 ? System.Linq.Enumerable.Any(__items265689) : (bool?)null) ?? true), () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
+        DartRuntimePrimitives.Assert(() => this.image?.debugDisposed != true, () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
         return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderImage(image: this.image?.clone(), debugImageLabel: this.debugImageLabel, width: this.width, height: this.height, scale: this.scale, color: this.color, opacity: this.opacity, colorBlendMode: this.colorBlendMode, fit: this.fit, alignment: this.alignment, repeat: this.repeat, centerSlice: this.centerSlice, matchTextDirection: this.matchTextDirection, textDirection: ((this.matchTextDirection || (this.alignment is not global::Doroti.Framework.Painting.Alignment)) ? Directionality.of(context) : null), invertColors: this.invertColors, isAntiAlias: this.isAntiAlias, filterQuality: this.filterQuality, blendMode: this.blendMode));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2466,7 +2466,7 @@ public class RawImage : LeafRenderObjectWidget
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderImage)(object)renderObject;
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Ui.Image.debugGetOpenHandleStackTraces() is { } __items266606 ? System.Linq.Enumerable.Any(__items266606) : (bool?)null) ?? true), () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
+        DartRuntimePrimitives.Assert(() => this.image?.debugDisposed != true, () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderImage>)(() =>
 {
     var __cascade = __renderObject;
@@ -2778,10 +2778,10 @@ public class AbsorbPointer : SingleChildRenderObjectWidget
 
 public class MetaData : SingleChildRenderObjectWidget
 {
-    public virtual dynamic metaData { get; private set; } = default!;
+    public virtual object? metaData { get; private set; } = default!;
     public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
 
-    public MetaData(global::Doroti.Framework.Foundation.Key? key = null, dynamic metaData = default!, global::Doroti.Framework.Rendering.HitTestBehavior behavior = global::Doroti.Framework.Rendering.HitTestBehavior.deferToChild, Widget? child = null) : base(key: key, child: child)
+    public MetaData(global::Doroti.Framework.Foundation.Key? key = null, object? metaData = default!, global::Doroti.Framework.Rendering.HitTestBehavior behavior = global::Doroti.Framework.Rendering.HitTestBehavior.deferToChild, Widget? child = null) : base(key: key, child: child)
     {
         this.metaData = metaData;
         this.behavior = behavior;

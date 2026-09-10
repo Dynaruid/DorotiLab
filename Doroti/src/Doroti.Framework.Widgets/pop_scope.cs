@@ -45,9 +45,12 @@ public class PopScope<T> : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopScopeState__pop_scope<T>());
 }
 
-internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>
+internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
 {
-    internal virtual dynamic _route { get; set; } = default!;
+    global::Doroti.Framework.Foundation.ValueListenable<bool> IPopEntry.canPopNotifier => canPopNotifier;
+    void IPopEntry.onPopInvokedWithResultObject(bool didPop, object? result) => onPopInvokedWithResult(didPop, result is null ? default : (T)result);
+
+    internal virtual IModalRoute? _route { get; set; } = default!;
     public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> canPopNotifier { get; private set; } = default!;
 
     public virtual void onPopInvoked(bool didPop)
@@ -69,12 +72,12 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        dynamic nextRoute = ModalRoute<object>.of<object>(this.context);
+        IModalRoute? nextRoute = ModalRoute<object>.untypedOf(this.context);
         if ((!object.Equals(nextRoute, this._route)))
         {
-            ((dynamic)this._route)?.unregisterPopEntry(this);
+            this._route?.unregisterPopEntry(this);
             _route = nextRoute;
-            ((dynamic)this._route)?.registerPopEntry(this);
+            this._route?.registerPopEntry(this);
         }
     }
 
@@ -86,7 +89,7 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>
 
     public override void dispose()
     {
-        ((dynamic)this._route)?.unregisterPopEntry(this);
+        this._route?.unregisterPopEntry(this);
         this.canPopNotifier.dispose();
         base.dispose();
     }

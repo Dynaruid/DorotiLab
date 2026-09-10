@@ -3,6 +3,7 @@
     <AssemblyName>Doroti.Framework.Material</AssemblyName>
     <PackageId>Doroti.Framework.Material</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
     <NoWarn>$(NoWarn);CS0219;CS8524;CS8846</NoWarn>
   </PropertyGroup>
   <ItemGroup>

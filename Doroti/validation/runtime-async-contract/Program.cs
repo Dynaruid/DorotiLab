@@ -89,6 +89,8 @@ using (DartAsyncRuntime.enterMicrotaskScheduler(action => { wakes++; nestedQueue
     nestedQueue.drain();
     Require(nestedCalls == 1, "The nested timer runs on its host pump.");
 }
+await ErrorHandlerContract.Run();
+await FutureOrContract.Run();
 Console.WriteLine("Runtime async contract: PASS");
 
 static void WaitForQueuedCallback(DartMicrotaskQueue queue, string name)

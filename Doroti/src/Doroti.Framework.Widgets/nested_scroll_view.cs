@@ -287,12 +287,12 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void beginActivity(ScrollActivity newOuterActivity, global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity> innerActivityGetter)
     {
-        ((dynamic)this._outerPosition!).beginActivity(newOuterActivity);
+        this._outerPosition!.beginActivity(newOuterActivity);
         bool scrolling = ((ScrollActivity)newOuterActivity).isScrolling;
         foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
         {
             ScrollActivity newInnerActivity = innerActivityGetter(position);
-            ((dynamic)position).beginActivity(newInnerActivity);
+            position.beginActivity(newInnerActivity);
             scrolling = (scrolling && ((ScrollActivity)newInnerActivity).isScrolling);
         }
         this._currentDrag?.dispose();
@@ -1006,12 +1006,12 @@ internal class _NestedInnerBallisticScrollActivity__nested_scroll_view : Ballist
     public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)(object?)base.@delegate)!);
     public override void resetActivity()
     {
-        ((dynamic)this.@delegate).beginActivity(this.coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity));
+        ((_NestedScrollPosition__nested_scroll_view)this.@delegate).beginActivity(this.coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity));
     }
 
     public override void applyNewDimensions()
     {
-        ((dynamic)this.@delegate).beginActivity(this.coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity));
+        ((_NestedScrollPosition__nested_scroll_view)this.@delegate).beginActivity(this.coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity));
     }
 
     public override bool applyMoveTo(double value)
@@ -1038,12 +1038,12 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
     public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)(object?)base.@delegate)!);
     public override void resetActivity()
     {
-        ((dynamic)this.@delegate).beginActivity(this.coordinator.createOuterBallisticScrollActivity(this.velocity));
+        ((_NestedScrollPosition__nested_scroll_view)this.@delegate).beginActivity(this.coordinator.createOuterBallisticScrollActivity(this.velocity));
     }
 
     public override void applyNewDimensions()
     {
-        ((dynamic)this.@delegate).beginActivity(this.coordinator.createOuterBallisticScrollActivity(this.velocity));
+        ((_NestedScrollPosition__nested_scroll_view)this.@delegate).beginActivity(this.coordinator.createOuterBallisticScrollActivity(this.velocity));
     }
 
     public override bool applyMoveTo(double value)
@@ -1244,7 +1244,7 @@ public class RenderSliverOverlapAbsorber : global::Doroti.Framework.Rendering.Re
             {
                 if ((child is not RenderSliver))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", (child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

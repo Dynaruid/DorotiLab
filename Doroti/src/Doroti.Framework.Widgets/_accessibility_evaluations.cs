@@ -315,7 +315,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
         Matrix4 globalTransform = ((Matrix4)(object?)((global::Doroti.Framework.Rendering.RenderBox)renderBox).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
         paintBoundsWithOffset = MatrixUtils.transformRect(globalTransform, ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderBox)).paintBounds.inflate(4.0));
         var rootTransform = Matrix4.identity();
-        renderView.applyPaintTransform(((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)renderView).child)!, rootTransform);
+        renderView.applyPaintTransform(((global::Doroti.Framework.Rendering.RenderBox?)(renderView).child)!, rootTransform);
         rootTransform.multiply(globalTransform);
         screenBounds = MatrixUtils.transformRect(rootTransform, ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderBox)).paintBounds);
         global::Doroti.Ui.Rect nodeBounds = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);

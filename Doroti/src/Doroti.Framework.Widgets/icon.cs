@@ -52,8 +52,8 @@ public class Icon : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((((TextDirection?)((dynamic)this).textDirection) is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
-        global::Doroti.Ui.TextDirection textDirectionLocal = ((((TextDirection?)((dynamic)this).textDirection) ?? (TextDirection)Directionality.of(context)));
+        DartRuntimePrimitives.Assert(() => ((((TextDirection?)(this).textDirection) is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
+        global::Doroti.Ui.TextDirection textDirectionLocal = ((((TextDirection?)(this).textDirection) ?? (TextDirection)Directionality.of(context)));
         IconThemeData iconTheme = ((IconThemeData)(object?)IconTheme.of(context));
         bool applyTextScalingLocal = ((this.applyTextScaling ?? ((IconThemeData)iconTheme).applyTextScaling) ?? false);
         double tentativeIconSize = ((this.size ?? ((IconThemeData)iconTheme).size) ?? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize);

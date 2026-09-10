@@ -335,7 +335,7 @@ internal class _SearchViewRoute__search_anchor : global::Doroti.Framework.Widget
             var searchBarBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)contextLocal.findRenderObject()!)!;
             global::Doroti.Ui.Size boxSize = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderBox)searchBarBox).size);
             global::Doroti.Framework.Widgets.NavigatorState navigator = ((global::Doroti.Framework.Widgets.NavigatorState)(object?)Navigator.of(contextLocal));
-            global::Doroti.Ui.Offset boxLocation = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)searchBarBox).localToGlobal(Offset.zero, ancestor: navigator.context.findRenderObject())));
+            global::Doroti.Ui.Offset boxLocation = ((global::Doroti.Ui.Offset)(object?)((Offset)(searchBarBox).localToGlobal(Offset.zero, ancestor: navigator.context.findRenderObject())));
             return (boxLocation & boxSize);
         }
         return null;

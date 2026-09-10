@@ -79,9 +79,9 @@ public enum _PredictiveBackPhase__predictive_back_page_transitions_builder
 internal class _PredictiveBackGestureDetector__predictive_back_page_transitions_builder : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget> builder { get; private set; } = default!;
-    public virtual dynamic route { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.IModalRoute route { get; private set; } = default!;
 
-    internal _PredictiveBackGestureDetector__predictive_back_page_transitions_builder(dynamic route, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget> builder)
+    internal _PredictiveBackGestureDetector__predictive_back_page_transitions_builder(global::Doroti.Framework.Widgets.IModalRoute route, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget> builder)
     {
         this.route = route;
         this.builder = builder;
@@ -100,7 +100,7 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
     {
         get
         {
-            return (((bool)((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).isCurrent) && ((bool)((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).popGestureEnabled));
+            return (((bool)(((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).isCurrent) && ((bool)(((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).popGestureEnabled));
             return default!;
         }
     }
@@ -148,7 +148,7 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
         {
             return false;
         }
-        ((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleStartBackGesture(progress: (1L - ((global::Doroti.Framework.Services.PredictiveBackEvent)backEvent).progress));
+        (((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleStartBackGesture(progress: (1L - ((global::Doroti.Framework.Services.PredictiveBackEvent)backEvent).progress));
         startBackEvent = currentBackEvent = backEvent;
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -157,21 +157,21 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
     public virtual void handleUpdateBackGestureProgress(global::Doroti.Framework.Services.PredictiveBackEvent backEvent)
     {
         phase = _PredictiveBackPhase__predictive_back_page_transitions_builder.update;
-        ((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleUpdateBackGestureProgress(progress: (1L - ((global::Doroti.Framework.Services.PredictiveBackEvent)backEvent).progress));
+        (((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleUpdateBackGestureProgress(progress: (1L - ((global::Doroti.Framework.Services.PredictiveBackEvent)backEvent).progress));
         currentBackEvent = backEvent;
     }
 
     public virtual void handleCancelBackGesture()
     {
         phase = _PredictiveBackPhase__predictive_back_page_transitions_builder.cancel;
-        ((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleCancelBackGesture();
+        (((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleCancelBackGesture();
         startBackEvent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.PredictiveBackEvent>(currentBackEvent = null);
     }
 
     public virtual void handleCommitBackGesture()
     {
         phase = _PredictiveBackPhase__predictive_back_page_transitions_builder.commit;
-        ((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleCommitBackGesture();
+        (((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).handleCommitBackGesture();
         startBackEvent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.PredictiveBackEvent>(currentBackEvent = null);
     }
 
@@ -189,7 +189,7 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _PredictiveBackPhase__predictive_back_page_transitions_builder effectivePhase = (((bool)((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).popGestureInProgress) ? this.phase : _PredictiveBackPhase__predictive_back_page_transitions_builder.idle);
+        _PredictiveBackPhase__predictive_back_page_transitions_builder effectivePhase = (((bool)(((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).popGestureInProgress) ? this.phase : _PredictiveBackPhase__predictive_back_page_transitions_builder.idle);
         return this.widget.builder(context, effectivePhase, this.startBackEvent, this.currentBackEvent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

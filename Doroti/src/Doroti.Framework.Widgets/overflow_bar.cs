@@ -687,7 +687,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).attach(owner);
+            (child).attach(owner);
             var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -699,7 +699,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            ((dynamic)child).detach();
+            (child).detach();
             var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }

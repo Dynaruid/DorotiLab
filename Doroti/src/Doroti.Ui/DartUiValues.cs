@@ -9,8 +9,10 @@ public enum KeyEventDeviceType { keyboard, directionalPad, gamepad, joystick, hd
 public enum AppExitType { cancelable, required }
 public enum AppExitResponse { exit, cancel }
 
-public readonly record struct FontWeight(int value)
+public readonly record struct FontWeight(int value) : Doroti.Runtime.IDartEnumIndex
 {
+    long Doroti.Runtime.IDartEnumIndex.DartEnumIndex => (value / 100) - 1;
+
     public static FontWeight w100 { get; } = new(100);
     public static FontWeight w200 { get; } = new(200);
     public static FontWeight w300 { get; } = new(300);

@@ -339,7 +339,7 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : global::Dorot
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child))));
+        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((global::Doroti.Framework.Rendering.RenderBox?)(this).child))));
         applyPaintTransformForBoxChild(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, transform);
     }
 

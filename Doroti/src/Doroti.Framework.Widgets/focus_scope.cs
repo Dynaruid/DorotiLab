@@ -361,7 +361,7 @@ internal class _FocusScopeState__focus_scope : _FocusState__focus_scope
     public override Widget build(BuildContext context)
     {
         this._focusAttachment!.reparent(parent: this.widget.parentNode);
-        Widget result = ((Widget)(object?)new _FocusInheritedScope__focus_scope(node: this.focusNode, child: ((Widget)((dynamic)this.widget).child)));
+        Widget result = ((Widget)(object?)new _FocusInheritedScope__focus_scope(node: this.focusNode, child: ((Widget)(this.widget).child)));
         if (this.widget.includeSemantics)
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(explicitChildNodes: true, child: result));

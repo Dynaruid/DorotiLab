@@ -14,10 +14,29 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Material;
 
+/// <summary>Static date components and arithmetic for application-defined calendar values.</summary>
+public interface ICalendarDate<T> where T : struct
+{
+    long Year { get; }
+    long Month { get; }
+    long Day { get; }
+    Duration difference(T earlier);
+}
+
 public abstract class CalendarDelegate<T> where T : struct
 {
     protected CalendarDelegate()
     {
+    }
+
+    /// <summary>Override for a custom date representation. Built-in DateTime delegates need no adapter.</summary>
+    protected virtual (long Year, long Month, long Day) getDateParts(T date)
+    {
+        if (date is DateTime value)
+            return (value.Year, value.Month, value.Day);
+        if (date is ICalendarDate<T> custom)
+            return (custom.Year, custom.Month, custom.Day);
+        throw new NotSupportedException($"CalendarDelegate<{typeof(T).Name}> must override getDateParts for its date representation.");
     }
 
     public abstract T now();
@@ -30,13 +49,17 @@ public abstract class CalendarDelegate<T> where T : struct
 
     public virtual bool isSameDay(T? dateA, T? dateB)
     {
-        return dateA.HasValue && dateB.HasValue && ((dynamic)dateA.Value).Year == ((dynamic)dateB.Value).Year && ((dynamic)dateA.Value).Month == ((dynamic)dateB.Value).Month && ((dynamic)dateA.Value).Day == ((dynamic)dateB.Value).Day;
+        if (!dateA.HasValue || !dateB.HasValue) return false;
+        return getDateParts(dateA.Value) == getDateParts(dateB.Value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool isSameMonth(T? dateA, T? dateB)
     {
-        return dateA.HasValue && dateB.HasValue && ((dynamic)dateA.Value).Year == ((dynamic)dateB.Value).Year && ((dynamic)dateA.Value).Month == ((dynamic)dateB.Value).Month;
+        if (!dateA.HasValue || !dateB.HasValue) return false;
+        var a = getDateParts(dateA.Value);
+        var b = getDateParts(dateB.Value);
+        return a.Year == b.Year && a.Month == b.Month;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -231,7 +254,11 @@ public class DateTimeRange<T> where T : struct
         System.Diagnostics.Debug.Assert(Comparer<T>.Default.Compare(start, end) <= 0);
     }
 
-    public virtual Duration duration => (Duration)(((dynamic)this.end) - ((dynamic)this.start));
+    public virtual Duration duration => this.end is DateTime endDate && this.start is DateTime startDate
+        ? (Duration)(endDate - startDate)
+        : this.end is ICalendarDate<T> custom
+            ? custom.difference(this.start)
+            : throw new NotSupportedException($"DateTimeRange<{typeof(T).Name}> requires ICalendarDate<{typeof(T).Name}> or an overridden duration.");
     public override bool Equals(object? other)
     {
         var __other = other as DateTimeRange<T>;

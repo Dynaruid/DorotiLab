@@ -25,11 +25,11 @@ public static partial class ImageLibrary
 
 public static partial class ImageLibrary
 {
-    public static Future precacheImage(dynamic provider, BuildContext context, Size? size = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
+    public static Future precacheImage(global::Doroti.Framework.Painting.IImageProvider provider, BuildContext context, Size? size = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
     {
         global::Doroti.Framework.Painting.ImageConfiguration config = ImageLibrary.createLocalImageConfiguration(context, size: size);
         var completer = new Completer<object?>();
-        global::Doroti.Framework.Painting.ImageStream stream = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)((dynamic)provider).resolve(config)));
+        global::Doroti.Framework.Painting.ImageStream stream = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)provider.resolve(config)));
         global::Doroti.Framework.Painting.ImageStreamListener? listener = default!;
         listener = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo?, bool>)((image, sync) =>
         {
@@ -72,7 +72,7 @@ public delegate Widget ImageErrorWidgetBuilder(BuildContext context, object erro
 
 public class Image : StatefulWidget
 {
-    public virtual dynamic image { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.IImageProvider image { get; private set; } = default!;
     public virtual global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder { get; private set; }
     public virtual global::System.Func<BuildContext, Widget, global::Doroti.Framework.Painting.ImageChunkEvent?, Widget>? loadingBuilder { get; private set; }
     public virtual global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder { get; private set; }
@@ -92,7 +92,7 @@ public class Image : StatefulWidget
     public virtual bool excludeFromSemantics { get; private set; } = default!;
     public virtual bool isAntiAlias { get; private set; } = default!;
 
-    public Image(global::Doroti.Framework.Foundation.Key? key = null, dynamic image = default!, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, Widget, global::Doroti.Framework.Painting.ImageChunkEvent?, Widget>? loadingBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = global::Doroti.Framework.Painting.ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium) : base(key: key)
+    public Image(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.IImageProvider image = default!, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, Widget, global::Doroti.Framework.Painting.ImageChunkEvent?, Widget>? loadingBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = global::Doroti.Framework.Painting.ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium) : base(key: key)
     {
         global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this.image = image;
@@ -330,12 +330,12 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         _invertColors = (MediaQuery.maybeInvertColorsOf(this.context) ?? global::Doroti.Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors);
     }
 
-    private ScrollAwareImageProvider<T> CreateScrollAwareProvider<T>(global::Doroti.Framework.Painting.ImageProvider<T> imageProvider) =>
+    private ScrollAwareImageProvider CreateScrollAwareProvider(global::Doroti.Framework.Painting.IImageProvider imageProvider) =>
         new(context: this._scrollAwareContext, imageProvider: imageProvider);
 
     internal virtual void _resolveImage()
     {
-        dynamic provider = CreateScrollAwareProvider(((Image)this.widget).image);
+        global::Doroti.Framework.Painting.IImageProvider provider = CreateScrollAwareProvider(((Image)this.widget).image);
         global::Doroti.Framework.Painting.ImageStream newStream = ((global::Doroti.Framework.Painting.ImageStream)(object?)provider.resolve(ImageLibrary.createLocalImageConfiguration(this.context, size: (((((Image)this.widget).width is not null) && (((Image)this.widget).height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((Image)this.widget).width), DartRuntimePrimitives.RequireValue(((Image)this.widget).height)) : null))));
         _updateSourceStream(newStream);
     }

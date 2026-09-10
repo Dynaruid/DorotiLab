@@ -44,7 +44,7 @@ public class ImageInfo
     public virtual long sizeBytes => ((this.image.height * this.image.width) * 4L);
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => (((((long?)(global::Doroti.Ui.Image.debugGetOpenHandleStackTraces()?.Count)) ?? 1L)) > 0L));
+        DartRuntimePrimitives.Assert(() => !this.image.debugDisposed);
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.image.dispose();
     }

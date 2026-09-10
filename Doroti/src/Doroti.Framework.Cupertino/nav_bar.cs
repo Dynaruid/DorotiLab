@@ -210,8 +210,8 @@ public static partial class Nav_barLibrary
 {
     internal static bool _isTransitionable(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        dynamic route = global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(context);
-        return (((route is PageRoute<object>) && !((bool)((dynamic)route).fullscreenDialog)) && !CupertinoSheetRoute<object>.hasParentSheet(context));
+        global::Doroti.Framework.Widgets.IModalRoute? route = global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(context);
+        return (((route is IPageRoute) && !((bool)(route).fullscreenDialog)) && !CupertinoSheetRoute<object>.hasParentSheet(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -399,7 +399,7 @@ internal class _CupertinoNavigationBarState__nav_bar : global::Doroti.Framework.
         double bottomHeight = (((CupertinoNavigationBar)this.widget).bottom?.preferredSize.height ?? 0.0);
         double persistentHeight = ((Nav_barLibrary._kNavBarPersistentHeight + bottomHeight) + MediaQuery.paddingOf(context).top);
         double largeHeight = (persistentHeight + Nav_barLibrary._kNavBarLargeTitleHeightExtension);
-        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: this.keys, route: global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(context), userLeading: ((CupertinoNavigationBar)this.widget).leading, automaticallyImplyLeading: ((CupertinoNavigationBar)this.widget).automaticallyImplyLeading, automaticallyImplyTitle: ((CupertinoNavigationBar)this.widget).automaticallyImplyMiddle, previousPageTitle: ((CupertinoNavigationBar)this.widget).previousPageTitle, userMiddle: ((CupertinoNavigationBar)this.widget).middle, userTrailing: ((CupertinoNavigationBar)this.widget).trailing, padding: ((CupertinoNavigationBar)this.widget).padding, userLargeTitle: ((CupertinoNavigationBar)this.widget).largeTitle, userBottom: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((CupertinoNavigationBar)this.widget).bottom), large: (((CupertinoNavigationBar)this.widget).largeTitle is not null), staticBar: true, context: context);
+        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: this.keys, route: global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(context), userLeading: ((CupertinoNavigationBar)this.widget).leading, automaticallyImplyLeading: ((CupertinoNavigationBar)this.widget).automaticallyImplyLeading, automaticallyImplyTitle: ((CupertinoNavigationBar)this.widget).automaticallyImplyMiddle, previousPageTitle: ((CupertinoNavigationBar)this.widget).previousPageTitle, userMiddle: ((CupertinoNavigationBar)this.widget).middle, userTrailing: ((CupertinoNavigationBar)this.widget).trailing, padding: ((CupertinoNavigationBar)this.widget).padding, userLargeTitle: ((CupertinoNavigationBar)this.widget).largeTitle, userBottom: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((CupertinoNavigationBar)this.widget).bottom), large: (((CupertinoNavigationBar)this.widget).largeTitle is not null), staticBar: true, context: context);
         global::Doroti.Framework.Widgets.Widget navBar = ((global::Doroti.Framework.Widgets.Widget)(object?)new _PersistentNavigationBar__nav_bar(components: componentsLocal, padding: ((CupertinoNavigationBar)this.widget).padding, middleVisible: (((CupertinoNavigationBar)this.widget).largeTitle is null)));
         if ((((CupertinoNavigationBar)this.widget).largeTitle is not null))
         {
@@ -692,7 +692,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: this.keys, route: global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(context), userLeading: ((((CupertinoSliverNavigationBar)this.widget).leading is not null) ? new global::Doroti.Framework.Widgets.Visibility(visible: !this.searchIsActive, child: ((CupertinoSliverNavigationBar)this.widget).leading!) : null), automaticallyImplyLeading: ((CupertinoSliverNavigationBar)this.widget).automaticallyImplyLeading, automaticallyImplyTitle: ((CupertinoSliverNavigationBar)this.widget).automaticallyImplyTitle, previousPageTitle: ((CupertinoSliverNavigationBar)this.widget).previousPageTitle, userMiddle: (((global::Doroti.Framework.Animation.AnimationController)this._animationController).isAnimating ? new global::Doroti.Framework.Widgets.Text("") : this.effectiveMiddle), userTrailing: ((((CupertinoSliverNavigationBar)this.widget).trailing is not null) ? new global::Doroti.Framework.Widgets.Visibility(visible: !this.searchIsActive, child: ((CupertinoSliverNavigationBar)this.widget).trailing!) : null), userLargeTitle: ((CupertinoSliverNavigationBar)this.widget).largeTitle, userBottom: (((((CupertinoSliverNavigationBar)this.widget)._searchable ? (this.searchIsActive ? new _ActiveSearchableBottom__nav_bar(animationController: this._animationController, animation: this.persistentHeightAnimation, searchField: ((CupertinoSliverNavigationBar)this.widget).searchField, searchFieldHeight: this.scaledSearchFieldHeight, onSearchFieldTap: () => this._onSearchFieldTap()) : new _InactiveSearchableBottom__nav_bar(animationController: this._animationController, animation: this.persistentHeightAnimation, searchField: ((CupertinoSliverNavigationBar)this.widget).searchField, searchFieldHeight: this.scaledSearchFieldHeight, onSearchFieldTap: () => this._onSearchFieldTap())) : (global::Doroti.Framework.Widgets.Widget?)(object?)((CupertinoSliverNavigationBar)this.widget).bottom)) ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), padding: ((CupertinoSliverNavigationBar)this.widget).padding, large: this.isPortrait, staticBar: false, context: context);
+        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: this.keys, route: global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(context), userLeading: ((((CupertinoSliverNavigationBar)this.widget).leading is not null) ? new global::Doroti.Framework.Widgets.Visibility(visible: !this.searchIsActive, child: ((CupertinoSliverNavigationBar)this.widget).leading!) : null), automaticallyImplyLeading: ((CupertinoSliverNavigationBar)this.widget).automaticallyImplyLeading, automaticallyImplyTitle: ((CupertinoSliverNavigationBar)this.widget).automaticallyImplyTitle, previousPageTitle: ((CupertinoSliverNavigationBar)this.widget).previousPageTitle, userMiddle: (((global::Doroti.Framework.Animation.AnimationController)this._animationController).isAnimating ? new global::Doroti.Framework.Widgets.Text("") : this.effectiveMiddle), userTrailing: ((((CupertinoSliverNavigationBar)this.widget).trailing is not null) ? new global::Doroti.Framework.Widgets.Visibility(visible: !this.searchIsActive, child: ((CupertinoSliverNavigationBar)this.widget).trailing!) : null), userLargeTitle: ((CupertinoSliverNavigationBar)this.widget).largeTitle, userBottom: (((((CupertinoSliverNavigationBar)this.widget)._searchable ? (this.searchIsActive ? new _ActiveSearchableBottom__nav_bar(animationController: this._animationController, animation: this.persistentHeightAnimation, searchField: ((CupertinoSliverNavigationBar)this.widget).searchField, searchFieldHeight: this.scaledSearchFieldHeight, onSearchFieldTap: () => this._onSearchFieldTap()) : new _InactiveSearchableBottom__nav_bar(animationController: this._animationController, animation: this.persistentHeightAnimation, searchField: ((CupertinoSliverNavigationBar)this.widget).searchField, searchFieldHeight: this.scaledSearchFieldHeight, onSearchFieldTap: () => this._onSearchFieldTap())) : (global::Doroti.Framework.Widgets.Widget?)(object?)((CupertinoSliverNavigationBar)this.widget).bottom)) ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), padding: ((CupertinoSliverNavigationBar)this.widget).padding, large: this.isPortrait, staticBar: false, context: context);
         return ((global::Doroti.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._searchAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SliverPersistentHeader(pinned: true, @delegate: new _LargeTitleNavigationBarSliverDelegate__nav_bar(keys: this.keys, components: componentsLocal, userMiddle: this.effectiveMiddle, backgroundColor: (CupertinoDynamicColor.maybeResolve(((CupertinoSliverNavigationBar)this.widget).backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor), automaticBackgroundVisibility: ((CupertinoSliverNavigationBar)this.widget).automaticBackgroundVisibility, brightness: ((CupertinoSliverNavigationBar)this.widget).brightness, border: ((CupertinoSliverNavigationBar)this.widget).border, padding: ((CupertinoSliverNavigationBar)this.widget).padding, actionsForegroundColor: CupertinoTheme.of(context).primaryColor, transitionBetweenRoutes: ((CupertinoSliverNavigationBar)this.widget).transitionBetweenRoutes, heroTag: ((CupertinoSliverNavigationBar)this.widget).heroTag, persistentHeight: (((global::Doroti.Framework.Animation.Animation<double>)this.persistentHeightAnimation).value + MediaQuery.paddingOf(context).top), largeTitleHeight: ((global::Doroti.Framework.Animation.Animation<double>)this.largeTitleHeightAnimation).value, alwaysShowMiddle: (((CupertinoSliverNavigationBar)this.widget).alwaysShowMiddle && (this.effectiveMiddle is not null)), stretchConfiguration: ((((CupertinoSliverNavigationBar)this.widget).stretch && !this.searchIsActive) ? new global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration() : null), enableBackgroundFilterBlur: ((CupertinoSliverNavigationBar)this.widget).enableBackgroundFilterBlur, bottomMode: (this.searchIsActive ? NavigationBarBottomMode.always : (((CupertinoSliverNavigationBar)this.widget).bottomMode ?? NavigationBarBottomMode.automatic)), bottomHeight: this._bottomHeight, controller: this._animationController, searchable: ((CupertinoSliverNavigationBar)this.widget)._searchable)));
@@ -941,7 +941,7 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return null;
@@ -961,7 +961,7 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
 
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).biggest;
         if ((childLocal is null))
         {
@@ -977,14 +977,14 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        DartRuntimePrimitives.Assert(() => (object.Equals(__child, ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child))));
+        DartRuntimePrimitives.Assert(() => (object.Equals(__child, ((global::Doroti.Framework.Rendering.RenderBox?)(this).child))));
         base.applyPaintTransform(__child, transform);
         transform.scaleByDouble(this._scale, this._scale, this._scale, 1);
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             layer = null;
@@ -998,7 +998,7 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
         if ((childLocal is null))
         {
             return false;
@@ -1099,7 +1099,7 @@ public class _NavigationBarStaticComponents__nav_bar
     public virtual global::Doroti.Framework.Widgets.KeyedSubtree? largeTitle { get; private set; }
     public virtual global::Doroti.Framework.Widgets.KeyedSubtree? navBarBottom { get; private set; }
 
-    internal _NavigationBarStaticComponents__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar keys, dynamic route, global::Doroti.Framework.Widgets.Widget? userLeading, bool automaticallyImplyLeading, bool automaticallyImplyTitle, string? previousPageTitle, global::Doroti.Framework.Widgets.Widget? userMiddle, global::Doroti.Framework.Widgets.Widget? userTrailing, global::Doroti.Framework.Widgets.Widget? userLargeTitle, global::Doroti.Framework.Widgets.Widget? userBottom, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, bool large, bool staticBar, global::Doroti.Framework.Widgets.BuildContext context)
+    internal _NavigationBarStaticComponents__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar keys, global::Doroti.Framework.Widgets.IModalRoute? route, global::Doroti.Framework.Widgets.Widget? userLeading, bool automaticallyImplyLeading, bool automaticallyImplyTitle, string? previousPageTitle, global::Doroti.Framework.Widgets.Widget? userMiddle, global::Doroti.Framework.Widgets.Widget? userTrailing, global::Doroti.Framework.Widgets.Widget? userLargeTitle, global::Doroti.Framework.Widgets.Widget? userBottom, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, bool large, bool staticBar, global::Doroti.Framework.Widgets.BuildContext context)
     {
         this.leading = _NavigationBarStaticComponents__nav_bar.createLeading(leadingKey: ((_NavigationBarStaticComponentsKeys__nav_bar)keys).leadingKey, userLeading: userLeading, route: route, automaticallyImplyLeading: automaticallyImplyLeading, padding: padding, context: context);
         this.backChevron = _NavigationBarStaticComponents__nav_bar.createBackChevron(backChevronKey: ((_NavigationBarStaticComponentsKeys__nav_bar)keys).backChevronKey, userLeading: userLeading, route: route, automaticallyImplyLeading: automaticallyImplyLeading, context: context);
@@ -1110,18 +1110,18 @@ public class _NavigationBarStaticComponents__nav_bar
         this.navBarBottom = _NavigationBarStaticComponents__nav_bar.createNavBarBottom(navBarBottomKey: ((_NavigationBarStaticComponentsKeys__nav_bar)keys).navBarBottomKey, userBottom: userBottom, context: context);
     }
 
-    internal static global::Doroti.Framework.Widgets.Widget? _derivedTitle(bool automaticallyImplyTitle, dynamic currentRoute = null)
+    internal static global::Doroti.Framework.Widgets.Widget? _derivedTitle(bool automaticallyImplyTitle, global::Doroti.Framework.Widgets.IModalRoute? currentRoute = null)
     {
-        if (((automaticallyImplyTitle && (currentRoute is CupertinoRouteTransitionMixin<object>)) && (((CupertinoRouteTransitionMixin<object>)currentRoute).title is not null)))
+        if (((automaticallyImplyTitle && (currentRoute is ICupertinoRouteTitle)) && (((ICupertinoRouteTitle)currentRoute).title is not null)))
         {
-            CupertinoRouteTransitionMixin<object> currentRoute__as76488 = (CupertinoRouteTransitionMixin<object>)currentRoute;
-            return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.Text(((CupertinoRouteTransitionMixin<object>)currentRoute__as76488).title!));
+            ICupertinoRouteTitle currentRoute__as76488 = (ICupertinoRouteTitle)currentRoute;
+            return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.Text(((ICupertinoRouteTitle)currentRoute__as76488).title!));
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createLeading(global::Doroti.Framework.Widgets.GlobalKey<IState> leadingKey, global::Doroti.Framework.Widgets.Widget? userLeading, dynamic route, bool automaticallyImplyLeading, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, global::Doroti.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Framework.Widgets.KeyedSubtree? createLeading(global::Doroti.Framework.Widgets.GlobalKey<IState> leadingKey, global::Doroti.Framework.Widgets.Widget? userLeading, global::Doroti.Framework.Widgets.IModalRoute? route, bool automaticallyImplyLeading, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Widgets.Widget? leadingContent = default!;
         if ((userLeading is not null))
@@ -1130,12 +1130,12 @@ public class _NavigationBarStaticComponents__nav_bar
         }
         else
         {
-            if ((((automaticallyImplyLeading && (route is PageRoute<object>)) && ((bool)((dynamic)route).canPop)) && ((bool)((dynamic)route).fullscreenDialog)))
+            if ((((automaticallyImplyLeading && (route is IPageRoute)) && ((bool)(route).canPop)) && ((bool)(route).fullscreenDialog)))
             {
-                dynamic route__as77104 = (dynamic)route;
+                var route__as77104 = route;
                 leadingContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new CupertinoButton(padding: global::Doroti.Framework.Painting.EdgeInsets.zero, onPressed: (() =>
                 {
-                    DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.NavigatorState?)((dynamic)route__as77104).navigator)!.maybePop<object>());
+                    DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.NavigatorState?)(route__as77104).navigator)!.maybePop<object>());
                 }), child: new global::Doroti.Framework.Widgets.Text(CupertinoLocalizations.of(context).cancelButtonLabel)));
             }
         }
@@ -1147,9 +1147,9 @@ public class _NavigationBarStaticComponents__nav_bar
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createBackChevron(global::Doroti.Framework.Widgets.GlobalKey<IState> backChevronKey, global::Doroti.Framework.Widgets.Widget? userLeading, dynamic route, bool automaticallyImplyLeading, global::Doroti.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Framework.Widgets.KeyedSubtree? createBackChevron(global::Doroti.Framework.Widgets.GlobalKey<IState> backChevronKey, global::Doroti.Framework.Widgets.Widget? userLeading, global::Doroti.Framework.Widgets.IModalRoute? route, bool automaticallyImplyLeading, global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if ((((((userLeading is not null) || !automaticallyImplyLeading) || (route is null)) || !((bool)((dynamic)route).canPop)) || (((route is PageRoute<object>) && ((bool)((dynamic)route).fullscreenDialog)))))
+        if ((((((userLeading is not null) || !automaticallyImplyLeading) || (route is null)) || !((bool)(route).canPop)) || (((route is IPageRoute) && ((bool)(route).fullscreenDialog)))))
         {
             return null;
         }
@@ -1157,9 +1157,9 @@ public class _NavigationBarStaticComponents__nav_bar
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createBackLabel(global::Doroti.Framework.Widgets.GlobalKey<IState> backLabelKey, global::Doroti.Framework.Widgets.Widget? userLeading, dynamic route, bool automaticallyImplyLeading, string? previousPageTitle, global::Doroti.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Framework.Widgets.KeyedSubtree? createBackLabel(global::Doroti.Framework.Widgets.GlobalKey<IState> backLabelKey, global::Doroti.Framework.Widgets.Widget? userLeading, global::Doroti.Framework.Widgets.IModalRoute? route, bool automaticallyImplyLeading, string? previousPageTitle, global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if ((((((userLeading is not null) || !automaticallyImplyLeading) || (route is null)) || !((bool)((dynamic)route).canPop)) || (((route is PageRoute<object>) && ((bool)((dynamic)route).fullscreenDialog)))))
+        if ((((((userLeading is not null) || !automaticallyImplyLeading) || (route is null)) || !((bool)(route).canPop)) || (((route is IPageRoute) && ((bool)(route).fullscreenDialog)))))
         {
             return null;
         }
@@ -1167,7 +1167,7 @@ public class _NavigationBarStaticComponents__nav_bar
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createMiddle(global::Doroti.Framework.Widgets.GlobalKey<IState> middleKey, global::Doroti.Framework.Widgets.Widget? userMiddle, global::Doroti.Framework.Widgets.Widget? userLargeTitle, bool large, bool staticBar, bool automaticallyImplyTitle, dynamic route, global::Doroti.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Framework.Widgets.KeyedSubtree? createMiddle(global::Doroti.Framework.Widgets.GlobalKey<IState> middleKey, global::Doroti.Framework.Widgets.Widget? userMiddle, global::Doroti.Framework.Widgets.Widget? userLargeTitle, bool large, bool staticBar, bool automaticallyImplyTitle, global::Doroti.Framework.Widgets.IModalRoute? route, global::Doroti.Framework.Widgets.BuildContext context)
     {
         var middleContent = userMiddle;
         if ((large && staticBar))
@@ -1197,7 +1197,7 @@ public class _NavigationBarStaticComponents__nav_bar
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createLargeTitle(global::Doroti.Framework.Widgets.GlobalKey<IState> largeTitleKey, global::Doroti.Framework.Widgets.Widget? userLargeTitle, bool large, bool automaticImplyTitle, dynamic route, global::Doroti.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Framework.Widgets.KeyedSubtree? createLargeTitle(global::Doroti.Framework.Widgets.GlobalKey<IState> largeTitleKey, global::Doroti.Framework.Widgets.Widget? userLargeTitle, bool large, bool automaticImplyTitle, global::Doroti.Framework.Widgets.IModalRoute? route, global::Doroti.Framework.Widgets.BuildContext context)
     {
         if (!large)
         {
@@ -1253,10 +1253,10 @@ public class CupertinoNavigationBarBackButton : global::Doroti.Framework.Widgets
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        dynamic currentRoute = global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(context);
+        global::Doroti.Framework.Widgets.IModalRoute? currentRoute = global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(context);
         if ((this.onPressed is null))
         {
-            DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)currentRoute)?.canPop) ?? false), () => (object?)"CupertinoNavigationBarBackButton should only be used in routes that can be popped");
+            DartRuntimePrimitives.Assert(() => (((bool?)(currentRoute)?.canPop) ?? false), () => (object?)"CupertinoNavigationBarBackButton should only be used in routes that can be popped");
         }
         global::Doroti.Framework.Painting.TextStyle actionTextStyle = CupertinoTheme.of(context).textTheme.navActionTextStyle;
         if ((this.color is not null))
@@ -1317,9 +1317,9 @@ internal class _BackChevron__nav_bar : global::Doroti.Framework.Widgets.Stateles
 internal class _BackLabel__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
 {
     public virtual string? specifiedPreviousTitle { get; private set; }
-    public virtual dynamic route { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.IModalRoute? route { get; private set; } = default!;
 
-    internal _BackLabel__nav_bar(string? specifiedPreviousTitle, dynamic route)
+    internal _BackLabel__nav_bar(string? specifiedPreviousTitle, global::Doroti.Framework.Widgets.IModalRoute? route)
     {
         this.specifiedPreviousTitle = specifiedPreviousTitle;
         this.route = route;
@@ -1348,11 +1348,11 @@ internal class _BackLabel__nav_bar : global::Doroti.Framework.Widgets.StatelessW
         }
         else
         {
-            if (((this.route is CupertinoRouteTransitionMixin<object>) && !((bool)((dynamic)this.route!).isFirst)))
+            if (((this.route is ICupertinoRouteTitle) && !((bool)(this.route!).isFirst)))
             {
-                CupertinoRouteTransitionMixin<object> route__as89428 = (CupertinoRouteTransitionMixin<object>)route;
-                var cupertinoRoute = ((CupertinoRouteTransitionMixin<object>?)(object?)this.route!)!;
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ValueListenableBuilder<string?>(valueListenable: ((CupertinoRouteTransitionMixin<object>)cupertinoRoute).previousTitle, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string?, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._buildPreviousTitleWidget));
+                ICupertinoRouteTitle route__as89428 = (ICupertinoRouteTitle)route;
+                var cupertinoRoute = ((ICupertinoRouteTitle?)(object?)this.route!)!;
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ValueListenableBuilder<string?>(valueListenable: ((ICupertinoRouteTitle)cupertinoRoute).previousTitle, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string?, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._buildPreviousTitleWidget));
             }
             else
             {
@@ -1607,19 +1607,20 @@ internal class _NavigationBarComponentsTransition__nav_bar
     {
         var componentBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)key).currentContext!.findRenderObject()!)!;
         DartRuntimePrimitives.Assert(() => componentBox.attached);
-        return global::Doroti.Framework.Rendering.RelativeRect.CreateFromRect((((Offset)((dynamic)componentBox).localToGlobal(Offset.zero, ancestor: from)) & ((global::Doroti.Framework.Rendering.RenderBox)componentBox).size), this.transitionBox);
+        return global::Doroti.Framework.Rendering.RelativeRect.CreateFromRect((((Offset)(componentBox).localToGlobal(Offset.zero, ancestor: from)) & ((global::Doroti.Framework.Rendering.RenderBox)componentBox).size), this.transitionBox);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual _FixedSizeSlidingTransition__nav_bar slideFromLeadingEdge(global::Doroti.Framework.Widgets.GlobalKey<IState> fromKey, global::Doroti.Framework.Rendering.RenderBox fromNavBarBox, global::Doroti.Framework.Widgets.GlobalKey<IState> toKey, global::Doroti.Framework.Rendering.RenderBox toNavBarBox, global::Doroti.Framework.Animation.Curve curve = default!, global::Doroti.Framework.Widgets.Widget child = default!)
     {
+        curve ??= new global::Doroti.Framework.Animation.Interval(0.0, 1.0);
         var fromBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)fromKey).currentContext!.findRenderObject()!)!;
         var toBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)toKey).currentContext!.findRenderObject()!)!;
         bool isLTRLocal = (this.forwardDirection > 0L);
         var fromAnchorLocal = new global::Doroti.Ui.Offset((isLTRLocal ? 0 : ((global::Doroti.Framework.Rendering.RenderBox)fromBox).size.width), (((global::Doroti.Framework.Rendering.RenderBox)fromBox).size.height / 2L));
         var toAnchorLocal = new global::Doroti.Ui.Offset((isLTRLocal ? 0 : ((global::Doroti.Framework.Rendering.RenderBox)toBox).size.width), (((global::Doroti.Framework.Rendering.RenderBox)toBox).size.height / 2L));
-        global::Doroti.Ui.Offset fromAnchorInFromBox = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)fromBox).localToGlobal(fromAnchorLocal, ancestor: fromNavBarBox)));
-        global::Doroti.Ui.Offset toAnchorInToBox = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)toBox).localToGlobal(toAnchorLocal, ancestor: toNavBarBox)));
+        global::Doroti.Ui.Offset fromAnchorInFromBox = ((global::Doroti.Ui.Offset)(object?)((Offset)(fromBox).localToGlobal(fromAnchorLocal, ancestor: fromNavBarBox)));
+        global::Doroti.Ui.Offset toAnchorInToBox = ((global::Doroti.Ui.Offset)(object?)((Offset)(toBox).localToGlobal(toAnchorLocal, ancestor: toNavBarBox)));
         global::Doroti.Ui.Offset translation = ((global::Doroti.Ui.Offset)(object?)(isLTRLocal ? (toAnchorInToBox - fromAnchorInFromBox) : (new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderBox)toNavBarBox).size.width - toAnchorInToBox.dx), toAnchorInToBox.dy) - new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderBox)fromNavBarBox).size.width - fromAnchorInFromBox.dx), fromAnchorInFromBox.dy))));
         global::Doroti.Framework.Rendering.RelativeRect fromBoxMargin = ((global::Doroti.Framework.Rendering.RelativeRect)(object?)positionInTransitionBox(fromKey, from: fromNavBarBox));
         var fromOriginInTransitionBox = new global::Doroti.Ui.Offset((isLTRLocal ? ((global::Doroti.Framework.Rendering.RelativeRect)fromBoxMargin).left : ((global::Doroti.Framework.Rendering.RelativeRect)fromBoxMargin).right), ((global::Doroti.Framework.Rendering.RelativeRect)fromBoxMargin).top);
@@ -1630,12 +1631,14 @@ internal class _NavigationBarComponentsTransition__nav_bar
 
     public virtual global::Doroti.Framework.Animation.Animation<double> fadeInFrom(double t, global::Doroti.Framework.Animation.Curve curve = default!)
     {
+        curve ??= global::Doroti.Framework.Animation.Curves.easeIn;
         return ((global::Doroti.Framework.Animation.Animation<double>)(object?)this.animation.drive(fadeIn.chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(t, 1.0, curve: curve)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Animation.Animation<double> fadeOutBy(double t, global::Doroti.Framework.Animation.Curve curve = default!)
     {
+        curve ??= global::Doroti.Framework.Animation.Curves.easeOut;
         return ((global::Doroti.Framework.Animation.Animation<double>)(object?)this.animation.drive(fadeOut.chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, t, curve: curve)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

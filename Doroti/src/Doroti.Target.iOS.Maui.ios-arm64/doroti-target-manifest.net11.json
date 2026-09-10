@@ -1,0 +1,10 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.iOS.Maui.ios-arm64",
+  "targetFramework": "net11.0-ios",
+  "rid": "ios-arm64",
+  "nativeViewType": "Doroti.Host.Maui.DorotiUIKitGraphiteView",
+  "graphicsBackend": "UIKit/MTKView/Graphite-Metal",
+  "softwareFallback": false,
+  "defaultSkiaEngine": "Graphite"
+}

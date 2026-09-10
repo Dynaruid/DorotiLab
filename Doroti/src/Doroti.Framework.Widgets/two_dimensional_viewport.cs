@@ -61,11 +61,11 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((RenderTwoDimensionalViewport?)(object?)base.renderObject)!);
+    public override RenderTwoDimensionalViewport renderObject => (RenderTwoDimensionalViewport)base.renderObject;
     public override void performRebuild()
     {
         base.performRebuild();
-        ((dynamic)this.renderObject).markNeedsLayout(withDelegateRebuild: true);
+        (this.renderObject).markNeedsLayout(withDelegateRebuild: true);
     }
 
     public override void forgetChild(Element child)
@@ -83,7 +83,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         var __slot = (ChildVicinity)(object)slot;
-        ((dynamic)this.renderObject)._insertChild(__child, __slot);
+        this.renderObject._insertChild(__child, __slot);
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -91,14 +91,14 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         var __oldSlot = (ChildVicinity)(object)oldSlot;
         var __newSlot = (ChildVicinity)(object)newSlot;
-        ((dynamic)this.renderObject)._moveChild(__child, from: __oldSlot, to: __newSlot);
+        this.renderObject._moveChild(__child, from: __oldSlot, to: __newSlot);
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         var __slot = (ChildVicinity)(object)slot;
-        ((dynamic)this.renderObject)._removeChild(__child, __slot);
+        this.renderObject._removeChild(__child, __slot);
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
@@ -675,12 +675,12 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
         }
         DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, this)));
         var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!;
-        global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(((Matrix4)((dynamic)target).getTransformTo(((global::Doroti.Framework.Rendering.RenderBox)child))), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
+        global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(((Matrix4)(target).getTransformTo(((global::Doroti.Framework.Rendering.RenderBox)child))), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
         var leadingScrollOffset = offsetLocal;
         leadingScrollOffset += (DartRuntimePrimitives.RequireValue(axisDirection) switch { global::Doroti.Framework.Painting.AxisDirection.up => (((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)child)).size.height - rectLocal.bottom), global::Doroti.Framework.Painting.AxisDirection.left => (((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)child)).size.width - rectLocal.right), global::Doroti.Framework.Painting.AxisDirection.right => rectLocal.left, global::Doroti.Framework.Painting.AxisDirection.down => rectLocal.top, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Ui.Offset paintOffsetLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(parentDataOf(box).paintOffset));
         leadingScrollOffset += (DartRuntimePrimitives.RequireValue(axisDirection) switch { global::Doroti.Framework.Painting.AxisDirection.up => ((this.viewportDimension.height - paintOffsetLocal.dy) - ((global::Doroti.Framework.Rendering.RenderBox)box).size.height), global::Doroti.Framework.Painting.AxisDirection.left => ((this.viewportDimension.width - paintOffsetLocal.dx) - ((global::Doroti.Framework.Rendering.RenderBox)box).size.width), global::Doroti.Framework.Painting.AxisDirection.right => paintOffsetLocal.dx, global::Doroti.Framework.Painting.AxisDirection.down => paintOffsetLocal.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        Matrix4 transform = ((Matrix4)(object?)((Matrix4)((dynamic)target).getTransformTo(this)));
+        Matrix4 transform = ((Matrix4)(object?)((Matrix4)(target).getTransformTo(this)));
         global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
         double mainAxisExtentDifference = (DartRuntimePrimitives.RequireValue(axis) switch { global::Doroti.Framework.Painting.Axis.horizontal => (this.viewportDimension.width - rectLocal.width), global::Doroti.Framework.Painting.Axis.vertical => (this.viewportDimension.height - rectLocal.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double targetOffset = (leadingScrollOffset - (mainAxisExtentDifference * alignment));
@@ -757,7 +757,7 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
                     if ((rect is null))
                     {
                         DartRuntimePrimitives.Assert(() => (viewport.parent is not null));
-                        Matrix4 transform = ((Matrix4)(object?)((Matrix4)((dynamic)descendant).getTransformTo(viewport.parent)));
+                        Matrix4 transform = ((Matrix4)(object?)((Matrix4)(descendant).getTransformTo(viewport.parent)));
                         return ((global::Doroti.Ui.Rect?)(object?)MatrixUtils.transformRect(transform, ((rect ?? (Rect)((global::Doroti.Framework.Rendering.RenderObject)descendant).paintBounds))));
                     }
                     return DartRuntimePrimitives.RequireValue(rect);

@@ -18,7 +18,7 @@ public abstract class Feedback
 {
     public static async Future forTap(BuildContext context)
     {
-        ((dynamic)context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        (context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
@@ -56,7 +56,7 @@ public abstract class Feedback
 
     public static Future forLongPress(BuildContext context)
     {
-        ((dynamic)context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.LongPressSemanticsEvent());
+        (context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.LongPressSemanticsEvent());
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:

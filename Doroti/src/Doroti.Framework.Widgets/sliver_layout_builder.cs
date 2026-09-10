@@ -32,7 +32,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
 
     public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((global::Doroti.Framework.Rendering.RenderSliver?)((dynamic)this).child))));
+        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((global::Doroti.Framework.Rendering.RenderSliver?)this.child))));
         return 0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -46,7 +46,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((global::Doroti.Framework.Rendering.RenderSliver?)((dynamic)this).child))));
+        DartRuntimePrimitives.Assert(() => (object.Equals(child, ((global::Doroti.Framework.Rendering.RenderSliver?)this.child))));
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
@@ -69,7 +69,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
             {
                 if ((child is not RenderSliver))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -98,13 +98,13 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        ((dynamic)this._child)?.attach(owner);
+        this._child?.attach(owner);
     }
 
     public override void detach()
     {
         base.detach();
-        ((dynamic)this._child)?.detach();
+        this._child?.detach();
     }
 
     public override void redepthChildren()

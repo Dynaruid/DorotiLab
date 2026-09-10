@@ -134,7 +134,7 @@ public class FocusAttachment
                 this._node.unfocus(disposition: UnfocusDisposition.previouslyFocusedChild);
             }
             ((FocusNode)this._node)._manager?._markDetached(this._node);
-            ((dynamic)((FocusNode)this._node)._parent)?._removeChild(this._node);
+            (((FocusNode)this._node)._parent)?._removeChild(this._node);
             this._node._attachment = null;
             DartRuntimePrimitives.Assert(() => !((FocusNode)this._node).hasPrimaryFocus, () => (object?)$"Node {(((object?)((FocusNode)this._node).debugLabel ?? (object?)this._node))} still has primary focus while being detached.");
             DartRuntimePrimitives.Assert(() => (!object.Equals(((FocusNode)this._node)._manager?._markedForFocus, this._node)), () => (object?)$"Node {(((object?)((FocusNode)this._node).debugLabel ?? (object?)this._node))} still marked for focus while being detached.");
@@ -161,7 +161,7 @@ public enum UnfocusDisposition
     previouslyFocusedChild
 }
 
-public class FocusNode : ChangeNotifier
+public class FocusNode : ChangeNotifier, DiagnosticableTree
 {
     internal virtual bool _skipTraversal { get; set; } = default!;
     internal virtual bool _canRequestFocus { get; set; } = default!;
@@ -388,7 +388,7 @@ public class FocusNode : ChangeNotifier
         {
             DartRuntimePrimitives.Assert(() => (this.context is not null), () => (object?)"Tried to get the offset of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
             global::Doroti.Framework.Rendering.RenderObject @object = this.context!.findRenderObject()!;
-            return MatrixUtils.transformPoint(((Matrix4)((dynamic)@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.topLeft);
+            return MatrixUtils.transformPoint(((Matrix4)(@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.topLeft);
             return default!;
         }
     }
@@ -398,8 +398,8 @@ public class FocusNode : ChangeNotifier
         {
             DartRuntimePrimitives.Assert(() => (this.context is not null), () => (object?)"Tried to get the bounds of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
             global::Doroti.Framework.Rendering.RenderObject @object = this.context!.findRenderObject()!;
-            global::Doroti.Ui.Offset topLeftLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.topLeft));
-            global::Doroti.Ui.Offset bottomRightLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.bottomRight));
+            global::Doroti.Ui.Offset topLeftLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)(@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.topLeft));
+            global::Doroti.Ui.Offset bottomRightLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)(@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.bottomRight));
             return global::Doroti.Ui.Rect.fromLTRB(topLeftLocal.dx, topLeftLocal.dy, bottomRightLocal.dx, bottomRightLocal.dy);
             return default!;
         }
@@ -525,7 +525,7 @@ public class FocusNode : ChangeNotifier
         DartRuntimePrimitives.Assert(() => !this.ancestors.contains(child), () => (object?)"The supplied child is already an ancestor of this node. Loops are not allowed.");
         FocusScopeNode? oldScopeLocal = ((FocusNode)child).enclosingScope;
         bool hadFocus = ((FocusNode)child).hasFocus;
-        ((dynamic)((FocusNode)child)._parent)?._removeChild(child, removeScopeFocus: (!object.Equals(oldScopeLocal, this.nearestScope)));
+        (((FocusNode)child)._parent)?._removeChild(child, removeScopeFocus: (!object.Equals(oldScopeLocal, this.nearestScope)));
         this._children.Add(child);
         child._parent = this;
         child._ancestors = null;
@@ -644,6 +644,8 @@ public class FocusNode : ChangeNotifier
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("hasFocus", value: (this.hasFocus && !this.hasPrimaryFocus), ifTrue: "IN FOCUS PATH", defaultValue: false));
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("hasPrimaryFocus", value: this.hasPrimaryFocus, ifTrue: "PRIMARY FOCUS", defaultValue: false));
     }
+
+    IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() => debugDescribeChildren();
 
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
@@ -812,7 +814,7 @@ internal class _AppLifecycleListener__focus_manager : WidgetsBindingObserver
     public virtual void didChangeAppLifecycleState(AppLifecycleState state) => this.onLifecycleStateChanged(state);
 }
 
-public class FocusManager : ChangeNotifier
+public class FocusManager : ChangeNotifier, DiagnosticableTree
 {
     private readonly object _focusUpdateGate = new();
     internal virtual _HighlightModeManager__focus_manager _highlightManager { get; private set; } = new _HighlightModeManager__focus_manager();
@@ -1034,6 +1036,8 @@ public class FocusManager : ChangeNotifier
             WidgetsBinding.instance.addObserver(this._appLifecycleListener!);
         }
     }
+
+    IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() => debugDescribeChildren();
 
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
@@ -1370,7 +1374,7 @@ internal class _HighlightModeManager__focus_manager
                 case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                 case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                     {
-                        if (((global::Doroti.Framework.Rendering.MouseTracker)((dynamic)WidgetsBinding.instance).mouseTracker).mouseIsConnected)
+                        if (((global::Doroti.Framework.Rendering.MouseTracker)((global::Doroti.Framework.Rendering.RendererBinding)WidgetsBinding.instance).mouseTracker).mouseIsConnected)
                         {
                             return FocusHighlightMode.traditional;
                         }
@@ -1402,7 +1406,7 @@ public static partial class Focus_managerLibrary
         string? result = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                result = ((string)((dynamic)FocusManager.instance).toStringDeep());
+                result = ((string)((DiagnosticableTree)FocusManager.instance).toStringDeep());
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });

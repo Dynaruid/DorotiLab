@@ -90,7 +90,7 @@ public class PageStorageBucket
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void writeState(BuildContext context, dynamic data, object? identifier = null)
+    public virtual void writeState(BuildContext context, object? data, object? identifier = null)
     {
         _storage ??= new DartMap<object, object>();
         if ((identifier is not null))
@@ -107,7 +107,7 @@ public class PageStorageBucket
         }
     }
 
-    public virtual dynamic readState(BuildContext context, object? identifier = null)
+    public virtual object? readState(BuildContext context, object? identifier = null)
     {
         if ((this._storage is null))
         {

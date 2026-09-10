@@ -8,7 +8,25 @@ internal static class ImageSizingContracts
 {
     internal static async Task Verify()
     {
+        using (var alive = new Doroti.Ui.Image(1, 2, 2))
+        {
+            var placeholder = new Doroti.Framework.Widgets.RawImage().createRenderObject(null!);
+            placeholder.dispose();
+            var valid = new Doroti.Framework.Widgets.RawImage(image: alive).createRenderObject(null!);
+            valid.dispose();
+            alive.Dispose();
+            try
+            {
+                new Doroti.Framework.Widgets.RawImage(image: alive).createRenderObject(null!);
+                throw new Exception("RawImage accepted a disposed image");
+            }
+            catch (AssertionError) { }
+            catch (ObjectDisposedException) { }
+        }
         using var environment = new ImageFixtureEnvironment();
+        // This raster-only host has no frame pump. Give asynchronous provider
+        // continuations an explicit offscreen scheduler, as a real host must.
+        using var scheduler = DartAsyncRuntime.enterMicrotaskScheduler(callback => { _ = Task.Run(callback); });
         using var bitmap = new SKBitmap(4, 8);
         bitmap.Erase(new SKColor(200, 100, 50, 128));
         using var png = bitmap.Encode(SKEncodedImageFormat.Png, 100);

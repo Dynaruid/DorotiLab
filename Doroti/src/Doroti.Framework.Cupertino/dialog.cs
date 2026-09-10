@@ -778,7 +778,7 @@ internal class _CupertinoActionSheetActionState__dialog : global::Doroti.Framewo
     internal virtual void _handleTap(global::Doroti.Framework.Widgets.Intent? __unused0 = null)
     {
         this.widget.onPressed();
-        ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        (this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
     }
 
     public virtual global::Doroti.Ui.Color effectiveFocusBackgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(global::Doroti.Framework.Painting.HSLColor.CreateFromColor(((((CupertinoActionSheetAction)this.widget).focusColor ?? CupertinoColors.activeBlue)).withOpacity(((object.Equals(CupertinoTheme.brightnessOf(this.context), Brightness.light)) ? ConstantsLibrary.kCupertinoButtonTintedOpacityLight : ConstantsLibrary.kCupertinoButtonTintedOpacityDark))).toColor());

@@ -398,7 +398,7 @@ public class TableRowInkWell : InkResponse
             var transform = Matrix4.identity();
             while ((true && (table is not global::Doroti.Framework.Rendering.RenderTable)))
             {
-                ((dynamic)table).applyPaintTransform(cell, transform);
+                (table).applyPaintTransform(cell, transform);
                 DartRuntimePrimitives.Assert(() => (object.Equals(table, ((global::Doroti.Framework.Rendering.RenderObject)cell).parent)));
                 cell = table;
                 table = ((global::Doroti.Framework.Rendering.RenderObject)table).parent;

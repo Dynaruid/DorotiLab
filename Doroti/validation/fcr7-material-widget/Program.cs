@@ -3,6 +3,30 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--drag-tree"])
+{
+    MountedPickerContracts.VerifyDragAndTreeContracts();
+    return;
+}
+
+if (args is ["--route-bridges"])
+{
+    MountedPickerContracts.VerifyRouteBridges();
+    return;
+}
+
+if (args is ["--form-sliver"])
+{
+    MountedPickerContracts.VerifyFormAndSliverContracts();
+    return;
+}
+
+if (args is ["--aot-bridges"])
+{
+    NativeAotBridgeContracts.Verify();
+    return;
+}
+
 if (args is ["--caret-handle-alignment"])
 {
     CaretHandleAlignmentContracts.Verify();

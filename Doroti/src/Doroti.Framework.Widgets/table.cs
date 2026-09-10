@@ -161,7 +161,7 @@ internal class _TableElement__table : RenderObjectElement
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderTable?)(object?)base.renderObject)!);
+    public override global::Doroti.Framework.Rendering.RenderTable renderObject => (global::Doroti.Framework.Rendering.RenderTable)base.renderObject;
     public override void mount(Element? parent, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => !this._doingMountOrUpdate);
@@ -191,7 +191,7 @@ internal class _TableElement__table : RenderObjectElement
         this.renderObject.setupParentData(__child);
         if (!this._doingMountOrUpdate)
         {
-            ((dynamic)this.renderObject).setChild(((_TableSlot__table)__slot).column, ((_TableSlot__table)__slot).row, __child);
+            this.renderObject.setChild(((_TableSlot__table)__slot).column, ((_TableSlot__table)__slot).row, __child);
         }
     }
 
@@ -207,7 +207,7 @@ internal class _TableElement__table : RenderObjectElement
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         var __slot = (_TableSlot__table)(object)slot;
-        ((dynamic)this.renderObject).setChild(((_TableSlot__table)__slot).column, ((_TableSlot__table)__slot).row, ((global::Doroti.Framework.Rendering.RenderBox)(object)null));
+        this.renderObject.setChild(((_TableSlot__table)__slot).column, ((_TableSlot__table)__slot).row, ((global::Doroti.Framework.Rendering.RenderBox)(object)null));
     }
 
     public override void update(Widget newWidget)
@@ -268,7 +268,7 @@ internal class _TableElement__table : RenderObjectElement
 
     internal virtual void _updateRenderObjectChildren()
     {
-        ((dynamic)this.renderObject).setFlatChildren((System.Linq.Enumerable.Any(this._children) ? checked((long)(this._children[(int)(0L)].children.Count)) : 0L), this._children.expand(((row) =>
+        this.renderObject.setFlatChildren((System.Linq.Enumerable.Any(this._children) ? checked((long)(this._children[(int)(0L)].children.Count)) : 0L), this._children.expand(((row) =>
         {
             return ((_TableElementRow__table)row).children.map<Element, global::Doroti.Framework.Rendering.RenderBox>(((child) =>
             {
@@ -335,7 +335,7 @@ internal class _TableCell__table : ParentDataWidget<global::Doroti.Framework.Ren
         if ((!object.Equals(((global::Doroti.Framework.Rendering.TableCellParentData)parentDataLocal).verticalAlignment, this.verticalAlignment)))
         {
             parentDataLocal.verticalAlignment = this.verticalAlignment;
-            ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
     }
 

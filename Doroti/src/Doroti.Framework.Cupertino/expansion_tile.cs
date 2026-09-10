@@ -154,7 +154,7 @@ internal class _CupertinoExpansionTileState__expansion_tile : global::Doroti.Fra
                 global::Doroti.Framework.Widgets.BuildContext headerContext = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._headerKey).currentContext!;
                 var overlay = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)Overlay.of(headerContext).context.findRenderObject()!)!;
                 var headerBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)headerContext.findRenderObject()!)!;
-                global::Doroti.Ui.Offset headerOffset = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)headerBox).localToGlobal(Offset.zero, ancestor: overlay)));
+                global::Doroti.Ui.Offset headerOffset = ((global::Doroti.Ui.Offset)(object?)((Offset)(headerBox).localToGlobal(Offset.zero, ancestor: overlay)));
                 return new global::Doroti.Framework.Widgets.Positioned(top: (headerOffset.dy + Expansion_tileLibrary._kHeaderHeight), left: headerOffset.dx, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints, child: new global::Doroti.Framework.Widgets.Visibility(visible: ((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: ((CupertinoExpansionTile)this.widget).child))));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }), child: childLocal));

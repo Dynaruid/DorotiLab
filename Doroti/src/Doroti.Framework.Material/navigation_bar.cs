@@ -212,8 +212,8 @@ internal class _IndicatorInkWell__navigation_bar : InkResponse
         return ((global::System.Func<Rect>?)(object?)(() =>
         {
             var iconBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.iconKey).currentContext!.findRenderObject()!)!;
-            global::Doroti.Ui.Rect iconRect = ((global::Doroti.Ui.Rect)(object?)(((Offset)((dynamic)iconBox).localToGlobal(Offset.zero)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size));
-            return (((Offset)((dynamic)referenceBox).globalToLocal(iconRect.topLeft)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size);
+            global::Doroti.Ui.Rect iconRect = ((global::Doroti.Ui.Rect)(object?)(((Offset)(iconBox).localToGlobal(Offset.zero)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size));
+            return (((Offset)(referenceBox).globalToLocal(iconRect.topLeft)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size);
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");

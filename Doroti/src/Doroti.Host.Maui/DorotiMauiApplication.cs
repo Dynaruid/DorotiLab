@@ -1,3 +1,6 @@
+#if IOS && !MACCATALYST
+using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
+#endif
 using Doroti.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 #if MACOS
@@ -52,7 +55,9 @@ public static class DorotiMauiApplicationBuilderExtensions
                     .AddHandler<DorotiMauiSurface, DorotiMacOSLayoutHandler>());
 #else
             .UseMauiApp<DorotiMauiApplication>()
+#if !IOS || MACCATALYST
             .UseSkiaSharp()
+#endif
 #if WINDOWS
             .ConfigureMauiHandlers(handlers =>
                 handlers.AddHandler<DorotiWindowsDxgiElement, DorotiWindowsDxgiElementHandler>());

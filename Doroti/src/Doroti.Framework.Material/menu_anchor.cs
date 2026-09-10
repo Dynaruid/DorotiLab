@@ -1343,7 +1343,7 @@ internal class _SubmenuDirectionalFocusAction__menu_anchor : global::Doroti.Fram
             case (global::Doroti.Framework.Painting.Axis.vertical, TextDirection.ltr, global::Doroti.Framework.Widgets.TraversalDirection.left):
             case (global::Doroti.Framework.Painting.Axis.vertical, TextDirection.rtl, global::Doroti.Framework.Widgets.TraversalDirection.right):
                 {
-                    if ((object.Equals(((_MenuAnchorState__menu_anchor?)((dynamic)this._parent)?._parent)?._orientation, global::Doroti.Framework.Painting.Axis.horizontal)))
+                    if ((object.Equals(((_MenuAnchorState__menu_anchor?)this._parent?._parent)?._orientation, global::Doroti.Framework.Painting.Axis.horizontal)))
                     {
                         if (this.isSubmenu)
                         {
@@ -1365,7 +1365,7 @@ internal class _SubmenuDirectionalFocusAction__menu_anchor : global::Doroti.Fram
                     {
                         if (this.isSubmenu)
                         {
-                            if ((((_MenuAnchorState__menu_anchor?)((dynamic)this._parent)?._parent) is null))
+                            if ((((_MenuAnchorState__menu_anchor?)this._parent?._parent) is null))
                             {
                                 return null;
                             }
@@ -1949,7 +1949,7 @@ internal class _MenuLayout__menu_anchor : global::Doroti.Framework.Rendering.Sin
             Offset menuPosition__value127155 = DartRuntimePrimitives.RequireValue(menuPosition);
             return finalPosition;
         }
-        bool growsUp = ((finalPosition.dy + childSizeEstimate.height) <= ((Offset)((dynamic)this.anchorRect).center).dy);
+        bool growsUp = ((finalPosition.dy + childSizeEstimate.height) <= ((Offset)(this.anchorRect).center).dy);
         if (growsUp)
         {
             double dyLocal = (childHeightEstimate - childSize.height);
@@ -2000,7 +2000,7 @@ internal class _MenuLayout__menu_anchor : global::Doroti.Framework.Rendering.Sin
             yLocal = adjustedPosition.dy;
         }
         IEnumerable<global::Doroti.Ui.Rect> subScreens = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)DisplayFeatureSubScreen.subScreensInBounds(overlayRect, this.avoidBounds));
-        global::Doroti.Ui.Rect allowedRect = ((global::Doroti.Ui.Rect)(object?)_closestScreen(subScreens.Cast<Rect>(), ((Offset)((dynamic)this.anchorRect).center)));
+        global::Doroti.Ui.Rect allowedRect = ((global::Doroti.Ui.Rect)(object?)_closestScreen(subScreens.Cast<Rect>(), ((Offset)(this.anchorRect).center)));
         bool offLeftSide(double x)
         {
             return (x < allowedRect.left);
@@ -2126,7 +2126,7 @@ internal class _MenuLayout__menu_anchor : global::Doroti.Framework.Rendering.Sin
         global::Doroti.Ui.Rect closest = ((global::Doroti.Ui.Rect)(object?)screens.First());
         foreach (var screen in screens)
         {
-            if ((((((Offset)((dynamic)screen).center) - point)).distance < ((((Offset)((dynamic)closest).center) - point)).distance))
+            if ((((((Offset)(screen).center) - point)).distance < ((((Offset)(closest).center) - point)).distance))
             {
                 closest = screen;
             }

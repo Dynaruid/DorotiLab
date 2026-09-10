@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <Compile Include="../../dynamic-dispatch/LayoutCallbackContract.cs" Link="LayoutCallbackContract.cs" />
+  </ItemGroup>
+</Project>

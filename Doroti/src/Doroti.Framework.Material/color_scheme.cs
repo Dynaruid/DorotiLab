@@ -23,7 +23,7 @@ internal sealed class QuantizerCelebi
 {
     internal async Future<QuantizerResult> quantize(dynamic pixels, long maxColors, bool returnInputPixelToClusterPixel = false)
     {
-        var input = ((System.Collections.IEnumerable)pixels).Cast<object>().Select(Convert.ToInt64).ToArray();
+        var input = ((System.Collections.IEnumerable)(object)pixels).Cast<object>().Select(Convert.ToInt64).ToArray();
         var limit = checked((int)maxColors);
         // Quantization is CPU work and must not block the UI continuation which
         // receives an image while a lazily mounted section is scrolling into view.
@@ -618,7 +618,7 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
         properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceVariant", this.surfaceVariant, defaultValue: ((ColorScheme)defaultScheme).surfaceVariant));
     }
 
-    public static async Future<ColorScheme> fromImageProvider(dynamic provider, Brightness brightness = Brightness.light, DynamicSchemeVariant dynamicSchemeVariant = DynamicSchemeVariant.tonalSpot, double contrastLevel = 0.0, Color? primary = null, Color? onPrimary = null, Color? primaryContainer = null, Color? onPrimaryContainer = null, Color? primaryFixed = null, Color? primaryFixedDim = null, Color? onPrimaryFixed = null, Color? onPrimaryFixedVariant = null, Color? secondary = null, Color? onSecondary = null, Color? secondaryContainer = null, Color? onSecondaryContainer = null, Color? secondaryFixed = null, Color? secondaryFixedDim = null, Color? onSecondaryFixed = null, Color? onSecondaryFixedVariant = null, Color? tertiary = null, Color? onTertiary = null, Color? tertiaryContainer = null, Color? onTertiaryContainer = null, Color? tertiaryFixed = null, Color? tertiaryFixedDim = null, Color? onTertiaryFixed = null, Color? onTertiaryFixedVariant = null, Color? error = null, Color? onError = null, Color? errorContainer = null, Color? onErrorContainer = null, Color? outline = null, Color? outlineVariant = null, Color? surface = null, Color? onSurface = null, Color? surfaceDim = null, Color? surfaceBright = null, Color? surfaceContainerLowest = null, Color? surfaceContainerLow = null, Color? surfaceContainer = null, Color? surfaceContainerHigh = null, Color? surfaceContainerHighest = null, Color? onSurfaceVariant = null, Color? inverseSurface = null, Color? onInverseSurface = null, Color? inversePrimary = null, Color? shadow = null, Color? scrim = null, Color? surfaceTint = null, Color? background = null, Color? onBackground = null, Color? surfaceVariant = null)
+    public static async Future<ColorScheme> fromImageProvider(global::Doroti.Framework.Painting.IImageProvider provider, Brightness brightness = Brightness.light, DynamicSchemeVariant dynamicSchemeVariant = DynamicSchemeVariant.tonalSpot, double contrastLevel = 0.0, Color? primary = null, Color? onPrimary = null, Color? primaryContainer = null, Color? onPrimaryContainer = null, Color? primaryFixed = null, Color? primaryFixedDim = null, Color? onPrimaryFixed = null, Color? onPrimaryFixedVariant = null, Color? secondary = null, Color? onSecondary = null, Color? secondaryContainer = null, Color? onSecondaryContainer = null, Color? secondaryFixed = null, Color? secondaryFixedDim = null, Color? onSecondaryFixed = null, Color? onSecondaryFixedVariant = null, Color? tertiary = null, Color? onTertiary = null, Color? tertiaryContainer = null, Color? onTertiaryContainer = null, Color? tertiaryFixed = null, Color? tertiaryFixedDim = null, Color? onTertiaryFixed = null, Color? onTertiaryFixedVariant = null, Color? error = null, Color? onError = null, Color? errorContainer = null, Color? onErrorContainer = null, Color? outline = null, Color? outlineVariant = null, Color? surface = null, Color? onSurface = null, Color? surfaceDim = null, Color? surfaceBright = null, Color? surfaceContainerLowest = null, Color? surfaceContainerLow = null, Color? surfaceContainer = null, Color? surfaceContainerHigh = null, Color? surfaceContainerHighest = null, Color? onSurfaceVariant = null, Color? inverseSurface = null, Color? onInverseSurface = null, Color? inversePrimary = null, Color? shadow = null, Color? scrim = null, Color? surfaceTint = null, Color? background = null, Color? onBackground = null, Color? surfaceVariant = null)
     {
         QuantizerResult quantizerResult = await ColorScheme._extractColorsFromImageProvider(provider);
         DartMap<long, long> colorToCountLocal = quantizerResult.colorToCount;
@@ -629,7 +629,7 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static async Future<QuantizerResult> _extractColorsFromImageProvider(dynamic imageProvider)
+    internal static async Future<QuantizerResult> _extractColorsFromImageProvider(global::Doroti.Framework.Painting.IImageProvider imageProvider)
     {
         using global::Doroti.Ui.Image scaledImage = await _imageProviderToScaled(imageProvider);
         var bytes = await scaledImage.toByteData(ImageByteFormat.rawRgba)
@@ -637,7 +637,7 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
         return await new QuantizerCelebi().quantize(MaterialImageColorRuntime.ArgbFromRgba(bytes.asMemory().Span), 128L);
     }
 
-    internal static async Future<global::Doroti.Ui.Image> _imageProviderToScaled(dynamic imageProvider)
+    internal static async Future<global::Doroti.Ui.Image> _imageProviderToScaled(global::Doroti.Framework.Painting.IImageProvider imageProvider)
     {
         var stream = (global::Doroti.Framework.Painting.ImageStream)imageProvider.resolve(
             new global::Doroti.Framework.Painting.ImageConfiguration(size: new Size(112, 112)));

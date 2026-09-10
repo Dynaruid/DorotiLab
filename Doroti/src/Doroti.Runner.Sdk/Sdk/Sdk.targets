@@ -1,4 +1,30 @@
 <Project>
+  <!-- Set PublishAot on the executable, never as a global property on the
+       platform-neutral ProjectReference graph (NETSDK1203 for ios-arm64). -->
+  <PropertyGroup>
+    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' == 'true'">NativeAot</DorotiCompilationMode>
+    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
+    <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
+    <ILLinkTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</ILLinkTreatWarningsAsErrors>
+    <IlcTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</IlcTreatWarningsAsErrors>
+    <TrimmerSingleWarn Condition="'$(DorotiCompilationMode)' == 'NativeAot'">false</TrimmerSingleWarn>
+  </PropertyGroup>
+  <Target Name="ValidateDorotiCompilationMode" BeforeTargets="PrepareForBuild;CollectPackageReferences">
+    <Error Code="DOROTIAOT001" Condition="'$(DorotiCompilationMode)' != 'Mono' and '$(DorotiCompilationMode)' != 'NativeAot'"
+           Text="DorotiCompilationMode must be Mono or NativeAot." />
+    <Error Code="DOROTIAOT002" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(DorotiTarget)' != 'iOS' or '$(RuntimeIdentifier)' != 'ios-arm64')"
+           Text="The experimental NativeAot profile currently targets iOS ios-arm64 only." />
+    <Error Code="DOROTIAOT003" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(ArtifactsPath)' == ''"
+           Text="NativeAot validation requires a separate ArtifactsPath. Use the Doroti CLI compilation mode option or pass a mode-specific ArtifactsPath." />
+    <Error Code="DOROTIAOT004" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(MtouchInterpreter)' != '' or '$(UseInterpreter)' == 'true')"
+           Text="Remove Mono interpreter options from the NativeAot profile." />
+    <Error Code="DOROTIAOT005" Condition="'$(DorotiCompilationMode)' == 'Mono' and '$(PublishAot)' == 'true'"
+           Text="PublishAot=true conflicts with DorotiCompilationMode=Mono." />
+    <Error Code="DOROTIAOT006" Condition="'$(DorotiTarget)' == 'iOS' and '$(DorotiCompilationMode)' == 'Mono' and '$(UseMonoRuntime)' != 'true'"
+           Text="The iOS Mono profile requires UseMonoRuntime=true; refusing an implicit CoreCLR runtime change." />
+    <Error Code="DOROTIAOT007" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(UseMonoRuntime)' == 'true'"
+           Text="UseMonoRuntime=true conflicts with NativeAot." />
+  </Target>
   <!-- Android AOT may resolve Skia P/Invokes without a managed resolver. The
        host AAR supplies the qualified libSkiaSharp.so; exclude stock runtime
        assets at the application graph root so APK ordering cannot select them. -->
@@ -28,7 +54,7 @@
     <!-- The translated framework uses C# dynamic dispatch for Dart dynamic
          semantics. Keep managed assemblies AOT-compiled, but retain the Mono
          interpreter for runtime-generated DLR methods. -->
-    <MtouchInterpreter Condition="'$(MtouchInterpreter)' == '' and ('$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst')">-all</MtouchInterpreter>
+    <MtouchInterpreter Condition="'$(PublishAot)' != 'true' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(MtouchInterpreter)' == '' and ('$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst')">-all</MtouchInterpreter>
     <!-- Keep the Android SDK's Release AOT / Debug interpreter defaults. The old x64
          AOT opt-out made framework JIT compilation block Android input at boot.
          The SDK's stock profiles do not cover Doroti's framework, so compile all
@@ -47,7 +73,7 @@
     <CopyOutputSymbolsToPublishDirectory Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">false</CopyOutputSymbolsToPublishDirectory>
     <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">net10.0-ios</_DorotiExpectedNativeBindingTfm>
+    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'macOS'">net10.0-macos</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'Android'">AndroidGradleProject</_DorotiExpectedNativeBuildItem>
@@ -402,4 +428,5 @@
           Condition="'$(DorotiWebTypeScript)' == 'true' and !Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
   <Import Project="$(MSBuildThisFileDirectory)Doroti.Web.targets" />
   <Import Project="$(MSBuildThisFileDirectory)Doroti.Qt.targets" />
+  <Import Project="Doroti.NativeAot.Evidence.targets" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'" />
 </Project>

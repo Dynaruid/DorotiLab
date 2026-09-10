@@ -62,13 +62,13 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list?)(object?)base.renderObject)!);
+    public override _RenderSliverPrototypeExtentList__sliver_prototype_extent_list renderObject => (_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)base.renderObject;
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         if ((object.Equals(slot, _prototypeSlot)))
         {
             DartRuntimePrimitives.Assert(() => (child is global::Doroti.Framework.Rendering.RenderBox));
-            ((dynamic)this.renderObject).child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!;
+            this.renderObject.child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!;
         }
         else
         {
@@ -102,7 +102,7 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         if ((object.Equals(((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child, __child)))
         {
-            ((dynamic)this.renderObject).child = null;
+            this.renderObject.child = null;
         }
         else
         {

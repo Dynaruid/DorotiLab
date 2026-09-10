@@ -30,7 +30,7 @@ public class SystemContextMenu : StatefulWidget
     public static SystemContextMenu CreateEditableText(global::Doroti.Framework.Foundation.Key? key = null, EditableTextState editableTextState = default!, List<IOSSystemContextMenuItem>? items = null)
     {
         var (startGlyphHeight, endGlyphHeight) = editableTextState.getGlyphHeights();
-        return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(((EditableTextState)editableTextState).renderEditable, startGlyphHeight, endGlyphHeight, ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)((dynamic)((EditableTextState)editableTextState).renderEditable).getEndpointsForSelection(((EditableTextState)editableTextState).textEditingValue.selection))), items: ((items ?? (List<IOSSystemContextMenuItem>)SystemContextMenu.getDefaultItems(editableTextState))), onSystemHide: ((global::System.Action)(() => { editableTextState.hideToolbar(false); })));
+        return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(((EditableTextState)editableTextState).renderEditable, startGlyphHeight, endGlyphHeight, ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(((EditableTextState)editableTextState).renderEditable).getEndpointsForSelection(((EditableTextState)editableTextState).textEditingValue.selection))), items: ((items ?? (List<IOSSystemContextMenuItem>)SystemContextMenu.getDefaultItems(editableTextState))), onSystemHide: ((global::System.Action)(() => { editableTextState.hideToolbar(false); })));
     }
 
     public static bool isSupported(BuildContext context)

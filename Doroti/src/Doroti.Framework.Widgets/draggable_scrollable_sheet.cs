@@ -494,7 +494,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
         if ((((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other))._dragCancelCallback is not null))
         {
             _dragCancelCallback = (global::System.Action)((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other))._dragCancelCallback;
-            ((dynamic)other)._dragCancelCallback = null;
+            ((_DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet)other)._dragCancelCallback = null;
         }
     }
 

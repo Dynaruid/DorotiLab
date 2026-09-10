@@ -147,7 +147,7 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
 
     internal virtual void _onExpansionChanged()
     {
-        global::Doroti.Ui.TextDirection textDirectionLocal = ((TextDirection)((dynamic)WidgetsLocalizations.of(this.context)).textDirection);
+        global::Doroti.Ui.TextDirection textDirectionLocal = ((TextDirection)(WidgetsLocalizations.of(this.context)).textDirection);
         MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
         string stateHint = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((MaterialLocalizations)localizations).collapsedHint : ((MaterialLocalizations)localizations).expandedHint);
         if ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))

@@ -127,8 +127,8 @@ public static partial class ImagePipelineValidation
         var schemes = new Dictionary<string, Dictionary<string, long>>();
         foreach (var brightness in new[] { Brightness.light, Brightness.dark })
         {
-            dynamic provider = networkUrl is not null ? (object)new NetworkImageIo(networkUrl)
-                : realProvider ? (object)new MemoryImage(new Uint8List(encoded)) : new ImmediateImageProvider(image);
+            IImageProvider provider = networkUrl is not null ? new NetworkImageIo(networkUrl)
+                : realProvider ? new MemoryImage(new Uint8List(encoded)) : new ImmediateImageProvider(image);
             var actual = await Material.ColorScheme.fromImageProvider(provider, brightness: brightness);
             var expected = Material.ColorScheme.CreateFromSeed(seedColor: new Color(seed), brightness: brightness);
             var roles = typeof(Material.ColorScheme).GetProperties().Where(property => property.PropertyType == typeof(Color))
@@ -155,9 +155,10 @@ public static partial class ImagePipelineValidation
     }
 }
 
-public sealed class ImmediateImageProvider(Image image)
+public sealed class ImmediateImageProvider(Image image) : ImageProvider<ImmediateImageProvider>
 {
-    public ImageStream resolve(ImageConfiguration configuration) => new ImmediateStream(image);
+    public override Doroti.Runtime.Future<ImmediateImageProvider> obtainKey(ImageConfiguration configuration) => new Doroti.Framework.Foundation.SynchronousFuture<ImmediateImageProvider>(this);
+    public override ImageStream resolve(ImageConfiguration configuration) => new ImmediateStream(image);
     private sealed class ImmediateStream(Image image) : ImageStream
     {
         public override void addListener(ImageStreamListener listener) => listener.onImage(new ImageInfo(image.clone()), true);

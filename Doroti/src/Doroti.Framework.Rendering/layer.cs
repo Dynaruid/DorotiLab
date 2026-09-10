@@ -346,7 +346,12 @@ public class LayerHandle<T> where T : Layer
 
     public LayerHandle(T? _layer = default)
     {
+        DartRuntimePrimitives.Assert(() => (_layer?.debugDisposed != true));
         this._layer = _layer;
+        if (_layer is not null)
+        {
+            _layer._refCount += 1L;
+        }
     }
 
     public virtual T? layer
@@ -364,7 +369,7 @@ public class LayerHandle<T> where T : Layer
             _layer = layer;
             if ((this._layer is not null))
             {
-                this._layer!._refCount = ((dynamic)this._layer!._refCount) + ((dynamic)1L);
+                this._layer!._refCount += 1L;
             }
         }
     }

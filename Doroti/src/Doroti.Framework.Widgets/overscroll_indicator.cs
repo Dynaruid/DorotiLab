@@ -135,7 +135,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
                         var renderer = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((OverscrollNotification)notification__as9386).context!.findRenderObject()!)!;
                         DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)renderer).hasSize);
                         global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderBox)renderer).size);
-                        global::Doroti.Ui.Offset position = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)renderer).globalToLocal(((OverscrollNotification)((OverscrollNotification)notification__as9386)).dragDetails!.globalPosition)));
+                        global::Doroti.Ui.Offset position = ((global::Doroti.Ui.Offset)(object?)((Offset)(renderer).globalToLocal(((OverscrollNotification)((OverscrollNotification)notification__as9386)).dragDetails!.globalPosition)));
                         switch (((OverscrollNotification)notification__as9386).metrics.axis)
                         {
                             case global::Doroti.Framework.Painting.Axis.horizontal:

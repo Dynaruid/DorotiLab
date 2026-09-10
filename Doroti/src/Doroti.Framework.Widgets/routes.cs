@@ -273,7 +273,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
     {
         global::System.Action? previousTrainHoppingListenerRemover = this._trainHoppingListenerRemover;
         _trainHoppingListenerRemover = null;
-        if ((((nextRoute is ITransitionRoute nextTransitionRoute) && canTransitionTo(nextRoute)) && nextTransitionRoute.canTransitionFrom(this)))
+        if ((((nextRoute is ITransitionRoute nextTransitionRoute) && canTransitionTo((object?)nextRoute)) && nextTransitionRoute.canTransitionFrom(this)))
         {
             global::Doroti.Framework.Animation.Animation<double>? current = ((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent;
             if ((current is not null))
@@ -447,7 +447,7 @@ public interface PredictiveBackRoute
 public class LocalHistoryEntry
 {
     public virtual global::System.Action? onRemove { get; private set; }
-    internal virtual LocalHistoryRoute<object>? _owner { get; set; } = default;
+    internal virtual ILocalHistoryRoute? _owner { get; set; } = default;
     public virtual bool impliesAppBarDismissal { get; private set; } = default!;
 
     public LocalHistoryEntry(global::System.Action? onRemove = null, bool impliesAppBarDismissal = true)
@@ -469,7 +469,13 @@ public class LocalHistoryEntry
 
 }
 
-public interface LocalHistoryRoute<T>
+public interface ILocalHistoryRoute
+{
+    void addLocalHistoryEntry(LocalHistoryEntry entry);
+    void removeLocalHistoryEntry(LocalHistoryEntry entry);
+}
+
+public interface LocalHistoryRoute<T> : ILocalHistoryRoute
 {
     List<LocalHistoryEntry>? _localHistory { get; set; }
     long _entriesImpliesAppBarDismissal { get; set; }
@@ -493,7 +499,7 @@ internal class _DismissModalAction__routes : DismissAction
 
     public override bool isEnabled(DismissIntent intent, BuildContext? context = null)
     {
-        ModalRoute<object> route = ModalRoute<object>.of<object>(this.context)!;
+        IModalRoute route = ModalRoute<object>.untypedOf(this.context)!;
         return route.barrierDismissible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -699,8 +705,34 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
 
 }
 
-public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
+public interface IModalRoute : ITransitionRoute, PredictiveBackRoute, ILocalHistoryRoute
 {
+    RouteBase routeBase { get; }
+    NavigatorState? navigator { get; }
+    RouteSettings settings { get; }
+    bool isCurrent { get; }
+    bool isFirst { get; }
+    bool isActive { get; }
+    bool canPop { get; }
+    bool impliesAppBarDismissal { get; }
+    bool fullscreenDialog { get; }
+    bool maintainState { get; }
+    bool barrierDismissible { get; }
+    bool popGestureInProgress { get; }
+    Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>? delegatedTransition { get; }
+    bool offstage { get; set; }
+    BuildContext? subtreeContext { get; }
+    void registerPopEntry(IPopEntry entry);
+    void unregisterPopEntry(IPopEntry entry);
+    void addScopedWillPopCallback(Func<Future<bool>> callback);
+    void removeScopedWillPopCallback(Func<Future<bool>> callback);
+}
+
+public interface IPageRoute : IModalRoute { }
+
+public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, IModalRoute
+{
+    RouteBase IModalRoute.routeBase => this;
     public virtual ImageFilter? filter { get; private set; }
     public virtual TraversalEdgeBehavior? traversalEdgeBehavior { get; private set; }
     public virtual TraversalEdgeBehavior? directionalTraversalEdgeBehavior { get; private set; }
@@ -709,7 +741,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     internal virtual global::Doroti.Framework.Animation.ProxyAnimation? _animationProxy { get; set; } = default;
     internal virtual global::Doroti.Framework.Animation.ProxyAnimation? _secondaryAnimationProxy { get; set; } = default;
     internal virtual List<global::System.Func<Future<bool>>> _willPopCallbacks { get; private set; } = new List<global::System.Func<Future<bool>>>();
-    internal virtual HashSet<dynamic> _popEntries { get; private set; } = new HashSet<dynamic>();
+    internal virtual HashSet<IPopEntry> _popEntries { get; private set; } = new HashSet<IPopEntry>();
     internal virtual GlobalKey<_ModalScopeState__routes<T>> _scopeKey { get; private set; } = GlobalKey<_ModalScopeState__routes<T>>.Create();
     internal virtual GlobalKey<IState> _subtreeKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual PageStorageBucket _storageBucket { get; private set; } = new PageStorageBucket();
@@ -738,7 +770,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static RouteBase? untypedOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<_ModalScopeStatus__routes>()?.route;
+    public static IModalRoute? untypedOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<_ModalScopeStatus__routes>()?.route as IModalRoute;
 
     private static _ModalScopeStatus__routes? ScopeOf(BuildContext context, _ModalRouteAspect__routes aspect) =>
         InheritedModel<object>.inheritFrom<_ModalScopeStatus__routes>(context, aspect: aspect);
@@ -891,9 +923,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     {
         get
         {
-            foreach (dynamic popEntry in this._popEntries)
+            foreach (IPopEntry popEntry in this._popEntries)
             {
-                if (!((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).value)
+                if (!((global::Doroti.Framework.Foundation.ValueListenable<bool>)popEntry.canPopNotifier).value)
                 {
                     return RoutePopDisposition.doNotPop;
                 }
@@ -904,9 +936,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     }
     public override void onPopInvokedWithResult(bool didPop, T? result)
     {
-        foreach (dynamic popEntry in this._popEntries)
+        foreach (IPopEntry popEntry in this._popEntries)
         {
-            ((dynamic)popEntry).onPopInvokedWithResult(didPop, result);
+            popEntry.onPopInvokedWithResultObject(didPop, result);
         }
         base.onPopInvokedWithResult(didPop, result);
     }
@@ -931,17 +963,17 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
         }
     }
 
-    public virtual void registerPopEntry(dynamic popEntry)
+    public virtual void registerPopEntry(IPopEntry popEntry)
     {
         this._popEntries.Add(popEntry);
-        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).addListener(this._maybeDispatchNavigationNotification);
+        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)popEntry.canPopNotifier).addListener(this._maybeDispatchNavigationNotification);
         _maybeDispatchNavigationNotification();
     }
 
-    public virtual void unregisterPopEntry(dynamic popEntry)
+    public virtual void unregisterPopEntry(IPopEntry popEntry)
     {
         this._popEntries.Remove(popEntry);
-        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).removeListener(this._maybeDispatchNavigationNotification);
+        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)popEntry.canPopNotifier).removeListener(this._maybeDispatchNavigationNotification);
         _maybeDispatchNavigationNotification();
     }
 
@@ -993,10 +1025,10 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
 
     public override void didChangeNext(dynamic nextRoute)
     {
-        if ((((nextRoute is ModalRoute<T>) && canTransitionTo(nextRoute)) && (!object.Equals((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((ModalRoute<T>)nextRoute).delegatedTransition, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)this.delegatedTransition))))
+        if (((((object?)nextRoute is IModalRoute) && canTransitionTo((object?)nextRoute)) && (!object.Equals((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((IModalRoute)(object)nextRoute).delegatedTransition, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)this.delegatedTransition))))
         {
-            ModalRoute<T> nextRoute__as84419 = (ModalRoute<T>)nextRoute;
-            receivedTransition = (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>)((ModalRoute<T>)nextRoute__as84419).delegatedTransition;
+            IModalRoute nextRoute__as84419 = (IModalRoute)(object)nextRoute;
+            receivedTransition = (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>)((IModalRoute)nextRoute__as84419).delegatedTransition;
         }
         else
         {
@@ -1008,10 +1040,10 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
 
     public override void didPopNext(dynamic nextRoute)
     {
-        if ((((nextRoute is ModalRoute<T>) && canTransitionTo(nextRoute)) && (!object.Equals((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((ModalRoute<T>)nextRoute).delegatedTransition, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)this.delegatedTransition))))
+        if (((((object?)nextRoute is IModalRoute) && canTransitionTo((object?)nextRoute)) && (!object.Equals((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((IModalRoute)(object)nextRoute).delegatedTransition, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)this.delegatedTransition))))
         {
-            ModalRoute<T> nextRoute__as84796 = (ModalRoute<T>)nextRoute;
-            receivedTransition = (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>)((ModalRoute<T>)nextRoute__as84796).delegatedTransition;
+            IModalRoute nextRoute__as84796 = (IModalRoute)(object)nextRoute;
+            receivedTransition = (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>)((IModalRoute)nextRoute__as84796).delegatedTransition;
         }
         else
         {
@@ -1097,7 +1129,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     public virtual void addLocalHistoryEntry(LocalHistoryEntry entry)
     {
         DartRuntimePrimitives.Assert(() => (((LocalHistoryEntry)entry)._owner is null));
-        entry._owner = DartRuntimePrimitives.ConvertValue<LocalHistoryRoute<object>>(this);
+        entry._owner = this;
         this._localHistory ??= new List<LocalHistoryEntry>();
         bool wasEmpty = !System.Linq.Enumerable.Any(this._localHistory!);
         this._localHistory!.Add(entry);
@@ -1394,8 +1426,15 @@ public delegate Widget RouteBarrierBuilder(BuildContext context, RouteBarrierDet
 
 public delegate void PopInvokedWithResultCallback<T>(bool didPop, T? result);
 
-public abstract class PopEntry<T>
+public interface IPopEntry
 {
+    global::Doroti.Framework.Foundation.ValueListenable<bool> canPopNotifier { get; }
+    void onPopInvokedWithResultObject(bool didPop, object? result);
+}
+
+public abstract class PopEntry<T> : IPopEntry
+{
+    void IPopEntry.onPopInvokedWithResultObject(bool didPop, object? result) => onPopInvokedWithResult(didPop, result is null ? default : (T)result);
     public PopEntry() { }
 
     public virtual void onPopInvoked(bool didPop)

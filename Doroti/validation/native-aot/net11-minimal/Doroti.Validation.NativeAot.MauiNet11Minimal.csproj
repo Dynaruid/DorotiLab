@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net11.0-ios</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <AppBundleManifest>Info.plist</AppBundleManifest>
+    <PublishAot>true</PublishAot>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <ApplicationId>dev.doroti.nativeaot.minimal</ApplicationId>
+    <ApplicationTitle>MAUI 11 NativeAOT dependency repro</ApplicationTitle>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
+    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" VersionOverride="11.0.0-rc.1.26451.6" />
+    <Compile Include="../maui-minimal/Program.cs" Link="Program.cs" />
+  </ItemGroup>
+  <Import Project="../native-evidence.targets" />
+</Project>

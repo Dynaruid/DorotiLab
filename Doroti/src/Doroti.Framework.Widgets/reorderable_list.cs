@@ -952,7 +952,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
     public virtual global::Doroti.Ui.Rect targetGeometry()
     {
         var itemRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset itemPosition = ((global::Doroti.Ui.Offset)(object?)(((Offset)((dynamic)itemRenderBox).localToGlobal(Offset.zero)) + this._targetOffset));
+        global::Doroti.Ui.Offset itemPosition = ((global::Doroti.Ui.Offset)(object?)(((Offset)(itemRenderBox).localToGlobal(Offset.zero)) + this._targetOffset));
         return (itemPosition & ((global::Doroti.Framework.Rendering.RenderBox)itemRenderBox).size);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1136,7 +1136,7 @@ public static partial class Reorderable_listLibrary
     {
         OverlayState overlay = ((OverlayState)(object?)Overlay.of(context, debugRequiredFor: ((BuildContext)context).widget));
         var overlayBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)overlay.context.findRenderObject()!)!;
-        return ((Offset)((dynamic)overlayBox).localToGlobal(Offset.zero));
+        return ((Offset)(overlayBox).localToGlobal(Offset.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

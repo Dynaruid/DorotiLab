@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PublishAot Condition="'$(PublishAot)' == ''">true</PublishAot>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <Compile Include="../../fcr7-material-widget/FocusGeometryContract.cs" Link="FocusGeometryContract.cs" />
+  </ItemGroup>
+</Project>

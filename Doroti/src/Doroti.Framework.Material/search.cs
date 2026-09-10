@@ -97,7 +97,7 @@ public abstract class SearchDelegate<T>
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.NavigatorState>)(() =>
 {
     var __cascade = Navigator.of(context);
-    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals(route, this._route)))));
+    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals((object?)route, this._route)))));
     __cascade.pop(result);
     return __cascade;
 }))());
@@ -110,7 +110,7 @@ public abstract class SearchDelegate<T>
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.NavigatorState>)(() =>
 {
     var __cascade = Navigator.of(context);
-    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals(route, this._route)))));
+    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals((object?)route, this._route)))));
     __cascade.pop<object>(null);
     return __cascade;
 }))());
