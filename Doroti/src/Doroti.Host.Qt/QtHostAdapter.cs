@@ -26,6 +26,7 @@ internal sealed unsafe class QtHostAdapter :
     private ulong _nextFrameToken = 1UL << 63;
     private ulong _nextClipboardRequest;
     private long _metricsGeneration;
+    private ulong _nativeMetricsGeneration;
     private long _inputSequence;
     private long _nativeClockOriginMicroseconds = -1;
     private TimeSpan _dorotiClockOrigin;
@@ -43,12 +44,13 @@ internal sealed unsafe class QtHostAdapter :
     public ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default) =>
         QtUrlLauncher.LaunchUrlAsync(absoluteUrl, cancellationToken);
 
+    private long _resizeGeneration;
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
     public long SurfaceGeneration => Metrics.surfaceGeneration;
     public DorotiResizeEpoch ResizeTarget => new(
-        Metrics.generation,
+        _resizeGeneration,
         Metrics.logicalSize.width,
         Metrics.logicalSize.height,
         Math.Max(0, checked((int)Math.Round(Metrics.physicalSize.width))),
@@ -134,13 +136,14 @@ internal sealed unsafe class QtHostAdapter :
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         var next = new ViewMetrics(new Size(surface.PixelWidth, surface.PixelHeight),
-            surface.DevicePixelRatio, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero,
+            surface.DevicePixelRatio, Metrics.viewPadding, Metrics.viewInsets, Metrics.systemGestureInsets,
             Metrics.lifecycleState, Interlocked.Increment(ref _metricsGeneration),
-            checked((long)surface.SurfaceGeneration));
+            checked((long)surface.SurfaceGeneration)) { gestureSettings = Metrics.gestureSettings };
         if (next.physicalSize != Metrics.physicalSize || next.devicePixelRatio != Metrics.devicePixelRatio ||
             next.surfaceGeneration != Metrics.surfaceGeneration)
         {
-            Metrics = next;
+            if (next.physicalSize != Metrics.physicalSize || next.devicePixelRatio != Metrics.devicePixelRatio) _resizeGeneration++;
+            Metrics = next.Validate();
             MetricsChanged?.Invoke(next);
         }
         Action<TimeSpan>? callback;
@@ -154,15 +157,19 @@ internal sealed unsafe class QtHostAdapter :
 
     internal void ApplyMetrics(in QtNativeV2.Metrics metrics)
     {
+        if (metrics.MetricsGeneration < _nativeMetricsGeneration) return;
+        _nativeMetricsGeneration = metrics.MetricsGeneration;
         var lifecycle = Enum.IsDefined((AppLifecycleState)metrics.LifecycleState)
             ? (AppLifecycleState)metrics.LifecycleState
             : AppLifecycleState.detached;
         var next = new ViewMetrics(new Size(metrics.PixelWidth, metrics.PixelHeight),
-            metrics.DevicePixelRatio, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero,
-            lifecycle, checked((long)metrics.MetricsGeneration), checked((long)metrics.SurfaceGeneration));
+            metrics.DevicePixelRatio, metrics.ViewPadding, metrics.ViewInsets, metrics.SystemGestureInsets,
+            lifecycle, Interlocked.Increment(ref _metricsGeneration), checked((long)metrics.SurfaceGeneration))
+            { gestureSettings = new(metrics.PhysicalTouchSlop > 0 ? metrics.PhysicalTouchSlop : null) };
         if (next != Metrics)
         {
-            Metrics = next;
+            if (next.physicalSize != Metrics.physicalSize || next.devicePixelRatio != Metrics.devicePixelRatio) _resizeGeneration++;
+            Metrics = next.Validate();
             MetricsChanged?.Invoke(next);
         }
     }
@@ -258,7 +265,7 @@ internal sealed unsafe class QtHostAdapter :
         completion?.TrySetResult(text);
     }
 
-    internal void ApplyConfiguration(string languageTags, uint brightness, bool alwaysUse24HourFormat)
+    internal void ApplyConfiguration(string languageTags, uint brightness, bool alwaysUse24HourFormat, bool highContrast = false)
     {
         var locales = languageTags.Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .Select(ParseLocale).ToArray();
@@ -268,6 +275,7 @@ internal sealed unsafe class QtHostAdapter :
             locales = locales,
             platformBrightness = brightness == 0 ? Brightness.dark : Brightness.light,
             alwaysUse24HourFormat = alwaysUse24HourFormat,
+            accessibilityFeatures = new(false, false, false, false, highContrast, false, false),
         };
         if (next != Configuration)
         {

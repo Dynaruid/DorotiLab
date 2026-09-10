@@ -473,6 +473,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         DartRuntimePrimitives.Ignore(PaintingBinding.shaderWarmUp?.execute());
         this._rootPipelineOwner = createRootPipelineOwner();
         this.platformDispatcher.onMetricsChanged = _ => handleMetricsChanged();
+        this.platformDispatcher.onLocaleChanged = handleLocaleChanged;
         this.platformDispatcher.onTextScaleFactorChanged = handleTextScaleFactorChanged;
         this.platformDispatcher.onPlatformBrightnessChanged = handlePlatformBrightnessChanged;
         addPersistentFrameCallback(this._handlePersistentFrameCallback);

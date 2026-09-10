@@ -8,7 +8,7 @@ namespace Doroti.Host.WindowsAppSdk;
 
 internal static partial class WindowsNativeV1
 {
-    internal const uint AbiVersion = 1;
+    internal const uint AbiVersion = 2;
     internal const ulong ExperimentalAcrylicFeature = 1UL << 0;
     internal const ulong PostPresentDwmFlushFeature = 1UL << 1;
     internal const ulong RetainedOversizedChildSurfaceFeature = 1UL << 2;
@@ -66,6 +66,13 @@ internal static partial class WindowsNativeV1
         internal double LogicalHeight;
         internal ulong DisplayId;
         internal long TimestampQpc;
+        internal Doroti.Ui.ViewPadding ViewPadding;
+        internal Doroti.Ui.ViewPadding ViewInsets;
+        internal Doroti.Ui.ViewPadding SystemGestureInsets;
+        internal ulong EnvironmentGeneration;
+        internal double TextScaleFactor;
+        internal uint AccessibilityFlags;
+        internal uint AlwaysUse24Hour;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -269,6 +276,8 @@ internal static partial class WindowsNativeV1
         internal uint CallbacksLifecycleOffset;
         internal uint HostInitialPlatformBrightnessOffset;
         internal uint CallbacksPlatformBrightnessOffset;
+        internal uint MetricsViewInsetsOffset;
+        internal uint MetricsEnvironmentGenerationOffset;
     }
 
     [LibraryImport(LibraryName, EntryPoint = "doroti_windows_get_abi_version_v1")]
@@ -464,6 +473,8 @@ internal static partial class WindowsNativeV1
         AssertEqual("callbacks lifecycle offset", OffsetOf<Callbacks>(nameof(Callbacks.Lifecycle)), layout.CallbacksLifecycleOffset);
         AssertEqual("host initial-platform-brightness offset", OffsetOf<Host>(nameof(Host.InitialPlatformBrightness)), layout.HostInitialPlatformBrightnessOffset);
         AssertEqual("callbacks platform-brightness offset", OffsetOf<Callbacks>(nameof(Callbacks.PlatformBrightness)), layout.CallbacksPlatformBrightnessOffset);
+        AssertEqual("metrics view-insets offset", OffsetOf<Metrics>(nameof(Metrics.ViewInsets)), layout.MetricsViewInsetsOffset);
+        AssertEqual("metrics environment-generation offset", OffsetOf<Metrics>(nameof(Metrics.EnvironmentGeneration)), layout.MetricsEnvironmentGenerationOffset);
         return layout;
     }
 

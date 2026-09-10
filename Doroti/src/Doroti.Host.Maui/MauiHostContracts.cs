@@ -9,6 +9,8 @@ internal readonly record struct MauiPaintCompletion(
     bool IsNewFrame,
     DorotiFrameDescriptor Descriptor);
 
+public sealed record MauiNativeViewSize(double Width, double Height);
+
 public sealed record MauiSurfaceSnapshot(
     int PixelWidth,
     int PixelHeight,
@@ -36,7 +38,11 @@ public sealed record MauiSurfaceSnapshot(
     bool DwmCompositionEnabled = false,
     string EglSwapIntervalPolicy = "not-applicable",
     bool ExactSwapTimingAvailable = false,
-    IReadOnlyList<DorotiResizeTraceEntry>? ResizeTrace = null);
+    IReadOnlyList<DorotiResizeTraceEntry>? ResizeTrace = null,
+    MauiNativeViewSize? NativeEnvironmentPhysicalSize = null,
+    ViewPadding RawViewPadding = default,
+    ViewPadding RawViewInsets = default,
+    ViewPadding RawSystemGestureInsets = default);
 
 public sealed record MauiFrameDiagnostics(
     long Submitted,

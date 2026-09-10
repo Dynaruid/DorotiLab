@@ -151,7 +151,7 @@ public sealed class PlatformDispatcher : IDisposable
 
     public AccessibilityFeatures accessibilityFeatures
     {
-        get => _accessibilityFeatures;
+        get => configurationSnapshot?.accessibilityFeatures ?? _accessibilityFeatures;
         set
         {
             ArgumentNullException.ThrowIfNull(value);
@@ -164,16 +164,19 @@ public sealed class PlatformDispatcher : IDisposable
     public DorotiView? implicitView => views.Count == 1 ? views[0] : null;
     public string defaultRouteName { get; set; } = "/";
     public bool brieflyShowPassword { get; set; } = true;
-    public IReadOnlyList<Locale> locales => implicitView?.environmentConfiguration?.locales ?? [];
-    public Brightness platformBrightness => implicitView?.environmentConfiguration?.platformBrightness ?? Brightness.light;
-    public bool alwaysUse24HourFormat => implicitView?.environmentConfiguration?.alwaysUse24HourFormat ?? false;
-    public bool nativeSpellCheckServiceDefined => implicitView?.environmentConfiguration?.nativeSpellCheckServiceDefined ?? false;
-    public double textScaleFactor => implicitView?.environmentConfiguration?.textScaleFactor ?? 1.0;
-    public bool supportsShowingSystemContextMenu => implicitView?.environmentConfiguration?.supportsShowingSystemContextMenu ?? false;
-    public double? lineHeightScaleFactorOverride => implicitView?.environmentConfiguration?.lineHeightScaleFactorOverride;
-    public double? letterSpacingOverride => implicitView?.environmentConfiguration?.letterSpacingOverride;
-    public double? wordSpacingOverride => implicitView?.environmentConfiguration?.wordSpacingOverride;
-    public double? paragraphSpacingOverride => implicitView?.environmentConfiguration?.paragraphSpacingOverride;
+    private PlatformConfiguration? _configurationSnapshot;
+    public PlatformConfiguration? configurationSnapshot => PlatformEnvironmentContext.currentOrNull ?? _configurationSnapshot;
+    public Action? onLocaleChanged { get; set; }
+    public IReadOnlyList<Locale> locales => configurationSnapshot?.locales ?? [];
+    public Brightness platformBrightness => configurationSnapshot?.platformBrightness ?? Brightness.light;
+    public bool alwaysUse24HourFormat => configurationSnapshot?.alwaysUse24HourFormat ?? false;
+    public bool nativeSpellCheckServiceDefined => configurationSnapshot?.nativeSpellCheckServiceDefined ?? false;
+    public double textScaleFactor => configurationSnapshot?.textScaleFactor ?? 1.0;
+    public bool supportsShowingSystemContextMenu => configurationSnapshot?.supportsShowingSystemContextMenu ?? false;
+    public double? lineHeightScaleFactorOverride => configurationSnapshot?.lineHeightScaleFactorOverride;
+    public double? letterSpacingOverride => configurationSnapshot?.letterSpacingOverride;
+    public double? wordSpacingOverride => configurationSnapshot?.wordSpacingOverride;
+    public double? paragraphSpacingOverride => configurationSnapshot?.paragraphSpacingOverride;
     public FrameData frameData => new(Volatile.Read(ref _frameNumber));
 
     public void setApplicationLocale(Locale locale) => applicationLocale = locale;
@@ -200,7 +203,7 @@ public sealed class PlatformDispatcher : IDisposable
         {
             throw new ArgumentOutOfRangeException(nameof(unscaledFontSize));
         }
-        return unscaledFontSize * textScaleFactor;
+        return configurationSnapshot?.fontSizeScaler?.Invoke(unscaledFontSize) ?? unscaledFontSize * textScaleFactor;
     }
 
     public DorotiView? view(long id)
@@ -350,6 +353,7 @@ public sealed class PlatformDispatcher : IDisposable
                 throw;
             }
             _views.Add(viewId, view);
+            _configurationSnapshot ??= view.environmentConfiguration;
             return view;
         }
     }
@@ -416,13 +420,20 @@ public sealed class PlatformDispatcher : IDisposable
         });
     }
 
-    internal void DispatchPlatformConfiguration(DorotiView view, PlatformConfiguration configuration)
+    internal void DispatchPlatformConfiguration(DorotiView view, PlatformConfiguration configuration, PlatformConfiguration? previous)
     {
+        _configurationSnapshot = configuration;
         DispatchWithEnvironment(view, () =>
         {
             onPlatformConfigurationChanged?.Invoke(view, configuration);
-            onTextScaleFactorChanged?.Invoke();
-            onPlatformBrightnessChanged?.Invoke();
+            if (previous?.textScaleFactor != configuration.textScaleFactor || previous?.fontSizeScaler != configuration.fontSizeScaler)
+                onTextScaleFactorChanged?.Invoke();
+            if (previous?.platformBrightness != configuration.platformBrightness)
+                onPlatformBrightnessChanged?.Invoke();
+            if (previous is null || !previous.locales.SequenceEqual(configuration.locales))
+                onLocaleChanged?.Invoke();
+            if (previous?.accessibilityFeatures != configuration.accessibilityFeatures)
+                onAccessibilityFeaturesChanged?.Invoke();
         });
     }
 
@@ -579,6 +590,8 @@ public sealed class DorotiView : IDisposable
     private readonly AsyncLocal<DorotiSceneBuildToken?> _activeBuildToken = new();
     private readonly AsyncLocal<DorotiFrameTransaction?> _activeFrameTransaction = new();
     private bool _disposed;
+    private ViewMetrics _metrics;
+    private PlatformConfiguration? _environmentConfiguration;
 
     internal DorotiView(PlatformDispatcher dispatcher, ulong viewId, DorotiViewCapabilities capabilities)
     {
@@ -589,6 +602,7 @@ public sealed class DorotiView : IDisposable
             viewId,
             DorotiCapabilityIds.ViewLifecycleMetrics,
             DartUiInvocation.Managed("dart:ui#DorotiView"));
+        _metrics = _viewHost.Metrics.Validate();
         _viewHost.MetricsChanged += HandleMetricsChanged;
         _viewHost.LifecycleChanged += HandleLifecycleChanged;
         _viewHost.CloseRequested += HandleCloseRequested;
@@ -609,6 +623,7 @@ public sealed class DorotiView : IDisposable
                 viewId,
                 DorotiCapabilityIds.PlatformEnvironment,
                 DartUiInvocation.Managed("dart:ui#PlatformConfiguration"));
+            _environmentConfiguration = _environmentHost.Configuration.Snapshot();
             _environmentHost.ConfigurationChanged += HandlePlatformConfigurationChanged;
         }
         if (capabilities.RegisteredIds.Contains(DorotiCapabilityIds.AccessibilitySemantics, StringComparer.Ordinal))
@@ -641,7 +656,7 @@ public sealed class DorotiView : IDisposable
                 "the active host did not register it",
                 targetIdentity);
         }
-        return PlatformEnvironmentContext.Enter(_environmentHost.Configuration);
+        return PlatformEnvironmentContext.Enter(_environmentConfiguration!);
     }
 
     /// <summary>
@@ -675,14 +690,14 @@ public sealed class DorotiView : IDisposable
 
     public ViewConstraints physicalConstraints => ViewConstraints.tight(metrics.physicalSize);
 
-    public ViewPadding padding => metrics.viewPadding;
+    public ViewPadding padding => metrics.padding;
     public ViewPadding viewPadding => metrics.viewPadding;
     public ViewPadding viewInsets => metrics.viewInsets;
     public ViewPadding systemGestureInsets => metrics.systemGestureInsets;
 
-    public IReadOnlyList<DisplayFeature> displayFeatures { get; set; } = Array.Empty<DisplayFeature>();
+    public IReadOnlyList<DisplayFeature> displayFeatures { get => metrics.displayFeatures; set => HandleMetricsChanged(metrics with { displayFeatures = value }); }
 
-    public DisplayCornerRadii? displayCornerRadii { get; set; }
+    public DisplayCornerRadii? displayCornerRadii { get => metrics.displayCornerRadii; set => HandleMetricsChanged(metrics with { displayCornerRadii = value }); }
 
     internal bool semanticsEnabled => _semanticsHost is not null;
     public bool coalesceSemanticsGeometryDuringActiveMetrics =>
@@ -690,14 +705,14 @@ public sealed class DorotiView : IDisposable
 
     public PlatformDispatcher platformDispatcher => _dispatcher;
 
-    public GestureSettings gestureSettings { get; set; } = new();
+    public GestureSettings gestureSettings { get => metrics.gestureSettings; set => HandleMetricsChanged(metrics with { gestureSettings = value }); }
 
     public ViewMetrics metrics
     {
         get
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            return _viewHost.Metrics;
+            return Volatile.Read(ref _metrics);
         }
     }
 
@@ -723,14 +738,14 @@ public sealed class DorotiView : IDisposable
         return new SceneBuildScope(this, previous, previousTransaction);
     }
 
-    public PlatformConfiguration platformConfiguration => _environmentHost?.Configuration ??
+    public PlatformConfiguration platformConfiguration => _environmentConfiguration ??
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformEnvironment,
             viewId,
             DartUiInvocation.Managed("dart:ui#PlatformConfiguration"),
             "the active host did not register it");
 
-    internal PlatformConfiguration? environmentConfiguration => _environmentHost?.Configuration;
+    public PlatformConfiguration? environmentConfiguration => _environmentConfiguration;
 
     public void Show()
     {
@@ -968,11 +983,13 @@ public sealed class DorotiView : IDisposable
 
     private void HandleMetricsChanged(ViewMetrics metrics)
     {
-        _ = metrics;
-        if (!_disposed)
-        {
-            _dispatcher.DispatchMetrics(this);
-        }
+        if (_disposed || metrics.generation < _metrics.generation) return;
+        metrics.Validate();
+        var previous = _metrics;
+        if (metrics.displayFeatures.SequenceEqual(previous.displayFeatures))
+            metrics = metrics.ReuseDisplayFeatures(previous);
+        Volatile.Write(ref _metrics, metrics);
+        if (!previous.HasSameEnvironment(metrics)) _dispatcher.DispatchMetrics(this);
     }
 
     private void HandleLifecycleChanged(AppLifecycleState state)
@@ -1003,8 +1020,14 @@ public sealed class DorotiView : IDisposable
 
     private void HandleFocusData(RawFocusData data) => _dispatcher.DispatchFocus(this, data);
 
-    private void HandlePlatformConfigurationChanged(PlatformConfiguration configuration) =>
-        _dispatcher.DispatchPlatformConfiguration(this, configuration);
+    private void HandlePlatformConfigurationChanged(PlatformConfiguration configuration)
+    {
+        if (_disposed) return;
+        var previous = _environmentConfiguration;
+        _environmentConfiguration = configuration.Snapshot();
+        if (previous?.HasSameValues(_environmentConfiguration) == true) return;
+        _dispatcher.DispatchPlatformConfiguration(this, _environmentConfiguration, previous);
+    }
 
     private void HandleSemanticsAction(SemanticsActionEvent action) => _dispatcher.DispatchSemanticsAction(this, action);
 

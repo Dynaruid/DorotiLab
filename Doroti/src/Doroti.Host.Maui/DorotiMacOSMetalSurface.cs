@@ -120,7 +120,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     {
         if (_disposed || logicalWidth <= 0 || logicalHeight <= 0 ||
             pixelWidth <= 0 || pixelHeight <= 0) return;
-        density = Math.Max(1, density);
+        density = MauiViewEnvironment.ValidScale(density);
         if (checked((int)Math.Round(logicalWidth * density)) != pixelWidth)
             logicalWidth = pixelWidth / density;
         if (checked((int)Math.Round(logicalHeight * density)) != pixelHeight)

@@ -1,3 +1,4 @@
+import { BrowserViewEnvironment } from "./doroti.web.environment.js";
 import { decodeDorotiMessage, dorotiProtocolVersion, dorotiWebGpuRendererVersion } from "./doroti.web.protocol.js";
 import { initializeBrowserTimers } from "./doroti.web.timers.js";
 export { scheduleBrowserTimer, cancelBrowserTimer, cancelBrowserTimerOwner } from "./doroti.web.timers.js";
@@ -41,6 +42,7 @@ interface ListenerRegistration {
 }
 
 interface BrowserHost {
+  environment?: BrowserViewEnvironment;
   id: number;
   root: HTMLElement;
   canvas: HTMLCanvasElement;
@@ -429,6 +431,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
 function snapshot(host: BrowserHost): string {
   const ratio = host.resizeEpoch.devicePixelRatio;
   return JSON.stringify({
+    ...host.environment?.value,
     canvasId: host.canvas.id,
     logicalWidth: host.logicalWidth,
     logicalHeight: host.logicalHeight,
@@ -524,9 +527,9 @@ function updateResizeEpoch(
   logicalWidth: number,
   logicalHeight: number,
   forceGeneration = false,
-  physicalWidth = Math.max(1, Math.round(logicalWidth * Math.max(1, globalThis.devicePixelRatio || 1))),
-  physicalHeight = Math.max(1, Math.round(logicalHeight * Math.max(1, globalThis.devicePixelRatio || 1))),
-  ratio = Math.max(1, globalThis.devicePixelRatio || 1)): boolean {
+  physicalWidth = Math.max(1, Math.round(logicalWidth * (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1))),
+  physicalHeight = Math.max(1, Math.round(logicalHeight * (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1))),
+  ratio = (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1)): boolean {
   const previous = host.resizeEpoch;
   const changed = forceGeneration || logicalWidth !== previous.logicalWidth ||
     logicalHeight !== previous.logicalHeight || ratio !== previous.devicePixelRatio ||
@@ -636,11 +639,11 @@ function commitObservedResize(
 
 function armDprWatcher(host: BrowserHost): void {
   if (!globalThis.matchMedia) return;
-  const query = globalThis.matchMedia(`(resolution: ${Math.max(1, globalThis.devicePixelRatio || 1)}dppx)`);
+  const query = globalThis.matchMedia(`(resolution: ${(globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1)}dppx)`);
   host.dprQuery = query;
   const handler: EventListener = () => {
     const rect = host.root.getBoundingClientRect();
-    const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+    const ratio = (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1);
     commitObservedResize(
       host, "dpr-watcher", rect.width, rect.height,
       Math.max(1, Math.round(rect.width * ratio)),
@@ -657,7 +660,7 @@ function observeResizeEntry(host: BrowserHost, entry: ResizeObserverEntry): void
     : entry.contentBoxSize;
   const logicalWidth = content?.inlineSize ?? entry.contentRect.width;
   const logicalHeight = content?.blockSize ?? entry.contentRect.height;
-  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const ratio = (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1);
   const physicalBoxes = entry.devicePixelContentBoxSize;
   const physical = Array.isArray(physicalBoxes) ? physicalBoxes[0] : physicalBoxes;
   const declaredPhysicalWidth = Math.max(1, Math.round(logicalWidth * ratio));
@@ -700,7 +703,7 @@ function observeFullPageViewport(host: BrowserHost, source: string): void {
   const rect = host.root.getBoundingClientRect();
   const logicalWidth = rect.width > 0 ? rect.width : globalThis.innerWidth;
   const logicalHeight = rect.height > 0 ? rect.height : globalThis.innerHeight;
-  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const ratio = (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1);
   commitObservedResize(
     host, source, logicalWidth, logicalHeight,
     Math.max(1, Math.round(logicalWidth * ratio)),
@@ -834,7 +837,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const initialRect = root.getBoundingClientRect();
   logicalWidth = initialRect.width > 0 ? initialRect.width : logicalWidth;
   logicalHeight = initialRect.height > 0 ? initialRect.height : logicalHeight;
-  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const ratio = (globalThis.devicePixelRatio > 0 && Number.isFinite(globalThis.devicePixelRatio) ? globalThis.devicePixelRatio : 1);
   const initialEpoch: ResizeEpoch = {
     generation: 1, logicalWidth, logicalHeight,
     physicalWidth: Math.max(1, Math.round(logicalWidth * ratio)),
@@ -1053,6 +1056,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const viewportResizeTarget: EventTarget = globalThis.visualViewport ?? globalThis;
   observe(viewportResizeTarget, "resize", () => observeFullPageViewport(
     host, globalThis.visualViewport ? "visual-viewport" : "window-resize"));
+  host.environment = new BrowserViewEnvironment(root, input, () => { host.generation++; emit(host); });
   armDprWatcher(host);
   return snapshot(host);
 }
@@ -1168,6 +1172,7 @@ export function closeHost(hostId: number): void {
   if (host.diagnosticsPublishTimer !== 0)
     clearTimeout(host.diagnosticsPublishTimer);
   if (host.frameRaf > 0) cancelAnimationFrame(host.frameRaf);
+  host.environment?.dispose();
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
   for (const controller of host.semanticsListeners.values()) controller.abort();

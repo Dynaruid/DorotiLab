@@ -1,3 +1,5 @@
+import { validateViewEnvironment } from "./doroti.web.protocol.js";
+import type { Insets, BrowserDisplayFeature } from "./doroti.web.environment.js";
 import {
   configureWorkerBridge,
   dispatchWorkerAnimationFrame,
@@ -33,6 +35,14 @@ interface ResizeEpoch {
 }
 
 interface HostSnapshot {
+  environmentGeneration: number;
+  viewPadding: Insets;
+  viewInsets: Insets;
+  systemGestureInsets: Insets;
+  displayFeatures: BrowserDisplayFeature[];
+  reduceMotion: boolean;
+  highContrast: boolean;
+  invertColors: boolean;
   canvasId: string;
   logicalWidth: number;
   logicalHeight: number;
@@ -162,6 +172,13 @@ function mergeNewestResizeState(value: HostSnapshot): HostSnapshot {
   const keepCurrentResize = current.resizeEpoch.generation > value.resizeEpoch.generation;
   return {
     ...value,
+    generation: Math.max(value.generation, current.generation),
+    ...(current.environmentGeneration > value.environmentGeneration ? {
+      environmentGeneration: current.environmentGeneration,
+      viewPadding: current.viewPadding, viewInsets: current.viewInsets, systemGestureInsets: current.systemGestureInsets,
+      displayFeatures: current.displayFeatures,
+      reduceMotion: current.reduceMotion, highContrast: current.highContrast, invertColors: current.invertColors,
+    } : {}),
     ...(keepCurrentResize ? {
       logicalWidth: current.resizeEpoch.logicalWidth,
       logicalHeight: current.resizeEpoch.logicalHeight,
@@ -175,6 +192,7 @@ function mergeNewestResizeState(value: HostSnapshot): HostSnapshot {
 }
 
 function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void {
+  validateViewEnvironment(value);
   const admittedGeneration = value.resizeEpoch.generation;
   snapshot = mergeNewestResizeState(value);
   latestAdmissionGeneration = Math.max(latestAdmissionGeneration, admittedGeneration);

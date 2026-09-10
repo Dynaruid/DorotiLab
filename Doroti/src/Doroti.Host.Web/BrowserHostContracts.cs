@@ -14,6 +14,20 @@ public sealed record BrowserGpuIdentity(
     bool SoftwareFallbackUsed,
     long ContextGeneration = 0);
 
+// Transport DTOs contain only wire fields. Ui.Rect also exposes computed aliases
+// (IsFinite/isFinite, Size.flipped, etc.) that are not JSON schema members.
+public sealed record BrowserFeatureBounds(double Left, double Top, double Right, double Bottom);
+public sealed record BrowserDisplayFeature(BrowserFeatureBounds Bounds, int Type, int State)
+{
+    public DisplayFeature ToDisplayFeature()
+    {
+        var bounds = new Rect(Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom);
+        if (!bounds.IsFinite || !Enum.IsDefined((DisplayFeatureType)Type) || !Enum.IsDefined((DisplayFeatureState)State))
+            throw new InvalidDataException("Invalid browser display feature.");
+        return new(bounds, (DisplayFeatureType)Type, (DisplayFeatureState)State);
+    }
+}
+
 public sealed record BrowserHostSnapshot(
     string CanvasId,
     double LogicalWidth,
@@ -28,7 +42,15 @@ public sealed record BrowserHostSnapshot(
     long SurfaceGeneration,
     long InputSequence,
     BrowserGpuIdentity Gpu,
-    DorotiResizeEpoch ResizeEpoch);
+    DorotiResizeEpoch ResizeEpoch,
+    ViewPadding ViewPadding = default,
+    ViewPadding ViewInsets = default,
+    ViewPadding SystemGestureInsets = default,
+    bool ReduceMotion = false,
+    bool HighContrast = false,
+    bool InvertColors = false,
+    long EnvironmentGeneration = 0,
+    IReadOnlyList<BrowserDisplayFeature>? DisplayFeatures = null);
 
 public sealed record BrowserJavaScriptPluginDescriptor(
     string Id,
@@ -770,8 +792,9 @@ public sealed class BrowserHostAdapter :
         FrameworkWorkCounters.Add(FrameworkWork.HostSnapshotApply);
         next = Validate(next);
         var previous = _snapshot;
+        if (next.Generation < previous.Generation || next.EnvironmentGeneration < previous.EnvironmentGeneration) return;
         _snapshot = next;
-        if (ToMetrics(previous) != ToMetrics(next))
+        if (!ToMetrics(previous).HasSameEnvironment(ToMetrics(next)) || previous.SurfaceGeneration != next.SurfaceGeneration)
         {
             FrameworkWorkCounters.Add(FrameworkWork.HostMetricsNotified);
             MetricsChanged?.Invoke(ToMetrics(next));
@@ -780,7 +803,8 @@ public sealed class BrowserHostAdapter :
         var nextState = Lifecycle(next);
         if (previousState != nextState) LifecycleChanged?.Invoke(nextState);
         var nextConfiguration = ToConfiguration(next);
-        if (previous.LanguageTag != next.LanguageTag || previous.Brightness != next.Brightness)
+        if (previous.LanguageTag != next.LanguageTag || previous.Brightness != next.Brightness ||
+            previous.ReduceMotion != next.ReduceMotion || previous.HighContrast != next.HighContrast || previous.InvertColors != next.InvertColors)
         {
             _configuration = nextConfiguration;
             ConfigurationChanged?.Invoke(nextConfiguration);
@@ -815,13 +839,19 @@ public sealed class BrowserHostAdapter :
         if (!snapshot.Gpu.Hardware || snapshot.Gpu.SoftwareFallbackUsed || snapshot.Gpu.Api is not ("webgl2" or "webgpu"))
             throw new PlatformNotSupportedException(
                 $"A hardware WebGL2 or WebGPU canvas is required; browser reported '{snapshot.Gpu.Api}/{snapshot.Gpu.Renderer}'.");
+        ToMetrics(snapshot).Validate();
         return snapshot;
     }
 
     private static ViewMetrics ToMetrics(BrowserHostSnapshot snapshot) => new(
         new Size(snapshot.ResizeEpoch.PhysicalWidth, snapshot.ResizeEpoch.PhysicalHeight),
-        snapshot.DevicePixelRatio, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero,
-        Lifecycle(snapshot), snapshot.Generation, snapshot.SurfaceGeneration);
+        snapshot.DevicePixelRatio, Physical(snapshot.ViewPadding, snapshot.DevicePixelRatio),
+        Physical(snapshot.ViewInsets, snapshot.DevicePixelRatio), Physical(snapshot.SystemGestureInsets, snapshot.DevicePixelRatio),
+        Lifecycle(snapshot), snapshot.Generation, snapshot.SurfaceGeneration)
+        { displayFeatures = snapshot.DisplayFeatures?.Select(feature => feature.ToDisplayFeature()).ToArray() ?? Array.Empty<DisplayFeature>() };
+
+    private static ViewPadding Physical(ViewPadding value, double ratio) =>
+        new(value.left * ratio, value.top * ratio, value.right * ratio, value.bottom * ratio);
 
     private static AppLifecycleState Lifecycle(BrowserHostSnapshot snapshot) =>
         snapshot.Visible ? (snapshot.Focused ? AppLifecycleState.resumed : AppLifecycleState.inactive) : AppLifecycleState.hidden;
@@ -846,7 +876,8 @@ public sealed class BrowserHostAdapter :
             _ => HostOperatingSystem.web,
         };
         return new([locale], snapshot.Brightness == "dark" ? Brightness.dark : Brightness.light,
-            false, false, operatingSystem);
+            false, false, operatingSystem, accessibilityFeatures: new(false, snapshot.InvertColors,
+                snapshot.ReduceMotion, false, snapshot.HighContrast, false, false, snapshot.ReduceMotion));
     }
 
     private static string InputMode(DorotiTextInputType type) => type switch

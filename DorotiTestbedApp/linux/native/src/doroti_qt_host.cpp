@@ -26,6 +26,9 @@
 #include <QScreen>
 #include <QSurfaceFormat>
 #include <QStyleHints>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+#include <QAccessibilityHints>
+#endif
 #include <QTabletEvent>
 #include <QTimer>
 #include <QTouchEvent>
@@ -65,7 +68,7 @@ class QPlatformNativeInterface : public QObject {
 QT_END_NAMESPACE
 
 namespace {
-constexpr std::uint32_t kAbiVersion = 2;
+constexpr std::uint32_t kAbiVersion = 3;
 // Acrylic covers the complete client surface. Wayland compositors clip effect
 // regions to the current surface bounds, so keep one deliberately oversized
 // region instead of replacing it after every resize. This also avoids the KDE
@@ -158,6 +161,16 @@ class DorotiSurface final : public DorotiWindowBase {
 #else
     connect(this, &QOpenGLWindow::frameSwapped, this, [this] { FrameSwapped(); });
 #endif
+    connect(QGuiApplication::inputMethod(), &QInputMethod::keyboardRectangleChanged, this, [this] { SendMetrics(); requestUpdate(); });
+    connect(QGuiApplication::inputMethod(), &QInputMethod::visibleChanged, this, [this] { SendMetrics(); requestUpdate(); });
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    connect(this, &QWindow::safeAreaMarginsChanged, this, [this] { SendMetrics(); requestUpdate(); });
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    connect(QGuiApplication::styleHints()->accessibility(), &QAccessibilityHints::contrastPreferenceChanged,
+            this, [this] { SendConfiguration(); requestUpdate(); });
+#endif
+    connect(QGuiApplication::styleHints(), &QStyleHints::startDragDistanceChanged, this, [this] { SendMetrics(); });
     connect(this, &QWindow::screenChanged, this, [this](QScreen*) { SendMetrics(); });
     connect(QGuiApplication::styleHints(), &QStyleHints::colorSchemeChanged,
             this, [this](Qt::ColorScheme) { SendConfiguration(); });
@@ -788,11 +801,22 @@ class DorotiSurface final : public DorotiWindowBase {
 
   void SendMetrics() {
     const auto scale = devicePixelRatio();
-    const doroti_qt_metrics_v2 metrics{
+    doroti_qt_metrics_v2 metrics{
         kAbiVersion, sizeof(doroti_qt_metrics_v2), surface_generation_,
         std::max(1, static_cast<int>(std::round(width() * scale))),
         std::max(1, static_cast<int>(std::round(height() * scale))),
         scale, lifecycle_state_, 0, ++metrics_generation_, Micros()};
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    const auto safe = safeAreaMargins();
+    metrics.view_padding = {safe.left() * scale, safe.top() * scale, safe.right() * scale, safe.bottom() * scale};
+#endif
+    // QInputMethod's rectangle is in window coordinates. A floating keyboard
+    // cannot be represented by a full-width bottom inset.
+    const auto keyboard = QGuiApplication::inputMethod()->keyboardRectangle();
+    if (QGuiApplication::inputMethod()->isVisible() && !keyboard.isEmpty() &&
+        keyboard.left() <= 0 && keyboard.right() >= width() && keyboard.bottom() >= height())
+      metrics.view_insets.bottom = std::clamp(height() - keyboard.top(), 0.0, double(height())) * scale;
+    metrics.physical_touch_slop = QGuiApplication::styleHints()->startDragDistance() * scale;
     callbacks_.metrics_changed(callback_context_, this, &metrics);
   }
 
@@ -802,8 +826,12 @@ class DorotiSurface final : public DorotiWindowBase {
     const auto time_format = QLocale::system().timeFormat(QLocale::ShortFormat);
     const auto always_24 = !time_format.contains("AP", Qt::CaseInsensitive) &&
                            !time_format.contains('a', Qt::CaseInsensitive);
+    std::uint32_t high_contrast = 0;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    high_contrast = QGuiApplication::styleHints()->accessibility()->contrastPreference() == Qt::ContrastPreference::HighContrast;
+#endif
     callbacks_.configuration_changed(callback_context_, this, Utf8(languages),
-                                     dark ? 0u : 1u, always_24 ? 1u : 0u);
+                                     dark ? 0u : 1u, always_24 ? 1u : 0u, high_contrast);
   }
 
   void SendPointer(const QPointF& logical_position, const QPointF& logical_delta,

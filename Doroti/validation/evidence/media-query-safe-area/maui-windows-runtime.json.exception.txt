@@ -1,0 +1,10 @@
+System.Runtime.InteropServices.COMException (0x8001010E)
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at ABI.Microsoft.UI.Xaml.IUIElementMethods.get_XamlRoot(IObjectReference _obj)
+   at Microsoft.UI.Xaml.UIElement.get_XamlRoot()
+   at Doroti.Host.Maui.MauiViewEnvironment.CaptureNative() in C:\Users\parti\Labo\DorotiLab\Doroti\src\Doroti.Host.Maui\MauiViewEnvironment.Windows.cs:line 65
+   at Doroti.Host.Maui.MauiViewEnvironment.Refresh(Object sender, EventArgs args) in C:\Users\parti\Labo\DorotiLab\Doroti\src\Doroti.Host.Maui\MauiViewEnvironment.cs:line 65
+   at Doroti.Host.Maui.MauiHostAdapter.HandleSizeChanged(DorotiResizeEpoch publishedTarget) in C:\Users\parti\Labo\DorotiLab\Doroti\src\Doroti.Host.Maui\MauiHostAdapter.cs:line 740
+   at Doroti.Host.Maui.DorotiWindowsDxgiSurface.MetricsMain() in C:\Users\parti\Labo\DorotiLab\Doroti\src\Doroti.Host.Maui\DorotiWindowsDxgiSurface.cs:line 537
+   at System.Threading.Thread.StartCallback()

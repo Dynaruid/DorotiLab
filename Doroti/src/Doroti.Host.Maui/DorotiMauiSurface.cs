@@ -35,12 +35,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         DorotiApplicationDescriptor application,
         ulong viewId = 1)
     {
+        SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None;
         _application = application ?? throw new ArgumentNullException(nameof(application));
         _viewId = viewId;
         var startupColor = ResolveBackgroundColor(Application.Current?.RequestedTheme ?? AppTheme.Unspecified);
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
             (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
-        _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
+        _semanticsLayer = new AbsoluteLayout { SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None, InputTransparent = true, CascadeInputTransparent = false };
         _textInput = new(CreateHiddenInput<Entry>, CreateHiddenInput<Editor>, this, attachOnDemand: true);
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId);
@@ -330,6 +331,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private void HandleLoaded(object? sender, EventArgs args)
     {
+#if IOS
+        // This switch is process-wide, so only the standalone Doroti application owns it.
+        if (Application.Current is DorotiMauiApplication) Microsoft.Maui.Platform.KeyboardAutoManagerScroll.Disconnect();
+#endif
         if (Window is not { } window || ReferenceEquals(window, _window)) return;
         DetachWindow();
         _window = window;

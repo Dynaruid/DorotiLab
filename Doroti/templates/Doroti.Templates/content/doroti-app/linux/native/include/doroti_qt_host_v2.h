@@ -94,6 +94,8 @@ struct doroti_qt_surface_v2 {
   doroti_qt_utf8_v2 vulkan_instance_extensions;
 };
 
+struct doroti_qt_insets_v3 { double left, top, right, bottom; };
+
 struct doroti_qt_metrics_v2 {
   std::uint32_t abi_version;
   std::uint32_t struct_size;
@@ -105,6 +107,10 @@ struct doroti_qt_metrics_v2 {
   std::uint32_t reserved;
   std::uint64_t metrics_generation;
   std::int64_t timestamp_microseconds;
+  doroti_qt_insets_v3 view_padding{};
+  doroti_qt_insets_v3 view_insets{};
+  doroti_qt_insets_v3 system_gesture_insets{};
+  double physical_touch_slop{};
 };
 
 struct doroti_qt_pointer_v2 {
@@ -229,7 +235,8 @@ struct doroti_qt_callbacks_v2 {
   void (*configuration_changed)(void* callback_context, void* view_handle,
                                 doroti_qt_utf8_v2 ui_languages,
                                 std::uint32_t brightness,
-                                std::uint32_t always_use_24_hour_format);
+                                std::uint32_t always_use_24_hour_format,
+                                std::uint32_t high_contrast);
   void (*semantics_action)(void* callback_context, void* view_handle,
                            std::int64_t node_id, std::int64_t action,
                            doroti_qt_utf8_v2 arguments_json);
@@ -248,7 +255,7 @@ static_assert(offsetof(doroti_qt_surface_v2, framebuffer_object) == 24);
 static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);
 static_assert(offsetof(doroti_qt_surface_v2, timestamp_microseconds) == 80);
 static_assert(sizeof(doroti_qt_surface_v2) == 120);
-static_assert(sizeof(doroti_qt_metrics_v2) == 56);
+static_assert(sizeof(doroti_qt_metrics_v2) == 160);
 static_assert(sizeof(doroti_qt_pointer_v2) == 120);
 static_assert(sizeof(doroti_qt_key_v2) == 56);
 static_assert(sizeof(doroti_qt_text_configuration_v2) == 40);

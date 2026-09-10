@@ -489,11 +489,11 @@ public static unsafe partial class DorotiQtRunner
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     internal static void OnConfigurationChanged(nint context, nint viewHandle,
-        QtNativeV2.Utf8 languages, uint brightness, uint alwaysUse24HourFormat) =>
+        QtNativeV2.Utf8 languages, uint brightness, uint alwaysUse24HourFormat, uint highContrast) =>
         GuardVoid(context, state =>
         {
             _ = viewHandle;
-            state.Host?.ApplyConfiguration(Decode(languages), brightness, alwaysUse24HourFormat != 0);
+            state.Host?.ApplyConfiguration(Decode(languages), brightness, alwaysUse24HourFormat != 0, highContrast != 0);
         });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

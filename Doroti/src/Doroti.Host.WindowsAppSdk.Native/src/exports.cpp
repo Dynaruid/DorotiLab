@@ -6,6 +6,8 @@
 #include <windowsx.h>
 #include <dwmapi.h>
 #include <imm.h>
+#include <inputpaneinterop.h>
+#include <winrt/Windows.UI.ViewManagement.h>
 
 #include <MddBootstrap.h>
 #include <WindowsAppSDK-VersionInfo.h>
@@ -54,6 +56,7 @@ constexpr UINT kSetCaretRect = WM_APP + 0x408;
 constexpr UINT kClearTextClient = WM_APP + 0x409;
 constexpr UINT kUpdateSemantics = WM_APP + 0x40A;
 constexpr UINT kClearSemantics = WM_APP + 0x40B;
+constexpr UINT kEnvironmentChanged = WM_APP + 0x40C;
 constexpr UINT_PTR kSmokeTimer = 1;
 constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
@@ -248,6 +251,7 @@ class ProductHost final {
       if (width > 0 && height > 0) ResizeCompositionViewport(width, height);
     }
     AttachInputServices();
+    AttachEnvironment();
     StartRenderWorker();
     EmitLifecycle(1);
     if (PublishMetrics() && composition_active_)
@@ -515,9 +519,15 @@ class ProductHost final {
       case WM_DISPLAYCHANGE:
         if (PublishMetrics()) QueueRender();
         return 0;
+      case kEnvironmentChanged:
+        CaptureEnvironment();
+        QueueRender();
+        return 0;
       case WM_SETTINGCHANGE:
       case WM_THEMECHANGED:
         RefreshPlatformBrightness();
+        CaptureEnvironment();
+        QueueRender();
         break;
       case WM_CLOSE:
         CancelMovingFrame();
@@ -1849,6 +1859,45 @@ class ProductHost final {
            last_render_terminal_generation_ >= current_generation_;
   }
 
+  void AttachEnvironment() {
+    using namespace winrt::Windows::UI::ViewManagement;
+    ui_settings_ = UISettings();
+    text_scale_token_ = ui_settings_.TextScaleFactorChanged([this](auto&&, auto&&) { PostMessageW(top_, kEnvironmentChanged, 0, 0); });
+    animation_token_ = ui_settings_.AnimationsEnabledChanged([this](auto&&, auto&&) { PostMessageW(top_, kEnvironmentChanged, 0, 0); });
+    auto interop = winrt::get_activation_factory<InputPane, IInputPaneInterop>();
+    const auto result = interop->GetForWindow(top_, winrt::guid_of<InputPane>(), winrt::put_abi(input_pane_));
+    if (SUCCEEDED(result)) {
+      showing_token_ = input_pane_.Showing([this](auto&&, InputPaneVisibilityEventArgs const& args) {
+        args.EnsuredFocusedElementInView(true);
+        keyboard_rect_ = args.OccludedRect();
+        ++environment_generation_; QueueRender();
+      });
+      hiding_token_ = input_pane_.Hiding([this](auto&&, InputPaneVisibilityEventArgs const& args) {
+        args.EnsuredFocusedElementInView(true);
+        keyboard_rect_ = {}; ++environment_generation_; QueueRender();
+      });
+      keyboard_rect_ = input_pane_.OccludedRect();
+    } else {
+      OutputDebugStringW(L"Doroti InputPane interop unavailable; keyboard metrics notVerified.\n");
+    }
+    CaptureEnvironment();
+  }
+
+  void CaptureEnvironment() {
+    if (!ui_settings_) return;
+    text_scale_factor_ = ui_settings_.TextScaleFactor();
+    // AccessibilitySettings.HighContrastChanged needs a CoreWindow and can
+    // return ERROR_NOT_FOUND for the custom HWND host. Win32 broadcasts settings
+    // changes to this window and exposes the same preference through SPI.
+    HIGHCONTRASTW contrast{sizeof(HIGHCONTRASTW)};
+    const bool contrast_read = SystemParametersInfoW(SPI_GETHIGHCONTRAST, sizeof(contrast), &contrast, 0) != FALSE;
+    accessibility_flags_ = (ui_settings_.AnimationsEnabled() ? 0u : 1u) |
+        (contrast_read ? ((contrast.dwFlags & HCF_HIGHCONTRASTON) ? 2u : 0u) : (accessibility_flags_ & 2u));
+    wchar_t format[8]{};
+    always_use_24_hour_ = GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_ITIME, format, 8) > 0 && format[0] == L'1';
+    ++environment_generation_;
+  }
+
   uint64_t QueueRender() {
     if (current_generation_ == 0 || current_width_ == 0 || current_height_ == 0)
       return 0;
@@ -1879,6 +1928,19 @@ class ProductHost final {
                      },
                     accepted,
                     trace_key_};
+    work.metrics.environment_generation = environment_generation_;
+    work.metrics.text_scale_factor = text_scale_factor_;
+    work.metrics.accessibility_flags = accessibility_flags_;
+    work.metrics.always_use_24_hour = always_use_24_hour_;
+    // InputPane is expressed in top-level client DIPs. The drawable child can
+    // occupy a smaller part of that client area; intersect before reporting.
+    POINT origin{};
+    if (!composition_active_) MapWindowPoints(child_, top_, &origin, 1);
+    const double left = origin.x / current_scale_, top = origin.y / current_scale_;
+    const double right = left + work.metrics.logical_width, bottom = top + work.metrics.logical_height;
+    if (keyboard_rect_.Width > 0 && keyboard_rect_.Height > 0 && keyboard_rect_.X <= left &&
+        keyboard_rect_.X + keyboard_rect_.Width >= right && keyboard_rect_.Y + keyboard_rect_.Height >= bottom)
+      work.metrics.view_insets[3] = std::clamp(bottom - keyboard_rect_.Y, 0.0, work.metrics.logical_height) * current_scale_;
     work.trace_key.generation = current_generation_;
     {
       std::lock_guard lock(render_mutex_);
@@ -1924,9 +1986,11 @@ class ProductHost final {
         render_pending_.reset();
       }
 
-      if (work.metrics.generation != delivered_metrics_generation_) {
+      if (work.metrics.generation != delivered_metrics_generation_ ||
+          work.metrics.environment_generation != delivered_environment_generation_) {
         callbacks_.metrics(callbacks_.callback_context, &work.metrics);
         delivered_metrics_generation_ = work.metrics.generation;
+        delivered_environment_generation_ = work.metrics.environment_generation;
       }
       doroti::resize_trace::render_key = work.trace_key;
       auto terminal = callbacks_.render(callbacks_.callback_context, &work.request);
@@ -2313,6 +2377,8 @@ class ProductHost final {
   }
 
   void Destroy() noexcept {
+    if (input_pane_) { input_pane_.Showing(showing_token_); input_pane_.Hiding(hiding_token_); input_pane_ = nullptr; }
+    if (ui_settings_) { ui_settings_.TextScaleFactorChanged(text_scale_token_); ui_settings_.AnimationsEnabledChanged(animation_token_); ui_settings_ = nullptr; }
     StopRenderWorker();
     if (task_ != nullptr) DestroyWindow(task_);
     if (child_ != nullptr) DestroyWindow(child_);
@@ -2339,6 +2405,13 @@ class ProductHost final {
   uint32_t current_height_{};
   double current_scale_{};
   int64_t current_metrics_qpc_{};
+  winrt::Windows::UI::ViewManagement::InputPane input_pane_{nullptr};
+  winrt::Windows::UI::ViewManagement::UISettings ui_settings_{nullptr};
+  winrt::Windows::Foundation::Rect keyboard_rect_{};
+  winrt::event_token showing_token_{}, hiding_token_{}, text_scale_token_{}, animation_token_{};
+  uint64_t environment_generation_{1}, delivered_environment_generation_{};
+  double text_scale_factor_{1};
+  uint32_t accessibility_flags_{}, always_use_24_hour_{};
   uint64_t delivered_metrics_generation_{};
   bool show_requested_{};
   bool first_exact_present_{};
@@ -2484,6 +2557,8 @@ doroti_windows_get_abi_layout_v1(doroti_windows_abi_layout_v1* layout) {
       offsetof(doroti_windows_callbacks_v1, lifecycle),
       offsetof(doroti_windows_host_v1, initial_platform_brightness),
       offsetof(doroti_windows_callbacks_v1, platform_brightness),
+      offsetof(doroti_windows_metrics_v1, view_insets),
+      offsetof(doroti_windows_metrics_v1, environment_generation),
   };
   return DOROTI_WINDOWS_STATUS_OK_V1;
 }
@@ -2540,6 +2615,11 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
     }
     if (bootstrap_initialized) MddBootstrapShutdown();
     return status;
+  } catch (const winrt::hresult_error& error) {
+    std::fprintf(stderr, "Doroti native host HRESULT 0x%08x: %ls\n",
+                 static_cast<unsigned>(error.code().value), error.message().c_str());
+    if (bootstrap_initialized) MddBootstrapShutdown();
+    return DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1;
   } catch (...) {
     if (bootstrap_initialized) MddBootstrapShutdown();
     return DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1;

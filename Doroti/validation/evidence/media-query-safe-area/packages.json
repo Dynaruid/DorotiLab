@@ -1,0 +1,20 @@
+[
+  {
+    "package": "Doroti.Host.Web",
+    "sha256": "fde8c795dcff46ff352285e09e298d15d50cb8e02d054b6b2a0d5aee5974c649",
+    "entryCount": 28,
+    "status": "automatedPassed"
+  },
+  {
+    "package": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+    "sha256": "201c58b99d79d133ea2d5de25d0bebea3a902707b531b59c4d548694730c6d3b",
+    "entryCount": 12,
+    "status": "automatedPassed"
+  },
+  {
+    "package": "Doroti.Templates",
+    "sha256": "7d2262ce356091330b940238a8003b3f800e0212534ba01739ac46b8720f0971",
+    "entryCount": 124,
+    "status": "automatedPassed"
+  }
+]

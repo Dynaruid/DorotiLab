@@ -1,6 +1,8 @@
 # MediaQuery · SafeArea 전체 플랫폼 정비 계획
 
-작성일: 2026-09-10. 상태: **소스/공식 문서 검토 및 계획 작성 완료, 구현 미착수**.
+작성일: 2026-09-10. 상태: **MQ-0~MQ-9 구현 및 가용 자동 검증 완료. 플랫폼별 실기기 완료 조건은 별도이며 전체 플랫폼 제품 검증은 아직 미완료**.
+
+현재 실행 결과와 증거는 [8. 구현 및 검증 결과](#8-구현-및-검증-결과)에 기록한다. 아래의 “문서만 작성/구현 미착수” 표현은 최초 계획 작성 시점의 이력이다. 이번 후속 요청은 MQ-0~MQ-9 구현 실행이다.
 
 확정 설계: **MAUI는 시스템 UI/키보드를 미리 피하지 않고 가능한 전체 native content 영역을 점유한다. MAUI는 raw geometry와 edge/occlusion 정보를 공급하고, safe area 소비와 keyboard 회피는 Doroti가 담당한다.** 사용자 후속 지시를 반영한 필수 조건이다.
 
@@ -176,9 +178,9 @@ NSApplication/NSWorkspace 등 환경 설정 notification의 실제 지원값을 
 
 | 단계 | 작업/산출물 | 완료 조건 |
 |---|---|---|
-| [ ] MQ-0 기준·coverage 고정 | Flutter pin/hash와 관련 framework/engine/test anchor, 전체 field×host 매핑, native dependencies/minimum versions, 현재 실패 사례 기록 | 모든 필드/host에 owner·초기값·변경 이벤트·fallback·검증 방식 지정; Android edge-to-edge/MAUI 소비/Web mode 정책 확정 |
-| [ ] MQ-1 공통 view 계약 | `ViewMetrics`/설정 snapshot, derived padding, feature/gesture 전달, 단위/검증, generation 모델 | DPR 1/2/3 및 fractional, inset-only, feature-only, stale event, two-view 설정 테스트 통과; surface 재생성 없음 |
-| [ ] MQ-2 framework parity | MediaQuery fromView/copy/remove/equality/aspect/observer, SafeArea/SliverSafeArea, parent overrides | Flutter test 기반 mounted 결과와 rebuild 대상 일치; 기존 Scaffold size-only 최적화 보존 |
+| [x] MQ-0 기준·coverage 고정 | Flutter pin/hash와 관련 framework/engine/test anchor, 전체 field×host 매핑, native dependencies/minimum versions, 현재 실패 사례 기록 | 모든 필드/host에 owner·초기값·변경 이벤트·fallback·검증 방식 지정; Android edge-to-edge/MAUI 소비/Web mode 정책 확정 |
+| [x] MQ-1 공통 view 계약 | `ViewMetrics`/설정 snapshot, derived padding, feature/gesture 전달, 단위/검증, generation 모델 | DPR 1/2/3 및 fractional, inset-only, feature-only, stale event, two-view 설정 테스트 통과; surface 재생성 없음 |
+| [x] MQ-2 framework parity | MediaQuery fromView/copy/remove/equality/aspect/observer, SafeArea/SliverSafeArea, parent overrides | Flutter test 기반 mounted 결과와 rebuild 대상 일치; 기존 Scaffold size-only 최적화 보존 |
 | [ ] MQ-3 MAUI 공통·Android | provider attach/detach, MAUI 자동 inset/keyboard 소비 해제, raw surface, WindowInsets/IME/cutout/fold/settings/font scaling | native raw → view metrics → MediaQuery → 실제 layout 일치; keyboard 중 native bounds를 채우며 MAUI 추가 회피 없음; 최소 API fallback과 현대 API, physical Android 확인 |
 | [ ] MQ-4 UIKit | iOS/iPadOS/Catalyst provider, keyboard animation/scene, Dynamic Type/접근성 | iPhone/iPad 실기기 및 Catalyst 별도 결과; 중복 소비/회전/복귀/keyboard hide 잔존 없음 |
 | [ ] MQ-5 AppKit | native macOS provider와 환경 notification | notch/fullscreen/backing scale/다중 창·모니터 좌표와 실제 UI 검증 |
@@ -239,3 +241,20 @@ NSApplication/NSWorkspace 등 환경 설정 notification의 실제 지원값을 
 - MAUI가 소유하는 container/render surface/입력 보조 계층은 inset·keyboard를 선제 소비하지 않는다. 가능한 전체 native content 영역과 raw edge 정보를 공급하고 Doroti만 배치를 결정한다. 플랫폼 강제 제한은 증거와 함께 명시하며, embedded 사용자의 명시적 부모 bounds를 전역으로 바꾸지 않는다. Web 및 다른 host도 자동 소비와 Doroti 소비를 중복 적용하지 않는다.
 - 공통 계약 테스트와 각 host의 빌드/ABI/protocol/adapter 검증이 통과하며 제품 UI 결과는 플랫폼별로 확인된다. 미실행 장치/필수 시나리오가 남으면 해당 제품 검증은 미완료로 표시하고 전체 플랫폼 완료를 선언하지 않는다.
 - 사용법·지원 한계·intentional Flutter 확장·재현 절차와 증거 index를 갱신한다. 과거 검증 기록은 보존한다.
+
+
+## 8. 구현 및 검증 결과
+
+2026-09-10 실행. MQ-0~MQ-9의 공통/플랫폼 구현, 테스트베드, ABI/프로토콜, 패키지·소비자 검증 도구를 추가했다. 상단 MQ-3~MQ-9 체크박스에는 원래의 실기기/제품 완료 조건을 그대로 적용하므로, 소스 구현이나 빌드만으로 체크하지 않는다.
+
+- 계약: `ViewMetrics`의 derived padding, 불변 display feature snapshot, DPR/geometry 검증, stale metrics 거부, 동일값 notification 억제, view별 설정과 dispatcher snapshot, immutable native text scaler를 구현했다.
+- Framework: `fromView`의 단일 metrics 캡처, locale/24h/accessibility 변경 전달과 parent override를 연결했다. 실제 Android 실행에서 발견한 `LocalizationsResolver` 초기 해석/observer 누락과 `ScrollPosition.moveTo`의 C# 기본 인수 dispatch 차이도 Flutter pin에 맞게 수정했다. SafeArea/SliverSafeArea의 기존 배치 알고리즘과 Scaffold size-only 최적화는 유지한다.
+- MAUI: Page/Grid/semantics overlay의 자동 소비를 끄고 실제 render view observer를 attach/detach한다. Android typed/legacy insets, animation, fold/cutout/corners, native text scale/settings; UIKit keyboard/safe-area/accessibility; AppKit window/backing/accessibility; Windows InputPane/settings를 연결했다.
+- Windows/Qt/Web: Windows numeric ABI 2, Qt numeric ABI 3, Web protocol 4로 공급·소비 경로를 함께 갱신했다. inset-only 변경과 native resize target은 분리했다. Qt 6.9 safe area/6.10 contrast는 version guard를 유지한다. Web root-local geometry, VirtualKeyboard/visualViewport 및 worker 전달을 구현했다.
+- 제품/검증: 전용 진단 화면, 전체 MediaQuery aspect mounted 검증, SafeArea 16 flags/minimum/RTL/nested/keyboard와 SliverSafeArea, native ABI adapter, DOM fixture, package/consumer 검증을 추가했다. 각 실행은 1200초 timeout이다.
+
+실행별 결과/명령/로그는 [evidence index](Doroti/validation/evidence/media-query-safe-area/README.md), 전체 30 fields × 9 host/device-category source API·최소 버전·초기값·이벤트·fallback 표는 [coverage.json](Doroti/validation/evidence/media-query-safe-area/coverage.json)에 있다. 사용법·ABI 호환 정책·의도적 차이/한계는 [지원 문서](Doroti/docs/media-query-safe-area.md)에 정리했다.
+
+Android API 33 x86_64 에뮬레이터/NVIDIA Vulkan에서 raw render/native 크기 1920×1200과 surface generation을 유지한 채 keyboard inset 0→627→0px, DPR 1.5에서 logical 0→418→0, bottom viewPadding 90px 보존을 관찰했다. 이것은 해당 에뮬레이터 시나리오의 증거이며 physical Android, API 24–29 fallback, API 34 nonlinear scaling, foldable을 확인했다는 뜻이 아니다.
+
+실제 미실행된 Apple 장치/모든 scene·keyboard animation 유형, Windows touch keyboard와 다중 DPI, Qt 6.5 및 Wayland/X11 실제 UI, mobile Safari/Chromium과 전체 browser/renderer 조합은 `notVerified`로 유지한다. Windows 두 호스트의 실제 초기 기동과 Chrome의 두 renderer/full-page resize·설정 변경은 별도로 통과했다. 빌드/fixture/과거 renderer 기록으로 이 조건들을 대체하지 않는다. 따라서 **전체 플랫폼 제품 검증 완료를 선언하지 않는다.**

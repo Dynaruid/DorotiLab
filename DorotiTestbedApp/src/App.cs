@@ -142,6 +142,8 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "media-query")
+            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new MediaQueryFixture());
         if (App.SampleEnabled) return new MaterialSample.SampleApp();
         Widget Gallery() => Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is "F0" or "F1" or "F2"
             ? new ResizeFixture(Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE")!)

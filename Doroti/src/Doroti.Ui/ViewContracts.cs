@@ -201,6 +201,52 @@ public sealed record ViewMetrics(
     long generation,
     long surfaceGeneration)
 {
+    private IReadOnlyList<DisplayFeature> _displayFeatures = Array.Empty<DisplayFeature>();
+    /// <summary>View-local logical bounds, matching FlutterView.displayFeatures.</summary>
+    public IReadOnlyList<DisplayFeature> displayFeatures
+    {
+        get => _displayFeatures;
+        init => _displayFeatures = Array.AsReadOnly(value.ToArray());
+    }
+    public DisplayCornerRadii? displayCornerRadii { get; init; }
+    public GestureSettings gestureSettings { get; init; } = new();
+    public ViewPadding padding => new(
+        Math.Max(0, viewPadding.left - viewInsets.left),
+        Math.Max(0, viewPadding.top - viewInsets.top),
+        Math.Max(0, viewPadding.right - viewInsets.right),
+        Math.Max(0, viewPadding.bottom - viewInsets.bottom));
+
+    internal ViewMetrics ReuseDisplayFeatures(ViewMetrics previous)
+    {
+        var copy = this with { };
+        copy._displayFeatures = previous._displayFeatures;
+        return copy;
+    }
+
+    public ViewMetrics Validate()
+    {
+        if (!double.IsFinite(devicePixelRatio) || devicePixelRatio <= 0 ||
+            !physicalSize.IsFinite || physicalSize.width < 0 || physicalSize.height < 0)
+            throw new ArgumentOutOfRangeException(nameof(devicePixelRatio), "Invalid view geometry.");
+        foreach (var inset in new[] { viewPadding, viewInsets, systemGestureInsets })
+            if (new[] { inset.left, inset.top, inset.right, inset.bottom }.Any(v => !double.IsFinite(v) || v < 0))
+                throw new ArgumentOutOfRangeException(nameof(viewPadding), "Insets must be finite and non-negative.");
+        if (displayFeatures.Any(f => !f.bounds.IsFinite))
+            throw new ArgumentOutOfRangeException(nameof(displayFeatures));
+        if (gestureSettings.physicalTouchSlop is { } slop && (!double.IsFinite(slop) || slop < 0))
+            throw new ArgumentOutOfRangeException(nameof(gestureSettings));
+        if (displayCornerRadii is { } corners && new[] { corners.topLeft, corners.topRight, corners.bottomRight, corners.bottomLeft }.Any(v => !double.IsFinite(v) || v < 0))
+            throw new ArgumentOutOfRangeException(nameof(displayCornerRadii));
+        return this;
+    }
+
+    public bool HasSameEnvironment(ViewMetrics other) =>
+        physicalSize == other.physicalSize && devicePixelRatio == other.devicePixelRatio &&
+        viewPadding == other.viewPadding && viewInsets == other.viewInsets &&
+        systemGestureInsets == other.systemGestureInsets && lifecycleState == other.lifecycleState &&
+        displayFeatures.SequenceEqual(other.displayFeatures) && displayCornerRadii == other.displayCornerRadii &&
+        gestureSettings == other.gestureSettings;
+
     public Size logicalSize => devicePixelRatio > 0
         ? new(physicalSize.width / devicePixelRatio, physicalSize.height / devicePixelRatio)
         : Size.zero;
@@ -217,7 +263,19 @@ public sealed record PlatformConfiguration(
     double? lineHeightScaleFactorOverride = null,
     double? letterSpacingOverride = null,
     double? wordSpacingOverride = null,
-    double? paragraphSpacingOverride = null);
+    double? paragraphSpacingOverride = null,
+    AccessibilityFeatures? accessibilityFeatures = null,
+    Func<double, double>? fontSizeScaler = null)
+{
+    public PlatformConfiguration Snapshot()
+    {
+        if (!double.IsFinite(textScaleFactor) || textScaleFactor <= 0)
+            throw new ArgumentOutOfRangeException(nameof(textScaleFactor));
+        return this with { locales = Array.AsReadOnly(locales.ToArray()) };
+    }
+    public bool HasSameValues(PlatformConfiguration other) =>
+        locales.SequenceEqual(other.locales) && (this with { locales = other.locales }) == other;
+}
 
 /// <summary>
 /// Carries the active view's host-neutral platform configuration while framework callbacks run.
@@ -226,6 +284,7 @@ public sealed record PlatformConfiguration(
 public static class PlatformEnvironmentContext
 {
     private static readonly AsyncLocal<PlatformConfiguration?> CurrentValue = new();
+    internal static PlatformConfiguration? currentOrNull => CurrentValue.Value;
 
     public static PlatformConfiguration current => CurrentValue.Value ??
         throw new DorotiCapabilityException(

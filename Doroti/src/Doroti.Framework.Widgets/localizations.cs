@@ -410,6 +410,8 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
         this._localeResolutionCallback = localeResolutionCallback;
         this._localizationsDelegates = localizationsDelegates;
         this._supportedLocales = supportedLocales;
+        _resolvedLocale = _resolveLocales(WidgetsBinding.instance.platformDispatcher.locales.ToList(), supportedLocales);
+        WidgetsBinding.instance.addObserver(this);
     }
 
     public override void dispose()
@@ -460,7 +462,7 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
     public virtual IEnumerable<global::Doroti.Ui.Locale> supportedLocales => DartRuntimePrimitives.ConvertValue<IEnumerable<global::Doroti.Ui.Locale>>(this._supportedLocales);
     public virtual void didChangeLocales(List<Locale>? locales)
     {
-        _updateResolvedLocale(locales.ToList());
+        _updateResolvedLocale(locales);
     }
 
     internal virtual void _updateResolvedLocale(List<Locale>? preferredLocales)

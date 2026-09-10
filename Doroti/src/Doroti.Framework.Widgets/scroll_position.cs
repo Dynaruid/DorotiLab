@@ -374,6 +374,9 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
     public abstract void pointerScroll(double delta);
     public override Future moveTo(double to, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null, bool? clamp = true)
     {
+        // C# binds optional arguments at the call site's static type. A call
+        // through ViewportOffset supplies null; Dart selects this override's true.
+        clamp ??= true;
         DartRuntimePrimitives.Assert(() => (clamp is not null));
         if (DartRuntimePrimitives.RequireValue(clamp))
         {

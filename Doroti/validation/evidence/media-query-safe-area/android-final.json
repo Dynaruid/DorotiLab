@@ -1,0 +1,349 @@
+{
+  "status": "automatedPassed",
+  "physicalDevice": false,
+  "api": 33,
+  "device": "emulator-5554",
+  "apkSha256": "2cc30945a4f703eaeeddea4528b9f8e6b3dca951d6fe5ce1f97242abf40c706b",
+  "snapshots": [
+    {
+      "viewId": 1,
+      "physicalWidth": 1920,
+      "physicalHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 2,
+      "surfaceGeneration": 4294967297,
+      "viewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "viewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "systemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      },
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "padding": "EdgeInsets(0.0, 24.0, 0.0, 60.0)",
+      "logicalViewInsets": "EdgeInsets.zero",
+      "safe": true,
+      "resize": true,
+      "maintain": false
+    },
+    {
+      "viewId": 1,
+      "physicalWidth": 1920,
+      "physicalHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 4,
+      "surfaceGeneration": 4294967297,
+      "viewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "viewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 627
+      },
+      "systemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      },
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "padding": "EdgeInsets(0.0, 24.0, 0.0, 0.0)",
+      "logicalViewInsets": "EdgeInsets(0.0, 0.0, 0.0, 418.0)",
+      "safe": true,
+      "resize": true,
+      "maintain": false
+    },
+    {
+      "viewId": 1,
+      "physicalWidth": 1920,
+      "physicalHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 4,
+      "surfaceGeneration": 4294967297,
+      "viewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "viewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 627
+      },
+      "systemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      },
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "padding": "EdgeInsets(0.0, 24.0, 0.0, 0.0)",
+      "logicalViewInsets": "EdgeInsets(0.0, 0.0, 0.0, 418.0)",
+      "safe": true,
+      "resize": false,
+      "maintain": false
+    },
+    {
+      "viewId": 1,
+      "physicalWidth": 1920,
+      "physicalHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 5,
+      "surfaceGeneration": 4294967297,
+      "viewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "viewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "systemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      },
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "padding": "EdgeInsets(0.0, 24.0, 0.0, 60.0)",
+      "logicalViewInsets": "EdgeInsets.zero",
+      "safe": true,
+      "resize": false,
+      "maintain": false
+    }
+  ],
+  "surfaceCases": {
+    "initial": {
+      "pixelWidth": 1920,
+      "pixelHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 2,
+      "contextGeneration": 1,
+      "surfaceGeneration": 4294967297,
+      "nativeViewType": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+      "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
+      "metalDevice": null,
+      "pixelFormat": null,
+      "commandBuffersCommitted": 0,
+      "commandBuffersCompleted": 0,
+      "commandBuffersErrored": 0,
+      "staleCompletions": 0,
+      "cpuReadbacks": 0,
+      "fullFrameCopies": 0,
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "resizeContinuityActivations": 0,
+      "resizeContinuityDeactivations": 0,
+      "resizeContinuityActive": false,
+      "resizeSynchronousPresents": 0,
+      "resizeSynchronousMisses": 0,
+      "dwmCompositionEnabled": false,
+      "eglSwapIntervalPolicy": "not-applicable",
+      "exactSwapTimingAvailable": false,
+      "resizeTrace": null,
+      "nativeEnvironmentPhysicalSize": {
+        "width": 1920,
+        "height": 1200
+      },
+      "rawViewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "rawViewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "rawSystemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      }
+    },
+    "caret": {
+      "pixelWidth": 1920,
+      "pixelHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 4,
+      "contextGeneration": 1,
+      "surfaceGeneration": 4294967297,
+      "nativeViewType": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+      "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
+      "metalDevice": null,
+      "pixelFormat": null,
+      "commandBuffersCommitted": 0,
+      "commandBuffersCompleted": 0,
+      "commandBuffersErrored": 0,
+      "staleCompletions": 0,
+      "cpuReadbacks": 0,
+      "fullFrameCopies": 0,
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "resizeContinuityActivations": 0,
+      "resizeContinuityDeactivations": 0,
+      "resizeContinuityActive": false,
+      "resizeSynchronousPresents": 0,
+      "resizeSynchronousMisses": 0,
+      "dwmCompositionEnabled": false,
+      "eglSwapIntervalPolicy": "not-applicable",
+      "exactSwapTimingAvailable": false,
+      "resizeTrace": null,
+      "nativeEnvironmentPhysicalSize": {
+        "width": 1920,
+        "height": 1200
+      },
+      "rawViewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "rawViewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 627
+      },
+      "rawSystemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      }
+    },
+    "no-resize": {
+      "pixelWidth": 1920,
+      "pixelHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 4,
+      "contextGeneration": 1,
+      "surfaceGeneration": 4294967297,
+      "nativeViewType": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+      "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
+      "metalDevice": null,
+      "pixelFormat": null,
+      "commandBuffersCommitted": 0,
+      "commandBuffersCompleted": 0,
+      "commandBuffersErrored": 0,
+      "staleCompletions": 0,
+      "cpuReadbacks": 0,
+      "fullFrameCopies": 0,
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "resizeContinuityActivations": 0,
+      "resizeContinuityDeactivations": 0,
+      "resizeContinuityActive": false,
+      "resizeSynchronousPresents": 0,
+      "resizeSynchronousMisses": 0,
+      "dwmCompositionEnabled": false,
+      "eglSwapIntervalPolicy": "not-applicable",
+      "exactSwapTimingAvailable": false,
+      "resizeTrace": null,
+      "nativeEnvironmentPhysicalSize": {
+        "width": 1920,
+        "height": 1200
+      },
+      "rawViewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "rawViewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 627
+      },
+      "rawSystemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      }
+    },
+    "hidden": {
+      "pixelWidth": 1920,
+      "pixelHeight": 1200,
+      "devicePixelRatio": 1.5,
+      "metricsGeneration": 5,
+      "contextGeneration": 1,
+      "surfaceGeneration": 4294967297,
+      "nativeViewType": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+      "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
+      "metalDevice": null,
+      "pixelFormat": null,
+      "commandBuffersCommitted": 0,
+      "commandBuffersCompleted": 0,
+      "commandBuffersErrored": 0,
+      "staleCompletions": 0,
+      "cpuReadbacks": 0,
+      "fullFrameCopies": 0,
+      "logicalWidth": 1280,
+      "logicalHeight": 800,
+      "resizeContinuityActivations": 0,
+      "resizeContinuityDeactivations": 0,
+      "resizeContinuityActive": false,
+      "resizeSynchronousPresents": 0,
+      "resizeSynchronousMisses": 0,
+      "dwmCompositionEnabled": false,
+      "eglSwapIntervalPolicy": "not-applicable",
+      "exactSwapTimingAvailable": false,
+      "resizeTrace": null,
+      "nativeEnvironmentPhysicalSize": {
+        "width": 1920,
+        "height": 1200
+      },
+      "rawViewPadding": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 90
+      },
+      "rawViewInsets": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "rawSystemGestureInsets": {
+        "left": 45,
+        "top": 36,
+        "right": 45,
+        "bottom": 90
+      }
+    }
+  },
+  "timeoutSeconds": 1200,
+  "limits": "Observed landscape emulator only; physical Android, other APIs/navigation/fold/IME/rotation remain notVerified"
+}

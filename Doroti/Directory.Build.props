@@ -54,4 +54,11 @@
     <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\android\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
   </PropertyGroup>
+  <!-- Restore evaluates the multi-target outer project before TargetFramework is
+       selected. Keep RID-less Maui assets at the same path for outer restore and
+       inner compilation; SDK output paths already include the target framework. -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and '$(ArtifactsPath)' == ''">
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
 </Project>

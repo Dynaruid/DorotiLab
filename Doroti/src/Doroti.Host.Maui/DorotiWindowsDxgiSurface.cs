@@ -104,6 +104,7 @@ public sealed class DorotiWindowsDxgiElementHandler
 /// </summary>
 internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 {
+    internal event Action? CaptureNativeEnvironment;
     private readonly object _gate = new();
     private readonly DorotiWindowsDxgiElement _view;
     private readonly AutoResetEvent _wake = new(false);
@@ -496,6 +497,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         }
         var logicalWidth = hasNativeSize ? physicalWidth / scaleX : Math.Max(0, host.ActualWidth);
         var logicalHeight = hasNativeSize ? physicalHeight / scaleY : Math.Max(0, host.ActualHeight);
+        // Capture SDK-owned environment values on the XAML thread, before the
+        // immutable target becomes visible to the dedicated metrics worker.
+        CaptureNativeEnvironment?.Invoke();
         DorotiResizeEpoch target;
         lock (_gate)
         {

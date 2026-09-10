@@ -84,6 +84,7 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         var title = descriptor.ViewConfiguration.title;
         return new(new ContentPage
         {
+            SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
             Title = title,
             Content = new DorotiMauiSurface(descriptor),
         })

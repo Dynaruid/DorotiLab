@@ -1,4 +1,4 @@
-export const dorotiProtocolVersion = 3 as const;
+export const dorotiProtocolVersion = 4 as const;
 export const dorotiWebGpuRendererVersion = 1 as const;
 
 export type DorotiProtocolEnvelope = Readonly<Record<string, unknown>> & {
@@ -47,4 +47,17 @@ export function requirePositiveSequence(message: DorotiProtocolEnvelope, name: s
   if (!Number.isSafeInteger(value) || value <= 0)
     throw new Error(`Doroti protocol '${name}' must be a positive safe integer.`);
   return value;
+}
+
+export function validateViewEnvironment(value: unknown): void {
+  if (!value || typeof value !== "object") throw new Error("Missing view environment snapshot.");
+  const snapshot = value as Record<string, unknown>;
+  if (!Number.isSafeInteger(snapshot.environmentGeneration) || Number(snapshot.environmentGeneration) < 0)
+    throw new Error("Invalid environment generation.");
+  for (const key of ["viewPadding", "viewInsets", "systemGestureInsets"]) {
+    const inset = snapshot[key] as Record<string, unknown> | undefined;
+    if (!inset || ["left", "top", "right", "bottom"].some(edge =>
+      typeof inset[edge] !== "number" || !Number.isFinite(inset[edge]) || Number(inset[edge]) < 0))
+      throw new Error(`Invalid ${key}.`);
+  }
 }

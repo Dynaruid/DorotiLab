@@ -36,6 +36,7 @@ internal sealed class MauiHostAdapter :
 
     private readonly ulong _viewId;
     private readonly IMauiSkiaSurface _surface;
+    private readonly MauiViewEnvironment _environment;
     private readonly object _gate = new();
     private Action<TimeSpan>? _pendingFrameCallback;
     private readonly IMauiSemanticsBridge _semantics;
@@ -77,7 +78,7 @@ internal sealed class MauiHostAdapter :
         _surface = surface ?? throw new ArgumentNullException(nameof(surface));
         _textInput = textInput ?? throw new ArgumentNullException(nameof(textInput));
         _logicalSize = logicalSize ?? throw new ArgumentNullException(nameof(logicalSize));
-        _density = Math.Max(1, DeviceDisplay.Current.MainDisplayInfo.Density);
+        _density = MauiViewEnvironment.ValidScale(DeviceDisplay.Current.MainDisplayInfo.Density);
         var initialTarget = _surface.ResizeTarget ?? new DorotiResizeEpoch(
             _metricsGeneration,
             _logicalSize.width,
@@ -100,11 +101,22 @@ internal sealed class MauiHostAdapter :
         if (Application.Current is { } application)
             application.RequestedThemeChanged += HandleRequestedThemeChanged;
         _nativeInput = _surface;
+        _environment = new(_surface.Element);
+        _environment.Changed += HandleEnvironmentChanged;
+#if WINDOWS
+        if (_surface is DorotiWindowsDxgiSurface windowsSurface) windowsSurface.CaptureNativeEnvironment += CaptureNativeEnvironment;
+#endif
     }
 
     private MauiSurfaceSnapshot _snapshot = new(
         0, 0, 1, 1, 0, 0, "not-attached", "not-attached");
-    internal MauiSurfaceSnapshot Snapshot => _surface.CaptureSnapshot(_snapshot);
+    internal MauiSurfaceSnapshot Snapshot => _surface.CaptureSnapshot(_snapshot) with
+    {
+        NativeEnvironmentPhysicalSize = _environment.NativePhysicalSize is { } size ? new(size.width, size.height) : null,
+        RawViewPadding = _environment.Padding,
+        RawViewInsets = _environment.Insets,
+        RawSystemGestureInsets = _environment.Gestures,
+    };
 
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
@@ -121,14 +133,15 @@ internal sealed class MauiHostAdapter :
             var epoch = ViewEpoch;
             return new(
                 new Size(epoch.PhysicalWidth, epoch.PhysicalHeight), epoch.DevicePixelRatio,
-                ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed,
-                epoch.MetricsGeneration, Interlocked.Read(ref _surfaceGeneration));
+                _environment.Padding, _environment.Insets, _environment.Gestures, AppLifecycleState.resumed,
+                epoch.MetricsGeneration, Interlocked.Read(ref _surfaceGeneration))
+            { gestureSettings = _environment.GestureSettings, displayCornerRadii = _environment.Corners, displayFeatures = _environment.Features };
         }
     }
     public PlatformConfiguration Configuration => new(
-        [ToLocale(CultureInfo.CurrentUICulture)],
+        _environment.Locales ?? [ToLocale(CultureInfo.CurrentUICulture)],
         Application.Current?.RequestedTheme == AppTheme.Dark ? Brightness.dark : Brightness.light,
-        false, false,
+        _environment.Use24Hour ?? false, false,
 #if WINDOWS
         HostOperatingSystem.windows
 #elif MACCATALYST
@@ -142,6 +155,8 @@ internal sealed class MauiHostAdapter :
 #else
 #error Doroti.Host.Maui requires an explicit operating-system mapping.
 #endif
+        , textScaleFactor: _environment.TextScale, accessibilityFeatures: _environment.Accessibility,
+        fontSizeScaler: _environment.FontScaler
     );
 
     public event Action<ViewMetrics>? MetricsChanged;
@@ -277,7 +292,7 @@ internal sealed class MauiHostAdapter :
             _surfaceGeneration = paint.SurfaceGeneration;
         else if (pixelSizeChanged)
             _surfaceGeneration++;
-        var density = Math.Max(1, paint.Density);
+        var density = MauiViewEnvironment.ValidScale(paint.Density);
         _density = density;
         var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * density)));
         var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * density)));
@@ -287,6 +302,7 @@ internal sealed class MauiHostAdapter :
             LogicalWidth: _logicalSize.width,
             LogicalHeight: _logicalSize.height);
         _ = expectedWidth == paint.PixelWidth && expectedHeight == paint.PixelHeight;
+        if (previous.SurfaceGeneration != _surfaceGeneration) MetricsChanged?.Invoke(Metrics);
 #if !WINDOWS
         TimeSpan? nativeVsyncTimestamp = null;
 #endif
@@ -652,6 +668,11 @@ internal sealed class MauiHostAdapter :
 #endif
         _surface.Pointer -= HandlePointer;
         _surface.Key -= HandleKey;
+        _environment.Changed -= HandleEnvironmentChanged;
+#if WINDOWS
+        if (_surface is DorotiWindowsDxgiSurface windowsSurface) windowsSurface.CaptureNativeEnvironment -= CaptureNativeEnvironment;
+#endif
+        _environment.Dispose();
         _surface.SizeChanged -= HandleSizeChanged;
         _surface.FocusChanged -= HandleFocusChanged;
         _textInput.EditingStateChanged -= HandleEditingStateChanged;
@@ -675,6 +696,25 @@ internal sealed class MauiHostAdapter :
         GC.KeepAlive(ActionPerformed);
     }
 
+    private void HandleEnvironmentChanged()
+    {
+        if (_disposed) return;
+        var current = ViewEpoch;
+        if (_environment.NativePhysicalSize is { } size &&
+            (size.width != current.PhysicalWidth || size.height != current.PhysicalHeight))
+        {
+            // The surface publishes the matching drawable epoch from SizeChanged.
+            ConfigurationChanged?.Invoke(Configuration);
+            return;
+        }
+        Volatile.Write(ref _viewEpoch, current with { MetricsGeneration = ++_metricsGeneration });
+        MetricsChanged?.Invoke(Metrics);
+        ConfigurationChanged?.Invoke(Configuration);
+        RequestInvalidate();
+    }
+
+    private void CaptureNativeEnvironment() => _environment.Refresh();
+
     private void HandleSizeChanged(DorotiResizeEpoch? publishedTarget)
     {
         DorotiResizeEpoch target;
@@ -686,7 +726,7 @@ internal sealed class MauiHostAdapter :
         {
             if (_surface.Width <= 0 || _surface.Height <= 0) return;
             var surface = _surface.CaptureSnapshot(_snapshot);
-            var density = Math.Max(1, surface.DevicePixelRatio);
+            var density = MauiViewEnvironment.ValidScale(surface.DevicePixelRatio);
             target = new(
                 checked(_metricsGeneration + 1),
                 _surface.Width,
@@ -705,6 +745,9 @@ internal sealed class MauiHostAdapter :
             current.PhysicalHeight == target.PhysicalHeight &&
             current.DeviceScaleX == target.DeviceScaleX &&
             current.DeviceScaleY == target.DeviceScaleY) return;
+#if !WINDOWS
+        _environment.Refresh();
+#endif
         _logicalSize = new(target.LogicalWidth, target.LogicalHeight);
         _density = target.DevicePixelRatio;
         _metricsGeneration++;

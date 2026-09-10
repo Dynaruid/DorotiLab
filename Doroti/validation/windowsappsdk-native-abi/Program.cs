@@ -147,6 +147,23 @@ try
         managedHost.ApplyPlatformBrightness((uint)Doroti.Ui.Brightness.light);
         if (managedHost.Configuration.platformBrightness != Doroti.Ui.Brightness.light || brightnessChanges != 1)
             throw new InvalidOperationException("The managed host did not publish one platform-brightness change.");
+        var metrics = new WindowsNativeV1.Metrics {
+            AbiVersion = WindowsNativeV1.AbiVersion, StructSize = (uint)Marshal.SizeOf<WindowsNativeV1.Metrics>(),
+            ViewId = 1, Generation = 1, WidthPx = 640, HeightPx = 480, Scale = 2,
+            LogicalWidth = 320, LogicalHeight = 240, EnvironmentGeneration = 1, TextScaleFactor = 1,
+            ViewPadding = new(0, 48, 0, 40) };
+        managedHost.ApplyMetrics(metrics);
+        var resizeGeneration = managedHost.ViewEpoch.ResizeTargetGeneration;
+        var metricsGeneration = managedHost.Metrics.generation;
+        metrics.EnvironmentGeneration++; metrics.ViewInsets = new(0, 0, 0, 200); metrics.TextScaleFactor = 1.5;
+        managedHost.ApplyMetrics(metrics);
+        if (managedHost.ViewEpoch.ResizeTargetGeneration != resizeGeneration || managedHost.Metrics.generation <= metricsGeneration ||
+            managedHost.Metrics.viewInsets.bottom != 200 || managedHost.Metrics.padding.bottom != 0 ||
+            managedHost.Configuration.textScaleFactor != 1.5)
+            throw new InvalidOperationException("Inset-only native ABI update failed or created a resize target.");
+        metrics.EnvironmentGeneration++; metrics.ViewInsets = default;
+        managedHost.ApplyMetrics(metrics);
+        if (managedHost.Metrics.padding.bottom != 40) throw new InvalidOperationException("Native keyboard hide did not restore padding.");
     }
 
     Console.WriteLine(JsonSerializer.Serialize(new

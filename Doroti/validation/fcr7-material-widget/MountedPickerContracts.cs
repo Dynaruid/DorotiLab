@@ -898,6 +898,12 @@ internal static partial class MountedPickerContracts
         public void Fire() { var frame = _frame; _frame = null; frame?.Invoke(DorotiFrameClock.Now); }
         public void ScheduleFrame(System.Action<TimeSpan> callback) => _frame = callback;
         public ViewMetrics Metrics { get; private set; } = new(new Size(Width, Height), 1, default, default, default, AppLifecycleState.resumed, 1, 1);
+        public void SetInsets(double bottom)
+        {
+            Metrics = Metrics with { viewInsets = new(0, 0, 0, bottom), generation = Metrics.generation + 1 };
+            ViewEpoch = ViewEpoch with { MetricsGeneration = Metrics.generation };
+            MetricsChanged?.Invoke(Metrics);
+        }
         public void Resize(int width)
         {
             var generation = ViewEpoch.ResizeTargetGeneration + 1;

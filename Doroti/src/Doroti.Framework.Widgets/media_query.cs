@@ -128,51 +128,59 @@ public class MediaQueryData
 
     public static MediaQueryData CreateFromView(DorotiView view, MediaQueryData? platformData = null)
     {
+        var metrics = view.metrics;
+        var configuration = view.environmentConfiguration ?? view.platformDispatcher.configurationSnapshot;
+        var accessibility = configuration?.accessibilityFeatures ?? view.platformDispatcher.accessibilityFeatures;
         var __instance = new MediaQueryData(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
-        __instance.size = (view.physicalSize / view.devicePixelRatio);
-        __instance.devicePixelRatio = view.devicePixelRatio;
+        __instance.size = (metrics.physicalSize / metrics.devicePixelRatio);
+        __instance.devicePixelRatio = metrics.devicePixelRatio;
         __instance._textScaleFactor = 1.0;
         __instance._textScaler = MediaQueryData._textScalerFromView(view, platformData);
-        __instance.platformBrightness = (platformData?.platformBrightness ?? view.platformDispatcher.platformBrightness);
-        __instance.padding = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(view.padding, view.devicePixelRatio);
-        __instance.viewPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(view.viewPadding, view.devicePixelRatio);
-        __instance.viewInsets = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(view.viewInsets, view.devicePixelRatio);
-        __instance.systemGestureInsets = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(view.systemGestureInsets, view.devicePixelRatio);
-        __instance.accessibleNavigation = (platformData?.accessibleNavigation ?? view.platformDispatcher.accessibilityFeatures.accessibleNavigation);
-        __instance.invertColors = (platformData?.invertColors ?? view.platformDispatcher.accessibilityFeatures.invertColors);
-        __instance.disableAnimations = (platformData?.disableAnimations ?? view.platformDispatcher.accessibilityFeatures.disableAnimations);
-        __instance.reduceMotion = (platformData?.reduceMotion ?? view.platformDispatcher.accessibilityFeatures.reduceMotion);
-        __instance.boldText = (platformData?.boldText ?? view.platformDispatcher.accessibilityFeatures.boldText);
-        __instance.supportsAnnounce = (platformData?.supportsAnnounce ?? view.platformDispatcher.accessibilityFeatures.supportsAnnounce);
-        __instance.highContrast = (platformData?.highContrast ?? view.platformDispatcher.accessibilityFeatures.highContrast);
-        __instance.onOffSwitchLabels = (platformData?.onOffSwitchLabels ?? view.platformDispatcher.accessibilityFeatures.onOffSwitchLabels);
-        __instance.alwaysUse24HourFormat = (platformData?.alwaysUse24HourFormat ?? view.platformDispatcher.alwaysUse24HourFormat);
+        __instance.platformBrightness = (platformData?.platformBrightness ?? configuration?.platformBrightness ?? view.platformDispatcher.platformBrightness);
+        __instance.padding = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(metrics.padding, metrics.devicePixelRatio);
+        __instance.viewPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(metrics.viewPadding, metrics.devicePixelRatio);
+        __instance.viewInsets = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(metrics.viewInsets, metrics.devicePixelRatio);
+        __instance.systemGestureInsets = global::Doroti.Framework.Painting.EdgeInsets.CreateFromViewPadding(metrics.systemGestureInsets, metrics.devicePixelRatio);
+        __instance.accessibleNavigation = (platformData?.accessibleNavigation ?? accessibility.accessibleNavigation);
+        __instance.invertColors = (platformData?.invertColors ?? accessibility.invertColors);
+        __instance.disableAnimations = (platformData?.disableAnimations ?? accessibility.disableAnimations);
+        __instance.reduceMotion = (platformData?.reduceMotion ?? accessibility.reduceMotion);
+        __instance.boldText = (platformData?.boldText ?? accessibility.boldText);
+        __instance.supportsAnnounce = (platformData?.supportsAnnounce ?? accessibility.supportsAnnounce);
+        __instance.highContrast = (platformData?.highContrast ?? accessibility.highContrast);
+        __instance.onOffSwitchLabels = (platformData?.onOffSwitchLabels ?? accessibility.onOffSwitchLabels);
+        __instance.alwaysUse24HourFormat = (platformData?.alwaysUse24HourFormat ?? configuration?.alwaysUse24HourFormat ?? view.platformDispatcher.alwaysUse24HourFormat);
         __instance.navigationMode = (platformData?.navigationMode ?? NavigationMode.traditional);
-        __instance.gestureSettings = global::Doroti.Framework.Gestures.DeviceGestureSettings.CreateFromView(view);
-        __instance.displayFeatures = view.displayFeatures.ToList();
-        __instance.supportsShowingSystemContextMenu = (platformData?.supportsShowingSystemContextMenu ?? view.platformDispatcher.supportsShowingSystemContextMenu);
-        __instance.lineHeightScaleFactorOverride = (platformData?.lineHeightScaleFactorOverride ?? view.platformDispatcher.lineHeightScaleFactorOverride);
-        __instance.letterSpacingOverride = (platformData?.letterSpacingOverride ?? view.platformDispatcher.letterSpacingOverride);
-        __instance.wordSpacingOverride = (platformData?.wordSpacingOverride ?? view.platformDispatcher.wordSpacingOverride);
-        __instance.paragraphSpacingOverride = (platformData?.paragraphSpacingOverride ?? view.platformDispatcher.paragraphSpacingOverride);
-        __instance.displayCornerRadii = MediaQueryData._displayCornerRadiiFromView(view);
+        __instance.gestureSettings = new global::Doroti.Framework.Gestures.DeviceGestureSettings(metrics.gestureSettings.physicalTouchSlop / metrics.devicePixelRatio);
+        __instance.displayFeatures = metrics.displayFeatures.ToList();
+        __instance.supportsShowingSystemContextMenu = (platformData?.supportsShowingSystemContextMenu ?? configuration?.supportsShowingSystemContextMenu ?? view.platformDispatcher.supportsShowingSystemContextMenu);
+        __instance.lineHeightScaleFactorOverride = (platformData?.lineHeightScaleFactorOverride ?? configuration?.lineHeightScaleFactorOverride ?? view.platformDispatcher.lineHeightScaleFactorOverride);
+        __instance.letterSpacingOverride = (platformData?.letterSpacingOverride ?? configuration?.letterSpacingOverride ?? view.platformDispatcher.letterSpacingOverride);
+        __instance.wordSpacingOverride = (platformData?.wordSpacingOverride ?? configuration?.wordSpacingOverride ?? view.platformDispatcher.wordSpacingOverride);
+        __instance.paragraphSpacingOverride = (platformData?.paragraphSpacingOverride ?? configuration?.paragraphSpacingOverride ?? view.platformDispatcher.paragraphSpacingOverride);
+        __instance.displayCornerRadii = MediaQueryData._displayCornerRadiiFromMetrics(metrics);
         return __instance;
     }
 
     internal static global::Doroti.Framework.Painting.TextScaler _textScalerFromView(DorotiView view, MediaQueryData? platformData)
     {
-        return (platformData?.textScaler ?? new SystemTextScaler(view.platformDispatcher));
+        return (platformData?.textScaler ?? new SystemTextScaler(view.environmentConfiguration ?? view.platformDispatcher.configurationSnapshot, view.platformDispatcher));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Framework.Painting.BorderRadius? _displayCornerRadiiFromView(DorotiView view)
     {
-        global::Doroti.Ui.DisplayCornerRadii? displayCornerRadiiLocal = ((global::Doroti.Ui.DisplayCornerRadii?)(object?)view.displayCornerRadii);
+        return _displayCornerRadiiFromMetrics(view.metrics);
+    }
+
+    private static global::Doroti.Framework.Painting.BorderRadius? _displayCornerRadiiFromMetrics(ViewMetrics metrics)
+    {
+        var displayCornerRadiiLocal = metrics.displayCornerRadii;
         if ((displayCornerRadiiLocal is null))
         {
             return ((global::Doroti.Framework.Painting.BorderRadius)(object)null);
         }
-        double devicePixelRatioLocal = view.devicePixelRatio;
+        double devicePixelRatioLocal = metrics.devicePixelRatio;
         return new global::Doroti.Framework.Painting.BorderRadius(topLeft: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.topLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))), topRight: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.topRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))), bottomRight: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.bottomRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))), bottomLeft: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.bottomLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -539,6 +547,7 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
     {
         base.initState();
         WidgetsBinding.instance.addObserver(this);
+        PlatformDispatcher.instance.onPlatformConfigurationChanged += HandleEnvironmentChanged;
     }
 
     public override void didChangeDependencies()
@@ -573,6 +582,8 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
     {
         FrameworkWorkCounters.Add(FrameworkWork.MediaUpdate);
         var newData = MediaQueryData.CreateFromView(((_MediaQueryFromView__media_query)this.widget).view, platformData: this._parentData);
+        if (_data is not null && newData.displayFeatures.SequenceEqual(_data.displayFeatures))
+            newData = newData.copyWith(displayFeatures: _data.displayFeatures);
         if ((!object.Equals(newData, this._data)))
         {
             FrameworkWorkCounters.Add(FrameworkWork.MediaChanged);
@@ -612,8 +623,14 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
         }
     }
 
+    private void HandleEnvironmentChanged(DorotiView view, PlatformConfiguration configuration)
+    {
+        if (view == widget.view && _parentData is null) _updateData();
+    }
+
     public override void dispose()
     {
+        PlatformDispatcher.instance.onPlatformConfigurationChanged -= HandleEnvironmentChanged;
         WidgetsBinding.instance.removeObserver(this);
         base.dispose();
     }
@@ -653,22 +670,27 @@ public class SystemTextScaler : global::Doroti.Framework.Painting.TextScaler
     private double __field_textScaleFactor = default!;
     public override double textScaleFactor { get => __field_textScaleFactor; }
 
-    public SystemTextScaler(PlatformDispatcher _platformDispatcher)
+    private readonly Func<double, double>? _fontSizeScaler;
+    public SystemTextScaler(PlatformDispatcher dispatcher) : this(dispatcher.configurationSnapshot, dispatcher) { }
+    public SystemTextScaler(PlatformConfiguration? configuration, PlatformDispatcher _platformDispatcher)
     {
         this._platformDispatcher = _platformDispatcher;
-        this.__field_textScaleFactor = _platformDispatcher.textScaleFactor;
+        this.__field_textScaleFactor = configuration?.textScaleFactor ?? _platformDispatcher.textScaleFactor;
+        _fontSizeScaler = configuration?.fontSizeScaler;
     }
 
-    public override double scale(double fontSize) => this._platformDispatcher.scaleFontSize(fontSize);
+    public override double scale(double fontSize)
+    {
+        if (!double.IsFinite(fontSize) || fontSize < 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
+        return _fontSizeScaler?.Invoke(fontSize) ?? fontSize * textScaleFactor;
+    }
     public override bool Equals(object? other)
     {
-        var __other = other as SystemTextScaler;
-        if (__other is null) return false;
-        if (DartRuntimePrimitives.Identical(this, __other))
+        if (DartRuntimePrimitives.Identical(this, other))
         {
             return true;
         }
-        return (__other switch { SystemTextScaler { textScaleFactor: double textScaleFactorLocal } __object111725 => (this.textScaleFactor == textScaleFactorLocal), var __constant111920 when (object.Equals(__constant111920, global::Doroti.Framework.Painting.TextScaler.noScaling)) => (this.textScaleFactor == 1.0), _ => false });
+        return (other switch { SystemTextScaler { textScaleFactor: double textScaleFactorLocal } => (this.textScaleFactor == textScaleFactorLocal), var noScaling when (object.Equals(noScaling, global::Doroti.Framework.Painting.TextScaler.noScaling)) => (this.textScaleFactor == 1.0), _ => false });
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(this.textScaleFactor.GetHashCode());

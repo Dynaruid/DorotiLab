@@ -1,0 +1,64 @@
+{
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "repositoryHead": "7f54b42f32a3f2caf6fa749a95fe37082ac5e776",
+  "worktree": "dirty - this task implementation",
+  "files": [
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/media_query.cs",
+      "sha256": "caa52dbfa37ceccb0bc65da1d6177033e286ed46037a25a719306ef884fdf3b9"
+    },
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/binding.cs",
+      "sha256": "76fe9a21e006ee2afa74544603e765f4d438eb90e6a9d22b7338ef1fbf50df19"
+    },
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/safe_area.cs",
+      "sha256": "0265edbbb031c045710f298160eb8ad8ce872913cb2ae45fefab5d62adbdd8ce"
+    },
+    {
+      "path": "reference/flutter-master/packages/flutter/lib/src/widgets/media_query.dart",
+      "sha256": "789f9b60482aeb0495fe98d7ede00644ab4ed961979c6c595365e77323334d75"
+    },
+    {
+      "path": "reference/flutter-master/packages/flutter/lib/src/widgets/safe_area.dart",
+      "sha256": "7f3dc2c5e4523799c54a2da3536309970feda6984877f3c0402c83fac63bf1c6"
+    },
+    {
+      "path": "reference/flutter-master/packages/flutter/test/widgets/media_query_test.dart",
+      "sha256": "a5fc0cf9bbe5da89b27d078837b6d03f54e37b08efcc11a98795185f16bfbfe0"
+    },
+    {
+      "path": "reference/flutter-master/packages/flutter/test/widgets/safe_area_test.dart",
+      "sha256": "b7df34d6997336b83563d643cb09cfa26945916d5b23cef04140ff1e7f3eacf3"
+    },
+    {
+      "path": "reference/flutter-master/engine/src/flutter/shell/platform/darwin/ios/framework/Source/AccessibilityFeatures.swift",
+      "sha256": "4cf3616cc35c2a49f055f165955c51a448fbe777163facdb2378d34eadea26a2"
+    },
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/localizations.cs",
+      "sha256": "7bcdfbd07090d3a37e784a94d9699dad49b127e870ddba6d8d82024386b57647"
+    },
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/scroll_position.cs",
+      "sha256": "00d9456fed0e8e42b0c2cf6b6736f59764a3e571a428351302352cded70e4ddc"
+    },
+    {
+      "path": "reference/flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
+      "sha256": "401eee576496baad947357b2fdde1ffa3d8182192773e056e1606e1271e5fbb7"
+    },
+    {
+      "path": "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_position.dart",
+      "sha256": "6a53c8564d5e873f47f6dad6069575ee7fb53b1a8edf6b8fc5b5d7ce85778039"
+    }
+  ],
+  "adaptations": [
+    "Atomic fromView metrics capture; derived padding; view-scoped environment and immutable text scaler",
+    "Retain pin listEquals value equality and identity-sensitive displayFeatures aspect; reuse unchanged lists within mounted fromView",
+    "Retain removeDisplayFeatures size and coordinate semantics from pin",
+    "Wire locale notifications and non-text settings to mounted fromView; SafeArea algorithm unchanged",
+    "Restore LocalizationsResolver constructor resolution and observer registration, including null locale lists",
+    "Normalize ScrollPosition.moveTo clamp when invoked through the ViewportOffset static type, matching Dart virtual default arguments",
+    "Keep the SystemTextScaler noScaling equality case reachable, matching the pinned switch"
+  ]
+}

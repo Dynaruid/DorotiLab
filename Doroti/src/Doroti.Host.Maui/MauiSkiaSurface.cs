@@ -195,15 +195,19 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         try
         {
             var nativeType = _view.Handler?.PlatformView?.GetType().FullName ?? "unknown";
-            var density = Math.Max(1, Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
-#if MACCATALYST
+            var density = MauiViewEnvironment.ValidScale(Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
+#if MACCATALYST || IOS
             // DeviceDisplay describes the main monitor, which need not own
             // this window. Match the scale used by the Metal drawable and
             // SKTouchHandler's conversion from UIKit points to pixels.
             if (_view.Handler?.PlatformView is UIKit.UIView nativeView)
-                density = Math.Max(1, (double)nativeView.ContentScaleFactor);
+                density = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
 #endif
 #if MACCATALYST || IOS || ANDROID
+#if ANDROID
+            if (_view.Handler?.PlatformView is Android.Views.View androidView)
+                density = MauiViewEnvironment.ValidScale(androidView.Resources?.DisplayMetrics?.Density ?? density);
+#endif
             PublishDrawableMetrics(
                 args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density);
 #endif
@@ -468,7 +472,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             _contextMenuDelegate = new MacCatalystContextMenuDelegate(location =>
             {
                 StopMomentum();
-                var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
+                var scale = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
                 var down = new MauiSurfacePointerData(DorotiFrameClock.Now, PointerChange.down,
                     PointerDeviceKind.mouse, 1, location.X * scale, location.Y * scale,
                     2, 0, 0, PointerSignalKind.none, 0);
@@ -484,7 +488,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 // Hover callbacks during a drag must not clear the pressed mask.
                 if (_mouseButtons != 0) return;
                 var location = recognizer.LocationInView(nativeView);
-                var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
+                var scale = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
                 var change = recognizer.State switch
                 {
                     UIKit.UIGestureRecognizerState.Began => PointerChange.add,
@@ -531,7 +535,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         private void DispatchScroll(double x, double y)
         {
             if (_nativeView is not { } nativeView || (x == 0 && y == 0)) return;
-            var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
+            var scale = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
             _dispatch(new(
                 DorotiFrameClock.Now,
                 PointerChange.hover,
@@ -632,7 +636,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             private void Send(Foundation.NSSet touches, UIKit.UIEvent evt, PointerChange change)
             {
                 if (View is not { } view) return;
-                var scale = Math.Max(1, (double)view.ContentScaleFactor);
+                var scale = MauiViewEnvironment.ValidScale((double)view.ContentScaleFactor);
                 foreach (var touch in touches.Cast<UIKit.UITouch>())
                 {
                     var handle = (nint)touch.Handle;

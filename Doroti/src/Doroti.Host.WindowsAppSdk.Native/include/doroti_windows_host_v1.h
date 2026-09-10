@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 1 };
+enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 2 };
 
 typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_NONE_V1 = 0,
@@ -62,6 +62,13 @@ typedef struct doroti_windows_metrics_v1 {
   double logical_height;
   uint64_t display_id;
   int64_t timestamp_qpc;
+  double view_padding[4];
+  double view_insets[4];
+  double system_gesture_insets[4];
+  uint64_t environment_generation;
+  double text_scale_factor;
+  uint32_t accessibility_flags;
+  uint32_t always_use_24_hour;
 } doroti_windows_metrics_v1;
 
 typedef struct doroti_windows_frame_request_v1 {
@@ -321,6 +328,8 @@ typedef struct doroti_windows_abi_layout_v1 {
   uint32_t callbacks_lifecycle_offset;
   uint32_t host_initial_platform_brightness_offset;
   uint32_t callbacks_platform_brightness_offset;
+  uint32_t metrics_view_insets_offset;
+  uint32_t metrics_environment_generation_offset;
 } doroti_windows_abi_layout_v1;
 
 #pragma pack(pop)

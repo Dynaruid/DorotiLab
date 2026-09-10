@@ -4,7 +4,7 @@ namespace Doroti.Host.Qt;
 
 internal static unsafe class QtNativeV2
 {
-    internal const uint AbiVersion = 2;
+    internal const uint AbiVersion = 3;
     internal static ulong RequiredFeatures =>
         (QtSkiaSurface.GraphiteEnabled ? (1UL << 10) : (1UL << 0)) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
         (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7) | (1UL << 8) | (1UL << 9);
@@ -82,6 +82,10 @@ internal static unsafe class QtNativeV2
         internal readonly uint Reserved;
         internal readonly ulong MetricsGeneration;
         internal readonly long TimestampMicroseconds;
+        internal readonly Doroti.Ui.ViewPadding ViewPadding;
+        internal readonly Doroti.Ui.ViewPadding ViewInsets;
+        internal readonly Doroti.Ui.ViewPadding SystemGestureInsets;
+        internal readonly double PhysicalTouchSlop;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -195,7 +199,7 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, TextState*, void> TextEditing;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, uint, void> TextAction;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, ulong, Utf8, void> ClipboardText;
-        internal readonly delegate* unmanaged[Cdecl]<nint, nint, Utf8, uint, uint, void> ConfigurationChanged;
+        internal readonly delegate* unmanaged[Cdecl]<nint, nint, Utf8, uint, uint, uint, void> ConfigurationChanged;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, long, long, Utf8, void> SemanticsAction;
 
         internal Callbacks(nint callbackContext)
@@ -231,7 +235,9 @@ internal static unsafe class QtNativeV2
         RequireSize<Utf8>(16);
         RequireSize<Configuration>(48);
         RequireSize<Surface>(120);
-        RequireSize<Metrics>(56);
+        RequireSize<Metrics>(160);
+        RequireOffset<Metrics>(nameof(Metrics.ViewInsets), 88);
+        RequireOffset<Metrics>(nameof(Metrics.PhysicalTouchSlop), 152);
         RequireSize<Pointer>(120);
         RequireSize<Key>(56);
         RequireSize<TextConfiguration>(40);

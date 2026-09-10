@@ -73,12 +73,15 @@ internal sealed unsafe class WindowsManagedProductHost :
         catch (Exception error) { return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message)); }
     }
 
+    private long _resizeGeneration;
+    private long _environmentGeneration;
+    private long _metricsGeneration;
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
     public long SurfaceGeneration => Metrics.surfaceGeneration;
     public DorotiResizeEpoch ResizeTarget => new(
-        Metrics.generation,
+        _resizeGeneration,
         Metrics.logicalSize.width,
         Metrics.logicalSize.height,
         checked((int)Math.Round(Metrics.physicalSize.width)),
@@ -119,14 +122,28 @@ internal sealed unsafe class WindowsManagedProductHost :
             metrics.Generation == 0 || metrics.WidthPx == 0 || metrics.HeightPx == 0 ||
             !double.IsFinite(metrics.Scale) || metrics.Scale <= 0)
             throw new InvalidDataException("Native product metrics are invalid.");
-        var target = _coordinator.Publish(1, checked((int)metrics.WidthPx), checked((int)metrics.HeightPx),
-            metrics.Scale, 0, checked((long)metrics.Generation));
-        if (target.Generation != checked((long)metrics.Generation))
-            throw new InvalidDataException("Native and managed resize generations diverged.");
+        if ((long)metrics.Generation < _resizeGeneration || (long)metrics.EnvironmentGeneration < _environmentGeneration) return;
+        if ((long)metrics.Generation > _resizeGeneration)
+        {
+            var target = _coordinator.Publish(1, checked((int)metrics.WidthPx), checked((int)metrics.HeightPx),
+                metrics.Scale, 0, checked((long)metrics.Generation));
+            if (target.Generation != checked((long)metrics.Generation))
+                throw new InvalidDataException("Native and managed resize generations diverged.");
+        }
+        else if (metrics.WidthPx != Metrics.physicalSize.width || metrics.HeightPx != Metrics.physicalSize.height ||
+                 metrics.Scale != Metrics.devicePixelRatio)
+            throw new InvalidDataException("An environment event changed geometry without a resize generation.");
         var next = new ViewMetrics(new Size(metrics.WidthPx, metrics.HeightPx), metrics.Scale,
-            ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed,
-            checked((long)metrics.Generation), checked((long)metrics.Generation));
-        Metrics = next;
+            metrics.ViewPadding, metrics.ViewInsets, metrics.SystemGestureInsets, AppLifecycleState.resumed,
+            ++_metricsGeneration, checked((long)metrics.Generation));
+        _resizeGeneration = checked((long)metrics.Generation);
+        _environmentGeneration = checked((long)metrics.EnvironmentGeneration);
+        var configuration = Configuration with { locales = ResolveLocales(), textScaleFactor = metrics.TextScaleFactor > 0 ? metrics.TextScaleFactor : 1,
+            alwaysUse24HourFormat = metrics.AlwaysUse24Hour != 0,
+            accessibilityFeatures = new(false, false, (metrics.AccessibilityFlags & 1) != 0, false,
+                (metrics.AccessibilityFlags & 2) != 0, false, false) };
+        Metrics = next.Validate();
+        if (!configuration.HasSameValues(Configuration)) { Configuration = configuration; ConfigurationChanged?.Invoke(configuration); }
         MetricsChanged?.Invoke(next);
     }
 
@@ -617,6 +634,13 @@ internal sealed unsafe class WindowsManagedProductHost :
 
     private static IReadOnlyList<Locale> ResolveLocales()
     {
+        var languages = Windows.System.UserProfile.GlobalizationPreferences.Languages;
+        if (languages.Count > 0) return languages.Select(tag =>
+        {
+            var pieces = tag.Split('-');
+            return new Locale(pieces[0], pieces.Skip(1).FirstOrDefault(p => p.Length is 2 or 3),
+                pieces.Skip(1).FirstOrDefault(p => p.Length == 4));
+        }).ToArray();
         var parts = CultureInfo.CurrentUICulture.Name.Split('-', StringSplitOptions.RemoveEmptyEntries);
         return [new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
     }

@@ -112,7 +112,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             }
             var presented = _window.Render(_width, _height, (surface, width, height) =>
             {
-                var density = Math.Max(1, Resources?.DisplayMetrics?.Density ?? 1);
+                var density = MauiViewEnvironment.ValidScale(Resources?.DisplayMetrics?.Density ?? 1);
                 paint = new(surface, _window.ContextIdentity, width, height, density,
                     (_generation << 32) | _window.Generation, GetType().FullName!, "Android/SurfaceView/Graphite-Vulkan");
                 _owner.PaintGraphite(paint);
