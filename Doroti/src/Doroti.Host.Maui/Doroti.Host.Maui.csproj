@@ -18,15 +18,19 @@
     <SingleProject>true</SingleProject>
     <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- The unmanaged Graphite DLL is distributed by buildTransitive outside lib/. -->
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
     <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;bin\**</DefaultItemExcludes>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">14.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="buildTransitive\Doroti.Host.Maui.targets" Pack="true" PackagePath="buildTransitive\" />
+    <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <PackageReference Include="Microsoft.Maui.Controls" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'macos'" />
@@ -41,4 +45,35 @@
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
   </ItemGroup>
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <DorotiGraphiteAndroidCpu Condition="'$(RuntimeIdentifier)' != 'android-x64'">arm64</DorotiGraphiteAndroidCpu>
+    <DorotiGraphiteAndroidCpu Condition="'$(RuntimeIdentifier)' == 'android-x64'">x64</DorotiGraphiteAndroidCpu>
+    <DorotiGraphiteAndroidAbi Condition="'$(RuntimeIdentifier)' != 'android-x64'">arm64-v8a</DorotiGraphiteAndroidAbi>
+    <DorotiGraphiteAndroidAbi Condition="'$(RuntimeIdentifier)' == 'android-x64'">x86_64</DorotiGraphiteAndroidAbi>
+    <DorotiGraphiteAndroidDistribution>$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\android-$(DorotiGraphiteAndroidCpu)</DorotiGraphiteAndroidDistribution>
+  </PropertyGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" ExcludeAssets="all" />
+    <EmbeddedNativeLibrary Include="$(DorotiGraphiteAndroidDistribution)\libSkiaSharp.so" Link="lib\$(DorotiGraphiteAndroidAbi)\libSkiaSharp.so" Abi="$(DorotiGraphiteAndroidAbi)" />
+    <!-- A RID-neutral Android NuGet/AAR must support both advertised targets. -->
+    <EmbeddedNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\android-x64\libSkiaSharp.so" Link="lib\x86_64\libSkiaSharp.so" Abi="x86_64" Condition="'$(RuntimeIdentifier)' == ''" />
+    <AndroidAsset Include="$(DorotiGraphiteAndroidDistribution)\build-provenance.json;$(DorotiGraphiteAndroidDistribution)\LICENSE.txt;$(DorotiGraphiteAndroidDistribution)\THIRD-PARTY-NOTICES.txt" Link="graphite\android-$(DorotiGraphiteAndroidCpu)\%(Filename)%(Extension)" />
+    <AndroidAsset Include="$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\android-x64\build-provenance.json;$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\android-x64\LICENSE.txt;$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\android-x64\THIRD-PARTY-NOTICES.txt" Link="graphite\android-x64\%(Filename)%(Extension)" Condition="'$(RuntimeIdentifier)' == ''" />
+    <DorotiLaunchDependency Include="$(DorotiGraphiteAndroidDistribution)\libSkiaSharp.so;$(MSBuildThisFileDirectory)..\..\native\graphite\stage-android.py" />
+  </ItemGroup>
+  <Target Name="EnsureDorotiGraphiteAndroidAsset" BeforeTargets="PrepareForBuild;DorotiCollectLaunchInputs;DorotiCollectLaunchDependencies" Condition="'$(DesignTimeBuild)' != 'true' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <Exec Command="python &quot;$(MSBuildThisFileDirectory)..\..\native\graphite\stage-android.py&quot; --cpu $(DorotiGraphiteAndroidCpu)" Timeout="1200000" />
+    <Exec Command="python &quot;$(MSBuildThisFileDirectory)..\..\native\graphite\stage-android.py&quot; --cpu x64" Timeout="1200000" Condition="'$(RuntimeIdentifier)' == ''" />
+  </Target>
+  <PropertyGroup>
+    <DorotiGraphiteWindowsDistribution>$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\win-x64</DorotiGraphiteWindowsDistribution>
+  </PropertyGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' or ('$(TargetFramework)' == '' and ('$(RuntimeIdentifier)' == 'win-x64' or $([System.String]::Copy('$(TargetFrameworks)').Contains('-windows'))))">
+    <Content Include="$(DorotiGraphiteWindowsDistribution)\libSkiaSharp.dll" Link="graphite\libDorotiGraphite.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Pack="true" PackagePath="nativeAssets\win-x64\graphite\libDorotiGraphite.dll" />
+    <Content Include="$(DorotiGraphiteWindowsDistribution)\build-provenance.json;$(DorotiGraphiteWindowsDistribution)\LICENSE.txt;$(DorotiGraphiteWindowsDistribution)\THIRD-PARTY-NOTICES.txt" Link="graphite\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Pack="true" PackagePath="nativeAssets\win-x64\graphite\" />
+    <DorotiLaunchDependency Include="$(DorotiGraphiteWindowsDistribution)\libSkiaSharp.dll;$(DorotiGraphiteWindowsDistribution)\build-provenance.json" />
+  </ItemGroup>
+  <Target Name="EnsureDorotiGraphiteMauiWindowsAsset" BeforeTargets="PrepareForBuild;DorotiCollectLaunchInputs;DorotiCollectLaunchDependencies" Condition="'$(DesignTimeBuild)' != 'true' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <Exec Command="python &quot;$(MSBuildThisFileDirectory)..\..\native\graphite\build-windows.py&quot; --ensure-distribution" Timeout="1200000" />
+  </Target>
 </Project>

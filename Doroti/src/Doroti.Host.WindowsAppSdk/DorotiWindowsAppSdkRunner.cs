@@ -43,6 +43,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 $"Unsupported Windows App SDK adapter '{adapter}'. Expected HwndExactCpp.");
 
         var selectedPresenter = WindowsManagedState.ResolveRequestedPresenter();
+        if (selectedPresenter == "Vulkan" && WindowsManagedVulkanPresenter.GraphiteEnabled)
+            WindowsManagedVulkanPresenter.ConfigureGraphiteLibrary();
         LastNativeProvenance = WindowsNativeV1.ConfigureAppDirectoryLoading(selectedPresenter);
         WindowsNativeV1.ValidateLayout();
         WindowsNativeV1.EnsureSelfContainedWindowsAppRuntime();
@@ -328,7 +330,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var renderer = new SkiaSceneRenderer(
                 1, host, _configuration.backgroundColor, _configuration.darkBackgroundColor,
                 target, Presenter.RuntimeEffectsBackend,
-                $"windowsappsdk-2.4-hwnd-{presenterSlug}-skia-managed");
+                $"windowsappsdk-2.4-hwnd-{presenterSlug}-skia-managed",
+                enablePictureRasterCache: Presenter.RuntimeEffectsBackend != DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend);
             var messages = new WindowsAppSdkPlatformMessageCapability();
             if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } activeAcrylic)
                 messages.SetMessageHandler(
@@ -493,7 +496,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
         }
 
-        internal void MarkNativeStopped() => Host?.MarkNativeStopped();
+        private bool _nativeRenderWorkerJoined;
+        internal void MarkNativeStopped()
+        {
+            _nativeRenderWorkerJoined = true;
+            Host?.MarkNativeStopped();
+        }
 
         internal void ReleasePlatformResources()
         {
@@ -941,8 +949,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
 
             var deviceLost = false;
+            var shutdownOwnerReady = true;
+            if (_nativeRenderWorkerJoined && Presenter is WindowsManagedVulkanPresenter vulkan)
+            {
+                shutdownOwnerReady = false;
+                Cleanup(() =>
+                {
+                    vulkan.TakeGraphiteShutdownOwnershipAfterRenderWorkerJoined();
+                    shutdownOwnerReady = true;
+                });
+            }
             var preflightCompleted = false;
-            Cleanup(() =>
+            if (shutdownOwnerReady) Cleanup(() =>
             {
                 deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
                 preflightCompleted = true;

@@ -21,7 +21,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private readonly IMTLDevice _metalDevice;
     private readonly IMTLCommandQueue _commandQueue;
     private readonly GRMtlBackendContext _backendContext;
-    internal static readonly bool UseGraphite = Environment.GetEnvironmentVariable("DOROTI_MACOS_GRAPHITE") == "1";
+    internal static readonly bool UseGraphite = Environment.GetEnvironmentVariable("DOROTI_MACOS_GRAPHITE") != "0";
     internal static string GraphicsBackendId => UseGraphite ? "AppKit/MTKView/Graphite-Metal" : "AppKit/MTKView/Metal-Skia";
     private GRContext? _grContext;
     private SkiaGraphiteSession? _graphite;

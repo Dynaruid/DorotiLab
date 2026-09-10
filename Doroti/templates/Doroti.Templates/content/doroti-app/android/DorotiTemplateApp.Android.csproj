@@ -10,7 +10,7 @@
     <DorotiNativeEntryKind>Android-Application</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
     <DefineConstants>$(DefineConstants);ANDROID;DOROTI_MAUI</DefineConstants>
-    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTemplateApp.Android.Native.csproj" />

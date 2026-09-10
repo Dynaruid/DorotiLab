@@ -6,8 +6,8 @@ public static class AndroidMauiTarget
 {
     public const string Rid = "android-arm64";
     public const string TargetFramework = "net10.0-android";
-    public const string NativeViewType = "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView";
-    public const string GraphicsBackend = "Android/MauiSKGLTextureView/OpenGL-ES-Skia";
+    public const string NativeViewType = "Doroti.Host.Maui.DorotiAndroidVulkanView";
+    public const string GraphicsBackend = "Android/SurfaceView/Graphite-Vulkan";
 
     public static void EnsureSupported()
     {

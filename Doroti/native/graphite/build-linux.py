@@ -42,7 +42,7 @@ def main():
     print(evidence, flush=True)
     manifest = {"schema": "doroti.graphite-native-build/v1", "rid": "linux-x64", "status": "FAIL",
                 "skiaRevision": SKIA_REVISION, "skiaSharpRevision": SKIASHARP_REVISION,
-                "bridgeAbi": 2, "productQualified": False, "commands": []}
+                "bridgeAbi": 3, "productQualified": False, "commands": []}
 
     def save():
         (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")

@@ -25,6 +25,7 @@ public static partial class DorotiSkiaRuntimeEffects
     public const string WebGpuBackend = "skiasharp-skglview-webgl2-gpu";
     public const string WebGraphiteBackend = "skiasharp-graphite-dawn-webgpu";
     public const string NativeGraphiteMetalBackend = "skiasharp-graphite-metal-gpu";
+    public const string NativeGraphiteVulkanBackend = "skiasharp-graphite-vulkan-gpu";
     public const string QtGpuBackend = "skiasharp-qt-opengl-gpu";
 
     private static readonly IReadOnlySet<string> SupportedBackends =
@@ -40,6 +41,7 @@ public static partial class DorotiSkiaRuntimeEffects
             WebGpuBackend,
             WebGraphiteBackend,
             NativeGraphiteMetalBackend,
+            NativeGraphiteVulkanBackend,
             QtGpuBackend,
         };
     private static readonly ConcurrentDictionary<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>> EffectCache = [];
@@ -268,6 +270,7 @@ public static partial class DorotiSkiaRuntimeEffects
             backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(WebGraphiteBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(NativeGraphiteMetalBackend + "/", StringComparison.Ordinal) ||
+            backend.StartsWith(NativeGraphiteVulkanBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(QtGpuBackend + "/", StringComparison.Ordinal))
             return;
         var message =

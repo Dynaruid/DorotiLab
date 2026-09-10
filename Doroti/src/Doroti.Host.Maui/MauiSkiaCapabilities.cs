@@ -16,6 +16,12 @@ internal sealed class MauiSkiaCapabilities :
 {
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+    private IMauiGraphiteSurface? _graphiteSurface;
+    internal void AttachGraphiteLifecycle(IMauiGraphiteSurface surface)
+    {
+        _graphiteSurface = surface;
+        surface.GpuResourcesReleasing += _renderer.InvalidateGpuContextResources;
+    }
 #if MACOS
     private DorotiMacOSMetalSurface? _metalSurface;
 
@@ -47,20 +53,30 @@ internal sealed class MauiSkiaCapabilities :
             enablePictureRasterCache: false);
 #elif MACCATALYST
             "maui/skglview",
-            DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            "skiasharp-maui-skglview-gpu",
+            DorotiGraphiteView.Enabled ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            DorotiGraphiteView.Enabled ? "UIKit/MTKView/Graphite-Metal" : "skiasharp-maui-skglview-gpu",
             // Catalyst uses the same Ganesh/Metal offscreen path. During a
             // live resize, cached component pictures can become visible before
             // their replacement raster belongs to the new drawable epoch.
             enablePictureRasterCache: false);
 #elif IOS
             "maui/skglview",
-            DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            "skiasharp-maui-skglview-gpu",
+            DorotiGraphiteView.Enabled ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            DorotiGraphiteView.Enabled ? "UIKit/MTKView/Graphite-Metal" : "skiasharp-maui-skglview-gpu",
             // iOS uses the same Ganesh/Metal offscreen path as Catalyst.
             // Cached component pictures can otherwise expose a transparent
             // snapshot before their raster work is visible to the drawable.
             enablePictureRasterCache: false);
+#elif ANDROID
+            "maui/surfaceview",
+            DorotiGraphiteView.Enabled ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            DorotiGraphiteView.Enabled ? "Android/SurfaceView/Graphite-Vulkan" : "skiasharp-maui-skglview-gpu",
+            enablePictureRasterCache: false);
+#elif WINDOWS
+            "maui/composition",
+            WindowsCompositionSurfaceFeature.GraphiteEnabled ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            WindowsCompositionSurfaceFeature.GraphiteEnabled ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan" : "skiasharp-maui-skglview-gpu",
+            enablePictureRasterCache: !WindowsCompositionSurfaceFeature.GraphiteEnabled);
 #else
             "maui/skglview",
             DorotiSkiaRuntimeEffects.MauiGpuBackend,
@@ -124,6 +140,11 @@ internal sealed class MauiSkiaCapabilities :
             completion.InputSequence, completion.SceneSequence,
             completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor), reason);
 
+    internal void SupersedePaint(MauiPaintCompletion completion, string reason) =>
+        _renderer.SupersedePaint(new(
+            completion.InputSequence, completion.SceneSequence,
+            completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor), reason);
+
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
 
@@ -152,6 +173,9 @@ internal sealed class MauiSkiaCapabilities :
 
     public void Dispose()
     {
+        if (_graphiteSurface is { } graphiteSurface)
+            graphiteSurface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
+        _graphiteSurface = null;
 #if MACOS
         if (_metalSurface is { } surface)
             surface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;

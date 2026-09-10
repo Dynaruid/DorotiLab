@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" />
+    <PackageReference Include="Vortice.Direct3D12" />
+    <PackageReference Include="Vortice.DXGI" />
+    <Content Include="..\..\artifacts\native-graphite\distribution\win-x64\libSkiaSharp.dll" Link="graphite\libDorotiGraphite.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\artifacts\native-graphite\distribution\win-x64\build-provenance.json" Link="graphite\build-provenance.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

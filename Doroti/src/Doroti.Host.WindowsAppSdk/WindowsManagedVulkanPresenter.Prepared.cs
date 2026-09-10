@@ -21,6 +21,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         lock (_viewportGate) MovingOriginWindowPosCommitMismatch++;
     }
     internal bool LastPrepareSucceeded { get; private set; }
+    // NVIDIA's matching display statistics arrive around 250 ms on the qualified
+    // hardware. The user accepts this latency; a missing receipt still fails.
+    internal uint? PreparedReceiptTimeoutForValidation { get; set; }
+    internal uint PreparedReceiptTimeoutMilliseconds => PreparedReceiptTimeoutForValidation
+        ?? (_deviceVendorId == 0x10de ? 1000u : 50u);
+    private ulong _preparedReceiptsOver50Milliseconds;
 
     internal (ulong Prepared, ulong Cancelled, ulong Committed, int Reserved) PreparedDiagnostics
     {
@@ -120,9 +126,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
                 LastPrepareSucceeded = false;
                 return 0;
             }
-            catch
+            catch (Exception exception)
             {
                 MovingOriginWindowPosCommitFailed++;
+                RecordEvent($"prepared commit failed: {exception.Message}");
                 _preparedMoving.Cancel();
                 LastPrepareSucceeded = false;
                 return -1;

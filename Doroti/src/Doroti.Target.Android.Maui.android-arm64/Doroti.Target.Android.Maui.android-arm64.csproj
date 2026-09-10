@@ -5,13 +5,13 @@
     <AssemblyName>Doroti.Target.Android.Maui</AssemblyName>
     <RootNamespace>Doroti.Target.Android.Maui</RootNamespace>
     <PackageId>Doroti.Target.Android.Maui.android-arm64</PackageId>
-    <Description>Doroti Android MAUI SKGL texture view OpenGL ES composition root for arm64.</Description>
+    <Description>Doroti Android MAUI SurfaceView Graphite Vulkan composition root for arm64.</Description>
     <PackageReleaseNotes>Adds the Android arm64 MAUI target with strict GPU surface ownership.</PackageReleaseNotes>
     <IsDorotiProduct>true</IsDorotiProduct>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
-    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=android-arm64" />

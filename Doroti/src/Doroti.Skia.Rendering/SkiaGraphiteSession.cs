@@ -8,13 +8,13 @@ namespace Doroti.Skia.Rendering;
 /// owns the device, queue and output textures and must outlive this session.
 /// Submission does not acknowledge GPU completion or platform presentation.
 /// </summary>
-public sealed class SkiaGraphiteSession : IDisposable
+public sealed partial class SkiaGraphiteSession : IDisposable
 {
     public const long ContextBudgetBytes = 256L * 1024 * 1024;
     public const long RecorderBudgetBytes = 64L * 1024 * 1024;
-    private readonly int _ownerThread = Environment.CurrentManagedThreadId;
+    private int _ownerThread = Environment.CurrentManagedThreadId;
     private readonly SKGraphiteContext _context;
-    private readonly SKGraphiteImageCache _images = new();
+    private readonly SkiaGraphiteUploadCache _images = new();
     private readonly SKGraphiteRecorder _recorder;
     private readonly HashSet<Frame> _frames = [];
     private Frame? _recordingFrame;
@@ -31,7 +31,7 @@ public sealed class SkiaGraphiteSession : IDisposable
         try
         {
             _recorder = context.CreateRecorder(RecorderBudgetBytes,
-                (recorder, image, mipmapped) => _images.FindOrCreate(recorder, image, mipmapped))
+                (recorder, image, mipmapped) => _images.FindOrCreate(recorder, image, mipmapped)!)
                 ?? throw new InvalidOperationException("Graphite recorder creation failed.");
         }
         catch
@@ -43,7 +43,10 @@ public sealed class SkiaGraphiteSession : IDisposable
     }
 
     public long Generation { get; }
+    public (long Uploads, long Hits, long Discarded) ImageCacheDiagnostics
+    { get { CheckOwner(); return (_images.Uploads, _images.Hits, _images.Discarded); } }
     public int MaxFrames { get; }
+    public bool IsDeviceLost { get { CheckOwner(); return _context.IsDeviceLost; } }
     public int OutstandingFrames { get { CheckOwner(); return _frames.Count; } }
     public bool CanBeginFrame
     {
@@ -54,9 +57,6 @@ public sealed class SkiaGraphiteSession : IDisposable
         }
     }
 
-    // Vulkan needs the enabled-feature/state/semaphore bridge before it can
-    // implement this session's submission boundary. Do not use CreateVulkan's
-    // incomplete public descriptor as an implicit alternate factory here.
     public static SkiaGraphiteSession CreateMetal(nint device, nint queue, long generation, int maxFrames = 3)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(generation, 1);
@@ -74,6 +74,7 @@ public sealed class SkiaGraphiteSession : IDisposable
     public Frame BeginMetalFrame(int width, int height, nint texture)
     {
         CheckOwner();
+        if (_vulkanOwner is not null) throw new InvalidOperationException("A Vulkan session cannot wrap a Metal texture.");
         if (!CanBeginFrame) throw new InvalidOperationException("Graphite session is stopping, faulted or at its frame limit.");
         if (_context.IsDeviceLost)
         {
@@ -102,12 +103,13 @@ public sealed class SkiaGraphiteSession : IDisposable
         if (_disposed) return;
         CheckOwner();
         _stopping = true;
-        if (_frames.Count != 0 || _pendingReadbacks != 0)
-            throw new InvalidOperationException("Host must complete GPU work and return all Graphite frames before disposal.");
+        if (_frames.Count != 0 || _pendingReadbacks != 0 || _vulkanTargets.Count != 0)
+            throw new InvalidOperationException("Host must complete GPU work and return all Graphite frames and Vulkan targets before disposal.");
         _context.CheckAsyncWorkCompletion();
         _images.Dispose();
         _recorder.Dispose();
-        _context.Dispose();
+        if (_vulkanOwner is not null) _vulkanOwner.Dispose();
+        else _context.Dispose();
         _disposed = true;
     }
 
@@ -129,12 +131,14 @@ public sealed class SkiaGraphiteSession : IDisposable
         private SKImageInfo? _readbackInfo;
         private TaskCompletionSource<SkiaGraphiteReadback>? _readback;
         private bool _readbackPending;
+        private readonly VulkanTarget? _vulkanTarget;
 
-        internal Frame(SkiaGraphiteSession session, SKGraphiteBackendTexture backend, SKSurface surface)
+        internal Frame(SkiaGraphiteSession session, SKGraphiteBackendTexture backend, SKSurface surface, VulkanTarget? vulkanTarget = null)
         {
             _session = session;
             _backend = backend;
             _surface = surface;
+            _vulkanTarget = vulkanTarget;
         }
 
         public SKSurface Surface
@@ -162,7 +166,16 @@ public sealed class SkiaGraphiteSession : IDisposable
             return _readback.Task;
         }
 
-        public void Submit()
+        public void Submit() => SubmitCore(default, default);
+
+        /// <summary>Binary Vulkan semaphores remain owned by the host until GPU consumption.</summary>
+        public void SubmitVulkan(ReadOnlySpan<ulong> waits, ReadOnlySpan<ulong> signals)
+        {
+            if (_vulkanTarget is null) throw new InvalidOperationException("This is not a Vulkan frame.");
+            SubmitCore(waits, signals);
+        }
+
+        private void SubmitCore(ReadOnlySpan<ulong> waits, ReadOnlySpan<ulong> signals)
         {
             _session.CheckOwner();
             if (_returned || _submissionAttempted || !ReferenceEquals(_session._recordingFrame, this))
@@ -172,9 +185,17 @@ public sealed class SkiaGraphiteSession : IDisposable
             {
                 _recording = _session._recorder.Snap()
                     ?? throw new InvalidOperationException("Graphite Snap failed.");
-                var status = _session._context.InsertRecording(_recording);
-                if (status != SKGraphiteInsertStatus.Success)
-                    throw new InvalidOperationException($"Graphite recording rejected: {status}.");
+                if (_vulkanTarget is not null)
+                {
+                    if (!_session._vulkanOwner!.Insert(_session._context.Handle, _recording.Handle, waits, signals))
+                        throw new InvalidOperationException("Graphite Vulkan recording rejected.");
+                }
+                else
+                {
+                    var status = _session._context.InsertRecording(_recording);
+                    if (status != SKGraphiteInsertStatus.Success)
+                        throw new InvalidOperationException($"Graphite recording rejected: {status}.");
+                }
                 if (_readbackInfo is { } info)
                 {
                     _session._pendingReadbacks++;
@@ -198,6 +219,8 @@ public sealed class SkiaGraphiteSession : IDisposable
                 }
                 if (!_session._context.Submit(new SKGraphiteSubmitInfo { Sync = false }))
                     throw new InvalidOperationException("Graphite Submit failed.");
+                _session._images.Commit();
+                SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: false);
             }
             catch (Exception exception)
             {
@@ -231,6 +254,10 @@ public sealed class SkiaGraphiteSession : IDisposable
             if (_returned || _submissionAttempted)
                 throw new InvalidOperationException("A submitted Graphite frame requires host GPU completion.");
             using var discarded = _session._recorder.Snap();
+            // Uploads belong to the discarded recording. A cached texture is
+            // not usable merely because its allocation survived that recording.
+            _session._images.Cancel();
+            SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: true);
             _readback?.TrySetCanceled();
             _session._recordingFrame = null;
             Release();
@@ -238,8 +265,12 @@ public sealed class SkiaGraphiteSession : IDisposable
 
         private void Release()
         {
-            _surface.Dispose();
-            _backend.Dispose();
+            if (_vulkanTarget is null)
+            {
+                _surface.Dispose();
+                _backend.Dispose();
+            }
+            else _vulkanTarget.ActiveFrame = null;
             _recording?.Dispose();
             _session._frames.Remove(this);
             _returned = true;

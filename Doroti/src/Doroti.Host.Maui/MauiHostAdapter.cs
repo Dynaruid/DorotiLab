@@ -448,7 +448,7 @@ internal sealed class MauiHostAdapter :
         if (repost) RequestAndroidVsync();
         if (!invalidate) return;
         Interlocked.Increment(ref _invalidationsRequested);
-        _surface.InvalidateSurface();
+        _surface.InvalidateSurfaceFromVsync();
     }
 
     private TimeSpan MapAndroidFrameTimestamp(long frameTimeNanos)

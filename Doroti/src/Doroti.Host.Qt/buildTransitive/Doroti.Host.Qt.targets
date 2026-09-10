@@ -1,0 +1,6 @@
+<Project>
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+    <Content Include="$(MSBuildThisFileDirectory)..\nativeAssets\linux-x64\graphite\*" Link="graphite\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <DorotiLaunchDependency Include="$(MSBuildThisFileDirectory)..\nativeAssets\linux-x64\graphite\libDorotiGraphite.so" />
+  </ItemGroup>
+</Project>

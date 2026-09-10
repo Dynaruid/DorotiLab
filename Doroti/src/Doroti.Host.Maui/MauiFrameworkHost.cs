@@ -17,13 +17,13 @@ public sealed class MauiFrameworkHost : IDisposable
 
     public MauiFrameworkHost(string? targetIdentity = null) => _targetIdentity = targetIdentity ??
 #if WINDOWS
-        "win-x64/win32-child-hwnd/offscreen-copy/Doroti-owned-D3D12-Skia";
+        (WindowsCompositionSurfaceFeature.GraphiteEnabled ? "win-x64/WinUI/CompositionDrawingSurface/Graphite-Vulkan" : "win-x64/win32-child-hwnd/offscreen-copy/Doroti-owned-D3D12-Skia");
 #elif MACCATALYST
-        "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia";
+        (DorotiGraphiteView.Enabled ? "maccatalyst-arm64/UIKit/MTKView/Graphite-Metal" : "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia");
 #elif IOS
-        "ios/UIKit-iOS/SKMetalView/Metal-Skia";
+        (DorotiGraphiteView.Enabled ? "ios/UIKit/MTKView/Graphite-Metal" : "ios/UIKit-iOS/SKMetalView/Metal-Skia");
 #elif ANDROID
-        $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia";
+        (DorotiGraphiteView.Enabled ? $"{AndroidRuntimeIdentifier}/Android/SurfaceView/Graphite-Vulkan" : $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia");
 #elif MACOS
         $"osx-arm64/{DorotiMacOSMetalView.GraphicsBackendId}";
 #else
@@ -68,6 +68,7 @@ public sealed class MauiFrameworkHost : IDisposable
         var host = new MauiHostAdapter(viewId, surface, textInput, configuration.logicalSize, semantics);
         var graphics = new MauiSkiaCapabilities(
             viewId, host, configuration.backgroundColor, configuration.darkBackgroundColor);
+        if (surface is IMauiGraphiteSurface graphiteSurface) graphics.AttachGraphiteLifecycle(graphiteSurface);
 #if MACOS
         if (surface is DorotiMacOSMetalSurface metalSurface) graphics.AttachNativeLifecycle(metalSurface);
 #endif
@@ -148,6 +149,11 @@ public sealed class MauiFrameworkHost : IDisposable
         if (_views.TryGetValue(viewId, out var value)) value.Graphics.FailPaint(completion, reason);
     }
 
+    internal void SupersedePaint(ulong viewId, MauiPaintCompletion completion, string reason)
+    {
+        if (_views.TryGetValue(viewId, out var value)) value.Graphics.SupersedePaint(completion, reason);
+    }
+
     internal void NotifyLifecycle(ulong viewId, AppLifecycleState state)
     {
         if (_views.TryGetValue(viewId, out var value)) value.Host.NotifyLifecycle(state);
@@ -175,7 +181,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #elif IOS
             ".NETCoreApp,Version=v10.0/iOS,Version=15.0",
 #elif ANDROID
-            ".NETCoreApp,Version=v10.0/Android,Version=21.0",
+            ".NETCoreApp,Version=v10.0/Android,Version=24.0",
 #elif MACOS
             ".NETCoreApp,Version=v10.0/macOS,Version=14.0",
 #else

@@ -7,6 +7,7 @@ internal static class DorotiSkiaImageFilterRenderer
 {
     private const int MaxPooledSurfacesPerFrame = 8;
     private const int MaxCachedImages = 32;
+    private const int StableCacheFrames = 3;
     private const long MaxCacheableImagePixels = 4L * 1024 * 1024;
     private const long MaxCachedImagePixels = 16L * 1024 * 1024;
     private static readonly object PoolGate = new();
@@ -134,7 +135,9 @@ internal static class DorotiSkiaImageFilterRenderer
             return true;
         }
 
-        if (canCache)
+        if (canCache) Interlocked.Increment(ref _imageCacheMisses);
+        if (canCache && ShouldPromote(backend, contextGeneration, contextOwner, cacheKey!,
+                cacheWidth, cacheHeight, signature, cacheGeneration))
         {
             var cacheLease = RentSurface(target, backend, contextGeneration, cacheWidth, cacheHeight, contextOwner, properties);
             try
@@ -153,7 +156,6 @@ internal static class DorotiSkiaImageFilterRenderer
                     ?? throw new InvalidOperationException("Doroti ImageFilter.shader could not snapshot its cached output.");
                 StoreAndDrawCached(target, backend, contextGeneration, cacheKey!, cacheWidth,
                     cacheHeight, signature, cacheGeneration, cacheLeft, cacheTop, outputImage, contextOwner);
-                Interlocked.Increment(ref _imageCacheMisses);
                 return true;
             }
             finally
@@ -162,13 +164,13 @@ internal static class DorotiSkiaImageFilterRenderer
             }
         }
 
-        var left = (int)visibleLeft;
-        var top = (int)visibleTop;
-        var right = (int)visibleRight;
-        var bottom = (int)visibleBottom;
-
-        var width = checked(right - left);
-        var height = checked(bottom - top);
+        // While a cache candidate moves, keep its full child texture and
+        // shader coordinates identical to the cached path. Only omit the
+        // intermediate output image; viewport clipping still belongs to target.
+        var left = canCache ? cacheLeft : (float)visibleLeft;
+        var top = canCache ? cacheTop : (float)visibleTop;
+        var width = canCache ? cacheWidth : checked((int)visibleRight - (int)visibleLeft);
+        var height = canCache ? cacheHeight : checked((int)visibleBottom - (int)visibleTop);
         var lease = RentSurface(target, backend, contextGeneration, width, height, contextOwner, properties);
         try
         {
@@ -239,15 +241,43 @@ internal static class DorotiSkiaImageFilterRenderer
             var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
             if (!pool.Images.TryGetValue(cacheKey, out var cached) || cached.Width != width ||
                 cached.Height != height || cached.Transform != signature ||
-                cached.Generation != generation)
+                cached.Generation != generation || cached.Recording?.IsDiscarded == true)
             {
-                if (cached is not null) pool.RemoveImage(cacheKey, cached);
+                if (cached is not null)
+                {
+                    pool.RemoveImage(cacheKey, cached);
+                    pool.TrackUnstable(cacheKey, width, height, signature, generation);
+                }
                 return false;
             }
             cached.LastUsedSequence = ++pool.UseSequence;
             DrawImage(target, cached.Image, left, top);
             Interlocked.Increment(ref _imageCacheHits);
             return true;
+        }
+    }
+
+    private static bool ShouldPromote(string backend, long contextGeneration, object? contextOwner,
+        object key, int width, int height, TransformSignature signature, long generation)
+    {
+        lock (PoolGate)
+        {
+            var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
+            // Preserve immediate caching for a first use. Once invalidated by
+            // movement/content, require stability instead of rebuilding pixels
+            // on every fractional scroll step.
+            if (!pool.Warmups.TryGetValue(key, out var warmup)) return true;
+            if (warmup.Width != width || warmup.Height != height || warmup.Transform != signature || warmup.Generation != generation)
+            {
+                pool.TrackUnstable(key, width, height, signature, generation);
+                return false;
+            }
+            if (warmup.LastFrame != pool.FrameNumber)
+            {
+                warmup.Uses++;
+                warmup.LastFrame = pool.FrameNumber;
+            }
+            return warmup.Uses >= StableCacheFrames;
         }
     }
 
@@ -268,7 +298,8 @@ internal static class DorotiSkiaImageFilterRenderer
         {
             var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
             if (pool.Images.Remove(cacheKey, out var replaced)) pool.DisposeImage(replaced);
-            var cached = new CachedImage(image, width, height, signature, generation, ++pool.UseSequence);
+            pool.Warmups.Remove(cacheKey);
+            var cached = new CachedImage(image, width, height, signature, generation, ++pool.UseSequence, SkiaGpuSurfaces.RecordingFor(target));
             pool.Images.Add(cacheKey, cached);
             pool.CachedPixels += cached.Pixels;
             DrawImage(target, image, left, top);
@@ -376,8 +407,9 @@ internal static class DorotiSkiaImageFilterRenderer
         int height,
         TransformSignature transform,
         long generation,
-        long lastUsedSequence)
+        long lastUsedSequence, SkiaGpuSurfaces.Recording? recording)
     {
+        internal SkiaGpuSurfaces.Recording? Recording { get; } = recording;
         internal SKImage Image { get; } = image;
         internal int Width { get; } = width;
         internal int Height { get; } = height;
@@ -391,6 +423,8 @@ internal static class DorotiSkiaImageFilterRenderer
     {
         internal List<SKSurface?> Surfaces { get; } = [];
         internal Dictionary<object, CachedImage> Images { get; } =
+            new(ReferenceEqualityComparer.Instance);
+        internal Dictionary<object, CacheWarmup> Warmups { get; } =
             new(ReferenceEqualityComparer.Instance);
         internal int NextSlot { get; set; }
         internal long FrameNumber { get; private set; }
@@ -408,6 +442,18 @@ internal static class DorotiSkiaImageFilterRenderer
         {
             Images.Remove(key);
             DisposeImage(image);
+        }
+
+        internal void TrackUnstable(object key, int width, int height, TransformSignature transform, long generation)
+        {
+            if (!Warmups.TryGetValue(key, out var warmup))
+            {
+                if (Warmups.Count >= MaxCachedImages * 2)
+                    Warmups.Remove(Warmups.MinBy(pair => pair.Value.LastFrame).Key);
+                Warmups.Add(key, warmup = new());
+            }
+            warmup.Width = width; warmup.Height = height; warmup.Transform = transform;
+            warmup.Generation = generation; warmup.Uses = 1; warmup.LastFrame = FrameNumber;
         }
 
         internal void DisposeImage(CachedImage image)
@@ -432,7 +478,15 @@ internal static class DorotiSkiaImageFilterRenderer
             Surfaces.Clear();
             foreach (var image in Images.Values) image.Image.Dispose();
             Images.Clear();
+            Warmups.Clear();
             CachedPixels = 0;
         }
+    }
+
+    private sealed class CacheWarmup
+    {
+        internal int Width, Height, Uses;
+        internal TransformSignature Transform;
+        internal long Generation, LastFrame;
     }
 }

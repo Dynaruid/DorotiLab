@@ -7,12 +7,14 @@ using Silk.NET.Core.Contexts;
 using Silk.NET.Core.Native;
 using Silk.NET.Vulkan;
 using SkiaSharp;
+using Doroti.Skia.Rendering;
 using VkDevice = Silk.NET.Vulkan.Device;
 
 namespace Doroti.Validation.WindowsVulkanCapability;
 
 internal static unsafe partial class Program
 {
+    private static nint _graphiteNativeModule;
     // NG1 is deliberately a separate result: a Vulkan/D3D11 capability PASS does
     // not qualify Graphite, and an offscreen readback does not qualify presentation.
     private static int RunGraphiteProbe(Options options, string[] args)
@@ -34,6 +36,8 @@ internal static unsafe partial class Program
         };
         try
         {
+            if (options.SelfTest == "graphite-after-present" && !args.Contains("--graphite-composition"))
+                throw new ArgumentException("graphite-after-present requires --graphite-composition.");
             var nativeIndex = Array.IndexOf(args, "--graphite-native");
             if (nativeIndex >= 0)
             {
@@ -42,12 +46,15 @@ internal static unsafe partial class Program
                 // The process owns this loaded module through exit. Both bindings
                 // resolve to this ONE library, including the added C ABI exports.
                 var module = NativeLibrary.Load(nativePath);
+                _graphiteNativeModule = module;
                 nint Resolve(string name, Assembly assembly, DllImportSearchPath? search) =>
                     name is "libSkiaSharp" or "libSkiaSharp.dll" or "libSkiaSharp.so" ? module : 0;
                 NativeLibrary.SetDllImportResolver(typeof(SKGraphiteContext).Assembly, Resolve);
                 NativeLibrary.SetDllImportResolver(typeof(Program).Assembly, Resolve);
                 report["requestedNativeAsset"] = AssetIdentity(nativePath);
             }
+            if (args.Contains("--graphite-session") && _graphiteNativeModule == 0)
+                throw new ArgumentException("--graphite-session requires the explicit --graphite-native module.");
             report["managedAsset"] = AssetIdentity(typeof(SKGraphiteContext).Assembly.Location);
             report["assemblyVersion"] = typeof(SKGraphiteContext).Assembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
@@ -87,10 +94,12 @@ internal static unsafe partial class Program
                 report["externalTextureRoundTrip"] = "notVerified";
                 report.Remove("offscreenFrames");
                 report.Remove("externalTextureFrames");
-                ProbeGraphiteDevice(options, report, args.Contains("--graphite-extended-context"));
+                ProbeGraphiteDevice(options, report, args.Contains("--graphite-extended-context"), args.Contains("--graphite-session"), args.Contains("--graphite-composition"));
                 completedGenerations.Add(new { generation,
                     contextCreated = report["contextCreated"], normalTeardown = report["normalTeardown"],
                     offscreenReadback = report["offscreenReadback"], externalTextureRoundTrip = report["externalTextureRoundTrip"],
+                    sharedVulkanSession = report.GetValueOrDefault("sharedVulkanSession"),
+                    platformPresent = report["platformPresent"],
                     externalTextureFrames = report.GetValueOrDefault("externalTextureFrames") });
             }
             if (report.ContainsKey("simulatedDeviceLoss")) report["simulatedDeviceLossTeardown"] = "PASS";
@@ -131,7 +140,7 @@ internal static unsafe partial class Program
         File.WriteAllText(path, JsonSerializer.Serialize(report, JsonOptions));
     }
 
-    private static void ProbeGraphiteDevice(Options options, Dictionary<string, object?> report, bool extended)
+    private static void ProbeGraphiteDevice(Options options, Dictionary<string, object?> report, bool extended, bool sharedSession, bool composition)
     {
         var systemLoader = OperatingSystem.IsWindows()
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll")
@@ -169,7 +178,12 @@ internal static unsafe partial class Program
                 StorageBuffer16BitAccess = extended && storageQuery.StorageBuffer16BitAccess };
             var enabled = new PhysicalDeviceFeatures2 { SType = StructureType.PhysicalDeviceFeatures2, PNext = &storageEnabled,
                 Features = new PhysicalDeviceFeatures { RobustBufferAccess = extended && supported.Features.RobustBufferAccess } };
-            string[] deviceExtensions = extended ? ["VK_KHR_maintenance1"] : [];
+            if (composition && (!OperatingSystem.IsWindows() || !extended || !sharedSession))
+                throw new ArgumentException("Composition qualification requires Windows, --graphite-extended-context and --graphite-session.");
+            string[] deviceExtensions = composition
+                ? ["VK_KHR_maintenance1", "VK_KHR_driver_properties", KhrExternalMemoryExtensionName,
+                    KhrExternalMemoryWin32ExtensionName, KhrGetMemoryRequirements2ExtensionName, KhrDedicatedAllocationExtensionName]
+                : extended ? ["VK_KHR_maintenance1", "VK_KHR_driver_properties"] : [];
             RequireAll(selected.Extensions, deviceExtensions, "Graphite probe device extension");
             report["extendedContext"] = extended;
             report["enabledInstanceExtensions"] = instanceExtensions;
@@ -207,7 +221,14 @@ internal static unsafe partial class Program
                 new SKGraphiteContextOptions { GpuBudgetInBytes = 256L * 1024 * 1024 })
                 ?? throw new InvalidOperationException("SKGraphiteContext.CreateVulkan returned null.");
             report["contextCreated"] = true;
-            if (extended) report["bridgeAbi"] = 2;
+            if (extended) report["bridgeAbi"] = GraphiteInterop.doroti_graphite_interop_version();
+            if (sharedSession && extended)
+            {
+                ProbeSessionDeviceLoss(vk, instance, selected.Handle, device, queue, selected.QueueFamily,
+                    &enabled, instanceExtensions, deviceExtensions);
+                report["sharedSessionSimulatedDeviceLoss"] = "PASS";
+                report["physicalDeviceLoss"] = "notVerified";
+            }
             // Exercise dispatch after temporary extension-name arrays are freed;
             // the owner retains the callback through native destruction.
             GC.Collect();
@@ -250,14 +271,30 @@ internal static unsafe partial class Program
             catch (EntryPointNotFoundException) { report["bridgeAbi"] = "notAvailable"; }
             if (bridgeVersion != 0)
             {
-                if (bridgeVersion is not (1 or 2)) throw new NotSupportedException($"Unexpected Graphite bridge ABI {bridgeVersion}.");
+                if (bridgeVersion is not (1 or 2 or 3)) throw new NotSupportedException($"Unexpected Graphite bridge ABI {bridgeVersion}.");
                 report["bridgeAbi"] = bridgeVersion;
                 report["lastOperation"] = "external-texture-roundtrip";
                 SaveGraphiteReport(options, report);
                 var external = new List<object>();
+                using var session = sharedSession ? SkiaGraphiteSession.CreateVulkan(new(
+                    instance.Handle, selected.Handle.Handle, device.Handle, queue.Handle, selected.QueueFamily,
+                    VulkanApiVersion11, (name, inst, dev) => dev != 0
+                        ? vk.GetDeviceProcAddr(new VkDevice(dev), name) : vk.GetInstanceProcAddr(new Instance(inst), name),
+                    instanceExtensions, deviceExtensions, EnabledFeatures2: extended ? (nint)(&enabled) : 0,
+                    ResolveNativeSymbol: name => NativeLibrary.GetExport(_graphiteNativeModule, name)),
+                    Convert.ToInt64(report["contextGeneration"]), maxFrames: 1) : null;
                 foreach (var size in new[] { 64, 128, 96 })
                     external.Add(ProbeExternalTexture(vk, selected.Handle, device, queue, selected.QueueFamily,
-                        context, size, options.SelfTest == "graphite-after-submit"));
+                        context, size, options.SelfTest == "graphite-after-submit", session,
+                        composition ? selected.Luid : null, instance, options.SelfTest == "graphite-after-present"));
+                report["sharedVulkanSession"] = sharedSession ? "PASS" : "notVerified";
+                report["platformPresent"] = composition ? "PASS" : "notVerified";
+                if (composition)
+                    report["compositionNativeAsset"] = AssetIdentity(Process.GetCurrentProcess().Modules.Cast<ProcessModule>()
+                        .Single(module => module.ModuleName.Equals("doroti_windows_appsdk_host_v1.dll", StringComparison.OrdinalIgnoreCase)).FileName);
+                report["platformEvidenceBoundary"] = composition
+                    ? "Probe Graphite to dedicated D3D11 import, DwmFlush boundary completion (native mode 1) and buffer availability retirement; no per-present display statistics or physical scan-out qualification."
+                    : "No platform output in this run.";
                 report["externalTextureFrames"] = external;
                 report["externalTextureRoundTrip"] = validation ? "PASS" : "notVerified";
             }

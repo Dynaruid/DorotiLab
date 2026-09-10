@@ -33,6 +33,7 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_TEXT_INPUT = 1ull << 7,
   DOROTI_QT_FEATURE_PLATFORM_SERVICES = 1ull << 8,
   DOROTI_QT_FEATURE_SEMANTICS = 1ull << 9,
+  DOROTI_QT_FEATURE_VULKAN_SURFACE = 1ull << 10,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -87,6 +88,10 @@ struct doroti_qt_surface_v2 {
   std::int32_t gl_major;
   std::int32_t gl_minor;
   std::int64_t timestamp_microseconds;
+  // Feature-gated v2 extension. Qt owns instance/surface; managed code owns device/WSI.
+  std::uint64_t vulkan_surface;
+  void* vulkan_instance;
+  doroti_qt_utf8_v2 vulkan_instance_extensions;
 };
 
 struct doroti_qt_metrics_v2 {
@@ -242,7 +247,7 @@ static_assert(offsetof(doroti_qt_surface_v2, surface_generation) == 8);
 static_assert(offsetof(doroti_qt_surface_v2, framebuffer_object) == 24);
 static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);
 static_assert(offsetof(doroti_qt_surface_v2, timestamp_microseconds) == 80);
-static_assert(sizeof(doroti_qt_surface_v2) == 88);
+static_assert(sizeof(doroti_qt_surface_v2) == 120);
 static_assert(sizeof(doroti_qt_metrics_v2) == 56);
 static_assert(sizeof(doroti_qt_pointer_v2) == 120);
 static_assert(sizeof(doroti_qt_key_v2) == 56);

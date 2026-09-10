@@ -5,6 +5,7 @@
     <PackageId>Doroti.Skia.Rendering</PackageId>
     <Description>Host-neutral retained Doroti scene rasterization for Skia surfaces.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" />

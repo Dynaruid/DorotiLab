@@ -142,8 +142,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         if (_disposed || _host is null) return;
         if (stale)
         {
-            _host.FailPaint(_viewId, completion,
-                "Metal completion belongs to a stale AppKit surface generation.");
+            _host.SupersedePaint(_viewId, completion,
+                "Native output was superseded by a newer surface or viewport generation.");
             ScheduleEvidenceWrite();
             return;
         }
@@ -168,11 +168,12 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         {
             try
             {
+                var started = Stopwatch.GetTimestamp();
                 while (true)
                 {
                     Thread.Sleep(EvidenceWriteQuiescence);
                     var latestGeneration = Interlocked.Read(ref _evidenceWriteGeneration);
-                    if (latestGeneration == generation) break;
+                    if (latestGeneration == generation || Stopwatch.GetElapsedTime(started) >= EvidenceWriteInterval) break;
                     generation = latestGeneration;
                 }
                 WriteEvidence();

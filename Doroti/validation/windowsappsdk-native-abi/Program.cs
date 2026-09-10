@@ -21,6 +21,12 @@ if (args is ["--prepared-frame"])
     return;
 }
 
+if (args is ["--prepared-frame", "--receipt-timeout-ms", var receiptTimeout])
+{
+    PreparedMovingFrameFixture.Run(uint.Parse(receiptTimeout));
+    return;
+}
+
 if (!OperatingSystem.IsWindows())
     throw new PlatformNotSupportedException("The native ABI fixture is Windows-only.");
 if (WindowsKeyMap.Physical(0x1e, 'A') != 0x00070004 ||

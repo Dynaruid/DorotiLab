@@ -33,6 +33,12 @@ var shader = FragmentProgram.fromSource(source, "runtime-shader-contract").fragm
 shader.setFloat(0, 320);
 shader.setFloat(1, 80);
 shader.setFloat(2, 0.75);
+// Product renderers scope the backend with /viewId; exercise that exact identity.
+foreach (var backend in new[] { DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend, DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend })
+{
+    using var scopedShader = DorotiSkiaRuntimeEffects.CreateShader(new FragmentShaderSnapshot(shader.CaptureState()),
+        _ => throw new InvalidOperationException("No sampler is declared."), backend + "/1", 1);
+}
 var compiledBeforeScalarShader = DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation;
 using (var nativeShader = DorotiSkiaRuntimeEffects.CreateShader(
     new FragmentShaderSnapshot(shader.CaptureState()),

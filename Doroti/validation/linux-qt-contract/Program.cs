@@ -3,8 +3,12 @@ using Doroti.Host.Qt;
 
 QtNativeV2.ValidateLayout();
 
-if (QtNativeV2.AbiVersion != 2 || QtNativeV2.RequiredFeatures != 0x3ff)
+if (QtNativeV2.AbiVersion != 2 || QtNativeV2.RequiredFeatures != (QtSkiaSurface.GraphiteEnabled ? 0x7feUL : 0x3ffUL))
     throw new InvalidOperationException("doroti.qt-host/v2 feature identity drifted.");
+if (Marshal.SizeOf<QtNativeV2.Surface>() != 120 ||
+    Marshal.OffsetOf<QtNativeV2.Surface>("VulkanSurface").ToInt32() != 88 ||
+    Marshal.OffsetOf<QtNativeV2.Surface>("VulkanInstanceExtensions").ToInt32() != 104)
+    throw new InvalidOperationException("Qt Vulkan descriptor extension layout drifted.");
 if (Marshal.SizeOf<QtNativeV2.Configuration>() != 48)
     throw new InvalidOperationException("doroti.qt-host/v2 configuration layout drifted.");
 if (Marshal.SizeOf<QtNativeV2.HostApi>() != 120)

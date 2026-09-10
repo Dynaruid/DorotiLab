@@ -64,13 +64,21 @@ internal interface IMauiSkiaSurface : IDisposable
     event Action<bool>? FocusChanged;
     event Action<DorotiResizeEpoch?>? SizeChanged;
     void InvalidateSurface();
+    // The caller already owns the current display pulse. Platforms may draw
+    // immediately instead of scheduling a second pulse.
+    void InvalidateSurfaceFromVsync() => InvalidateSurface();
     void RequestFocus(bool focused);
     void SetCursor(DorotiMouseCursorKind cursor);
     MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current);
 }
 
+internal interface IMauiGraphiteSurface
+{
+    event Action? GpuResourcesReleasing;
+}
+
 #if !MACOS && !WINDOWS
-internal sealed class MauiSkglSurface : IMauiSkiaSurface
+internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 #if WINDOWS
     , IMauiSynchronousResizeSurface
 #endif
@@ -92,7 +100,16 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
 
     internal MauiSkglSurface(MauiTextInputBridge textInput, ulong viewId)
     {
-        _view = new SKGLView { HasRenderLoop = false, EnableTouchEvents = true };
+        _view = DorotiGraphiteView.Enabled ? new DorotiGraphiteView() : new SKGLView();
+        _view.HasRenderLoop = false;
+        _view.EnableTouchEvents = true;
+        if (_view is DorotiGraphiteView graphite)
+        {
+            graphite.GraphitePaint += HandleGraphitePaint;
+            graphite.GraphitePresentCompleted += HandleGraphiteCompleted;
+            graphite.GraphiteFailed += HandleGraphiteFailed;
+            graphite.GpuResourcesReleasing += HandleGraphiteRelease;
+        }
 #if MACCATALYST
         // The UIKit SKTouchHandler discards device kind and UIEvent.ButtonMask.
         // Own this stream so secondary clicks are not converted to primary taps.
@@ -126,11 +143,31 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     public event Action<KeyData>? Key;
     public event Action<bool>? FocusChanged;
     public event Action<DorotiResizeEpoch?>? SizeChanged;
+    public event Action? GpuResourcesReleasing;
+    private void HandleGraphiteRelease() => GpuResourcesReleasing?.Invoke();
+    private void HandleGraphiteCompleted(MauiPaintCompletion completion, bool replay) => PresentCompleted?.Invoke(completion, replay);
+    private void HandleGraphiteFailed(MauiPaintCompletion? completion, Exception exception) => PaintFailed?.Invoke(completion, exception);
+    private void HandleGraphitePaint(MauiSkiaPaintContext context)
+    {
+        PublishDrawableMetrics(context.PixelWidth, context.PixelHeight, context.Density);
+        Paint?.Invoke(context);
+    }
 #if WINDOWS
     public event Action<MauiSynchronousResize>? SynchronousResize;
 #endif
 
     public void InvalidateSurface() => _view.InvalidateSurface();
+    public void InvalidateSurfaceFromVsync()
+    {
+#if ANDROID
+        if (_view.Handler is DorotiAndroidVulkanViewHandler graphite)
+        {
+            graphite.PlatformView.DrawFromVsync();
+            return;
+        }
+#endif
+        InvalidateSurface();
+    }
     public void RequestFocus(bool focused)
     {
         if (focused) _view.Focus();
@@ -314,6 +351,15 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     {
         if (_disposed) return;
         _disposed = true;
+        if (_view is DorotiGraphiteView graphite)
+        {
+            // Native GPU owner releases while renderer callbacks are still attached.
+            _view.Handler?.DisconnectHandler();
+            graphite.GraphitePaint -= HandleGraphitePaint;
+            graphite.GraphitePresentCompleted -= HandleGraphiteCompleted;
+            graphite.GraphiteFailed -= HandleGraphiteFailed;
+            graphite.GpuResourcesReleasing -= HandleGraphiteRelease;
+        }
         _view.PaintSurface -= HandlePaintSurface;
         _view.Touch -= HandleTouch;
         _view.SizeChanged -= HandleSizeChanged;

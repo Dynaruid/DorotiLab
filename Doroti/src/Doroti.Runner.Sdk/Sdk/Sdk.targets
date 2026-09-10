@@ -1,4 +1,11 @@
 <Project>
+  <!-- Android AOT may resolve Skia P/Invokes without a managed resolver. The
+       host AAR supplies the qualified libSkiaSharp.so; exclude stock runtime
+       assets at the application graph root so APK ordering cannot select them. -->
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Android'">
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" VersionOverride="4.154.0-preview.1.26454.9" ExcludeAssets="all" Condition="'$(ManagePackageVersionsCentrally)' == 'true'" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="4.154.0-preview.1.26454.9" ExcludeAssets="all" Condition="'$(ManagePackageVersionsCentrally)' != 'true'" />
+  </ItemGroup>
   <!-- Append after package evaluation so the owned Dawn device-loss adapter
        follows SkiaSharp's library_webgpu. Track its content as a link input. -->
   <Target Name="DorotiConfigureWebNativeInterop" BeforeTargets="_BrowserWasmWriteRspForLinking"

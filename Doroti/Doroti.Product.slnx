@@ -24,6 +24,7 @@
     <Project Path="src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj" />
     <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
     <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+    <Project Path="src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
     <Project Path="src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />

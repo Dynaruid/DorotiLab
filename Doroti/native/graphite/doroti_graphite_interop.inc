@@ -3,7 +3,7 @@
 #include "include/c/sk_graphite.h"
 #include <cstdint>
 
-extern "C" SK_C_API uint32_t doroti_graphite_interop_version() { return 2; }
+extern "C" SK_C_API uint32_t doroti_graphite_interop_version() { return 3; }
 
 #if defined(SK_GRAPHITE) && defined(SK_VULKAN)
 #include "include/gpu/MutableTextureState.h"
@@ -11,7 +11,22 @@ extern "C" SK_C_API uint32_t doroti_graphite_interop_version() { return 2; }
 #include "include/gpu/vk/VulkanMutableTextureState.h"
 #include "include/gpu/vk/VulkanExtensions.h"
 #include "src/gpu/graphite/vk/VulkanGraphiteUtils.h"
+#include "src/gpu/graphite/ContextPriv.h"
+#pragma push_macro("interface")
+#undef interface
+#include "src/gpu/graphite/vk/VulkanSharedContext.h"
+#pragma pop_macro("interface")
 #include <vector>
+
+// ABI 3: the host may observe device loss first on its external copy queue/fence.
+// Forward that exact result to Graphite's shared context before resource release.
+// This is not an abandon operation for an unknown/timeout result on a live GPU.
+extern "C" SK_C_API bool doroti_graphite_vk_context_report_device_lost(sk_graphite_context_t* context) {
+    if (!context || AsGraphiteContext(context)->backend() != skgpu::BackendApi::kVulkan) return false;
+    auto* shared = static_cast<gr::VulkanSharedContext*>(AsGraphiteContext(context)->priv().sharedContext());
+    shared->checkVkResult(VK_ERROR_DEVICE_LOST);
+    return shared->isDeviceLost();
+}
 
 // ABI 2 is additive. Feature structures and extension arrays are borrowed only
 // during creation. They must describe EXACTLY what vkCreateInstance/vkCreateDevice
@@ -108,6 +123,7 @@ extern "C" SK_C_API bool doroti_graphite_has_unfinished_gpu_work(sk_graphite_con
     return context && AsGraphiteContext(context)->hasUnfinishedGpuWork();
 }
 #else
+extern "C" SK_C_API bool doroti_graphite_vk_context_report_device_lost(sk_graphite_context_t*) { return false; }
 extern "C" SK_C_API sk_graphite_context_t* doroti_graphite_vk_context_create(
         const sk_graphite_vk_backend_context_init_t*, const sk_graphite_context_options_t*,
         const void*, const void*, uint32_t, const char* const*, uint32_t, const char* const*) { return nullptr; }

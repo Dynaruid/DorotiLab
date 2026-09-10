@@ -192,6 +192,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         Brightness systemBrightness = Brightness.light)
     {
         _diagnosticsEnabled = enableDiagnostics;
+        if (_useGraphite) ConfigureGraphiteLibrary();
         if (acrylicOptions is not null)
             _acrylicOptions = new WindowsAcrylicOptionsState(
                 acrylicOptions, systemBrightness);
@@ -205,8 +206,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         RecordEvent($"loader-open path={_loaderPath}");
     }
 
-    internal override string BackendName => "Vulkan/Composition-Swapchain";
-    internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsVulkanBackend;
+    internal override string BackendName => _useGraphite ? "Graphite/Vulkan/Composition-Swapchain" : "Vulkan/Composition-Swapchain";
+    internal override string RuntimeEffectsBackend => _useGraphite
+        ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.WindowsVulkanBackend;
     internal override ulong NativeRequiredFeatures =>
         WindowsNativeV1.PostPresentDwmFlushFeature |
         WindowsNativeV1.RetainedOversizedChildSurfaceFeature |
@@ -310,7 +312,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ResizeClockFailures: _resizeClockFailureCount,
         LastResizeClockStatus: _lastResizeClockStatus,
         MaximumResizeClockWaitMicroseconds: _maximumResizeClockWaitMicroseconds,
-        RecentEvents: SnapshotEvents());
+        RecentEvents: SnapshotEvents(),
+        PreparedReceiptTimeoutMilliseconds: PreparedReceiptTimeoutMilliseconds,
+        PreparedReceiptsOver50Milliseconds: _preparedReceiptsOver50Milliseconds);
 
     bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
 
@@ -583,8 +587,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ArgumentNullException.ThrowIfNull(paint);
         ArgumentNullException.ThrowIfNull(shouldPresent);
         ObjectDisposedException.ThrowIf(_disposed, this);
-        var context = _context ?? throw new InvalidOperationException("The managed Vulkan Skia context is unavailable.");
-        var backing = _backingSurface ?? throw new InvalidOperationException("The managed Vulkan backing surface is unavailable.");
         if (_selectedSlot is < 0 or >= BufferCount || _presentationContext == 0)
             throw new InvalidOperationException("No Vulkan Composition buffer is admitted.");
 
@@ -593,14 +595,26 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         lock (_viewportGate) prepareRequest = _movingPrepareRequest;
         try
         {
+            if (_useGraphite)
+            {
+                _graphiteFrame = (_graphite ?? throw new InvalidOperationException("Graphite context is unavailable."))
+                    .BeginVulkanFrame(_graphiteTarget ?? throw new InvalidOperationException("Graphite target is unavailable."));
+                _graphiteSubmissionAttempted = false;
+            }
+            var backing = _graphiteFrame?.Surface ?? _backingSurface
+                ?? throw new InvalidOperationException("The managed Vulkan backing surface is unavailable.");
             // The raster target and client clip share one top-level HWND geometry.
             // Paint replacements at the same origin; an edge-based
             // offset would make the entire scene jump at raster cadence.
             var result = paint(backing);
-            backing.Canvas.Flush();
-            context.Flush(backing);
-            context.Submit(false);
-            GpuSubmitCount++;
+            if (!_useGraphite)
+            {
+                var context = _context ?? throw new InvalidOperationException("The managed Vulkan Skia context is unavailable.");
+                backing.Canvas.Flush();
+                context.Flush(backing);
+                context.Submit(false);
+                GpuSubmitCount++;
+            }
             if (!shouldPresent(result)) return result;
 
             if (TakeInjectedResult("OUT_OF_DATE"))
@@ -636,7 +650,20 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 // Keep the viewport authority stable while the retained guard
                 // is updated and committed. Otherwise a superseded raster could
                 // replace pixels that belong to the last displayed geometry.
+                if (_graphiteFrame is not null)
+                {
+                    _graphiteSubmissionAttempted = true;
+                    try { _graphiteFrame.Submit(); }
+                    catch (InvalidOperationException) when (_graphite!.IsDeviceLost)
+                    { throw new WindowsManagedVulkanDeviceLostException("Graphite Vulkan submission reported device loss."); }
+                    GpuSubmitCount++;
+                }
                 CopyBackingToPresentation(slot);
+                if (_graphiteFrame is not null)
+                {
+                    ReturnGraphiteFrameAfterGpuCompletion();
+                    _graphiteTarget!.SetStateAfterGpuCompletion((int)ImageLayout.ColorAttachmentOptimal, _queueFamily);
+                }
                 GpuCopyCount++;
                 if (prepareRequest is { } prepareKey)
                 {
@@ -660,6 +687,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         finally
         {
+            if (_graphiteFrame is not null && !_graphiteSubmissionAttempted) ReturnGraphiteFrameAfterGpuCompletion();
             _selectedSlot = -1;
             _selectedViewportRevision = 0;
             _acquired = false;
@@ -680,7 +708,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             checked((uint)slot.CapacityWidth),
             checked((uint)slot.CapacityHeight), ++_presentTag,
             waitForResizeReceipt ? 2u : waitForCompositionFrame ? 1u : 0u,
-            CompositionFrameWaitMilliseconds,
+            waitForResizeReceipt ? PreparedReceiptTimeoutMilliseconds : CompositionFrameWaitMilliseconds,
             out var compositionFrameObserved,
             out var presentId, out var retiringFenceValue);
         if (present < 0)
@@ -706,6 +734,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             if (compositionFrameReady)
             {
                 _compositionFrameObservedCount++;
+                if (waitForResizeReceipt && _lastCompositionFrameWaitMicroseconds > 50_000)
+                    _preparedReceiptsOver50Milliseconds++;
                 _displayWaitViewportRevision = 0;
             }
             else
@@ -956,9 +986,13 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
         BeginCommands();
         var acquireBarriers = stackalloc ImageMemoryBarrier[3];
+        var graphiteState = _graphiteTarget?.GetState();
+        if (graphiteState is { } state && state.QueueFamily != _queueFamily)
+            throw new InvalidOperationException("Graphite backing has unexpected queue ownership.");
         acquireBarriers[0] = ImageBarrier(
-            _backingImage, ImageLayout.ColorAttachmentOptimal, ImageLayout.TransferSrcOptimal,
-            AccessFlags.ColorAttachmentWriteBit, AccessFlags.TransferReadBit);
+            _backingImage, graphiteState is { } tracked ? (ImageLayout)tracked.Layout : ImageLayout.ColorAttachmentOptimal,
+            ImageLayout.TransferSrcOptimal,
+            _useGraphite ? AccessFlags.MemoryWriteBit : AccessFlags.ColorAttachmentWriteBit, AccessFlags.TransferReadBit);
         acquireBarriers[1] = ImageBarrier(
             _retainedFrameImage, _retainedFrameLayout, ImageLayout.TransferDstOptimal,
             _retainedFrameLayout == ImageLayout.Undefined
@@ -971,7 +1005,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             0, AccessFlags.TransferWriteBit);
         _vk.CmdPipelineBarrier(
             _commandBuffer,
-            PipelineStageFlags.TopOfPipeBit | PipelineStageFlags.ColorAttachmentOutputBit |
+            (_useGraphite ? PipelineStageFlags.AllCommandsBit : PipelineStageFlags.TopOfPipeBit | PipelineStageFlags.ColorAttachmentOutputBit) |
             PipelineStageFlags.TransferBit,
             PipelineStageFlags.TransferBit, 0,
             0, null, 0, null, 3, acquireBarriers);
@@ -1192,6 +1226,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         try
         {
             WaitIdle();
+            ReturnGraphiteFrameAfterGpuCompletion();
             _copySubmissionPending = false;
             return false;
         }
@@ -1199,6 +1234,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         {
             _rendererReleasePreflightReportedDeviceLoss = true;
             AbandonContextForDeviceLossCore();
+            ReturnGraphiteFrameAfterGpuCompletion();
             TryRecordEvent("device-loss context abandoned before renderer invalidation");
             TryRecordEvent("device loss observed during renderer-release preflight");
             return true;
@@ -1210,7 +1246,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             // Skia wrappers are abandoned before renderer cache destruction and
             // the original failure is preserved. Because idleness was not
             // established, callers must not destroy native child objects.
-            AbandonContextForDeviceLossCore();
+            if (!_useGraphite) AbandonContextForDeviceLossCore();
             TryRecordEvent("renderer-release preflight failed; quarantining unsafe Vulkan context");
             throw;
         }
@@ -1218,6 +1254,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     internal override bool TryAbandonGpuContextAfterRendererReleasePreflightFailure()
     {
+        if (_useGraphite) return false; // Retain the whole state if GPU idleness is unknown.
         AbandonContextForDeviceLossCore();
         TryRecordEvent("renderer-release preflight threw; abandoning Vulkan context before renderer cleanup");
         return _context is null || _contextAbandoned;
@@ -1524,6 +1561,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             "VK_KHR_dedicated_allocation",
         };
         var availableExtensions = EnumerateDeviceExtensions(_physicalDevice);
+        if (_useGraphite) extensionNames = [.. extensionNames, "VK_KHR_driver_properties"];
         var missingExtensions = extensionNames.Where(value => !availableExtensions.Contains(value)).ToArray();
         if (missingExtensions.Length != 0)
             throw new PlatformNotSupportedException(
@@ -1614,6 +1652,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             "VK_KHR_get_memory_requirements2",
             "VK_KHR_dedicated_allocation",
         ];
+        if (_useGraphite)
+        {
+            CreateGraphiteContext([.. deviceExtensions, "VK_KHR_driver_properties"]);
+            _contextAbandoned = false;
+            return;
+        }
         _skiaExtensions = new GRVkExtensions();
         _skiaExtensions.Initialize(
             GetVulkanProcedureAddress,
@@ -1854,7 +1898,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             Samples = SampleCountFlags.Count1Bit,
             Tiling = ImageTiling.Optimal,
             Usage = ImageUsageFlags.ColorAttachmentBit | ImageUsageFlags.TransferSrcBit |
-                    ImageUsageFlags.TransferDstBit | ImageUsageFlags.SampledBit,
+                    ImageUsageFlags.TransferDstBit | ImageUsageFlags.SampledBit |
+                    (_useGraphite ? ImageUsageFlags.InputAttachmentBit : 0),
             SharingMode = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
         };
@@ -2002,6 +2047,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void WrapBackingSurface(int width, int height)
     {
+        if (_useGraphite) { WrapGraphiteBacking(width, height); return; }
         var skiaImageInfo = new GRVkImageInfo
         {
             Image = _backingImage.Handle,
@@ -2240,6 +2286,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void ReleaseBackingSurface()
     {
+        ReturnGraphiteFrameAfterGpuCompletion();
+        _graphiteTarget?.Dispose();
+        _graphiteTarget = null;
         _backingSurface?.Dispose();
         _backingSurface = null;
         _backingTarget?.Dispose();
@@ -2395,6 +2444,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _copySubmissionPending = false;
         _context?.Dispose();
         _context = null;
+        _graphite?.Dispose();
+        _graphite = null;
         _contextAbandoned = false;
         _skiaBackend?.Dispose();
         _skiaBackend = null;
@@ -2448,6 +2499,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void AbandonContextForDeviceLossCore()
     {
+        if (_graphite is not null)
+        {
+            _graphite.NotifyVulkanDeviceLost();
+            _contextAbandoned = true;
+            return;
+        }
         if (_context is null || _contextAbandoned) return;
         _context.AbandonContext(false);
         _contextAbandoned = true;
@@ -3088,4 +3145,6 @@ internal sealed record VulkanPresenterSnapshot(
     ulong ResizeClockFailures,
     uint LastResizeClockStatus,
     long MaximumResizeClockWaitMicroseconds,
-    string[] RecentEvents);
+    string[] RecentEvents,
+    uint PreparedReceiptTimeoutMilliseconds,
+    ulong PreparedReceiptsOver50Milliseconds);

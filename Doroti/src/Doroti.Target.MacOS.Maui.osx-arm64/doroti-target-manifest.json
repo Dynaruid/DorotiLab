@@ -4,6 +4,7 @@
   "targetFramework": "net10.0-macos",
   "rid": "osx-arm64",
   "nativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
-  "graphicsBackend": "AppKit/MTKView/Metal-Skia",
-  "softwareFallback": false
+  "graphicsBackend": "AppKit/MTKView/Graphite-Metal",
+  "softwareFallback": false,
+  "defaultSkiaEngine": "Graphite"
 }

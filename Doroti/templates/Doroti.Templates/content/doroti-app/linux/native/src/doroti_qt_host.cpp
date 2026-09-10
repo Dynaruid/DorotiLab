@@ -31,6 +31,11 @@
 #include <QTouchEvent>
 #include <QWheelEvent>
 #include <QWindow>
+#ifdef DOROTI_QT_GRAPHITE
+#include <QVulkanInstance>
+#include <QPlatformSurfaceEvent>
+#include <QVersionNumber>
+#endif
 #include <QtCore/qglobal.h>
 #include <algorithm>
 #include <cmath>
@@ -38,6 +43,7 @@
 #include <exception>
 #include <limits>
 #include <string>
+#include <stdexcept>
 #include <utility>
 #include <wayland-client.h>
 
@@ -66,7 +72,12 @@ constexpr std::uint32_t kAbiVersion = 2;
 // blur protocol retaining its first committed bounds across Qt surface resizes.
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
-    DOROTI_QT_FEATURE_OPENGL_FBO | DOROTI_QT_FEATURE_SWAP_ACK |
+#ifdef DOROTI_QT_GRAPHITE
+    DOROTI_QT_FEATURE_VULKAN_SURFACE |
+#else
+    DOROTI_QT_FEATURE_OPENGL_FBO |
+#endif
+    DOROTI_QT_FEATURE_SWAP_ACK |
     DOROTI_QT_FEATURE_CONTEXT_LIFETIME |
     DOROTI_QT_FEATURE_LENGTH_PREFIXED_UTF8 |
     DOROTI_QT_FEATURE_METRICS_LIFECYCLE |
@@ -117,11 +128,16 @@ QString String(doroti_qt_utf8_v2 value) {
                            static_cast<qsizetype>(value.length));
 }
 
-class DorotiSurface final : public QOpenGLWindow {
+#ifdef DOROTI_QT_GRAPHITE
+using DorotiWindowBase = QWindow;
+#else
+using DorotiWindowBase = QOpenGLWindow;
+#endif
+class DorotiSurface final : public DorotiWindowBase {
  public:
   DorotiSurface(void* callback_context, const doroti_qt_callbacks_v2& callbacks,
                 std::uint32_t backdrop_mode, std::uint32_t backdrop_fallback)
-      : QOpenGLWindow(QOpenGLWindow::NoPartialUpdate),
+      : DorotiWindowBase(),
         callback_context_(callback_context), callbacks_(callbacks),
         backdrop_mode_(backdrop_mode), backdrop_fallback_(backdrop_fallback) {
     // Wayland compositors can only preserve intentional transparent pixels when
@@ -133,7 +149,15 @@ class DorotiSurface final : public QOpenGLWindow {
     surface_format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     setFormat(surface_format);
     clock_.start();
+#ifdef DOROTI_QT_GRAPHITE
+    setSurfaceType(QSurface::VulkanSurface);
+    vulkan_.setApiVersion(QVersionNumber(1, 1));
+    if (!vulkan_.create()) throw std::runtime_error("Qt Vulkan instance creation failed; no OpenGL fallback");
+    setVulkanInstance(&vulkan_);
+    vulkan_extensions_ = vulkan_.extensions().join('\n');
+#else
     connect(this, &QOpenGLWindow::frameSwapped, this, [this] { FrameSwapped(); });
+#endif
     connect(this, &QWindow::screenChanged, this, [this](QScreen*) { SendMetrics(); });
     connect(QGuiApplication::styleHints(), &QStyleHints::colorSchemeChanged,
             this, [this](Qt::ColorScheme) { SendConfiguration(); });
@@ -143,6 +167,10 @@ class DorotiSurface final : public QOpenGLWindow {
     ClearSemanticsTree();
     ReleaseBackdrop();
     ReleaseSurface();
+#ifdef DOROTI_QT_GRAPHITE
+    // QWindow's VkSurface must die before the member QVulkanInstance.
+    destroy();
+#endif
     callbacks_.lifecycle_changed(callback_context_, this, 0, Micros());
     callbacks_.closed(callback_context_, this);
   }
@@ -242,6 +270,9 @@ class DorotiSurface final : public QOpenGLWindow {
   }
 
   static void* GetGlProcAddress(void* view_handle, doroti_qt_utf8_v2 name) noexcept {
+#ifdef DOROTI_QT_GRAPHITE
+    return nullptr;
+#else
     auto* surface = static_cast<DorotiSurface*>(view_handle);
     auto* current = QOpenGLContext::currentContext();
     if (surface == nullptr || current == nullptr || current != surface->context() ||
@@ -250,6 +281,7 @@ class DorotiSurface final : public QOpenGLWindow {
     const QByteArray symbol(reinterpret_cast<const char*>(name.data),
                             static_cast<qsizetype>(name.length));
     return reinterpret_cast<void*>(current->getProcAddress(symbol));
+#endif
   }
 
   static void Resize(void* view_handle, double width, double height) noexcept {
@@ -401,6 +433,59 @@ class DorotiSurface final : public QOpenGLWindow {
   }
 
  protected:
+#ifdef DOROTI_QT_GRAPHITE
+  QVulkanInstance vulkan_;
+  QByteArray vulkan_extensions_;
+  double devicePixelRatioF() const { return devicePixelRatio(); }
+  void update() { requestUpdate(); }
+  void RenderVulkan() {
+    if (!isExposed() || width() <= 0 || height() <= 0 || fatal_) return;
+    const auto surface = QVulkanInstance::surfaceForWindow(this);
+    if (surface == VK_NULL_HANDLE) throw std::runtime_error("Qt Vulkan surface creation failed");
+    if (context_identity_ == 0) {
+      context_identity_ = reinterpret_cast<std::uintptr_t>(vulkan_.vkInstance());
+      ++surface_generation_;
+      surface_released_ = false;
+      Diagnostic("qpa", QGuiApplication::platformName().toUtf8().constData());
+      Diagnostic("graphics.backend", "Graphite-Vulkan");
+      Diagnostic("presentation.completion", "queue-present-accepted-not-scanout");
+    }
+    if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+    const auto token = std::exchange(pending_frame_token_, 0);
+    const auto scale = devicePixelRatioF();
+    doroti_qt_surface_v2 descriptor{};
+    descriptor.abi_version = kAbiVersion;
+    descriptor.struct_size = sizeof(descriptor);
+    descriptor.surface_generation = surface_generation_;
+    descriptor.context_identity = context_identity_;
+    descriptor.pixel_width = std::max(1, static_cast<int>(width() * scale));
+    descriptor.pixel_height = std::max(1, static_cast<int>(height() * scale));
+    descriptor.device_pixel_ratio = scale;
+    descriptor.timestamp_microseconds = Micros();
+    descriptor.vulkan_surface = reinterpret_cast<std::uintptr_t>(surface);
+    descriptor.vulkan_instance = vulkan_.vkInstance();
+    descriptor.vulkan_instance_extensions = Utf8(vulkan_extensions_);
+    vulkan_.presentAboutToBeQueued(this);
+    const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
+    vulkan_.presentQueued(this);
+    if (result == 1) {
+      Terminal(token, DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
+      update();
+      return;
+    }
+    if (result != DOROTI_QT_OK) {
+      fatal_ = true;
+      Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
+      callbacks_.fatal(callback_context_, result, Utf8("managed Vulkan render callback failed"));
+      QCoreApplication::exit(result);
+      RequestClose(this);
+      return;
+    }
+    rasterized_frame_token_ = token;
+    rasterized_generation_ = surface_generation_;
+    FrameSwapped();
+  }
+#else
   void initializeGL() override {
     ++surface_generation_;
     surface_released_ = false;
@@ -516,8 +601,26 @@ class DorotiSurface final : public QOpenGLWindow {
       pending_frame_token_ = next_automatic_frame_token_++;
   }
 
+#endif
   bool event(QEvent* event) override {
     switch (event->type()) {
+#ifdef DOROTI_QT_GRAPHITE
+      case QEvent::UpdateRequest:
+        try { RenderVulkan(); }
+        catch (const std::exception& exception) {
+          fatal_ = true;
+          callbacks_.fatal(callback_context_, DOROTI_QT_ERROR_NATIVE_EXCEPTION, Utf8(exception.what()));
+          QCoreApplication::exit(DOROTI_QT_ERROR_NATIVE_EXCEPTION);
+        }
+        return true;
+      case QEvent::Expose:
+        if (isExposed()) update();
+        break;
+      case QEvent::PlatformSurface:
+        if (static_cast<QPlatformSurfaceEvent*>(event)->surfaceEventType() == QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed)
+          ReleaseSurface();
+        break;
+#endif
       case QEvent::Show:
         lifecycle_state_ = 1;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
@@ -531,6 +634,9 @@ class DorotiSurface final : public QOpenGLWindow {
         break;
       case QEvent::Resize:
         SendMetrics();
+#ifdef DOROTI_QT_GRAPHITE
+        update();
+#endif
         break;
       case QEvent::WindowActivate:
         lifecycle_state_ = 1;
@@ -658,7 +764,7 @@ class DorotiSurface final : public QOpenGLWindow {
       default:
         break;
     }
-    return QOpenGLWindow::event(event);
+    return DorotiWindowBase::event(event);
   }
 
   QVariant inputMethodQuery(Qt::InputMethodQuery query) const {
@@ -804,9 +910,13 @@ class DorotiSurface final : public QOpenGLWindow {
   void ReleaseSurface() {
     if (surface_released_ || context_identity_ == 0) return;
     surface_released_ = true;
+#ifndef DOROTI_QT_GRAPHITE
     if (context() != nullptr && QOpenGLContext::currentContext() != context()) makeCurrent();
+#endif
     callbacks_.surface_destroying(callback_context_, this, surface_generation_, context_identity_);
+#ifndef DOROTI_QT_GRAPHITE
     if (context() != nullptr && QOpenGLContext::currentContext() == context()) doneCurrent();
+#endif
     context_identity_ = 0;
   }
 

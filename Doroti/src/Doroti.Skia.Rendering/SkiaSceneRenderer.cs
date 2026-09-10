@@ -1229,7 +1229,7 @@ public sealed partial class SkiaSceneRenderer :
             surfaceProperties?.PixelGeometry ?? SKPixelGeometry.Unknown);
         if (_pictureRasterCache.TryGetValue(cacheKey, out var cached))
         {
-            if (cached.Width == width && cached.Height == height && cached.Transform == signature)
+            if (cached.Recording?.IsDiscarded != true && cached.Width == width && cached.Height == height && cached.Transform == signature)
             {
                 cached.LastUsedSequence = ++_pictureRasterUseSequence;
                 DrawRasterImage(canvas, cached.Image, rasterLeft, rasterTop);
@@ -1284,7 +1284,7 @@ public sealed partial class SkiaSceneRenderer :
         rasterCanvas.Flush();
         var image = surface.Snapshot()
             ?? throw new InvalidOperationException("Doroti picture raster cache could not snapshot its GPU surface.");
-        cached = new(image, width, height, signature, ++_pictureRasterUseSequence);
+        cached = new(image, width, height, signature, ++_pictureRasterUseSequence, SkiaGpuSurfaces.RecordingFor(canvas));
         _pictureRasterCache.Add(cacheKey, cached);
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
@@ -1431,8 +1431,9 @@ public sealed partial class SkiaSceneRenderer :
         int width,
         int height,
         PictureRasterTransform transform,
-        long lastUsedSequence)
+        long lastUsedSequence, SkiaGpuSurfaces.Recording? recording)
     {
+        internal SkiaGpuSurfaces.Recording? Recording { get; } = recording;
         internal SKImage Image { get; } = image;
         internal int Width { get; } = width;
         internal int Height { get; } = height;

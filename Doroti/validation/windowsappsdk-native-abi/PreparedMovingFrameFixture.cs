@@ -5,8 +5,10 @@ using SkiaSharp;
 
 internal static class PreparedMovingFrameFixture
 {
-    internal static void Run()
+    internal static void Run(uint? receiptTimeoutMilliseconds = null)
     {
+        if (receiptTimeoutMilliseconds is < 1 or > 5000)
+            throw new ArgumentOutOfRangeException(nameof(receiptTimeoutMilliseconds));
         static void Require(bool value, string message)
         {
             if (!value) throw new InvalidOperationException(message);
@@ -33,6 +35,7 @@ internal static class PreparedMovingFrameFixture
         try
         {
             using var presenter = new WindowsManagedVulkanPresenter(enableDiagnostics: true);
+            presenter.PreparedReceiptTimeoutForValidation = receiptTimeoutMilliseconds;
             presenter.AttachWindow(window);
             presenter.ResizeViewport(320, 240, 1, 4, true);
             for (ulong generation = 1; generation <= 3; generation++)
@@ -123,11 +126,14 @@ internal static class PreparedMovingFrameFixture
                 presenter.AlignPreparedMovingFrame(commitKey) == 0 && presenter.PresentCount == 1,
                 "Clock alignment presented pixels or was not idempotent.");
             Require(presenter.CommitPreparedMovingFrame(commitKey) == 0 && presenter.PresentCount == 2,
-                "Exact prepared commit failed.");
+                $"Exact prepared commit failed. {JsonSerializer.Serialize(presenter.Snapshot())}");
             Require(presenter.CommitPreparedMovingFrame(commitKey) == 1 && presenter.PresentCount == 2,
                 "A prepared frame was presented twice.");
             Require(presenter.Snapshot() is { ResizeClockWaits: 1, ResizeClockSignals: 1, ResizeClockFailures: 0 },
                 "Exact commit did not consume one clock signal, or mismatch/double commit waited.");
+            Require(presenter.Snapshot().PreparedReceiptTimeoutMilliseconds ==
+                (receiptTimeoutMilliseconds ?? (presenter.Snapshot().VendorId == 0x10de ? 1000u : 50u)),
+                "Prepared receipt budget differs from the selected hardware policy.");
             Require(presenter.EnsureTarget(window, 320, 240), "Clock failure prepare acquire failed.");
             var timeoutKey = key with { ResizeEpoch = 3, MetricsGeneration = 9 };
             presenter.RenderAndPrepare(timeoutKey,
@@ -153,6 +159,10 @@ internal static class PreparedMovingFrameFixture
             Require(presenter.PreparedDiagnostics.Reserved == 0, "Shutdown leaked a reservation.");
             Console.WriteLine(JsonSerializer.Serialize(new {
                 status = "PASS-prepared-clock-commit", prepared = presenter.PreparedDiagnostics.Prepared,
+                receiptTimeoutMilliseconds = presenter.Snapshot().PreparedReceiptTimeoutMilliseconds,
+                strict50MillisecondOverruns = presenter.Snapshot().PreparedReceiptsOver50Milliseconds,
+                maximumReceiptWaitMicroseconds = presenter.Snapshot().MaximumCompositionFrameWaitMicroseconds,
+                receiptTimeouts = presenter.Snapshot().CompositionFrameWaitTimeouts,
                 cancelled = presenter.PreparedDiagnostics.Cancelled, reserved = presenter.PreparedDiagnostics.Reserved,
                 presents = presenter.PresentCount, clock = presenter.Snapshot().ResizeClockWaits,
                 clockSignals = presenter.Snapshot().ResizeClockSignals,

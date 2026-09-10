@@ -10,7 +10,7 @@ internal static class GpuCompositingContracts
     private const long Generation = 901;
     internal static void Verify(string contract)
     {
-        if (contract is not ("blend" or "phase" or "eviction" or "exception" or "owners" or "huge"))
+        if (contract is not ("blend" or "phase" or "eviction" or "exception" or "owners" or "huge" or "moving"))
             throw new ArgumentException("Unknown GPU compositing contract", nameof(contract));
         using var gpu = new GpuRasterFixture();
         using var target = SKSurface.Create(gpu.Context, true, new SKImageInfo(128, 128));
@@ -19,6 +19,7 @@ internal static class GpuCompositingContracts
         {
             if (contract == "blend") VerifyBlends(target, reference);
             else if (contract == "owners") VerifyOwners(target);
+            else if (contract == "moving") VerifyMovingFilter(target, reference);
             else VerifyFilters(contract, target, reference);
             Console.WriteLine($"GPU compositing {contract} PASS");
         }
@@ -27,6 +28,44 @@ internal static class GpuCompositingContracts
             DorotiSkiaImageFilterRenderer.ReleaseContext(Backend, Generation);
             DorotiSkiaRuntimeEffects.ReleaseContext(Backend, Generation);
         }
+    }
+
+    private static void VerifyMovingFilter(SKSurface target, SKSurface reference)
+    {
+        var shader = FragmentProgram.fromSource("uniform float2 size;\nuniform shader child;\nhalf4 main(float2 p) { return child.eval(p) * half4(0.5, 0.75, 1, 1); }", "moving-cache").fragmentShader();
+        var snapshot = new FragmentShaderSnapshot(shader.CaptureState());
+        var movingKey = new object();
+        long movingAllocations = 0;
+        using var paint = new SKPaint { Color = new SKColor(80, 160, 240, 128), IsAntialias = true };
+        void Draw(SKSurface surface, object key, out bool hit) =>
+            DorotiSkiaImageFilterRenderer.Draw(surface.Canvas, 128, 128, snapshot,
+                SKRect.Create(0, 0, 64, 64), default, SKSamplingOptions.Default,
+                _ => throw new Exception("Unexpected sampler"),
+                (canvas, _, _) => canvas.DrawCircle(17.25f, 18.375f, 8.25f, paint),
+                Backend, Generation, key, 0, out hit);
+        for (var frame = 0; frame < 20; frame++)
+        {
+            DorotiSkiaImageFilterRenderer.BeginFrame(Backend, Generation);
+            foreach (var surface in new[] { target, reference })
+            {
+                surface.Canvas.RestoreToCount(1);
+                surface.Canvas.ResetMatrix();
+                surface.Canvas.Clear(new SKColor(160, 70, 90, 220));
+                surface.Canvas.Save();
+                surface.Canvas.ClipRect(SKRect.Create(4, 8, 70, 65));
+                surface.Canvas.Translate(-10.375f + Math.Min(frame, 15) * 0.125f, 12.625f);
+            }
+            var before = DorotiSkiaImageFilterRenderer.Diagnostics.Created;
+            Draw(target, movingKey, out var hit);
+            if (frame < 16) movingAllocations += DorotiSkiaImageFilterRenderer.Diagnostics.Created - before;
+            // A new key takes the full cached-output path for comparison.
+            Draw(reference, new object(), out _);
+            EqualPixels(target, reference, $"moving/clipped translucent filter frame={frame}");
+            if (frame == 19 && !hit) throw new Exception("Settled filter did not resume cache reuse");
+        }
+        if (movingAllocations >= 16) throw new Exception("Moving filter still allocates an output surface every frame");
+        target.Canvas.RestoreToCount(1); reference.Canvas.RestoreToCount(1);
+        shader.dispose();
     }
 
     private static void VerifyBlends(SKSurface target, SKSurface reference)

@@ -4,8 +4,8 @@ public static class MacCatalystMauiTarget
 {
     public const string Rid = "maccatalyst-arm64";
     public const string TargetFramework = "net10.0-maccatalyst";
-    public const string NativeViewType = "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKMetalView";
-    public const string GraphicsBackend = "UIKit-MacCatalyst/SKMetalView/Metal-Skia";
+    public const string NativeViewType = "Doroti.Host.Maui.DorotiUIKitGraphiteView";
+    public const string GraphicsBackend = "UIKit/MTKView/Graphite-Metal";
 
     public static void EnsureSupported()
     {

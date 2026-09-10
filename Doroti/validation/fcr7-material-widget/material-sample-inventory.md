@@ -4,7 +4,7 @@ Baseline: repository `48343b7c8511c040faba8704e59aa32a80062374`, local
 `reference/flutter_sample_app/lib/main.dart` and `lib/src`. SDK resolved by the
 sample's package config: `C:/Users/parti/flutter`, revision
 `6b182d2c7585eba26d4edce0f97630effd256c33` (SDK `pubspec.lock` locally modified).
-This is the original source inventory, not a blanket runtime acceptance. Integration results are maintained in [work.md section 9](../../../work.md#9-2026-09-06-전체-작업-후속-구현-진행-중).
+This is the original source inventory, not a blanket runtime acceptance. Integration results were recorded in the historical Material sample plan's `work.md` section 9 (2026-09-06); that reference does not describe the later Graphite plan.
 The initial blocker table below is historical. All four screens and six component groups
 now have C# implementations in `DorotiTestbedApp/src/MaterialSample`; the implementation
 and validation sections below supersede the initial "blocked" and "notVerified" states.

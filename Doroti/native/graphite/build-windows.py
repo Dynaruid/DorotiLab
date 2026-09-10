@@ -1,4 +1,4 @@
-"""Build the NG1 interop probe asset from pinned Skia, never install into NuGet/product.
+"""Build and stage the pinned Windows Graphite asset, without changing the NuGet cache.
 
 Requires Windows, VS C++ x64 tools/SDK, LLVM, Ninja, Git, Python. Each child
 operation has a 20-minute timeout. Sources and logs stay under artifacts.
@@ -16,6 +16,39 @@ SKIA_REVISION = "cc43af052d3d98e605bee4ddc98671dafded1c57"
 SKIASHARP_REVISION = "143a933a753dbfeca1909524b2c06c546c5c3e20"
 HERE = Path(__file__).resolve().parent
 DOROTI = HERE.parents[1]
+PACKAGE_VERSION = "4.154.0-preview.1.26454.9"
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def stage_inputs():
+    return {"builderSha256": sha(Path(__file__)), "bridgeSha256": sha(HERE / "doroti_graphite_interop.inc"),
+            "skiaRevision": SKIA_REVISION, "skiaSharpRevision": SKIASHARP_REVISION,
+            "skiaSharpPackageVersion": PACKAGE_VERSION}
+
+
+def stage_is_current(directory):
+    try:
+        manifest = json.loads((directory / "build-provenance.json").read_text())
+        return manifest["inputs"] == stage_inputs() and manifest["bridgeAbi"] == 3 and all(
+            sha(directory / name) == digest for name, digest in manifest["files"].items())
+    except (OSError, KeyError, ValueError):
+        return False
+
+
+def stage_asset(directory, library, build_manifest):
+    packages = Path(os.environ.get("NUGET_PACKAGES", str(Path.home() / ".nuget/packages")))
+    upstream = packages / "skiasharp.nativeassets.win32" / PACKAGE_VERSION
+    directory.mkdir(parents=True, exist_ok=True)
+    for source, name in [(library, "libSkiaSharp.dll"), (upstream / "LICENSE.txt", "LICENSE.txt"),
+                         (upstream / "THIRD-PARTY-NOTICES.txt", "THIRD-PARTY-NOTICES.txt")]:
+        shutil.copyfile(source, directory / name)
+    manifest = {"schema": "doroti.graphite-distribution/v1", "rid": "win-x64", "bridgeAbi": 3,
+                "inputs": stage_inputs(), "build": build_manifest,
+                "files": {name: sha(directory / name) for name in ["libSkiaSharp.dll", "LICENSE.txt", "THIRD-PARTY-NOTICES.txt"]}}
+    (directory / "build-provenance.json").write_text(json.dumps(manifest, indent=2))
 
 
 def main():
@@ -23,9 +56,18 @@ def main():
     parser.add_argument("--vs", type=Path, default=Path("C:/Program Files/Microsoft Visual Studio/18/Community"))
     parser.add_argument("--llvm", type=Path, default=Path("C:/Program Files/LLVM"))
     parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument("--ensure-distribution", action="store_true", help="Reuse a hash-verified staged asset, otherwise build it.")
     args = parser.parse_args()
+    import xml.etree.ElementTree as ET
+    version = ET.parse(DOROTI / "Directory.Packages.props").find(".//PackageVersion[@Include='SkiaSharp']").attrib["Version"]
+    if version != PACKAGE_VERSION:
+        raise RuntimeError("The managed SkiaSharp pin differs from the qualified native asset recipe.")
+    distribution = DOROTI / "artifacts/native-graphite/distribution/win-x64"
+    if args.ensure_distribution and stage_is_current(distribution):
+        print(distribution / "build-provenance.json")
+        return
     if sys.platform != "win32":
-        parser.error("This bootstrap qualifies win-x64 only.")
+        parser.error("Build win-x64 on Windows first, or supply its hash-verified distribution when cross-packaging.")
     root = DOROTI / "artifacts/native-graphite/skia-build"
     root.mkdir(parents=True, exist_ok=True)
     run_dir = DOROTI / "artifacts/native-graphite/build-runs"
@@ -112,10 +154,11 @@ extra_ldflags=["/DEBUG:FULL", "/DEBUGTYPE:CV,FIXUP", "/guard:cf", "/DELAYLOAD:d3
     dll = out / "libSkiaSharp.dll"
     manifest = {"schema": "doroti.graphite-native-build/v1", "rid": "win-x64",
         "skiaRevision": SKIA_REVISION, "skiaSharpRevision": SKIASHARP_REVISION,
-        "bridgeAbi": 2, "productQualified": False,
+        "bridgeAbi": 3, "productQualified": False,
         "files": [{"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
                   for p in [dll, root / "src/c/doroti_graphite_interop.inc", out / "args.gn", root / "DEPS", root / "bin/gn.exe"]]}
     (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    stage_asset(distribution, dll, manifest)
     print(run_dir / "manifest.json")
 
 

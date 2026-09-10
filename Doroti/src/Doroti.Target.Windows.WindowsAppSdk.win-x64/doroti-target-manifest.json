@@ -4,7 +4,7 @@
   "targetFramework": "net10.0-windows10.0.19041.0",
   "rid": "win-x64",
   "nativeViewType": "Win32.ChildHwnd",
-  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Vulkan-Composition-Swapchain-Skia",
+  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Graphite-Vulkan-Composition-Swapchain",
   "defaultRenderer": "Vulkan",
   "optionalRenderers": [
     "AngleD3D11"
@@ -13,7 +13,9 @@
   "adapterCapabilities": [
     "HwndExactCpp"
   ],
-  "cutoverDecision": "Vulkan is the default; Acrylic is available when requested by the app through WindowBackdropMode.acrylic; broader GPU/DPI/refresh qualification remains incomplete",
+  "cutoverDecision": "Graphite/Vulkan is the user-selected default; NVIDIA prepared receipt latency is accepted at 1000 ms. Broader GPU/DPI/refresh qualification remains incomplete.",
   "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
-  "softwareFallback": false
+  "softwareFallback": false,
+  "nativeSkiaBridgeAbi": 3,
+  "defaultSkiaEngine": "Graphite"
 }

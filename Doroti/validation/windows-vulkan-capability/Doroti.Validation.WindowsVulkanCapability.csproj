@@ -14,10 +14,18 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="../../../reference/flutter_sample_app/assets/images/mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="sample.webp" />
+    <ProjectReference Include="..\..\src\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Condition="'$(RuntimeIdentifier)' == 'win-x64'" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
     <PackageReference Include="Silk.NET.Vulkan" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DorotiVulkanProbePlatform)' == 'Windows'">
+    <None Include="..\..\src\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\doroti_windows_appsdk_host_v1.dll"
+          Link="doroti_windows_appsdk_host_v1.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\Microsoft.WindowsAppRuntime.Bootstrap.dll"
+          Link="Microsoft.WindowsAppRuntime.Bootstrap.dll" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

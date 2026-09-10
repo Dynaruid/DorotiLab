@@ -148,8 +148,10 @@ internal static class Program
                     presentationContract &&
                     diagnostics.GpuCopies <= diagnostics.GpuSubmits,
                 "Managed presenter ordering or injected device recreation differs in the product path.");
-            var expectedBackend = requestedPresenter.Equals("Vulkan", StringComparison.OrdinalIgnoreCase)
-                ? "Vulkan/Composition-Swapchain"
+            var vulkanRequested = requestedPresenter.Equals("Vulkan", StringComparison.OrdinalIgnoreCase);
+            var expectedBackend = vulkanRequested
+                ? Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE") != "0"
+                    ? "Graphite/Vulkan/Composition-Swapchain" : "Vulkan/Composition-Swapchain"
                 : acrylicRequested ? "ANGLE-D3D11/Composition-Swapchain" : "ANGLE/EGL-D3D11";
             Require(diagnostics.PresenterBackend == expectedBackend &&
                     diagnostics.RequestedPresenter.Equals(requestedPresenter, StringComparison.OrdinalIgnoreCase) &&
@@ -162,7 +164,7 @@ internal static class Program
                         ? diagnostics.Acrylic is { BackdropTargetAdded: true }
                         : diagnostics.Acrylic is null),
                 "Product validation did not preserve the requested window backdrop mode.");
-            if (acrylicRequested && expectedBackend == "Vulkan/Composition-Swapchain")
+            if (acrylicRequested && vulkanRequested)
                 Require(diagnostics.Acrylic is {
                             ContentIslandConnected: false,
                             DesktopWindowTargetConnected: true
@@ -176,7 +178,7 @@ internal static class Program
                         } &&
                         diagnostics.Vulkan is { CompositeAlpha: "Premultiplied" },
                     "Vulkan Acrylic did not layer a premultiplied top-level Presentation target over an active DesktopAcrylicController target and its DWM transient-backdrop resize underlay.");
-            Require(expectedBackend != "Vulkan/Composition-Swapchain" ||
+            Require(!vulkanRequested ||
                      diagnostics.PresenterDiagnosticCoverage.Contains("topmost DirectComposition target on the top-level HWND", StringComparison.Ordinal) &&
                      diagnostics.PresenterDiagnosticCoverage.Contains("single top-level client geometry", StringComparison.Ordinal) &&
                      diagnostics.Vulkan is { CandidatePolicy: "moving-origin-clock-geometry-prepared-commit-receipt", MovingOriginReserved: 0 } &&
@@ -189,7 +191,7 @@ internal static class Program
                     diagnostics.PresenterDiagnosticCoverage.Contains("three-slot", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("availability", StringComparison.Ordinal),
                 "Explicit Vulkan did not select the synchronous top-level full-capacity Presentation topology.");
-            Require((expectedBackend == "Vulkan/Composition-Swapchain" ||
+            Require((vulkanRequested ||
                      diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
                      (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
                       diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase))) &&
@@ -367,7 +369,7 @@ internal static class Program
                     fragment = "IRawElementProviderFragment",
                     patterns = new[] { "Invoke", "Value", "Toggle", "SelectionItem", "RangeValue" },
                     actions = ProductEntrypoint.SemanticsActions,
-                    boundsAuthority = expectedBackend == "Vulkan/Composition-Swapchain"
+                    boundsAuthority = vulkanRequested
                         ? "current top-level HWND screen origin plus current metrics scale"
                         : "current child HWND screen origin plus current metrics scale",
                 },
@@ -394,12 +396,12 @@ internal static class Program
                 gate = "C9-runtime-provenance",
                 status = "PASS",
                 adapter = "HwndExactCpp",
-                nativeViewType = expectedBackend == "Vulkan/Composition-Swapchain"
+                nativeViewType = vulkanRequested
                     ? acrylicRequested
                         ? "synchronous top-level Vulkan Presentation plus Desktop Acrylic window target"
                         : "synchronous top-level Vulkan Presentation"
                     : acrylicRequested ? "ContentIsland/Composition-Swapchain" : "Win32.ChildHwnd",
-                visibleOwner = expectedBackend == "Vulkan/Composition-Swapchain"
+                visibleOwner = vulkanRequested
                     ? acrylicRequested
                         ? "top-level HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target"
                         : "top-level HWND DirectComposition Vulkan Presentation target"

@@ -3,7 +3,11 @@
   "packageId": "Doroti.Target.Android.Maui.android-x64",
   "targetFramework": "net10.0-android",
   "rid": "android-x64",
-  "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
-  "graphicsBackend": "Android/MauiSKGLTextureView/OpenGL-ES-Skia",
-  "softwareFallback": false
+  "nativeViewType": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+  "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
+  "softwareFallback": false,
+  "minimumApi": 24,
+  "requiredVulkanVersion": "1.1",
+  "nativeSkiaBridgeAbi": 3,
+  "defaultSkiaEngine": "Graphite"
 }

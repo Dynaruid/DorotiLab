@@ -1,7 +1,7 @@
 # Material sample integration validation
 
 The testbed sample is an explicit C# application mode. The default remains diagnostics
-until the Windows/Web P1-P5 acceptance gate in [work.md](../../../work.md) passes.
+until the Windows/Web P1-P5 acceptance gate from the historical Material sample plan passes.
 The local reference is `reference/flutter_sample_app`, Flutter SDK revision
 `6b182d2c7585eba26d4edce0f97630effd256c33`; its immutable P0 and WebP manifests remain
 under `validation/fcr7-material-widget/baselines/` and `.doroti/evidence/material-image-repair/`.
@@ -108,8 +108,9 @@ The `Scroll` suite checks wheel input, stable first-traversal extent, direct acc
 end, section state retention and width/text-scale/column transitions. It does not certify
 physical-device frame cadence or startup latency.
 
-Current run results, historical failures, and per-target build/live status are recorded
-in [work.md section 9](../../../work.md#9-2026-09-06-전체-작업-후속-구현-진행-중).
+Run results, historical failures, and per-target build/live status were recorded
+in the historical Material sample plan's `work.md` section 9 (2026-09-06).
+That removed plan is distinct from the later Graphite plan; the evidence locations follow.
 Evidence root: `.doroti/evidence/material-sample-implementation/`; browser wrappers:
 `Doroti/validation/web-playwright/artifacts/wrapper/material-sample-implementation-v*/`.
 Browser screenshots and traces are in the corresponding non-`wrapper` artifact folder.

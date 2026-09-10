@@ -23,6 +23,11 @@ public static class DorotiMauiApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(launchContext);
+#if ANDROID
+        if (DorotiGraphiteView.Enabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+#elif WINDOWS
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+#endif
         var descriptor = DorotiApplicationFactory.Create<TStartup>(launchContext);
         return builder.UseDorotiApplication(descriptor);
     }
@@ -33,6 +38,11 @@ public static class DorotiMauiApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(descriptor);
+#if ANDROID
+        if (DorotiGraphiteView.Enabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+#elif WINDOWS
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+#endif
         builder
 #if MACOS
             .UseMauiAppMacOS<DorotiMauiApplication>()
@@ -48,10 +58,15 @@ public static class DorotiMauiApplicationBuilderExtensions
                 handlers.AddHandler<DorotiWindowsDxgiElement, DorotiWindowsDxgiElementHandler>());
 #elif MACCATALYST
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>());
+                handlers.AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>()
+                    .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>());
 #elif IOS
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<SKGLView, DorotiIosMetalViewHandler>());
+                handlers.AddHandler<SKGLView, DorotiIosMetalViewHandler>()
+                    .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>());
+#elif ANDROID
+            .ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler<DorotiGraphiteView, DorotiAndroidVulkanViewHandler>());
 #else
             ;
 #endif

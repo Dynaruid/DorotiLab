@@ -102,7 +102,7 @@ public sealed class DorotiWindowsDxgiElementHandler
 /// Doroti-owned Windows presenter. XAML owns layout/input only; a dedicated
 /// raster thread owns D3D12, Skia, swap-chain buffers and Present.
 /// </summary>
-internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
+internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 {
     private readonly object _gate = new();
     private readonly DorotiWindowsDxgiElement _view;
@@ -171,6 +171,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
     public event Action<KeyData>? Key;
     public event Action<bool>? FocusChanged;
     public event Action<DorotiResizeEpoch?>? SizeChanged;
+    public event Action? GpuResourcesReleasing;
 
     internal void Connect(DorotiWindowsDxgiHost host)
     {
@@ -300,7 +301,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 ? "WinUI attached Composition visual hosted by DorotiWindowsDxgiHost"
                 : "Win32 child HWND hosted by DorotiWindowsDxgiHost",
             GraphicsBackend = compositionCandidate
-                ? "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
+                ? WindowsCompositionSurfaceFeature.GraphiteEnabled ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan" : "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
                 : WindowsStableCapacityFeature.Enabled
                     ? "Win32/child-HWND/grow-only-capacity/exact-content/DXGI-D3D12-Skia"
                     : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia",
@@ -544,6 +545,8 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         }
     }
 
+    private void ReleaseGraphiteRendererResources() => GpuResourcesReleasing?.Invoke();
+
     private void RasterMain()
     {
         using var presenter = new WindowsHwndD3D12Presenter();
@@ -654,6 +657,8 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     compositionPresenter ??= new WindowsCompositionSurfacePresenter(
                         compositor!, InvokeOnUiThread, WakeCompositionRetry);
                     _compositionPresenter = compositionPresenter;
+                    compositionPresenter.GpuResourcesReleasing -= ReleaseGraphiteRendererResources;
+                    compositionPresenter.GpuResourcesReleasing += ReleaseGraphiteRendererResources;
                     compositionPresenter.EnsureTarget(
                         host!, target.PhysicalWidth, target.PhysicalHeight);
                 }
@@ -692,7 +697,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     Interlocked.Read(ref _surfaceGeneration),
                     compositionCandidate ? "WinUI attached Composition visual" : "Win32 child HWND",
                     compositionCandidate
-                        ? "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
+                        ? WindowsCompositionSurfaceFeature.GraphiteEnabled ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan" : "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
                         : WindowsStableCapacityFeature.Enabled
                             ? "Win32/child-HWND/grow-only-capacity/exact-content/DXGI-D3D12-Skia"
                             : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia");
@@ -1054,9 +1059,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         if (Thread.CurrentThread != _metricsThread && !_metricsThread.Join(TimeSpan.FromSeconds(5)))
             PaintFailed?.Invoke(null, new TimeoutException("Windows resize framework thread did not stop within five seconds."));
         if (Thread.CurrentThread != _rasterThread && !_rasterThread.Join(TimeSpan.FromSeconds(5)))
-            PaintFailed?.Invoke(null, new TimeoutException("Windows D3D12 raster thread did not stop within five seconds."));
+            throw new TimeoutException("Windows raster thread did not stop; retaining GPU resources to prevent concurrent disposal.");
         if (_compositionPresenter is { } compositionPresenter)
         {
+            compositionPresenter.TakeGraphiteShutdownOwnershipAfterThreadJoined();
             compositionPresenter.Dispose();
             _compositionPresenter = null;
         }
@@ -2780,13 +2786,13 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
 internal sealed class WindowsD3D12BackingStore : IDisposable
 {
     private readonly ID3D12Device _device;
-    private readonly GRContext _context;
+    private readonly GRContext? _context;
     private ID3D12Resource? _resource;
     private GRVorticeD3DTextureResourceInfo? _resourceInfo;
     private GRBackendRenderTarget? _renderTarget;
     private SKSurface? _surface;
 
-    internal WindowsD3D12BackingStore(ID3D12Device device, GRContext context)
+    internal WindowsD3D12BackingStore(ID3D12Device device, GRContext? context)
     {
         _device = device;
         _context = context;
@@ -2801,7 +2807,7 @@ internal sealed class WindowsD3D12BackingStore : IDisposable
 
     internal bool EnsureSize(int width, int height)
     {
-        if (_surface is not null && Width == width && Height == height) return false;
+        if (_resource is not null && Width == width && Height == height) return false;
         ReleaseResources();
         var description = ResourceDescription.Texture2D(
             Format.R8G8B8A8_UNorm,
@@ -2814,10 +2820,11 @@ internal sealed class WindowsD3D12BackingStore : IDisposable
             ResourceFlags.AllowRenderTarget);
         _resource = _device.CreateCommittedResource(
             HeapType.Default,
-            HeapFlags.None,
+            _context is null ? HeapFlags.Shared : HeapFlags.None,
             description,
-            ResourceStates.RenderTarget,
+            _context is null ? ResourceStates.Common : ResourceStates.RenderTarget,
             null);
+        if (_context is null) { Width = width; Height = height; return true; }
         _resourceInfo = new GRVorticeD3DTextureResourceInfo
         {
             Resource = _resource,

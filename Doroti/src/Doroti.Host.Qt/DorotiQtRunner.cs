@@ -29,6 +29,7 @@ public static unsafe partial class DorotiQtRunner
         }
 
         QtNativeV2.ValidateLayout();
+        if (QtSkiaSurface.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
         using var application = DorotiApplicationBoundary.Load(
             descriptor.ManifestAssembly,
             descriptor.ApplicationAssembly,
@@ -138,10 +139,13 @@ public static unsafe partial class DorotiQtRunner
                 checked((int)_configuration.logicalSize.height));
             var renderer = new SkiaSceneRenderer(1, host,
                 _configuration.backgroundColor, _configuration.darkBackgroundColor,
-                "linux-x64/qt6-opengl/skia-gl", DorotiSkiaRuntimeEffects.QtGpuBackend,
-                DorotiSkiaRuntimeEffects.QtGpuBackend);
+                QtSkiaSurface.GraphiteEnabled ? "linux-x64/qt6-vulkan/graphite" : "linux-x64/qt6-opengl/skia-gl",
+                QtSkiaSurface.GraphiteEnabled ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.QtGpuBackend,
+                QtSkiaSurface.GraphiteEnabled ? "Qt/QWindow/Graphite-Vulkan" : DorotiSkiaRuntimeEffects.QtGpuBackend,
+                enablePictureRasterCache: !QtSkiaSurface.GraphiteEnabled);
+            Surface.GpuResourcesReleasing += renderer.InvalidateGpuContextResources;
             var messages = new QtPlatformMessageCapability();
-            var capabilities = new DorotiViewCapabilities("linux-x64/qt6-opengl/skia-gl")
+            var capabilities = new DorotiViewCapabilities(QtSkiaSurface.GraphiteEnabled ? "linux-x64/qt6-vulkan/graphite" : "linux-x64/qt6-opengl/skia-gl")
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
@@ -332,8 +336,10 @@ public static unsafe partial class DorotiQtRunner
         });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    internal static int OnRender(nint context, nint viewHandle, QtNativeV2.Surface* surface, ulong frameToken) =>
-        Guard(context, state =>
+    internal static int OnRender(nint context, nint viewHandle, QtNativeV2.Surface* surface, ulong frameToken)
+    {
+        var presented = false;
+        var result = Guard(context, state =>
         {
             _ = (viewHandle, frameToken);
             if (surface == null) throw new InvalidDataException("Qt supplied a null surface descriptor.");
@@ -348,10 +354,13 @@ public static unsafe partial class DorotiQtRunner
             }
             state.Host.BeginFrame(in *surface);
             SkiaPaintCompletion? completion = null;
-            state.Surface.Render(in *surface, skiaSurface =>
+            presented = state.Surface.Render(in *surface, skiaSurface =>
                 completion = state.Renderer.Paint(skiaSurface, surface->PixelWidth, surface->PixelHeight));
-            state.RecordRasterized(frameToken, completion);
+            if (presented) state.RecordRasterized(frameToken, completion);
+            else if (completion is { } pending) state.Renderer.FailPaint(pending, "Vulkan swapchain became out of date before presentation.");
         });
+        return result == 0 && !presented ? 1 : result;
+    }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     internal static void OnFrameTerminal(

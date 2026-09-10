@@ -3,7 +3,8 @@
   "packageId": "Doroti.Target.iOS.Maui.iossimulator-x64",
   "targetFramework": "net10.0-ios",
   "rid": "iossimulator-x64",
-  "nativeViewType": "Doroti.Host.Maui.DorotiIosMetalViewHandler+DorotiIosMetalView",
-  "graphicsBackend": "UIKit-iOS-Simulator/SKMetalView/Metal-Skia",
-  "softwareFallback": false
+  "nativeViewType": "Doroti.Host.Maui.DorotiUIKitGraphiteView",
+  "graphicsBackend": "UIKit/MTKView/Graphite-Metal",
+  "softwareFallback": false,
+  "defaultSkiaEngine": "Graphite"
 }

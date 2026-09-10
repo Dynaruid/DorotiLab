@@ -4,7 +4,7 @@
   "packageVersion": "0.2.0-beta",
   "rid": "linux-x64",
   "host": "qt6-c-abi",
-  "graphicsBackend": "qt6/QOpenGLWindow/Ganesh-OpenGL-Skia",
+  "graphicsBackend": "qt6/QWindow/Graphite-Vulkan",
   "processOwner": "managed",
   "nativeAbi": "doroti.qt-host/v2",
   "requiredCapabilities": [
@@ -17,5 +17,9 @@
     "graphics.scene",
     "accessibility.semantics"
   ],
-  "verificationStatus": "notVerified"
+  "verificationStatus": "notVerified",
+  "nativeSkiaBridgeAbi": 3,
+  "nativeSurfaceFeature": "vulkan-surface-bit10",
+  "requiredVulkanVersion": "1.1",
+  "defaultSkiaEngine": "Graphite"
 }

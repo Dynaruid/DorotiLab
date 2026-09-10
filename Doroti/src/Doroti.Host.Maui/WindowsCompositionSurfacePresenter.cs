@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Doroti.Ui;
+using Doroti.Skia.Vulkan;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using SharpGen.Runtime;
@@ -21,9 +22,10 @@ namespace Doroti.Host.Maui;
 
 internal static class WindowsCompositionSurfaceFeature
 {
+    internal static bool GraphiteEnabled => Environment.GetEnvironmentVariable("DOROTI_WINDOWS_MAUI_GRAPHITE") != "0";
     internal const string EnvironmentVariable = "DOROTI_WINDOWS_COMPOSITION_SURFACE";
 
-    internal static bool Enabled =>
+    internal static bool Enabled => GraphiteEnabled ||
         string.Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), "1",
             StringComparison.Ordinal);
 }
@@ -54,6 +56,9 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private GRVorticeD3DBackendContext? _skiaBackend;
     private GRContext? _skiaContext;
     private WindowsD3D12BackingStore? _backingStore;
+    private GraphiteVulkanWindow? _graphite;
+    private SKSurface? _graphiteSurface;
+    internal event Action? GpuResourcesReleasing;
     private ID3D12CommandAllocator? _copyAllocator;
     private ID3D12GraphicsCommandList? _copyCommandList;
     private ID3D12Fence? _copyFence;
@@ -97,9 +102,9 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     internal int CheckedOutResourceCount { get; private set; }
     internal int OpenDrawCount { get; private set; }
     internal string AdapterDescription => _adapterDescription;
-    internal GRContext Context => _skiaContext ??
+    internal object Context => (object?)_graphite?.ContextIdentity ?? _skiaContext ??
         throw new InvalidOperationException("Composition Skia context is unavailable.");
-    internal SKSurface Surface => _backingStore?.Surface ??
+    internal SKSurface Surface => _graphiteSurface ?? _backingStore?.Surface ??
         throw new InvalidOperationException("Composition D3D12 backing store is unavailable.");
 
     internal void EnsureTarget(
@@ -112,17 +117,36 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         EnsureDeviceAndVisual(host);
-        _backingStore ??= new WindowsD3D12BackingStore(_device12!, Context);
+        _graphite?.ReleaseD3D12Frame();
+        if (_graphite is not null && _backingStore is not null && (_backingStore.Width != width || _backingStore.Height != height))
+        {
+            // Dispose the imported image before releasing its D3D allocation.
+            _graphite.Dispose(); _graphite = null; _graphiteSurface = null;
+            _backingStore.Dispose(); _backingStore = null;
+            CreateGraphite();
+        }
+        _backingStore ??= new WindowsD3D12BackingStore(_device12!, _skiaContext);
         SurfaceChanged = _backingStore.EnsureSize(width, height);
+        if (_graphite is not null)
+        {
+            if (SurfaceChanged)
+            {
+                var handle = _device12!.CreateSharedHandle(_backingStore.Resource, null, null!);
+                try { _graphite.ImportD3D12Resource(handle, width, height); }
+                finally { CloseGraphiteHandle(handle); }
+            }
+            _graphiteSurface = _graphite.BeginD3D12Frame();
+        }
         Width = width;
         Height = height;
     }
 
     internal void Flush()
     {
+        if (_graphite is not null) { _graphite.FlushD3D12Frame(); _graphiteSurface = null; return; }
         Surface.Canvas.Flush();
-        Context.Flush(Surface);
-        Context.Submit(false);
+        _skiaContext!.Flush(Surface);
+        _skiaContext.Submit(false);
     }
 
     internal bool TryPresent(
@@ -300,7 +324,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             [
                 ResourceBarrier.BarrierTransition(
                     _backingStore!.Resource,
-                    ResourceStates.RenderTarget,
+                    _graphite is not null ? ResourceStates.Common : ResourceStates.RenderTarget,
                     ResourceStates.CopySource),
                 ResourceBarrier.BarrierTransition(
                     destination12,
@@ -319,7 +343,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
                 ResourceBarrier.BarrierTransition(
                     _backingStore.Resource,
                     ResourceStates.CopySource,
-                    ResourceStates.RenderTarget),
+                    _graphite is not null ? ResourceStates.Common : ResourceStates.RenderTarget),
                 ResourceBarrier.BarrierTransition(
                     destination12,
                     ResourceStates.CopyDest,
@@ -420,7 +444,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
 
     private void EnsureDeviceAndVisual(DorotiWindowsDxgiHost host)
     {
-        if (_skiaContext is null)
+        if (_device12 is null)
         {
             _factory = CreateDXGIFactory2<IDXGIFactory6>(false);
             _adapter = _factory.EnumAdapterByGpuPreference<IDXGIAdapter1>(
@@ -442,6 +466,9 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
                 throw new InvalidOperationException($"D3D11On12 selected {chosenFeatureLevel}.");
             _on12 = _device11.QueryInterface<ID3D11On12Device2>();
             _graphicsDevice = WindowsCompositionInterop.CreateGraphicsDevice(_compositor, _device11);
+            if (WindowsCompositionSurfaceFeature.GraphiteEnabled) CreateGraphite();
+            else
+            {
             _skiaBackend = new GRVorticeD3DBackendContext
             {
                 Adapter = _adapter,
@@ -450,6 +477,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             };
             _skiaContext = GRContext.CreateDirect3D(_skiaBackend) ??
                 throw new InvalidOperationException("Skia could not create the Composition D3D12 context.");
+            }
             _copyAllocator = _device12.CreateCommandAllocator(CommandListType.Direct);
             _copyCommandList = _device12.CreateCommandList<ID3D12GraphicsCommandList>(
                 CommandListType.Direct, _copyAllocator, null);
@@ -480,6 +508,19 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _attachedHost = host;
         }
     }
+
+    private void CreateGraphite()
+    {
+        var luid = _adapter!.Description1.Luid;
+        _graphite = GraphiteVulkanWindow.CreateD3D12(System.Runtime.CompilerServices.Unsafe.As<Vortice.Luid, long>(ref luid));
+        _graphite.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
+    }
+
+    internal void TakeGraphiteShutdownOwnershipAfterThreadJoined() => _graphite?.TakeShutdownOwnershipAfterThreadJoined();
+
+    [DllImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CloseGraphiteHandle(nint handle);
 
     internal void PrepareForUiTeardown(DorotiWindowsDxgiHost host)
     {
@@ -519,6 +560,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _graphicsDevice = null;
         });
         _front = null;
+        _graphite?.Dispose(); _graphite = null; _graphiteSurface = null;
         _backingStore?.Dispose();
         _backingStore = null;
         _on12?.Dispose();

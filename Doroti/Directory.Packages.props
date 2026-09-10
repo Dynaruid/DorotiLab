@@ -7,6 +7,7 @@
     <PackageVersion Include="MaterialColorUtilities" Version="0.3.0" />
     <PackageVersion Include="SkiaSharp" Version="4.154.0-preview.1.26454.9" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="4.154.0-preview.1.26454.9" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="4.154.0-preview.1.26454.9" />
     <PackageVersion Include="Avalonia.Angle.Windows.Natives" Version="2.1.27548.20260419" />
     <PackageVersion Include="Silk.NET.Vulkan" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.23.0" />

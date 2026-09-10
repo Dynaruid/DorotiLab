@@ -8,6 +8,20 @@ public static class SkiaGpuSurfaces
 {
     private sealed record Owner(SKGraphiteRecorder Recorder, int Thread);
     private static readonly ConditionalWeakTable<SKSurface, Owner> Owners = new();
+    public sealed class Recording { public bool IsDiscarded { get; internal set; } }
+    private sealed class RecorderCache { public Recording Current = new(); }
+    private static readonly ConditionalWeakTable<SKGraphiteRecorder, RecorderCache> RecorderCaches = new();
+
+    /// <summary>Retain with a cached snapshot to detect whether its GPU draws were discarded.</summary>
+    public static Recording? RecordingFor(SKCanvas canvas) => RecorderFor(canvas) is { } recorder
+        ? RecorderCaches.GetOrCreateValue(recorder).Current : null;
+
+    public static void CompleteRecording(SKGraphiteRecorder recorder, bool discarded)
+    {
+        var cache = RecorderCaches.GetOrCreateValue(recorder);
+        cache.Current.IsDiscarded = discarded;
+        cache.Current = new();
+    }
 
     public static SKSurface Register(SKSurface surface, SKGraphiteRecorder recorder)
     {

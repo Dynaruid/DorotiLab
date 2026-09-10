@@ -4,8 +4,8 @@ public static class WindowsMauiTarget
 {
     public const string Rid = "win-x64";
     public const string TargetFramework = "net10.0-windows10.0.19041.0";
-    public const string NativeViewType = "Microsoft.UI.Xaml.Controls.SwapChainPanel";
-    public const string GraphicsBackend = "winui3/SwapChainPanel/Doroti-owned-D3D12-Skia";
+    public const string NativeViewType = "Doroti.Host.Maui.DorotiWindowsDxgiHost";
+    public const string GraphicsBackend = "WinUI/CompositionDrawingSurface/Graphite-Vulkan";
 
     public static void EnsureSupported()
     {
