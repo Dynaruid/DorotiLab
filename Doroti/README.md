@@ -4,6 +4,8 @@
 
 Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for Windows App SDK, optional Windows MAUI, native AppKit macOS, Mac Catalyst, Android, iOS, WebAssembly, and Linux/Qt.
 
+iOS device (`ios-arm64`) Release builds default to NativeAOT. Debug, simulators and other platforms keep their existing defaults; `-CompilationMode Mono` explicitly selects the recovery profile. See [iOS build instructions](validation/native-aot/README.md).
+
 ## Development model
 
 `src/Doroti.Framework.*` is maintained product source. Its public namespaces are `Doroti.Framework.*`, matching the project, assembly, and package names. Add features and fix correctness directly in the owning framework/runtime/host project, then update every consumer of the shared contract.

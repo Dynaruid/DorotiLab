@@ -14,7 +14,8 @@
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=ios-arm64" />
+    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=ios-arm64;DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(TargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion)"
+                      SetTargetFramework="TargetFramework=$(TargetFramework)" SkipGetTargetFrameworkProperties="true" />
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' == 'net10.0-ios'" />
     <EmbeddedResource Include="doroti-target-manifest.net11.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' == 'net11.0-ios'" />
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" Condition="'$(TargetFramework)' == 'net10.0-ios'" />

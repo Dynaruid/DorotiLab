@@ -5,7 +5,8 @@ and an isolated, installed-template NuGet consumer now **publish as signed iOS
 NativeAOT apps and run on an iPhone**. Both pass the native-link/bundle Mono
 absence check. All 12 main framework assemblies pass Debug/Release zero-DLR
 and AOT analysis. Exhaustive G2 device/lifetime and quantitative performance
-gates, other-platform execution and G3 default promotion remain open; see
+gates and other-platform execution remain open. At the user’s request, iOS device
+Release now defaults to NativeAOT; see
 [the execution report](../../docs/validation/nativeaot-2026-09-10.md).
 
 Run commands from the repository root. `run.py` imposes the repository's 1,200
@@ -13,27 +14,30 @@ second limit, captures a log, and writes a sibling `.result.json` with the exact
 command, elapsed time, exit code and timeout status. Output under `Doroti/artifacts`
 is durable local evidence; `.doroti/tmp` is disposable.
 
-## Experimental iOS profile
+## iOS Release default
 
 ```powershell
-pwsh -File Doroti/eng/doroti.ps1 publish -App DorotiTestbedApp -Platform ios -Rid ios-arm64 -CompilationMode NativeAot
+pwsh -File Doroti/eng/doroti.ps1 publish -App DorotiTestbedApp -Platform ios -Configuration Release
 ```
 
 The CLI selects the runtime on the executable and places the complete graph in
-`.doroti/cache/compilation/<mode>/<rid>`. NativeAOT is opt-in while gates remain
-open; `-CompilationMode Mono` is the explicit comparison/recovery profile. The
+`.doroti/cache/compilation/<mode>/<rid>`. iOS device (`ios-arm64`) Release uses
+NativeAOT by default; an omitted Release RID selects `ios-arm64`. Debug, explicitly
+selected simulator RIDs, and other platforms retain their existing defaults.
+`-CompilationMode Mono` is the explicit comparison/recovery profile. The
 CLI rejects NativeAOT `run`, because a normal build/run does not compile NativeAOT.
 The source Testbed NativeAot profile selects `net11.0-ios` and MAUI
 `11.0.0-rc.1.26451.6` across the runner, host, target and native binding. Use
 SDK `11.0.100-rc.1.26425.128` and the matching installed iOS workload.
 `Doroti/global.json` still selects SDK 10 inside the product directory; run
 these commands from the repository root. An isolated packaged-template consumer has published and run successfully.
-Direct invocation, including an isolated output path:
+Direct invocation, including an optional isolated output path (without one, the
+SDK uses `.doroti/compilation/NativeAot/<rid>` under the runner directory):
 
 ```sh
 python3 Doroti/validation/native-aot/run.py --log Doroti/artifacts/native-aot/testbed.log -- \
   dotnet publish DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 \
-  -p:DorotiCompilationMode=NativeAot -p:ArtifactsPath=/absolute/path/to/nativeaot-output \
+  -p:ArtifactsPath=/absolute/path/to/nativeaot-output \
   -p:UseSharedCompilation=false -bl:Doroti/artifacts/native-aot/testbed.binlog -v:normal
 ```
 
@@ -149,7 +153,7 @@ checks that missing and empty input sets fail. The audit tool's `--expect-zero`
 flag exits 1 for actual call sites and 2 for missing/invalid inputs.
 `.github/workflows/native-aot-contracts.yml` wires this gate and nine NativeAOT
 contract publish/execution checks into CI. The workflow has not yet run on GitHub;
-full-device coverage and default promotion remain open; signed iPhone smoke and
+full-device coverage remains open; signed iPhone smoke and
 full-framework zero-DLR checks have passed locally.
 
 
@@ -244,7 +248,8 @@ Known limits: MAUI KVO observer finalizer warnings remain documented without
 suppression, remote orientation control is unsupported by this iPhone, and
 exhaustive physical IME/accessibility/lifetime and controlled performance checks
 are not complete. The comparison plan is in `performance-plan.json`; it is not a
-benchmark result. NativeAOT therefore remains explicit opt-in.
+benchmark result. The user subsequently requested NativeAOT as the iOS device
+Release default; that policy change does not mark unmeasured performance gates as passed.
 
 The actual .NET 10 Mono comparison also published successfully. Raw bundle
 bytes are 104,701,336 versus NativeAOT 42,616,772 (59.30% reduction); compressed

@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Configuration)' == 'Release' and '$(DorotiCompilationMode)' != 'Mono' and '$(PublishAot)' != 'false'">ios-arm64</RuntimeIdentifier>
+  </PropertyGroup>
   <Import Project="..\Directory.Build.props" />
   <PropertyGroup>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>

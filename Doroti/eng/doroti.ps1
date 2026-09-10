@@ -27,7 +27,7 @@ param(
     [string] $Configuration = 'Release',
 
     [ValidateSet('Mono', 'NativeAot')]
-    [string] $CompilationMode = 'Mono',
+    [string] $CompilationMode,
 
     [switch] $NoBuild,
 
@@ -189,6 +189,8 @@ function Invoke-WorkspaceDotNet {
         }
         $runner = [IO.Path]::GetFullPath($mauiBackend[0])
     }
+    $CompilationMode = Resolve-DorotiCompilationMode $Platform $Configuration $CompilationMode $Rid
+    if ($CompilationMode -eq 'NativeAot' -and -not $Rid) { $Rid = 'ios-arm64' }
     if ($CompilationMode -eq 'NativeAot' -and ($Platform -ne 'ios' -or $Rid -ne 'ios-arm64')) {
         throw 'NativeAot currently requires -Platform ios -Rid ios-arm64.'
     }

@@ -455,3 +455,25 @@ are **37,351,329 → 18,185,146**. `final-size-comparison.json` preserves the
 This comparison bundle was not installed over the final NativeAOT Testbed.
 The final device snapshot is 390×844 logical pixels, 1,237 presented frames,
 zero failed frames and zero software fallback.
+
+
+## 2026-09-11: iOS Release default requested by the user
+
+The user explicitly requested NativeAOT as the iOS Release default, superseding
+the earlier opt-in policy. The runner, CLI and template now select NativeAOT for
+iOS device Release; omitted Release RIDs select `ios-arm64`. Debug, explicitly
+selected simulator RIDs and other platforms keep their existing defaults.
+An explicit `DorotiCompilationMode=Mono` remains available.
+
+The default profile is propagated through NuGet restore and late-added transitive
+project references, including RID-less framework discovery. Only the iOS framework
+is restored for the NativeAOT MAUI host. Executable `PublishAot` is not forwarded
+to libraries. The source Testbed published successfully without an explicit
+compilation mode (`ios-release-default-publish.result.json`). Default-selection
+contracts and existing launch identity checks passed. The previously recorded
+unmeasured performance and device/lifetime gates remain unverified.
+
+The final publish also omitted the RID and used normal parallel build scheduling:
+`ios-release-default-no-rid-publish.result.json` records exit 0 in 71.06 seconds,
+NativeAOT code generation and a signed IPA. All seven contract tests passed after
+the restore and transitive-reference fixes.

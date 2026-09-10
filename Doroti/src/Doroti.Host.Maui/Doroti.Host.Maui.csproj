@@ -11,6 +11,8 @@
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64'">$(DorotiIosTargetFramework)</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-arm64'">net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-x64'">net10.0-android</TargetFrameworks>
+    <!-- NativeAot is an iOS device profile, including RID-less restore queries. -->
+    <TargetFrameworks Condition="'$(DorotiCompilationMode)' == 'NativeAot'">$(DorotiIosTargetFramework)</TargetFrameworks>
     <AssemblyName>Doroti.Host.Maui</AssemblyName>
     <PackageId>Doroti.Host.Maui</PackageId>
     <Description>Doroti MAUI SKGLView host with externally owned GPU surface lifecycle.</Description>

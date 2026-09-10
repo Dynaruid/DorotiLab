@@ -1,6 +1,14 @@
+# Resolve once before choosing mode-specific caches and launch identities.
+function Resolve-DorotiCompilationMode([string] $Platform, [string] $Configuration, [string] $RequestedMode, [string] $Rid) {
+    if ($RequestedMode) { return $RequestedMode }
+    if ($Platform -eq 'ios' -and $Configuration -eq 'Release' -and (-not $Rid -or $Rid -eq 'ios-arm64')) { return 'NativeAot' }
+    return 'Mono'
+}
+
 # Apply the same mode/output selection to restore, build, publish and every identity query.
-function Get-DorotiCompilationArguments([string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
-    $result = @("-p:DorotiCompilationMode=$CompilationMode")
+function Get-DorotiCompilationArguments([string] $CompilationMode = '', [string] $CompilationArtifacts = '') {
+    $result = @()
+    if ($CompilationMode) { $result += "-p:DorotiCompilationMode=$CompilationMode" }
     if ($CompilationArtifacts) { $result += "-p:ArtifactsPath=$CompilationArtifacts" }
     return $result
 }
@@ -50,7 +58,7 @@ function Get-DorotiContentFingerprint([object[]] $Files, [string] $Selection) {
     } finally { $hash.Dispose() }
 }
 
-function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory, [string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
+function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory, [string] $CompilationMode = '', [string] $CompilationArtifacts = '') {
     $collector = Join-Path $PSScriptRoot 'launch-inputs.targets'
     Push-Location $WorkingDirectory
     try {
@@ -74,7 +82,7 @@ function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configura
     } finally { Pop-Location }
 }
 
-function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory, [string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
+function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory, [string] $CompilationMode = '', [string] $CompilationArtifacts = '') {
     $collector = Join-Path $PSScriptRoot 'launch-inputs.targets'
     $arguments = @('msbuild', $Runner, '-nologo', "-p:Configuration=$Configuration",
         "-p:CustomAfterMicrosoftCommonTargets=$collector", '-getTargetResult:DorotiCollectLaunchDependencies')
@@ -123,7 +131,7 @@ function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
     } finally { Pop-Location }
 }
 
-function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory = (Get-Location).Path, [string] $CompilationMode = 'Mono', [string] $CompilationArtifacts = '') {
+function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory = (Get-Location).Path, [string] $CompilationMode = '', [string] $CompilationArtifacts = '') {
     $arguments = @('msbuild', $Runner, '-nologo', "-p:Configuration=$Configuration",
         '-getProperty:TargetDir,TargetPath,RuntimeIdentifier,TargetFramework,IntermediateOutputPath,DorotiCompilationMode,PublishAot,TrimMode,MtouchInterpreter,DorotiTrimPreserveDynamicMembers')
     if ($Rid) { $arguments += "-p:RuntimeIdentifier=$Rid" }

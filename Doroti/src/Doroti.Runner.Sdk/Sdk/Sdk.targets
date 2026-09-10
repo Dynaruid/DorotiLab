@@ -428,5 +428,31 @@
           Condition="'$(DorotiWebTypeScript)' == 'true' and !Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
   <Import Project="$(MSBuildThisFileDirectory)Doroti.Web.targets" />
   <Import Project="$(MSBuildThisFileDirectory)Doroti.Qt.targets" />
+  <!-- Carry a locally selected default through RID-less framework negotiation.
+       Do not propagate executable PublishAot to neutral libraries. -->
+  <Target Name="DorotiApplyIosCompilationProfileToRestore"
+          BeforeTargets="_FilterRestoreGraphProjectInputItems"
+          Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
+    <PropertyGroup>
+      <_GenerateRestoreGraphProjectEntryInputProperties>$(_GenerateRestoreGraphProjectEntryInputProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);RuntimeIdentifier=$(RuntimeIdentifier);ArtifactsPath=$(ArtifactsPath)</_GenerateRestoreGraphProjectEntryInputProperties>
+    </PropertyGroup>
+  </Target>
+  <ItemGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
+    <ProjectReference Update="@(ProjectReference)">
+      <AdditionalProperties>%(ProjectReference.AdditionalProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);ArtifactsPath=$(ArtifactsPath)</AdditionalProperties>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- NuGet adds transitive references during target execution, after the
+       evaluated ProjectReference items above. Carry the selected profile into
+       their RID-less framework discovery as well. -->
+  <Target Name="DorotiApplyIosCompilationProfileToTransitiveReferences"
+          AfterTargets="IncludeTransitiveProjectReferences"
+          Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
+    <ItemGroup>
+      <ProjectReference Update="@(_TransitiveProjectReferences)">
+        <AdditionalProperties>%(ProjectReference.AdditionalProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);ArtifactsPath=$(ArtifactsPath)</AdditionalProperties>
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
   <Import Project="Doroti.NativeAot.Evidence.targets" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'" />
 </Project>

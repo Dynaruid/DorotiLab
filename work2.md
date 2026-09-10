@@ -344,7 +344,7 @@ N0에서 `Doroti/validation/native-aot/size-report.py`를 후보로 삼아 Mac/W
 - [x] 과거 full-trim workaround와 NativeAOT 요구를 구분한다. PDB 관련 ILLink 내부 오류가 현재 도구에서도 재현되는지 확인하고, 과거 `DebugType=None` 우회를 영구 정책으로 복사하지 않는다.
 - [x] 새 템플릿 앱과 NuGet 소비 앱의 publish/설치 결과를 남기고, 사용자 정의 generic widget/localization/action이 포함된 앱으로 검증한다.
 - [ ] 최종 커밋·산출물 해시·패키지 버전·테스트 결과·측정치·남은 플랫폼별 제한을 기록한다. 문제가 생기면 명시적인 Mono 프로필로 되돌릴 수 있게 한다.
-- [ ] G2·소비 앱 검증·제품 성능 게이트를 통과하면 iOS Runner/CLI/템플릿의 정식 배포 기본값을 NativeAOT로 전환하고 그 기본 경로를 다시 검증하여 G3를 닫는다. Mono는 명시적인 전환 복구 프로필로만 남기고 자동 런타임 fallback은 만들지 않는다. 다른 타깃은 각각의 검증 전까지 승격하지 않는다.
+- [x] 사용자 추가 지시(2026-09-11)에 따라 iOS 기기용 Release의 Runner/CLI/템플릿 기본값을 NativeAOT로 전환한다. Debug·시뮬레이터·다른 타깃 기본값과 명시적 Mono 선택은 유지한다. 이 기본값 변경으로 미검증 성능·전체 기기 시나리오를 통과 처리하지 않는다.
 
 **완료 조건:** 새 checkout에서 iOS 정식 배포 기본 경로가 NativeAOT로 재현되고, 배포 SDK/템플릿과 실제 Testbed가 같은 계약을 사용한다. 각 최종 앱에 `monoAbsent=pass`, 실제 NativeAOT publish·기능·성능 결과와 크기 변화가 기록되어 있다. opt-in probe만 완료한 상태는 G3가 아니다. iOS 밖에 남은 Mono 사용 범위도 명시한다.
 
@@ -519,6 +519,15 @@ N0/N1의 최소 publish 프로필로 N2/N4~N7의 계약 변경마다 가능한 N
 - **Mono 크기 비교도 완료:** 실제 .NET 10 Mono publish `net10-mono-baseline-publish.result.json` 종료 코드 0. `.app` 104,701,336 bytes → NativeAOT 42,616,772 bytes로 **62,084,564 bytes / 59.30% 감소**. 압축 IPA 37,351,329 → 18,185,146 bytes. `final-size-comparison.json`에 SDK/MAUI 버전 차이와 정량 성능 미검증을 명시했다. 이 비교용 Mono 앱을 기기에 덮어쓰지는 않았다.
 - 최종 기기 증거 `net11-testbed-final-device-evidence.json`: 390×844 논리 화면, presented 1,237 / failed 0 / software fallback 0. 마지막 설치 앱은 NativeAOT Testbed다.
 - 기본 배포 모드는 자동 승격하지 않았다. 사용자 실행 경로는 명시적인 `-CompilationMode NativeAot`이며, Mono 복구 경로는 `-CompilationMode Mono`다. Git 변경은 커밋하지 않았고 HEAD와 작업 트리 해시를 인계 증거로 구분한다.
+
+### 7.9 2026-09-11 — 사용자 요청에 따른 iOS Release 기본값 변경
+
+- 사용자의 “ios만 릴리즈에서 NativeAot기본값이면댐” 요청을 적용해, 이전 기본값 승격 보류 결정을 변경했다. iOS 기기(`ios-arm64`) Release에서 모드를 생략하면 NativeAOT를 선택한다. iOS Release에서 RID도 생략하면 `ios-arm64`를 선택한다.
+- Debug·명시적인 시뮬레이터 RID·다른 플랫폼의 기본값은 유지한다. `-CompilationMode Mono` / `-p:DorotiCompilationMode=Mono`와 직접 MSBuild의 `PublishAot=false` 선택은 우선한다.
+- CLI가 기본 모드를 먼저 결정한 뒤 restore/build/publish·캐시·launch identity에 같은 값을 전달한다. SDK 직접 호출은 별도 산출물 경로를 자동 선택하고, 로컬 기본 모드를 ProjectReference에 전달해 RID 없는 의존성 TFM 조회도 .NET 11을 사용한다. 실행 파일의 PublishAot를 라이브러리에 전파하지 않는다.
+- `ios-release-default-contract.log`: 7개 계약 테스트 통과(Release/Debug, RID 유무, Mono opt-out, 시뮬레이터, 타 플랫폼, CLI, 의존성·descriptor 정책). `ios-release-default-identity.log`: 기존 cache/input/산출물 변조 검증 통과.
+- `ios-release-default-no-rid-publish.result.json`: 모드와 RID를 모두 생략한 `dotnet publish ... -c Release` 성공(71.06초, exit 0), NativeAOT 코드 생성과 서명된 IPA 생성 확인. NuGet restore 및 빌드 도중 추가되는 전이 참조에도 프로필·기기 대상이 전달되도록 수정했다. MAUI Host의 NativeAOT 복원은 iOS TFM만 선택한다.
+- 기본 명령: `pwsh -File Doroti/eng/doroti.ps1 publish -App DorotiTestbedApp -Platform ios -Configuration Release`. 원래 기록의 성능·접근성·장기 수명 미검증 항목은 유지한다.
 
 ## 8. 공식 근거
 

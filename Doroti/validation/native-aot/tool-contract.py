@@ -117,6 +117,112 @@ class EvidenceContract(unittest.TestCase):
                     self.assertEqual(seen[key], props)
                 seen[key] = props
 
+    def test_ios_release_defaults(self):
+        runner = ROOT / "DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj"
+        cases = [
+            ("Debug", "", [], "Mono", "iossimulator-arm64"),
+            ("Debug", "ios-arm64", [], "Mono", "ios-arm64"),
+            ("Release", "", [], "NativeAot", "ios-arm64"),
+            ("Release", "ios-arm64", [], "NativeAot", "ios-arm64"),
+            ("Release", "iossimulator-arm64", [], "Mono", "iossimulator-arm64"),
+            ("Release", "ios-arm64", ["-p:DorotiCompilationMode=Mono"], "Mono", "ios-arm64"),
+            ("Release", "ios-arm64", ["-p:PublishAot=false"], "Mono", "ios-arm64"),
+        ]
+        for configuration, rid, overrides, mode, effective_rid in cases:
+            command = ["dotnet", "msbuild", str(runner), "-nologo", f"-p:Configuration={configuration}",
+                "-getProperty:DorotiCompilationMode,TargetFramework,RuntimeIdentifier,PublishAot,UseMonoRuntime,ArtifactsPath,MtouchInterpreter",
+                "-getItem:ProjectReference"]
+            if rid: command.append(f"-p:RuntimeIdentifier={rid}")
+            value = json.loads(subprocess.run(command + overrides, cwd=ROOT, capture_output=True,
+                text=True, check=True, timeout=1200).stdout)
+            props = value["Properties"]
+            self.assertEqual(props["DorotiCompilationMode"], mode)
+            self.assertEqual(props["RuntimeIdentifier"], effective_rid)
+            if mode == "NativeAot":
+                self.assertEqual(props["TargetFramework"], "net11.0-ios")
+                self.assertEqual(props["PublishAot"], "true")
+                self.assertEqual(props["UseMonoRuntime"], "false")
+                self.assertEqual(props["MtouchInterpreter"], "")
+                self.assertIn("NativeAot", props["ArtifactsPath"])
+                for reference in value["Items"]["ProjectReference"]:
+                    metadata = reference["AdditionalProperties"]
+                    self.assertIn("DorotiCompilationMode=NativeAot", metadata)
+                    self.assertIn("DorotiIosTargetFramework=net11.0-ios", metadata)
+                    self.assertNotIn("PublishAot=", metadata)
+            else:
+                self.assertEqual(props["TargetFramework"], "net10.0-ios")
+                self.assertNotEqual(props["PublishAot"], "true")
+                self.assertEqual(props["UseMonoRuntime"], "true")
+        # Shared profile imports must not promote a neutral or non-iOS library.
+        profile = ROOT / "Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props"
+        project = self.root / "Defaults.proj"
+        project.write_text(f'<Project><Import Project="{profile}" /></Project>')
+        for rid in ("", "android-arm64", "win-x64", "osx-arm64", "maccatalyst-arm64", "browser-wasm"):
+            value = json.loads(subprocess.run(["dotnet", "msbuild", str(project), "-nologo",
+                "-p:Configuration=Release", f"-p:RuntimeIdentifier={rid}",
+                "-getProperty:DorotiCompilationMode,PublishAot"], capture_output=True,
+                text=True, check=True, timeout=1200).stdout)["Properties"]
+            self.assertEqual(value["DorotiCompilationMode"], "")
+            self.assertNotEqual(value["PublishAot"], "true")
+
+        # NuGet introduces transitive references after evaluation; these must
+        # receive the same profile before RID-less framework discovery.
+        host = ROOT / "Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj"
+        late_reference = self.root / "LateReference.targets"
+        late_reference.write_text(f'''<Project>
+          <Target Name="InjectLateReference" BeforeTargets="DorotiApplyIosCompilationProfileToTransitiveReferences">
+            <ItemGroup>
+              <_TransitiveProjectReferences Include="{host}" />
+              <ProjectReference Include="@(_TransitiveProjectReferences)" />
+            </ItemGroup>
+          </Target>
+        </Project>''')
+        value = json.loads(subprocess.run(["dotnet", "msbuild", str(runner), "-nologo",
+            "-p:Configuration=Release", f"-p:CustomAfterMicrosoftCommonTargets={late_reference}",
+            "-t:DorotiApplyIosCompilationProfileToRestore;DorotiApplyIosCompilationProfileToTransitiveReferences",
+            "-getProperty:_GenerateRestoreGraphProjectEntryInputProperties", "-getItem:ProjectReference"],
+            cwd=ROOT, capture_output=True, text=True, check=True, timeout=1200).stdout)
+        restore_properties = value["Properties"]["_GenerateRestoreGraphProjectEntryInputProperties"]
+        self.assertIn("DorotiCompilationMode=NativeAot", restore_properties)
+        self.assertIn("RuntimeIdentifier=ios-arm64", restore_properties)
+        self.assertIn("ArtifactsPath=", restore_properties)
+        self.assertNotIn("PublishAot=", restore_properties)
+        reference = next(item for item in value["Items"]["ProjectReference"] if item["FullPath"] == str(host))
+        self.assertIn("DorotiCompilationMode=NativeAot", reference["AdditionalProperties"])
+        self.assertIn("DorotiIosTargetFramework=net11.0-ios", reference["AdditionalProperties"])
+        self.assertNotIn("PublishAot=", reference["AdditionalProperties"])
+
+        target = ROOT / "Doroti/src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj"
+        props = json.loads(subprocess.run(["dotnet", "msbuild", str(target), "-nologo",
+            "-p:Configuration=Release", "-getProperty:TargetFramework,DorotiCompilationMode,PublishAot"],
+            cwd=ROOT, capture_output=True, text=True, check=True, timeout=1200).stdout)["Properties"]
+        self.assertEqual(props["TargetFramework"], "net11.0-ios")
+        self.assertEqual(props["DorotiCompilationMode"], "NativeAot")
+        self.assertNotEqual(props["PublishAot"], "true")
+
+    def test_cli_default_selection(self):
+        helper = str(ROOT / "Doroti/eng/launch-identity.ps1").replace("'", "''")
+        script = f". '{helper}'; " + """
+        $rows = @(
+            @('ios','Release','','ios-arm64','NativeAot'),
+            @('ios','Release','','','NativeAot'),
+            @('ios','Debug','','ios-arm64','Mono'),
+            @('ios','Release','','iossimulator-arm64','Mono'),
+            @('ios','Release','Mono','ios-arm64','Mono'),
+            @('ios','Debug','NativeAot','ios-arm64','NativeAot'))
+        foreach ($platform in @('android','windows','web','linux','macos','maccatalyst')) {
+            $rows += ,@($platform,'Release','','','Mono')
+        }
+        foreach ($row in $rows) {
+            $actual = Resolve-DorotiCompilationMode $row[0] $row[1] $row[2] $row[3]
+            if ($actual -cne $row[4]) { throw "Unexpected compilation mode for $row : $actual" }
+        }
+        if (@(Get-DorotiCompilationArguments).Count -ne 0) { throw 'Unspecified helper mode must allow MSBuild defaults' }
+        Write-Output 'CLI default selection PASS'
+        """
+        subprocess.run(["pwsh", "-NoProfile", "-Command", script], check=True, timeout=1200,
+                       capture_output=True, text=True)
+
     def test_ios_nativeaot_dependency_framework_selection(self):
         projects = (
             ROOT / "Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
@@ -138,6 +244,8 @@ class EvidenceContract(unittest.TestCase):
                     props = value["Properties"]
                     frameworks = props["TargetFrameworks"] or props["TargetFramework"]
                     self.assertIn(expected, frameworks.split(";"))
+                    if mode == "NativeAot" and project.name == "Doroti.Host.Maui.csproj":
+                        self.assertEqual(frameworks, expected, "NativeAOT restore must not require non-iOS workloads.")
                     self.assertNotEqual(props["PublishAot"], "true", "Libraries must not inherit executable PublishAot.")
                     if project.name.startswith("Doroti.Target."):
                         resources = value["Items"]["EmbeddedResource"]
