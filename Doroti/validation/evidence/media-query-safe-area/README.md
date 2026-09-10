@@ -1,6 +1,6 @@
 # MQ-0–MQ-9 implementation evidence
 
-Date: 2026-09-10. **Implementation and available automation completed; full platform product qualification remains incomplete.** `work.md` retains the original physical-device completion gates.
+Date: 2026-09-10. **Implementation and available automation completed; the work was closed at the user's request.** The [archived summary](../../../../history/26-09-10/media-query-safe-area-summary.md) records the decisions and results. Individual unexecuted device scenarios retain their original evidence status below.
 
 ## Automated contracts and builds
 

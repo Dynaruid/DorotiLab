@@ -12,11 +12,11 @@
 
 성공을 세 단계로 구분한다.
 
-| 단계 | 완료 조건 | 이것만으로 전체 완료인가 |
-|---|---|---|
-| G1: 기반 호환성 | 현재 MAUI·SkiaSharp·Metal·네이티브 바인딩으로 작은 NativeAOT 앱을 iPhone에서 실행 | 아니오. 외부 의존성의 조기 검증 |
-| G2: 실제 앱 성공 | 전체 Testbed를 NativeAOT로 publish하고 화면·입력·비동기·네이티브 연동·수명 검증 통과 | 앱 전환 성공. 제품 SDK 배포 검증은 별도 |
-| G3: 제품 경로 완성 | 정식 Runner/CLI, NuGet 소비 앱, 새 템플릿 앱, 제품 코드의 CI 회귀 방지까지 검증 | **NativeAOT 전환의 전체 완료 조건** |
+| 단계               | 완료 조건                                                                            | 이것만으로 전체 완료인가                |
+| ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------- |
+| G1: 기반 호환성    | 현재 MAUI·SkiaSharp·Metal·네이티브 바인딩으로 작은 NativeAOT 앱을 iPhone에서 실행    | 아니오. 외부 의존성의 조기 검증         |
+| G2: 실제 앱 성공   | 전체 Testbed를 NativeAOT로 publish하고 화면·입력·비동기·네이티브 연동·수명 검증 통과 | 앱 전환 성공. 제품 SDK 배포 검증은 별도 |
+| G3: 제품 경로 완성 | 정식 Runner/CLI, NuGet 소비 앱, 새 템플릿 앱, 제품 코드의 CI 회귀 방지까지 검증      | **NativeAOT 전환의 전체 완료 조건**     |
 
 G2/G3의 공통 조건:
 
@@ -31,21 +31,19 @@ G2/G3의 공통 조건:
 
 ## 2. 범위
 
-| 구분 | 이번 계획의 책임 |
-|---|---|
-| 우선 배포 타깃 | `net10.0-ios` / `ios-arm64`, 현재 연결 가능한 iPhone 12를 우선 사용 |
-| 공용 제품 코드 | Runtime, Ui, Hosting, Framework 전체 계층, Skia 렌더링·runtime effects, 앱 시작·등록 계약 |
-| iOS 통합 | MAUI host, UIKit/Metal/Graphite 및 기존 지원 렌더 경로, native binding, Runner SDK, Testbed |
-| 제품 생성·배포 | bootstrap·등록 코드, 템플릿·패키지·CLI·검증 도구 |
-| 번역기 보조 개선 | 선택한 타입 매핑·호출 lowering의 품질 개선. 현재 프레임워크 동일 재현·전체 재생성·모든 제품 수정의 역반영은 제외 |
-| 타 플랫폼 | 공유 코드 변경의 Android·Web·Windows·AppKit·Mac Catalyst·Linux 회귀 방지. 실제 테스트 불가 환경은 미검증으로 남김 |
+| 구분                | 이번 계획의 책임                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 우선 배포 타깃      | `net10.0-ios` / `ios-arm64`, 현재 연결 가능한 iPhone 12를 우선 사용                                                  |
+| 공용 제품 코드      | Runtime, Ui, Hosting, Framework 전체 계층, Skia 렌더링·runtime effects, 앱 시작·등록 계약                            |
+| iOS 통합            | MAUI host, UIKit/Metal/Graphite 및 기존 지원 렌더 경로, native binding, Runner SDK, Testbed                          |
+| 제품 생성·배포      | bootstrap·등록 코드, 템플릿·패키지·CLI·검증 도구                                                                     |
+| 번역기 보조 개선    | 선택한 타입 매핑·호출 lowering의 품질 개선. 현재 프레임워크 동일 재현·전체 재생성·모든 제품 수정의 역반영은 제외     |
+| 타 플랫폼           | 공유 코드 변경의 Android·Web·Windows·AppKit·Mac Catalyst·Linux 회귀 방지. 실제 테스트 불가 환경은 미검증으로 남김    |
 | 후속 NativeAOT 확장 | Mac Catalyst 등은 타깃별 지원성과 publish 검증 후 별도 승격. iOS 성공을 전체 플랫폼 NativeAOT 지원으로 발표하지 않음 |
 
 번역기·Roslyn·빌드 도구 자체의 NativeAOT화는 요구하지 않는다. 이들은 **앱 실행 시 의존성**과 분리하여 분석한다. 일반 앱이 아닌 빌드 도구에서 사용하는 리플렉션까지 무조건 제거하지 않는다.
 
 Flutter 소스와 테스트는 의미를 이해하고 비교하는 참고 자료로 사용한다. 현재 Doroti의 의도적인 차이는 제품 계약과 회귀 테스트로 명시하여 유지한다. NativeAOT 전환을 계기로 Flutter와 다른 부분을 일괄 원복하거나 번역 결과로 제품 소스를 덮어쓰지 않는다. bootstrap·JSON context·native binding 등 빌드에 필요한 코드 생성은 이 번역기 범위 축소와 별개로 계속 검증한다.
-
-[work.md](work.md)의 MediaQuery/SafeArea 정비는 선행 동작 계약이다. 특히 MAUI의 raw geometry 제공, Doroti의 safe area·keyboard 회피 책임, view/metrics/surface 세대 구분과 이벤트 순서를 유지한다.
 
 ## 3. 검토 결과와 기준선
 
@@ -53,11 +51,11 @@ Flutter 소스와 테스트는 의미를 이해하고 비교하는 참고 자료
 
 [iPhone 트리밍 보고서](Doroti/docs/validation/ios-trimming-2026-09-10.md)에 다음 결과가 있다.
 
-| 기존 실험 | 로컬 `.app` 크기 | 의미 |
-|---|---:|---|
-| 부분 트리밍 + Mono AOT | 136,038,224 bytes | 과거 기준선 |
-| 전체 트리밍, 동적 멤버 보존 없음 | 96,677,312 bytes | 지역화·첫 화면 준비에서 `NoSuchMember` 발생 |
-| 전체 트리밍 + 동적 멤버 보존 | 105,013,528 bytes | iPhone에서 샘플·진단·MediaQuery 렌더링 성공, 1,691개 빌드 경고 잔존 |
+| 기존 실험                        |  로컬 `.app` 크기 | 의미                                                                |
+| -------------------------------- | ----------------: | ------------------------------------------------------------------- |
+| 부분 트리밍 + Mono AOT           | 136,038,224 bytes | 과거 기준선                                                         |
+| 전체 트리밍, 동적 멤버 보존 없음 |  96,677,312 bytes | 지역화·첫 화면 준비에서 `NoSuchMember` 발생                         |
+| 전체 트리밍 + 동적 멤버 보존     | 105,013,528 bytes | iPhone에서 샘플·진단·MediaQuery 렌더링 성공, 1,691개 빌드 경고 잔존 |
 
 105MB 빌드는 NativeAOT가 아니다. 해당 검증의 초기 스냅샷은 pointer event가 0이므로 전체 상호작용 검증도 아니다. N0에서 같은 커밋으로 다시 기준선을 만든다.
 
@@ -73,33 +71,33 @@ Flutter 소스와 테스트는 의미를 이해하고 비교하는 참고 자료
 
 아래는 소스 조사 결과다. NativeAOT publish 경고 전체 목록을 이미 확보했다는 뜻은 아니다.
 
-| 위치 | 확인한 사실 | 필요한 작업 |
-|---|---|---|
-| `Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets` | iOS/Catalyst에서 `MtouchInterpreter=-all` 기본 주입 | Mono/NativeAOT 프로필 분리, NativeAOT에 Mono 전용 설정 유입 방지 |
-| `DorotiTestbedApp/ios/TrimmerRoots.xml` | 여러 assembly에서 살아남은 타입의 모든 멤버 보존 | NativeAOT 성공 조건에서 제외하고 동적 호출 자체를 정적 계약으로 전환 |
-| `Doroti.Framework.Widgets/localizations.cs` | heterogeneous delegate의 `type/isSupported/load/shouldReload`를 dynamic 호출 | 비제네릭 공통 계약 + 제네릭 구현의 typed bridge |
-| `Doroti.Framework.Widgets/view.cs` | `renderObject.prepareInitialFrame`, 자식 접근에 dynamic 사용 | RenderView 및 기존 render-child 계약으로 연결 |
-| `Doroti.Framework.Widgets/layout_builder.cs` | 자식 연결은 개선됐지만 layoutInfo 등 다른 dynamic 경로가 남음 | box/sliver 공통 layout callback·제약 전달 계약 정비 |
-| Widgets/Material/Cupertino 전반 | 상태·callback·컬렉션·렌더 객체·연산자에 dynamic 사용 | 용도별 분류 후 계층별 전환; 단순 문자열 치환 금지 |
-| `Doroti.Runtime/DartAsync.cs`, `DartCoreAdapters.cs` | error handler/predicate의 `Delegate.DynamicInvoke`, `Method.GetParameters()` | 명시적 callback 형태와 반환값 처리, 비동기 의미 보존 |
-| `Doroti.Runtime/FoundationRuntimePorts.cs` | `EnumIndex`가 `GetProperty("index"/"value")` 사용 | enum/FontWeight/indexable 값의 명시적 계약 |
-| `Doroti.Ui/FrameworkShaderAssets.cs` | assembly 열거 후 이름으로 `Assembly.Load` fallback | 생성·명시 등록된 resource owner와 stream factory 사용 |
-| `Doroti.Host.Maui/DorotiGraphiteView.cs` | 기본 Graphite view도 `SKGLView`를 상속 | SkiaSharp MAUI control 경계와 내부 string binding의 NativeAOT 적합성 확인 |
-| `DorotiMauiApplication.cs` | `UseSkiaSharp`, generic handler·서비스 등록, Graphite/기존 view 등록 | 실제 root graph와 생성된 registrar, DI·callback 경고 검증 |
-| `DorotiTestbedApp/ios/binding/ApiDefinition.cs` | ObjC export와 `Action<string>` completion bridge | NativeAOT binding/registrar·역방향 callback·수명 실기기 검증 |
-| `tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/` | Types/Expressions 등에서 `dynamic`과 `((dynamic)this.renderObject)`를 출력 | 보조 개선 후보. 선택한 패턴의 출력 품질을 개선하되 제품 프레임워크 재현을 요구하지 않음 |
-| 제품 프로젝트 설정 | 공통 `IsAotCompatible`/AOT 분석 정책이 아직 없음 | 계층별 분석 도입과 앱 publish 검증 병행 |
+| 위치                                                     | 확인한 사실                                                                  | 필요한 작업                                                                             |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets`           | iOS/Catalyst에서 `MtouchInterpreter=-all` 기본 주입                          | Mono/NativeAOT 프로필 분리, NativeAOT에 Mono 전용 설정 유입 방지                        |
+| `DorotiTestbedApp/ios/TrimmerRoots.xml`                  | 여러 assembly에서 살아남은 타입의 모든 멤버 보존                             | NativeAOT 성공 조건에서 제외하고 동적 호출 자체를 정적 계약으로 전환                    |
+| `Doroti.Framework.Widgets/localizations.cs`              | heterogeneous delegate의 `type/isSupported/load/shouldReload`를 dynamic 호출 | 비제네릭 공통 계약 + 제네릭 구현의 typed bridge                                         |
+| `Doroti.Framework.Widgets/view.cs`                       | `renderObject.prepareInitialFrame`, 자식 접근에 dynamic 사용                 | RenderView 및 기존 render-child 계약으로 연결                                           |
+| `Doroti.Framework.Widgets/layout_builder.cs`             | 자식 연결은 개선됐지만 layoutInfo 등 다른 dynamic 경로가 남음                | box/sliver 공통 layout callback·제약 전달 계약 정비                                     |
+| Widgets/Material/Cupertino 전반                          | 상태·callback·컬렉션·렌더 객체·연산자에 dynamic 사용                         | 용도별 분류 후 계층별 전환; 단순 문자열 치환 금지                                       |
+| `Doroti.Runtime/DartAsync.cs`, `DartCoreAdapters.cs`     | error handler/predicate의 `Delegate.DynamicInvoke`, `Method.GetParameters()` | 명시적 callback 형태와 반환값 처리, 비동기 의미 보존                                    |
+| `Doroti.Runtime/FoundationRuntimePorts.cs`               | `EnumIndex`가 `GetProperty("index"/"value")` 사용                            | enum/FontWeight/indexable 값의 명시적 계약                                              |
+| `Doroti.Ui/FrameworkShaderAssets.cs`                     | assembly 열거 후 이름으로 `Assembly.Load` fallback                           | 생성·명시 등록된 resource owner와 stream factory 사용                                   |
+| `Doroti.Host.Maui/DorotiGraphiteView.cs`                 | 기본 Graphite view도 `SKGLView`를 상속                                       | SkiaSharp MAUI control 경계와 내부 string binding의 NativeAOT 적합성 확인               |
+| `DorotiMauiApplication.cs`                               | `UseSkiaSharp`, generic handler·서비스 등록, Graphite/기존 view 등록         | 실제 root graph와 생성된 registrar, DI·callback 경고 검증                               |
+| `DorotiTestbedApp/ios/binding/ApiDefinition.cs`          | ObjC export와 `Action<string>` completion bridge                             | NativeAOT binding/registrar·역방향 callback·수명 실기기 검증                            |
+| `tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/` | Types/Expressions 등에서 `dynamic`과 `((dynamic)this.renderObject)`를 출력   | 보조 개선 후보. 선택한 패턴의 출력 품질을 개선하되 제품 프레임워크 재현을 요구하지 않음 |
+| 제품 프로젝트 설정                                       | 공통 `IsAotCompatible`/AOT 분석 정책이 아직 없음                             | 계층별 분석 도입과 앱 publish 검증 병행                                                 |
 
 검토 시점의 단순 텍스트 집계는 다음과 같다. `bin/obj`를 제외한 C# 파일에서 `\bdynamic\b`를 세었으며 주석·선언·문자열도 포함할 수 있다. **이 수치는 실제 DLR call-site 수나 수정 건수가 아니다.**
 
 | Framework assembly | 포함 파일 수 | dynamic 토큰 수 | 명시적 `(dynamic)` 수 |
-|---|---:|---:|---:|
-| Widgets | 80 | 966 | 586 |
-| Material | 58 | 499 | 277 |
-| Cupertino | 25 | 263 | 128 |
-| Painting | 5 | 17 | 2 |
-| Rendering | 1 | 2 | 2 |
-| 합계 | 169 | 1,747 | 995 |
+| ------------------ | -----------: | --------------: | --------------------: |
+| Widgets            |           80 |             966 |                   586 |
+| Material           |           58 |             499 |                   277 |
+| Cupertino          |           25 |             263 |                   128 |
+| Painting           |            5 |              17 |                     2 |
+| Rendering          |            1 |               2 |                     2 |
+| 합계               |          169 |           1,747 |                   995 |
 
 N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을 다시 집계한다. `DartMap<Type, dynamic>` 같은 데이터 선언, `JsonElement.GetProperty` 같은 JSON API, Windows 전용 조건부 코드를 iOS 런타임 리플렉션 장애물로 잘못 세지 않는다. `DynamicInvoke` 역시 발견만으로 모든 형태가 불가능하다고 단정하지 않고 호출 형태와 실제 publish 진단을 함께 평가한다.
 
@@ -282,17 +280,17 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 
 ## 6. 필수 검증표
 
-| 영역 | 주요 시나리오 | 기존 검증 자산 / 추가할 증거 |
-|---|---|---|
-| 제품 호출 의미 | overload, variance, operator, callback, mixin/override, 오류 동작 | 현재 제품의 `dynamic-dispatch`/`virtual-dispatch` 및 NativeAOT 계약 fixture |
-| Runtime 비동기 | 동기 완료/지연, error recovery, error handler의 인수·반환 형태, timeout/cancellation, microtask 순서 | `runtime-async-contract`, 작은 NativeAOT 소비 fixture |
-| 등록·JSON·native | manifest, 지역화·shader owner, nested map/list, Unicode/숫자, main-thread completion·GC | `json-codec`, `app-bootstrap/descriptor-contract`, 실기기 왕복 로그 |
-| Widget·generic 확장 | attach/update/detach, LayoutBuilder/SliverLayoutBuilder, Route 결과, Action dispatch, 외부 State/delegate | `dynamic-dispatch`, `virtual-dispatch`, NuGet 소비 앱 |
-| Material/Cupertino | 컴포넌트, picker/menu/dialog, toolbar/magnifier, theme/locale/typography | `fcr7-material-widget`와 샘플 실제 조작 |
-| 입력·metrics | pointer/fling/cancel, 한글/IME/선택/clipboard, 회전·keyboard·SafeArea·text scale | `--scaffold-metrics`, `--ios-text-menu`, `--scroll-tap`, work.md의 raw→framework 검증 |
-| 렌더·리소스 | Graphite/Metal, font/image, shader filter, background 복귀·resource 재생성 | `runtime-shader-contract`, `image-pipeline`, device evidence·캡처 |
-| 접근성·수명 | semantics focus/actions, 폰트 배율, view 교체, dispose 후 callback, native handle 수명 | semantics fixture + iPhone 접근성/반복 수명 검증 |
-| 배포·성능 | 새 checkout, mode 변경, 서명 번들, 아이콘 재실행, size/startup/frame/memory | publish binlog·artifact hash·launch identity fixture·기기 측정 |
+| 영역                | 주요 시나리오                                                                                             | 기존 검증 자산 / 추가할 증거                                                                                                                                     |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 제품 호출 의미      | overload, variance, operator, callback, mixin/override, 오류 동작                                         | 현재 제품의 `dynamic-dispatch`/`virtual-dispatch` 및 NativeAOT 계약 fixture                                                                                      |
+| Runtime 비동기      | 동기 완료/지연, error recovery, error handler의 인수·반환 형태, timeout/cancellation, microtask 순서      | `runtime-async-contract`, 작은 NativeAOT 소비 fixture                                                                                                            |
+| 등록·JSON·native    | manifest, 지역화·shader owner, nested map/list, Unicode/숫자, main-thread completion·GC                   | `json-codec`, `app-bootstrap/descriptor-contract`, 실기기 왕복 로그                                                                                              |
+| Widget·generic 확장 | attach/update/detach, LayoutBuilder/SliverLayoutBuilder, Route 결과, Action dispatch, 외부 State/delegate | `dynamic-dispatch`, `virtual-dispatch`, NuGet 소비 앱                                                                                                            |
+| Material/Cupertino  | 컴포넌트, picker/menu/dialog, toolbar/magnifier, theme/locale/typography                                  | `fcr7-material-widget`와 샘플 실제 조작                                                                                                                          |
+| 입력·metrics        | pointer/fling/cancel, 한글/IME/선택/clipboard, 회전·keyboard·SafeArea·text scale                          | `--scaffold-metrics`, `--ios-text-menu`, `--scroll-tap`, [MediaQuery/SafeArea 완료 기록](history/26-09-10/media-query-safe-area-summary.md)의 raw→framework 검증 |
+| 렌더·리소스         | Graphite/Metal, font/image, shader filter, background 복귀·resource 재생성                                | `runtime-shader-contract`, `image-pipeline`, device evidence·캡처                                                                                                |
+| 접근성·수명         | semantics focus/actions, 폰트 배율, view 교체, dispose 후 callback, native handle 수명                    | semantics fixture + iPhone 접근성/반복 수명 검증                                                                                                                 |
+| 배포·성능           | 새 checkout, mode 변경, 서명 번들, 아이콘 재실행, size/startup/frame/memory                               | publish binlog·artifact hash·launch identity fixture·기기 측정                                                                                                   |
 
 라이브러리의 NativeAOT 호환성 선언에는 실제 앱에서 도달하지 않는 public API의 검증도 필요하다. 필요한 경우 API를 root로 삼는 분석용 앱과 작은 기능별 실행 앱을 나누되, 분석용으로 모든 API를 보존한 앱의 크기를 제품 크기로 비교하지 않는다.
 
