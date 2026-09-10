@@ -41,10 +41,6 @@ internal sealed partial class MauiViewEnvironment
         public override WindowInsets OnProgress(WindowInsets insets, IList<WindowInsetsAnimation> runningAnimations)
         { changed(insets); return insets; }
     }
-    private sealed class SettingsObserver(Action changed) : Android.Database.ContentObserver(new Android.OS.Handler(Android.OS.Looper.MainLooper!))
-    {
-        public override void OnChange(bool selfChange) => changed();
-    }
     partial void AttachNative()
     {
         if (_element.Handler?.PlatformView is not Android.Views.View native) return;
@@ -65,7 +61,7 @@ internal sealed partial class MauiViewEnvironment
         }
         if (native.Context?.ContentResolver is { } resolver)
         {
-            var settings = new SettingsObserver(() => Refresh());
+            var settings = new MauiSettingsObserver(() => Refresh());
             resolver.RegisterContentObserver(Android.Provider.Settings.System.ContentUri!, true, settings);
             resolver.RegisterContentObserver(Android.Provider.Settings.Secure.ContentUri!, true, settings);
             resolver.RegisterContentObserver(Android.Provider.Settings.Global.ContentUri!, true, settings);
