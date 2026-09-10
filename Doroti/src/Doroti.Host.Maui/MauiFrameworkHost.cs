@@ -86,7 +86,9 @@ public sealed class MauiFrameworkHost : IDisposable
 #if MACOS
         if (surface is DorotiMacOSMetalSurface metalSurface) graphics.AttachNativeLifecycle(metalSurface);
 #endif
-        var messages = new MauiPlatformMessageCapability();
+        var messages = new HapticFeedbackPlatformMessageCapability(
+            new MauiPlatformMessageCapability(), (kind, cancellationToken) =>
+                MauiHapticFeedback.PerformAsync(kind, surface, cancellationToken));
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)

@@ -146,6 +146,9 @@ internal static partial class BrowserInterop
     [JSImport("launchExternalUrl", Module)]
     internal static partial Task<string> LaunchExternalUrlAsync(string url);
 
+    [JSImport("vibrate", Module)]
+    internal static partial Task VibrateAsync(int durationMilliseconds);
+
     [JSImport("readClipboardText", Module)]
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> ReadClipboardTextAsync();

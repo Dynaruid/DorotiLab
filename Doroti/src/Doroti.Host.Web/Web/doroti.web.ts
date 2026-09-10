@@ -1389,6 +1389,15 @@ export async function launchExternalUrl(url: string): Promise<string> {
   return "opened";
 }
 
+export async function vibrate(durationMilliseconds: number): Promise<void> {
+  if (activeWorkerBridge) {
+    await activeWorkerBridge.requestControl("haptic-feedback", { durationMilliseconds });
+    return;
+  }
+  // Like Flutter web, unsupported hardware/API or denied activation is a no-op.
+  navigator.vibrate?.(durationMilliseconds);
+}
+
 export async function readClipboardText(): Promise<string> {
   if (activeWorkerBridge) return activeWorkerBridge.requestControl("clipboard-read", {});
   if (!navigator.clipboard?.readText) throw new Error("Doroti clipboard read capability is unavailable.");
@@ -2049,6 +2058,10 @@ export async function startDorotiWorkerHost(
           const payload = (message.payload ?? {}) as Record<string, unknown>;
           void (async () => {
             if (kind === "url-launch") return launchExternalUrl(String(payload.url));
+            if (kind === "haptic-feedback") {
+              await vibrate(Number(payload.durationMilliseconds));
+              return "";
+            }
             if (kind === "clipboard-read") return readClipboardText();
             if (kind === "clipboard-write") return writeClipboardText(String(payload.text));
             if (kind === "plugin") return invokePlugin(

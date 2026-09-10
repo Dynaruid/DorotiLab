@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Doroti.Host.Web/BrowserHapticFeedback.cs" Link="BrowserHapticFeedback.cs" />
+    <ProjectReference Include="../../src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
+    <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" />
+  </ItemGroup>
+</Project>

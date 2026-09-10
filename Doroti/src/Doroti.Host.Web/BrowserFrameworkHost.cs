@@ -43,7 +43,8 @@ public sealed class BrowserFrameworkHost : IDisposable
                 viewId, host,
                 configuration.backgroundColor, configuration.darkBackgroundColor,
                 backendIdentity, _fallbackFonts);
-        var messages = new BrowserPlatformMessageCapability(host);
+        var messages = new HapticFeedbackPlatformMessageCapability(
+            new BrowserPlatformMessageCapability(host), BrowserHapticFeedback.PerformAsync);
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
