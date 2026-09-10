@@ -139,6 +139,10 @@ For an Intel Mac simulator, use `-r iossimulator-x64`. A physical iPhone/iPad re
 `-r ios-arm64`, its device ID, and separate signing/provisioning configuration.
 Here, `--device` belongs to `dotnet run`; the `doroti.ps1` wrapper's `-Device` currently supports Android only.
 
+For the opt-in iPhone full-trimming experiment, size measurements and build/install
+commands, see the [iOS trimming report](../Doroti/docs/validation/ios-trimming-2026-09-10.md).
+The default remains partial trimming; full trimming needs the dynamic-member preservation descriptor.
+
 ### Web sample
 
 Start the server and leave this terminal open:

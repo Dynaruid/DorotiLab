@@ -13,6 +13,9 @@
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
+  <ItemGroup Condition="'$(TrimMode)' == 'full' and '$(DorotiTrimPreserveDynamicMembers)' != 'false'">
+    <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
+  </ItemGroup>
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTestbedApp.iOS.Native.csproj" />
     <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main"

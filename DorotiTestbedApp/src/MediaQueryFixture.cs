@@ -2,7 +2,18 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using M = Doroti.Framework.Material;
+
+internal sealed record MediaQueryReport(
+    ulong viewId, double physicalWidth, double physicalHeight, double devicePixelRatio,
+    long metricsGeneration, long surfaceGeneration, ViewPadding viewPadding,
+    ViewPadding viewInsets, ViewPadding systemGestureInsets, double logicalWidth,
+    double logicalHeight, string padding, string logicalViewInsets, bool safe, bool resize, bool maintain);
+
+[JsonSerializable(typeof(MediaQueryReport))]
+internal sealed partial class MediaQueryJsonContext : JsonSerializerContext;
 
 // Opt-in diagnostics only: DOROTI_TESTBED_MODE=media-query (or ?testbed=media-query on Web).
 internal sealed class MediaQueryFixture : StatefulWidget
@@ -23,12 +34,12 @@ internal sealed class MediaQueryFixture : StatefulWidget
                 $"gestures={media.systemGestureInsets} features={media.displayFeatures.Count}\n" +
                 $"text={media.textScaler.scale(14):F2}/{media.textScaler.scale(32):F2} theme={media.platformBrightness}\n" +
                 $"24h={media.alwaysUse24HourFormat} contrast={media.highContrast} motion={media.reduceMotion}";
-            Console.WriteLine("MQ-FIXTURE " + System.Text.Json.JsonSerializer.Serialize(new {
-                viewId = view.viewId, physicalWidth = raw.physicalSize.width, physicalHeight = raw.physicalSize.height,
-                raw.devicePixelRatio, metricsGeneration = raw.generation, raw.surfaceGeneration,
+            Console.WriteLine("MQ-FIXTURE " + JsonSerializer.Serialize(new MediaQueryReport(
+                view.viewId, raw.physicalSize.width, raw.physicalSize.height,
+                raw.devicePixelRatio, raw.generation, raw.surfaceGeneration,
                 raw.viewPadding, raw.viewInsets, raw.systemGestureInsets,
-                logicalWidth = media.size.width, logicalHeight = media.size.height, padding = media.padding.ToString(),
-                logicalViewInsets = media.viewInsets.ToString(), safe = _safe, resize = _resize, maintain = _maintain }));
+                media.size.width, media.size.height, media.padding.ToString(),
+                media.viewInsets.ToString(), _safe, _resize, _maintain), MediaQueryJsonContext.Default.MediaQueryReport));
             Widget Content(BuildContext ctx) => new Padding(padding: EdgeInsets.CreateAll(12), child: new Column(
                 mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, spacing: 8, children:
                 [

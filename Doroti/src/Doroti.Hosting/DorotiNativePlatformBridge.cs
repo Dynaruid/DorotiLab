@@ -1,6 +1,12 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Doroti.Hosting;
+
+[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
+[JsonSerializable(typeof(DorotiNativePlatformInfo))]
+[JsonSerializable(typeof(string))]
+internal sealed partial class NativePlatformJsonContext : JsonSerializerContext;
 
 public static class DorotiNativePlatformBridgeContract
 {
@@ -18,10 +24,8 @@ public sealed record DorotiNativePlatformInfo(
     public static DorotiNativePlatformInfo Parse(string json)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(json);
-        var value = JsonSerializer.Deserialize<DorotiNativePlatformInfo>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        }) ?? throw new InvalidDataException("The native platform bridge returned an empty platformInfo payload.");
+        var value = JsonSerializer.Deserialize(json, NativePlatformJsonContext.Default.DorotiNativePlatformInfo)
+            ?? throw new InvalidDataException("The native platform bridge returned an empty platformInfo payload.");
         if (string.IsNullOrWhiteSpace(value.Platform) ||
             string.IsNullOrWhiteSpace(value.OsVersion) ||
             value.BridgeVersion != DorotiNativePlatformBridgeContract.BridgeVersion)
@@ -82,6 +86,11 @@ public abstract class DorotiNativePlatformBridgeBase : IDorotiNativePlatformBrid
                 cancellationToken).ConfigureAwait(false),
             _ => throw new MissingMethodException($"Unsupported native platform bridge method: {method}"),
         };
-        return JsonSerializer.SerializeToUtf8Bytes(response);
+        return response switch
+        {
+            DorotiNativePlatformInfo info => JsonSerializer.SerializeToUtf8Bytes(info, NativePlatformJsonContext.Default.DorotiNativePlatformInfo),
+            string value => JsonSerializer.SerializeToUtf8Bytes(value, NativePlatformJsonContext.Default.String),
+            _ => throw new InvalidOperationException("Unsupported native platform bridge response type."),
+        };
     }
 }

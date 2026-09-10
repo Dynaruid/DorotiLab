@@ -1,18 +1,18 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Doroti.Hosting;
 using Doroti.Ui;
 
 namespace Doroti.Host.Maui;
 
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, WriteIndented = true)]
+[JsonSerializable(typeof(MauiHostDiagnostics))]
+internal sealed partial class MauiEvidenceJsonContext : JsonSerializerContext;
+
 public sealed class DorotiMauiSurface : Grid, IDisposable
 {
-    private static readonly JsonSerializerOptions EvidenceJsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true,
-    };
     private static readonly TimeSpan EvidenceWriteInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan EvidenceWriteQuiescence = TimeSpan.FromMilliseconds(250);
     private readonly ulong _viewId;
@@ -196,7 +196,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         var diagnostics = Diagnostics;
         if (diagnostics is null) return;
-        var evidencePath = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+        var evidencePath = ResolveEvidencePath();
         var shouldRequestReplay = diagnostics.Frame.Presented > 0 && diagnostics.Frame.Replayed == 0;
         var timestamp = Stopwatch.GetTimestamp();
         var lastWrite = Interlocked.Read(ref _lastEvidenceWriteTimestamp);
@@ -210,7 +210,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         // file I/O must never occupy the native paint callback while an interaction is active.
         if (firstEvidence || firstReplay || intervalElapsed)
         {
-            var json = JsonSerializer.Serialize(diagnostics, EvidenceJsonOptions);
+            var json = JsonSerializer.Serialize(diagnostics, MauiEvidenceJsonContext.Default.MauiHostDiagnostics);
             var path = evidencePath;
 #if ANDROID
             path = System.IO.Path.Combine(Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
@@ -244,7 +244,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     internal static void WriteFailure(Exception exception)
     {
-        var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+        var path = ResolveEvidencePath();
 #if ANDROID
         Android.Util.Log.Error("DorotiMauiFailure", exception.ToString());
         path = System.IO.Path.Combine(Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
@@ -257,6 +257,15 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             string.IsNullOrWhiteSpace(path) ? null : path + ".exception.txt",
 #endif
             exception.ToString());
+    }
+
+    private static string? ResolveEvidencePath()
+    {
+        var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+        return path == "1"
+            ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "doroti-maui-evidence.json")
+            : path;
     }
 
     private static bool EvidenceEnabled()

@@ -139,6 +139,10 @@ Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제
 `-r ios-arm64`와 해당 기기의 ID를 지정하며 별도 코드 서명·프로비저닝 설정이 필요합니다.
 여기서 `--device`는 `dotnet run` 옵션입니다. `doroti.ps1`의 `-Device`는 현재 Android 전용입니다.
 
+iPhone 전체 트리밍 실험의 크기 측정과 빌드·설치 명령은
+[iOS 트리밍 보고서](../Doroti/docs/validation/ios-trimming-2026-09-10.md)를 참고하세요.
+기본값은 부분 트리밍이며, 전체 트리밍에는 동적 호출 멤버의 보존 설정이 필요합니다.
+
 ### Web 샘플
 
 서버를 실행하고 이 터미널을 열어 둡니다.

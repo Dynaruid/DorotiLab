@@ -1447,7 +1447,8 @@ public sealed partial class SkiaSceneRenderer :
         var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color,
             style?.fontWeight?.value ?? 400, style?.fontStyle == FontStyle.italic,
             (float)(style?.letterSpacing ?? 0), (float)(style?.wordSpacing ?? 0),
-            System.Text.Json.JsonSerializer.Serialize(style?.fontFamilyFallback ?? []));
+            System.Text.Json.JsonSerializer.Serialize(style?.fontFamilyFallback ?? [],
+                SkiaRenderingJsonContext.Default.IReadOnlyListString));
         if (_textRenderResources.TryGetValue(key, out var resources)) return resources;
         resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts, key, style?.fontFamilyFallback);
         _textRenderResources.Add(key, resources);

@@ -456,7 +456,57 @@ public static class Dart_convertLibrary
 
     public sealed class JsonCodec
     {
-        public string encode(object? value) => JsonSerializer.Serialize(value);
+        public string encode(object? value)
+        {
+            using var stream = new MemoryStream();
+            using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { MaxDepth = 64 }))
+                WriteValue(writer, value);
+            return Encoding.UTF8.GetString(stream.ToArray());
+        }
+
+        // Dart's JSON channel payloads consist of scalars, lists and string-keyed maps.
+        // Inspect those contracts directly so trimming never has to discover CLR
+        // collection metadata (or arbitrary object properties) through reflection.
+        private static void WriteValue(Utf8JsonWriter writer, object? value)
+        {
+            switch (value)
+            {
+                case null: writer.WriteNullValue(); break;
+                case string text: writer.WriteStringValue(text); break;
+                case bool boolean: writer.WriteBooleanValue(boolean); break;
+                case byte number: writer.WriteNumberValue(number); break;
+                case sbyte number: writer.WriteNumberValue(number); break;
+                case short number: writer.WriteNumberValue(number); break;
+                case ushort number: writer.WriteNumberValue(number); break;
+                case int number: writer.WriteNumberValue(number); break;
+                case uint number: writer.WriteNumberValue(number); break;
+                case long number: writer.WriteNumberValue(number); break;
+                case ulong number: writer.WriteNumberValue(number); break;
+                case float number: writer.WriteNumberValue(number); break;
+                case double number: writer.WriteNumberValue(number); break;
+                case decimal number: writer.WriteNumberValue(number); break;
+                case JsonElement element: element.WriteTo(writer); break;
+                case IDictionary map:
+                    writer.WriteStartObject();
+                    foreach (DictionaryEntry entry in map)
+                    {
+                        if (entry.Key is not string key)
+                            throw new JsonException("Dart JSON object keys must be strings.");
+                        writer.WritePropertyName(key);
+                        WriteValue(writer, entry.Value);
+                    }
+                    writer.WriteEndObject();
+                    break;
+                case IEnumerable list:
+                    writer.WriteStartArray();
+                    foreach (var item in list) WriteValue(writer, item);
+                    writer.WriteEndArray();
+                    break;
+                default:
+                    throw new JsonException($"{value.GetType().FullName} is not a Dart JSON value. Convert it to scalars, lists or string-keyed maps before encoding.");
+            }
+        }
+
         public object? decode(string value)
         {
             using var document = JsonDocument.Parse(value);

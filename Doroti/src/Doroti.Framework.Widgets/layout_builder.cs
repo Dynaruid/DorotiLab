@@ -183,10 +183,9 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var renderObjectLocal = this.renderObject;
-        var childProperty = renderObjectLocal.GetType().GetProperty("child")
-            ?? throw new InvalidOperationException($"{renderObjectLocal.GetType().FullName} does not expose a layout-builder child property.");
+        var childOwner = (global::Doroti.Framework.Rendering.IRenderObjectWithChild)renderObjectLocal;
         DartRuntimePrimitives.Assert(() => (slot is null));
-        childProperty.SetValue(renderObjectLocal, child);
+        childOwner.child = child;
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 
@@ -198,10 +197,9 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var renderObjectLocal = this.renderObject;
-        var childProperty = renderObjectLocal.GetType().GetProperty("child")
-            ?? throw new InvalidOperationException($"{renderObjectLocal.GetType().FullName} does not expose a layout-builder child property.");
-        DartRuntimePrimitives.Assert(() => (object.Equals((global::Doroti.Framework.Rendering.RenderObject?)childProperty.GetValue(renderObjectLocal), child)));
-        childProperty.SetValue(renderObjectLocal, null);
+        var childOwner = (global::Doroti.Framework.Rendering.IRenderObjectWithChild)renderObjectLocal;
+        DartRuntimePrimitives.Assert(() => (object.Equals(childOwner.child, child)));
+        childOwner.child = null;
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 

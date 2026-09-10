@@ -35,6 +35,28 @@ var response = await nativeBridge.HandleAsync(DorotiNativePlatformBridgeContract
 if (response is null || System.Text.Json.JsonSerializer.Deserialize<string>(response.Value.Span) != "channel")
     throw new InvalidOperationException("The native platform channel did not round-trip its payload.");
 
+var platformResponse = await nativeBridge.HandleAsync(
+    DorotiNativePlatformBridgeContract.Channel, "json", "{\"method\":\"platformInfo\"}"u8.ToArray());
+using (var platformJson = System.Text.Json.JsonDocument.Parse(platformResponse
+    ?? throw new InvalidOperationException("The platformInfo response was empty.")))
+{
+    var info = platformJson.RootElement;
+    if (info.GetProperty("Platform").GetString() != "Contract" ||
+        info.GetProperty("OsVersion").GetString() != "1" ||
+        info.GetProperty("BridgeVersion").GetString() != "1.0.0")
+        throw new InvalidOperationException("The platformInfo JSON wire contract changed.");
+}
+
+var uiResponse = await nativeBridge.HandleAsync(
+    DorotiNativePlatformBridgeContract.Channel, "json",
+    "{\"method\":\"echoOnUiThread\",\"value\":\"한글 \\\"echo\\\"\"}"u8.ToArray());
+using (var uiJson = System.Text.Json.JsonDocument.Parse(uiResponse
+    ?? throw new InvalidOperationException("The UI echo response was empty.")))
+{
+    if (uiJson.RootElement.GetString() != "한글 \"echo\"")
+        throw new InvalidOperationException("The UI echo JSON did not preserve Unicode and quotes.");
+}
+
 await AssertThrowsAsync<MissingMethodException>(() =>
     nativeBridge.HandleAsync(DorotiNativePlatformBridgeContract.Channel, "json",
         System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { method = "missing" })).AsTask());

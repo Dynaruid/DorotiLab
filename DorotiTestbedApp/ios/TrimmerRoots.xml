@@ -1,0 +1,21 @@
+<linker>
+  <!-- The translated framework invokes members through the DLR. Preserve members
+       of retained types, while allowing entirely unused types to be removed.
+       required="false" is essential: these entries must not root every type.
+       This is an experimental compatibility boundary, not a trim-safety claim. -->
+  <assembly fullname="Doroti.Runtime"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Ui"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Foundation"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Scheduler"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Services"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Physics"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Animation"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Gestures"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Painting"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Semantics"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Rendering"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Widgets"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Cupertino"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Framework.Material"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="DorotiTestbedApp"><type fullname="*" preserve="all" required="false" /></assembly>
+</linker>
