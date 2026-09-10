@@ -1,12 +1,14 @@
-# Doroti NativeAOT 전환 작업계획
+# Doroti Mono 제거·NativeAOT 전환 작업계획
 
 작성일: 2026-09-10. 상태: **계획 작성 완료, NativeAOT 구현·publish·실기기 검증 미착수**.
 
-검토 기준 커밋: `3ff6f464d51a67ef412d9c16f68c4d63ced9f1dc`. 이번 작업에서는 저장소 소스와 공식 문서를 검토하고 이 문서만 작성했다. 기존 Mono 트리밍 실험의 성공을 NativeAOT 성공으로 취급하지 않는다.
+재검토 기준 커밋: `0538597fafe52954b898b008adde110a79bd1ca0`. 최초 계획의 기준은 `3ff6f464d51a67ef412d9c16f68c4d63ced9f1dc`였다. 이번에는 `ref1.md`, 현재 제품 소스·빌드 설정·기존 검증 보고서와 공식 문서를 대조하여 이 문서만 수정했다. 빌드·publish·기기 연결은 실행하지 않았다. 기존 Mono 트리밍 실험의 성공을 NativeAOT 성공으로 취급하지 않는다.
 
 ## 1. 목표와 완료의 의미
 
-**DorotiTestbedApp의 전체 기능을 유지하면서 iOS arm64 NativeAOT 앱을 publish·서명·설치하고, iPhone에서 정상 동작하도록 만든다.** 현재 Doroti 제품 코드를 직접 정비하여 이후 새 앱과 새로운 위젯도 같은 경로로 배포할 수 있게 한다. 번역기 수정은 별도의 제한된 개선 작업으로 둔다.
+**최우선 목표는 배포 앱에서 Mono 런타임·인터프리터 의존을 제거하는 것이다.** 기존 계획의 첫 전환 타깃인 iOS arm64에서 DorotiTestbedApp의 전체 기능을 유지하는 NativeAOT 앱을 publish·서명·설치하고, iPhone에서 정상 동작하도록 만든다. 현재 Doroti 제품 코드를 직접 정비하여 이후 새 앱과 새로운 위젯도 같은 경로로 배포할 수 있게 한다. 번역기 수정은 별도의 제한된 개선 작업으로 둔다.
+
+Mono full trimming 개선, Android `RunAOTCompilation=false`, iOS 해석 실행 확대는 이 목표의 대안이나 선행 최적화 단계가 아니다. 기존 Mono 산출물은 동작·크기 비교와 전환 중 복구에만 사용한다. NativeAOT에도 GC 등 자체 .NET 런타임 지원은 남으므로, “Mono 제거”를 “모든 .NET 런타임 코드 제거”로 정의하지 않는다. iOS 완료를 Android·Web 등 저장소 전체의 Mono 제거 완료로 발표하지 않는다.
 
 확정 범위: **현재 프레임워크 C# 코드가 제품의 기준이다.** 이미 Flutter와 의도적인 차이가 생겼으므로, 번역기가 이 코드를 동일하게 재현하거나 Flutter 소스로부터 프레임워크 전체를 재생성하는 것은 목표가 아니다. 제품 수정 내용을 번역기에 모두 역반영해야 한다는 조건도 두지 않는다.
 
@@ -16,30 +18,32 @@
 | ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------- |
 | G1: 기반 호환성    | 현재 MAUI·SkiaSharp·Metal·네이티브 바인딩으로 작은 NativeAOT 앱을 iPhone에서 실행    | 아니오. 외부 의존성의 조기 검증         |
 | G2: 실제 앱 성공   | 전체 Testbed를 NativeAOT로 publish하고 화면·입력·비동기·네이티브 연동·수명 검증 통과 | 앱 전환 성공. 제품 SDK 배포 검증은 별도 |
-| G3: 제품 경로 완성 | 정식 Runner/CLI, NuGet 소비 앱, 새 템플릿 앱, 제품 코드의 CI 회귀 방지까지 검증      | **NativeAOT 전환의 전체 완료 조건**     |
+| G3: 제품 경로 완성 | iOS 정식 배포 기본 경로를 NativeAOT로 전환하고 Runner/CLI·NuGet 소비·새 템플릿·CI 검증 | **NativeAOT 전환의 전체 완료 조건**     |
 
 G2/G3의 공통 조건:
 
 - `dotnet publish`가 실제 NativeAOT 컴파일러와 네이티브 링크를 수행한다. 일반 `dotnet build`, Mono AOT, 시뮬레이터 실행만으로 대신하지 않는다.
-- JIT·Mono 인터프리터·DLR 런타임 코드 생성에 의존하지 않는다. 기존 `MtouchInterpreter=-all`은 NativeAOT 해결책이 아니다.
+- 최종 배포 번들 및 링크 결과에 Mono 런타임·인터프리터·Mono AOT 이미지가 없고, JIT·DLR 런타임 코드 생성에 의존하지 않는다. §4.4의 정적 링크·번들·실행 증거를 모두 확보한다. 기존 `MtouchInterpreter=-all`은 NativeAOT 해결책이 아니다.
 - 제품과 배포 의존성의 미해결 AOT/트리밍 경고가 없다. 전체 경고 숨김, `ILLinkTreatWarningsAsErrors=false`, 광범위한 멤버 보존으로 성공 판정을 만들지 않는다.
 - 샘플을 단순화하거나 실패하는 위젯·지역화·셰이더·진단 화면을 빼서 크기와 실행 성공을 얻지 않는다.
 - 현재 지원하는 외부 앱의 사용자 정의 Widget/State/Route/Action/LocalizationsDelegate 확장이 가능하다. Testbed 타입만 하드코딩한 구현은 불합격이다.
 - 기능 검증 결과, 실제 산출물, 빌드 로그, 크기·성능 비교, 사용한 커밋·도구 버전을 저장소의 재현 가능한 보고서로 남긴다.
 
-크기 절감은 별도의 제품 목표다. 동일 커밋·기능·리소스의 Mono 기준과 비교한다. NativeAOT 컴파일 성공과 크기·성능 개선 여부를 따로 기록하고, 크기가 커지거나 입력 성능이 퇴행하면 최적화 단계가 남은 것으로 처리한다. 아직 측정하지 않은 “50MB 이하” 같은 수치를 확약하지 않는다.
+크기 절감은 전환 효과를 평가하는 별도 지표다. 동일 커밋·기능·리소스의 Mono 기준과 비교하되 절감률을 Mono 제거의 성공 조건으로 삼지 않는다. **Mono 제거·기능 호환성·크기 변화·성능 판정을 각각 기록한다.** 크기가 기대보다 크면 최적화 backlog로 남기며 Mono 유지로 목표를 대체하지 않는다. 입력·시작·프레임 성능의 허용 범위를 넘는 회귀는 제품 승격을 막지만 Mono 제거 여부와 구분한다. 아직 측정하지 않은 “50MB 이하” 같은 수치를 확약하지 않는다.
 
 ## 2. 범위
 
 | 구분                | 이번 계획의 책임                                                                                                     |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 우선 배포 타깃      | `net10.0-ios` / `ios-arm64`, 현재 연결 가능한 iPhone 12를 우선 사용                                                  |
+| 우선 배포 타깃      | `net10.0-ios` / `ios-arm64`, 과거 검증에 사용한 iPhone 12를 우선 후보로 삼되 Mac·서명·기기 가용성은 N0에서 확인       |
 | 공용 제품 코드      | Runtime, Ui, Hosting, Framework 전체 계층, Skia 렌더링·runtime effects, 앱 시작·등록 계약                            |
 | iOS 통합            | MAUI host, UIKit/Metal/Graphite 및 기존 지원 렌더 경로, native binding, Runner SDK, Testbed                          |
 | 제품 생성·배포      | bootstrap·등록 코드, 템플릿·패키지·CLI·검증 도구                                                                     |
 | 번역기 보조 개선    | 선택한 타입 매핑·호출 lowering의 품질 개선. 현재 프레임워크 동일 재현·전체 재생성·모든 제품 수정의 역반영은 제외     |
 | 타 플랫폼           | 공유 코드 변경의 Android·Web·Windows·AppKit·Mac Catalyst·Linux 회귀 방지. 실제 테스트 불가 환경은 미검증으로 남김    |
 | 후속 NativeAOT 확장 | Mac Catalyst 등은 타깃별 지원성과 publish 검증 후 별도 승격. iOS 성공을 전체 플랫폼 NativeAOT 지원으로 발표하지 않음 |
+
+Android는 현재 Mono AOT 기본 동작을 보존하는 공유 코드 회귀 범위다. Android에서 Mono를 제거하는 후속 작업은 해당 SDK의 NativeAOT 지원·JNI/native binding·Vulkan host를 별도로 검증해야 한다. 단순 AOT-off나 CoreCLR 교체를 이번 iOS NativeAOT 완료로 계산하지 않는다. Web의 Worker/.NET WASM 실행 구조도 별도 전환 범위다.
 
 번역기·Roslyn·빌드 도구 자체의 NativeAOT화는 요구하지 않는다. 이들은 **앱 실행 시 의존성**과 분리하여 분석한다. 일반 앱이 아닌 빌드 도구에서 사용하는 리플렉션까지 무조건 제거하지 않는다.
 
@@ -51,13 +55,13 @@ Flutter 소스와 테스트는 의미를 이해하고 비교하는 참고 자료
 
 [iPhone 트리밍 보고서](Doroti/docs/validation/ios-trimming-2026-09-10.md)에 다음 결과가 있다.
 
-| 기존 실험                        |  로컬 `.app` 크기 | 의미                                                                |
-| -------------------------------- | ----------------: | ------------------------------------------------------------------- |
-| 부분 트리밍 + Mono AOT           | 136,038,224 bytes | 과거 기준선                                                         |
-| 전체 트리밍, 동적 멤버 보존 없음 |  96,677,312 bytes | 지역화·첫 화면 준비에서 `NoSuchMember` 발생                         |
-| 전체 트리밍 + 동적 멤버 보존     | 105,013,528 bytes | iPhone에서 샘플·진단·MediaQuery 렌더링 성공, 1,691개 빌드 경고 잔존 |
+| 기존 실험                        | 로컬 `.app` bytes | 실행 파일 bytes | 의미 |
+| -------------------------------- | ----------------: | --------------: | ---- |
+| 부분 트리밍 + Mono AOT           | 136,038,224 | 88,303,792 | 호환성 수정 전 과거 기준선 |
+| 전체 트리밍, 동적 멤버 보존 없음 | 96,677,312 | 58,291,376 | 지역화·첫 화면 준비에서 `NoSuchMember` 발생 |
+| 전체 트리밍 + 동적 멤버 보존     | 105,013,528 | 63,839,616 | iPhone에서 샘플·진단·MediaQuery 렌더링 성공, 1,691개 빌드 경고 잔존 |
 
-105MB 빌드는 NativeAOT가 아니다. 해당 검증의 초기 스냅샷은 pointer event가 0이므로 전체 상호작용 검증도 아니다. N0에서 같은 커밋으로 다시 기준선을 만든다.
+105MB 빌드는 NativeAOT가 아니다. 해당 검증의 초기 스냅샷은 pointer event가 0이므로 전체 상호작용 검증도 아니다. 값은 서명된 `.app`의 일반 파일 길이 합이며 decimal MB를 사용한다. IPA 압축 크기·App Store 전송량·기기 설치 저장 공간과 다르다. 31,024,696 bytes 절감에는 JSON/호환성 수정도 포함되어 있으므로 “31MB 전부가 trim 속성 하나의 효과”라고 단정하지 않는다. N0/N10에서 통제된 비교를 만든다.
 
 이미 도입된 개선은 재사용한다.
 
@@ -82,13 +86,13 @@ Flutter 소스와 테스트는 의미를 이해하고 비교하는 참고 자료
 | `Doroti.Runtime/DartAsync.cs`, `DartCoreAdapters.cs`     | error handler/predicate의 `Delegate.DynamicInvoke`, `Method.GetParameters()` | 명시적 callback 형태와 반환값 처리, 비동기 의미 보존                                    |
 | `Doroti.Runtime/FoundationRuntimePorts.cs`               | `EnumIndex`가 `GetProperty("index"/"value")` 사용                            | enum/FontWeight/indexable 값의 명시적 계약                                              |
 | `Doroti.Ui/FrameworkShaderAssets.cs`                     | assembly 열거 후 이름으로 `Assembly.Load` fallback                           | 생성·명시 등록된 resource owner와 stream factory 사용                                   |
-| `Doroti.Host.Maui/DorotiGraphiteView.cs`                 | 기본 Graphite view도 `SKGLView`를 상속                                       | SkiaSharp MAUI control 경계와 내부 string binding의 NativeAOT 적합성 확인               |
+| `Doroti.Host.Maui/DorotiGraphiteView.cs`                 | `SKGLView`를 입력/속성 계약으로 상속하며 Graphite handler는 별도 GPU surface를 사용 | 상속·등록에서 도달하는 MAUI control 경계 검사. 상속만으로 GL 렌더러 사용이나 AOT 불가를 단정하지 않음 |
 | `DorotiMauiApplication.cs`                               | `UseSkiaSharp`, generic handler·서비스 등록, Graphite/기존 view 등록         | 실제 root graph와 생성된 registrar, DI·callback 경고 검증                               |
 | `DorotiTestbedApp/ios/binding/ApiDefinition.cs`          | ObjC export와 `Action<string>` completion bridge                             | NativeAOT binding/registrar·역방향 callback·수명 실기기 검증                            |
 | `tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/` | Types/Expressions 등에서 `dynamic`과 `((dynamic)this.renderObject)`를 출력   | 보조 개선 후보. 선택한 패턴의 출력 품질을 개선하되 제품 프레임워크 재현을 요구하지 않음 |
 | 제품 프로젝트 설정                                       | 공통 `IsAotCompatible`/AOT 분석 정책이 아직 없음                             | 계층별 분석 도입과 앱 publish 검증 병행                                                 |
 
-검토 시점의 단순 텍스트 집계는 다음과 같다. `bin/obj`를 제외한 C# 파일에서 `\bdynamic\b`를 세었으며 주석·선언·문자열도 포함할 수 있다. **이 수치는 실제 DLR call-site 수나 수정 건수가 아니다.**
+최초 계획에 기록된 단순 텍스트 집계는 다음과 같다. 이번 재검토에서 전체 재집계하지 않았으며 N0에서 갱신한다. `bin/obj`를 제외한 C# 파일에서 `\bdynamic\b`를 세었으며 주석·선언·문자열도 포함할 수 있다. **이 수치는 실제 DLR call-site 수나 수정 건수가 아니다.**
 
 | Framework assembly | 포함 파일 수 | dynamic 토큰 수 | 명시적 `(dynamic)` 수 |
 | ------------------ | -----------: | --------------: | --------------------: |
@@ -113,6 +117,24 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 
 이 버전들이 NativeAOT 호환이라고 아직 판정하지 않는다. 해결에 버전 변경이 필요하면 해당 패키지·워크로드 단위로 재현 가능한 변경을 만들고, 관련 없는 플랫폼 패키지까지 일괄 업그레이드하지 않는다.
 
+### 3.4 `ref1.md` 적용 판단
+
+참고 문서의 **DLR 실행 의존을 정리하여 NativeAOT로 전환한다**는 방향은 현재 구성에 맞는다. 다만 Mono 최적화부터 진행하는 로드맵은 사용자의 Mono 제거 목표에 맞지 않으므로 채택하지 않는다.
+
+| 참고 문서의 주장·제안 | 현재 근거와 판단 | 계획 반영 |
+| --- | --- | --- |
+| iOS 136 → 105MB, 실행 파일 88.3 → 63.8MB | §3.1 보고서 수치와 일치. 수정 전후 비교이며 원인별 기여도는 미분해 | 과거 참고값만 유지, 절감 확약 금지 |
+| 큰 Mach-O에 Mono AOT·Skia·MAUI 등이 함께 들어감 | 링크된 코드의 구성 후보로 타당. 실행 파일 전체를 Skia 또는 Mono의 크기로 귀속할 수 없음 | native link map과 section 자료로 분해, 귀속 불가분은 unknown |
+| `MtouchInterpreter=-all` 유지 | 현재 Runner 설정과 일치. 모든 assembly를 AOT하면서 동적 생성 메서드에 interpreter를 허용하는 뜻이며 `all`과 다름 | 기존 Mono 비교에만 유지. NativeAOT에선 효과가 없으며 제거 대상 ([공식 설명](https://learn.microsoft.com/en-us/dotnet/maui/macios/interpreter?view=net-maui-10.0)) |
+| full trim + descriptor로 dynamic 해결 | 현재 descriptor는 `required="false"`로 살아남은 타입의 멤버를 넓게 보존. DLR 코드 생성 의존은 남음 | Mono 호환성 우회로만 기록, NativeAOT 계약으로 채택하지 않음 |
+| Android x64 APK 49,818,774 bytes / AOT 128개 | [시작 ANR 수정 보고서](Doroti/docs/validation/android-aot-startup-2026-09-10.md)와 일치. 모듈 개수만으로 AOT 총 bytes는 알 수 없음 | Android 회귀 기준. iOS 용량 근거로 전용하지 않음 |
+| ABI 두 개이므로 약 100MB | RID-neutral Host가 두 ABI를 포함하는 것은 확인. 실제 runner는 선택 RID별 target을 참조하며 최종 AAB의 두 ABI 포함·100MB 원인은 미확인 | 실제 archive entry 없이 합산 추정하지 않음. AAB와 기기별 split 배포량 구분 |
+| Android AOT-off를 먼저 비교 | Mono는 남고 JIT 부담이 증가. 위 x64 보고서에서 AOT-off 시작 ANR 재현 | Mono 제거 경로에서 제외, 현재 Release AOT 정책 보존 |
+| Graphite/Skottie/codec이 용량을 차지 | `Doroti/native/graphite/build-android.py`에서 빌드 옵션 확인. Linux 12,941,848 bytes는 Linux 자료로만 유효 | iOS/Android native 산출물별로 측정. Graphite·shader·codec 삭제를 기본 해법으로 삼지 않음 |
+| `DorotiDynamic.InvokeMember` / generated dispatch로 대체 | 이름만 바꾼 reflection/DLR wrapper면 문제가 그대로 남음 | §4.1의 정적 계약 우선. 잔여 호출에만 빌드 시 확정된 typed thunk 사용 |
+
+MAUI 기본 앱의 NativeAOT 용량 예시는 가능성을 보여주는 외부 사례이며 Doroti 예상 크기가 아니다. APK/AAB 압축 크기, ABI별 비압축 `.so`, iOS `.app` raw 합계는 직접 비교하지 않는다. Google Play는 기기에 맞는 APK를 생성하므로 AAB 업로드 용량이 기기 전송량과 같지 않다. ([Android App Bundles](https://developer.android.com/guide/app-bundle))
+
 ## 4. 전환 설계 원칙
 
 ### 4.1 현재 Doroti 계약을 유지하는 정적 호출
@@ -125,6 +147,18 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 6. 제품 코드에서 처리하지 못하는 호출은 계약과 오류 동작을 명확히 정한다. `null/default`, 호출 무시, reflection/Expression.Compile/DLR fallback으로 숨기지 않는다. 번역기에서 개선 대상으로 선택한 lowering도 지원하지 못하면 명시적 compiler 진단을 내도록 한다.
 
 모든 타입을 하나의 거대한 switch로 바꾸는 것도 목표가 아니다. 정적 dispatch가 제네릭 인스턴스 수·boxing·코드 크기를 과도하게 늘리는지 N10에서 측정한다.
+
+계약별 구현 선택을 다음처럼 고정한다. 아래 이름은 설계 후보이며 아직 추가된 API가 아니다.
+
+| 호출군 | 우선 구현과 확인할 의미 | 담당 단계 |
+| --- | --- | --- |
+| RenderView/child/layout | 구체 `RenderView`, 기존 `IRenderObjectWithChild`/container 계약, layout callback 계약. attach/detach·box/sliver 제약·override 유지 | N4 |
+| `LocalizationsDelegate<T>` | 비제네릭 `ILocalizationsDelegate` 후보에 type/support/load/reload bridge 제공. `T`와 `Future<T>`는 구현 내부에서 유지하고 동기 완료·locale 변경 중 늦은 완료·서로 다른 delegate 타입의 reload를 검증 | N4 |
+| State/Route/Action | 기존 generic 구현 + 비제네릭 동작 계약. 외부 assembly의 새 타입도 override와 결과형 보존 | N4~N6 |
+| callback/연산 | typed adapter와 현재 숫자·null·오류 계약. 지원 함수 형태를 API 경계에서 명시하고 등록 후 `DynamicInvoke`로 재진입하지 않음 | N2/N5 |
+| 위 계약으로 표현할 수 없는 실제 동적 멤버 호출 | 필요한 경우 호출 지점·receiver 계약·멤버·인수 형태별 generated typed thunk. 읽기/쓰기/호출/연산을 구분하고 닫힌 generic 대상은 빌드 시 생성 | N2 설계, N5/N6 적용 |
+
+generated dispatch를 도입한다면 N2에서 작은 제품 fixture로 필요성을 먼저 입증한다. 등록은 앱 composition root/generated bootstrap에서 하고 NuGet 외부 타입 확장과 충돌·누락 진단을 포함한다. final app의 알려진 타입은 빌드 진단으로 검증하며, 실제 런타임의 지원 밖 receiver/멤버는 현재 제품 오류 계약을 따른다. 런타임 assembly 검색, `MakeGenericType`로 임의 닫힌 타입 생성, `Expression.Compile`/DLR fallback은 대체 구현이 아니다. 호출 캐시는 타입 수·수명·threading이 제한되어야 한다. 번역기 전체 개편 없이 현재 C# 제품 코드에서 적용한다.
 
 ### 4.2 리플렉션·등록·리소스
 
@@ -142,6 +176,28 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 - Mono 프로필과 NativeAOT 프로필의 obj/bin, restore graph, 생성 bootstrap, native binding 산출물, launch 재사용 키를 구분한다. 기존 `ArtifactsPath`/RID별 경로와 맞물리는 부분까지 검증한다.
 - 첫 실패 분석에서는 경고를 수집할 수 있으나, 이 설정을 정식 완료 판정·템플릿·기본 빌드에 남기지 않는다. 최종 native publish는 분석을 켜고 경고를 오류로 처리한다.
 
+### 4.4 Mono 제거를 증명하는 계약
+
+G1의 probe, G2의 Testbed, G3의 템플릿/NuGet 소비 앱에 같은 검사기를 사용한다.
+
+1. **빌드 선택:** 평가된 TFM/RID/`PublishAot`·feature switches·compiler/link 실행 로그를 저장한다. `dotnet publish`가 실제 ILC와 native link를 실행해야 한다. 속성 출력만으로 성공 처리하지 않는다.
+2. **링크 입력과 포함 코드:** SDK runtime pack, native linker response/input, 가능한 link map에서 Mono runtime/interpreter/Mono AOT 모듈의 링크·포함 여부를 확인한다. iOS에서는 Mono가 정적 링크될 수 있어 `.dylib` 부재나 `otool -L`만으로 제거를 증명할 수 없다. SDK 버전별 입력 이름·역할을 기준으로 검사하고 이름이 불명확하면 미판정으로 남긴다.
+3. **최종 번들:** 서명·배포할 `.app` 및 IPA payload의 파일 목록·크기·SHA-256, executable의 load command와 가능한 symbol/section 자료를 연결한다. stripping된 바이너리에서 `mono` 문자열 검색 결과가 0인 것은 보조 자료일 뿐이다. NativeAOT의 자체 GC/runtime 지원을 Mono로 오분류하지 않는다.
+4. **실제 실행:** 검사한 bundle의 설치·launch identity를 기록하고 기능·native callback·수명을 검증한다. runtime feature 값은 보조 증거다. 자동 Mono fallback, 다른 Mono 빌드 설치, stale artifact 재사용이 있으면 불합격이다.
+
+결과에는 `monoAbsent=pass|fail|notVerified`, `nativeAotPublish`, `functional`, `performance`, `sizeDeltaBytes`를 별도 필드로 남긴다. `monoAbsent=pass`에는 1~3의 일치하는 증거가 필요하고 G2/G3 완료에는 4도 필요하다. 외부 도구나 앱 빌드에 쓰는 Roslyn의 런타임은 배포 앱의 Mono 제거 판정 대상이 아니다.
+
+### 4.5 크기 보고서와 비교 규칙
+
+N0에서 `Doroti/validation/native-aot/size-report.py`를 후보로 삼아 Mac/Windows에서 읽을 수 있는 JSON 보고서를 설계한다. N10에서 최종 비교에 사용하며 이번 계획 수정에서는 도구를 구현하지 않는다.
+
+- 입력: bundle/archive 경로, 플랫폼·RID·mode·커밋·도구 버전·native provenance, 선택적 linker map. 산출물 파일을 읽고 원본을 변경하지 않는다.
+- `.app`: 일반 파일의 bytes 합계, executable, frameworks/dylibs, fonts/images/shaders, 기타 리소스를 중복 없이 집계한다. symlink는 별도 표시하여 중복 합산하지 않는다. dSYM은 배포 bundle과 별도 기록한다.
+- `.apk`/`.aab` 분석이 필요하면 ABI별 `libaot-*`, Skia, Mono/플랫폼 glue, managed assembly blob, dex/resources, 기타를 분리한다. ZIP entry의 비압축/압축 bytes와 archive 자체 bytes를 모두 보존하고 header·alignment·서명 차액도 표시한다. packed blob을 이름만 보고 Doroti/MAUI/기본 라이브러리별로 임의 분배하지 않는다.
+- iOS의 정적 링크된 코드 기여도는 map에서 확인 가능한 부분만 분류한다. 최종 section 합계와 다른 map 추정치를 같은 정확도로 표시하지 않고 unknown을 허용한다.
+- MB는 `bytes / 1,000,000`, MiB는 `bytes / 1,048,576`로 명시한다. `.app` raw·IPA compressed·설치 공간·스토어 전송량은 각각 독립 필드다. device-specific Android 전송 추정이 필요할 때만 `bundletool`을 사용한다. ([bundletool 크기 측정](https://developer.android.com/tools/bundletool))
+- Mono 비교는 같은 소스·renderer·리소스·RID·서명 및 진단 설정으로 만든다. 보존 descriptor가 필요한 Mono와 불필요한 NativeAOT의 차이는 의도된 차이로 기록한다. 별도 Mono 최적화나 native 기능 삭제를 섞지 않는다.
+
 ## 5. 단계별 작업
 
 필수 단계는 **구현 → 해당 계약 검증 → 가능한 실제 publish → 증거 기록**까지 수행한다. 빌드가 한 번 통과했다는 이유로 후속 단계를 생략하지 않는다. **N3은 별도 보조 개선이며 N0~N2, N4~N12의 착수·완료나 G3 판정을 막지 않는다.** 아래 체크박스는 이번 계획 작성으로 완료되지 않는다.
@@ -149,11 +205,15 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 ### N0. 기준선·전체 장애물 목록·실험 격리
 
 - [ ] 현재 커밋, SDK/workload/Xcode/native 라이브러리 해시, 잠금 파일, signing 및 지원 OS를 기록한다.
-- [ ] 동일 커밋으로 Mono 부분/보존형 full-trim 기준 앱을 만들고 기능·크기·startup/frame/memory 기준선을 확보한다.
-- [ ] 제품 프로젝트·패키지 그래프와 실제 앱 reachability를 만든다. 파일/메서드/원인/소유 계층/테스트/상태로 장애물을 관리한다.
+- [ ] Mac/Xcode/workload·서명·iPhone의 실제 가용성을 확인하고 Windows에서 가능한 소스/계약 검증과 분리한다. 장비가 없으면 native/device 항목을 `notVerified`로 남기되 독립적인 계약 정비는 진행할 수 있다.
+- [ ] 기존 Mono 배포 프로필 하나를 주 비교군으로 정하고 기능·크기·startup/frame/memory 기준선을 확보한다. 기본 partial trim을 우선 사용하며, 기존 guarded full trim은 보조 비교로만 둔다. 새로운 Mono 최적화 작업을 추가하지 않는다.
+- [ ] §4.5 보고서 형식·집계 도구와 §4.4 제거 판정의 수집 항목을 만든다. 기존 임시 Mac 증거의 존재·해시를 확인하고 사라진 원자료는 재확보 전까지 과거 보고서 값으로 표시한다.
+- [ ] 제품 프로젝트·패키지 그래프와 실제 앱 reachability를 만든다. `id, assembly, source/member, operation, receiver/type-flow, Debug/Release reachability, warning/IL evidence, replacement, fixture, status`로 장애물을 관리한다.
 - [ ] C# dynamic 호출, IL의 Binder/CallSite, reflection/assembly loading, delegate invocation, serializer, generic reflection, native callback을 구분해 조사한다.
 - [ ] 분석 전용 profile과 별도 산출물 경로를 만들고 최초 iOS NativeAOT publish 실패 로그/binlog를 확보한다. 실패가 예상되는 진단 실행이며 배포 성공으로 기록하지 않는다.
 - [ ] 현재 제품 소스와 빌드에 필수인 bootstrap·등록·binding 생성의 소유권을 확인한다. 번역기의 과거 manifest/재생성 체계 복구를 NativeAOT 선행 작업으로 넣지 않는다.
+- [ ] N1/N4가 사용할 최소 opt-in NativeAOT profile을 먼저 만든다. N8은 이를 정식 Runner/CLI/패키지로 완성하는 단계이며 최초 publish를 N8까지 미루지 않는다.
+- [ ] 같은 기기에서 cold start 5회, 대표 조작 시나리오 3회 등 제한된 baseline으로 측정 변동과 허용 회귀율을 문서화한다. ANR/crash/입력 누락은 0건을 요구하고 startup·frame p95·메모리의 수치 기준은 후보 결과를 보기 전에 확정한다.
 
 **완료 조건:** 재현 가능한 초기 실패, 소유자가 정해진 장애물 목록, 크기 측정 정의와 성능 합격 기준, 기존 앱과 충돌하지 않는 실험 디렉터리가 있다.
 
@@ -167,11 +227,14 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 
 **완료 조건:** 실제 iPhone에서 렌더링과 native round-trip이 되는 작은 NativeAOT 산출물이 있다. dependency blocker가 있다면 해결 PR/버전/교체 작업까지 추적한다. 빈 MAUI 창만 떴다고 G1을 닫지 않는다.
 
+§4.4의 Mono 제거 증거도 probe에 남긴다. 이 단계의 dependency blocker가 미해결이면 N4~N6의 대규모 전환에 앞서 원인·지원 버전·최소 패치 가능성을 확정한다. N2의 독립적인 계약 조사/fixture는 진행 가능하나 외부 기반이 검증됐다고 가정하지 않는다.
+
 ### N2. 런타임의 명시적 호출·값 계약
 
 - [ ] `DartAsync.cs`의 error callback을 인수 1개/2개, void/값/Future/Task 반환 등 실제 지원 형태로 구분하고 typed adapter를 제공한다.
 - [ ] `DartCoreAdapters.cs`의 predicate 호출 및 `EnumIndex`의 enum/FontWeight/indexable 처리를 명시적 계약으로 전환한다.
 - [ ] 기존 공개 API와 현재 제품 코드의 call-site를 함께 이전한다. 사용자 callback을 조용히 무시하거나 기본값으로 바꾸지 않는다. 번역기 반영이 유용한 항목은 N3 후보로 따로 기록한다.
+- [ ] §4.1의 호출군별로 직접 호출/비제네릭 bridge/typed callback/필요 시 generated thunk 선택과 API 변경 영향을 기록한다. 새 registry가 필요하면 외부 assembly 확장·누락 진단·오류 의미·호출 수명을 포함한 작은 NativeAOT fixture부터 통과시킨다.
 - [ ] FutureOr 처리, 오류 회복·재전파, stack 보존, SynchronousFuture, microtask 순서, cancellation, timeout을 검증한다.
 - [ ] `runtime-async-contract`, `json-codec`를 재사용하고 필요한 focused fixture를 실제 NativeAOT console publish로 실행한다. 기존 JSON 검증은 full trim이었으므로 NativeAOT 검증을 추가한다.
 
@@ -195,6 +258,7 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 - [ ] `framework.cs`, `layout_builder.cs`, `sliver_layout_builder.cs`의 State/Element/render/layout 경계를 정비한다.
 - [ ] nullable 수신자, attach/detach, child 교체·이동·제거, relayout, 비동기 지역화 완료 후 rebuild를 검증한다.
 - [ ] 외부 fixture assembly에 정의한 State/LocalizationsDelegate도 동일 경로로 동작하게 한다.
+- [ ] 정비한 계약의 descriptor 보존 의존을 제거하면서 Mono 회귀와 작은 iOS NativeAOT publish를 모두 확인한다. 아직 DLR이 남은 다른 계약의 Mono 보존을 한꺼번에 삭제하지 않는다.
 
 **완료 조건:** 작은 실제 Doroti 위젯 트리를 NativeAOT로 부팅·갱신·해제할 수 있고 최초 `NoSuchMember` 경로가 멤버 보존 없이 통과한다. 정적 첫 프레임은 G2 전체 완료가 아니다.
 
@@ -230,17 +294,20 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 ### N8. NativeAOT publish 경로와 패키지·템플릿
 
 - [ ] Runner SDK와 iOS csproj에 명시적 NativeAOT 배포 프로필을 연결한다. Mono 전용 interpreter/AOT 옵션과 광범위 `TrimmerRoots.xml`을 NativeAOT 경로에서 제외한다.
+- [ ] 현재 descriptor 조건이 `TrimMode=full`만 검사하는 점을 수정하여 NativeAOT와 Mono 보존형 실험이 명시적으로 분리되게 한다. NativeAOT에 빈 interpreter 값을 넘기는 것만으로 끝내지 않고 `Sdk.targets`의 기본값 재주입도 막는다. 최종 평가 속성·item과 compiler 입력으로 검증한다.
 - [ ] 정비된 제품 라이브러리에 `IsAotCompatible`/trim 분석 정책을 적용한다. 앱에서 안 쓰는 메서드는 publish 분석만으로 놓칠 수 있으므로 라이브러리 API 소비 fixture도 유지한다.
 - [ ] `Doroti/eng/doroti.ps1`, `launch-identity.ps1`, generated bootstrap과 restore/publish graph에 compilation mode를 전달하고 재사용 키에 반영한다.
+- [ ] `launch-identity.ps1`의 현재 runner/configuration/RID 선택에 mode 및 trim/보존 정책·관련 native provenance를 포함한다. Mono → NativeAOT → Mono 및 역순에서 서로의 obj/bin·서명 bundle을 재사용하지 않는지 검사한다.
 - [ ] 앱 프로젝트와 플랫폼 runner의 property 전파, RID 제거 규칙, native binding 빌드가 올바른 TFM/RID를 선택하는지 검증한다.
 - [ ] NuGet/buildTransitive/템플릿에 static 등록·리소스 계약을 포함한다. repository ProjectReference가 없는 새 소비 앱에서도 확인한다.
-- [ ] opt-in 배포 정책과 최소 SDK/패키지 요구를 문서화한다. 검증된 프로필을 숨겨진 개발자 명령에만 남기지 않는다.
+- [ ] 전환 중 opt-in 검증 정책과 최소 SDK/패키지 요구를 문서화한다. N12에서 iOS 정식 배포 기본 경로로 승격하며 검증된 프로필을 숨겨진 개발자 명령에만 남기지 않는다.
 
 **완료 조건:** 정식 명령으로 깨끗한 restore → NativeAOT publish → 서명된 설치 대상 생성이 재현되고, Mono 산출물을 잘못 재사용하는 계약 테스트도 통과한다.
 
 ### N9. iPhone 기능·수명 검증 — G2
 
 - [ ] 실제 서명된 NativeAOT 산출물을 설치한다. compiler/link 로그, runtime feature 정보, 실행 파일·링크 의존성으로 NativeAOT 실행을 확인한다. `RuntimeFeature.IsDynamicCodeSupported=false` 하나만으로 Mono AOT와 구분하지 않는다.
+- [ ] §4.4 검사 결과와 설치한 bundle identity를 연결하고 `monoAbsent=pass`를 확인한다. 정적 링크 자료나 배포 payload 확인이 빠지면 기능이 동작해도 Mono 제거 판정은 `notVerified`다.
 - [ ] Material·진단·MediaQuery 각각의 cold start, 앱 아이콘 재실행, background/foreground, 반복 view 생성/해제, GC 이후 callback을 확인한다.
 - [ ] 버튼·switch·slider·menu·dialog·route 결과, 스크롤/fling/취소, 키보드·한글/IME·선택/clipboard, 테마·지역화·날짜/시간, 이미지·shader·native plugin을 실제 입력으로 검증한다.
 - [ ] 세로/가로, safe area, keyboard inset, text scale, 접근성 focus/semantics와 기존 렌더 fallback의 지원 계약을 확인한다.
@@ -256,7 +323,7 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 - [ ] NativeAOT 크기가 예상보다 크면 generic virtual method/value-type 인스턴스, 과도한 adapter/registration, 보존 metadata, native asset을 size/map 자료로 조사한다.
 - [ ] `IlcOptimizationPreference=Size` 등은 검증된 NativeAOT 경로에서 별도 비교한다. 인터프리터·기능 삭제·stack trace 전체 제거로 합격을 대체하지 않는다.
 
-**완료 조건:** 크기·성능 결과가 측정으로 입증되고, 제품 크기 목표와 성능 합격 기준을 만족한다. NativeAOT의 일반적인 벤치마크 수치를 Doroti 실측처럼 인용하지 않는다.
+**완료 조건:** §4.5의 bytes 비교·주요 구성·측정 조건을 남기고 N0에서 정한 성능 합격 기준을 만족한다. 크기 절감이 없다는 이유만으로 Mono 제거를 실패 처리하지 않으며, 크기 개선 후보는 별도 backlog로 남긴다. NativeAOT의 일반적인 벤치마크 수치를 Doroti 실측처럼 인용하지 않는다.
 
 ### N11. 지속 검증·지원 범위별 회귀 방지
 
@@ -265,6 +332,7 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 - [ ] macOS runner에서 iOS native publish를 수행하고 signing/device 검증은 가능한 보안·장비 환경의 별도 단계로 연결한다. 장비 부재를 PASS로 처리하지 않는다.
 - [ ] Android, Web Worker, Windows 두 호스트, AppKit, Catalyst, Linux의 공유 계약·host 빌드·가능한 실제 입력 회귀를 수행한다.
 - [ ] 빌드 모드 변경, 누락된 native dependency, stale cache, 패키지 소비/템플릿 누락을 회귀 fixture로 남긴다.
+- [ ] §4.4 검사기로 최종 배포 경로에 Mono runtime/interpreter 또는 Mono AOT 산출물이 재유입되면 실패시킨다. dependency graph·링크 provenance 변경도 감지한다.
 
 **완료 조건:** 누군가 새 dynamic fallback을 도입하거나 패키지 등록을 누락하면 자동 검증이 실패하며, 플랫폼별 실제 검증 범위가 보고서와 일치한다.
 
@@ -274,9 +342,9 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 - [ ] 과거 full-trim workaround와 NativeAOT 요구를 구분한다. PDB 관련 ILLink 내부 오류가 현재 도구에서도 재현되는지 확인하고, 과거 `DebugType=None` 우회를 영구 정책으로 복사하지 않는다.
 - [ ] 새 템플릿 앱과 NuGet 소비 앱의 publish/설치 결과를 남기고, 사용자 정의 generic widget/localization/action이 포함된 앱으로 검증한다.
 - [ ] 최종 커밋·산출물 해시·패키지 버전·테스트 결과·측정치·남은 플랫폼별 제한을 기록한다. 문제가 생기면 명시적인 Mono 프로필로 되돌릴 수 있게 한다.
-- [ ] NativeAOT 기본값 승격은 G2/G3와 제품 성능 게이트를 통과한 타깃에 한해 결정한다. 자동 런타임 fallback은 만들지 않는다.
+- [ ] G2·소비 앱 검증·제품 성능 게이트를 통과하면 iOS Runner/CLI/템플릿의 정식 배포 기본값을 NativeAOT로 전환하고 그 기본 경로를 다시 검증하여 G3를 닫는다. Mono는 명시적인 전환 복구 프로필로만 남기고 자동 런타임 fallback은 만들지 않는다. 다른 타깃은 각각의 검증 전까지 승격하지 않는다.
 
-**완료 조건:** 새 checkout에서 문서의 정식 경로로 성공이 재현되고, 배포 SDK/템플릿과 실제 Testbed가 같은 계약을 사용한다.
+**완료 조건:** 새 checkout에서 iOS 정식 배포 기본 경로가 NativeAOT로 재현되고, 배포 SDK/템플릿과 실제 Testbed가 같은 계약을 사용한다. 각 최종 앱에 `monoAbsent=pass`, 실제 NativeAOT publish·기능·성능 결과와 크기 변화가 기록되어 있다. opt-in probe만 완료한 상태는 G3가 아니다. iOS 밖에 남은 Mono 사용 범위도 명시한다.
 
 ## 6. 필수 검증표
 
@@ -291,6 +359,7 @@ N0에서 Roslyn 의미 분석과 생성 IL 검사로 실제 호출·도달성을
 | 렌더·리소스         | Graphite/Metal, font/image, shader filter, background 복귀·resource 재생성                                | `runtime-shader-contract`, `image-pipeline`, device evidence·캡처                                                                                                |
 | 접근성·수명         | semantics focus/actions, 폰트 배율, view 교체, dispose 후 callback, native handle 수명                    | semantics fixture + iPhone 접근성/반복 수명 검증                                                                                                                 |
 | 배포·성능           | 새 checkout, mode 변경, 서명 번들, 아이콘 재실행, size/startup/frame/memory                               | publish binlog·artifact hash·launch identity fixture·기기 측정                                                                                                   |
+| Mono 제거           | static/dynamic native link·최종 bundle·설치 identity 일치, Mono 재유입·fallback 없음 | §4.4 probe/Testbed/새 소비 앱 공통 검사와 원자료 |
 
 라이브러리의 NativeAOT 호환성 선언에는 실제 앱에서 도달하지 않는 public API의 검증도 필요하다. 필요한 경우 API를 root로 삼는 분석용 앱과 작은 기능별 실행 앱을 나누되, 분석용으로 모든 API를 보존한 앱의 크기를 제품 크기로 비교하지 않는다.
 
@@ -303,11 +372,15 @@ N3을 수행하면 선정한 번역 fixture의 의미·컴파일·실행 검증�
 ```text
 N0 → N1(외부 기반 조기 확인)
 N0 → N2(런타임 계약)
-N2 → N4 → N5 → N6(현재 프레임워크를 계약 단위로 직접 전환)
+N1 통과 + N2 → N4 → N5 → N6(현재 프레임워크를 계약 단위로 직접 전환)
 N1 + N2 + N4~N6 → N7 → N8 → N9 → N10 → N12
 N11은 N0부터 회귀 검사를 추가하고 N12 전에 전체 게이트를 완성
 N3은 별도 보조 개선: 제품 전환에서 얻은 패턴을 선택적으로 반영
 ```
+
+N0/N1의 최소 publish 프로필로 N2/N4~N7의 계약 변경마다 가능한 NativeAOT publish를 수행한다. N8은 최초 실행을 위한 단계가 아니라 제품 배포 통합 단계다. 각 변경은 **정적 계약 fixture → 기존 플랫폼 회귀 → NativeAOT fixture/publish → 보존 의존 축소 → 증거 기록** 순으로 진행한다.
+
+모든 테스트/외부 검증 프로세스는 `.github/copilot-instructions.md`에 따라 **20분(1,200초) timeout**을 적용한다. 시작·성능 측정 반복은 기본 10회 이내, 필요 시 이유를 기록하고 최대 20회로 제한하며 warm-up과 retry도 센다. timeout이나 장비 부재는 통과로 바꾸지 않는다.
 
 실제 일정 추정은 N0/N1에서 blocker를 수집한 뒤 계약군별로 한다. 현재 작업량을 `dynamic` 텍스트 건수로 나누어 확정 일정을 만들지 않는다. 제품 변경은 원인·제품 코드·테스트·증거가 함께 검토되는 크기로 나누고, 번역기 개선은 선정한 lowering·도구 fixture 단위로 따로 진행한다.
 
@@ -315,10 +388,13 @@ N3은 별도 보조 개선: 제품 전환에서 얻은 패턴을 선택적으로
 
 - `Doroti/docs/validation/nativeaot-<date>.md`: 버전·최초 실패·호환성 판단·실기기·성능 최종 보고서.
 - `Doroti/validation/native-aot/`: 호스트 probe, API 소비·동작 fixture, 분석·publish 검증 진입점.
+- 위 디렉터리의 `size-report.py`, Mono 제거 검사 진입점, `blockers.json`, `gate-results.json`: 구현 시 확정할 도구·형식 후보. 보고서는 커밋/RID/mode/산출물 해시와 원자료 경로를 포함한다.
 - `tools/Doroti.DartToCSharp/validation/native-aot/`: N3에서 선택한 개선의 fixture가 필요할 때만 추가. 프레임워크 전체 재생성 검증용이 아님.
 - `Doroti/artifacts/native-aot/...`: 모드/RID/커밋별 로그·binlog·산출물·측정 원자료. 저장소의 기존 artifact/local-storage 정책에 맞춰 실제 위치를 N0에서 확정.
 
 진행 시 이 문서에 각 N 단계의 상태, 변경 커밋, 실행한 명령, 결과·증거 경로, 미검증 사항과 다음 장애물을 갱신한다. N1의 작은 앱 성공, 경고 억제 publish, 기능 일부만 되는 Testbed를 전체 완료로 표시하지 않는다.
+
+현재 상태: **계획 재검토 완료 / N0~N12 구현 미착수 / G1~G3 미검증 / Mono 제거 미검증**. 다음 실행 지점은 N0의 환경·baseline·최초 publish 및 제거 증거 수집이다. `ref1.md`는 참고 원문으로 보존한다.
 
 ## 8. 공식 근거
 
@@ -329,3 +405,5 @@ N3은 별도 보조 개선: 제품 전환에서 얻은 패턴을 선택적으로
 - [라이브러리의 AOT 호환성 정비](https://devblogs.microsoft.com/dotnet/creating-aot-compatible-libraries/): 분석 속성, API 소비 테스트 앱, annotation과 실제 publish 검증.
 - [MAUI trimming](https://learn.microsoft.com/en-us/dotnet/maui/deployment/trimming?view=net-maui-10.0): NativeAOT의 full trimming 및 기존 보존 설정과의 구분.
 - [Mono interpreter](https://learn.microsoft.com/en-us/dotnet/maui/macios/interpreter?view=net-maui-10.0): 현재 `-all` 의미와 NativeAOT 경로의 차이.
+- [MAUI runtimes and compilation](https://learn.microsoft.com/en-us/dotnet/maui/deployment/runtimes-compilation?view=net-maui-10.0): Mono AOT와 NativeAOT 구분, Android 패키지 구성. 일반 예제의 크기를 Doroti 실측으로 사용하지 않음.
+- [Android App Bundles](https://developer.android.com/guide/app-bundle), [bundletool](https://developer.android.com/tools/bundletool): AAB와 기기별 APK/전송 추정 구분. Android 용량 진단이 필요할 때의 참고이며 Mono 제거 선행 단계는 아님.
