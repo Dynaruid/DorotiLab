@@ -916,7 +916,7 @@ internal static partial class MountedPickerContracts
         public DorotiResizeEpoch ResizeTarget { get; private set; } = new(1, Width, Height, Width, Height, 1, 0);
         public long InputSequence => 0;
         public long SurfaceGeneration => 1;
-        public PlatformConfiguration Configuration { get; } = new([new Locale("en", "US")], Brightness.light, false, false, HostOperatingSystem.windows);
+        public PlatformConfiguration Configuration { get; init; } = new([new Locale("en", "US")], Brightness.light, false, false, HostOperatingSystem.windows);
         public event System.Action<ViewMetrics>? MetricsChanged;
         public event System.Action<AppLifecycleState>? LifecycleChanged { add { } remove { } }
         public event Action? CloseRequested { add { } remove { } }

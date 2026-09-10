@@ -124,8 +124,8 @@ public class VelocityTracker
     }
     public virtual void addPosition(Duration time, Offset position)
     {
-        this._sinceLastSample.Start();
-        this._sinceLastSample.Reset();
+        // Dart reset() preserves the running state; Stopwatch.Reset() stops it.
+        this._sinceLastSample.Restart();
         _index += 1L;
         if ((this._index == _historySize))
         {
@@ -214,8 +214,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 
     public override void addPosition(Duration time, Offset position)
     {
-        _sinceLastSample.Start();
-        _sinceLastSample.Reset();
+        _sinceLastSample.Restart();
         DartRuntimePrimitives.Assert(() =>
             {
                 _PointAtTime__velocity_tracker? previousPoint = this._touchSamples[(int)(_index)];
@@ -231,8 +230,9 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 
     internal virtual global::Doroti.Ui.Offset _previousVelocityAt(long index)
     {
-        long endIndex = (((_index + index)) % _sampleSize);
-        long startIndex = ((((_index + index) - 1L)) % _sampleSize);
+        // Dart % wraps negative offsets into the ring; C# % keeps their sign.
+        long endIndex = (((_index + index) % _sampleSize) + _sampleSize) % _sampleSize;
+        long startIndex = (((_index + index - 1L) % _sampleSize) + _sampleSize) % _sampleSize;
         _PointAtTime__velocity_tracker? end = this._touchSamples[(int)(endIndex)];
         _PointAtTime__velocity_tracker? start = this._touchSamples[(int)(startIndex)];
         if (((end is null) || (start is null)))

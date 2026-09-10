@@ -11,6 +11,7 @@ VerifyTraceIsBoundedWithoutReusingSequenceNumbers();
 VerifyFrameTraceKeepsScrollAndAnimationTransitions();
 VerifyScrollMetricsDepthConversion();
 VerifyNestedScrollbarOwnership();
+TouchSlopContracts.Verify();
 
 Console.WriteLine($"FCR-5 scroll runtime contract: PASS (configuration={ConfigurationName()})");
 

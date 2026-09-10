@@ -81,6 +81,12 @@ if (args.Length >= 1 && args[0] == "--sample-scroll")
     return;
 }
 
+if (args is ["--scroll-tap"])
+{
+    MountedPickerContracts.VerifyScrollTap();
+    return;
+}
+
 if (args is ["--widget-startup"])
 {
     MountedPickerContracts.VerifyWidgetStartup();
