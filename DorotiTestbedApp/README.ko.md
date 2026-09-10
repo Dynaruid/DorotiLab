@@ -7,6 +7,8 @@ Doroti의 Material 위젯과 플랫폼별 호스트를 확인하는 샘플·진�
 
 Material 샘플은 Components, Color, Typography, Elevation, 9개 seed 색상과 6개 이미지 테마,
 로컬·URL 이미지 데모를 제공합니다. **기본 화면은 진단 갤러리**이며, 아래 명령은 샘플 모드를 명시적으로 엽니다.
+진단 갤러리 맨 위의 **Open Material sample** 버튼으로도 샘플을 열 수 있습니다.
+아이폰에서 앱을 종료한 뒤 아이콘으로 다시 열었을 때도 이 버튼을 사용하면 됩니다.
 
 - [실행 준비](#실행-준비)
 - [플랫폼별 샘플 실행](#material-샘플-모드)

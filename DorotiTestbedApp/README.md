@@ -7,6 +7,8 @@ One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linu
 
 The Material sample includes Components, Color, Typography, Elevation, nine seed colors,
 six image themes, and local/URL image demos. **Diagnostics is the default screen**; the commands below explicitly open sample mode.
+You can also use **Open Material sample** at the top of the diagnostics gallery,
+including after closing the app and reopening it from its icon on iPhone.
 
 - [Prerequisites](#prerequisites)
 - [Platform sample commands](#material-sample-mode)

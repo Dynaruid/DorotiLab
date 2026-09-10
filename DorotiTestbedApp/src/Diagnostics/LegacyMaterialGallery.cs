@@ -81,6 +81,9 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private double _slider = 0.2;
     private int _fabCount;
     private string _textValue = string.Empty;
+    private bool _openingSample;
+    private bool _showSample;
+    private bool _sampleLoadFailed;
     private bool _blurEnabled = true;
     private readonly TextEditingController _textController = new();
     private readonly FocusNode _textFocusNode = new();
@@ -160,6 +163,24 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         InteractionCount++;
     });
 
+    private async void OpenSample()
+    {
+        if (_openingSample) return;
+        setState(() => { _openingSample = true; _sampleLoadFailed = false; });
+        try
+        {
+            await MaterialDemoEntrypoint.PrepareSampleResourcesAsync();
+            if (!mounted) return;
+            _textFocusNode.unfocus();
+            setState(() => { _openingSample = false; _showSample = true; });
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine(exception);
+            if (mounted) setState(() => { _openingSample = false; _sampleLoadFailed = true; });
+        }
+    }
+
     private Widget ActionSemantics(string label, Widget child, System.Action action, string value) => new Semantics(
         container: true,
         excludeSemantics: true,
@@ -192,6 +213,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
 
     public override Widget build(BuildContext context)
     {
+        if (_showSample) return new MaterialSample.SampleApp();
         BuildCount++;
         var palette = Material.Theme.of(context).colorScheme;
         var interactionOverlay = palette.primary.withOpacity(0.13);
@@ -369,6 +391,13 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                         spacing: 10,
                         children:
                         [
+                            new Material.FilledButton(
+                                onPressed: _openingSample ? null : OpenSample,
+                                child: new Text(_openingSample ? "Opening sample…" : "Open Material sample")),
+                            .. (_sampleLoadFailed ? new Widget[] {
+                                new Text("Could not open the sample. Please try again.",
+                                    style: new Doroti.Framework.Painting.TextStyle(color: palette.error))
+                            } : []),
                             new Stack(children:
                             [
                                 new Text("Custom SkSL · shared GPU runtime effect · all targets",
@@ -468,4 +497,3 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         ]);
     }
 }
-
