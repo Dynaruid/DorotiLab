@@ -2,7 +2,7 @@
 
 실행일: 2026-09-07. 시작 HEAD: `c9b9eb21` / clean working tree.
 계획의 과거 검토 HEAD `207010a4` 이후 변경이 이미 커밋된 상태를 확인하고 시작했다.
-범위는 [work2.md](../../work2.md)의 P0~P4이며 기존 `work.md`와 과거 실패 기록은 보존했다.
+범위는 [work2.md](web-direct-work2-executed-plan.md)의 P0~P4이며 기존 `work.md`와 과거 실패 기록은 보존했다.
 
 **최종 상태: PARTIAL. 기본값 전환 및 CSS/캐시 수정은 구현했다. live resize와 시작 지연의 성능 gate는 FAIL이며 전체 완료가 아니다.**
 사용자 최종 관찰: **“일부 개선됐지만 지연이 남음”**. 자동 검사와 별도의 사용자 증거다.

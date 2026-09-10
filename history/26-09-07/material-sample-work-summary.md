@@ -12,7 +12,7 @@
   SHA-256: `20D07BF00276013596629519073EAFEBFF975E493284E3645E81A671EF5B086F`.
   원문의 상대 경로는 **저장소 루트 기준**이다. 초기 분석의 미구현 표현과 당시 다음 작업도 시점별 기록으로 보존했다.
 - [Web 캐시·스크롤·애니메이션 상세 조사](web-sample-retained-rendering.md): 원문 §16–§19의 원본 측정·실패·한계.
-- [SkiaSharp direct 전환·live resize·시작 지연 후속 계획](../../work2.md): 아직 계획이며 구현 미시작.
+- [SkiaSharp direct 전환·live resize·시작 지연 후속 계획](web-direct-work2-executed-plan.md): 아직 계획이며 구현 미시작.
 - [별도 cross-platform 부트 계획 요약·원문 보관](cross-platform-boot-plan-summary.md) 및 [부트 결과](cross-platform-boot-results.md): 샘플 이식과 별도 범위.
 
 사용자는 이후 direct가 훨씬 부드럽다고 확인하고 Web 기본값 전환과 두 성능 문제 수리를 요청했다.
@@ -167,7 +167,7 @@ direct progress pixel-change/stop PASS, restart 초기 viewport selector FAIL→
 
 ## 6. 남은 작업과 최종 상태
 
-1. **Web direct 기본값·resize·onset:** 사용자 확인을 반영한 [work2.md](../../work2.md)에서 진행한다.
+1. **Web direct 기본값·resize·onset:** 사용자 확인을 반영한 [work2.md](web-direct-work2-executed-plan.md)에서 진행한다.
    warm 측정은 첫 버튼 클릭 후 3초를 제외했으므로 시작 지연 해결 근거가 아니다.
 2. **P3/P5:** 모든 overlay 취소/확정 focus 복귀·controller dispose, carousel snapping,
    모든 폭/theme에서 height cache·scroll ownership, animation 중 방향 반전의 연속 geometry 확인.

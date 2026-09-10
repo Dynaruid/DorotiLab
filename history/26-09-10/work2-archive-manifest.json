@@ -1,0 +1,14 @@
+{
+  "archivedAt": "2026-09-11T07:59:32.427766+09:00",
+  "reason": "User requested summary under history/26-09-10 and removal of root work2.md. Archival does not imply acceptance completion.",
+  "originalLinksBase": "repository root",
+  "summary": "history/26-09-10/nativeaot-work2-summary.md",
+  "files": [
+    {
+      "source": "work2.md",
+      "archive": "history/26-09-10/work2.original.md",
+      "bytes": 87708,
+      "sha256": "6EFB454DD255118CAF7A046694F1CC7AC9137FC5EACFA845CBFAD3B4E933098C"
+    }
+  ]
+}

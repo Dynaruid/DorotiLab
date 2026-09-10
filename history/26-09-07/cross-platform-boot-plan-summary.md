@@ -17,7 +17,7 @@
 - [2026-08-28 선행 계획 원문](../26-09-06/cross-platform-first-boot-plan-2026-08-28.md),
   [2026-08-29 MVP 결과](../26-08-29/cross-platform-first-boot-implementation.md)도 유지한다.
 - [Material 샘플 별도 작업](material-sample-work-summary.md),
-  [Web direct 전환·resize·시작 지연 후속 계획](../../work2.md)은 별도 범위다.
+  [Web direct 전환·resize·시작 지연 후속 계획](web-direct-work2-executed-plan.md)은 별도 범위다.
 
 ## 1. 목표와 증거 계약
 
