@@ -161,6 +161,7 @@ public sealed class Path
                     break;
                 case "addRect":
                 case "addOval":
+                case "arcTo":
                 case "addRRect":
                 case "addRSuperellipse":
                     if (values.Length >= 4)

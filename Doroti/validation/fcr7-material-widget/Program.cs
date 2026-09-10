@@ -15,6 +15,12 @@ if (args is ["--magnifier-shadows"])
     return;
 }
 
+if (args is ["--ios-text-menu"])
+{
+    MountedPickerContracts.VerifyIosTextMenu();
+    return;
+}
+
 if (args is ["--mac-text-menu"])
 {
     MacMenuRenderingContracts.Verify();

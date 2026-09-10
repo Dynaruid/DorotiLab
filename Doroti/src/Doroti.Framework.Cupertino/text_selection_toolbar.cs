@@ -247,7 +247,10 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         long startQuadrantIndex = (checked((long)(startAngle / halfPI)));
         for (var i = startQuadrantIndex; (i < (checked((long)(rrectCorners.Count)) + startQuadrantIndex)); i += 1L)
         {
-            var (vertex, rectCenterOffset) = rrectCorners[(int)((i % checked((long)(rrectCorners.Count))))];
+            // Dart modulo stays non-negative. A toolbar below the selection
+            // starts at quadrant -1, whose corner is the top-right corner.
+            var cornerIndex = (int)((i % rrectCorners.Count + rrectCorners.Count) % rrectCorners.Count);
+            var (vertex, rectCenterOffset) = rrectCorners[cornerIndex];
             var otherVertex = new global::Doroti.Ui.Offset((vertex.dx + (2L * rectCenterOffset.x)), (vertex.dy + (2L * rectCenterOffset.y)));
             var rectLocal = global::Doroti.Ui.Rect.fromPoints(vertex, otherVertex);
             path.arcTo(rectLocal, (halfPI * i), halfPI, false);

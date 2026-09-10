@@ -1957,6 +1957,10 @@ public sealed partial class SkiaSceneRenderer :
                     new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
                     (float)(a[4] * 180 / Math.PI),
                     (float)(a[5] * 180 / Math.PI)); break;
+                case "arcTo": builder.ArcTo(
+                    new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                    (float)(a[4] * 180 / Math.PI),
+                    (float)(a[5] * 180 / Math.PI), a[6] != 0); break;
                 case "addRSuperellipse":
                     using (var superellipse = SkiaRSuperellipsePath.Create(new RSuperellipse(
                         Rect.fromLTRB(a[0], a[1], a[2], a[3]),

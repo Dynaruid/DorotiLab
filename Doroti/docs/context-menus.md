@@ -42,3 +42,5 @@ menu.show(context, menuContext => AdaptiveTextSelectionToolbar.CreateButtonItems
 기준: [Flutter AdaptiveTextSelectionToolbar](https://api.flutter.dev/flutter/material/AdaptiveTextSelectionToolbar-class.html), [플랫폼별 버튼](https://api.flutter.dev/flutter/material/AdaptiveTextSelectionToolbar/getAdaptiveButtons.html), 저장소의 고정 Flutter reference.
 
 자동 검증은 `validation/fcr7-material-widget/ContextMenuContracts.cs`에서 플랫폼별 위젯 선택·메뉴 항목·콜백·오버레이 테마 전달을 검사한다. 실제 OS 메뉴 픽셀, 터치·마우스 동작, 시스템 조회·공유 실행 및 접근성 검증은 별도다.
+
+`--ios-text-menu` 검증은 390px 폭의 mounted iOS 필드에 길게 누르기/두 번 탭을 전달한다. 밝은/어두운 테마와 선택 영역 위/아래 배치에서 메뉴 글자의 실제 래스터 출력, 터치로 복사·잘라내기·빈 필드 붙여넣기 및 메뉴 닫기를 확인한다. 실행: `python3 Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/fcr7-material-widget -c Release -- --ios-text-menu`. iPhone 실기기 검증과는 별개다.
