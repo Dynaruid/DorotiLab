@@ -107,7 +107,7 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Widgets.Widget content = ((global::Doroti.Framework.Widgets.Widget)(object?)_getContentWidget(context));
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoButton(color: (this.isPressed ? Text_selection_toolbar_buttonLibrary._kToolbarPressedColor.resolveFrom(context) : CupertinoColors.transparent), disabledColor: CupertinoColors.transparent, onPressed: ((CupertinoTextSelectionToolbarButton)this.widget).onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 1.0, child: content));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoButton(color: (this.isPressed ? Text_selection_toolbar_buttonLibrary._kToolbarPressedColor.resolveFrom(context) : CupertinoColors.transparent), disabledColor: CupertinoColors.transparent, onPressed: ((CupertinoTextSelectionToolbarButton)this.widget).onPressed, padding: Text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 1.0, child: content));
         if ((((CupertinoTextSelectionToolbarButton)this.widget).onPressed is not null))
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)this._onTapDown, onTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)this._onTapUp, onTapCancel: () => this._onTapCancel(), child: childLocal));
@@ -125,7 +125,7 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
         {
             return ((CupertinoTextSelectionToolbarButton)this.widget).child!;
         }
-        global::Doroti.Framework.Widgets.Widget textWidget = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Text(((((CupertinoTextSelectionToolbarButton)this.widget).text ?? (string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, ((CupertinoTextSelectionToolbarButton)this.widget).buttonItem!))), overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((((CupertinoTextSelectionToolbarButton)this.widget).onPressed is not null) ? Text_selection_toolbarLibrary._kToolbarTextColor.resolveFrom(context) : CupertinoColors.inactiveGray))));
+        global::Doroti.Framework.Widgets.Widget textWidget = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Text(((((CupertinoTextSelectionToolbarButton)this.widget).text ?? (string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, ((CupertinoTextSelectionToolbarButton)this.widget).buttonItem!))), overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, style: Text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((((CupertinoTextSelectionToolbarButton)this.widget).onPressed is not null) ? Text_selection_toolbar_buttonLibrary._kToolbarTextColor.resolveFrom(context) : CupertinoColors.inactiveGray))));
         switch (((CupertinoTextSelectionToolbarButton)this.widget).buttonItem?.type)
         {
             case global::Doroti.Framework.Widgets.ContextMenuButtonType.cut:
@@ -143,7 +143,7 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
                 }
             case global::Doroti.Framework.Widgets.ContextMenuButtonType.liveTextInput:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: 13.0, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _LiveTextIconPainter__text_selection_toolbar_button(color: Text_selection_toolbarLibrary._kToolbarTextColor.resolveFrom(context)))));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: 13.0, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _LiveTextIconPainter__text_selection_toolbar_button(color: Text_selection_toolbar_buttonLibrary._kToolbarTextColor.resolveFrom(context)))));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

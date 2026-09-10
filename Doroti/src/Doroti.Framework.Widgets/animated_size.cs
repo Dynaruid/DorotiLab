@@ -47,7 +47,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _AnimatedSize__animated_size(alignment: ((AnimatedSize)this.widget).alignment, curve: ((AnimatedSize)this.widget).curve, duration: ((AnimatedSize)this.widget).duration, reverseDuration: ((AnimatedSize)this.widget).reverseDuration, vsync: this, clipBehavior: ((AnimatedSize)this.widget).clipBehavior, onEnd: () => ((AnimatedSize)this.widget).onEnd(), child: ((AnimatedSize)this.widget).child));
+        return ((Widget)(object?)new _AnimatedSize__animated_size(alignment: ((AnimatedSize)this.widget).alignment, curve: ((AnimatedSize)this.widget).curve, duration: ((AnimatedSize)this.widget).duration, reverseDuration: ((AnimatedSize)this.widget).reverseDuration, vsync: this, clipBehavior: ((AnimatedSize)this.widget).clipBehavior, onEnd: ((AnimatedSize)this.widget).onEnd, child: ((AnimatedSize)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -148,7 +148,7 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: () => this.onEnd()));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: this.onEnd));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -58,6 +58,20 @@ internal static partial class MountedPickerContracts
                 ?? throw new Exception($"Right-click did not build macOS menu: focus={focus.hasFocus}, selection={controller.selection}");
             var box = (RenderBox)menu.findRenderObject()!;
             if (box.size.isEmpty) throw new Exception("macOS menu has no layout size");
+            foreach (var button in Elements(menu).Where(e => e.widget is C.CupertinoDesktopTextSelectionToolbarButton))
+            {
+                var label = Elements(button).Single(e => e.widget is Text);
+                var textBox = (RenderBox)label.findRenderObject()!;
+                var buttonBox = (RenderBox)button.findRenderObject()!;
+                var textOrigin = textBox.localToGlobal(Offset.zero);
+                var buttonOrigin = buttonBox.localToGlobal(Offset.zero);
+                if (Math.Abs(textOrigin.dx - buttonOrigin.dx - 8) > 0.01 ||
+                    Math.Abs(textOrigin.dy - buttonOrigin.dy - 2) > 0.01 ||
+                    Math.Abs(buttonBox.size.height - textBox.size.height - 7) > 0.01 ||
+                    Math.Abs(buttonBox.size.width - 210) > 0.01)
+                    throw new Exception("macOS menu lost Flutter desktop button padding or outer inset");
+                Console.WriteLine($"macOS {brightness} {((Text)label.widget).data}: text=({textOrigin.dx:F2},{textOrigin.dy:F2},{textBox.size.width:F2},{textBox.size.height:F2}) button=({buttonOrigin.dx:F2},{buttonOrigin.dy:F2},{buttonBox.size.width:F2},{buttonBox.size.height:F2})");
+            }
             using var surface = SKSurface.Create(new SKImageInfo(Width, Height));
             if (renderer.Paint(surface, Width, Height) is { } completion)
                 renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);

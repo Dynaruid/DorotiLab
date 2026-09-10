@@ -86,7 +86,7 @@ public class CupertinoTextSelectionToolbar : global::Doroti.Framework.Widgets.St
 
     internal static global::Doroti.Framework.Widgets.Widget _defaultToolbarBuilder(global::Doroti.Framework.Widgets.BuildContext context, Offset anchorAbove, Offset anchorBelow, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CupertinoTextSelectionToolbarShape__text_selection_toolbar(anchorAbove: anchorAbove, anchorBelow: anchorBelow, shadowColor: ((object.Equals(CupertinoTheme.brightnessOf(context), Brightness.light)) ? CupertinoColors.black.withOpacity(0.2) : null), child: new global::Doroti.Framework.Widgets.ColoredBox(color: Desktop_text_selection_toolbarLibrary._kToolbarBackgroundColor.resolveFrom(context), child: child)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CupertinoTextSelectionToolbarShape__text_selection_toolbar(anchorAbove: anchorAbove, anchorBelow: anchorBelow, shadowColor: ((object.Equals(CupertinoTheme.brightnessOf(context), Brightness.light)) ? CupertinoColors.black.withOpacity(0.2) : null), child: new global::Doroti.Framework.Widgets.ColoredBox(color: Text_selection_toolbarLibrary._kToolbarBackgroundColor.resolveFrom(context), child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -95,8 +95,8 @@ public class CupertinoTextSelectionToolbar : global::Doroti.Framework.Widgets.St
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
         double paddingAbove = (((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).top + kToolbarScreenPadding);
-        double leftMargin = (Text_selectionLibrary._kArrowScreenPadding + ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).left);
-        double rightMargin = ((MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).right) - Text_selectionLibrary._kArrowScreenPadding);
+        double leftMargin = (Text_selection_toolbarLibrary._kArrowScreenPadding + ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).left);
+        double rightMargin = ((MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).right) - Text_selection_toolbarLibrary._kArrowScreenPadding);
         var anchorAboveAdjusted = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(this.anchorAbove.dx, leftMargin, rightMargin), ((this.anchorAbove.dy - Text_selection_toolbarLibrary._kToolbarContentDistance) - paddingAbove));
         var anchorBelowAdjusted = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(this.anchorBelow.dx, leftMargin, rightMargin), ((this.anchorBelow.dy + Text_selection_toolbarLibrary._kToolbarContentDistance) - paddingAbove));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(kToolbarScreenPadding, paddingAbove, kToolbarScreenPadding, kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.TextSelectionToolbarLayoutDelegate(anchorAbove: anchorAboveAdjusted, anchorBelow: anchorBelowAdjusted), child: new _CupertinoTextSelectionToolbarContent__text_selection_toolbar(anchorAbove: anchorAboveAdjusted, anchorBelow: anchorBelowAdjusted, toolbarBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, Offset, Offset, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>)this.toolbarBuilder, children: this.children))));
@@ -195,7 +195,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
     internal virtual bool _isAbove(double childHeight) => DartRuntimePrimitives.ConvertValue<bool>((this.anchorAbove.dy >= (childHeight - Text_selection_toolbarLibrary._kToolbarArrowSize.height)));
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _constraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: (Text_selection_toolbarLibrary._kToolbarArrowSize.width + (Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius.x * 2L))).enforce(constraints.loosen()));
+        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: (Text_selection_toolbarLibrary._kToolbarArrowSize.width + (Text_selection_toolbarLibrary._kToolbarBorderRadius.x * 2L))).enforce(constraints.loosen()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -234,7 +234,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
     internal virtual global::Doroti.Ui.RRect _shapeRRect(global::Doroti.Framework.Rendering.RenderBox child)
     {
         global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(new global::Doroti.Ui.Offset(0.0, Text_selection_toolbarLibrary._kToolbarArrowSize.height) & new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.RenderBox)child).size.width, (((global::Doroti.Framework.Rendering.RenderBox)child).size.height - (Text_selection_toolbarLibrary._kToolbarArrowSize.height * 2L)))));
-        return ((global::Doroti.Ui.RRect)(object?)global::Doroti.Ui.RRect.fromRectAndRadius(rect, Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius).scaleRadii());
+        return ((global::Doroti.Ui.RRect)(object?)global::Doroti.Ui.RRect.fromRectAndRadius(rect, Text_selection_toolbarLibrary._kToolbarBorderRadius).scaleRadii());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -262,7 +262,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
     internal virtual global::Doroti.Ui.Path _clipPath(global::Doroti.Framework.Rendering.RenderBox child, RRect rrect)
     {
         var path = new global::Doroti.Ui.Path();
-        if ((((Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius.x * 2L) + Text_selection_toolbarLibrary._kToolbarArrowSize.width) > this.size.width))
+        if ((((Text_selection_toolbarLibrary._kToolbarBorderRadius.x * 2L) + Text_selection_toolbarLibrary._kToolbarArrowSize.width) > this.size.width))
         {
             return ((global::Doroti.Ui.Path)(object?)((Func<Path>)(() =>
 {
@@ -273,7 +273,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         }
         bool isAbove = _isAbove(((global::Doroti.Framework.Rendering.RenderBox)child).size.height);
         global::Doroti.Ui.Offset localAnchor = ((global::Doroti.Ui.Offset)(object?)globalToLocal((isAbove ? this._anchorAbove : this._anchorBelow)));
-        double arrowTipX = Dart_uiLibrary.clampDouble(localAnchor.dx, (Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius.x + (Text_selection_toolbarLibrary._kToolbarArrowSize.width / 2L)), ((this.size.width - (Text_selection_toolbarLibrary._kToolbarArrowSize.width / 2L)) - Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius.x));
+        double arrowTipX = Dart_uiLibrary.clampDouble(localAnchor.dx, (Text_selection_toolbarLibrary._kToolbarBorderRadius.x + (Text_selection_toolbarLibrary._kToolbarArrowSize.width / 2L)), ((this.size.width - (Text_selection_toolbarLibrary._kToolbarArrowSize.width / 2L)) - Text_selection_toolbarLibrary._kToolbarBorderRadius.x));
         if (isAbove)
         {
             double arrowBaseY = (((global::Doroti.Framework.Rendering.RenderBox)child).size.height - Text_selection_toolbarLibrary._kToolbarArrowSize.height);
@@ -323,7 +323,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         if ((this._shadowColor is not null))
         {
             var boxShadow = new global::Doroti.Framework.Painting.BoxShadow(color: this._shadowColor!, blurRadius: 15.0);
-            global::Doroti.Ui.RRect shadowRRect = ((global::Doroti.Ui.RRect)(object?)global::Doroti.Ui.RRect.fromLTRBR(rrect.left, rrect.top, rrect.right, (rrect.bottom + Text_selection_toolbarLibrary._kToolbarArrowSize.height), Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius).shift(((offset + ((global::Doroti.Framework.Rendering.BoxParentData)childParentData).offset) + boxShadow.offset)));
+            global::Doroti.Ui.RRect shadowRRect = ((global::Doroti.Ui.RRect)(object?)global::Doroti.Ui.RRect.fromLTRBR(rrect.left, rrect.top, rrect.right, (rrect.bottom + Text_selection_toolbarLibrary._kToolbarArrowSize.height), Text_selection_toolbarLibrary._kToolbarBorderRadius).shift(((offset + ((global::Doroti.Framework.Rendering.BoxParentData)childParentData).offset) + boxShadow.offset)));
             ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(shadowRRect, boxShadow.toPaint());
         }
         this._clipPathLayer.layer = context.pushClipPath(this.needsCompositing, (offset + ((global::Doroti.Framework.Rendering.BoxParentData)childParentData).offset), (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)childLocal).size), clipPath, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((innerContext, innerOffset) => { innerContext.paintChild(childLocal, innerOffset); })), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.ClipPathLayer>)this._clipPathLayer).layer);
