@@ -5,8 +5,14 @@ using Doroti.Runtime;
 using Doroti.Ui;
 
 var calls = new List<HapticFeedbackKind>();
+var sounds = new List<SystemSoundKind>();
 var fallback = new Fallback();
-var messages = new HapticFeedbackPlatformMessageCapability(fallback, (kind, _) =>
+var soundMessages = new SystemSoundPlatformMessageCapability(fallback, (kind, _) =>
+{
+    sounds.Add(kind);
+    return ValueTask.CompletedTask;
+});
+var messages = new HapticFeedbackPlatformMessageCapability(soundMessages, (kind, _) =>
 {
     calls.Add(kind);
     return ValueTask.CompletedTask;
@@ -26,6 +32,23 @@ try
     await HapticFeedback.errorNotification();
     Require(calls.SequenceEqual(Enum.GetValues<HapticFeedbackKind>()), "all eight Flutter calls reach the host exactly once and retain their type");
     Require(fallback.Sends == 0, "haptic requests do not fall through to a missing plugin");
+
+    await SystemSound.play(SystemSoundType.click);
+    await SystemSound.play(SystemSoundType.tick);
+    await SystemSound.play(SystemSoundType.alert);
+    Require(sounds.SequenceEqual(Enum.GetValues<SystemSoundKind>()), "public sound calls use Flutter's qualified wire names and reach the host once");
+    Require(calls.Count == 8, "system sounds do not cause haptic feedback");
+    Require(fallback.Sends == 0, "system sounds do not fall through to a missing plugin");
+    foreach (var invalid in new object?[] { "click", "SystemSoundType.unknown", null, 42 })
+    {
+        try
+        {
+            await SystemChannels.platform.invokeMethod<object?>("SystemSound.play", invalid!);
+            throw new InvalidOperationException("invalid sound was accepted");
+        }
+        catch (PlatformException) { }
+    }
+    Require(sounds.Count == 3, "invalid sounds do not reach hardware");
 
     try
     {
@@ -56,6 +79,22 @@ try
     catch (OperationCanceledException) { }
     Require(calls.Count == 8, "cancelled request does not actuate hardware");
 
+    var soundRequest = "{\"method\":\"SystemSound.play\",\"args\":\"SystemSoundType.click\"}"u8.ToArray();
+    try
+    {
+        await messages.SendAsync("flutter/platform", soundRequest, cancellation.Token);
+        throw new InvalidOperationException("cancelled sound was accepted");
+    }
+    catch (OperationCanceledException) { }
+    Require(sounds.Count == 3, "cancelled sound does not reach hardware");
+
+    var soundCompletion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+    var asynchronousSound = new SystemSoundPlatformMessageCapability(fallback, (_, _) => new ValueTask(soundCompletion.Task));
+    var pendingSound = asynchronousSound.SendAsync("flutter/platform", soundRequest).AsTask();
+    Require(!pendingSound.IsCompleted, "sound response waits for UI-thread playback dispatch");
+    soundCompletion.SetResult();
+    Require(Encoding.UTF8.GetString((await pendingSound)!.Value.Span) == "[null]", "sound success returns a JSON null envelope");
+
     var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
     var asynchronousHost = new HapticFeedbackPlatformMessageCapability(fallback, (_, _) => new ValueTask(completion.Task));
     var pending = asynchronousHost.SendAsync("flutter/platform", request).AsTask();
@@ -72,7 +111,7 @@ try
 #pragma warning restore CA1416
     Require(Doroti.Host.Web.BrowserInterop.Durations.SequenceEqual(new[] { 50, 10, 20, 30, 10, 20, 20, 30 }),
         "browser durations match Flutter for all eight feedback types");
-    Console.WriteLine("PASS: framework haptics, JSON envelopes, routing, cancellation, asynchronous completion, unsupported hardware and browser durations.");
+    Console.WriteLine("PASS: framework haptics and system sounds, JSON envelopes, routing, cancellation, asynchronous completion, unsupported hardware and browser durations.");
 }
 finally
 {

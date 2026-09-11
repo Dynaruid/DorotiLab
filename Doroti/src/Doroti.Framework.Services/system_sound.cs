@@ -25,8 +25,7 @@ public abstract class SystemSound
 {
     public static async Future play(SystemSoundType type)
     {
-        await SystemChannels.platform.invokeMethod<object?>("SystemSound.play", type.ToString());
+        await SystemChannels.platform.invokeMethod<object?>("SystemSound.play", $"SystemSoundType.{type}");
     }
 
 }
-
