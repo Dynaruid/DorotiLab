@@ -213,7 +213,7 @@ internal sealed unsafe class WindowsManagedProductHost :
             throw new InvalidDataException("Native pointer packet is invalid.");
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
-        var packet = new PointerDataPacket([
+        var packet = new PointerDataPacket((PointerData[])[
             new(1, timestamp, (PointerChange)value.Change, (PointerDeviceKind)value.Kind,
                 checked((ulong)value.Device), value.PhysicalX, value.PhysicalY,
                 value.PhysicalDeltaX, value.PhysicalDeltaY, value.Buttons,
@@ -642,7 +642,7 @@ internal sealed unsafe class WindowsManagedProductHost :
                 pieces.Skip(1).FirstOrDefault(p => p.Length == 4));
         }).ToArray();
         var parts = CultureInfo.CurrentUICulture.Name.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        return [new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
+        return (Locale[])[new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
     }
 
     private TimeSpan MapTimestamp(long qpc)

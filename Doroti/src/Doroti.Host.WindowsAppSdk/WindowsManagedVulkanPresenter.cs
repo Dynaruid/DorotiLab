@@ -1654,7 +1654,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ];
         if (_useGraphite)
         {
-            CreateGraphiteContext([.. deviceExtensions, "VK_KHR_driver_properties"]);
+            CreateGraphiteContext((string[])[.. deviceExtensions, "VK_KHR_driver_properties"]);
             _contextAbandoned = false;
             return;
         }
