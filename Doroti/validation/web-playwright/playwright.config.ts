@@ -1,9 +1,10 @@
 import { defineConfig } from "@playwright/test";
+import { fileURLToPath } from "node:url";
 
 const twentyMinutes = 20 * 60 * 1000;
 const rendererMode = process.env.DOROTI_WEB_RENDERER_MODE ?? "auto";
 const artifactLabel = process.env.DOROTI_WEB_ARTIFACT_LABEL ?? rendererMode;
-const artifactRoot = `./artifacts/${artifactLabel}`;
+const artifactRoot = fileURLToPath(new URL(`../../artifacts/validation/web-playwright/${artifactLabel}/`, import.meta.url));
 
 export default defineConfig({
   testDir: "./tests",

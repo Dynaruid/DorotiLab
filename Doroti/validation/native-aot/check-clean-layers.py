@@ -33,7 +33,7 @@ def main():
     try:
         project = HERE / "il-audit"
         run("audit-build", ["dotnet", "build", project, "-c", "Release", "-v:minimal", "-p:UseSharedCompilation=false"])
-        audit = ["dotnet", project / "bin/Release/net10.0/Doroti.Validation.NativeAot.IlAudit.dll", "--expect-zero"]
+        audit = ["dotnet", PRODUCT / "artifacts/validation/build/native-aot/il-audit/bin/Release/net10.0/Doroti.Validation.NativeAot.IlAudit.dll", "--expect-zero"]
         for configuration in ("Debug", "Release"):
             run(configuration.lower() + "-build", ["dotnet", "build", PRODUCT / "src/Doroti.Framework.Material", "-c", configuration, "-v:minimal", "-p:UseSharedCompilation=false"])
             assemblies = [PRODUCT / f"src/Doroti.Framework.{layer}/bin/{configuration}/net10.0/Doroti.Framework.{layer}.dll"

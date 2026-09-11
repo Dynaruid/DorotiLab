@@ -34,6 +34,7 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_PLATFORM_SERVICES = 1ull << 8,
   DOROTI_QT_FEATURE_SEMANTICS = 1ull << 9,
   DOROTI_QT_FEATURE_VULKAN_SURFACE = 1ull << 10,
+  DOROTI_QT_FEATURE_VULKAN_API_VERSION = 1ull << 11,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -92,6 +93,7 @@ struct doroti_qt_surface_v2 {
   std::uint64_t vulkan_surface;
   void* vulkan_instance;
   doroti_qt_utf8_v2 vulkan_instance_extensions;
+  std::uint32_t vulkan_instance_api_version;
 };
 
 struct doroti_qt_insets_v3 { double left, top, right, bottom; };
@@ -254,7 +256,7 @@ static_assert(offsetof(doroti_qt_surface_v2, surface_generation) == 8);
 static_assert(offsetof(doroti_qt_surface_v2, framebuffer_object) == 24);
 static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);
 static_assert(offsetof(doroti_qt_surface_v2, timestamp_microseconds) == 80);
-static_assert(sizeof(doroti_qt_surface_v2) == 120);
+static_assert(sizeof(doroti_qt_surface_v2) == 128);
 static_assert(sizeof(doroti_qt_metrics_v2) == 160);
 static_assert(sizeof(doroti_qt_pointer_v2) == 120);
 static_assert(sizeof(doroti_qt_key_v2) == 56);

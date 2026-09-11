@@ -26,7 +26,7 @@ Run from the repository root with a connected Android arm64 device:
 
 ```powershell
 python Doroti/validation/run-with-timeout.py dotnet build Doroti/validation/android-settings-observer/Doroti.Validation.AndroidSettingsObserver.csproj -c Release -t:SignAndroidPackage
-python Doroti/validation/run-with-timeout.py python Doroti/validation/android-settings-observer/run.py --serial <serial> --apk Doroti/validation/android-settings-observer/bin/Release/net10.0-android/android-arm64/dev.doroti.validation.settingsobserver-Signed.apk --output artifacts/android-settings-observer
+python Doroti/validation/run-with-timeout.py python Doroti/validation/android-settings-observer/run.py --serial <serial> --apk Doroti/artifacts/validation/build/android-settings-observer/bin/Release/net10.0-android/android-arm64/dev.doroti.validation.settingsobserver-Signed.apk --output artifacts/android-settings-observer
 ```
 
 The runner installs a separate validation package and returns nonzero on failure.

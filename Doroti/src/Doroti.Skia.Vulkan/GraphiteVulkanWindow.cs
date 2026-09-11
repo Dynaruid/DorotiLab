@@ -15,7 +15,7 @@ namespace Doroti.Skia.Vulkan;
 /// </summary>
 public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 {
-    private const uint Api11 = (1u << 22) | (1u << 12);
+    private const uint Api12 = (1u << 22) | (2u << 12);
     private const ulong Timeout = 5_000_000_000;
     private readonly Vk _vk;
     private readonly Instance _instance;
@@ -44,6 +44,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     private bool _disposed;
     private bool _recreate = true;
     private Format _format;
+    private VulkanObserver? _stockObserver;
 
     public int Width { get; private set; }
     public int Height { get; private set; }
@@ -55,10 +56,11 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 
     public static GraphiteVulkanWindow CreateAndroid(nint nativeWindow)
     {
-        GraphiteNativeLibrary.Configure();
+        if (!GraphiteNativeLibrary.IsOfficialSelected)
+            throw new InvalidOperationException("Configure the official APK asset before creating an Android surface.");
         var vk = Vk.GetApi();
         string[] extensions = ["VK_KHR_surface", "VK_KHR_android_surface"];
-        var instance = CreateInstance(vk, extensions);
+        var instance = CreateInstance(vk, extensions, Api12);
         ulong surface = 0;
         try
         {
@@ -80,9 +82,10 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         }
     }
 
-    public static GraphiteVulkanWindow FromQt(nint instance, ulong surface, string[] enabledInstanceExtensions)
+    public static GraphiteVulkanWindow FromQtOfficial(nint instance, ulong surface, string[] enabledInstanceExtensions, uint instanceApiVersion)
     {
-        GraphiteNativeLibrary.Configure();
+        if (instanceApiVersion < Api12) throw new PlatformNotSupportedException("Qt must create and report a real Vulkan 1.2 instance.");
+        GraphiteNativeLibrary.ConfigureOfficial(GraphiteNativeLibrary.PackagedOfficialAsset());
         var vk = Vk.GetApi();
         try { return new(vk, new(instance), new(surface), enabledInstanceExtensions, false, false); }
         catch { vk.Dispose(); throw; }
@@ -106,7 +109,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             foreach (var candidate in devices)
             {
                 _vk.GetPhysicalDeviceProperties(candidate, out var properties);
-                if (properties.DeviceType == PhysicalDeviceType.Cpu || properties.ApiVersion < Api11) continue;
+                if (properties.DeviceType == PhysicalDeviceType.Cpu || properties.ApiVersion < (Api12)) continue;
                 if (adapterLuid is { } requiredLuid)
                 {
                     var identity = new PhysicalDeviceIDProperties { SType = StructureType.PhysicalDeviceIDProperties };
@@ -133,7 +136,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 }
                 if (_physical.Handle != 0) break;
             }
-            if (_physical.Handle == 0) throw new PlatformNotSupportedException("A hardware Vulkan 1.1 graphics/present queue is required; no software fallback.");
+            if (_physical.Handle == 0) throw new PlatformNotSupportedException("A hardware Vulkan 1.2 graphics/present queue is required; no software fallback.");
             float priority = 1;
             var queueInfo = new DeviceQueueCreateInfo { SType = StructureType.DeviceQueueCreateInfo,
                 QueueFamilyIndex = _family, QueueCount = 1, PQueuePriorities = &priority };
@@ -147,8 +150,9 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             foreach (var entry in availableExtensions)
             {
                 var copy = entry;
-                if (Marshal.PtrToStringUTF8((nint)copy.ExtensionName) == "VK_KHR_driver_properties")
-                    extensionNames.Add("VK_KHR_driver_properties");
+                var name = Marshal.PtrToStringUTF8((nint)copy.ExtensionName);
+                if (name == "VK_KHR_driver_properties" || name == "VK_KHR_create_renderpass2")
+                    extensionNames.Add(name);
             }
             var enabledExtensions = extensionNames.Select(Marshal.StringToCoTaskMemUTF8).ToArray();
             try
@@ -165,9 +169,11 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             _vk.GetDeviceQueue(_device, _family, 0, out _queue);
             if (surface.Handle != 0 && !_vk.TryGetDeviceExtension(_instance, _device, out _swapchains))
                 throw new PlatformNotSupportedException("VK_KHR_swapchain is required.");
-            _session = SkiaGraphiteSession.CreateVulkan(new(_instance.Handle, _physical.Handle,
-                _device.Handle, _queue.Handle, _family, Api11, GetProcedure,
-                extensions, extensionNames, ResolveNativeSymbol: GraphiteNativeLibrary.Resolve), 1,
+            _stockObserver = new VulkanObserver(_vk, _instance, _device, _queue, _family,
+                extensionNames.Contains("VK_KHR_create_renderpass2"));
+            _session = SkiaGraphiteSession.CreateOfficialVulkan(new(_instance.Handle, _physical.Handle,
+                _device.Handle, _queue.Handle, _family, Api12, _stockObserver.Resolve,
+                image => { var state = _stockObserver.State((ulong)image); return ((int)state.Layout, state.Family); }, _stockObserver.Check), 1,
                 _pipelinedWindowFrames ? WindowFrameLimit : 1);
             var poolInfo = new CommandPoolCreateInfo { SType = StructureType.CommandPoolCreateInfo,
                 QueueFamilyIndex = _family, Flags = CommandPoolCreateFlags.ResetCommandBufferBit };
@@ -178,6 +184,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 var allocation = new CommandBufferAllocateInfo { SType = StructureType.CommandBufferAllocateInfo,
                     CommandPool = _pool, Level = CommandBufferLevel.Primary, CommandBufferCount = 1 };
                 Check(_vk.AllocateCommandBuffers(_device, &allocation, out _command), "command buffer");
+                _stockObserver?.Journal.Allocate(_command.Handle, _pool.Handle);
                 var fence = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
                 Check(_vk.CreateFence(_device, &fence, null, out _fence), "fence");
             }
@@ -231,6 +238,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             var begin = new CommandBufferBeginInfo { SType = StructureType.CommandBufferBeginInfo,
                 Flags = CommandBufferUsageFlags.OneTimeSubmitBit };
             CheckDevice(_vk.BeginCommandBuffer(command, &begin), "begin commands");
+            _stockObserver?.Journal.Begin(command.Handle);
             Barrier(command, slot.Backing, (ImageLayout)state.Layout, ImageLayout.TransferSrcOptimal,
                 AccessFlags.MemoryWriteBit, AccessFlags.TransferReadBit);
             Barrier(command, _images[index], _initialized[index] ? ImageLayout.PresentSrcKhr : ImageLayout.Undefined,
@@ -241,9 +249,11 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 ImageLayout.TransferDstOptimal, 1, &copy);
             Barrier(command, _images[index], ImageLayout.TransferDstOptimal, ImageLayout.PresentSrcKhr,
                 AccessFlags.TransferWriteBit, 0);
-            Barrier(command, slot.Backing, ImageLayout.TransferSrcOptimal, ImageLayout.ColorAttachmentOptimal,
-                AccessFlags.TransferReadBit, AccessFlags.ColorAttachmentReadBit | AccessFlags.ColorAttachmentWriteBit);
+            var restoreLayout = _stockObserver is null ? ImageLayout.ColorAttachmentOptimal : (ImageLayout)state.Layout;
+            Barrier(command, slot.Backing, ImageLayout.TransferSrcOptimal, restoreLayout,
+                AccessFlags.TransferReadBit, AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit);
             CheckDevice(_vk.EndCommandBuffer(command), "end commands");
+            _stockObserver?.Journal.End(command.Handle);
             CheckDevice(_vk.ResetFences(_device, 1, in slot.Fence), "reset submit fence");
             // The GPU waits for acquisition before writing or re-signalling
             // this image's presentation semaphore; the UI thread never waits.
@@ -256,7 +266,11 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 WaitSemaphoreCount = 1, PWaitSemaphores = &acquireReady, PWaitDstStageMask = &waitStage,
                 CommandBufferCount = 1, PCommandBuffers = &command,
                 SignalSemaphoreCount = 1, PSignalSemaphores = &ready };
-            CheckDevice(_vk.QueueSubmit(_queue, 1, &submit, slot.Fence), "copy submit");
+            var copyResult = _vk.QueueSubmit(_queue, 1, &submit, slot.Fence);
+            _stockObserver?.Journal.Submit([command.Handle], copyResult);
+            CheckDevice(copyResult, "copy submit");
+            _stockObserver?.Check();
+            slot.RestoredLayout = restoreLayout;
             var copiedTime = FrameTimestamp();
             slot.AcquireWaitPending = false;
             slot.Frame = frame;
@@ -376,6 +390,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             AllocationSize = requirements.Size, MemoryTypeIndex = memoryType };
         Check(_vk.AllocateMemory(_device, &allocation, null, out slot.Memory), "backing memory");
         Check(_vk.BindImageMemory(_device, slot.Backing, slot.Memory, 0), "bind backing memory");
+        _stockObserver?.RegisterHostTarget(slot.Backing.Handle, imageInfo);
         slot.Target = _session!.CreateVulkanTarget(Width, Height, new SKGraphiteVkTextureInfo {
             SampleCount = 1, Format = (int)_format, ImageTiling = (int)ImageTiling.Optimal,
             ImageUsageFlags = (uint)usage, SharingMode = (int)SharingMode.Exclusive, AspectMask = (uint)ImageAspectFlags.ColorBit },
@@ -391,17 +406,18 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             SubresourceRange = new(ImageAspectFlags.ColorBit, 0, 1, 0, 1) };
         _vk.CmdPipelineBarrier(command, PipelineStageFlags.AllCommandsBit, PipelineStageFlags.AllCommandsBit,
             0, 0, null, 0, null, 1, &barrier);
+        _stockObserver?.Journal.Barrier(command.Handle, image.Handle, oldLayout, newLayout, uint.MaxValue, uint.MaxValue);
     }
 
     private nint GetProcedure(string name, nint instance, nint device) => device != 0
         ? _vk.GetDeviceProcAddr(new(device), name) : _vk.GetInstanceProcAddr(new(instance), name);
 
-    private static Instance CreateInstance(Vk vk, string[] names)
+    private static Instance CreateInstance(Vk vk, string[] names, uint apiVersion = Api12)
     {
         var strings = names.Select(Marshal.StringToCoTaskMemUTF8).ToArray();
         try
         {
-            var application = new ApplicationInfo { SType = StructureType.ApplicationInfo, ApiVersion = Api11 };
+            var application = new ApplicationInfo { SType = StructureType.ApplicationInfo, ApiVersion = apiVersion };
             fixed (nint* extensions = strings)
             {
                 var info = new InstanceCreateInfo { SType = StructureType.InstanceCreateInfo,
@@ -420,11 +436,13 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         foreach (var slot in _windowFrames)
         {
             slot.Target?.Dispose(); slot.Target = null;
+            if (slot.Backing.Handle != 0) _stockObserver?.ForgetHostTarget(slot.Backing.Handle);
             if (slot.Backing.Handle != 0) _vk.DestroyImage(_device, slot.Backing, null);
             if (slot.Memory.Handle != 0) _vk.FreeMemory(_device, slot.Memory, null);
             slot.Backing = default; slot.Memory = default;
         }
         _target?.Dispose(); _target = null;
+        ReleaseOfficialIntermediate();
         if (_backing.Handle != 0) _vk.DestroyImage(_device, _backing, null);
         if (_memory.Handle != 0) _vk.FreeMemory(_device, _memory, null);
         if (_swapchain.Handle != 0) _swapchains.DestroySwapchain(_device, _swapchain, null);
@@ -450,6 +468,11 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         _windowFrames.Clear();
         if (_fence.Handle != 0) _vk.DestroyFence(_device, _fence, null);
         if (_pool.Handle != 0) _vk.DestroyCommandPool(_device, _pool, null);
+        if (_stockObserver != null)
+        {
+            _stockObserver.Journal.FreePool(_pool.Handle);
+            _stockObserver.Check(); _stockObserver.Dispose(); _stockObserver = null;
+        }
         _vk.DestroyDevice(_device, null); _device = default;
     }
 
@@ -468,6 +491,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         var result = _vk.DeviceWaitIdle(_device);
         if (result != Result.ErrorDeviceLost) Check(result, "terminal owner transfer drain");
+        _stockObserver?.TakeShutdownOwnershipAfterGpuDrain();
         _session!.TakeVulkanShutdownOwnershipAfterGpuDrain();
         _owner = Environment.CurrentManagedThreadId;
         if (result == Result.ErrorDeviceLost) _session.NotifyVulkanDeviceLost();

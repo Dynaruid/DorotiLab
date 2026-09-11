@@ -30,6 +30,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private long _evidenceWriteGeneration;
     private int _evidenceWritePending;
     private Window? _window;
+#if WINDOWS
+    private Microsoft.UI.Xaml.Window? _closingWindow;
+    private bool _closeStarted;
+    private bool _closeReady;
+#endif
 
     public DorotiMauiSurface(
         DorotiApplicationDescriptor application,
@@ -365,6 +370,14 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         window.Resumed += HandleResumed;
         window.Stopped += HandleStopped;
         window.Destroying += HandleDestroying;
+#if WINDOWS
+        if (window.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeWindow &&
+            WindowsCompositionSurfaceFeature.GraphiteEnabled)
+        {
+            _closingWindow = nativeWindow;
+            nativeWindow.AppWindow.Closing += HandleNativeClosing;
+        }
+#endif
         _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
     }
 
@@ -415,6 +428,36 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
               _application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xff141218L)
             : _application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xfffffbfeL);
 
+#if WINDOWS
+    private async void HandleNativeClosing(
+        Microsoft.UI.Windowing.AppWindow sender,
+        Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
+    {
+        if (_closeReady) return;
+        args.Cancel = true;
+        if (_closeStarted) return;
+        _closeStarted = true;
+        var retirement = ((DorotiWindowsDxgiSurface)_renderSurface).PrepareForCloseAsync();
+        sender.Hide();
+        try
+        {
+            try { await retirement.WaitAsync(TimeSpan.FromSeconds(5)); }
+            catch (TimeoutException exception)
+            {
+                WriteFailure(exception); // Faulted hold; retain this generation until actual completion.
+                await retirement;
+            }
+            _closeReady = true;
+            _closingWindow?.Close();
+        }
+        catch (Exception exception)
+        {
+            // A failed completion cannot authorize native disposal or a replacement renderer.
+            WriteFailure(exception);
+        }
+    }
+#endif
+
     private void HandleDestroying(object? sender, EventArgs args)
     {
         _host?.NotifyCloseRequested(_viewId);
@@ -434,6 +477,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _window.Resumed -= HandleResumed;
         _window.Stopped -= HandleStopped;
         _window.Destroying -= HandleDestroying;
+#if WINDOWS
+        if (_closingWindow is { } nativeWindow)
+            nativeWindow.AppWindow.Closing -= HandleNativeClosing;
+        _closingWindow = null;
+#endif
         _window = null;
     }
 }

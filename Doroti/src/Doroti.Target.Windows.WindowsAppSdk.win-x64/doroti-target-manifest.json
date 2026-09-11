@@ -16,6 +16,9 @@
   "cutoverDecision": "Graphite/Vulkan is the user-selected default; NVIDIA prepared receipt latency is accepted at 1000 ms. Broader GPU/DPI/refresh qualification remains incomplete.",
   "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
   "softwareFallback": false,
-  "nativeSkiaBridgeAbi": 3,
-  "defaultSkiaEngine": "Graphite"
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.Win32",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite",
+  "requiredVulkanVersion": "1.2"
 }

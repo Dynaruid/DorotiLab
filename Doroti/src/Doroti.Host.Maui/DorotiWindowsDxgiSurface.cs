@@ -145,6 +145,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     private DorotiMouseCursorKind _currentCursor = DorotiMouseCursorKind.basic;
     private bool _loaded;
     private bool _disposed;
+    private bool _stopRequested;
 
     internal DorotiWindowsDxgiSurface()
     {
@@ -190,7 +191,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         var inputOwner = host.InputOwner;
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed || _stopRequested) return;
             _host = host;
             _panel = panel;
             _inputOwner = inputOwner;
@@ -250,7 +251,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     {
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed || _stopRequested) return;
             _requestSerial++;
         }
         _wake.Set();
@@ -474,7 +475,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         var host = _host;
         var panel = _panel;
         var compositionCandidate = WindowsCompositionSurfaceFeature.Enabled;
-        if (_disposed || !_loaded || host is null || (!compositionCandidate && panel is null)) return null;
+        if (_disposed || _stopRequested || !_loaded || host is null || (!compositionCandidate && panel is null)) return null;
         WindowsClientResizeSource? nativeSource;
         WindowsTopLevelResizeSource? topLevelSource;
         lock (_gate)
@@ -544,7 +545,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 DorotiResizeEpoch? target;
                 lock (_gate)
                 {
-                    if (_disposed) return;
+                    if (_disposed || _stopRequested) return;
                     target = _latestTarget;
                 }
                 if (target is null || target.Generation == dispatchedGeneration) break;
@@ -552,7 +553,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 dispatchedGeneration = target.Generation;
                 lock (_gate)
                 {
-                    if (_disposed) return;
+                    if (_disposed || _stopRequested) return;
                     if (_latestTarget?.Generation == dispatchedGeneration) break;
                 }
             }
@@ -580,7 +581,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             long serial;
             lock (_gate)
             {
-                if (_disposed) break;
+                if (_disposed || _stopRequested) break;
                 target = _latestTarget;
                 nativeSource = _nativeResizeSource;
                 host = _host;
@@ -963,7 +964,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             }
             lock (_gate)
             {
-                if (!_disposed && _requestSerial != processedSerial) _wake.Set();
+                if (!_disposed && !_stopRequested && _requestSerial != processedSerial) _wake.Set();
             }
         }
     }
@@ -972,7 +973,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     {
         lock (_gate)
         {
-            if (_disposed || !_loaded || !WindowsCompositionSurfaceFeature.Enabled) return;
+            if (_disposed || _stopRequested || !_loaded || !WindowsCompositionSurfaceFeature.Enabled) return;
             _requestSerial++;
         }
         _wake.Set();
@@ -1055,6 +1056,22 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             surfaceWidth: surfaceWidth, surfaceHeight: surfaceHeight,
             terminal: terminal, detail: detail);
         WindowsResizeEtw.Log.Marker(phase, target, surfaceWidth, surfaceHeight, source);
+    }
+
+    internal async Task PrepareForCloseAsync()
+    {
+        lock (_gate) _stopRequested = true;
+        _wake.Set();
+        _metricsWake.Set();
+        // Keep the UI dispatcher running while raster callbacks and Composition
+        // completion handlers drain. Timeout is not permission to release owners.
+        await Task.Run(() =>
+        {
+            _metricsThread.Join();
+            _rasterThread.Join();
+        });
+        if (_compositionPresenter is { } presenter)
+            await presenter.DrainForCloseAsync();
     }
 
     public void Dispose()

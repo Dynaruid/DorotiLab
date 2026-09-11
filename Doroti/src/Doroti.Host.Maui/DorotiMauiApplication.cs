@@ -27,9 +27,13 @@ public static class DorotiMauiApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(launchContext);
 #if ANDROID
-        if (DorotiGraphiteView.Enabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+        if (DorotiGraphiteView.Enabled)
+        {
+            var info = global::Android.App.Application.Context.ApplicationInfo!;
+            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficialAndroid(info.SourceDir!, info.NativeLibraryDir!);
+        }
 #elif WINDOWS
-        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
 #endif
         var descriptor = DorotiApplicationFactory.Create<TStartup>(launchContext);
         return builder.UseDorotiApplication(descriptor);
@@ -42,9 +46,13 @@ public static class DorotiMauiApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(descriptor);
 #if ANDROID
-        if (DorotiGraphiteView.Enabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+        if (DorotiGraphiteView.Enabled)
+        {
+            var info = global::Android.App.Application.Context.ApplicationInfo!;
+            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficialAndroid(info.SourceDir!, info.NativeLibraryDir!);
+        }
 #elif WINDOWS
-        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure();
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled) WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
 #endif
         builder
 #if MACOS

@@ -24,8 +24,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
     <TargetName>Doroti.WinRtContentIsland.NativeBridge</TargetName>
-    <OutDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(DorotiValidationProjectOutput)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(DorotiValidationProjectOutput)obj\$(Configuration)\$(Platform)\</IntDir>
     <GeneratedHeaders>$(IntDir)generated</GeneratedHeaders>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -42,9 +42,9 @@
 **/*.coverage
 **/*.coveragexml
 
-# Local resize traces and measurement evidence
-/Doroti/validation/evidence/resize/
-/Doroti/validation/evidence/flutter/
+# Python bytecode is generated state, never validation source.
+**/__pycache__/
+*.py[cod]
 
 # Visual Studio and MSBuild user state
 **/.vs/

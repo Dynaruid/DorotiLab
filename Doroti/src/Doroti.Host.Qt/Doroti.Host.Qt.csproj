@@ -7,7 +7,6 @@
     <Description>Doroti managed-owned Linux process bridge for a Qt 6 C ABI surface.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DorotiGraphiteLinuxDistribution>$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\linux-x64</DorotiGraphiteLinuxDistribution>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" />
@@ -17,17 +16,7 @@
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux')) or Exists('$(DorotiGraphiteLinuxDistribution)/libDorotiGraphite.so')">
-    <Content Include="$(DorotiGraphiteLinuxDistribution)\libDorotiGraphite.so;$(DorotiGraphiteLinuxDistribution)\build-provenance.json;$(DorotiGraphiteLinuxDistribution)\LICENSE.txt;$(DorotiGraphiteLinuxDistribution)\THIRD-PARTY-NOTICES.txt" Link="graphite\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Pack="true" PackagePath="nativeAssets\linux-x64\graphite\" />
-    <DorotiLaunchDependency Include="$(DorotiGraphiteLinuxDistribution)\libDorotiGraphite.so;$(DorotiGraphiteLinuxDistribution)\build-provenance.json" />
-  </ItemGroup>
   <ItemGroup>
     <None Include="buildTransitive\Doroti.Host.Qt.targets" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
-  <Target Name="EnsureDorotiGraphiteLinuxAsset" BeforeTargets="PrepareForBuild;DorotiCollectLaunchInputs;DorotiCollectLaunchDependencies" Condition="'$(DesignTimeBuild)' != 'true' and $([MSBuild]::IsOSPlatform('Linux'))">
-    <Exec Command="python3 &quot;$(MSBuildThisFileDirectory)..\..\native\graphite\stage-linux.py&quot;" Timeout="1200000" />
-  </Target>
-  <Target Name="RequireGraphiteLinuxAssetForPack" BeforeTargets="GenerateNuspec" Condition="!Exists('$(DorotiGraphiteLinuxDistribution)/libDorotiGraphite.so')">
-    <Error Text="Pack Doroti.Host.Qt on Linux after native Graphite staging; a source-only cross-build cannot produce a runnable package." />
-  </Target>
 </Project>

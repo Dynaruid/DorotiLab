@@ -65,7 +65,7 @@ internal static class Program
 
         var root = FindRepositoryRoot();
         var runId = $"c0-composition-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}"[..48];
-        return Path.Combine(root, "Doroti", "validation", "evidence", "resize", $"{runId}.summary.json");
+        return Path.Combine(root, "Doroti", "artifacts", "validation", "resize", $"{runId}.summary.json");
     }
 
     private static string FindRepositoryRoot()

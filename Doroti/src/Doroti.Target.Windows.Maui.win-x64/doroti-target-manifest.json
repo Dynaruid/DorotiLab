@@ -6,6 +6,9 @@
   "nativeViewType": "Doroti.Host.Maui.DorotiWindowsDxgiHost",
   "graphicsBackend": "WinUI/CompositionDrawingSurface/Graphite-Vulkan",
   "softwareFallback": false,
-  "nativeSkiaBridgeAbi": 3,
-  "defaultSkiaEngine": "Graphite"
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.Win32",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite",
+  "requiredVulkanVersion": "1.2"
 }

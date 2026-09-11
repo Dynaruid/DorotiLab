@@ -65,6 +65,9 @@ internal static class Program
                     diagnostics.RasterThreadId != diagnostics.PlatformThreadId,
                 "C6 platform/input pump was not isolated from managed raster presentation.");
             Require(diagnostics.VisibleAfterExactPresent, "The native window was not shown after an exact frame.");
+            if (diagnostics.Vulkan is { } validationVulkan)
+                Require(validationVulkan.ValidationErrors == 0 && validationVulkan.ValidationWarnings == 0 && !validationVulkan.ValidationCallbackFault,
+                    "Product Vulkan validation reported a warning/error or callback failure.");
             Require(diagnostics.AcceptedResizeGenerations >= 1 && diagnostics.UnterminatedResizeGenerations == 0 &&
                     diagnostics.DuplicateResizeTerminals == 0, "Product resize generation did not drain exactly once.");
             if (resizeCycles == 0 && !externalResize && !skipResizeBurst)

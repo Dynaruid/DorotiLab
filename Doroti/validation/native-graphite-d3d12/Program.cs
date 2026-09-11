@@ -23,7 +23,9 @@ internal static unsafe class Program
         var rows = new List<object>();
         try
         {
-            GraphiteNativeLibrary.Configure();
+            var manifestPath = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
+            var official = string.IsNullOrWhiteSpace(manifestPath) ? null : GraphiteNativeLibrary.ReadOfficialManifest(manifestPath);
+            if (official == null) GraphiteNativeLibrary.Configure(); else GraphiteNativeLibrary.ConfigureOfficial(official);
             using var factory = CreateDXGIFactory2<IDXGIFactory6>(false);
             for (uint adapterIndex = 0; factory.EnumAdapters1(adapterIndex, out var adapter).Success; adapterIndex++)
             {
@@ -37,7 +39,8 @@ internal static unsafe class Program
                     commands.Close();
                     using var fence = device.CreateFence(0);
                     var luid = adapter.Description1.Luid;
-                    using var graphite = GraphiteVulkanWindow.CreateD3D12(Unsafe.As<Luid, long>(ref luid));
+                    using var graphite = official == null ? GraphiteVulkanWindow.CreateD3D12(Unsafe.As<Luid, long>(ref luid))
+                        : GraphiteVulkanWindow.CreateD3D12Official(Unsafe.As<Luid, long>(ref luid), official);
                     ulong serial = 0;
                     foreach (var width in new[] { 64, 96, 64 })
                     {
@@ -88,7 +91,8 @@ internal static unsafe class Program
                 }
             }
             if (rows.Count == 0) throw new InvalidOperationException("No hardware GPU was tested.");
-            File.WriteAllText(report, JsonSerializer.Serialize(new { status = "PASS", rows }, new JsonSerializerOptions { WriteIndented = true }));
+            File.WriteAllText(report, JsonSerializer.Serialize(new { status = "PASS", rows, officialAsset = official,
+                boundary = "D3D12 pixel/cancellation diagnostic; MAUI presentation notVerified" }, new JsonSerializerOptions { WriteIndented = true }));
             Console.WriteLine($"PASS {rows.Count} GPU/size rows; 12 pixel-verified frames per row");
             return 0;
         }

@@ -1,7 +1,4 @@
 <Project>
-  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-    <Content Include="$(MSBuildThisFileDirectory)..\nativeAssets\win-x64\graphite\libSkiaSharp.dll;$(MSBuildThisFileDirectory)..\nativeAssets\win-x64\graphite\build-provenance.json;$(MSBuildThisFileDirectory)..\nativeAssets\win-x64\graphite\LICENSE.txt;$(MSBuildThisFileDirectory)..\nativeAssets\win-x64\graphite\THIRD-PARTY-NOTICES.txt"
-             Link="graphite\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <DorotiLaunchDependency Include="$(MSBuildThisFileDirectory)..\nativeAssets\win-x64\graphite\libSkiaSharp.dll;$(MSBuildThisFileDirectory)..\nativeAssets\win-x64\graphite\build-provenance.json" />
-  </ItemGroup>
+  <!-- The pinned official NativeAssets dependency supplies libSkiaSharp.
+       No custom Skia distribution or source-build input is staged. -->
 </Project>

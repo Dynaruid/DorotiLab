@@ -29,6 +29,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
         internal SkiaGraphiteSession.Frame? Frame;
         internal bool AcquireWaitPending;
         internal long SubmittedAt;
+        internal ImageLayout RestoredLayout = ImageLayout.ColorAttachmentOptimal;
     }
 
     private void CreateWindowFrameSlots()
@@ -40,6 +41,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
             var allocation = new CommandBufferAllocateInfo { SType = StructureType.CommandBufferAllocateInfo,
                 CommandPool = _pool, Level = CommandBufferLevel.Primary, CommandBufferCount = 1 };
             Check(_vk.AllocateCommandBuffers(_device, &allocation, out slot.Command), "frame command buffer");
+            _stockObserver?.Journal.Allocate(slot.Command.Handle, _pool.Handle);
             var fence = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
             Check(_vk.CreateFence(_device, &fence, null, out slot.Fence), "frame fence");
             var semaphore = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
@@ -74,7 +76,8 @@ public sealed unsafe partial class GraphiteVulkanWindow
         if (slot.Frame is null) return;
         slot.Frame.CompleteGpuWork();
         slot.Frame = null;
-        slot.Target!.SetStateAfterGpuCompletion((int)ImageLayout.ColorAttachmentOptimal, _family);
+        if (_session?.IsDeviceLost != true)
+            slot.Target!.SetStateAfterGpuCompletion((int)slot.RestoredLayout, _family);
         CompletedWindowFrames++;
     }
 

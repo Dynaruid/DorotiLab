@@ -35,11 +35,9 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
     {
         _ = sender;
         _ = args;
-        // The Doroti Windows runner owns one window. Angle's render worker can
-        // still be waiting on the dispatcher after that window closes, so the
-        // normal WinUI exit request alone may not let `dotnet run` return.
+        // The official Graphite close path drains workers while the dispatcher
+        // is alive. Do not turn incomplete cleanup into exit-code-zero success.
         Microsoft.UI.Xaml.Application.Current.Exit();
-        Environment.Exit(0);
     }
 
     protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();

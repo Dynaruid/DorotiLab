@@ -50,7 +50,7 @@ Run processes with the repository's 20-minute deadline, for example:
 ```powershell
 $env:DOROTI_WEB_BASE_URL = 'http://127.0.0.1:5088'
 ./Doroti/eng/invoke-work2-check.ps1 -Label local-onset -Directory Doroti/validation/web-playwright -Command @('node','measure-material-sample.mjs','local-onset','--progress','--onset','--no-diagnostics','--no-trace')
-python Doroti/validation/web-playwright/analyze-framework-work.py Doroti/validation/web-playwright/artifacts/sample-perf/local-onset.json
+python Doroti/validation/web-playwright/analyze-framework-work.py Doroti/artifacts/validation/web-playwright/sample-perf/local-onset.json
 ```
 
 The analyzer reports absent managed attribution in minimal-marker runs. It uses

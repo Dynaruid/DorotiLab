@@ -8,7 +8,7 @@ import sys
 import time
 
 root = Path(__file__).resolve().parents[3]
-evidence = root / "Doroti/validation/evidence/media-query-safe-area"
+evidence = root / "Doroti/artifacts/validation/media-query-safe-area"
 evidence.mkdir(parents=True, exist_ok=True)
 suite = sys.argv[1] if len(sys.argv) > 1 else "contracts"
 if suite == "all":
@@ -29,7 +29,7 @@ if suite == "contracts":
         ("material-scaffold", "fcr7-material-widget/Doroti.Validation.Fcr7MaterialWidget.csproj", ["--scaffold-metrics"]),
         ("material-full", "fcr7-material-widget/Doroti.Validation.Fcr7MaterialWidget.csproj", []),
         ("windows-abi", "windowsappsdk-native-abi/Doroti.Validation.WindowsAppSdkNativeAbi.csproj",
-         [str(root / "Doroti/validation/windowsappsdk-native-abi/bin/Debug/net10.0-windows10.0.19041.0/win-x64/doroti_windows_appsdk_host_v1.dll")]),
+         [str(root / "Doroti/artifacts/validation/build/windowsappsdk-native-abi/bin/Debug/net10.0-windows10.0.19041.0/win-x64/doroti_windows_appsdk_host_v1.dll")]),
     ]:
         add(name, "dotnet", "run", "--project", "Doroti/validation/" + project, "--", *arguments)
     add("browser-environment", "node", "Doroti/validation/media-query-safe-area/browser-environment.mjs")

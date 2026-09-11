@@ -17,13 +17,13 @@
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
     <None Include="buildTransitive\Doroti.Target.Windows.WindowsAppSdk.win-x64.targets"
           Pack="true" PackagePath="buildTransitive\Doroti.Target.Windows.WindowsAppSdk.win-x64.targets" />
-    <Content Include="..\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\doroti_windows_appsdk_host_v1.dll"
+    <None Include="..\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\doroti_windows_appsdk_host_v1.dll"
              Link="doroti_windows_appsdk_host_v1.dll"
              CopyToOutputDirectory="PreserveNewest"
              CopyToPublishDirectory="PreserveNewest"
              Pack="true"
              PackagePath="runtimes\win-x64\native\doroti_windows_appsdk_host_v1.dll" />
-    <Content Include="..\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\Microsoft.WindowsAppRuntime.Bootstrap.dll"
+    <None Include="..\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\Microsoft.WindowsAppRuntime.Bootstrap.dll"
              Link="Microsoft.WindowsAppRuntime.Bootstrap.dll"
              CopyToOutputDirectory="PreserveNewest"
              CopyToPublishDirectory="PreserveNewest"

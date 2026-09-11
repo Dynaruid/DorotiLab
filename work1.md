@@ -394,3 +394,10 @@ python Doroti/validation/run-with-timeout.py pwsh -NoProfile -File Doroti/eng/do
 기본 B 통과 후 work2의 탐색·JS 작업을 진행할 수 있다. **이번 요구의 완료는 양방향 전체·부분 겹침 C1~C6와 PV-5를 통과한 조합에 한정한다.** C 미지원 target/view 종류는 제한형 B로 공개할 수 있지만 요구를 충족한 것으로 계산하지 않는다. 플랫폼 공통 지원 선언에는 모든 대상의 실제 증거가 필요하며 문서 체크박스만으로 완료하지 않는다. Linux 추가 재검토에서는 work2 WV-7A~F와 이 문서의 PV-9·인계표를 함께 수정했다.
 
 주요 로컬 레퍼런스: [Flutter PlatformViewLayer](reference/flutter-master/engine/src/flutter/flow/layers/platform_view_layer.cc), [external embedder 계약](reference/flutter-master/engine/src/flutter/flow/embedded_views.h), [Avalonia attachment](reference/Avalonia-main/src/Avalonia.Controls/Platform/INativeControlHostImpl.cs), [Web embedder](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/platform_views/embedder.dart). Flutter 파일의 이식 provenance와 참조 폴더 전체 버전은 구분한다.
+
+
+## work0 renderer contract handoff (2026-09-12)
+
+공식 SkiaSharp NativeAssets `4.154.0-preview.1.26454.9`가 기본이다. Vulkan은 실제 1.2 profile, 공개 session 생성, 성공한 queue submit 순서의 observer 상태를 사용한다. 각 raster segment의 일반 R과 플랫폼 소유 P를 구분하고 GPU copy 뒤 R을 관찰된 L/ownership으로 복원한다. host fence 완료와 플랫폼 front/present retirement는 별도 경계다. segment identity·paint order·alpha·frame admission 계약을 유지해야 한다.
+
+구 `SkiaGraphiteVulkanOptions`/private ABI 생성 경로는 제거했다. 새 직접 소비자는 `CreateOfficialVulkan`의 typed observed-state/retirement 계약을 사용한다. 정상 desktop 제품은 manifest 없이 표준 공식 DLL을 검증하고, 프로세스 안에서 native 자산을 교체하지 않는다. timeout을 device loss로 바꾸거나 미완료 generation을 재사용하지 않는다. Apple/Linux는 코드 구성만 완료했으며 검증은 `skippedByUser`다. 전체 성능 수용은 미완료다. [전환 및 검증 범위](Doroti/docs/validation/official-graphite-cutover-2026-09-12.md)를 따른다.

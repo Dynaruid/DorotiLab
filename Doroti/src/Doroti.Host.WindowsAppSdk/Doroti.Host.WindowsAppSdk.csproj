@@ -10,7 +10,6 @@
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DorotiGraphiteDistribution>$(MSBuildThisFileDirectory)..\..\artifacts\native-graphite\distribution\win-x64</DorotiGraphiteDistribution>
     <!-- This unmanaged DLL is copied by buildTransitive, never added as a CLR reference. -->
     <NoWarn>$(NoWarn);NU5100</NoWarn>
   </PropertyGroup>
@@ -24,17 +23,11 @@
     <PackageReference Include="SkiaSharp.Vulkan.Silk.NET" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
+    <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="WindowsManagedHwndPresenter.cs" />
-    <Content Include="$(DorotiGraphiteDistribution)\libSkiaSharp.dll;$(DorotiGraphiteDistribution)\build-provenance.json;$(DorotiGraphiteDistribution)\LICENSE.txt;$(DorotiGraphiteDistribution)\THIRD-PARTY-NOTICES.txt"
-             Link="graphite\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"
-             Pack="true" PackagePath="nativeAssets\win-x64\graphite\" />
     <None Include="buildTransitive\Doroti.Host.WindowsAppSdk.targets" Pack="true" PackagePath="buildTransitive\" />
-    <DorotiLaunchDependency Include="$(DorotiGraphiteDistribution)\libSkiaSharp.dll;$(DorotiGraphiteDistribution)\build-provenance.json;$(MSBuildThisFileDirectory)..\..\native\graphite\build-windows.py;$(MSBuildThisFileDirectory)..\..\native\graphite\doroti_graphite_interop.inc" />
   </ItemGroup>
-  <Target Name="EnsureDorotiGraphiteWindowsAsset" BeforeTargets="PrepareForBuild;DorotiCollectLaunchInputs;DorotiCollectLaunchDependencies" Condition="'$(DesignTimeBuild)' != 'true'">
-    <Exec Command="python &quot;$(MSBuildThisFileDirectory)..\..\native\graphite\build-windows.py&quot; --ensure-distribution" Timeout="1200000" />
-  </Target>
 </Project>

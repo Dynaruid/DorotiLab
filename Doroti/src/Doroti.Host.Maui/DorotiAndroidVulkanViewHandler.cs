@@ -129,7 +129,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             if (_window is null)
             {
                 if (!OperatingSystem.IsAndroidVersionAtLeast(24))
-                    throw new PlatformNotSupportedException("Doroti Graphite requires Android API 24 or newer and a hardware Vulkan 1.1 device.");
+                    throw new PlatformNotSupportedException("Doroti Graphite requires Android API 24 or newer and a hardware Vulkan 1.2 device for the official profile.");
                 _nativeWindow = ANativeWindowFromSurface(JNIEnv.Handle, Holder!.Surface!.Handle);
                 if (_nativeWindow == 0) throw new InvalidOperationException("ANativeWindow_fromSurface failed.");
                 _window = GraphiteVulkanWindow.CreateAndroid(_nativeWindow);

@@ -40,7 +40,15 @@ public sealed record DorotiApplicationManifest(
     DorotiEmbeddedResource[] Resources,
     DorotiApplicationPlugin[] Plugins)
 {
-    public DorotiPlatformViewRegistration[] PlatformViews { get; init; } = [];
+    private DorotiPlatformViewRegistration[] _platformViews = [];
+
+    // Older v1 manifests omit this optional field. The source-generated object
+    // creator may explicitly assign its default null after running initializers.
+    public DorotiPlatformViewRegistration[] PlatformViews
+    {
+        get => _platformViews;
+        init => _platformViews = value ?? [];
+    }
 }
 
 public sealed record DorotiPlatformViewRegistration(string ViewType, string Rid);

@@ -1,6 +1,7 @@
 <Project>
+  <!-- Official NativeAssets.Linux is a transitive NuGet dependency. The loader
+       validates the final standard library against the pinned package hash. -->
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
-    <Content Include="$(MSBuildThisFileDirectory)..\nativeAssets\linux-x64\graphite\*" Link="graphite\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <DorotiLaunchDependency Include="$(MSBuildThisFileDirectory)..\nativeAssets\linux-x64\graphite\libDorotiGraphite.so" />
+    <DorotiLaunchDependency Include="$(TargetDir)libSkiaSharp.so" />
   </ItemGroup>
 </Project>

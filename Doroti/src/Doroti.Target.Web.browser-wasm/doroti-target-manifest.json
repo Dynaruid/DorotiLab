@@ -53,5 +53,8 @@
     "software-webgl-renderer",
     "native-desktop-plugin",
     "trimmed-generated-product"
-  ]
+  ],
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.WebAssembly",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite"
 }

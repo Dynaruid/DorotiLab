@@ -21,8 +21,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
     <TargetName>Doroti.HwndExactCpp.ManagedPresenterProbe</TargetName>
-    <OutDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(DorotiValidationProjectOutput)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(DorotiValidationProjectOutput)obj\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

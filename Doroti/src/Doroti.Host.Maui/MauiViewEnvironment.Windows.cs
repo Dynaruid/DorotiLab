@@ -27,6 +27,9 @@ internal sealed partial class MauiViewEnvironment
     private InputPane? _inputPane;
     private readonly UISettings _uiSettings = new();
     private bool _highContrast;
+    private Windows.Foundation.Rect _keyboardOcclusion;
+    private bool _animationsEnabled = true;
+    private bool _nativeSettingsRefreshPosted;
     partial void AttachNative()
     {
         if (_element.Handler?.PlatformView is not FrameworkElement native) return;
@@ -67,15 +70,36 @@ internal sealed partial class MauiViewEnvironment
         Padding = ViewPadding.zero;
         var position = native.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point());
         var bounds = Rect.fromLTWH(position.X, position.Y, native.ActualWidth, native.ActualHeight);
-        var keyboard = _inputPane?.OccludedRect ?? default;
+        try
+        {
+            // InputPane can make an outgoing COM call. Cross-process synchronous
+            // WM_SIZE delivery forbids that call (RPC_E_CANTCALLOUT_ININPUTSYNCCALL).
+            // Keep the last settings snapshot and refresh after the window message.
+            var keyboardSnapshot = _inputPane?.OccludedRect ?? default;
+            var textScaleSnapshot = _uiSettings.TextScaleFactor;
+            var animationsSnapshot = _uiSettings.AnimationsEnabled;
+            var localesSnapshot = Windows.System.UserProfile.GlobalizationPreferences.Languages.Select(ParseLocale).ToArray();
+            _keyboardOcclusion = keyboardSnapshot;
+            TextScale = textScaleSnapshot;
+            _animationsEnabled = animationsSnapshot;
+            Locales = localesSnapshot;
+        }
+        catch (COMException exception) when (exception.HResult == unchecked((int)0x8001010D))
+        {
+            if (!_nativeSettingsRefreshPosted)
+            {
+                _nativeSettingsRefreshPosted = true;
+                if (!native.DispatcherQueue.TryEnqueue(() => { _nativeSettingsRefreshPosted = false; Refresh(); }))
+                    _nativeSettingsRefreshPosted = false;
+            }
+        }
+        var keyboard = _keyboardOcclusion;
         Insets = ViewOcclusion.Scale(ViewOcclusion.EdgeInsets(bounds,
             Rect.fromLTWH(keyboard.X, keyboard.Y, keyboard.Width, keyboard.Height)), root.RasterizationScale);
-        TextScale = _uiSettings.TextScaleFactor;
         var contrast = new NativeHighContrast { Size = (uint)Marshal.SizeOf<NativeHighContrast>() };
         if (QueryHighContrast(0x42, contrast.Size, ref contrast, 0)) _highContrast = (contrast.Flags & 1) != 0;
-        Accessibility = new(false, false, !_uiSettings.AnimationsEnabled, false, _highContrast, false, false);
+        Accessibility = new(false, false, !_animationsEnabled, false, _highContrast, false, false);
         Use24Hour = !System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains('t');
-        Locales = Windows.System.UserProfile.GlobalizationPreferences.Languages.Select(ParseLocale).ToArray();
     }
 }
 #endif

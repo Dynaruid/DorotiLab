@@ -1,0 +1,148 @@
+{
+  "schema": "doroti.stock-graphite-research/v1",
+  "observedAtUtc": "2026-09-11T13:22:45.685677+00:00",
+  "repositoryHead": "a6b30264bf5fe41cabdf4df67107ca906ce0e1df",
+  "packageVersion": "4.154.0-preview.1.26454.9",
+  "skiaSharpRevision": "143a933a753dbfeca1909524b2c06c546c5c3e20",
+  "skiaRevision": "cc43af052d3d98e605bee4ddc98671dafded1c57",
+  "scope": "package integrity, exported API and Windows compiled-backend availability only",
+  "gpuContextCreated": false,
+  "productQualified": false,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/mono/SkiaSharp/143a933a753dbfeca1909524b2c06c546c5c3e20/binding/SkiaSharp/Gpu/Graphite/SKGraphiteContext.cs",
+      "sha256": "93080905c8eec4e2cc7300753ff70cc6daa9ae931ba001379afc228f4993b2ac",
+      "bytes": 12141
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/SkiaSharp/143a933a753dbfeca1909524b2c06c546c5c3e20/binding/SkiaSharp/Gpu/Graphite/SKGraphiteVkBackendContext.cs",
+      "sha256": "d79d5bd952eebc2c5b1dc25559174232ea90f77878bd986b09f12156f696a697",
+      "bytes": 3297
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/SkiaSharp/143a933a753dbfeca1909524b2c06c546c5c3e20/binding/SkiaSharp/Gpu/Graphite/SKGraphiteBackendTexture.cs",
+      "sha256": "b7ebf27d9227811003f32437363e833e17c00374bbd4f7db01a7ce04aa9f723d",
+      "bytes": 2355
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/SkiaSharp/143a933a753dbfeca1909524b2c06c546c5c3e20/tests/VulkanTests/Visual/GraphiteVulkanRenderer.cs",
+      "sha256": "5a3fbaff80c362c73db21223d0885ce3b8eb3b363313a0d5a4abf26fd024207e",
+      "bytes": 2939
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/SkiaSharp/143a933a753dbfeca1909524b2c06c546c5c3e20/tests/Tests/SkiaSharp/Visual/Renderers/GraphiteDawnRenderer.cs",
+      "sha256": "5bdf0cc53672ebd2ab47c42b649cee3be0c3834d9c75b8abcfbb91f9b04e4321",
+      "bytes": 14292
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/include/c/sk_graphite.h",
+      "sha256": "9d699e969639d01a43ec901666a2c73fdcbed7f6c91841f9d237c5fb7084f8e4",
+      "bytes": 13812
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/include/c/sk_graphite_vulkan.h",
+      "sha256": "63a664876156d6c08d6f82f4dad277a163139011d9fe0518a98e5aee7b65d72c",
+      "bytes": 3917
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/src/c/sk_graphite_vulkan.cpp",
+      "sha256": "a4c713f2aee4d281d49e14e4a4e7c06ecae87f016a036694d34b9ee394e9df23",
+      "bytes": 5447
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/include/gpu/vk/VulkanBackendContext.h",
+      "sha256": "4b3fb86e7d64f201af1b11f6298a26605acab7e707e4129c6db968d8690fa5af",
+      "bytes": 2764
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/src/gpu/graphite/vk/VulkanSharedContext.cpp",
+      "sha256": "8c4dad8b4749802eb2e2b6faf98c06fa6042c2223cf04b6bc1b10a5879cb5f96",
+      "bytes": 12616
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/src/gpu/graphite/vk/VulkanCommandBuffer.cpp",
+      "sha256": "e550892f251193467e4329c91e60a77234c9f3a9bd17623e30b38283733ad8e7",
+      "bytes": 101147
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/src/gpu/graphite/vk/VulkanRenderPass.cpp",
+      "sha256": "8251ccb7c8cc1d49a3edfd856381bcccbc724bde31b56b7f4abd04807a3f6bea",
+      "bytes": 29472
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mono/skia/cc43af052d3d98e605bee4ddc98671dafded1c57/src/gpu/graphite/vk/VulkanTexture.cpp",
+      "sha256": "0b5e0e58cdac5c7d14af8c17fa524c17b42fa972cb06acfbaf4e48e2a491d118",
+      "bytes": 28212
+    }
+  ],
+  "packages": [
+    {
+      "package": "skiasharp.nativeassets.win32",
+      "rid": "win-x64",
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-x64\\native\\libSkiaSharp.dll",
+      "packageSource": "https://api.nuget.org/v3/index.json",
+      "archiveMatchesCachedSha512": true,
+      "installedAssetMatchesArchive": true,
+      "assetSha256": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1",
+      "bytes": 13456696,
+      "remoteArchiveReDownloaded": false,
+      "exports": {
+        "sk_graphite_backend_is_available": true,
+        "sk_graphite_context_make_vulkan": true,
+        "sk_graphite_vk_backend_texture_new": true,
+        "sk_graphite_context_insert_recording": true,
+        "sk_graphite_context_submit": true,
+        "sk_graphite_context_check_async_work_completion": true,
+        "sk_graphite_context_async_rescale_and_read_pixels_surface": true,
+        "doroti_graphite_interop_version": false,
+        "doroti_graphite_vk_context_create": false,
+        "doroti_graphite_vk_texture_get_state": false,
+        "doroti_graphite_vk_texture_set_state": false,
+        "doroti_graphite_vk_insert_recording": false,
+        "doroti_graphite_vk_context_report_device_lost": false,
+        "doroti_graphite_has_unfinished_gpu_work": false
+      },
+      "compiledBackends": {
+        "Dawn": false,
+        "Metal": false,
+        "Vulkan": true
+      }
+    },
+    {
+      "package": "skiasharp.nativeassets.android",
+      "rid": "android-arm64",
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.android\\4.154.0-preview.1.26454.9\\runtimes\\android-arm64\\native\\libSkiaSharp.so",
+      "packageSource": "https://api.nuget.org/v3/index.json",
+      "archiveMatchesCachedSha512": true,
+      "installedAssetMatchesArchive": true,
+      "assetSha256": "63af1ec283b86965542bca1400ae446e6a179a7be5b6187e69aa5fa0bd49e180",
+      "bytes": 10341904,
+      "remoteArchiveReDownloaded": false
+    },
+    {
+      "package": "skiasharp.nativeassets.android",
+      "rid": "android-x64",
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.android\\4.154.0-preview.1.26454.9\\runtimes\\android-x64\\native\\libSkiaSharp.so",
+      "packageSource": "https://api.nuget.org/v3/index.json",
+      "archiveMatchesCachedSha512": true,
+      "installedAssetMatchesArchive": true,
+      "assetSha256": "9bb141c1ee6b40781044a4e13779c6f19a0b45554dc6030b5f1cf49b24f7e7b8",
+      "bytes": 11099936,
+      "remoteArchiveReDownloaded": false
+    }
+  ],
+  "nugetIndex": {
+    "url": "https://api.nuget.org/v3-flatcontainer/skiasharp/index.json",
+    "recentVersions": [
+      "4.151.0",
+      "4.151.1",
+      "4.151.2",
+      "4.152.0-preview.1.1",
+      "4.152.0-rc.1.26426.14",
+      "4.152.0",
+      "4.153.0-preview.1.26454.6",
+      "4.154.0-preview.1.26454.9"
+    ],
+    "pinnedVersionListed": true
+  }
+}

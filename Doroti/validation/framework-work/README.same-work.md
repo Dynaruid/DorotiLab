@@ -62,8 +62,8 @@ not `staticwebassets.build.endpoints.json` (relative paths), using
 `measure-state-resize.mjs LABEL resize-break --visit-all` performs 12 wheel inputs
 of 600px per column, returns each by -20000px, asserts IDs 0–28, then performs
 exactly eight resize inputs. It requires detailed diagnostics. The current indexed sample materializes visible sections initially; all 29
-sections must be visited before comparing the fully materialized workload. `summarize-same-work.py` preserves all six raw
-runs and verifies an exact final-generation commit.
+sections must be visited before comparing the fully materialized workload. The retired milestone summarizer preserved all six raw
+runs and verified an exact final-generation commit; its findings remain in the execution record below.
 
 ## Result / 결과
 

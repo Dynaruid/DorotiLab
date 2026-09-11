@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_SKIP_RPATH ON)
-option(DOROTI_QT_GRAPHITE "Use Graphite Vulkan output (requires a hardware Vulkan 1.1 GPU)" ON)
+option(DOROTI_QT_GRAPHITE "Use Graphite Vulkan output (official profile requires a hardware Vulkan 1.2 GPU)" ON)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 find_package(PkgConfig REQUIRED)

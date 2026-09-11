@@ -6,6 +6,8 @@ Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semanti
 
 iOS device (`ios-arm64`) Release builds default to NativeAOT. Debug, simulators and other platforms keep their existing defaults; `-CompilationMode Mono` explicitly selects the recovery profile. See [iOS build instructions](validation/native-aot/README.md).
 
+Official Graphite is the default. Windows uses the standard app-directory DLL from pinned SkiaSharp NativeAssets; no manifest override is required. Android verifies the official APK asset, and Qt negotiates Vulkan 1.2 with the official desktop asset. Custom Skia builds and the private ABI binding have been retired. Apple/Linux build, execution and AOT checks are skipped by user request. Performance acceptance remains incomplete. See [cutover and support matrix](docs/validation/official-graphite-cutover-2026-09-12.md) and [work0 status](../work0.md).
+
 ## Development model
 
 `src/Doroti.Framework.*` is maintained product source. Its public namespaces are `Doroti.Framework.*`, matching the project, assembly, and package names. Add features and fix correctness directly in the owning framework/runtime/host project, then update every consumer of the shared contract.
@@ -92,7 +94,7 @@ The active command surface is intentionally small:
 
 For Windows, `-Platform windows` selects Windows App SDK/`HwndExactCpp`; add `-WindowsBackend Maui` to select the independent MAUI runner. Target-specific scripts under `eng/` are maintainer diagnostics, not interchangeable product commands. Their contracts and evidence boundaries are described under [validation](validation/README.md), while previous run results remain under `history/` at the repository root.
 
-Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to use ANGLE explicitly. GPU selection defaults to `NoPreference` (system default). Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` for a Windows/DXGI preference; this applies to Vulkan and ANGLE. `DOROTI_WINDOWS_VULKAN_DEVICE` optionally overrides the Vulkan choice with an exact or unique device-name fragment. On Windows 11 24H2+, an app can request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag; omitted backdrop options and `system` remain opaque. The demo already requests Acrylic. Vulkan uses System32 Vulkan 1.1, dedicated D3D11-texture external memory, and Windows Presentation, with no automatic presenter fallback. Web defaults to `worker-direct-webgpu`, including `auto`; other renderers remain explicitly selectable. These defaults do not change the recorded validation results or complete the remaining GPU/DPI/refresh/IME/accessibility qualification.
+Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to use ANGLE explicitly. GPU selection defaults to `NoPreference` (system default). Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` for a Windows/DXGI preference; this applies to Vulkan and ANGLE. `DOROTI_WINDOWS_VULKAN_DEVICE` optionally overrides the Vulkan choice with an exact or unique device-name fragment. On Windows 11 24H2+, an app can request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag; omitted backdrop options and `system` remain opaque. The demo already requests Acrylic. Vulkan uses System32 Vulkan 1.2, dedicated D3D11-texture external memory, and Windows Presentation, with no automatic presenter fallback. Web defaults to `worker-direct-webgpu`, including `auto`; other renderers remain explicitly selectable. These defaults do not change the recorded validation results or complete the remaining GPU/DPI/refresh/IME/accessibility qualification.
 
 Vulkan moving-origin resize submits a prepared frame immediately after the HWND geometry change and waits for its CompositionFrame receipt. Implementation details, earlier failures, observed resize improvement, and validation limits are preserved in the [September 5 history](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md). `experimentalAcrylic` remains a compatibility mode using the same Acrylic implementation.
 
@@ -112,7 +114,7 @@ AppKit live coverage and its remaining gates are recorded separately in the arch
 - Fix shared behavior at the lowest owning framework/runtime/rendering/host contract.
 - Keep reference comparison, build, native live, browser live, physical, and cross-target claims distinct.
 - `validation/contracts/` stores small machine-readable contracts consumed by active validators.
-- `validation/evidence/` is reserved for deliberately committed machine-readable summaries; it is currently empty.
+- `validation/` contains source and fixtures only. Generated output goes under `artifacts/validation/`; retained milestone evidence lives under `../history/`.
 - `.doroti/` and `artifacts/` store transient tool and validation output.
 - All repository JSON uses `System.Text.Json`.
 

@@ -24,7 +24,7 @@ if not args.no_build:
     result = run("dotnet", "build", str(here / "Doroti.Validation.AndroidSemanticsProvider.csproj"), "-c", "Release", check=False)
     args.output.joinpath("build.log").write_bytes(result.stdout + result.stderr)
     result.check_returncode()
-apk = here / "bin/Release/net10.0-android/android-arm64" / (package + "-Signed.apk")
+apk = here.parents[1] / "artifacts/validation/build/android-semantics-provider/bin/Release/net10.0-android/android-arm64" / (package + "-Signed.apk")
 run(*adb, "install", "-r", "--user", "0", str(apk))
 remote = f"/sdcard/Android/data/{package}/cache/result.txt"
 run(*adb, "shell", "rm", "-f", remote)

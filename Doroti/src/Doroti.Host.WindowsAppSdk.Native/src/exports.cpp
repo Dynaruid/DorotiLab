@@ -536,6 +536,10 @@ class ProductHost final {
         // worker is draining; that invalidation is obsolete once close has
         // begun and must not race the task HWND teardown.
         EmitLifecycle(0);
+        // Acknowledge the user's close immediately. Keep the HWND and all
+        // callback/GPU owners alive until the render worker actually retires.
+        // This is a visibility/admission boundary, not a GPU completion receipt.
+        ShowWindow(top_, SW_HIDE);
         StopRenderWorker();
         DestroyWindow(top_);
         return 0;

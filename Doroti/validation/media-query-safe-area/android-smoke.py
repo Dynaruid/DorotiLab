@@ -8,7 +8,8 @@ import time
 import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[3]
-evidence = root / "Doroti/validation/evidence/media-query-safe-area"
+evidence = root / "Doroti/artifacts/validation/media-query-safe-area"
+evidence.mkdir(parents=True, exist_ok=True)
 serial = sys.argv[1] if len(sys.argv) > 1 else "emulator-5554"
 package = "dev.doroti.testbed"
 apk = root / "DorotiTestbedApp/android/bin/android-x64/Debug/net10.0-android/android-x64/dev.doroti.testbed-Signed.apk"

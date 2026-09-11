@@ -8,6 +8,8 @@ Material 테마는 Material 3 전용입니다. `ThemeData` factory, 생성자, `
 
 iOS 기기용(`ios-arm64`) Release는 NativeAOT가 기본입니다. Debug·시뮬레이터·다른 플랫폼은 기존 기본값을 유지하며, `-CompilationMode Mono`로 명시적 복구 프로필을 선택할 수 있습니다. [iOS 빌드 안내](validation/native-aot/README.md)를 참고하세요.
 
+공식 Graphite를 기본 경로로 전환했습니다. Windows는 manifest 지정 없이 공식 NativeAssets의 앱 디렉터리 DLL을 검증해 사용하고, Android는 공식 APK 자산을 검증합니다. Qt는 공식 desktop 자산과 Vulkan 1.2를 사용하도록 구성했습니다. 커스텀 Skia 빌드와 private ABI binding은 보관 후 활성 경로에서 제거했습니다. Apple·Linux build/실행/AOT 검증은 사용자 요청으로 생략했으며 전체 성능 수용은 미완료입니다. [전환 결과와 지원표](docs/validation/official-graphite-cutover-2026-09-12.md), [work0 상태](../work0.md)를 참고하세요.
+
 ## 개발 방식
 
 `src/Doroti.Framework.*`는 직접 유지보수하는 제품 source입니다. 공개 namespace는 project, assembly, package 이름과 같은 `Doroti.Framework.*`입니다. 기능 추가와 정확성 수정은 소유 framework/runtime/host project에서 직접 수행하고, 바뀐 공용 계약의 모든 consumer를 함께 고칩니다.
@@ -90,7 +92,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windo
 
 Windows에서 `-Platform windows`는 Windows App SDK/`HwndExactCpp`를 선택하며, 독립 MAUI runner는 `-WindowsBackend Maui`로 선택합니다. `eng/`의 target-specific script는 서로 대체 가능한 제품 명령이 아니라 maintainer 진단 도구입니다. 계약과 evidence 경계는 [validation](validation/README.md)에, 과거 실행 결과는 repository root의 `history/`에 보존합니다.
 
-Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.1, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 `worker-direct-webgpu`가 기본값이고 `worker-direct-webgl`도 명시적으로 선택할 수 있습니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
+Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.2, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 `worker-direct-webgpu`가 기본값이고 `worker-direct-webgl`도 명시적으로 선택할 수 있습니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
 
 Vulkan의 moving-origin resize는 준비된 frame을 HWND geometry 변경 직후 제출하고 CompositionFrame receipt를 기다립니다. 구현과 이전 실패, 관찰된 resize 개선, 검증 범위는 [9월 5일 기록](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md)에 보존되어 있습니다. `experimentalAcrylic`은 기존 앱을 위한 호환 mode로 같은 Acrylic 구현을 사용합니다.
 
@@ -110,7 +112,7 @@ AppKit의 live 범위와 남은 gate는 archive한 [AppKit dual-backend 요약](
 - 공용 동작은 가장 낮은 소유 framework/runtime/rendering/host 계약에서 고칩니다.
 - Reference 비교, build, native live, browser live, physical, cross-target 결과를 구분합니다.
 - `validation/contracts/`에는 활성 validator가 읽는 작은 machine-readable contract를 둡니다.
-- `validation/evidence/`는 명시적으로 commit할 machine-readable summary를 위해 예약하며 현재는 비어 있습니다.
+- `validation/`에는 소스와 fixture만 둡니다. 생성 산출물은 `artifacts/validation/`, 보관할 단계별 검증 기록은 `../history/`에 둡니다.
 - `.doroti/`와 `artifacts/`에는 임시 tool·validation output을 둡니다.
 - Repository JSON은 `System.Text.Json`을 사용합니다.
 

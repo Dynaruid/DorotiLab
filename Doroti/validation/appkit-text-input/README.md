@@ -4,7 +4,7 @@ Run from the repository root on Apple Silicon with the macOS workload installed:
 
 ```powershell
 dotnet build ./Doroti/validation/appkit-text-input -c Release
-& "./Doroti/validation/appkit-text-input/bin/Release/net10.0-macos/osx-arm64/Doroti.Validation.AppKitTextInput.app/Contents/MacOS/Doroti.Validation.AppKitTextInput"
+& "./Doroti/artifacts/validation/build/appkit-text-input/bin/Release/net10.0-macos/osx-arm64/Doroti.Validation.AppKitTextInput.app/Contents/MacOS/Doroti.Validation.AppKitTextInput"
 ```
 
 The executable uses real AppKit controls and the pinned MAUI backend in an

@@ -33,7 +33,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         Validate(descriptor);
         if (GraphiteEnabled)
         {
-            if (descriptor.StructSize < 120 || descriptor.VulkanInstance == 0 || descriptor.VulkanSurface == 0)
+            if (descriptor.StructSize < 128 || descriptor.VulkanInstance == 0 || descriptor.VulkanSurface == 0)
                 throw new InvalidDataException("Qt Graphite requires the negotiated Vulkan surface descriptor.");
             if (_vulkan is null || _contextIdentity != descriptor.ContextIdentity || _surfaceGeneration != descriptor.SurfaceGeneration)
             {
@@ -41,7 +41,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                 var extensions = descriptor.VulkanInstanceExtensions;
                 if (extensions.Length > 65536) throw new InvalidDataException("Qt Vulkan extension list is too long.");
                 var names = Marshal.PtrToStringUTF8((nint)extensions.Data, (int)extensions.Length)!.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                _vulkan = GraphiteVulkanWindow.FromQt(descriptor.VulkanInstance, descriptor.VulkanSurface, names);
+                _vulkan = GraphiteVulkanWindow.FromQtOfficial(descriptor.VulkanInstance, descriptor.VulkanSurface, names, descriptor.VulkanInstanceApiVersion);
                 _vulkan.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
                 _contextIdentity = descriptor.ContextIdentity;
                 _surfaceGeneration = descriptor.SurfaceGeneration;

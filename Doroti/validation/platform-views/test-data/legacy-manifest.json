@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "legacy-manifest-validation",
+  "targetRid": "win-x64",
+  "resources": [],
+  "plugins": []
+}

@@ -6,5 +6,5 @@ import sys
 root = Path(__file__).resolve().parents[3]
 project = Path(__file__).resolve().parent / "AppKitPlatformViews.csproj"
 subprocess.run(["dotnet", "build", str(project), "--nologo", "-m:1", "-v:q"], cwd=root, check=True)
-executable = project.parent / "bin/Debug/net10.0-macos/osx-arm64/AppKitPlatformViews.app/Contents/MacOS/AppKitPlatformViews"
+executable = root / "artifacts/validation/build/platform-views/macos/bin/Debug/net10.0-macos/osx-arm64/AppKitPlatformViews.app/Contents/MacOS/AppKitPlatformViews"
 raise SystemExit(subprocess.run([str(executable)], cwd=root).returncode)

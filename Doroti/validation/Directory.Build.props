@@ -1,0 +1,15 @@
+<Project>
+  <Import Project="../Directory.Build.props" />
+  <PropertyGroup>
+    <!-- Use the fixture's relative directory to keep nested projects isolated. -->
+    <DorotiValidationBuildRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '../artifacts/validation/build'))</DorotiValidationBuildRoot>
+    <DorotiValidationProjectPath>$([MSBuild]::MakeRelative('$(MSBuildThisFileDirectory)', '$(MSBuildProjectDirectory)'))</DorotiValidationProjectPath>
+    <DorotiValidationProjectOutput>$(DorotiValidationBuildRoot)$(DorotiValidationProjectPath)/</DorotiValidationProjectOutput>
+    <BaseOutputPath Condition="'$(ArtifactsPath)' == ''">$(DorotiValidationProjectOutput)bin/</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">$(DorotiValidationProjectOutput)obj/</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <NuGetLockFilePath Condition="'$(ArtifactsPath)' == ''">$(DorotiValidationProjectOutput)obj/packages.lock.json</NuGetLockFilePath>
+    <NuGetLockFilePath Condition="'$(ArtifactsPath)' != ''">$(ArtifactsPath)/obj/$(MSBuildProjectName)/packages.lock.json</NuGetLockFilePath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

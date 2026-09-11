@@ -76,7 +76,7 @@ constexpr std::uint32_t kAbiVersion = 3;
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
 #ifdef DOROTI_QT_GRAPHITE
-    DOROTI_QT_FEATURE_VULKAN_SURFACE |
+    DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION |
 #else
     DOROTI_QT_FEATURE_OPENGL_FBO |
 #endif
@@ -154,7 +154,7 @@ class DorotiSurface final : public DorotiWindowBase {
     clock_.start();
 #ifdef DOROTI_QT_GRAPHITE
     setSurfaceType(QSurface::VulkanSurface);
-    vulkan_.setApiVersion(QVersionNumber(1, 1));
+    vulkan_.setApiVersion(QVersionNumber(1, 2));
     if (!vulkan_.create()) throw std::runtime_error("Qt Vulkan instance creation failed; no OpenGL fallback");
     setVulkanInstance(&vulkan_);
     vulkan_extensions_ = vulkan_.extensions().join('\n');
@@ -478,6 +478,7 @@ class DorotiSurface final : public DorotiWindowBase {
     descriptor.vulkan_surface = reinterpret_cast<std::uintptr_t>(surface);
     descriptor.vulkan_instance = vulkan_.vkInstance();
     descriptor.vulkan_instance_extensions = Utf8(vulkan_extensions_);
+    descriptor.vulkan_instance_api_version = VK_MAKE_VERSION(vulkan_.apiVersion().majorVersion(), vulkan_.apiVersion().minorVersion(), vulkan_.apiVersion().microVersion());
     vulkan_.presentAboutToBeQueued(this);
     const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
     vulkan_.presentQueued(this);

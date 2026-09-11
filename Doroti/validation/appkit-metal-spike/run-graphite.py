@@ -59,7 +59,7 @@ def main():
         if code:
             print((evidence / "build.log").read_text()[-6000:])
             return 1
-    binary = PROJECT / "bin/Debug/net10.0-macos/osx-arm64/Doroti AppKit Metal Spike.app/Contents/MacOS/Doroti.Validation.AppKitMetalSpike"
+    binary = ROOT / "Doroti/artifacts/validation/build/appkit-metal-spike/bin/Debug/net10.0-macos/osx-arm64/Doroti AppKit Metal Spike.app/Contents/MacOS/Doroti.Validation.AppKitMetalSpike"
     manifest["app"] = {"path": str(binary), "sha256": hashlib.sha256(binary.read_bytes()).hexdigest()}
     modes = ["contract", "ganesh", "graphite"] if args.mode == "all" else [args.mode]
     passed = True

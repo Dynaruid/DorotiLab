@@ -12,7 +12,8 @@ mode = sys.argv[1] if len(sys.argv) > 1 else "native"
 if mode not in ("native", "maui"):
     raise SystemExit("Expected native or maui")
 folder, name = ("windowsappsdk", "WindowsAppSdk") if mode == "native" else ("windows", "Windows")
-evidence = root / "Doroti/validation/evidence/media-query-safe-area"
+evidence = root / "Doroti/artifacts/validation/media-query-safe-area"
+evidence.mkdir(parents=True, exist_ok=True)
 label = "windows-native-smoke" if mode == "native" else "maui-windows-smoke"
 exe = root / f"DorotiTestbedApp/{folder}/bin/Debug/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.{name}.exe"
 env = os.environ.copy()

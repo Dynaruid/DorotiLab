@@ -118,8 +118,13 @@ internal sealed class MauiSkiaCapabilities :
         }
     }
 
-    internal void AttachFrameworkTrace(DorotiFrameTrace frameTrace) =>
+    internal void AttachFrameworkTrace(DorotiFrameTrace frameTrace)
+    {
+        // Diagnostic wall clock is separate from the causally clamped frame
+        // timestamp. Both baseline and official candidates use the same switch.
+        frameTrace.MeasureRecordingTime = Environment.GetEnvironmentVariable("DOROTI_MAUI_WALL_TRACE") == "1";
         _renderer.AttachFrameworkTrace(frameTrace);
+    }
 
     internal void AttachSurface(Action invalidate) => _renderer.AttachSurface(invalidate);
 

@@ -344,3 +344,10 @@ target 행은 WindowsAppSdk, Windows MAUI, Android emulator x64/실기기 arm64,
 | 기기별 성능 예산 | PV-0/WV-0, 최종 WV-9 | 기존 baseline과 동일 workload 측정, 허용 회귀 수치 |
 
 주요 로컬 레퍼런스: [공통 widget](reference/flutter_inappwebview-master/flutter_inappwebview/lib/src/in_app_webview/in_app_webview.dart), [controller interface](reference/flutter_inappwebview-master/flutter_inappwebview_platform_interface/lib/src/in_app_webview/platform_inappwebview_controller.dart), [Windows 구현](reference/flutter_inappwebview-master/flutter_inappwebview_windows/windows/in_app_webview/in_app_webview.cpp), [Web element 수명](reference/flutter_inappwebview-master/flutter_inappwebview_web/lib/web/in_app_web_view_web_element.dart). reference의 구현 존재는 Doroti 기능 구현·제품 검증 완료를 뜻하지 않는다.
+
+
+## work0 renderer contract handoff (2026-09-12)
+
+공식 SkiaSharp NativeAssets `4.154.0-preview.1.26454.9`가 기본이다. Vulkan은 실제 1.2 profile, 공개 session 생성, 성공한 queue submit 순서의 observer 상태를 사용한다. 각 raster segment의 일반 R과 플랫폼 소유 P를 구분하고 GPU copy 뒤 R을 관찰된 L/ownership으로 복원한다. host fence 완료와 플랫폼 front/present retirement는 별도 경계다. segment identity·paint order·alpha·frame admission 계약을 유지해야 한다.
+
+구 `SkiaGraphiteVulkanOptions`/private ABI 생성 경로는 제거했다. 새 직접 소비자는 `CreateOfficialVulkan`의 typed observed-state/retirement 계약을 사용한다. 정상 desktop 제품은 manifest 없이 표준 공식 DLL을 검증하고, 프로세스 안에서 native 자산을 교체하지 않는다. timeout을 device loss로 바꾸거나 미완료 generation을 재사용하지 않는다. Apple/Linux는 코드 구성만 완료했으며 검증은 `skippedByUser`다. 전체 성능 수용은 미완료다. [전환 및 검증 범위](Doroti/docs/validation/official-graphite-cutover-2026-09-12.md)를 따른다.

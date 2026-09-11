@@ -30,6 +30,13 @@ internal static class WindowsCompositionSurfaceFeature
     internal static bool Enabled => GraphiteEnabled ||
         string.Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), "1",
             StringComparison.Ordinal);
+
+    internal static void ConfigureGraphiteLibrary()
+    {
+        var manifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
+        if (string.IsNullOrWhiteSpace(manifest)) GraphiteNativeLibrary.Configure();
+        else GraphiteNativeLibrary.ConfigureOfficial(GraphiteNativeLibrary.ReadOfficialManifest(manifest));
+    }
 }
 
 /// <summary>
@@ -514,7 +521,10 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private void CreateGraphite()
     {
         var luid = _adapter!.Description1.Luid;
-        _graphite = GraphiteVulkanWindow.CreateD3D12(System.Runtime.CompilerServices.Unsafe.As<Luid, long>(ref luid));
+        var officialManifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
+        var adapterLuid = System.Runtime.CompilerServices.Unsafe.As<Luid, long>(ref luid);
+        _graphite = string.IsNullOrWhiteSpace(officialManifest) ? GraphiteVulkanWindow.CreateD3D12(adapterLuid)
+            : GraphiteVulkanWindow.CreateD3D12Official(adapterLuid, GraphiteNativeLibrary.ReadOfficialManifest(officialManifest));
         _graphite.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
     }
 
@@ -539,6 +549,17 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         _copyFence.SetEventOnCompletion(fenceValue, completion).CheckError();
         if (!completion.WaitOne(TimeSpan.FromSeconds(5)))
             throw new TimeoutException($"Composition D3D12 fence {fenceValue} did not complete.");
+    }
+
+    internal async Task DrainForCloseAsync()
+    {
+        // The raster owner has already stopped, so no new commits can enter.
+        await Task.Run(() => _noPendingCommits.Wait());
+        lock (_poolGate)
+        {
+            if (_asyncCommitFailure is { } failure)
+                throw new InvalidOperationException("Composition completion was not confirmed; retaining the renderer.", failure);
+        }
     }
 
     internal void Reset()

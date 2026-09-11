@@ -46,7 +46,8 @@ public sealed partial class SkiaGraphiteSession : IDisposable
     public (long Uploads, long Hits, long Discarded) ImageCacheDiagnostics
     { get { CheckOwner(); return (_images.Uploads, _images.Hits, _images.Discarded); } }
     public int MaxFrames { get; }
-    public bool IsDeviceLost { get { CheckOwner(); return _context.IsDeviceLost; } }
+    public bool IsDeviceLost { get { CheckOwner(); return _hostReportedVulkanDeviceLost || _context.IsDeviceLost; } }
+    public bool IsFaulted { get { CheckOwner(); return _faulted; } }
     public int OutstandingFrames { get { CheckOwner(); return _frames.Count; } }
     public bool CanBeginFrame
     {
@@ -219,6 +220,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                 }
                 if (!_session._context.Submit(new SKGraphiteSubmitInfo { Sync = false }))
                     throw new InvalidOperationException("Graphite Submit failed.");
+                _session._vulkanOwner?.CheckHostState();
                 _session._images.Commit();
                 SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: false);
             }

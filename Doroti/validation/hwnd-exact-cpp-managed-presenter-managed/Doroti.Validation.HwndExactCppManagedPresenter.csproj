@@ -13,7 +13,7 @@
     <ProjectReference Include="..\..\src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\hwnd-exact-cpp-managed-presenter\bin\Release\x64\Doroti.HwndExactCpp.ManagedPresenterProbe.dll"
+    <None Include="$(DorotiValidationBuildRoot)hwnd-exact-cpp-managed-presenter\bin\Release\x64\Doroti.HwndExactCpp.ManagedPresenterProbe.dll"
           Link="Doroti.HwndExactCpp.ManagedPresenterProbe.dll"
           CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

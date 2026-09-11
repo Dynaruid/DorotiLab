@@ -112,7 +112,7 @@ Run results, historical failures, and per-target build/live status were recorded
 in the historical Material sample plan's `work.md` section 9 (2026-09-06).
 That removed plan is distinct from the later Graphite plan; the evidence locations follow.
 Evidence root: `.doroti/evidence/material-sample-implementation/`; browser wrappers:
-`Doroti/validation/web-playwright/artifacts/wrapper/material-sample-implementation-v*/`.
+`Doroti/artifacts/validation/web-playwright/wrapper/material-sample-implementation-v*/`.
 Browser screenshots and traces are in the corresponding non-`wrapper` artifact folder.
 
 `material-sample-final-v27` passed all 13 current integration scenarios in 6.2 minutes,

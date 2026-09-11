@@ -5,7 +5,8 @@ namespace Doroti.Skia.Rendering;
 
 public sealed partial class SkiaGraphiteSession
 {
-    private SkiaGraphiteVulkanInterop? _vulkanOwner;
+    private SkiaGraphiteVulkanBinding? _vulkanOwner;
+    private bool _hostReportedVulkanDeviceLost;
     private readonly HashSet<VulkanTarget> _vulkanTargets = [];
 
     /// <summary>
@@ -27,15 +28,17 @@ public sealed partial class SkiaGraphiteSession
         CheckOwner();
         if (_vulkanOwner is null) throw new InvalidOperationException("This is not a Vulkan session.");
         _stopping = _faulted = true;
+        _hostReportedVulkanDeviceLost = true;
         if (!_vulkanOwner.ReportDeviceLost(_context.Handle))
             throw new InvalidOperationException("Could not forward external Vulkan device loss to Graphite.");
     }
 
-    public static SkiaGraphiteSession CreateVulkan(SkiaGraphiteVulkanOptions options, long generation, int maxFrames = 3)
+    /// <summary>Official asset path. Host state observation and safe retirement are mandatory.</summary>
+    public static SkiaGraphiteSession CreateOfficialVulkan(SkiaGraphiteOfficialVulkanOptions options, long generation, int maxFrames = 3)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(generation, 1);
         ArgumentOutOfRangeException.ThrowIfLessThan(maxFrames, 1);
-        var owner = new SkiaGraphiteVulkanInterop(options);
+        var owner = new SkiaGraphiteOfficialVulkanInterop(options);
         try { return new(owner.Context, generation, maxFrames) { _vulkanOwner = owner }; }
         catch { owner.Dispose(); throw; }
     }
@@ -52,15 +55,17 @@ public sealed partial class SkiaGraphiteSession
         if (image == 0) throw new ArgumentException("A live Vulkan image is required.", nameof(image));
         var backend = SKGraphiteBackendTexture.CreateVulkan(width, height, info, layout, queueFamily, image)
             ?? throw new InvalidOperationException("Graphite Vulkan texture wrapping failed.");
+        SKSurface? surface = null;
         try
         {
-            var surface = SKSurface.Create(_recorder, backend, colorType)
+            _vulkanOwner.TrackTarget(backend.Handle, image, layout, queueFamily);
+            surface = SKSurface.Create(_recorder, backend, colorType)
                 ?? throw new InvalidOperationException("Graphite Vulkan surface creation failed; verify format and INPUT_ATTACHMENT usage.");
             var target = new VulkanTarget(this, backend, SkiaGpuSurfaces.Register(surface, _recorder));
             _vulkanTargets.Add(target);
             return target;
         }
-        catch { backend.Dispose(); throw; }
+        catch { surface?.Dispose(); _vulkanOwner.UntrackTarget(backend.Handle); backend.Dispose(); throw; }
     }
 
     public Frame BeginVulkanFrame(VulkanTarget target)
@@ -75,6 +80,7 @@ public sealed partial class SkiaGraphiteSession
             throw new InvalidOperationException("Graphite Vulkan device lost.");
         }
         _context.CheckAsyncWorkCompletion();
+        _vulkanOwner!.CheckHostState();
         var frame = new Frame(this, target.Backend, target.Surface, target);
         target.ActiveFrame = frame;
         _recordingFrame = frame;
@@ -122,6 +128,7 @@ public sealed partial class SkiaGraphiteSession
             _session.CheckOwner();
             if (ActiveFrame is not null) throw new InvalidOperationException("Return the Vulkan frame before disposing its target.");
             Surface.Dispose();
+            _session._vulkanOwner!.UntrackTarget(Backend.Handle);
             Backend.Dispose();
             _session._vulkanTargets.Remove(this);
             _disposed = true;

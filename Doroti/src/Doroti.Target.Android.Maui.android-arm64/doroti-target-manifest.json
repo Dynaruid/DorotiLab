@@ -7,7 +7,9 @@
   "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
   "softwareFallback": false,
   "minimumApi": 24,
-  "requiredVulkanVersion": "1.1",
-  "nativeSkiaBridgeAbi": 3,
-  "defaultSkiaEngine": "Graphite"
+  "requiredVulkanVersion": "1.2",
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.Android",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite"
 }

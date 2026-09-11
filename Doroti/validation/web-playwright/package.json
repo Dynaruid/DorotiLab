@@ -7,7 +7,7 @@
     "check": "tsc --noEmit",
     "test": "playwright test",
     "test:headed": "playwright test --project=desktop-chrome-headed",
-    "show-report": "playwright show-report artifacts/report"
+    "show-report": "playwright show-report ../../artifacts/validation/web-playwright/auto/report"
   },
   "keywords": [],
   "author": "",

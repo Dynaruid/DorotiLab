@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="test-data/legacy-manifest.json" LogicalName="Doroti.Application.Manifest" />
     <Compile Remove="windows/**/*.cs" />
     <Compile Remove="macos/**/*.cs" />
     <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" />

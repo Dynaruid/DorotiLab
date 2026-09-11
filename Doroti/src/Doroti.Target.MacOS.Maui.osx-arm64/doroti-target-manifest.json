@@ -6,5 +6,8 @@
   "nativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
   "graphicsBackend": "AppKit/MTKView/Graphite-Metal",
   "softwareFallback": false,
-  "defaultSkiaEngine": "Graphite"
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.macOS",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite"
 }

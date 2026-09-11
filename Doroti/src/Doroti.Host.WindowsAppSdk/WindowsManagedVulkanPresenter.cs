@@ -227,7 +227,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         : "top-level-dcomp-vulkan-presentation-synchronous-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
     internal override string DiagnosticCoverage =>
-        "Vulkan 1.1 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
+        "Vulkan 1.2 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
         "external queue-family ownership transfers, CPU copy-fence completion before native Present, three-slot availability retirement, " +
         "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM wait, a native topmost DirectComposition target on the top-level HWND, " +
         "identity full-capacity Presentation coverage clipped by the single top-level client geometry, " +
@@ -274,7 +274,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _lastPresentResult.ToString(),
         ActiveSwapchains: 0,
         RetiredSwapchains: 0,
-        ValidationEnabled: false,
+        ValidationEnabled: _validationEnabled,
         MaximumRetiredSwapchains: 0,
         LastRecreateReason: _lastRecreateReason,
         LastRetirementLatencyMicroseconds: _lastRetirementLatencyMicroseconds,
@@ -314,7 +314,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         MaximumResizeClockWaitMicroseconds: _maximumResizeClockWaitMicroseconds,
         RecentEvents: SnapshotEvents(),
         PreparedReceiptTimeoutMilliseconds: PreparedReceiptTimeoutMilliseconds,
-        PreparedReceiptsOver50Milliseconds: _preparedReceiptsOver50Milliseconds);
+        PreparedReceiptsOver50Milliseconds: _preparedReceiptsOver50Milliseconds,
+        ValidationErrors: _validationErrors, ValidationWarnings: _validationWarnings,
+        ValidationCallbackFault: _validationCallbackFault, ValidationMessages: ValidationMessages(),
+        OfficialGraphiteAsset: _officialGraphiteSelected, GraphiteNativePath: _actualGraphiteLibraryPath,
+        GraphiteNativeSha256: _officialGraphiteNativeHash);
 
     bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
 
@@ -652,6 +656,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 // replace pixels that belong to the last displayed geometry.
                 if (_graphiteFrame is not null)
                 {
+                    DelayOfficialProducerForQualification();
                     _graphiteSubmissionAttempted = true;
                     try { _graphiteFrame.Submit(); }
                     catch (InvalidOperationException) when (_graphite!.IsDeviceLost)
@@ -662,7 +667,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 if (_graphiteFrame is not null)
                 {
                     ReturnGraphiteFrameAfterGpuCompletion();
-                    _graphiteTarget!.SetStateAfterGpuCompletion((int)ImageLayout.ColorAttachmentOptimal, _queueFamily);
+                    _graphiteTarget!.SetStateAfterGpuCompletion((int)_graphiteCopyRestoreLayout, _queueFamily);
                 }
                 GpuCopyCount++;
                 if (prepareRequest is { } prepareKey)
@@ -987,6 +992,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         BeginCommands();
         var acquireBarriers = stackalloc ImageMemoryBarrier[3];
         var graphiteState = _graphiteTarget?.GetState();
+        _graphiteCopyRestoreLayout = _stockObserver != null && graphiteState is { } observed ? (ImageLayout)observed.Layout : ImageLayout.ColorAttachmentOptimal;
         if (graphiteState is { } state && state.QueueFamily != _queueFamily)
             throw new InvalidOperationException("Graphite backing has unexpected queue ownership.");
         acquireBarriers[0] = ImageBarrier(
@@ -1003,7 +1009,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             slot.Image, slot.Layout, ImageLayout.TransferDstOptimal,
             Vk.QueueFamilyExternal, _queueFamily,
             0, AccessFlags.TransferWriteBit);
-        _vk.CmdPipelineBarrier(
+        ObservedPipelineBarrier(
             _commandBuffer,
             (_useGraphite ? PipelineStageFlags.AllCommandsBit : PipelineStageFlags.TopOfPipeBit | PipelineStageFlags.ColorAttachmentOutputBit) |
             PipelineStageFlags.TransferBit,
@@ -1030,7 +1036,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         var retainedReady = ImageBarrier(
             _retainedFrameImage, ImageLayout.TransferDstOptimal, ImageLayout.TransferSrcOptimal,
             AccessFlags.TransferWriteBit, AccessFlags.TransferReadBit);
-        _vk.CmdPipelineBarrier(
+        ObservedPipelineBarrier(
             _commandBuffer, PipelineStageFlags.TransferBit, PipelineStageFlags.TransferBit,
             0, 0, null, 0, null, 1, &retainedReady);
 
@@ -1048,15 +1054,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
         var releaseBarriers = stackalloc ImageMemoryBarrier[2];
         releaseBarriers[0] = ImageBarrier(
-            _backingImage, ImageLayout.TransferSrcOptimal, ImageLayout.ColorAttachmentOptimal,
-            AccessFlags.TransferReadBit, AccessFlags.ColorAttachmentWriteBit);
+            _backingImage, ImageLayout.TransferSrcOptimal, _graphiteCopyRestoreLayout,
+            AccessFlags.TransferReadBit, _stockObserver != null ? AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit : AccessFlags.ColorAttachmentWriteBit);
         releaseBarriers[1] = ExternalImageBarrier(
             slot.Image, ImageLayout.TransferDstOptimal, ImageLayout.General,
             _queueFamily, Vk.QueueFamilyExternal,
             AccessFlags.TransferWriteBit, 0);
-        _vk.CmdPipelineBarrier(
+        ObservedPipelineBarrier(
             _commandBuffer, PipelineStageFlags.TransferBit,
-            PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
+            _stockObserver != null ? PipelineStageFlags.AllCommandsBit : PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
             0, 0, null, 0, null, 2, releaseBarriers);
 
         var started = Stopwatch.GetTimestamp();
@@ -1368,11 +1374,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         var loaderApiVersion = VulkanApiVersion11;
         Check(_vk.EnumerateInstanceVersion(&loaderApiVersion), "vkEnumerateInstanceVersion");
         _loaderApiVersion = loaderApiVersion;
-        if (_loaderApiVersion < VulkanApiVersion11)
+        if (_loaderApiVersion < RequiredVulkanApiVersion)
             throw new InvalidOperationException(
-                $"The Vulkan loader API {FormatVersion(_loaderApiVersion)} is below 1.1.");
+                $"The Vulkan loader API {FormatVersion(_loaderApiVersion)} is below {FormatVersion(RequiredVulkanApiVersion)}.");
         var applicationName = (byte*)SilkMarshal.StringToPtr("Doroti");
         var engineName = (byte*)SilkMarshal.StringToPtr("Doroti");
+        var validationNames = _validationEnabled ? new[] { "VK_EXT_debug_utils", "VK_EXT_validation_features", "VK_LAYER_KHRONOS_validation" }.Select(Marshal.StringToCoTaskMemUTF8).ToArray() : [];
         try
         {
             var applicationInfo = new ApplicationInfo
@@ -1380,7 +1387,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 SType = StructureType.ApplicationInfo,
                 PApplicationName = applicationName,
                 PEngineName = engineName,
-                ApiVersion = VulkanApiVersion11,
+                ApiVersion = RequiredVulkanApiVersion,
             };
             var createInfo = new InstanceCreateInfo
             {
@@ -1389,12 +1396,26 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 EnabledExtensionCount = 0,
                 PpEnabledExtensionNames = null,
             };
-            Check(_vk.CreateInstance(&createInfo, null, out _instance), "vkCreateInstance");
+            var debug = ValidationDebugInfo();
+            var synchronization = ValidationFeatureEnableEXT.SynchronizationValidationExt;
+            var validation = new ValidationFeaturesEXT { SType = StructureType.ValidationFeaturesExt, PNext = &debug,
+                EnabledValidationFeatureCount = 1, PEnabledValidationFeatures = &synchronization };
+            fixed (nint* names = validationNames)
+            {
+                if (_validationEnabled)
+                {
+                    createInfo.EnabledExtensionCount = 2; createInfo.PpEnabledExtensionNames = (byte**)names;
+                    createInfo.EnabledLayerCount = 1; createInfo.PpEnabledLayerNames = (byte**)(names + 2); createInfo.PNext = &validation;
+                }
+                Check(_vk.CreateInstance(&createInfo, null, out _instance), "vkCreateInstance");
+            }
+            if (_validationEnabled) CreateValidationMessenger(&debug);
         }
         finally
         {
             SilkMarshal.Free((nint)applicationName);
             SilkMarshal.Free((nint)engineName);
+            foreach (var name in validationNames) Marshal.FreeCoTaskMem(name);
         }
     }
 
@@ -1465,7 +1486,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                     rejectedCandidates.Add($"{name}: missing {string.Join(", ", missing)}");
                     break;
                 }
-                if (properties.ApiVersion < VulkanApiVersion11)
+                if (properties.ApiVersion < RequiredVulkanApiVersion)
                 {
                     rejectedCandidates.Add($"{name}: Vulkan API below 1.1");
                     break;
@@ -1501,8 +1522,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             selected = candidates[Array.IndexOf(eligibleLuids, luid)];
         }
         RecordEvent($"gpu-selection preference={preference} override={selector ?? "none"} device={selected.Name} luid={selected.Luid}");
-        if (selected.Properties.ApiVersion < VulkanApiVersion11)
-            throw new InvalidOperationException($"Vulkan device '{selected.Name}' does not support Vulkan 1.1.");
+        if (selected.Properties.ApiVersion < RequiredVulkanApiVersion)
+            throw new InvalidOperationException($"Vulkan device '{selected.Name}' does not support the required Vulkan 1.2 profile.");
         _physicalDevice = selected.Device;
         _queueFamily = selected.QueueFamily;
         _deviceApiVersion = selected.Properties.ApiVersion;
@@ -1577,6 +1598,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 EnabledExtensionCount = checked((uint)extensionNames.Length),
                 PpEnabledExtensionNames = extensions,
             };
+            var timeline = new PhysicalDeviceTimelineSemaphoreFeatures { SType = StructureType.PhysicalDeviceTimelineSemaphoreFeatures };
+            if (_diagnosticDelayMilliseconds != 0)
+            {
+                if (!_officialGraphiteSelected) throw new InvalidOperationException("Qualification timeline requires official Vulkan 1.2.");
+                var features = new PhysicalDeviceFeatures2 { SType = StructureType.PhysicalDeviceFeatures2, PNext = &timeline };
+                _vk.GetPhysicalDeviceFeatures2(_physicalDevice, &features);
+                if (!timeline.TimelineSemaphore) throw new PlatformNotSupportedException("Host timeline fixture unsupported.");
+                createInfo.PNext = &timeline;
+            }
             Check(_vk.CreateDevice(_physicalDevice, &createInfo, null, out _device), "vkCreateDevice");
         }
         finally
@@ -2108,7 +2138,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         var barrier = ImageBarrier(
             _backingImage, ImageLayout.Undefined, ImageLayout.ColorAttachmentOptimal,
             0, AccessFlags.ColorAttachmentWriteBit);
-        _vk.CmdPipelineBarrier(
+        ObservedPipelineBarrier(
             _commandBuffer, PipelineStageFlags.TopOfPipeBit, PipelineStageFlags.ColorAttachmentOutputBit,
             0, 0, null, 0, null, 1, &barrier);
         SubmitCommands("Vulkan backing initialization", waitForCompletion: true);
@@ -2124,7 +2154,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         barriers[1] = ImageBarrier(
             destination, _swapchainLayouts[checked((int)imageIndex)], ImageLayout.TransferDstOptimal,
             0, AccessFlags.TransferWriteBit);
-        _vk.CmdPipelineBarrier(
+        ObservedPipelineBarrier(
             _commandBuffer,
             PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.TransferBit,
             PipelineStageFlags.TransferBit,
@@ -2146,7 +2176,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         barriers[1] = ImageBarrier(
             destination, ImageLayout.TransferDstOptimal, ImageLayout.PresentSrcKhr,
             AccessFlags.TransferWriteBit, 0);
-        _vk.CmdPipelineBarrier(
+        ObservedPipelineBarrier(
             _commandBuffer, PipelineStageFlags.TransferBit,
             PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
             0, 0, null, 0, null, 2, barriers);
@@ -2181,13 +2211,17 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void BeginCommands()
     {
-        Check(_vk.ResetCommandBuffer(_commandBuffer, 0), "vkResetCommandBuffer");
+        if (_stockObserver != null && !_stockObserver.Journal.Buffers.ContainsKey(_commandBuffer.Handle))
+            _stockObserver.Journal.Allocate(_commandBuffer.Handle, _commandPool.Handle);
+        Check(_stockObserver == null ? _vk.ResetCommandBuffer(_commandBuffer, 0) :
+            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.ResetCommandBufferDelegate>("vkResetCommandBuffer")(_commandBuffer, 0), "vkResetCommandBuffer");
         var beginInfo = new CommandBufferBeginInfo
         {
             SType = StructureType.CommandBufferBeginInfo,
             Flags = CommandBufferUsageFlags.OneTimeSubmitBit,
         };
-        Check(_vk.BeginCommandBuffer(_commandBuffer, &beginInfo), "vkBeginCommandBuffer");
+        Check(_stockObserver == null ? _vk.BeginCommandBuffer(_commandBuffer, &beginInfo) :
+            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.BeginCommandBufferDelegate>("vkBeginCommandBuffer")(_commandBuffer, &beginInfo), "vkBeginCommandBuffer");
     }
 
     private void SubmitCommands(
@@ -2199,7 +2233,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         if (_copySubmissionPending)
             throw new InvalidOperationException(
                 "The Vulkan copy command buffer cannot be reused before its fence completes.");
-        Check(_vk.EndCommandBuffer(_commandBuffer), "vkEndCommandBuffer");
+        Check(_stockObserver == null ? _vk.EndCommandBuffer(_commandBuffer) :
+            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.EndCommandBufferDelegate>("vkEndCommandBuffer")(_commandBuffer), "vkEndCommandBuffer");
+        _stockObserver?.Check();
         ResetFence();
         var commandBuffer = _commandBuffer;
         var waitStage = PipelineStageFlags.TransferBit;
@@ -2220,8 +2256,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             submitInfo.SignalSemaphoreCount = 1;
             submitInfo.PSignalSemaphores = &signalSemaphore;
         }
-        _lastSubmitResult = _vk.QueueSubmit(_queue, 1, &submitInfo, _fence);
+        _lastSubmitResult = _stockObserver == null ? _vk.QueueSubmit(_queue, 1, &submitInfo, _fence) :
+            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(_queue, 1, &submitInfo, _fence);
         Check(_lastSubmitResult, "vkQueueSubmit");
+        _stockObserver?.Check();
         GpuSubmitCount++;
         if (waitForCompletion)
         {
@@ -2315,7 +2353,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _retainedFrameLayout = ImageLayout.Undefined;
         _retainedFrameInitialized = false;
 
-        if (_backingImage.Handle != 0) _vk.DestroyImage(_device, _backingImage, null);
+        if (_backingImage.Handle != 0) { _stockObserver?.ForgetHostTarget(_backingImage.Handle); _vk.DestroyImage(_device, _backingImage, null); }
         _backingImage = default;
         if (_backingMemory.Handle != 0) _vk.FreeMemory(_device, _backingMemory, null);
         _backingMemory = default;
@@ -2473,12 +2511,19 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         if (_acquireSemaphore.Handle != 0) _vk.DestroySemaphore(_device, _acquireSemaphore, null);
         _acquireSemaphore = default;
         if (_commandPool.Handle != 0) _vk.DestroyCommandPool(_device, _commandPool, null);
+        if (_stockObserver != null)
+        {
+            _stockObserver.Journal.FreePool(_commandPool.Handle);
+            _stockObserver.Check();
+            _stockObserver.Dispose(); _stockObserver = null;
+        }
         _commandPool = default;
         _commandBuffer = default;
         _externalMemoryApi?.Dispose();
         _externalMemoryApi = null;
         _swapchainApi?.Dispose();
         _swapchainApi = null;
+        ReleaseDiagnosticProducer();
         if (_device.Handle != 0) _vk.DestroyDevice(_device, null);
         _device = default;
         _queue = default;
@@ -2488,7 +2533,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _win32SurfaceApi = null;
         _surfaceApi?.Dispose();
         _surfaceApi = null;
+        DestroyValidationMessenger();
         _vk.DestroyInstance(_instance, null);
+        GC.KeepAlive(_validationCallback);
         _instance = default;
         _physicalDevice = default;
         _window = 0;
@@ -3147,4 +3194,11 @@ internal sealed record VulkanPresenterSnapshot(
     long MaximumResizeClockWaitMicroseconds,
     string[] RecentEvents,
     uint PreparedReceiptTimeoutMilliseconds,
-    ulong PreparedReceiptsOver50Milliseconds);
+    ulong PreparedReceiptsOver50Milliseconds,
+    int ValidationErrors = 0,
+    int ValidationWarnings = 0,
+    bool ValidationCallbackFault = false,
+    string[]? ValidationMessages = null,
+    bool OfficialGraphiteAsset = false,
+    string? GraphiteNativePath = null,
+    string? GraphiteNativeSha256 = null);

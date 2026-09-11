@@ -18,8 +18,10 @@
     "accessibility.semantics"
   ],
   "verificationStatus": "notVerified",
-  "nativeSkiaBridgeAbi": 3,
   "nativeSurfaceFeature": "vulkan-surface-bit10",
-  "requiredVulkanVersion": "1.1",
-  "defaultSkiaEngine": "Graphite"
+  "requiredVulkanVersion": "1.2",
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.Linux",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite"
 }

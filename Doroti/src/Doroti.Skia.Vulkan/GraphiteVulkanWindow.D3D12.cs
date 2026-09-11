@@ -13,12 +13,16 @@ public sealed unsafe partial class GraphiteVulkanWindow
     private const uint ExternalFamily = uint.MaxValue - 1;
 
     /// <summary>A Vulkan owner on the exact D3D12 adapter; no presentation surface is created.</summary>
-    public static GraphiteVulkanWindow CreateD3D12(long adapterLuid)
+    public static GraphiteVulkanWindow CreateD3D12(long adapterLuid) =>
+        CreateD3D12Official(adapterLuid, GraphiteNativeLibrary.PackagedOfficialAsset());
+
+    /// <summary>Official asset selection. R remains private; only P is imported from D3D12.</summary>
+    public static GraphiteVulkanWindow CreateD3D12Official(long adapterLuid, OfficialGraphiteAsset asset)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-        GraphiteNativeLibrary.Configure();
+        GraphiteNativeLibrary.ConfigureOfficial(asset);
         var vk = Vk.GetApi();
-        var instance = CreateInstance(vk, []);
+        var instance = CreateInstance(vk, [], Api12);
         try { return new(vk, instance, default, [], true, false, adapterLuid); }
         catch { vk.DestroyInstance(instance, null); vk.Dispose(); throw; }
     }
@@ -62,21 +66,14 @@ public sealed unsafe partial class GraphiteVulkanWindow
         }
         Check(_vk.BindImageMemory(_device, _backing, _memory, 0), "D3D12 image bind");
         Width = width; Height = height; Generation++; _externalInitialized = false;
-        _target = _session!.CreateVulkanTarget(width, height, new SKGraphiteVkTextureInfo {
-            SampleCount = 1, Format = (int)Format.R8G8B8A8Unorm, ImageTiling = (int)ImageTiling.Optimal,
-            ImageUsageFlags = (uint)usage, SharingMode = (int)SharingMode.Exclusive, AspectMask = (uint)ImageAspectFlags.ColorBit },
-            (int)ImageLayout.Undefined, ExternalFamily, (nint)_backing.Handle, SKColorType.Rgba8888);
+        CreateOfficialIntermediate(width, height, usage);
     }
 
     public SKSurface BeginD3D12Frame()
     {
         CheckOwner();
         ReleaseD3D12Frame();
-        ExternalBarrier(_externalInitialized ? ImageLayout.General : ImageLayout.Undefined,
-            ImageLayout.ColorAttachmentOptimal, ExternalFamily, _family,
-            0, AccessFlags.ColorAttachmentReadBit | AccessFlags.ColorAttachmentWriteBit);
-        _target!.SetStateAfterGpuCompletion((int)ImageLayout.ColorAttachmentOptimal, _family);
-        _externalFrame = _session!.BeginVulkanFrame(_target);
+        _externalFrame = _session!.BeginVulkanFrame(_target!);
         return _externalFrame.Surface;
     }
 
@@ -86,12 +83,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
         if (_externalFrame is null) throw new InvalidOperationException("No recording frame to flush.");
         _externalSubmitted = true;
         _externalFrame.Submit();
-        var state = _target!.GetState();
-        ExternalBarrier((ImageLayout)state.Layout, ImageLayout.General, _family, ExternalFamily,
-            AccessFlags.MemoryWriteBit | AccessFlags.MemoryReadBit, 0);
-        _externalFrame.CompleteGpuWork(); _externalFrame = null; _externalSubmitted = false;
-        _target.SetStateAfterGpuCompletion((int)ImageLayout.General, ExternalFamily);
-        _externalInitialized = true;
+        CopyOfficialIntermediateToD3D12();
     }
 
     public void ReleaseD3D12Frame()
@@ -107,31 +99,8 @@ public sealed unsafe partial class GraphiteVulkanWindow
         else
         {
             _externalFrame.CancelRecording();
-            var state = _target!.GetState();
-            ExternalBarrier((ImageLayout)state.Layout, ImageLayout.General, _family, ExternalFamily,
-                AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit, 0);
-            _target.SetStateAfterGpuCompletion((int)ImageLayout.General, ExternalFamily);
-            _externalInitialized = true;
         }
         _externalFrame = null; _externalSubmitted = false;
     }
 
-    private void ExternalBarrier(ImageLayout oldLayout, ImageLayout newLayout, uint sourceFamily,
-        uint destinationFamily, AccessFlags sourceAccess, AccessFlags destinationAccess)
-    {
-        Check(_vk.ResetCommandBuffer(_command, 0), "external reset commands");
-        var begin = new CommandBufferBeginInfo { SType = StructureType.CommandBufferBeginInfo, Flags = CommandBufferUsageFlags.OneTimeSubmitBit };
-        Check(_vk.BeginCommandBuffer(_command, &begin), "external begin commands");
-        var barrier = new ImageMemoryBarrier { SType = StructureType.ImageMemoryBarrier, Image = _backing,
-            OldLayout = oldLayout, NewLayout = newLayout, SrcAccessMask = sourceAccess, DstAccessMask = destinationAccess,
-            SrcQueueFamilyIndex = sourceFamily, DstQueueFamilyIndex = destinationFamily,
-            SubresourceRange = new(ImageAspectFlags.ColorBit, 0, 1, 0, 1) };
-        _vk.CmdPipelineBarrier(_command, PipelineStageFlags.AllCommandsBit, PipelineStageFlags.AllCommandsBit, 0, 0, null, 0, null, 1, &barrier);
-        Check(_vk.EndCommandBuffer(_command), "external end commands");
-        Check(_vk.ResetFences(_device, 1, in _fence), "external reset fence");
-        var command = _command;
-        var submit = new SubmitInfo { SType = StructureType.SubmitInfo, CommandBufferCount = 1, PCommandBuffers = &command };
-        Check(_vk.QueueSubmit(_queue, 1, &submit, _fence), "external barrier submit");
-        Check(_vk.WaitForFences(_device, 1, in _fence, true, Timeout), "external barrier fence");
-    }
 }

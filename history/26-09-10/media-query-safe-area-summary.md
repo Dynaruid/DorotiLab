@@ -47,7 +47,7 @@ MQ-0~MQ-9의 구현·검증 결과와 유지할 설계를 요약했다. 당시 �
 | Windows 실제 실행 | Windows App SDK 및 MAUI Windows의 Graphite/Vulkan 초기 기동, metrics·프레임과 정상 종료 확인 |
 | Web 실제 실행 | 설치된 Chrome 152.0.7977.83, AMD WebGPU/WebGL2 양쪽 진단 화면 표시, 900×700 resize, reduced-motion 반영, 설정 변경 중 resize/surface generation 유지, page error 0 |
 
-각 테스트 실행에는 1200초 제한을 적용했다. 자세한 명령·exit code·로그·화면은 [검증 인덱스](../../Doroti/validation/evidence/media-query-safe-area/README.md)에 있다.
+각 테스트 실행에는 1200초 제한을 적용했다. 자세한 명령·exit code·로그·화면은 [검증 인덱스](../2026-09-12/validation/evidence/media-query-safe-area/README.md)에 있다.
 
 ## 4. 실행 중 발견해 수정한 문제
 
@@ -74,11 +74,11 @@ MQ-0~MQ-9의 구현·검증 결과와 유지할 설계를 요약했다. 당시 �
 ## 6. 문서·증거와 재현
 
 - [사용법·플랫폼 지원·ABI 정책](../../Doroti/docs/media-query-safe-area.md)
-- [전체 검증 인덱스와 재현 절차](../../Doroti/validation/evidence/media-query-safe-area/README.md)
-- [전체 field × host coverage](../../Doroti/validation/evidence/media-query-safe-area/coverage.json)
-- [공통 계약 결과](../../Doroti/validation/evidence/media-query-safe-area/contracts.json), [build 결과](../../Doroti/validation/evidence/media-query-safe-area/builds.json), [소비자·패키지 결과](../../Doroti/validation/evidence/media-query-safe-area/products.json)
-- [Flutter pin·소스 provenance](../../Doroti/validation/evidence/media-query-safe-area/source-provenance.json)
-- [Android 최종 실행](../../Doroti/validation/evidence/media-query-safe-area/android-final.json), [Windows native 실행](../../Doroti/validation/evidence/media-query-safe-area/windows-native-smoke.json), [MAUI Windows 실행](../../Doroti/validation/evidence/media-query-safe-area/maui-windows-smoke.json), [브라우저 실행](../../Doroti/validation/evidence/media-query-safe-area/browser-product.json)
+- [전체 검증 인덱스와 재현 절차](../2026-09-12/validation/evidence/media-query-safe-area/README.md)
+- [전체 field × host coverage](../2026-09-12/validation/evidence/media-query-safe-area/coverage.json)
+- [공통 계약 결과](../2026-09-12/validation/evidence/media-query-safe-area/contracts.json), [build 결과](../2026-09-12/validation/evidence/media-query-safe-area/builds.json), [소비자·패키지 결과](../2026-09-12/validation/evidence/media-query-safe-area/products.json)
+- [Flutter pin·소스 provenance](../2026-09-12/validation/evidence/media-query-safe-area/source-provenance.json)
+- [Android 최종 실행](../2026-09-12/validation/evidence/media-query-safe-area/android-final.json), [Windows native 실행](../2026-09-12/validation/evidence/media-query-safe-area/windows-native-smoke.json), [MAUI Windows 실행](../2026-09-12/validation/evidence/media-query-safe-area/maui-windows-smoke.json), [브라우저 실행](../2026-09-12/validation/evidence/media-query-safe-area/browser-product.json)
 
 저장소 루트에서 기존 검증을 실행하는 명령:
 

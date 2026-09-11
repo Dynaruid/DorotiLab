@@ -5,6 +5,13 @@ using Doroti.Skia.Rendering;
 using SkiaSharp;
 
 var results = new List<string>();
+await Check("legacy-v1-manifest-without-platform-views", () =>
+{
+    using var boundary = DorotiApplicationBoundary.Load(System.Reflection.Assembly.GetExecutingAssembly(), "win-x64");
+    Assert(boundary.Manifest.PlatformViews.Length == 0, "missing optional field must retain an empty registration list");
+    Assert(DorotiApplicationBoundary.CreatePlatformViewRegistry(boundary.Manifest, []).ViewTypes.Count == 0, "legacy manifest unexpectedly enabled a factory");
+    return Task.CompletedTask;
+});
 await Check("legacy-codec-wire-format", () =>
 {
     var codec = new StandardMethodCodec();
