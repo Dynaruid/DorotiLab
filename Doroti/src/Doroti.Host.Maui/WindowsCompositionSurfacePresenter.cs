@@ -1,22 +1,24 @@
 #if WINDOWS
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using Luid = Silk.NET.Core.Native.Luid;
+using DeviceCreationFlags = Silk.NET.Direct3D11.CreateDeviceFlag;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Doroti.Ui;
 using Doroti.Skia.Vulkan;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
-using SharpGen.Runtime;
 using SkiaSharp;
-using Vortice.Direct3D;
-using Vortice.Direct3D11;
-using Vortice.Direct3D11on12;
-using Vortice.Direct3D12;
-using Vortice.DXGI;
 using Windows.Foundation;
 using Windows.Graphics;
-using static Vortice.Direct3D11on12.Apis;
-using static Vortice.Direct3D12.D3D12;
-using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Host.Maui;
 
@@ -53,7 +55,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private ID3D11DeviceContext? _context11;
     private ID3D11On12Device2? _on12;
     private CompositionGraphicsDevice? _graphicsDevice;
-    private GRVorticeD3DBackendContext? _skiaBackend;
+    private GRD3DBackendContext? _skiaBackend;
     private GRContext? _skiaContext;
     private WindowsD3D12BackingStore? _backingStore;
     private GraphiteVulkanWindow? _graphite;
@@ -391,8 +393,8 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         Texture2DDescription description11,
         ResourceDescription description12)
     {
-        if (description11.Format != Format.R8G8B8A8_UNorm ||
-            description12.Format != Format.R8G8B8A8_UNorm)
+        if (description11.Format != Format.FormatR8G8B8A8Unorm ||
+            description12.Format != Format.FormatR8G8B8A8Unorm)
             throw new InvalidOperationException("Composition surface format mismatch.");
         if (description11.SampleDescription.Count != 1 || description12.SampleDescription.Count != 1)
             throw new InvalidOperationException("Composition surface sample-count mismatch.");
@@ -450,30 +452,30 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _adapter = _factory.EnumAdapterByGpuPreference<IDXGIAdapter1>(
                 0, GpuPreference.HighPerformance);
             _adapterDescription = _adapter.Description1.Description;
-            _device12 = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level_11_0);
+            _device12 = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level110);
             _queue = _device12.CreateCommandQueue(
                 CommandListType.Direct, 0, CommandQueueFlags.None, 0);
             D3D11On12CreateDevice(
                 _device12,
                 DeviceCreationFlags.BgraSupport,
-                [FeatureLevel.Level_11_0],
+                [FeatureLevel.Level110],
                 [_queue],
                 0,
                 out _device11,
                 out _context11,
                 out var chosenFeatureLevel).CheckError();
-            if (chosenFeatureLevel < FeatureLevel.Level_11_0)
+            if (chosenFeatureLevel < FeatureLevel.Level110)
                 throw new InvalidOperationException($"D3D11On12 selected {chosenFeatureLevel}.");
             _on12 = _device11.QueryInterface<ID3D11On12Device2>();
             _graphicsDevice = WindowsCompositionInterop.CreateGraphicsDevice(_compositor, _device11);
             if (WindowsCompositionSurfaceFeature.GraphiteEnabled) CreateGraphite();
             else
             {
-            _skiaBackend = new GRVorticeD3DBackendContext
+            _skiaBackend = new GRD3DBackendContext
             {
-                Adapter = _adapter,
-                Device = _device12,
-                Queue = _queue,
+                Adapter = _adapter.NativePointer,
+                Device = _device12.NativePointer,
+                Queue = _queue.NativePointer,
             };
             _skiaContext = GRContext.CreateDirect3D(_skiaBackend) ??
                 throw new InvalidOperationException("Skia could not create the Composition D3D12 context.");
@@ -482,7 +484,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _copyCommandList = _device12.CreateCommandList<ID3D12GraphicsCommandList>(
                 CommandListType.Direct, _copyAllocator, null);
             _copyCommandList.Close();
-            _copyFence = _device12.CreateFence(0, Vortice.Direct3D12.FenceFlags.None);
+            _copyFence = _device12.CreateFence(0, FenceFlags.None);
         }
 
         if (_visual is null)
@@ -512,7 +514,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private void CreateGraphite()
     {
         var luid = _adapter!.Description1.Luid;
-        _graphite = GraphiteVulkanWindow.CreateD3D12(System.Runtime.CompilerServices.Unsafe.As<Vortice.Luid, long>(ref luid));
+        _graphite = GraphiteVulkanWindow.CreateD3D12(System.Runtime.CompilerServices.Unsafe.As<Luid, long>(ref luid));
         _graphite.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
     }
 

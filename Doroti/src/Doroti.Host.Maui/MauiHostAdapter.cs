@@ -140,7 +140,7 @@ internal sealed class MauiHostAdapter :
         }
     }
     public PlatformConfiguration Configuration => new(
-        _environment.Locales ?? [ToLocale(CultureInfo.CurrentUICulture)],
+        _environment.Locales ?? new Locale[] { ToLocale(CultureInfo.CurrentUICulture) },
         Application.Current?.RequestedTheme == AppTheme.Dark ? Brightness.dark : Brightness.light,
         _environment.Use24Hour ?? false, false,
 #if WINDOWS
@@ -820,7 +820,7 @@ internal sealed class MauiHostAdapter :
         var hasPrevious = _pointerPositions.TryGetValue(pointer, out var previous);
         var x = args.X;
         var y = args.Y;
-        PointerData?.Invoke(new([new(_viewId, timestamp, change,
+        PointerData?.Invoke(new((PointerData[])[new(_viewId, timestamp, change,
             args.Kind, pointer, x, y,
             hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, args.Buttons,
             scrollDeltaX: args.ScrollDeltaX, scrollDeltaY: args.ScrollDeltaY,

@@ -149,7 +149,8 @@ internal static class Program
                     diagnostics.GpuCopies <= diagnostics.GpuSubmits,
                 "Managed presenter ordering or injected device recreation differs in the product path.");
             var vulkanRequested = requestedPresenter.Equals("Vulkan", StringComparison.OrdinalIgnoreCase);
-            var expectedBackend = vulkanRequested
+            var d3d12Requested = requestedPresenter.Equals("D3D12", StringComparison.OrdinalIgnoreCase);
+            var expectedBackend = d3d12Requested ? "D3D12" : vulkanRequested
                 ? Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE") != "0"
                     ? "Graphite/Vulkan/Composition-Swapchain" : "Vulkan/Composition-Swapchain"
                 : acrylicRequested ? "ANGLE-D3D11/Composition-Swapchain" : "ANGLE/EGL-D3D11";
@@ -191,7 +192,7 @@ internal static class Program
                     diagnostics.PresenterDiagnosticCoverage.Contains("three-slot", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("availability", StringComparison.Ordinal),
                 "Explicit Vulkan did not select the synchronous top-level full-capacity Presentation topology.");
-            Require((vulkanRequested ||
+            Require((vulkanRequested || d3d12Requested ||
                      diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
                      (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
                       diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase))) &&
@@ -200,6 +201,9 @@ internal static class Program
                     !diagnostics.AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase),
                 "Product validation did not bind the presenter to a hardware renderer.");
             Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational GPU errors.");
+            if (d3d12Requested)
+                Require(diagnostics.PresenterDiagnosticCoverage == "D3D12 debug layer",
+                    "D3D12 diagnostic validation requires the debug layer.");
             if (injectedResult == "DEVICE_LOST")
                 Require(diagnostics.VulkanDeviceLossRecoveries == 1 && diagnostics.Vulkan is { DeviceLostResults: 1 },
                     "Injected Vulkan DEVICE_LOST did not take the single recovery branch.");
@@ -210,7 +214,7 @@ internal static class Program
                     "The Vulkan Composition path emitted a legacy WSI result.");
             var layout = WindowsNativeV1.ValidateLayout();
             Require(layout.GpuPointerCount == 0, "Product ABI exposes a GPU pointer.");
-            Require(ProductEntrypoint.PointerChanges.Take(5).SequenceEqual([
+            Require(ProductEntrypoint.PointerChanges.Take(5).SequenceEqual((PointerChange[])[
                         PointerChange.add, PointerChange.hover, PointerChange.down,
                         PointerChange.move, PointerChange.up]),
                 "Synthetic pointer lifecycle or re-entry coordinates differ.");
@@ -582,10 +586,10 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         (_dispatcher ?? throw new InvalidOperationException("C7 dispatcher is unavailable."))
             .setSemanticsTreeEnabled(true);
         view.updateSemantics(new SemanticsUpdate(1,
-        [
+        (SemanticsNodeUpdate[])[
             new SemanticsNodeUpdate(0, Rect.fromLTWH(20, 30, 180, 48),
                 "Doroti C7 action", "ready", SemanticsAction.tap | SemanticsAction.focus,
-                [1, 2, 3, 4], new SemanticsFlags(isButton: true, isFocused: Tristate.isTrue)),
+                (int[])[1, 2, 3, 4], new SemanticsFlags(isButton: true, isFocused: Tristate.isTrue)),
             new SemanticsNodeUpdate(1, Rect.fromLTWH(4, 54, 180, 40),
                 "Doroti C7 toggle", null, SemanticsAction.tap,
                 [], new SemanticsFlags(isChecked: CheckedState.isFalse, isFocused: Tristate.isFalse)),

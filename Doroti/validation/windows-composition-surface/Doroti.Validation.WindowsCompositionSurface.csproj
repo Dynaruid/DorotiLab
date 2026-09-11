@@ -13,9 +13,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
-    <PackageReference Include="Vortice.Direct3D11" />
-    <PackageReference Include="Vortice.Direct3D12" />
-    <PackageReference Include="Vortice.DXGI" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" />
   </ItemGroup>
 </Project>

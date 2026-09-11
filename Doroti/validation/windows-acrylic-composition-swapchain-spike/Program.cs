@@ -1,3 +1,5 @@
+using Doroti.Graphics.DirectX;
+using DeviceCreationFlags = Silk.NET.Direct3D11.CreateDeviceFlag;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -7,7 +9,6 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Content;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
-using Vortice.Direct3D11;
 using Windows.UI.Composition;
 
 namespace Doroti.Validation.WindowsAcrylicCompositionSwapchainSpike;

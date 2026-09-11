@@ -1,13 +1,19 @@
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using Luid = Silk.NET.Core.Native.Luid;
+using Format = Silk.NET.DXGI.Format;
+using PlacedSubresourceFootPrint = Silk.NET.Direct3D12.PlacedSubresourceFootprint;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using HeapType = Silk.NET.Direct3D12.HeapType;
+using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
+using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Skia.Vulkan;
 using SkiaSharp;
-using Vortice.Direct3D;
-using Vortice.Direct3D12;
-using Vortice.DXGI;
-using static Vortice.Direct3D12.D3D12;
-using static Vortice.DXGI.DXGI;
 
 internal static unsafe class Program
 {
@@ -24,20 +30,20 @@ internal static unsafe class Program
                 using (adapter)
                 {
                     if ((adapter.Description1.Flags & AdapterFlags.Software) != 0) continue;
-                    using var device = D3D12CreateDevice<ID3D12Device>(adapter, FeatureLevel.Level_11_0);
+                    using var device = D3D12CreateDevice<ID3D12Device>(adapter, FeatureLevel.Level110);
                     using var queue = device.CreateCommandQueue(CommandListType.Direct);
                     using var allocator = device.CreateCommandAllocator(CommandListType.Direct);
                     using var commands = device.CreateCommandList<ID3D12GraphicsCommandList>(CommandListType.Direct, allocator, null);
                     commands.Close();
                     using var fence = device.CreateFence(0);
                     var luid = adapter.Description1.Luid;
-                    using var graphite = GraphiteVulkanWindow.CreateD3D12(Unsafe.As<Vortice.Luid, long>(ref luid));
+                    using var graphite = GraphiteVulkanWindow.CreateD3D12(Unsafe.As<Luid, long>(ref luid));
                     ulong serial = 0;
                     foreach (var width in new[] { 64, 96, 64 })
                     {
                         const int height = 48;
                         using var texture = device.CreateCommittedResource(HeapType.Default, HeapFlags.Shared,
-                            ResourceDescription.Texture2D(Format.R8G8B8A8_UNorm, (uint)width, height, 1, 1, 1, 0, ResourceFlags.AllowRenderTarget),
+                            ResourceDescription.Texture2D(Format.FormatR8G8B8A8Unorm, (uint)width, height, 1, 1, 1, 0, ResourceFlags.AllowRenderTarget),
                             ResourceStates.Common, null);
                         var handle = device.CreateSharedHandle(texture, null, null!);
                         try { graphite.ImportD3D12Resource(handle, width, height); }
@@ -55,7 +61,7 @@ internal static unsafe class Program
                             allocator.Reset(); commands.Reset(allocator);
                             commands.ResourceBarrierTransition(texture, ResourceStates.Common, ResourceStates.CopySource);
                             var footprint = new PlacedSubresourceFootPrint { Offset = 0,
-                                Footprint = new(Format.R8G8B8A8_UNorm, (uint)width, height, 1, pitch) };
+                                Footprint = new(Format.FormatR8G8B8A8Unorm, (uint)width, height, 1, pitch) };
                             commands.CopyTextureRegion(new TextureCopyLocation(readback, footprint), 0, 0, 0, new TextureCopyLocation(texture, 0), null);
                             commands.ResourceBarrierTransition(texture, ResourceStates.CopySource, ResourceStates.Common);
                             commands.Close(); queue.ExecuteCommandList(commands);

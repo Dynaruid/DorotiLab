@@ -14,10 +14,10 @@
   <ItemGroup>
     <Compile Include="..\Doroti.Host.WindowsAppSdk\WindowsManagedHwndPresenter.cs" Link="WindowsManagedHwndPresenter.cs" />
     <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
-    <PackageReference Include="Vortice.Direct3D12" />
-    <PackageReference Include="Vortice.DXGI" />
     <ProjectReference Include="..\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" />
   </ItemGroup>
 </Project>

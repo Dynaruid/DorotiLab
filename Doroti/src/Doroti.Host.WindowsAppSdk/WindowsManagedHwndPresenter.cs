@@ -1,12 +1,22 @@
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using Scaling = Silk.NET.DXGI.Scaling;
+using SwapEffect = Silk.NET.DXGI.SwapEffect;
+using AlphaMode = Silk.NET.DXGI.AlphaMode;
+using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
+using HeapType = Silk.NET.Direct3D12.HeapType;
+using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
+using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
+using MessageSeverity = Silk.NET.Direct3D12.MessageSeverity;
 using System.Runtime.InteropServices;
-using SharpGen.Runtime;
 using SkiaSharp;
-using Vortice.Direct3D;
-using Vortice.Direct3D12;
-using Vortice.Direct3D12.Debug;
-using Vortice.DXGI;
-using static Vortice.Direct3D12.D3D12;
-using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Host.WindowsAppSdk;
 
@@ -20,7 +30,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
     private ID3D12CommandAllocator? _copyAllocator;
     private ID3D12GraphicsCommandList? _copyCommandList;
     private ID3D12Fence? _fence;
-    private GRVorticeD3DBackendContext? _backend;
+    private GRD3DBackendContext? _backend;
     private GRContext? _context;
     private IDXGISwapChain3? _swapChain;
     private WindowsManagedD3D12BackingStore? _backing;
@@ -79,7 +89,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         {
             var description = new SwapChainDescription1(
                 checked((uint)width), checked((uint)height),
-                Format.B8G8R8A8_UNorm, false,
+                Format.FormatB8G8R8A8Unorm, false,
                 Usage.RenderTargetOutput, 2, Scaling.None,
                 SwapEffect.FlipDiscard, AlphaMode.Ignore, SwapChainFlags.None);
             using var created = _factory!.CreateSwapChainForHwnd(
@@ -95,9 +105,9 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             {
                 _swapChain.ResizeBuffers(
                     2, checked((uint)width), checked((uint)height),
-                    Format.B8G8R8A8_UNorm, SwapChainFlags.None).CheckError();
+                    Format.FormatB8G8R8A8Unorm, SwapChainFlags.None).CheckError();
             }
-            catch (SharpGenException exception) when (exception.ResultCode.Code == unchecked((int)0x887A0001))
+            catch (COMException exception) when (exception.HResult == unchecked((int)0x887A0001))
             {
                 ResizeInvalidCallCount++;
                 throw;
@@ -207,7 +217,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         {
             var result = _factory.EnumAdapterByGpuPreference(
                 index, GpuPreference.HighPerformance, out IDXGIAdapter1? candidate);
-            if (result == Vortice.DXGI.ResultCode.NotFound) break;
+            if (result == ResultCode.NotFound) break;
             result.CheckError();
             if ((candidate!.Description1.Flags & AdapterFlags.Software) != 0)
             {
@@ -216,7 +226,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             }
             try
             {
-                _device = D3D12CreateDevice<ID3D12Device2>(candidate, FeatureLevel.Level_11_0);
+                _device = D3D12CreateDevice<ID3D12Device2>(candidate, FeatureLevel.Level110);
                 _adapter = candidate;
                 break;
             }
@@ -236,11 +246,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             CommandListType.Direct, _copyAllocator, null);
         _copyCommandList.Close();
         _fence = _device.CreateFence(0, FenceFlags.None);
-        _backend = new GRVorticeD3DBackendContext
+        _backend = new GRD3DBackendContext
         {
-            Adapter = _adapter,
-            Device = _device,
-            Queue = _queue,
+            Adapter = _adapter.NativePointer,
+            Device = _device.NativePointer,
+            Queue = _queue.NativePointer,
         };
         _context = GRContext.CreateDirect3D(_backend) ??
             throw new InvalidOperationException("Skia could not create the managed-owner D3D12 context.");
@@ -345,7 +355,7 @@ internal sealed class WindowsManagedD3D12BackingStore : IDisposable
     private readonly ID3D12Device _device;
     private readonly GRContext _context;
     private ID3D12Resource? _resource;
-    private GRVorticeD3DTextureResourceInfo? _resourceInfo;
+    private GRD3DTextureResourceInfo? _resourceInfo;
     private GRBackendRenderTarget? _target;
     private SKSurface? _surface;
 
@@ -367,16 +377,16 @@ internal sealed class WindowsManagedD3D12BackingStore : IDisposable
         if (_surface is not null && Width == width && Height == height) return;
         Release();
         var description = ResourceDescription.Texture2D(
-            Format.B8G8R8A8_UNorm, checked((uint)width), checked((uint)height),
+            Format.FormatB8G8R8A8Unorm, checked((uint)width), checked((uint)height),
             1, 1, 1, 0, ResourceFlags.AllowRenderTarget);
         _resource = _device.CreateCommittedResource(
             HeapType.Default, HeapFlags.None, description,
             ResourceStates.RenderTarget, null);
-        _resourceInfo = new GRVorticeD3DTextureResourceInfo
+        _resourceInfo = new GRD3DTextureResourceInfo
         {
-            Resource = _resource,
-            ResourceState = ResourceStates.RenderTarget,
-            Format = Format.B8G8R8A8_UNorm,
+            Resource = _resource.NativePointer,
+            ResourceState = (uint)ResourceStates.RenderTarget,
+            Format = (uint)Format.FormatB8G8R8A8Unorm,
             SampleCount = 1,
             LevelCount = 1,
         };

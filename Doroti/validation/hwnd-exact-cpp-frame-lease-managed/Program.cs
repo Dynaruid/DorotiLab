@@ -1,11 +1,12 @@
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using Format = Silk.NET.DXGI.Format;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Host.WindowsAppSdk;
 using SkiaSharp;
-using Vortice.Direct3D12;
-using Vortice.DXGI;
-using static Vortice.DXGI.DXGI;
 
 [assembly: DisableRuntimeMarshalling]
 
@@ -154,7 +155,7 @@ internal static unsafe partial class Program
         private IDXGIAdapter1? _adapter;
         private ID3D12Device2? _device;
         private ID3D12CommandQueue? _queue;
-        private GRVorticeD3DBackendContext? _backend;
+        private GRD3DBackendContext? _backend;
         private GRContext? _context;
         private ulong _hostGeneration;
         private ulong _contextGeneration;
@@ -183,12 +184,12 @@ internal static unsafe partial class Program
                 _device = new ID3D12Device2(lease->Device);
                 _queue = new ID3D12CommandQueue(lease->CommandQueue);
                 _factory = CreateDXGIFactory2<IDXGIFactory6>(false);
-                _adapter = _factory.EnumAdapterByLuid<IDXGIAdapter1>((Vortice.Luid)_device.AdapterLuid);
-                _backend = new GRVorticeD3DBackendContext
+                _adapter = _factory.EnumAdapterByLuid<IDXGIAdapter1>(_device.AdapterLuid);
+                _backend = new GRD3DBackendContext
                 {
-                    Adapter = _adapter,
-                    Device = _device,
-                    Queue = _queue,
+                    Adapter = _adapter.NativePointer,
+                    Device = _device.NativePointer,
+                    Queue = _queue.NativePointer,
                 };
                 _context = GRContext.CreateDirect3D(_backend) ??
                     throw new InvalidOperationException("Skia could not create the callback-scoped D3D12 context.");
@@ -237,7 +238,7 @@ internal static unsafe partial class Program
                 Require(lease->ContextGeneration == _contextGeneration, "Stale context generation reached managed rendering.");
                 Require(request->WidthPx == lease->WidthPx && request->HeightPx == lease->HeightPx,
                     "Frame request and resource extents differ.");
-                Require(lease->DxgiFormat == (uint)Format.B8G8R8A8_UNorm, "Unexpected frame format.");
+                Require(lease->DxgiFormat == (uint)Format.FormatB8G8R8A8Unorm, "Unexpected frame format.");
                 Require(lease->ResourceState == (uint)WindowsNativeV1.LeaseResourceState.RenderTarget,
                     "Unexpected frame resource state.");
                 Require(lease->SampleCount == 1 && lease->SampleQuality == 0, "The frame resource is not single-sampled.");
@@ -256,11 +257,11 @@ internal static unsafe partial class Program
                 if (request->CausalFrameId == ExceptionCausalId)
                     throw new InvalidOperationException("Intentional managed render exception probe.");
 
-                using var resourceInfo = new GRVorticeD3DTextureResourceInfo
+                using var resourceInfo = new GRD3DTextureResourceInfo
                 {
-                    Resource = resource,
-                    ResourceState = ResourceStates.RenderTarget,
-                    Format = Format.B8G8R8A8_UNorm,
+                    Resource = resource.NativePointer,
+                    ResourceState = (uint)ResourceStates.RenderTarget,
+                    Format = (uint)Format.FormatB8G8R8A8Unorm,
                     SampleCount = 1,
                     LevelCount = 1,
                 };

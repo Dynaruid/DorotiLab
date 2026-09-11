@@ -1,3 +1,13 @@
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using DriverType = Silk.NET.Core.Native.D3DDriverType;
+using DeviceCreationFlags = Silk.NET.Direct3D11.CreateDeviceFlag;
+using Format = Silk.NET.DXGI.Format;
+using Scaling = Silk.NET.DXGI.Scaling;
+using SwapEffect = Silk.NET.DXGI.SwapEffect;
+using AlphaMode = Silk.NET.DXGI.AlphaMode;
+using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -7,14 +17,7 @@ using Microsoft.UI;
 using Microsoft.UI.Content;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
-using SharpGen.Runtime;
-using Vortice.Direct3D;
-using Vortice.Direct3D11;
-using Vortice.DXGI;
-using Vortice.Mathematics;
 using Windows.UI.Composition;
-using static Vortice.Direct3D11.D3D11;
-using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Validation.WinRtContentIslandSpike;
 
@@ -1018,7 +1021,7 @@ internal sealed class D3DCompositionGrid : IDisposable
             null,
             DriverType.Hardware,
             DeviceCreationFlags.BgraSupport,
-            [FeatureLevel.Level_11_1, FeatureLevel.Level_11_0],
+            [FeatureLevel.Level111, FeatureLevel.Level110],
             out _device,
             out _,
             out _context).CheckError();
@@ -1036,7 +1039,7 @@ internal sealed class D3DCompositionGrid : IDisposable
         if (_width != width || _height != height)
         {
             _context.ClearState();
-            _swapChain.ResizeBuffers(2, (uint)width, (uint)height, Format.B8G8R8A8_UNorm, SwapChainFlags.None)
+            _swapChain.ResizeBuffers(2, (uint)width, (uint)height, Format.FormatB8G8R8A8Unorm, SwapChainFlags.None)
                 .CheckError();
             _width = width;
             _height = height;
@@ -1071,7 +1074,7 @@ internal sealed class D3DCompositionGrid : IDisposable
         var description = new SwapChainDescription1(
             (uint)width,
             (uint)height,
-            Format.B8G8R8A8_UNorm,
+            Format.FormatB8G8R8A8Unorm,
             false,
             Usage.RenderTargetOutput,
             2,

@@ -1,3 +1,16 @@
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using DeviceCreationFlags = Silk.NET.Direct3D11.CreateDeviceFlag;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
+using HeapType = Silk.NET.Direct3D12.HeapType;
+using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
+using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -6,17 +19,8 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
-using SharpGen.Runtime;
 using SkiaSharp;
-using Vortice.Direct3D;
-using Vortice.Direct3D11;
-using Vortice.Direct3D11on12;
-using Vortice.Direct3D12;
-using Vortice.DXGI;
 using Windows.Graphics;
-using static Vortice.Direct3D11on12.Apis;
-using static Vortice.Direct3D12.D3D12;
-using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Validation.WindowsCompositionSurface;
 
@@ -112,7 +116,7 @@ internal sealed class CompositionSurfaceValidation : IDisposable
     private readonly ID3D11DeviceContext _context11;
     private readonly ID3D11On12Device2 _on12;
     private readonly CompositionGraphicsDevice _graphicsDevice;
-    private readonly GRVorticeD3DBackendContext _skiaBackend;
+    private readonly GRD3DBackendContext _skiaBackend;
     private readonly GRContext _skiaContext;
     private readonly ID3D12CommandAllocator _copyAllocator;
     private readonly ID3D12GraphicsCommandList _copyCommandList;
@@ -149,26 +153,26 @@ internal sealed class CompositionSurfaceValidation : IDisposable
         _compositor = new Compositor();
         _factory = CreateDXGIFactory2<IDXGIFactory6>(false);
         _adapter = _factory.EnumAdapterByGpuPreference<IDXGIAdapter1>(0, GpuPreference.HighPerformance);
-        _device12 = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level_11_0);
+        _device12 = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level110);
         _queue = _device12.CreateCommandQueue(CommandListType.Direct, 0, CommandQueueFlags.None, 0);
         D3D11On12CreateDevice(
             _device12,
             DeviceCreationFlags.BgraSupport,
-            [FeatureLevel.Level_11_0],
+            [FeatureLevel.Level110],
             [_queue],
             0,
             out _device11,
             out _context11,
             out var chosenFeatureLevel).CheckError();
-        if (chosenFeatureLevel < FeatureLevel.Level_11_0)
+        if (chosenFeatureLevel < FeatureLevel.Level110)
             throw new InvalidOperationException($"D3D11On12 selected {chosenFeatureLevel}.");
         _on12 = _device11.QueryInterface<ID3D11On12Device2>();
         _graphicsDevice = CompositionInterop.CreateGraphicsDevice(_compositor, _device11);
-        _skiaBackend = new GRVorticeD3DBackendContext
+        _skiaBackend = new GRD3DBackendContext
         {
-            Adapter = _adapter,
-            Device = _device12,
-            Queue = _queue,
+            Adapter = _adapter.NativePointer,
+            Device = _device12.NativePointer,
+            Queue = _queue.NativePointer,
         };
         _skiaContext = GRContext.CreateDirect3D(_skiaBackend) ??
             throw new InvalidOperationException("Skia could not create the C0 D3D12 context.");
@@ -178,7 +182,7 @@ internal sealed class CompositionSurfaceValidation : IDisposable
             _copyAllocator,
             null);
         _copyCommandList.Close();
-        _copyFence = _device12.CreateFence(0, Vortice.Direct3D12.FenceFlags.None);
+        _copyFence = _device12.CreateFence(0, FenceFlags.None);
         _brush = _compositor.CreateSurfaceBrush();
         _brush.Stretch = CompositionStretch.None;
         _brush.HorizontalAlignmentRatio = 0;
@@ -378,25 +382,25 @@ internal sealed class CompositionSurfaceValidation : IDisposable
     private ID3D12Resource CreatePatternSource(int width, int height, int patternIndex)
     {
         var description = ResourceDescription.Texture2D(
-            Format.R8G8B8A8_UNorm,
+            Format.FormatR8G8B8A8Unorm,
             checked((uint)width),
             checked((uint)height),
             1,
             1,
             1,
             0,
-            Vortice.Direct3D12.ResourceFlags.AllowRenderTarget);
+            ResourceFlags.AllowRenderTarget);
         var source = _device12.CreateCommittedResource(
             HeapType.Default,
             HeapFlags.None,
             description,
             ResourceStates.RenderTarget,
             null);
-        using var resourceInfo = new GRVorticeD3DTextureResourceInfo
+        using var resourceInfo = new GRD3DTextureResourceInfo
         {
-            Resource = source,
-            ResourceState = ResourceStates.RenderTarget,
-            Format = Format.R8G8B8A8_UNorm,
+            Resource = source.NativePointer,
+            ResourceState = (uint)ResourceStates.RenderTarget,
+            Format = (uint)Format.FormatR8G8B8A8Unorm,
             SampleCount = 1,
             LevelCount = 1,
         };
@@ -457,7 +461,7 @@ internal sealed class CompositionSurfaceValidation : IDisposable
         ResourceDescription description12)
     {
         if (offset.X != 0 || offset.Y != 0) _offsetNonZeroCount++;
-        if (description11.Format != Format.R8G8B8A8_UNorm || description12.Format != Format.R8G8B8A8_UNorm)
+        if (description11.Format != Format.FormatR8G8B8A8Unorm || description12.Format != Format.FormatR8G8B8A8Unorm)
             _formatMismatchCount++;
         if (description11.SampleDescription.Count != 1 || description12.SampleDescription.Count != 1)
             _sampleMismatchCount++;

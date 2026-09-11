@@ -18,7 +18,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
-    <PackageReference Include="Vortice.Direct3D11" />
-    <PackageReference Include="Vortice.DXGI" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" />
   </ItemGroup>
 </Project>

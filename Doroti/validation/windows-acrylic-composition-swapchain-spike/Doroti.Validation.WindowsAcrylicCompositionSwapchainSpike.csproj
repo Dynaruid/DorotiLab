@@ -20,6 +20,8 @@
                       AdditionalProperties="WindowsAppSdkUndockedRegFreeWinRTInitialize=false;WindowsAppSdkAutoInitialize=false" />
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
     <PackageReference Include="Avalonia.Angle.Windows.Natives" />
-    <PackageReference Include="Vortice.Direct3D11" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" />
   </ItemGroup>
 </Project>

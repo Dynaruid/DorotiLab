@@ -13,9 +13,6 @@
     <ProjectReference Include="..\..\src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
-    <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
-    <PackageReference Include="Vortice.Direct3D12" />
-    <PackageReference Include="Vortice.DXGI" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\hwnd-exact-cpp-frame-lease\bin\Release\x64\Doroti.HwndExactCpp.FrameLeaseProbe.dll"
@@ -24,5 +21,8 @@
     <None Include="..\..\src\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\doroti_windows_appsdk_host_v1.dll"
           Link="doroti_windows_appsdk_host_v1.dll"
           CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" />
   </ItemGroup>
 </Project>

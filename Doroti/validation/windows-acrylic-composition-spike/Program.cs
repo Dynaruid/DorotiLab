@@ -1,3 +1,4 @@
+using Doroti.Graphics.DirectX;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -7,7 +8,6 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Content;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
-using Vortice.Direct3D11;
 using Windows.Graphics;
 using Windows.Graphics.DirectX;
 using Windows.UI.Composition;

@@ -1,4 +1,20 @@
 #if WINDOWS
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using Scaling = Silk.NET.DXGI.Scaling;
+using SwapEffect = Silk.NET.DXGI.SwapEffect;
+using AlphaMode = Silk.NET.DXGI.AlphaMode;
+using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
+using HeapType = Silk.NET.Direct3D12.HeapType;
+using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
+using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Diagnostics.Tracing;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -11,13 +27,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
-using SharpGen.Runtime;
 using SkiaSharp;
-using Vortice.Direct3D;
-using Vortice.Direct3D12;
-using Vortice.DXGI;
-using static Vortice.Direct3D12.D3D12;
-using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Host.Maui;
 
@@ -2414,7 +2424,7 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
     private ulong _lastConfirmedFence;
     private nint _frameLatencyWaitableObject;
     private bool _hasPresented;
-    private GRVorticeD3DBackendContext? _backend;
+    private GRD3DBackendContext? _backend;
     private GRContext? _context;
     private WindowsD3D12BackingStore? _backingStore;
     private nint _windowHandle;
@@ -2457,7 +2467,7 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
             var description = new SwapChainDescription1(
                 (uint)capacity.Width,
                 (uint)capacity.Height,
-                Format.R8G8B8A8_UNorm,
+                Format.FormatR8G8B8A8Unorm,
                 false,
                 Usage.RenderTargetOutput,
                 2,
@@ -2489,7 +2499,7 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
                 2,
                 (uint)capacityWidth,
                 (uint)capacityHeight,
-                Format.R8G8B8A8_UNorm,
+                Format.FormatR8G8B8A8Unorm,
                 SwapChainFlags.FrameLatencyWaitableObject).CheckError();
             _swapChainWidth = capacityWidth;
             _swapChainHeight = capacityHeight;
@@ -2534,7 +2544,7 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
                 2,
                 (uint)Width,
                 (uint)Height,
-                Format.R8G8B8A8_UNorm,
+                Format.FormatR8G8B8A8Unorm,
                 SwapChainFlags.FrameLatencyWaitableObject).CheckError();
             _swapChainWidth = Width;
             _swapChainHeight = Height;
@@ -2605,18 +2615,18 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
             _adapter = factory6.EnumAdapterByGpuPreference<IDXGIAdapter1>(0, GpuPreference.MinimumPower);
         }
         _adapterDescription = _adapter.Description1.Description;
-        _device = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level_11_0);
+        _device = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level110);
         _queue = _device.CreateCommandQueue(CommandListType.Direct, 0, CommandQueueFlags.None, 0);
         _copyAllocator = _device.CreateCommandAllocator(CommandListType.Direct);
         _copyCommandList = _device.CreateCommandList<ID3D12GraphicsCommandList>(
             CommandListType.Direct, _copyAllocator, null);
         _copyCommandList.Close();
         _copyFence = _device.CreateFence(0, FenceFlags.None);
-        _backend = new GRVorticeD3DBackendContext
+        _backend = new GRD3DBackendContext
         {
-            Adapter = _adapter,
-            Device = _device,
-            Queue = _queue,
+            Adapter = _adapter.NativePointer,
+            Device = _device.NativePointer,
+            Queue = _queue.NativePointer,
         };
         _context = GRContext.CreateDirect3D(_backend)
             ?? throw new InvalidOperationException("Skia could not create the Doroti D3D12 context.");
@@ -2792,7 +2802,7 @@ internal sealed class WindowsD3D12BackingStore : IDisposable
     private readonly ID3D12Device _device;
     private readonly GRContext? _context;
     private ID3D12Resource? _resource;
-    private GRVorticeD3DTextureResourceInfo? _resourceInfo;
+    private GRD3DTextureResourceInfo? _resourceInfo;
     private GRBackendRenderTarget? _renderTarget;
     private SKSurface? _surface;
 
@@ -2814,7 +2824,7 @@ internal sealed class WindowsD3D12BackingStore : IDisposable
         if (_resource is not null && Width == width && Height == height) return false;
         ReleaseResources();
         var description = ResourceDescription.Texture2D(
-            Format.R8G8B8A8_UNorm,
+            Format.FormatR8G8B8A8Unorm,
             checked((uint)width),
             checked((uint)height),
             1,
@@ -2829,11 +2839,11 @@ internal sealed class WindowsD3D12BackingStore : IDisposable
             _context is null ? ResourceStates.Common : ResourceStates.RenderTarget,
             null);
         if (_context is null) { Width = width; Height = height; return true; }
-        _resourceInfo = new GRVorticeD3DTextureResourceInfo
+        _resourceInfo = new GRD3DTextureResourceInfo
         {
-            Resource = _resource,
-            ResourceState = ResourceStates.RenderTarget,
-            Format = Format.R8G8B8A8_UNorm,
+            Resource = _resource.NativePointer,
+            ResourceState = (uint)ResourceStates.RenderTarget,
+            Format = (uint)Format.FormatR8G8B8A8Unorm,
             SampleCount = 1,
             LevelCount = 1,
         };
@@ -2875,10 +2885,10 @@ internal sealed class WindowsD3D12Presenter : IDisposable
     private IDXGIFactory2? _factory;
     private IDXGISwapChain3? _renderSwapChain;
     private IDXGISwapChain3? _presentedSwapChain;
-    private GRVorticeD3DBackendContext? _backend;
+    private GRD3DBackendContext? _backend;
     private GRContext? _context;
     private ID3D12Resource? _buffer;
-    private GRVorticeD3DTextureResourceInfo? _resourceInfo;
+    private GRD3DTextureResourceInfo? _resourceInfo;
     private GRBackendRenderTarget? _renderTarget;
     private SKSurface? _surface;
     private SwapChainPanel? _panel;
@@ -2914,7 +2924,7 @@ internal sealed class WindowsD3D12Presenter : IDisposable
         if (_renderSwapChain is null)
         {
             var description = new SwapChainDescription1(
-                (uint)width, (uint)height, Format.R8G8B8A8_UNorm,
+                (uint)width, (uint)height, Format.FormatR8G8B8A8Unorm,
                 false, Usage.RenderTargetOutput, 2,
                 Scaling.Stretch, SwapEffect.FlipSequential, AlphaMode.Ignore, SwapChainFlags.None);
             using var created = _factory!.CreateSwapChainForComposition(_queue!, description, null);
@@ -2929,7 +2939,7 @@ internal sealed class WindowsD3D12Presenter : IDisposable
             _renderSwapChain.ResizeBuffers(2,
                 (uint)width,
                 (uint)height,
-                Format.R8G8B8A8_UNorm,
+                Format.FormatR8G8B8A8Unorm,
                 SwapChainFlags.None).CheckError();
             _renderWidth = width;
             _renderHeight = height;
@@ -3036,13 +3046,13 @@ internal sealed class WindowsD3D12Presenter : IDisposable
         _factory = CreateDXGIFactory2<IDXGIFactory2>(false);
         using var factory6 = _factory.QueryInterface<IDXGIFactory6>();
         _adapter = factory6.EnumAdapterByGpuPreference<IDXGIAdapter1>(0, GpuPreference.HighPerformance);
-        _device = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level_11_0);
+        _device = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level110);
         _queue = _device.CreateCommandQueue(CommandListType.Direct, 0, CommandQueueFlags.None, 0);
-        _backend = new GRVorticeD3DBackendContext
+        _backend = new GRD3DBackendContext
         {
-            Adapter = _adapter,
-            Device = _device,
-            Queue = _queue,
+            Adapter = _adapter.NativePointer,
+            Device = _device.NativePointer,
+            Queue = _queue.NativePointer,
         };
         _context = GRContext.CreateDirect3D(_backend)
             ?? throw new InvalidOperationException("Skia could not create the Doroti D3D12 context.");
@@ -3052,11 +3062,11 @@ internal sealed class WindowsD3D12Presenter : IDisposable
     {
         ReleaseBuffer();
         _buffer = _renderSwapChain!.GetBuffer<ID3D12Resource>(_renderSwapChain.CurrentBackBufferIndex);
-        _resourceInfo = new GRVorticeD3DTextureResourceInfo
+        _resourceInfo = new GRD3DTextureResourceInfo
         {
-            Resource = _buffer,
-            ResourceState = ResourceStates.Present,
-            Format = Format.R8G8B8A8_UNorm,
+            Resource = _buffer.NativePointer,
+            ResourceState = (uint)ResourceStates.Present,
+            Format = (uint)Format.FormatR8G8B8A8Unorm,
             SampleCount = 1,
             LevelCount = 1,
         };

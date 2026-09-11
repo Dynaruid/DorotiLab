@@ -1,9 +1,10 @@
+using Doroti.Graphics.DirectX;
+using static Doroti.Graphics.DirectX.DirectX;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
 using SkiaSharp;
-using Vortice.Direct3D;
-using Vortice.Direct3D12;
-using Vortice.DXGI;
-using static Vortice.Direct3D12.D3D12;
-using static Vortice.DXGI.DXGI;
 
 // Offscreen hardware context; no window, compositor or input automation.
 internal sealed class GpuRasterFixture : IDisposable
@@ -12,14 +13,14 @@ internal sealed class GpuRasterFixture : IDisposable
     private readonly IDXGIAdapter1 _adapter;
     private readonly ID3D12Device2 _device;
     private readonly ID3D12CommandQueue _queue;
-    private readonly GRVorticeD3DBackendContext _backend;
+    private readonly GRD3DBackendContext _backend;
     internal GRContext Context { get; }
     internal GpuRasterFixture()
     {
         _adapter = _factory.EnumAdapterByGpuPreference<IDXGIAdapter1>(0, GpuPreference.HighPerformance);
-        _device = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level_11_0);
+        _device = D3D12CreateDevice<ID3D12Device2>(_adapter, FeatureLevel.Level110);
         _queue = _device.CreateCommandQueue(CommandListType.Direct, 0, CommandQueueFlags.None, 0);
-        _backend = new GRVorticeD3DBackendContext { Adapter = _adapter, Device = _device, Queue = _queue };
+        _backend = new GRD3DBackendContext { Adapter = _adapter.NativePointer, Device = _device.NativePointer, Queue = _queue.NativePointer };
         Context = GRContext.CreateDirect3D(_backend) ?? throw new Exception("GPU raster fixture context creation failed");
     }
     public void Dispose()

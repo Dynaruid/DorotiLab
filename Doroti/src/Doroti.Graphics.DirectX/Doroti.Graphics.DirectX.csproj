@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <Description>Silk.NET DirectX COM ownership and presentation helpers for Doroti Windows hosts.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Direct3D11" />
+    <PackageReference Include="Silk.NET.Direct3D12" />
+    <PackageReference Include="Silk.NET.DXGI" />
+    <PackageReference Include="Silk.NET.Direct3D11.Extensions.D3D11On12" />
+  </ItemGroup>
+</Project>

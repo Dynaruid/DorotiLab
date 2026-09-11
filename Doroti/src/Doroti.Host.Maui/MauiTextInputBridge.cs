@@ -77,7 +77,8 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal event Action<DorotiTextInputAction>? ActionPerformed;
     internal event Action<bool>? FocusChanged;
     internal IReadOnlyList<InputView> Inputs =>
-        _entry is null ? (_editor is null ? [] : [_editor]) : (_editor is null ? [_entry] : [_entry, _editor]);
+        _entry is null ? (_editor is null ? Array.Empty<InputView>() : new InputView[] { _editor })
+            : (_editor is null ? new InputView[] { _entry } : new InputView[] { _entry, _editor });
     internal bool HasClient => _hasClient;
 
     internal void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)

@@ -36,6 +36,13 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: GPU surface implementation behind the Windows App SDK, MAUI, AppKit, Web, and Linux/Qt hosts
 - License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
 
+## Silk.NET
+
+- Upstream: https://github.com/dotnet/Silk.NET
+- Packages: `Silk.NET.Direct3D11`, `Silk.NET.Direct3D12`, `Silk.NET.DXGI`, `Silk.NET.Direct3D11.Extensions.D3D11On12`, and the existing Vulkan packages, version 2.23.0
+- Use: generated native graphics bindings; `Doroti.Graphics.DirectX` owns Windows COM references and uses the binding-independent SkiaSharp Direct3D API
+- License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
+
 ## ANGLE Windows runtime
 
 - Upstream: https://github.com/AvaloniaUI/angle

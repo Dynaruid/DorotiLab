@@ -42,10 +42,6 @@
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="SkiaSharp.Views" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
-    <PackageReference Include="SkiaSharp.Direct3D.Vortice" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
-    <PackageReference Include="Vortice.Direct3D11" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
-    <PackageReference Include="Vortice.DXGI" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
-    <PackageReference Include="Vortice.Direct3D12" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
@@ -81,4 +77,7 @@
   <Target Name="EnsureDorotiGraphiteMauiWindowsAsset" BeforeTargets="PrepareForBuild;DorotiCollectLaunchInputs;DorotiCollectLaunchDependencies" Condition="'$(DesignTimeBuild)' != 'true' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
     <Exec Command="python &quot;$(MSBuildThisFileDirectory)..\..\native\graphite\build-windows.py&quot; --ensure-distribution" Timeout="1200000" />
   </Target>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
+  </ItemGroup>
 </Project>
