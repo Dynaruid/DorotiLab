@@ -4,6 +4,7 @@
 # Keep Doroti-owned source and future tools/* projects tracked.
 /reference/Avalonia-main/
 /reference/flutter-master/
+/reference/flutter_inappwebview-master/
 
 # .NET build output
 # Project-local temporary workspaces and reusable caches. See
