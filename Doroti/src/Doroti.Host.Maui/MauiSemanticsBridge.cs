@@ -56,6 +56,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     public void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 16) : default;
         ArgumentNullException.ThrowIfNull(update);
         ArgumentNullException.ThrowIfNull(performAction);
         Interlocked.Increment(ref _updatesReceived);
@@ -223,6 +224,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     private void Apply(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 17) : default;
         var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, update.nodes);
         var changedById = delta.changedNodes.ToDictionary(node => node.id);
         var rebuildOrder = delta.HasTopologyChange;

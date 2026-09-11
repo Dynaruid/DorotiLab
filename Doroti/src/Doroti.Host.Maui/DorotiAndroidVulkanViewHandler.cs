@@ -1,10 +1,12 @@
 #if ANDROID
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Views;
 using Doroti.Skia.Vulkan;
+using Doroti.Ui;
 using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
 using SkiaSharp;
@@ -40,15 +42,28 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     private long _generation;
     private readonly Java.Lang.Runnable _drawCallback;
     private readonly Java.Lang.Runnable _gpuCompletionCallback;
+    private readonly Java.Lang.Runnable _allocationProfileCallback;
     private bool _gpuCompletionPending;
     private int _timingFrames;
     private readonly double[] _timingSums = new double[7];
     private readonly double[] _timingMaxima = new double[7];
+    private bool _inputTiming;
+    private double _density = 1;
+    internal double SemanticsDensity => _density;
+    internal AndroidX.CustomView.Widget.ExploreByTouchHelper? SemanticsHelper { get; set; }
+
+    protected override bool DispatchHoverEvent(MotionEvent? e) =>
+        (e is not null && SemanticsHelper?.DispatchHoverEvent(e) == true) || base.DispatchHoverEvent(e);
 
     public DorotiAndroidVulkanView(Context context) : base(context)
     {
         _drawCallback = new(DrawFrame);
         _gpuCompletionCallback = new(PollGpuCompletion);
+        _allocationProfileCallback = new(() =>
+        {
+            foreach (var entry in FrameworkWorkProfile.CaptureEntries())
+                global::Android.Util.Log.Info("DorotiAllocation", $"kind={entry.Kind} calls={entry.Calls} allocated={entry.AllocatedBytes} self={entry.SelfAllocatedBytes} type={entry.Type}");
+        });
         // SurfaceView is composed below the MAUI semantics and IME overlay.
         Holder!.SetFormat(Format.Translucent);
         Focusable = FocusableInTouchMode = true;
@@ -57,6 +72,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     internal void Connect(DorotiGraphiteView owner)
     {
         _owner = owner;
+        RefreshDensity();
+        _inputTiming = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?
+            .Intent?.GetStringExtra("DOROTI_INPUT_TIMING") == "1";
         Holder!.AddCallback(this);
         _live = Holder.Surface?.IsValid == true;
         if (_live && Holder.SurfaceFrame is { } bounds) { _width = bounds.Width(); _height = bounds.Height(); }
@@ -70,8 +88,18 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     }
     public void SurfaceCreated(ISurfaceHolder holder) { _live = true; RequestFrame(); }
     public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
-    { _width = width; _height = height; RequestFrame(); }
+    { _width = width; _height = height; RefreshDensity(); RequestFrame(); }
     public void SurfaceDestroyed(ISurfaceHolder holder) { _live = false; ReleaseSurface(); }
+
+    protected override void OnConfigurationChanged(Android.Content.Res.Configuration? newConfig)
+    {
+        base.OnConfigurationChanged(newConfig);
+        RefreshDensity();
+        RequestFrame();
+    }
+
+    private void RefreshDensity() =>
+        _density = MauiViewEnvironment.ValidScale(Resources?.DisplayMetrics?.Density ?? 1);
 
     internal void RequestFrame()
     {
@@ -92,6 +120,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     private void DrawFrame()
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 10) : default;
         _pending = false;
         if (!_live || _owner is null) return;
         MauiSkiaPaintContext? paint = null;
@@ -105,20 +134,21 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 if (_nativeWindow == 0) throw new InvalidOperationException("ANativeWindow_fromSurface failed.");
                 _window = GraphiteVulkanWindow.CreateAndroid(_nativeWindow);
                 _window.EnableFrameTiming = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?
-                    .Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1";
+                    .Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1" || _inputTiming;
                 _window.ResourcesReleasing += ReleaseRendererResources;
                 _generation++;
                 global::Android.Util.Log.Info("DorotiGraphite", $"Vulkan device={_window.DeviceName} generation={_generation}");
             }
             var presented = _window.Render(_width, _height, (surface, width, height) =>
             {
-                var density = MauiViewEnvironment.ValidScale(Resources?.DisplayMetrics?.Density ?? 1);
-                paint = new(surface, _window.ContextIdentity, width, height, density,
+                paint = new(surface, _window.ContextIdentity, width, height, _density,
                     (_generation << 32) | _window.Generation, GetType().FullName!, "Android/SurfaceView/Graphite-Vulkan");
                 _owner.PaintGraphite(paint);
             }, () => paint is { SkipPresent: false, SkipRaster: false });
             if (paint?.Completion is { } completion) _owner.CompleteGraphite(completion, !presented);
             if (presented && _window.EnableFrameTiming) RecordFrameTiming(_window.LastFrameTiming);
+            if (presented && _inputTiming && _window.LastFrameTiming.TotalMs > 12)
+                global::Android.Util.Log.Info("DorotiInputTiming", $"frame={_window.LastFrameTiming}");
             ScheduleGpuCompletion();
             if (!presented || paint?.Completion is null) RequestFrame();
         }
@@ -191,7 +221,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     public override bool OnTouchEvent(MotionEvent? e)
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 9) : default;
         if (e is null || _owner?.EnableTouchEvents != true) return false;
+        var started = _inputTiming ? Stopwatch.GetTimestamp() : 0;
         if (e.ActionMasked == MotionEventActions.Down) RequestFocus();
         var action = e.ActionMasked switch {
             MotionEventActions.Down or MotionEventActions.PointerDown => SKTouchAction.Pressed,
@@ -211,6 +243,13 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             var args = new SKTouchEventArgs(e.GetPointerId(i), action, button, device,
                 new SKPoint(e.GetX(i), e.GetY(i)), contact, 0, e.GetPressure(i));
             ((ISKGLView)_owner).OnTouch(args);
+        }
+        if (_inputTiming && (e.ActionMasked != MotionEventActions.Move || Stopwatch.GetElapsedTime(started).TotalMilliseconds > 8))
+            global::Android.Util.Log.Info("DorotiInputTiming", $"action={e.ActionMasked} eventMs={e.EventTime} dispatchMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
+        if (FrameworkWorkProfile.AllocationEnabled && e.ActionMasked == MotionEventActions.Up)
+        {
+            RemoveCallbacks(_allocationProfileCallback);
+            PostDelayed(_allocationProfileCallback, 2000);
         }
         return true;
     }
@@ -238,7 +277,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) { Disconnect(); _drawCallback.Dispose(); _gpuCompletionCallback.Dispose(); }
+        if (disposing) { Disconnect(); RemoveCallbacks(_allocationProfileCallback); _allocationProfileCallback.Dispose(); _drawCallback.Dispose(); _gpuCompletionCallback.Dispose(); }
         base.Dispose(disposing);
     }
 }

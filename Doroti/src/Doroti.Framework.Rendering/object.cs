@@ -869,6 +869,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void flushSemantics()
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 15) : default;
         if ((this._semanticsOwner is null))
         {
             return;
@@ -2121,6 +2122,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     internal virtual void _paintWithContext(PaintingContext context, Offset offset)
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 12) : default;
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -3572,6 +3574,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     public virtual void markNeedsUpdate()
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(renderObject.GetType(), 13) : default;
         ((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsGeometryUpdate.Add(this.renderObject);
         global::Doroti.Framework.Semantics.SemanticsNode? producedSemanticsNode = this.cachedSemanticsNode;
         bool wasSemanticsBoundaryLocal = ((producedSemanticsNode is not null) && ((_SemanticsConfigurationProvider__object)this.configProvider).wasSemanticsBoundary);

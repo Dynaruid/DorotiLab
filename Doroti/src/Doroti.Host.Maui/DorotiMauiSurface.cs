@@ -96,8 +96,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 _application.ApplicationAssembly,
                 _application.LaunchContext.RuntimeIdentifier,
                 _application.NativePluginHandlers);
+            IMauiSemanticsBridge semantics =
+#if ANDROID
+                DorotiGraphiteView.Enabled ? new MauiAndroidSemanticsBridge(_renderSurface.Element) :
+#endif
+                new MauiSemanticsBridge(_semanticsLayer);
             _host.CreateView(_session, _viewId, _renderSurface, _application.ViewConfiguration,
-                new MauiSemanticsBridge(_semanticsLayer), _boundary, _textInput);
+                semantics, _boundary, _textInput);
             using (var dispatcherScope = _session.dispatcher.EnterScope())
                 _session.dispatcher.setSemanticsTreeEnabled(true);
             _attached = true;

@@ -8,6 +8,8 @@ public static class FrameworkWorkProfile
     // silently change the instrumentation of existing latency comparisons.
     public static readonly bool LayoutEnabled =
         Environment.GetEnvironmentVariable("DOROTI_LAYOUT_PROFILE") == "1";
+    public static readonly bool AllocationEnabled =
+        Environment.GetEnvironmentVariable("DOROTI_ALLOCATION_PROFILE") == "1";
     private const int Capacity = 512;
     [ThreadStatic] private static Buffer? _buffer;
     private sealed class Buffer
@@ -15,6 +17,7 @@ public static class FrameworkWorkProfile
         public readonly Dictionary<(Type, int), int> Ids = new();
         public readonly long[] Calls = new long[Capacity], Inclusive = new long[Capacity], Self = new long[Capacity];
         public readonly long[] Children = new long[Capacity];
+        public readonly long[] Allocated = new long[Capacity], SelfAllocated = new long[Capacity], ChildAllocated = new long[Capacity];
         public readonly long[] StartCalls = new long[Capacity], StartSelf = new long[Capacity], StartInclusive = new long[Capacity];
         public readonly long[] Frames = new long[512 * 22];
         public long FrameCount, BuildSequence;
@@ -24,9 +27,14 @@ public static class FrameworkWorkProfile
     public readonly struct Scope : IDisposable
     {
         private readonly int _id, _depth;
-        private readonly long _start;
+        private readonly long _start, _allocated;
         private readonly bool _active;
-        internal Scope(int id, int depth) { _id = id; _depth = depth; _start = DorotiFrameClock.Now.Ticks; _active = true; }
+        internal Scope(int id, int depth)
+        {
+            _id = id; _depth = depth;
+            _allocated = AllocationEnabled ? GC.GetAllocatedBytesForCurrentThread() : 0;
+            _start = DorotiFrameClock.Now.Ticks; _active = true;
+        }
         public void Dispose()
         {
             if (!_active || _buffer is not { } buffer) return;
@@ -36,6 +44,13 @@ public static class FrameworkWorkProfile
             buffer.Inclusive[_id] += elapsed;
             buffer.Self[_id] += elapsed - buffer.Children[_depth];
             if (_depth > 0) buffer.Children[_depth - 1] += elapsed;
+            if (AllocationEnabled)
+            {
+                var allocated = GC.GetAllocatedBytesForCurrentThread() - _allocated;
+                buffer.Allocated[_id] += allocated;
+                buffer.SelfAllocated[_id] += allocated - buffer.ChildAllocated[_depth];
+                if (_depth > 0) buffer.ChildAllocated[_depth - 1] += allocated;
+            }
         }
     }
     public static Scope Begin(Type type, int kind = 0)
@@ -50,6 +65,7 @@ public static class FrameworkWorkProfile
         }
         var depth = buffer.Depth++;
         buffer.Children[depth] = 0;
+        buffer.ChildAllocated[depth] = 0;
         return new(id, depth);
     }
     public static void Count(Type type, int kind)
@@ -96,14 +112,18 @@ public static class FrameworkWorkProfile
             return buffer.Frames[offset..(offset+22)];
         }).ToArray();
     }
-    public sealed record Entry(int Id, string Type, int Kind, long Calls, long InclusiveMicroseconds, long SelfMicroseconds);
+    public sealed record Entry(int Id, string Type, int Kind, long Calls, long InclusiveMicroseconds, long SelfMicroseconds,
+        long AllocatedBytes = 0, long SelfAllocatedBytes = 0);
+    public static Entry[] CaptureEntries() => _buffer?.Ids.Select(pair => new Entry(pair.Value,
+        pair.Key.Item1.FullName ?? pair.Key.Item1.Name, pair.Key.Item2, _buffer.Calls[pair.Value],
+        _buffer.Inclusive[pair.Value] / 10, _buffer.Self[pair.Value] / 10,
+        _buffer.Allocated[pair.Value], _buffer.SelfAllocated[pair.Value])).ToArray() ?? [];
     public static object Snapshot() => new {
         frames = Frames(), framesDropped = Math.Max(0, (_buffer?.FrameCount ?? 0) - 512),
         enabled = FrameworkWorkCounters.Enabled, layoutEnabled = LayoutEnabled,
         thread = Environment.CurrentManagedThreadId,
         dropped = _buffer?.Dropped ?? 0,
-        entries = _buffer?.Ids.Select(pair => new Entry(pair.Value, pair.Key.Item1.FullName ?? pair.Key.Item1.Name,
-            pair.Key.Item2, _buffer.Calls[pair.Value], _buffer.Inclusive[pair.Value] / 10, _buffer.Self[pair.Value] / 10)).ToArray() ?? [],
+        entries = CaptureEntries(),
         managedAllocatedBytes = GC.GetTotalAllocatedBytes(), managedHeapBytes = GC.GetTotalMemory(false),
         gcCollections = new[] { GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2) },
     };

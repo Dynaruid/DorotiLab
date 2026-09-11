@@ -122,6 +122,11 @@ On 2026-09-09, a Release AOT APK was installed on a Galaxy `SM-S931N` using the 
 and the `Doroti Material 3` Components screen was visually confirmed. This did not validate all widgets, input, or performance.
 If automatic deployment fails, see [Android build and deployment errors](#android-build-and-deployment-errors).
 
+Android Graphite exposes accessibility through virtual nodes on the render view,
+avoiding hidden MAUI controls per semantic node. GC settings and AOT defaults are unchanged.
+See [touch timing validation](../Doroti/validation/app-runner/android-touch-timing.md) for the Galaxy comparison
+and the opt-in `DOROTI_INPUT_TIMING` diagnostic.
+
 ### iOS sample
 
 Use Apple Silicon macOS with Xcode/iOS workloads, and start Simulator first.

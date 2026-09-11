@@ -63,6 +63,7 @@ internal sealed class MauiHostAdapter :
     private bool _compositionVsyncAttached;
 #elif ANDROID
     private readonly AndroidFrameCallback _androidFrameCallback;
+    private Android.Views.Choreographer? _androidChoreographer;
     private readonly HashSet<ulong> _androidActiveTouchPointers = [];
     private bool _androidFrameCallbackPosted;
     private TimeSpan? _androidVsyncTimestamp;
@@ -406,7 +407,13 @@ internal sealed class MauiHostAdapter :
             if (_disposed || _androidFrameCallbackPosted) return;
             _androidFrameCallbackPosted = true;
         }
-        _surface.Dispatcher.Dispatch(PostAndroidFrameCallback);
+        // Graphite input and painting already run on the UI thread. Posting a
+        // managed Runnable on every pulse adds Java peers for the GC bridge
+        // and can register the waiter too late for the next refresh.
+        if (_surface.Dispatcher.IsDispatchRequired)
+            _surface.Dispatcher.Dispatch(PostAndroidFrameCallback);
+        else
+            PostAndroidFrameCallback();
     }
 
     private void PostAndroidFrameCallback()
@@ -420,7 +427,8 @@ internal sealed class MauiHostAdapter :
                 return;
             }
         }
-        Android.Views.Choreographer.Instance!.PostFrameCallback(_androidFrameCallback);
+        _androidChoreographer ??= Android.Views.Choreographer.Instance!;
+        _androidChoreographer.PostFrameCallback(_androidFrameCallback);
     }
 
     private void HandleAndroidFrame(long frameTimeNanos)
@@ -485,8 +493,15 @@ internal sealed class MauiHostAdapter :
             _androidFrameCallbackPosted = false;
             _androidActiveTouchPointers.Clear();
         }
-        _surface.Dispatcher.Dispatch(() =>
-            Android.Views.Choreographer.Instance!.RemoveFrameCallback(_androidFrameCallback));
+        void RemoveCallback()
+        {
+            _androidChoreographer?.RemoveFrameCallback(_androidFrameCallback);
+            _androidChoreographer = null;
+        }
+        if (_surface.Dispatcher.IsDispatchRequired)
+            _surface.Dispatcher.Dispatch(RemoveCallback);
+        else
+            RemoveCallback();
     }
 
     private sealed class AndroidFrameCallback(Action<long> callback) :

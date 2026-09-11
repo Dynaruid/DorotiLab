@@ -143,7 +143,7 @@ public static class ExecutionCostContracts
         public int Reads;
         public AdaptorProbe() : base(new SliverList(@delegate: new SliverChildListDelegate(new List<Widget>())))
             => Target = new SliverProbe(this);
-        public override RenderObject renderObject { get { Reads++; return Target; } }
+        public override RenderSliverMultiBoxAdaptor renderObject { get { Reads++; return Target; } }
     }
 
     public sealed class SliverProbe(RenderSliverBoxChildManager manager) : RenderSliverList(manager)

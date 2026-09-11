@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+    <ApplicationId>dev.doroti.validation.semanticsprovider</ApplicationId>
+    <ApplicationTitle>Doroti semantics regression</ApplicationTitle>
+    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+    <UseMaui>true</UseMaui>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <ProjectReference Include="../../src/Doroti.Ui/Doroti.Ui.csproj" />
+    <Compile Include="../../src/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs" Link="MauiAndroidSemanticsBridge.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/MauiHostContracts.cs" Link="MauiHostContracts.cs" />
+  </ItemGroup>
+</Project>

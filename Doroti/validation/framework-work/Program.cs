@@ -88,6 +88,18 @@ Require(outer.GetProperty("Calls").GetInt64() == 1 && inner.GetProperty("Calls")
     "nested profile scopes unwind through exceptions");
 Require(outer.GetProperty("InclusiveMicroseconds").GetInt64() >= outer.GetProperty("SelfMicroseconds").GetInt64(),
     "profile inclusive time contains self time");
+if (FrameworkWorkProfile.AllocationEnabled)
+{
+    Require(inner.GetProperty("AllocatedBytes").GetInt64() > 0 &&
+        outer.GetProperty("AllocatedBytes").GetInt64() - inner.GetProperty("AllocatedBytes").GetInt64() ==
+        outer.GetProperty("SelfAllocatedBytes").GetInt64(),
+        "nested allocation attribution excludes child allocations from parent self bytes");
+}
+else
+{
+    Require(outer.GetProperty("AllocatedBytes").GetInt64() == 0 && inner.GetProperty("AllocatedBytes").GetInt64() == 0,
+        "allocation capture remains separately opt-in");
+}
 var isolated = false;
 var thread = new Thread(() => {
     var other = System.Text.Json.JsonSerializer.SerializeToElement(FrameworkWorkProfile.Snapshot());
