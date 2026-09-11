@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <ApplicationId>dev.doroti.validation.appkit-platform-views</ApplicationId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Doroti.Hosting/Doroti.Hosting.csproj" />
+    <Compile Include="../../../src/Doroti.Host.Maui/AppKitPlatformViewFactory.cs" Link="AppKitPlatformViewFactory.cs" />
+  </ItemGroup>
+</Project>

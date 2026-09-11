@@ -13,7 +13,8 @@
     <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" />
+    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=osx-arm64"
+                      SetTargetFramework="TargetFramework=net10.0-macos" SkipGetTargetFrameworkProperties="true" />
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
     <None Include="buildTransitive\Doroti.Target.MacOS.Maui.osx-arm64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.MacOS.Maui.osx-arm64.targets" />

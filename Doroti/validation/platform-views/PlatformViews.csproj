@@ -2,6 +2,7 @@
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
     <Compile Remove="windows/**/*.cs" />
+    <Compile Remove="macos/**/*.cs" />
     <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
     <ProjectReference Include="../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />

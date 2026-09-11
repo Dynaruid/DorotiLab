@@ -64,6 +64,8 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     internal void RaiseGpuResourcesReleasing() => GpuResourcesReleasing?.Invoke();
 
     internal ulong ViewId => _viewId;
+    internal DorotiMacOSMetalView? NativeView => _nativeView;
+    internal AppKitPlatformViewHost? PlatformViews { get; set; }
 
     internal void Connect(DorotiMacOSMetalView nativeView)
     {
@@ -76,6 +78,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     {
         if (!ReferenceEquals(_nativeView, nativeView)) return;
         _nativeView = null;
+        PlatformViews?.DetachSurface();
         nativeView.Disconnect();
     }
 
@@ -141,6 +144,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     {
         if (_disposed) return;
         _disposed = true;
+        PlatformViews?.Dispose();
         var native = _nativeView;
         _nativeView = null;
         native?.Disconnect();

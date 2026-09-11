@@ -11,6 +11,10 @@ python Doroti/validation/platform-views/record.py web-typescript
 python Doroti/validation/platform-views/record.py product-build
 python Doroti/validation/platform-views/record.py windows-product-build
 python Doroti/validation/platform-views/record.py testbed-build
+python3 Doroti/validation/platform-views/record.py macos-attachment
+python3 Doroti/validation/platform-views/record.py macos-product-build
+python3 Doroti/validation/platform-views/record.py macos-product-live
+python3 Doroti/validation/platform-views/record.py macos-interleaved
 ```
 
 Each command invokes `run-with-timeout.py` (1200 s) and records command, SDK scope,
@@ -37,3 +41,14 @@ transfer OffscreenCanvas segments or qualify PV-4C. Browser screenshots are pres
 The testbed fixture can be selected with `DOROTI_TESTBED_MODE=platform-views` after
 a runner implements and registers the actual native compositor. It reports missing
 capability explicitly on current runners.
+
+The AppKit runner now registers the generic factories from its optional manifest.
+Select `DOROTI_PLATFORM_VIEW_COMPOSITION=overlay` for its explicit NativeOverlay
+fixture; `interleaved` selects the AppKit multi-surface compositor fixture.
+`macos-attachment` runs actual NSControls in an isolated AppKit window harness;
+`macos-product-live` requires the built Debug Testbed and executes its real Metal
+scene path with both Graphite and Ganesh. See [AppKit scope and limitations](../../docs/platform-views/appkit.md).
+
+`macos-interleaved` runs ten stable-instance overlap states on Graphite and Ganesh,
+checks real window PNG pixels, native state/identity, ordered hit targets and synthetic
+shield tap counts. Physical input, IME, VoiceOver and complete PV-5/PV-10 remain unverified.

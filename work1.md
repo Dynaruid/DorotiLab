@@ -2,14 +2,27 @@
 
 작성일·재검토일: 2026-09-11 · 재검토 HEAD: `5b8996fbe0fde6cff76b7024fe8046505e108d6e` + 기존 working tree 변경 포함
 
-기준: [idea.md](idea.md) 및 이번 사용자 요구인 **Doroti 위젯과 플랫폼 뷰의 양방향 전체·부분 겹침**. 공통 기반과 Windows/Web 선행 작업, AppKit NativeOverlay 제품 연결이 일부 진행되어 있다. **현재 전체 상태는 `PARTIAL`이며 사용자 요구를 아직 충족하지 못한다.** 기존 PV 단계는 유지하되 C 교차 합성을 필수 목표로 구체화한다. 이번 재검토에서는 소스·기존 실행 기록을 확인하고 이 계획서만 수정했다. 제품 코드를 수정하거나 테스트를 새로 실행하지 않았다.
+기준: [idea.md](idea.md) 및 이번 사용자 요구인 **Doroti 위젯과 플랫폼 뷰의 양방향 전체·부분 겹침**. 공통 기반과 Windows/Web 선행 작업, AppKit NativeOverlay 제품 연결이 일부 진행되어 있다. **현재 전체 상태는 `PARTIAL`이며 사용자 요구를 아직 충족하지 못한다.** 기존 PV 단계는 유지하되 C 교차 합성을 필수 목표로 구체화한다. 최초 재검토는 문서 수정만 수행했으며, 이후 사용자 요청에 따른 macOS 제품 코드·검증 변경은 아래 후속 구현 절에 기록한다.
 
-현재 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 이번 완료 기준 반영은 PV-0의 남은 작업이다.
+최초 재검토 시 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없었다. 후속 구현에서 계약/지원표를 복구했으며 실행 기록은 AppKit README를 사용한다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 양방향 겹침 기준 반영은 수행했으며, 기기별 성능 예산은 남아 있다.
+
+## macOS 후속 구현 — 2026-09-11
+
+사용자의 맥 작업 요청에 따라 **native AppKit macOS** 경로를 추가 구현했다. 아래 최초 재검토의 Windows/Web 등 다른 플랫폼 상태는 유지하며, AppKit의 단일 surface/B 전용 설명은 이 후속 결과로 갱신한다.
+
+- `AppKitPlatformRasterSurface`로 중간·전경별 투명 CAMetalLayer를 만들고 Graphite/Ganesh의 실제 GPU surface를 연결했다. 첫 raster는 기존 MTKView를 사용한다.
+- native clip, raster, shield가 동일 paint order를 사용한다. AppKit hit-test도 이 순서를 따르며, shield는 기존 Metal view의 입력 경로로 연결한다. 슬롯은 제한 내 재사용하고 detach 시 GPU lease 종료 뒤 해제한다.
+- 전체 frame 준비 후 같은 Metal queue에 제출하고 Core Animation transaction에서 drawable들을 표시한다. 실패 시 준비 취소/배치 rollback과 제출된 자원의 GPU retirement를 처리한다. 물리적인 display 동기화와 device-loss 스트레스는 미검증이다.
+- Testbed에 같은 key/handle을 유지하는 10개 장면(부분/전체 가림, 해제, 역순, 중간 그림, alpha, shield on/off/역순, 이동)과 전체 영역을 보호하는 modal 예제를 추가했다.
+- `macos-interleaved` gate는 두 renderer에서 실제 창 캡처의 색 공간을 sRGB로 변환해 픽셀을 비교하고, native identity·편집 내용·hit target·합성 입력의 단일 탭 전달을 검사한다. [최신 실행 결과](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md)를 기준으로 한다.
+- 누락된 [공통 계약](Doroti/docs/platform-views/contract.md)과 [지원표](Doroti/docs/platform-views/support-matrix.md)를 복구했다.
+
+**PV-8은 여전히 PARTIAL이다.** 제한된 C 제품 경로를 구현했지만 한글 IME, VoiceOver, 완전 가림 시 focus/semantics 정책, 실제 wheel/drag/capture, 제품 두 창 close/reopen, resize/DPR/device-loss 스트레스, 0/1/4-view 성능 및 최종 배포는 완료로 계산하지 않는다. 다른 플랫폼과 Mac Catalyst도 승격하지 않는다. `skippedByUser`로 처리한 항목은 없다.
 
 ## 재검토 결론
 
 - **설계 방향은 유지한다.** 기존 `raster → native → raster` planner는 양방향 겹침을 위한 기반이다. registry·identity·수명·typed scene·segment 분할을 버리고 다시 만들 필요는 없다.
-- **제품 합성 구현은 추가·수정해야 한다.** 현재 AppKit은 모든 raster segment를 하나의 Metal canvas에 그리고 그 위에 native container를 올린다. 따라서 플랫폼 뷰가 Doroti 위젯을 덮는 한 방향만 가능하며, scene에서 나중에 그린 Doroti 위젯도 native 위로 올라가지 않는다.
+- **제품 합성 구현은 추가·수정해야 한다.** 최초 재검토 당시 AppKit의 단일 Metal canvas는 한 방향의 겹침만 가능했다. 후속 구현에서는 segment별 투명 Metal surface로 제한된 C 제품 경로를 연결했다. 전체 수용 기준은 여전히 미완료다.
 - **B 성공을 목표 달성으로 보지 않는다.** NativeOverlay는 중간 단계다. 요구를 충족하는 경로는 `InterleavedComposition`이며, 전체/부분 가림·반대 순서·동적 순서 변경·입력 정합성을 실제 제품에서 검증해야 한다. `PointerInterceptor`만 추가해도 시각적 합성이 해결되지는 않는다.
 - **Windows/Web도 소스상 제품 연결이 미완성이다.** Windows HWND factory와 Web DOM registry는 존재하지만 각각 제품 runner/managed host에 연결되지 않았다. Windows MAUI는 WindowsAppSdk와 다른 presenter를 사용한다. 두 플랫폼 모두 B 제품 통합부터 마무리해야 하며 C에는 실제 다중 raster surface 합성이 추가로 필요하다. 상세 근거는 2.1~2.3에 기록한다.
 
@@ -17,9 +30,9 @@
 
 | 단계 | 구현/검증 상태 | 남은 필수 작업 |
 |---|---|---|
-| PV-0 | `PARTIAL` — typed 계약과 evidence schema 존재; 양방향 겹침 요구 재확정 | 누락된 계약/지원표 문서 복구, 전체·부분 가림과 순서 변경 기준 반영; 플랫폼/기기별 수치는 PV-10에서 확정 |
+| PV-0 | `PARTIAL` — typed 계약/evidence schema 및 계약·지원표 문서 복구, 양방향 겹침 기준 반영 | 플랫폼/기기별 성능 수치는 PV-10에서 확정 |
 | PV-1 | `PARTIAL` — typed capability/registry/coordinator, manifest 입력 검증, owner별 legacy messenger/focus handler, create 중 dispose, 공통 PlatformView/HtmlElementView facade 구현; 공통 자동 검증 통과 | SDK manifest 생성기와 각 runner의 factory/coordinator/channel 등록, 모든 기존 controller 전략의 제품 연결 |
-| PV-2 | `PARTIAL` — typed scene payload, retained planner, effect 거부, balanced raster segment, 실제 Skia CPU 픽셀, commit/retirement 계약, bounded overlay pool 구현·자동 검증; AppKit B의 scene 경로 연결 | segment별 제품 surface와 paint order 연결, NativeOverlay의 일반 전경 겹침 오동작 방지, 실제 GPU/compositor transaction·retirement·device loss 연결 |
+| PV-2 | `PARTIAL` — typed scene payload, retained planner, effect 거부, balanced raster segment, 실제 Skia CPU 픽셀, commit/retirement 계약, bounded overlay pool 구현·자동 검증; AppKit B/C scene·다중 surface·paint order 연결 | 다른 backend의 제품 다중 surface 연결, NativeOverlay 제한 검사, transaction 실패/retirement/device-loss 종합 검증 |
 | PV-3B | `PARTIAL` — HWND factory·독립 stacking/attachment harness 존재, 기존 실행 기록 보존; 제품 등록 호출 없음 | WindowsAppSdk의 HWND 생성 시점/factory 공급·coordinator/channel 연결, Windows MAUI 별도 adapter, DPI·입력/IME/close 제품 검증 |
 | PV-3C | `TODO` — 제품 Vulkan DComp는 여전히 topmost 단일 content root; HWND factory는 C 거부 | HWND/composition-native 별도 C 결정, WindowsAppSdk 다중 visual·C ABI·retirement, MAUI Composition/SwapChainPanel 경로별 구현·검증 |
 | PV-4B | `PARTIAL` — DOM registry·불변 batch·stale 거부·HtmlElementView wrapper와 독립 DOM harness 존재; 제품 host/worker 연결 없음 | managed factory 공급·등록·codec·수명/응답 protocol, HtmlElementView 입력 정책, 실제 root 입력/focus 분리와 제품 실행 |
@@ -27,11 +40,11 @@
 | PV-5 | `PARTIAL` — PointerInterceptor widget/layer/DOM shield와 안팎 입력 단일 전달 검증 | native gesture arena, wheel/drag/capture 종합 검증, 한글 IME 상호 배제, semantics subtree·screen reader 제품 검증 |
 | PV-6 | `TODO` | Android View/SurfaceView B/C host 및 emulator/실기기 검증 |
 | PV-7 | `TODO` | UIKit iOS/Catalyst B/C host, binding/ABI 및 각 runner·기기 검증 |
-| PV-8 | `PARTIAL` — AppKit NSView NativeOverlay factory·owner/channel·실제 Metal scene 경로 연결, 기본 native/제품 자동 검증 추가 | C 다중 Metal surface·shield 합성, 한글 IME·VoiceOver·제품 두 창/close-reopen·성능 검증 |
+| PV-8 | `PARTIAL` — AppKit B 및 제한된 C 다중 Metal surface·paint order·shield 경로, Graphite/Ganesh 제품 검증 추가 | 전체 C1~C6/PV-5, 한글 IME·VoiceOver·제품 두 창/close-reopen·device-loss·성능·배포 검증 |
 | PV-9 | `TODO` | WV-7A Qt 결정, QWindow X11/Wayland B/C 구현·검증 |
 | PV-10 | `PARTIAL` — Testbed fixture와 자동 수명 시나리오 추가 | 실제 제품 0/1/4-view 성능, 두 창, route/lifecycle, 최종 runner/template/package 배포 회귀 |
 
-현재 어느 backend도 제품 `InterleavedComposition` 완료로 광고하지 않는다. 독립 native/DOM harness 성공은 제품 B/C 통과가 아니다. 위 Windows/Web 성공 기록은 기존 작업 기록을 보존한 것이며 이번 재검토에서 재실행하지 않았다. 해당 날짜별 결과 파일이 현재 checkout에 없으므로 재현·증거 복구 없이 검증 완료 범위를 확대하지 않는다. 미실행 항목은 사용자 생략이 아니므로 `skippedByUser`로 표시하지 않는다. 재개 순서는 **PV-0 요구/문서 정리 → PV-2의 제품 다중 surface 연결 → PV-3C/PV-4C와 PV-5 → PV-6~PV-9 C 확장**이다. 이미 제품 B가 연결된 AppKit PV-8C는 실제 경로를 이용한 선행 검증으로 착수할 수 있다.
+AppKit은 제한된 제품 `InterleavedComposition` 경로를 제공하지만, 어느 backend도 전체 C1~C6/PV-5 완료로 광고하지 않는다. 독립 native/DOM harness 성공은 제품 B/C 통과가 아니다. 위 Windows/Web 성공 기록은 기존 작업 기록을 보존한 것이며 이번 재검토에서 재실행하지 않았다. 해당 날짜별 결과 파일이 현재 checkout에 없으므로 재현·증거 복구 없이 검증 완료 범위를 확대하지 않는다. 미실행 항목은 사용자 생략이 아니므로 `skippedByUser`로 표시하지 않는다. 재개 순서는 **PV-0 요구/문서 정리 → PV-2의 제품 다중 surface 연결 → PV-3C/PV-4C와 PV-5 → PV-6~PV-9 C 확장**이다. AppKit PV-8C는 실제 제품 경로의 선행 검증을 수행했으며, 남은 플랫폼별 게이트는 독립적으로 진행한다.
 
 ## 1. 목표와 work2 경계
 
@@ -82,7 +95,7 @@ WebView는 선택형 소비자다. 공통 PlatformView가 WebView 패키지를 �
 | [Widgets csproj](Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj) | `_html_element_view_web.cs`의 compile 제외는 이미 해소됐다. 제품 factory/protocol 연결과 합성 검증은 별도로 남았다. |
 | [Android host](Doroti/src/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs) | SurfaceView가 MAUI semantics/IME overlay 아래에 놓인다. native view와 Doroti foreground의 계층을 별도로 설계한다. |
 | [UIKit host](Doroti/src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs) | UIView 계층·입력 adapter 및 C 합성을 연결해야 한다. AppKit 구현으로 대체되지 않는다. |
-| [AppKit host](Doroti/src/Doroti.Host.Maui/AppKitPlatformViewHost.cs), [factory](Doroti/src/Doroti.Host.Maui/AppKitPlatformViewFactory.cs) | `GetContainer`는 native container를 Metal view의 `Above` sibling으로 붙인다. `Draw`는 모든 raster segment를 동일 canvas에 재생한다. factory는 B만 허용한다. **C에는 segment별 Metal surface와 native/shield의 공통 순서가 필요하다.** shield 없는 일반 전경 widget의 잘못된 가림을 B가 자동 거부한다고 주장할 수 없다. |
+| [AppKit host](Doroti/src/Doroti.Host.Maui/AppKitPlatformViewHost.cs), [factory](Doroti/src/Doroti.Host.Maui/AppKitPlatformViewFactory.cs) | `GetContainer`는 layer-backed container를 MTKView의 sibling으로 붙인다. 첫 raster는 기존 canvas, 이후 raster는 독립 투명 Metal surface에 재생하고 native/shield와 paint order를 공유한다. host factory는 제한된 B/C를 지원하며, standalone factory는 명시적 opt-in 없이는 B 전용이다. 일반 전경의 입력 차단은 PointerInterceptor로 별도 지정한다. |
 | [제품 fixture](DorotiTestbedApp/src/PlatformViewFixture.cs), [기존 검증](Doroti/validation/platform-views/Program.cs) | C용 중간/전경 widget과 modal fixture, planner 순서·CPU segment 픽셀 검증은 있다. AppKit 실행 증거는 별도 B fixture다. 전체 가림·반대 순서·같은 instance의 순서 변경과 최종 native 포함 합성/입력 검증을 추가해야 한다. |
 | [Qt host](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp), [Qt CMake](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/CMakeLists.txt) | Graphite는 QWindow, 비교 경로는 QOpenGLWindow이며 Qt 최소 6.5다. 일반 QWidget 예제를 그대로 적용할 수 없다. |
 
@@ -183,8 +196,8 @@ support key는 backend·OS/runtime·view 종류·요청 효과다. rect/rounded/
 
 - 위 소스와 Flutter external-view embedder/Avalonia attachment의 대응표를 작성하고 legacy controller별 지원·거부 정책을 정한다.
 - WindowsAppSdk와 Windows MAUI, Android, iOS, Mac Catalyst, AppKit macOS, Web 두 renderer, Linux X11/Wayland를 별도 target 행으로 만든다.
-- 신규 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/validation/platform-views/`의 결과 schema를 정의한다.
-- 누락된 공통 계약/지원표를 복구하고 B와 양방향 겹침 C를 구분한다. `idea.md`의 비겹침만 필요한지에 대한 미결정 질문은 이번 요구로 해소되었다. work2의 겹침 인계 기준도 이번 C 기준을 따른다.
+- 공통 계약·지원표는 `Doroti/artifacts/platform-views/`에 기록하고, `Doroti/validation/platform-views/` 검증 도구의 결과 schema를 정의한다. `Doroti/docs/platform-views/`의 별도 문서 생성·복구는 요구하지 않는다.
+- 공통 계약·지원표에서 B와 양방향 겹침 C를 구분한다. `idea.md`의 비겹침만 필요한지에 대한 미결정 질문은 이번 요구로 해소되었다. work2의 겹침 인계 기준도 이번 C 기준을 따른다.
 - 테스트 기기/OS/runtime/RID와 0/1/4 native view 기준 측정 시나리오, 성능 예산, overlay 상한을 기록한다. 수치 미결정 항목에는 결정 담당 단계와 종료 조건을 둔다.
 
 완료 기준: 필수 기능·제한 기능·후속 연구 및 모든 target의 검증 책임이 명시되고, public API·오류·수명·evidence schema가 리뷰 가능하다. 구현 성공을 뜻하지 않는다.
@@ -285,14 +298,14 @@ support key는 backend·OS/runtime·view 종류·요청 효과다. rect/rounded/
 
 2026-09-11 macOS 구현: [AppKit 구성·지원 범위](Doroti/docs/platform-views/appkit.md),
 [실행 증거](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md).
-NSButton/NSTextField `NativeOverlay`만 명시적으로 제공한다. manifest 선택 등록,
-owner별 coordinator/channel, flipped 좌표·rect clip·focus/field editor, native semantics
-placeholder 중복 제거, scene 배치와 Metal 완료 시 참조 해제를 연결했다.
-기존 단일 drawable 구조로 C를 지원한다고 선언하지 않으며, native끼리의 겹침,
-native가 있는 scene의 shield·미지원 효과는 거부한다. **shield 없는 일반 Doroti 전경
-그림의 겹침은 현재 자동 검출하지 못한다.** 이 부분은 PV-2 제한 검사 보강 대상이다.
-C의 compositor 결정과 미검증 게이트는 위 문서에 기록한다.
-다른 플랫폼이나 Mac Catalyst의 상태는 이 작업으로 승격하지 않는다.
+NSButton/NSTextField의 B 및 제한된 C를 제품 host에서 제공한다. manifest 선택 등록,
+owner별 coordinator/channel, flipped 좌표·rect clip·focus/field editor와 native semantics
+placeholder 중복 제거를 유지한다. C는 첫 raster MTKView와 중간·전경별 투명 Metal
+surface를 native/shield와 같은 순서로 배치하고 transaction 표시 및 GPU lease 해제를
+연결한다. `macos-interleaved`에서 실제 제품의 10개 장면과 입력/픽셀을 검증한다.
+한글 IME·VoiceOver·두 창·close/reopen·device-loss·성능·배포 등 미검증 게이트는
+[AppKit 문서](Doroti/docs/platform-views/appkit.md)에 남긴다. 다른 플랫폼이나
+Mac Catalyst의 상태는 이 작업으로 승격하지 않는다.
 
 - **PV-8B:** NSView attachment, flipped 좌표/scale, responder chain, mouse/wheel/key/IME, accessibility 연결.
 - **PV-8C:** 모든 NSView를 한 overlay container에 올리는 B 경로와 별도로, `Metal 배경 → NSView A → 투명 Metal 중간 → NSView B → 투명 Metal 전경`을 실제 sibling/합성 계층으로 구성한다. 현재 renderer별 단일 drawable 제출을 다중 surface 준비·commit·retirement로 확장한다. alpha/clip, shield·hit-test, 순서 변경, live resize, 창 activation을 함께 구현한다.
@@ -349,7 +362,7 @@ C의 compositor 결정과 미검증 게이트는 위 문서에 기록한다.
 
 plan 순서와 CPU segment 픽셀 검증은 공통 자동 검증으로 유지한다. **C 합격 증거는 실제 제품 compositor의 native 포함 화면 캡처/영상과 입력 기록**이어야 한다. 현재 AppKit B 스크린샷이나 `R/N/R/N/R` 단위 검증만으로 C1~C6를 통과 처리하지 않는다. rounded/path clip·perspective·native group opacity 등의 미지원 효과까지 일괄 지원한다고 해석하지 않는다.
 
-결과는 신규 `Doroti/docs/validation/platform-views/<date>/<target>/`에 commit, dirty 변경 식별, OS/RID/기기/runtime/renderer, 명령·exit code·timeout, capability 요청/결과, frame/epoch trace, screenshot/video, 실패 원인과 재개 지점을 남긴다. `sourceReviewed`, `build`, `automated`, `productLive`, `physical`, `nativeAot`를 독립 필드로 기록한다. `skippedByUser`는 실제 사용자 생략 요청이 있을 때만 사용한다.
+결과는 `Doroti/artifacts/platform-views/<date>/<target>/`에 commit, dirty 변경 식별, OS/RID/기기/runtime/renderer, 명령·exit code·timeout, capability 요청/결과, frame/epoch trace, screenshot/video, 실패 원인과 재개 지점을 남긴다. AppKit 구성·지원 범위와 미검증 게이트를 포함한 후속 문서·실행 기록도 `Doroti/artifacts/platform-views/` 안에 작성하며, `Doroti/docs/platform-views/`와 `Doroti/docs/validation/`에 별도 문서를 생성·복구할 필요는 없다. 위의 기존 문서 링크는 과거 구현·실행 기록 참조다. `sourceReviewed`, `build`, `automated`, `productLive`, `physical`, `nativeAot`를 독립 필드로 기록한다. `skippedByUser`는 실제 사용자 생략 요청이 있을 때만 사용한다.
 
 모든 테스트는 [.github 지침](.github/copilot-instructions.md)에 따라 외부 **1200초 timeout**으로 실행한다. 저장소 루트에서의 기본 build 검증 예시는 다음과 같다. 해당 단계의 focused validator와 target build/run도 같은 wrapper를 사용한다. 새 validator의 정확한 명령은 그 validator를 추가하는 단계에서 고정한다.
 
@@ -357,7 +370,7 @@ plan 순서와 CPU segment 픽셀 검증은 공통 자동 검증으로 유지한
 python Doroti/validation/run-with-timeout.py pwsh -NoProfile -File Doroti/eng/doroti.ps1 build
 ```
 
-이번 문서 재검토에서는 제품 build/runtime 테스트를 새로 실행하지 않았다. 이전 구현 실행의 실제 명령·결과는 [검증 README](Doroti/validation/platform-views/README.md)와 현재 존재하는 날짜별 evidence에서 구분한다.
+최초 문서 재검토는 제품 build/runtime 테스트를 실행하지 않았고, 후속 macOS 구현에서는 build/runtime gate를 실행했다. 실제 명령·결과는 [검증 README](Doroti/validation/platform-views/README.md)와 현재 존재하는 날짜별 evidence에서 구분한다.
 
 ## 6. work2 인계 및 완료 규칙
 

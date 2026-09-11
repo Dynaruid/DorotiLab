@@ -21,6 +21,10 @@ CASES = {
     "product-build": ["dotnet", "build", "Doroti.Product.slnx", "--nologo", "-m:1", "-p:UseSharedCompilation=false", "-v:q"],
     "windows-product-build": ["dotnet", "build", "../DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "--nologo", "-m:1", "-v:q"],
     "testbed-build": ["dotnet", "build", "../DorotiTestbedApp/DorotiTestbedApp.csproj", "--nologo", "-m:1", "-v:q"],
+    "macos-attachment": [sys.executable, "validation/platform-views/macos/run.py"],
+    "macos-product-build": ["dotnet", "build", "../DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj", "-r", "osx-arm64", "--nologo", "-m:1", "-v:q"],
+    "macos-product-live": [sys.executable, "validation/platform-views/macos/product.py"],
+    "macos-interleaved": [sys.executable, "validation/platform-views/macos/interleaved.py"],
 }
 
 def git(*args):
@@ -48,21 +52,32 @@ def main():
                 destination = out / ("browser-result.json" if file.name == "result.json" else file.name)
                 shutil.copyfile(file, destination)
                 artifacts.append(str(destination.relative_to(ROOT)).replace("\\", "/"))
+    if args.gate in {"macos-product-live", "macos-interleaved"}:
+        folder = "macos-interleaved" if args.gate == "macos-interleaved" else "macos-product"
+        for file in (DOROTI / "artifacts/validation/platform-views" / folder).glob("*"):
+            destination = out / file.name
+            shutil.copyfile(file, destination)
+            artifacts.append(str(destination.relative_to(ROOT)).replace("\\", "/"))
     evidence = {
         "schemaVersion": "doroti.platform-views.evidence/v1", "commit": git("rev-parse", "HEAD"),
         "dirty": git("status", "--short").splitlines(), "target": args.gate,
-        "os": platform.platform(), "rid": "win-x64", "device": platform.machine(),
+        "os": platform.platform(), "rid": ("osx-arm64" if platform.machine() == "arm64" else "osx-x64") if sys.platform == "darwin" else
+            ("win-x64" if sys.platform == "win32" else "linux-" + platform.machine()), "device": platform.machine(),
         "runtime": "dotnet SDK " + subprocess.check_output(["dotnet", "--version"], cwd=DOROTI, text=True).strip(),
-        "renderer": "isolated DOM" if args.gate == "web-dom" else "CPU/fake" if args.gate == "common" else "notApplicable",
+        "renderer": "AppKit Graphite-Metal and Ganesh-Metal" if args.gate in {"macos-product-live", "macos-interleaved"} else
+            "AppKit NSControl harness" if args.gate == "macos-attachment" else
+            "isolated DOM" if args.gate == "web-dom" else "CPU/fake" if args.gate == "common" else "notApplicable",
         "command": subprocess.list2cmdline(command), "workingDirectory": str(DOROTI),
         "startedUtc": started, "finishedUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "exitCode": result.returncode, "timeoutSeconds": 1200,
-        "sourceReviewed": "passed", "build": "passed" if passed else "failed",
+        "sourceReviewed": "passed", "build": "notVerified" if args.gate in {"macos-product-live", "macos-interleaved"} else "passed" if passed else "failed",
         "automated": ("passed" if passed else "failed") if not args.gate.endswith("-build") and args.gate != "web-typescript" else "notVerified",
-        "productLive": "notVerified", "physical": "notVerified", "nativeAot": "notVerified",
+        "productLive": ("passed" if passed else "failed") if args.gate in {"macos-product-live", "macos-interleaved"} else "notVerified",
+        "physical": "notVerified", "nativeAot": "notVerified",
         "capabilities": [{"request": args.gate, "result": "passed" if passed else "failed"}],
         "artifacts": artifacts,
-        "remaining": ["Actual product compositor integration and all platform B/C acceptance gates remain open.",
+        "remaining": ["AppKit acceptance beyond recorded C scenarios, physical display synchronization, gesture mediation and complete PV-5/PV-10 remain open." if args.gate.startswith("macos-") else
+                      "Actual product compositor integration and all platform B/C acceptance gates remain open.",
                       "Korean IME, screen readers, physical devices, deployment and 0/1/4-view performance are not qualified."],
     }
     (out / "result.json").write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

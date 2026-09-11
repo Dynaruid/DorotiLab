@@ -90,6 +90,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private void SetClientCore(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
     {
         if (_disposed) return;
+#if MACOS
+        _macOSNativeFocus = false;
+#endif
         _configuration = configuration;
         _hasClient = true;
         var next = configuration.inputType == DorotiTextInputType.multiline
@@ -245,6 +248,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private void ShowTextInputCore()
     {
         if (_disposed || _suspended || !_hasClient) return;
+#if MACOS
+        _macOSNativeFocus = false;
+#endif
         AttachActiveInput(requestFocus: false);
         DispatchActiveInputMutation(ActivateNativeTextInput);
     }

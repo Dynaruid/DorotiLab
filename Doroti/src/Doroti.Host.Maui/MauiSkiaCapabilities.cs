@@ -24,6 +24,16 @@ internal sealed class MauiSkiaCapabilities :
     }
 #if MACOS
     private DorotiMacOSMetalSurface? _metalSurface;
+    private IDisposable? _platformViewChannel;
+    private AppKitPlatformViewHost? _platformViews;
+
+    internal void AttachPlatformViews(AppKitPlatformViewHost platformViews, IDisposable channel)
+    {
+        _platformViews = platformViews;
+        _platformViewChannel = channel;
+        _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+            platformViews.Draw(_renderer, canvas, commands, descriptor, width, height, _host.Configuration.platformBrightness);
+    }
 
     internal void AttachNativeLifecycle(DorotiMacOSMetalSurface surface)
     {
@@ -177,6 +187,11 @@ internal sealed class MauiSkiaCapabilities :
             graphiteSurface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
         _graphiteSurface = null;
 #if MACOS
+        _renderer.PlatformScenePainter = null;
+        _platformViewChannel?.Dispose();
+        _platformViewChannel = null;
+        _platformViews?.Dispose();
+        _platformViews = null;
         if (_metalSurface is { } surface)
             surface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
         _metalSurface = null;

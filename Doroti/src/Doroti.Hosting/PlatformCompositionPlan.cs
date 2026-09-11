@@ -35,16 +35,28 @@ public static class PlatformCompositionPlanner
     public const int MaximumRasterSegments = MaximumNativeViews + 1;
     private sealed record State(PlatformViewTransform Transform, Rect? Clip, string? Unsupported);
 
-    public static PlatformCompositionPlan Build(Scene scene, PlatformCompositionToken token, PlatformViewCoordinator coordinator)
+    public static PlatformCompositionPlan Build(Scene scene, PlatformCompositionToken token, PlatformViewCoordinator coordinator,
+        PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ObjectDisposedException.ThrowIf(scene.debugDisposed, scene);
-        if (scene.viewId != token.OwnerViewId || coordinator.OwnerViewId != token.OwnerViewId || token.ViewEpoch < 0 || token.FrameNumber < 0 || token.SurfaceGeneration < 0)
+        if (scene.viewId != token.OwnerViewId) throw new InvalidOperationException("Platform composition scene owner is invalid.");
+        return Build(scene.Commands, token, coordinator, composition);
+    }
+
+    /// <summary>Plans the immutable commands retained by a product renderer.</summary>
+    public static PlatformCompositionPlan Build(IReadOnlyList<SceneCommand> commands, PlatformCompositionToken token,
+        PlatformViewCoordinator coordinator, PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition)
+    {
+        ArgumentNullException.ThrowIfNull(commands);
+        if (composition is not (PlatformViewComposition.NativeOverlay or PlatformViewComposition.InterleavedComposition))
+            throw new ArgumentOutOfRangeException(nameof(composition));
+        if (coordinator.OwnerViewId != token.OwnerViewId || token.ViewEpoch < 0 || token.FrameNumber < 0 || token.SurfaceGeneration < 0)
             throw new InvalidOperationException("Platform composition token/scene owner is invalid.");
         if (!double.IsFinite(token.DeviceScaleX) || !double.IsFinite(token.DeviceScaleY) || token.DeviceScaleX <= 0 || token.DeviceScaleY <= 0)
             throw new InvalidOperationException("Platform composition device scale is invalid.");
         var flattened = new List<SceneCommand>();
-        Flatten(scene.Commands, flattened, scene.viewId, 0);
+        Flatten(commands, flattened, token.OwnerViewId, 0);
         var nativeCount = flattened.Count(command => command.Operation == "platformView");
         if (nativeCount == 0 && !flattened.Any(command => command.Operation == "inputShield"))
             return new(token, [new PlatformRasterSegment(0, Array.AsReadOnly(flattened.ToArray()))], []);
@@ -74,7 +86,7 @@ public static class PlatformCompositionPlanner
                 var placement = new PlatformViewPlacement(native.Handle, native.Bounds, state.Transform, state.Clip, parts.Count,
                     !native.Bounds.isEmpty && !(state.Clip?.isEmpty ?? false));
                 placement.Validate();
-                coordinator.ValidatePlacementSupport(placement, true);
+                coordinator.ValidatePlacementSupport(placement, composition == PlatformViewComposition.InterleavedComposition);
                 parts.Add(new PlatformNativeSegment(placement));
                 raster.AddRange(scopes);
                 continue;
@@ -106,6 +118,26 @@ public static class PlatformCompositionPlanner
         FlushRaster();
         if (parts.Count(part => part is PlatformRasterSegment) > MaximumRasterSegments)
             throw Failure("raster segment limit exceeded");
+        if (composition == PlatformViewComposition.NativeOverlay)
+        {
+            if (nativeCount != 0 && parts.Any(part => part is PlatformShieldSegment))
+                throw Failure("NativeOverlay cannot display foreground UI protected by an input shield; interleaved composition is required");
+            var occupied = new List<Rect>();
+            foreach (var native in parts.OfType<PlatformNativeSegment>())
+            {
+                var placement = native.Placement;
+                if (!placement.Visible) continue;
+                if (!placement.Transform.IsAxisAligned) throw Failure("NativeOverlay requires axis-aligned native bounds");
+                var a = placement.Transform.Map(placement.Bounds.topLeft);
+                var b = placement.Transform.Map(placement.Bounds.bottomRight);
+                var bounds = new Rect(a.dx, a.dy, b.dx, b.dy);
+                if (placement.Clip is { } clip) bounds = bounds.intersect(clip);
+                if (bounds.isEmpty) continue;
+                if (occupied.Any(previous => !previous.intersect(bounds).isEmpty))
+                    throw Failure("NativeOverlay requires non-overlapping native regions");
+                occupied.Add(bounds);
+            }
+        }
         var leases = new List<IDisposable>();
         try
         {

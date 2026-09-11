@@ -83,6 +83,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     public override bool AcceptsFirstResponder() => true;
 
+    internal AppKitPlatformRasterSurface CreatePlatformRasterSurface() => new(_metalDevice, _commandQueue, _grContext);
+
     internal void Connect(DorotiMacOSMetalSurface owner)
     {
         if (_resourcesReleased || _releaseRequested)
@@ -261,7 +263,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var owner = _owner;
         var size = DrawableSize;
         if (owner is null || _releaseRequested || size.Width <= 0 || size.Height <= 0) return;
-        if (UseGraphite && _inFlight >= 3)
+        if (_inFlight >= 3)
         {
             _frameBackpressure = true;
             return;
@@ -279,8 +281,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var generation = Interlocked.Read(ref _surfaceGeneration);
         MauiPaintCompletion? completion = null;
         var commandBufferTracked = false;
+        AppKitPlatformViewHost.PreparedFrame? platformFrame = null;
         SkiaGraphiteSession.Frame? graphiteFrame = null;
         var graphiteSubmissionAttempted = false;
+        var compositionTransaction = owner.PlatformViews is not null;
+        if (compositionTransaction)
+        {
+            CATransaction.Begin();
+            CATransaction.DisableActions = true;
+            PresentsWithTransaction = true;
+        }
         try
         {
             if (UseGraphite && _graphite is null)
@@ -314,11 +324,14 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 checked((int)size.Width), checked((int)size.Height), (double)scale, generation,
                 GetType().FullName ?? nameof(DorotiMacOSMetalView), GraphicsBackendId);
             completion = owner.RaisePaint(paint);
+            platformFrame = owner.PlatformViews?.TakePending();
             if (paint.SkipPresent || generation != Interlocked.Read(ref _surfaceGeneration))
             {
                 graphiteFrame?.CancelRecording();
+                platformFrame?.Dispose();
                 return;
             }
+            platformFrame?.Submit();
             if (graphiteFrame is not null)
             {
                 graphiteSubmissionAttempted = true;
@@ -333,51 +346,66 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
             using var commandBuffer = _commandQueue.CommandBuffer() ??
                 throw new InvalidOperationException("Metal command buffer creation failed.");
-            var transactionPresentation = _drawingLayout;
+            platformFrame?.Commit();
+            var transactionPresentation = _drawingLayout || compositionTransaction;
             if (!transactionPresentation) commandBuffer.PresentDrawable(drawable);
-            TrackCommandBuffer(commandBuffer, owner, completion, generation, graphiteFrame, drawable);
+            TrackCommandBuffer(commandBuffer, owner, completion, generation, graphiteFrame, drawable, platformFrame);
             commandBufferTracked = true;
             commandBuffer.Commit();
-            graphiteFrame = null; // Ownership transferred to the completion callback.
+            var presentationFrame = platformFrame;
+            graphiteFrame = null; // The committed buffer now owns retirement, including if Present fails.
+            platformFrame = null;
+            graphiteSubmissionAttempted = false;
             Interlocked.Increment(ref _commandBuffersCommitted);
             commandBufferTracked = false;
             if (transactionPresentation)
             {
-                // CAMetalLayer requires drawable.Present() for transaction
-                // presentation. PresentDrawable() on the command buffer does
-                // not join the current Core Animation transaction. Waiting
-                // only until scheduled preserves queue ordering without a
-                // synchronous GPU-completion stall on the AppKit UI thread.
                 commandBuffer.WaitUntilScheduled();
                 drawable.Present();
+                presentationFrame?.Present();
             }
         }
         catch (Exception exception)
         {
+            owner.PlatformViews?.CancelPending();
+            try { platformFrame?.Abort(); }
+            catch (Exception rollbackError) { System.Diagnostics.Trace.TraceError(rollbackError.ToString()); }
             if (commandBufferTracked) CancelCommandBufferTracking();
-            if (graphiteFrame is not null)
+            if (graphiteFrame is not null && !graphiteSubmissionAttempted)
             {
-                if (!graphiteSubmissionAttempted) graphiteFrame.CancelRecording();
-                else
+                graphiteFrame.CancelRecording();
+                graphiteFrame = null;
+            }
+            if (graphiteSubmissionAttempted || platformFrame?.HasSubmitted == true)
+            {
+                // Every segment uses this same queue. The terminal marker retains all
+                // submitted textures and native leases, including partial failures.
+                using var marker = _commandQueue.CommandBuffer();
+                if (marker is not null)
                 {
-                    // Retain submitted resources until a same-queue terminal
-                    // marker, including rejected/failed submission attempts.
-                    using var marker = _commandQueue.CommandBuffer();
-                    if (marker is not null)
-                    {
-                        TrackCommandBuffer(marker, owner, null, generation, graphiteFrame, drawable);
-                        marker.Commit();
-                        Interlocked.Increment(ref _commandBuffersCommitted);
-                    }
+                    TrackCommandBuffer(marker, owner, null, generation, graphiteFrame, drawable, platformFrame);
+                    marker.Commit();
+                    platformFrame = null;
+                    Interlocked.Increment(ref _commandBuffersCommitted);
                 }
             }
+            platformFrame?.Dispose();
             owner.RaiseFailure(exception, completion);
+        }
+        finally
+        {
+            if (compositionTransaction)
+            {
+                CATransaction.Commit();
+                PresentsWithTransaction = _drawingLayout;
+            }
         }
     }
 
     private void TrackCommandBuffer(IMTLCommandBuffer buffer, DorotiMacOSMetalSurface owner,
         MauiPaintCompletion? completion, long generation,
-        SkiaGraphiteSession.Frame? graphiteFrame, ICAMetalDrawable drawable)
+        SkiaGraphiteSession.Frame? graphiteFrame, ICAMetalDrawable drawable,
+        AppKitPlatformViewHost.PreparedFrame? platformFrame = null)
     {
         buffer.AddCompletedHandler(completedBuffer =>
         {
@@ -405,6 +433,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 }
                 finally
                 {
+                    platformFrame?.Dispose();
                     graphiteFrame?.CompleteGpuWork();
                     GC.KeepAlive(drawable);
                     lock (_resourceGate)

@@ -255,7 +255,7 @@ headless WebView, 고급 keep-alive pool, devtools UI, 인증 challenge·프록�
 
 target 행은 WindowsAppSdk, Windows MAUI, Android emulator x64/실기기 arm64, iOS simulator/device, Mac Catalyst, AppKit macOS, WebGPU/WebGL의 브라우저별 결과, Linux X11/Wayland다. 실제 지원 RID·OS·기기·browser/provider/runtime 버전은 WV-0에서 고정한다. 물리 기기 결과를 다른 OS/runtime 조합으로 확대하지 않는다.
 
-신규 `Doroti/docs/validation/webview/<date>/<target>/`에 commit/dirty 식별, 환경, 명령·exit code·1200초 timeout 여부, feature-map 행, trace/capture/video, 실패·잔여 작업·재개 명령을 기록한다. 단계별 `sourceReviewed/build/automated/productLive/physical/nativeAot`를 독립적으로 남긴다. 사용자 요청 없이 `skippedByUser`로 처리하지 않는다.
+`Doroti/artifacts/webview/<date>/<target>/`에 commit/dirty 식별, 환경, 명령·exit code·1200초 timeout 여부, feature-map 행, trace/capture/video, 실패·잔여 작업·재개 명령을 기록한다. 검증 보고서도 같은 경로에 작성하며 `Doroti/docs/validation/`에 별도 문서를 생성할 필요는 없다. 단계별 `sourceReviewed/build/automated/productLive/physical/nativeAot`를 독립적으로 남긴다. 사용자 요청 없이 `skippedByUser`로 처리하지 않는다.
 
 모든 테스트는 [.github 지침](.github/copilot-instructions.md)의 **20분 외부 timeout**을 적용한다. 기존 [run-with-timeout.py](Doroti/validation/run-with-timeout.py)를 사용하고 플랫폼별 실제 명령은 각 adapter/validator를 구현할 때 고정한다. 계획 작성만 수행하는 이번 변경에서는 제품 build/runtime 테스트를 실행하지 않는다.
 

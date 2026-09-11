@@ -1833,7 +1833,8 @@ public sealed record SemanticsNodeUpdate(
     long? scrollIndex = null,
     IReadOnlyList<string>? controlsNodes = null,
     Locale? locale = null,
-    IReadOnlyList<double>? coordinateTransform = null);
+    IReadOnlyList<double>? coordinateTransform = null,
+    long? platformViewId = null);
 
 public enum SemanticsUpdateUrgency
 {
@@ -2016,6 +2017,7 @@ public static class SemanticsUpdateDiffer
         hash.Add(node.actions);
         hash.Add(node.flags);
         hash.Add(node.role);
+        hash.Add(node.platformViewId);
         hash.Add(node.traversalParent);
         hash.Add(node.indexInParent);
         hash.Add(node.textSelectionBase);
@@ -2068,6 +2070,7 @@ public static class SemanticsUpdateDiffer
         if (previous.actions != current.actions) result |= SemanticsNodeProperty.actions;
         if (previous.flags != current.flags) result |= SemanticsNodeProperty.flags;
         if (previous.role != current.role) result |= SemanticsNodeProperty.role;
+        if (previous.platformViewId != current.platformViewId) result |= SemanticsNodeProperty.children;
         if (!previous.children.SequenceEqual(current.children)) result |= SemanticsNodeProperty.children;
         if (previous.traversalParent != current.traversalParent || previous.indexInParent != current.indexInParent)
             result |= SemanticsNodeProperty.traversal;
@@ -2201,7 +2204,8 @@ public sealed class SemanticsUpdateBuilder
             NormalizeOptionalLong(scrollIndex),
             controlsNodes?.ToArray(),
             locale,
-            transform is IEnumerable<double> matrix && matrix.Count() == 16 ? matrix.ToArray() : Matrix4.identity().storage.ToArray()));
+            transform is IEnumerable<double> matrix && matrix.Count() == 16 ? matrix.ToArray() : Matrix4.identity().storage.ToArray(),
+            NormalizeOptionalLong(platformViewId)));
     }
 
     // The generated framework ABI represents an absent scroll metric as NaN.

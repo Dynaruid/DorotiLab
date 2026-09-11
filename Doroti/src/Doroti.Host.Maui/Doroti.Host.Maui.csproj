@@ -43,6 +43,7 @@
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="SkiaSharp.Views" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
   </ItemGroup>

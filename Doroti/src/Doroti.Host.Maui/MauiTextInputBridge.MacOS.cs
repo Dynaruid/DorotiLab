@@ -9,6 +9,16 @@ public sealed partial class MauiTextInputBridge
 {
     private readonly Dictionary<InputView, NSObject> _macOSInputObservers = [];
     private long _macOSFocusRequest;
+    private bool _macOSNativeFocus;
+
+    internal void YieldMacOSNativeFocus()
+    {
+        _macOSNativeFocus = true;
+        ++_macOSFocusRequest;
+        // Preserve the framework client, but stop its hidden field editor from reclaiming focus.
+        DeactivateActiveInput(clearFocus: true);
+        DetachInputs();
+    }
 
     private void HandleMacOSInputHandlerChanged(object? sender, EventArgs args)
     {
@@ -48,7 +58,7 @@ public sealed partial class MauiTextInputBridge
         // layout. Let both finish before installing AppKit's field editor.
         NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
         {
-            if (_disposed || _suspended || !_hasClient || request != _macOSFocusRequest ||
+            if (_disposed || _suspended || _macOSNativeFocus || !_hasClient || request != _macOSFocusRequest ||
                 !ReferenceEquals(input, _active) || input.Handler?.PlatformView is not NSView native) return;
             native.Superview?.LayoutSubtreeIfNeeded();
             if (_disposed || !_hasClient || !ReferenceEquals(input, _active)) return;

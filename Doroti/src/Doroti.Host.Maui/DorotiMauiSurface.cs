@@ -91,11 +91,19 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             _session = new(_application.EntrypointFactory());
             _host = new();
             _session.Start(deferFrameworkBootstrap: true);
+#if MACOS
+            var appKitSurface = (DorotiMacOSMetalSurface)_renderSurface;
+            appKitSurface.PlatformViews = new AppKitPlatformViewHost(appKitSurface, _textInput);
+#endif
             _boundary = DorotiApplicationBoundary.Load(
                 _application.ManifestAssembly,
                 _application.ApplicationAssembly,
                 _application.LaunchContext.RuntimeIdentifier,
-                _application.NativePluginHandlers);
+                _application.NativePluginHandlers
+#if MACOS
+                , appKitSurface.PlatformViews.CreateFactories()
+#endif
+                );
             IMauiSemanticsBridge semantics =
 #if ANDROID
                 DorotiGraphiteView.Enabled ? new MauiAndroidSemanticsBridge(_renderSurface.Element) :

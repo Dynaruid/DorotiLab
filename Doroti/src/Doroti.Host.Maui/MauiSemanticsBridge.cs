@@ -138,6 +138,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     {
         var nodesById = nodes.ToDictionary(node => node.id);
         var hidden = nodes.Where(node => node.flags?.isHidden == true).Select(node => node.id).ToHashSet();
+#if MACOS
+        // AppKit exposes the real NSControl subtree. A transparent MAUI placeholder would
+        // duplicate it in accessibility and can steal native hit tests / keyboard navigation.
+        hidden.UnionWith(nodes.Where(node => node.platformViewId is not null).Select(node => node.id));
+#endif
         var changed = true;
         while (changed)
         {

@@ -86,7 +86,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #if MACOS
         if (surface is DorotiMacOSMetalSurface metalSurface) graphics.AttachNativeLifecycle(metalSurface);
 #endif
-        var messages = new HapticFeedbackPlatformMessageCapability(
+        IPlatformMessageHostCapability messages = new HapticFeedbackPlatformMessageCapability(
             new SystemSoundPlatformMessageCapability(new MauiPlatformMessageCapability(), MauiSystemSound.PlayAsync), (kind, cancellationToken) =>
                 MauiHapticFeedback.PerformAsync(kind, surface, cancellationToken));
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
@@ -103,6 +103,16 @@ public sealed class MauiFrameworkHost : IDisposable
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
             .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, graphics);
+#if MACOS
+        if (application?.Manifest.PlatformViews.Length > 0 && surface is DorotiMacOSMetalSurface { PlatformViews: { } platformViews })
+        {
+            var coordinator = application.ConfigurePlatformViews(capabilities, viewId, new AppKitPlatformViewDispatcher());
+            platformViews.Configure(coordinator);
+            var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            messages = channel;
+            graphics.AttachPlatformViews(platformViews, channel);
+        }
+#endif
         if (application is null)
             capabilities.Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
         else

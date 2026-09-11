@@ -123,6 +123,10 @@ public sealed partial class SkiaSceneRenderer :
     /// </summary>
     public event Action<SkiaFrameReceipt>? FrameReceipt;
 
+    /// <summary>Optional native compositor entry point, called under the render lock after exact-frame validation.
+    /// The host must draw every raster part and retain native resources until its GPU work retires.</summary>
+    public Action<SKCanvas, IReadOnlyList<SceneCommand>, DorotiFrameDescriptor, int, int>? PlatformScenePainter { get; set; }
+
     public SkiaFrameDiagnostics Diagnostics
     {
         get
@@ -429,7 +433,10 @@ public sealed partial class SkiaSceneRenderer :
             canvas.ClipRect(SKRect.Create(pixelWidth, pixelHeight), SKClipOperation.Intersect, false);
             try
             {
-                DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
+                if (PlatformScenePainter is { } painter)
+                    painter(canvas, frame.Commands, frame.Descriptor, pixelWidth, pixelHeight);
+                else
+                    DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
             }
             finally
             {

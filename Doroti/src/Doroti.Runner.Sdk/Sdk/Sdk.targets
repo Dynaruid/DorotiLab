@@ -455,4 +455,17 @@
     </ItemGroup>
   </Target>
   <Import Project="Doroti.NativeAot.Evidence.targets" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'" />
+  <!-- NuGet also injects a direct transitive reference to Host.Maui. Keep it on
+       the same RID-specific intermediate path as the AppKit target reference. -->
+  <Target Name="DorotiApplyAppKitRuntimeToTransitiveReferences"
+          AfterTargets="IncludeTransitiveProjectReferences"
+          Condition="'$(DorotiTarget)' == 'macOS' and '$(RuntimeIdentifier)' == 'osx-arm64'">
+    <ItemGroup>
+      <ProjectReference Update="@(_TransitiveProjectReferences)" Condition="'%(Filename)' == 'Doroti.Host.Maui'">
+        <AdditionalProperties>%(ProjectReference.AdditionalProperties);RuntimeIdentifier=osx-arm64</AdditionalProperties>
+        <SetTargetFramework>TargetFramework=net10.0-macos</SetTargetFramework>
+        <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
 </Project>
