@@ -2,6 +2,8 @@
 
 작성일·재검토일: 2026-09-11 · 재검토 HEAD: `5b8996fbe0fde6cff76b7024fe8046505e108d6e` + 기존 working tree 변경 포함
 
+Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f2880fd363da95`. [ref.md](ref.md)를 반영한 [work2 WV-7](work2.md)의 시스템 Qt WebEngine 직접 adapter 계획에 맞춰 PV-9와 인계 조건을 갱신했다. 이번 변경은 문서에 한정하며 기존 AppKit 증거와 다른 플랫폼 상태를 승격하지 않는다.
+
 기준: [idea.md](idea.md) 및 이번 사용자 요구인 **Doroti 위젯과 플랫폼 뷰의 양방향 전체·부분 겹침**. 공통 기반과 Windows/Web 선행 작업, AppKit NativeOverlay 제품 연결이 일부 진행되어 있다. **현재 전체 상태는 `PARTIAL`이며 사용자 요구를 아직 충족하지 못한다.** 기존 PV 단계는 유지하되 C 교차 합성을 필수 목표로 구체화한다. 최초 재검토는 문서 수정만 수행했으며, 이후 사용자 요청에 따른 macOS 제품 코드·검증 변경은 아래 후속 구현 절에 기록한다.
 
 최초 재검토 시 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없었다. 후속 구현에서 계약/지원표를 복구했으며 실행 기록은 AppKit README를 사용한다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 양방향 겹침 기준 반영은 수행했으며, 기기별 성능 예산은 남아 있다.
@@ -41,7 +43,7 @@
 | PV-6 | `TODO` | Android View/SurfaceView B/C host 및 emulator/실기기 검증 |
 | PV-7 | `TODO` | UIKit iOS/Catalyst B/C host, binding/ABI 및 각 runner·기기 검증 |
 | PV-8 | `PARTIAL` — AppKit B 및 제한된 C 다중 Metal surface·paint order·shield 경로, Graphite/Ganesh 제품 검증 추가 | 전체 C1~C6/PV-5, 한글 IME·VoiceOver·제품 두 창/close-reopen·device-loss·성능·배포 검증 |
-| PV-9 | `TODO` | WV-7A Qt 결정, QWindow X11/Wayland B/C 구현·검증 |
+| PV-9 | `TODO` | WV-7A 시스템 Qt/ABI 범위, WV-7B 공동 host spike, generic 초기화·attachment와 X11/Wayland B/C 구현·검증 |
 | PV-10 | `PARTIAL` — Testbed fixture와 자동 수명 시나리오 추가 | 실제 제품 0/1/4-view 성능, 두 창, route/lifecycle, 최종 runner/template/package 배포 회귀 |
 
 AppKit은 제한된 제품 `InterleavedComposition` 경로를 제공하지만, 어느 backend도 전체 C1~C6/PV-5 완료로 광고하지 않는다. 독립 native/DOM harness 성공은 제품 B/C 통과가 아니다. 위 Windows/Web 성공 기록은 기존 작업 기록을 보존한 것이며 이번 재검토에서 재실행하지 않았다. 해당 날짜별 결과 파일이 현재 checkout에 없으므로 재현·증거 복구 없이 검증 완료 범위를 확대하지 않는다. 미실행 항목은 사용자 생략이 아니므로 `skippedByUser`로 표시하지 않는다. 재개 순서는 **PV-0 요구/문서 정리 → PV-2의 제품 다중 surface 연결 → PV-3C/PV-4C와 PV-5 → PV-6~PV-9 C 확장**이다. AppKit PV-8C는 실제 제품 경로의 선행 검증을 수행했으며, 남은 플랫폼별 게이트는 독립적으로 진행한다.
@@ -314,13 +316,16 @@ Mac Catalyst의 상태는 이 작업으로 승격하지 않는다.
 
 ### PV-9 — Linux Qt native hosting
 
-선행: PV-2/PV-5 및 work2 WV-7A의 Qt API/버전 결정. generic QWindow B 실험은 WV-7A와 함께 진행 가능.
+선행: 공통 제품 연결은 PV-1/PV-2, 입력 완료는 PV-5. **PV-9A의 최소 native 실험은 WV-7A/B와 함께 조기 진행**하며 공통 입력 전체 완료를 기다리지 않는다. work2는 시스템 Qt WebEngine 직접 adapter를 소유하고, 이 문서는 generic host/합성/입력을 소유한다. QWebView/Qt 6.11 채택 여부는 더 이상 선행 미결정 항목이 아니다.
 
-- **PV-9B:** 현 QWindow 기반 Graphite host에 native attachment를 결합한다. parent/geometry/DPR/focus/hide/종료를 X11과 Wayland에서 각각 구현한다.
-- **PV-9C:** native window stacking과 Doroti foreground surface의 교차 합성 가능성을 검증하고 필요한 Qt container 구조를 결정한다. 지원 불가 조합은 구체적인 원인과 제한형 capability를 남긴다.
-- QWidget shell/`createWindowContainer()`를 선택하면 host 구조 변경 비용과 opaque native window 제약을 평가한다. Linux generic hosting에는 WebEngine 필수 의존성을 넣지 않는다.
+- **PV-9A — host 구조 결정:** WV-7B의 최소 QWebEngineView와 현재 Graphite Vulkan QWindow를 사용해 QWidget shell/attachment를 실험한다. `raster → live native A → raster → live native B → raster`의 실제 겹침·alpha·hit-test를 X11/Wayland에서 조사한다. Widgets 제약이 확인되면 WebEngine Quick을 사용하는 Qt host 구조의 비용을 함께 비교하되 하나의 제품 경로로 결정한다. 결과를 view 종류·renderer·QPA별 B/C 결정 기록으로 남긴다.
+- **PV-9B — generic attachment·초기화:** 선택한 QWindow/QWidget/Quick 계층에서 parent/geometry/DPR/rect clip/focus/hide/owner 종료를 연결한다. 기존 QApplication/event loop를 공유하고 plugin opt-in 준비를 application 생성 전에 실행할 generic hook을 제공한다. WebEngine scheme 등록/engine-specific 초기화는 WV-7C shim이 수행한다. UI-thread dispatch, 두 owner와 늦은 callback 거부, callback 종료 전 자원·module 해제 방지를 공통 계약에 맞춘다.
+- **PV-9C — 제품 교차 합성:** PV-9A에서 정한 host 계층에 raster segment별 background/intermediate/foreground surface, native attachment, shield를 같은 paint order로 연결한다. frame/epoch별 준비·commit·실패 rollback·GPU retirement, resize/DPR/clip 및 동적 순서 변경을 구현한다. C1~C6와 PV-5는 실제 제품 native 포함 화면/입력으로 검증한다. 별도 popup 창이나 snapshot/hide 대체로 일반 C를 선언하지 않는다.
+- QWidget `createWindowContainer()`의 embedded window는 widget 위의 opaque box로 쌓이고 여러 겹친 container의 순서는 정의되지 않는다. 단순 reparent/raise/lower 또는 비겹침 B 성공을 C 설계 근거로 삼지 않는다. [Qt container 공식 제약](https://doc.qt.io/qt-6/qwidget.html#createWindowContainer). C가 불가능한 조합은 구체적 원인·제한형 B와 미충족 요구를 남긴다.
+- **의존성 경계:** generic `libdoroti_qt_host.so`에 WebEngine/WebChannel/Quick 필수 링크를 추가하지 않는다. Quick host가 필요하면 선택 구성으로 분리한다. 현재 generic Qt 하한 6.5와 WebView 선택 앱의 계획 API 하한 6.8을 구분하고, 같은 process의 host/shim은 WV-7A에서 검증한 시스템 Qt 조합을 사용한다. 시스템 WebEngine 패키징·진단은 WV-7E가 소유한다.
+- **실제 변경 접점:** [managed Qt host](Doroti/src/Doroti.Host.Qt/DorotiQtRunner.cs), [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs), [Testbed native host](DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp), [template native host](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp), 각 CMake/header와 [runner targets](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets)를 동기화한다. 현재 v2 이름/export의 실제 ABI 값은 3이므로 version/struct size/feature negotiation 및 validator를 함께 갱신한다.
 
-완료 기준: X11/Wayland별 B/C·입력·IME·접근성·live resize·창 종료 증거가 있다. 비겹침 패널 표시를 interleaved 성공으로 승격하지 않는다. [Qt container 공식 제약](https://doc.qt.io/qt-6/qwidget.html#createWindowContainer)을 decision record에 반영한다.
+완료 기준: generic control과 WV-7F의 실제 WebEngine 각각 X11/Wayland B/C·입력·한글 IME·Orca·live resize·창 종료 증거가 있다. native X11/XWayland/WSLg/VM/물리 Linux를 구분하고 C 미해결 또는 미실행이면 Linux 목표는 `PARTIAL`이다. WV-7B와 PV-9A는 공동 spike여서 순환 선행 조건이 아니며, PV-9B 후 WebView 기능 개발을 진행할 수 있다.
 
 ### PV-10 — 제품 통합·성능·배포 회귀
 
@@ -382,8 +387,10 @@ python Doroti/validation/run-with-timeout.py pwsh -NoProfile -File Doroti/eng/do
 | WV-4 Android | PV-6B, 이후 PV-6C·PV-5 |
 | WV-5 UIKit | PV-7B, 이후 PV-7C·PV-5, iOS/Catalyst 별도 |
 | WV-6 AppKit | PV-8B, 이후 PV-8C·PV-5 |
-| WV-7 Qt | WV-7A 결정과 PV-9 공동 수행, 이후 PV-9B/C·PV-5 |
+| WV-7A/B Qt 조사·host spike | WV-7A 버전/ABI 범위와 PV-9A/WV-7B 공동 실험; 표시·합성 구조 및 제한 결정 |
+| WV-7C/D Qt adapter·기능 | PV-9B의 generic pre-application hook/attachment/수명; WebEngine API·scheme/profile은 work2 소유 |
+| WV-7E/F Qt 배포·제품 승인 | generic host 의존성 분리 회귀, PV-9C·PV-5의 실제 WebEngine C1~C6/입력 증거 |
 
-기본 B 통과 후 work2의 탐색·JS 작업을 진행할 수 있다. **이번 요구의 완료는 양방향 전체·부분 겹침 C1~C6와 PV-5를 통과한 조합에 한정한다.** C 미지원 target/view 종류는 제한형 B로 공개할 수 있지만 요구를 충족한 것으로 계산하지 않는다. 플랫폼 공통 지원 선언에는 모든 대상의 실제 증거가 필요하며 문서 체크박스만으로 완료하지 않는다. work2에 전달할 기준 변경은 이 문서에 기록했으며 이번 재검토에서 work2.md는 수정하지 않았다.
+기본 B 통과 후 work2의 탐색·JS 작업을 진행할 수 있다. **이번 요구의 완료는 양방향 전체·부분 겹침 C1~C6와 PV-5를 통과한 조합에 한정한다.** C 미지원 target/view 종류는 제한형 B로 공개할 수 있지만 요구를 충족한 것으로 계산하지 않는다. 플랫폼 공통 지원 선언에는 모든 대상의 실제 증거가 필요하며 문서 체크박스만으로 완료하지 않는다. Linux 추가 재검토에서는 work2 WV-7A~F와 이 문서의 PV-9·인계표를 함께 수정했다.
 
 주요 로컬 레퍼런스: [Flutter PlatformViewLayer](reference/flutter-master/engine/src/flutter/flow/layers/platform_view_layer.cc), [external embedder 계약](reference/flutter-master/engine/src/flutter/flow/embedded_views.h), [Avalonia attachment](reference/Avalonia-main/src/Avalonia.Controls/Platform/INativeControlHostImpl.cs), [Web embedder](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/platform_views/embedder.dart). Flutter 파일의 이식 provenance와 참조 폴더 전체 버전은 구분한다.
