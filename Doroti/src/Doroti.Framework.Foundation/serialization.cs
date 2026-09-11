@@ -32,25 +32,21 @@ public sealed class WriteBuffer
     public void putUint8(long value) => putUint8(checked((int)value));
     public void putUint16(int value, Endian endian = Endian.host)
     {
-        Align(2);
         Write(2, span => WriteUInt16(span, checked((ushort)value), endian));
     }
     public void putUint16(long value, Endian endian = Endian.host) => putUint16(checked((int)value), endian);
     public void putUint32(uint value, Endian endian = Endian.host)
     {
-        Align(4);
         Write(4, span => WriteUInt32(span, value, endian));
     }
     public void putUint32(long value, Endian endian = Endian.host) => putUint32(checked((uint)value), endian);
     public void putInt32(int value, Endian endian = Endian.host)
     {
-        Align(4);
         Write(4, span => WriteInt32(span, value, endian));
     }
     public void putInt32(long value, Endian endian = Endian.host) => putInt32(checked((int)value), endian);
     public void putInt64(long value, Endian endian = Endian.host)
     {
-        Align(8);
         Write(8, span => WriteInt64(span, value, endian));
     }
 

@@ -356,7 +356,7 @@ internal sealed record ScenePicturePayload(
     bool IsComplexHint,
     bool WillChangeHint);
 internal sealed record SceneOffsetPayload(double Dx, double Dy);
-internal sealed record SceneClipRectPayload(Rect Rect);
+internal sealed record SceneClipRectPayload(Rect Rect, Clip Behavior = Clip.antiAlias);
 internal sealed record SceneClipRRectPayload(RRect RRect);
 internal sealed record SceneClipRSuperellipsePayload(RSuperellipse RSuperellipse);
 internal sealed record SceneClipPathPayload(Path Path);
@@ -612,7 +612,7 @@ public sealed class SceneBuilder
         OffsetEngineLayer? oldLayer = null) =>
         Push(oldLayer, "offset", new { dx, dy }, new SceneOffsetPayload(dx, dy));
     public ClipRectEngineLayer pushClipRect(Rect rect, Clip clipBehavior = Clip.antiAlias, ClipRectEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipRect", new { rect, clipBehavior }, new SceneClipRectPayload(rect));
+        Push(oldLayer, "clipRect", new { rect, clipBehavior }, new SceneClipRectPayload(rect, clipBehavior));
     public ClipRRectEngineLayer pushClipRRect(RRect rrect, Clip clipBehavior = Clip.antiAlias, ClipRRectEngineLayer? oldLayer = null) =>
         Push(oldLayer, "clipRRect", new { rrect, clipBehavior }, new SceneClipRRectPayload(rrect));
     public ClipRSuperellipseEngineLayer pushClipRSuperellipse(RSuperellipse rse, Clip clipBehavior = Clip.antiAlias, ClipRSuperellipseEngineLayer? oldLayer = null) =>
@@ -661,8 +661,30 @@ public sealed class SceneBuilder
         EngineLayer.RecordReuse();
     }
     public void addPerformanceOverlay(long enabledOptions, Rect bounds) => _commands.Add(new("performanceOverlay", new { enabledOptions, bounds }));
-    public void addPlatformView(long viewId, Offset offset = default, double width = 0, double height = 0) =>
-        _commands.Add(new("platformView", new { viewId, offset, width, height }));
+    public void addPlatformView(long viewId, Offset offset = default, double width = 0, double height = 0)
+    {
+        var invocation = DartUiInvocation.Managed("dart:ui#SceneBuilder.addPlatformView");
+        var host = PlatformDispatcher.instance.GetView(_viewId, invocation)
+            .RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews, invocation);
+        addPlatformView(host.Resolve(viewId), offset, width, height);
+    }
+
+    public void addPlatformView(PlatformViewHandle handle, Offset offset = default, double width = 0, double height = 0)
+    {
+        if (handle.OwnerViewId != _viewId || handle.InstanceGeneration <= 0)
+            throw new InvalidOperationException("PlatformView scene owner/generation is invalid.");
+        var bounds = Rect.fromLTWH(offset.dx, offset.dy, width, height);
+        new PlatformViewPlacement(handle, bounds, PlatformViewTransform.Identity, null, 0).Validate();
+        var payload = new ScenePlatformViewPayload(handle, bounds);
+        _commands.Add(new("platformView", payload) { HostPayload = payload });
+    }
+
+    public void addInputShield(Rect bounds, bool debug = false)
+    {
+        new PlatformViewPlacement(default, bounds, PlatformViewTransform.Identity, null, 0).Validate();
+        var payload = new SceneInputShieldPayload(bounds, debug);
+        _commands.Add(new("inputShield", payload) { HostPayload = payload });
+    }
     public void addTexture(long textureId, Offset offset = default, double width = 0, double height = 0, bool freeze = false, FilterQuality filterQuality = FilterQuality.low) =>
         _commands.Add(new("texture", new { textureId, offset, width, height, freeze, filterQuality }));
 

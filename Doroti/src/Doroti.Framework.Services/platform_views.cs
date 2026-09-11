@@ -43,11 +43,58 @@ public delegate void PlatformViewCreatedCallback(long id);
 
 public class PlatformViewsService
 {
-    internal static PlatformViewsService _instance = new PlatformViewsService();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<DorotiView, PlatformViewsService> _owners = new();
+    private static readonly System.Threading.AsyncLocal<DorotiView?> _activeOwner = new();
+    internal static PlatformViewsService _instance
+    {
+        get
+        {
+            var service = _owners.GetValue(RequireOwner(), owner => new PlatformViewsService(owner));
+            service.EnsureHandlers();
+            return service;
+        }
+    }
+    internal readonly MethodChannel Channel;
+    internal readonly MethodChannel Channel2;
+    private bool _handlersInstalled;
     internal virtual DartMap<long, Action> _focusCallbacks { get; private set; } = new DartMap<long, Action>();
 
-    public PlatformViewsService()
+    public PlatformViewsService() : this(RequireOwner()) { }
+    private PlatformViewsService(DorotiView owner)
     {
+        var messenger = new OwnerPlatformViewMessenger(owner);
+        Channel = new MethodChannel("flutter/platform_views", binaryMessenger: messenger);
+        Channel2 = new MethodChannel("flutter/platform_views_2", binaryMessenger: messenger);
+    }
+    private static DorotiView RequireOwner() => _activeOwner.Value ?? PlatformDispatcher.instance.implicitView ??
+        throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformViews, null,
+            DartUiInvocation.Managed("PlatformViewsService"), "multiple views require an explicit EnterOwner scope");
+    public static IDisposable EnterOwner(DorotiView owner)
+    {
+        ArgumentNullException.ThrowIfNull(owner);
+        var previous = _activeOwner.Value;
+        _activeOwner.Value = owner;
+        return new OwnerScope(previous);
+    }
+    private sealed class OwnerScope(DorotiView? previous) : IDisposable
+    {
+        private bool _disposed;
+        public void Dispose() { if (_disposed) return; _disposed = true; _activeOwner.Value = previous; }
+    }
+    private void EnsureHandlers()
+    {
+        if (_handlersInstalled) return;
+        Channel.setMethodCallHandler(_onMethodCall);
+        Channel2.setMethodCallHandler(_onMethodCall);
+        _handlersInstalled = true;
+    }
+    internal void RemoveFocus(long id)
+    {
+        _focusCallbacks.remove(id);
+        if (_focusCallbacks.Count != 0 || !_handlersInstalled) return;
+        _handlersInstalled = false;
+        try { Channel.setMethodCallHandler(null!); Channel2.setMethodCallHandler(null!); }
+        catch (ObjectDisposedException) { }
     }
 
     internal virtual Future _onMethodCall(MethodCall call)
@@ -124,7 +171,7 @@ public class PlatformViewsService
             ByteData paramsByteData = creationParamsCodec!.encodeMessage(creationParams)!;
             args["params"] = new Uint8List(paramsByteData.buffer, 0L, paramsByteData.lengthInBytes);
         }
-        await SystemChannels.platform_views.invokeMethod<object?>("create", args);
+        await _instance.Channel.invokeMethod<object?>("create", args);
         if ((onFocus is not null))
         {
             _instance._focusCallbacks[id] = onFocus;
@@ -142,7 +189,7 @@ public class PlatformViewsService
             ByteData paramsByteData = creationParamsCodec!.encodeMessage(creationParams)!;
             args["params"] = new Uint8List(paramsByteData.buffer, 0L, paramsByteData.lengthInBytes);
         }
-        await SystemChannels.platform_views.invokeMethod<object?>("create", args);
+        await _instance.Channel.invokeMethod<object?>("create", args);
         if ((onFocus is not null))
         {
             _instance._focusCallbacks[id] = onFocus;
@@ -392,6 +439,7 @@ internal class _CreationParams
 
 public abstract class AndroidViewController : PlatformViewController
 {
+    internal readonly PlatformViewsService _service = PlatformViewsService._instance;
     public const long kActionDown = 0L;
     public const long kActionUp = 1L;
     public const long kActionMove = 2L;
@@ -448,7 +496,14 @@ public abstract class AndroidViewController : PlatformViewController
             return;
         }
         _state = _AndroidViewState.creating;
-        await _sendCreateMessage(size: size, position: position);
+        try { await _sendCreateMessage(size: size, position: position); }
+        catch
+        {
+            _state = _AndroidViewState.disposed;
+            _service.RemoveFocus(viewId);
+            throw;
+        }
+        if (_state == _AndroidViewState.disposed) return;
         _state = _AndroidViewState.created;
         foreach (Action<long> callback in _platformViewCreatedCallbacks)
         {
@@ -476,7 +531,7 @@ public abstract class AndroidViewController : PlatformViewController
     public virtual bool requiresViewComposition => false;
     public async virtual Future sendMotionEvent(AndroidMotionEvent @event)
     {
-        await SystemChannels.platform_views.invokeMethod<object>("touch", @event._asList(viewId));
+        await _service.Channel.invokeMethod<object>("touch", @event._asList(viewId));
     }
 
     public virtual Func<Offset, Offset> pointTransformer
@@ -514,7 +569,7 @@ public abstract class AndroidViewController : PlatformViewController
         {
             return;
         }
-        await SystemChannels.platform_views.invokeMethod<object?>("setDirection", new DartMap<string, object> { ["id"] = viewId, ["direction"] = _getAndroidDirection(layoutDirection) });
+        await _service.Channel.invokeMethod<object?>("setDirection", new DartMap<string, object> { ["id"] = viewId, ["direction"] = _getAndroidDirection(layoutDirection) });
     }
 
     public async override Future dispatchPointerEvent(PointerEvent @event)
@@ -552,7 +607,7 @@ public abstract class AndroidViewController : PlatformViewController
         {
             return Future.value();
         }
-        return SystemChannels.platform_views.invokeMethod<object?>("clearFocus", viewId);
+        return _service.Channel.invokeMethod<object?>("clearFocus", viewId);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -561,7 +616,7 @@ public abstract class AndroidViewController : PlatformViewController
         _AndroidViewState state = _state;
         _state = _AndroidViewState.disposed;
         _platformViewCreatedCallbacks.Clear();
-        PlatformViewsService._instance._focusCallbacks.remove(viewId);
+        _service.RemoveFocus(viewId);
         if (((object.Equals(state, _AndroidViewState.creating)) || (object.Equals(state, _AndroidViewState.created))))
         {
             await _sendDisposeMessage();
@@ -583,7 +638,7 @@ public class SurfaceAndroidViewController : AndroidViewController
     {
         var __size = DartRuntimePrimitives.RequireValue(size);
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
-        object response = await _AndroidViewControllerInternals.sendCreateMessage(viewId: viewId, viewType: _viewType, hybrid: false, hybridFallback: true, layoutDirection: _layoutDirection, creationParams: _creationParams, size: __size, position: position);
+        object response = await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: false, hybridFallback: true, layoutDirection: _layoutDirection, creationParams: _creationParams, size: __size, position: position);
         if (response is long response__as43898)
         {
             (((_TextureAndroidViewControllerInternals?)_internals)!).textureId = ((long)response__as43898);
@@ -641,7 +696,7 @@ public class ExpensiveAndroidViewController : AndroidViewController
     internal override bool _createRequiresSize => false;
     internal async override Future _sendCreateMessage(Size? size, Offset? position = null)
     {
-        await _AndroidViewControllerInternals.sendCreateMessage(viewId: viewId, viewType: _viewType, hybrid: true, layoutDirection: _layoutDirection, creationParams: _creationParams, position: position);
+        await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: true, layoutDirection: _layoutDirection, creationParams: _creationParams, position: position);
     }
 
     public override long? textureId
@@ -690,7 +745,7 @@ public class HybridAndroidViewController : AndroidViewController
     internal override bool _createRequiresSize => false;
     internal async override Future _sendCreateMessage(Size? size, Offset? position = null)
     {
-        await _AndroidViewControllerInternals.sendCreateMessage(viewId: viewId, viewType: _viewType, hybrid: true, layoutDirection: _layoutDirection, creationParams: _creationParams, position: position, useNewController: true);
+        await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: true, layoutDirection: _layoutDirection, creationParams: _creationParams, position: position, useNewController: true);
     }
 
     public override long? textureId
@@ -727,7 +782,7 @@ public class HybridAndroidViewController : AndroidViewController
 
     public async override Future sendMotionEvent(AndroidMotionEvent @event)
     {
-        await SystemChannels.platform_views_2.invokeMethod<object>("touch", @event._asList(viewId));
+        await _service.Channel2.invokeMethod<object>("touch", @event._asList(viewId));
     }
 
 }
@@ -745,7 +800,7 @@ public class TextureAndroidViewController : AndroidViewController
     {
         var __size = DartRuntimePrimitives.RequireValue(size);
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
-        object response = await _AndroidViewControllerInternals.sendCreateMessage(viewId: viewId, viewType: _viewType, hybrid: false, layoutDirection: _layoutDirection, creationParams: _creationParams, size: __size, position: position);
+        object response = await _AndroidViewControllerInternals.sendCreateMessage(service: _service, viewId: viewId, viewType: _viewType, hybrid: false, layoutDirection: _layoutDirection, creationParams: _creationParams, size: __size, position: position);
         if (response is long response__as49495)
         {
             (((_TextureAndroidViewControllerInternals?)_internals)!).textureId = ((long)response__as49495);
@@ -804,7 +859,7 @@ public class TextureAndroidViewController : AndroidViewController
 
 internal interface _AndroidViewControllerInternals
 {
-    public static Future<object> sendCreateMessage(long viewId, string viewType, TextDirection layoutDirection, bool hybrid, bool hybridFallback = false, bool useNewController = false, _CreationParams? creationParams = null, Size? size = null, Offset? position = null)
+    public static Future<object> sendCreateMessage(PlatformViewsService service, long viewId, string viewType, TextDirection layoutDirection, bool hybrid, bool hybridFallback = false, bool useNewController = false, _CreationParams? creationParams = null, Size? size = null, Offset? position = null)
     {
         var args = new DartMap<string, object> { ["id"] = viewId, ["viewType"] = viewType, ["direction"] = AndroidViewController._getAndroidDirection(layoutDirection), ["width"] = size?.width, ["height"] = size?.height, ["left"] = position?.dx, ["top"] = position?.dy };
         if ((creationParams is not null))
@@ -814,9 +869,9 @@ internal interface _AndroidViewControllerInternals
         }
         if (useNewController)
         {
-            return SystemChannels.platform_views_2.invokeMethod<object>("create", args);
+            return service.Channel2.invokeMethod<object>("create", args);
         }
-        return SystemChannels.platform_views.invokeMethod<object>("create", args);
+        return service.Channel.invokeMethod<object>("create", args);
     }
     public long? textureId { get; }
     public bool requiresViewComposition { get; }
@@ -827,6 +882,7 @@ internal interface _AndroidViewControllerInternals
 
 internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerInternals
 {
+    private readonly PlatformViewsService _service = PlatformViewsService._instance;
     internal virtual Offset _offset { get; set; } = Offset.zero;
     public virtual long? textureId { get; set; } = default;
 
@@ -839,7 +895,7 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(viewState, _AndroidViewState.waitingForSize)));
         DartRuntimePrimitives.Assert(() => !size.isEmpty);
-        DartMap<object?, object?>? meta = await SystemChannels.platform_views.invokeMapMethod<object?, object?>("resize", new DartMap<string, object> { ["id"] = viewId, ["width"] = size.width, ["height"] = size.height });
+        DartMap<object?, object?>? meta = await _service.Channel.invokeMapMethod<object?, object?>("resize", new DartMap<string, object> { ["id"] = viewId, ["width"] = size.width, ["height"] = size.height });
         DartRuntimePrimitives.Assert(() => (meta is not null));
         DartRuntimePrimitives.Assert(() => meta!.ContainsKey("width"));
         DartRuntimePrimitives.Assert(() => meta!.ContainsKey("height"));
@@ -858,12 +914,12 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
             return;
         }
         _offset = offset;
-        await SystemChannels.platform_views.invokeMethod<object?>("offset", new DartMap<string, object> { ["id"] = viewId, ["top"] = offset.dy, ["left"] = offset.dx });
+        await _service.Channel.invokeMethod<object?>("offset", new DartMap<string, object> { ["id"] = viewId, ["top"] = offset.dy, ["left"] = offset.dx });
     }
 
     public virtual Future sendDisposeMessage(long viewId)
     {
-        return SystemChannels.platform_views.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = false });
+        return _service.Channel.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = false });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -871,6 +927,7 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
 
 internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInternals
 {
+    private readonly PlatformViewsService _service = PlatformViewsService._instance;
     public virtual long? textureId
     {
         get
@@ -893,7 +950,7 @@ internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInt
 
     public virtual Future sendDisposeMessage(long viewId)
     {
-        return SystemChannels.platform_views.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true });
+        return _service.Channel.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -901,9 +958,10 @@ internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInt
 
 internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerInternals
 {
+    private readonly PlatformViewsService _service = PlatformViewsService._instance;
     public static async Future<bool> checkIfSurfaceControlEnabled()
     {
-        return DartRuntimePrimitives.RequireValue((await SystemChannels.platform_views_2.invokeMethod<bool>("isSurfaceControlEnabled", new DartMap<string, object?>())));
+        return DartRuntimePrimitives.RequireValue((await PlatformViewsService._instance.Channel2.invokeMethod<bool>("isSurfaceControlEnabled", new DartMap<string, object?>())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -929,7 +987,7 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
 
     public virtual Future sendDisposeMessage(long viewId)
     {
-        return SystemChannels.platform_views_2.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true });
+        return _service.Channel2.invokeMethod<object?>("dispose", new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -937,6 +995,7 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
 
 public abstract class DarwinPlatformViewController
 {
+    internal readonly PlatformViewsService _service = PlatformViewsService._instance;
     public virtual long id { get; private set; } = default!;
     internal virtual bool _debugDisposed { get; set; } = false;
     internal virtual TextDirection _layoutDirection { get; set; } = default!;
@@ -960,22 +1019,23 @@ public abstract class DarwinPlatformViewController
     public virtual Future acceptGesture()
     {
         var args = new DartMap<string, object> { ["id"] = id };
-        return SystemChannels.platform_views.invokeMethod<object?>("acceptGesture", args);
+        return _service.Channel.invokeMethod<object?>("acceptGesture", args);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Future rejectGesture()
     {
         var args = new DartMap<string, object> { ["id"] = id };
-        return SystemChannels.platform_views.invokeMethod<object?>("rejectGesture", args);
+        return _service.Channel.invokeMethod<object?>("rejectGesture", args);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public async virtual Future dispose()
     {
+        if (_debugDisposed) return;
         _debugDisposed = true;
-        await SystemChannels.platform_views.invokeMethod<object?>("dispose", id);
-        PlatformViewsService._instance._focusCallbacks.remove(id);
+        try { await _service.Channel.invokeMethod<object?>("dispose", id); }
+        finally { _service.RemoveFocus(id); }
     }
 
 }
@@ -1016,4 +1076,3 @@ public abstract class PlatformViewController
     public abstract Future dispose();
     public abstract Future clearFocus();
 }
-

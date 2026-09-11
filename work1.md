@@ -2,7 +2,27 @@
 
 작성일: 2026-09-11 · 검토 HEAD: `cf83abd603aa06b942051cabdeb5132f4dd774c7`
 
-기준: [idea.md](idea.md). 이 문서는 **구현을 위한 계획**이며 아래 구현 단계는 모두 `TODO`, 실행 검증은 `notVerified`다. 이번 작업은 소스·참조 검토와 계획 작성까지다. 문서의 제안 API와 신규 산출물 경로는 아직 구현된 계약이 아니다.
+기준: [idea.md](idea.md). 2026-09-11의 전체 구현 요청에 따라 공통 기반과 Windows/Web 선행 구현·검증을 진행했다. **현재 전체 상태는 `PARTIAL`이며 전체 작업 완료가 아니다.** 아래 원래 단계·완료 기준은 유지한다. 구현된 계약은 [contract.md](Doroti/docs/platform-views/contract.md), 제품 지원 여부는 [support-matrix.md](Doroti/docs/platform-views/support-matrix.md), 실행 증거는 [2026-09-11 결과](Doroti/docs/validation/platform-views/2026-09-11/README.md)를 따른다.
+
+## 실행 상태 — 2026-09-11
+
+| 단계 | 구현/검증 상태 | 남은 필수 작업 |
+|---|---|---|
+| PV-0 | `DONE` — 계약, 지원표, evidence schema, 예산/검증 책임 기록 | 플랫폼/기기별 수치 확정은 지정된 PV-10에서 수행 |
+| PV-1 | `PARTIAL` — typed capability/registry/coordinator, manifest 입력 검증, owner별 legacy messenger/focus handler, create 중 dispose, 공통 PlatformView/HtmlElementView facade 구현; 공통 자동 검증 통과 | SDK manifest 생성기와 각 runner의 factory/coordinator/channel 등록, 모든 기존 controller 전략의 제품 연결 |
+| PV-2 | `PARTIAL` — typed scene payload, retained planner, effect 거부, balanced raster segment, 실제 Skia CPU 픽셀, commit/retirement 계약, bounded overlay pool 구현·자동 검증 | 제품 renderer의 frame 제출 경로와 실제 GPU/compositor transaction·retirement·device loss 연결 |
+| PV-3B | `PARTIAL` — 실제 HWND/DComp stacking 선행 실험, 제품 HWND factory를 독립 UI harness에서 생성/배치/포커스/100회 수명 검증 | WindowsAppSdk와 MAUI runner 각각 연결, DPI 전체 행·실제 입력/IME/close callback 제품 검증 |
+| PV-3C | `TODO` — topmost HWND 가림 재현 및 lower target + WS_CLIPCHILDREN 결정 기록 | composition-native visual, background/native/foreground surface, C ABI/Presentation retirement 구현 및 실제 창 검증 |
+| PV-4B | `PARTIAL` — main DOM registry, immutable batch, stale packet 거부, HtmlElementView compile 제외 해소; Chromium DPR 1/1.25/1.5/2와 iframe 보존/수명 검증 | managed factory ↔ main/worker protocol 실제 연결과 두 제품 renderer 실행 |
+| PV-4C | `TODO` | OffscreenCanvas segment transfer/재사용/commit/context-loss와 실제 두 renderer의 교차 합성 |
+| PV-5 | `PARTIAL` — PointerInterceptor widget/layer/DOM shield와 안팎 입력 단일 전달 검증 | native gesture arena, wheel/drag/capture 종합 검증, 한글 IME 상호 배제, semantics subtree·screen reader 제품 검증 |
+| PV-6 | `TODO` | Android View/SurfaceView B/C host 및 emulator/실기기 검증 |
+| PV-7 | `TODO` | UIKit iOS/Catalyst B/C host, binding/ABI 및 각 runner·기기 검증 |
+| PV-8 | `TODO` | native AppKit B/C host 및 macOS 입력/VoiceOver 검증 |
+| PV-9 | `TODO` | WV-7A Qt 결정, QWindow X11/Wayland B/C 구현·검증 |
+| PV-10 | `PARTIAL` — Testbed fixture와 자동 수명 시나리오 추가 | 실제 제품 0/1/4-view 성능, 두 창, route/lifecycle, 최종 runner/template/package 배포 회귀 |
+
+현재 어느 backend도 제품 `InterleavedComposition` 완료로 광고하지 않는다. 독립 native/DOM harness 성공은 제품 B/C 통과가 아니다. 미실행 항목은 사용자 생략이 아니므로 `skippedByUser`로 표시하지 않는다. 남은 구현의 첫 재개 지점은 **PV-2의 실제 frame/compositor 연결 → PV-3C/PV-4C → PV-5 → PV-6~PV-9**다.
 
 ## 1. 목표와 work2 경계
 
@@ -86,7 +106,7 @@ support key는 backend·OS/runtime·view 종류·요청 효과다. rect/rounded/
 
 ## 4. 작업 단계
 
-아래 모든 단계 상태는 `TODO`다. B는 기본 배치, C는 교차 합성 게이트다. C 실패 시 B 결과를 보존하되 해당 backend의 교차 합성은 `PARTIAL`로 남긴다.
+현재 단계 상태는 위 실행 상태 표를 따른다. 아래는 원래 작업 범위와 완료 기준이다. B는 기본 배치, C는 교차 합성 게이트다. C 실패 시 B 결과를 보존하되 해당 backend의 교차 합성은 `PARTIAL`로 남긴다.
 
 ### PV-0 — 범위·지원표·관측 기준 고정
 
@@ -230,7 +250,7 @@ support key는 backend·OS/runtime·view 종류·요청 효과다. rect/rounded/
 python Doroti/validation/run-with-timeout.py pwsh -NoProfile -File Doroti/eng/doroti.ps1 build
 ```
 
-계획 작성 시에는 제품 build/runtime 테스트를 실행하지 않는다. 문서 경로·단계 의존성·공백을 점검한 결과만 계획 검토 증거로 남긴다.
+계획 작성 당시에는 제품 build/runtime 테스트를 실행하지 않았다. 이번 구현 실행의 실제 명령·결과는 [검증 README](Doroti/validation/platform-views/README.md)와 날짜별 evidence에서 구분한다.
 
 ## 6. work2 인계 및 완료 규칙
 

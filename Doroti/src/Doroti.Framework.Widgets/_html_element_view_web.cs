@@ -1,71 +1,37 @@
 // <doroti-reviewed-framework-source />
-// Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/_html_element_view_web.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Doroti.Runtime;
+// Owner-bound replacement for the excluded Flutter web controller shim.
+using Doroti.Framework.Services;
 using Doroti.Ui;
-using static Doroti.Runtime.FoundationRuntimePorts;
-using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Widgets;
 
-public static partial class _html_element_view_webLibrary
+/// <summary>Registered DOM factories share the native view asynchronous lifecycle.</summary>
+internal sealed class RegisteredHtmlElementView(HtmlElementView definition) : StatefulWidget
 {
-    internal static global::System.Action<long>? _createPlatformViewCallbackForElementCallback(global::System.Action<object>? onElementCreated)
-    {
-        if ((onElementCreated is null))
-        {
-            return ((global::System.Action<long>)(object)null);
-        }
-        return ((global::System.Action<long>)((id) => {
-onElementCreated(Dart_ui_webLibrary.platformViewRegistry.getViewById(id));
-}));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
+    internal HtmlElementView Definition { get; } = definition;
+    public override IState createState() => new RegisteredHtmlElementState();
 }
 
-internal class _HtmlElementViewController___html_element_view_web : global::Doroti.Framework.Services.PlatformViewController
+internal sealed class RegisteredHtmlElementState : State<RegisteredHtmlElementView>
 {
-    private long __field_viewId = default!;
-    public override long viewId { get => __field_viewId; }
-    public virtual string viewType { get; private set; } = default!;
-    public virtual dynamic creationParams { get; private set; } = default!;
-    internal virtual bool _initialized { get; set; } = false;
-
-    internal _HtmlElementViewController___html_element_view_web(long viewId, string viewType, dynamic creationParams)
+    private readonly long _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
+    private PlatformViewRequest? _request;
+    public override Widget build(BuildContext context)
     {
-        this.__field_viewId = viewId;
-        this.viewType = viewType;
-        this.creationParams = creationParams;
+        var definition = widget.Definition;
+        if (definition.hitTestBehavior == Rendering.PlatformViewHitTestBehavior.translucent)
+            throw new NotSupportedException("DOM direct input does not support translucent framework gesture mediation.");
+        _request ??= new PlatformViewRequest(_id, definition.viewType,
+            PlatformViewComposition.InterleavedComposition,
+            CreationParameters: definition.creationParams is null ? default : new StandardMessageCodec().encodeMessage(definition.creationParams)!.asMemory());
+        return new PlatformView(View.of(context), _request,
+            onCreated: handle => definition.onPlatformViewCreated?.Invoke(handle.InstanceId));
     }
-
-    internal async virtual Future _initialize()
+    public override void didUpdateWidget(RegisteredHtmlElementView oldWidget)
     {
-        var args = new DartMap<string, object> { ["id"] = this.viewId, ["viewType"] = this.viewType, ["params"] = this.creationParams };
-        await global::Doroti.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("create", args);
-        _initialized = true;
+        base.didUpdateWidget(oldWidget);
+        if (oldWidget.Definition.viewType != widget.Definition.viewType ||
+            !Equals(oldWidget.Definition.creationParams, widget.Definition.creationParams))
+            throw new InvalidOperationException("Changing an HtmlElementView factory/creation parameters requires a new widget key.");
     }
-
-    public async override Future clearFocus()
-    {
-    }
-
-    public async override Future dispatchPointerEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
-    {
-    }
-
-    public async override Future dispose()
-    {
-        if (this._initialized)
-        {
-            await global::Doroti.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("dispose", this.viewId);
-        }
-    }
-
 }
-

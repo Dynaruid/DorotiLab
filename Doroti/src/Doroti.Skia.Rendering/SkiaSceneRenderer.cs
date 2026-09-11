@@ -910,6 +910,14 @@ public sealed partial class SkiaSceneRenderer :
         return true;
     }
 
+    /// <summary>Replay a planner-produced, balanced raster segment on its render-owner canvas.</summary>
+    public void DrawPlatformRasterSegment(SKCanvas canvas, IReadOnlyList<SceneCommand> commands, int pixelWidth, int pixelHeight)
+    {
+        ArgumentNullException.ThrowIfNull(canvas);
+        ArgumentNullException.ThrowIfNull(commands);
+        DrawScene(canvas, commands, pixelWidth, pixelHeight);
+    }
+
     private void DrawScene(
         SKCanvas canvas,
         IReadOnlyList<SceneCommand> commands,
@@ -952,7 +960,8 @@ public sealed partial class SkiaSceneRenderer :
                     case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
                         canvas.Save();
                         restoreCounts.Push(1);
-                        canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, true);
+                        if (clip.Behavior != Clip.none)
+                            canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, clip.Behavior != Clip.hardEdge);
                         break;
                     case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
                         canvas.Save(); restoreCounts.Push(1);
@@ -1073,6 +1082,11 @@ public sealed partial class SkiaSceneRenderer :
                         break;
                     case "retained" when command.HostPayload is SceneRetainedPayload retained:
                         DrawCommands(retained.Commands); break;
+                    case "platformView":
+                    case "inputShield":
+                        throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformViews, null,
+                            DartUiInvocation.Managed("SkiaSceneRenderer.DrawScene"),
+                            "Native and shield commands require a host composition plan before raster replay.");
                     case "pop" when restoreCounts.Count > 0:
                         for (var count = restoreCounts.Pop(); count > 0; count--) canvas.Restore();
                         break;

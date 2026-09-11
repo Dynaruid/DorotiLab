@@ -216,7 +216,9 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             DartRuntimePrimitives.Assert(() => this.hasConfiguration);
             DartRuntimePrimitives.Assert(() => (this._rootTransform is not null));
             DartRuntimePrimitives.Assert(() => (layer is not null));
-            global::Doroti.Ui.SceneBuilder builder = RendererBinding.instance.createSceneBuilder();
+            global::Doroti.Ui.SceneBuilder builder = this._view.viewId == 0
+                ? RendererBinding.instance.createSceneBuilder()
+                : new global::Doroti.Ui.SceneBuilder(this._view.viewId);
             global::Doroti.Ui.Scene scene = layer!.buildScene(builder);
             if (this.automaticSystemUiAdjustment)
             {
@@ -399,4 +401,3 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 }
 
 public delegate void DebugPaintCallback(PaintingContext context, Offset offset, RenderView renderView);
-

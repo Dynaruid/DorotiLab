@@ -5,6 +5,7 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Hosting" />
     <InternalsVisibleTo Include="Doroti.Host.Web" />
     <InternalsVisibleTo Include="Doroti.Host.Maui" />
     <InternalsVisibleTo Include="Doroti.Host.Qt" />

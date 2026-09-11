@@ -142,6 +142,8 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-views")
+            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new PlatformViewFixture());
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "media-query")
             return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new MediaQueryFixture());
         if (App.SampleEnabled) return new MaterialSample.SampleApp();

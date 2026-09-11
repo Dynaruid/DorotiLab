@@ -38,7 +38,12 @@ public sealed record DorotiApplicationManifest(
     string ApplicationId,
     string TargetRid,
     DorotiEmbeddedResource[] Resources,
-    DorotiApplicationPlugin[] Plugins);
+    DorotiApplicationPlugin[] Plugins)
+{
+    public DorotiPlatformViewRegistration[] PlatformViews { get; init; } = [];
+}
+
+public sealed record DorotiPlatformViewRegistration(string ViewType, string Rid);
 
 public sealed record DorotiEmbeddedResource(
     string Key,
@@ -58,15 +63,18 @@ public sealed class DorotiApplicationBoundary : IDisposable
 {
     private readonly ApplicationResourceCapability _resources;
     private readonly ApplicationPluginCapability _plugins;
+    private readonly PlatformViewFactoryRegistry _platformViews;
 
     private DorotiApplicationBoundary(
         DorotiApplicationManifest manifest,
         Assembly assembly,
-        IEnumerable<IDorotiNativePluginHandler> handlers)
+        IEnumerable<IDorotiNativePluginHandler> handlers,
+        IEnumerable<IPlatformViewFactory> platformViewFactories)
     {
         Manifest = manifest;
         _resources = new(manifest, assembly);
         _plugins = new(manifest, handlers);
+        _platformViews = CreatePlatformViewRegistry(manifest, platformViewFactories);
     }
 
     public DorotiApplicationManifest Manifest { get; }
@@ -74,14 +82,16 @@ public sealed class DorotiApplicationBoundary : IDisposable
     public static DorotiApplicationBoundary Load(
         Assembly applicationAssembly,
         string targetRid,
-        IEnumerable<IDorotiNativePluginHandler>? handlers = null) =>
-        Load(applicationAssembly, applicationAssembly, targetRid, handlers);
+        IEnumerable<IDorotiNativePluginHandler>? handlers = null,
+        IEnumerable<IPlatformViewFactory>? platformViewFactories = null) =>
+        Load(applicationAssembly, applicationAssembly, targetRid, handlers, platformViewFactories);
 
     public static DorotiApplicationBoundary Load(
         Assembly manifestAssembly,
         Assembly applicationAssembly,
         string targetRid,
-        IEnumerable<IDorotiNativePluginHandler>? handlers = null)
+        IEnumerable<IDorotiNativePluginHandler>? handlers = null,
+        IEnumerable<IPlatformViewFactory>? platformViewFactories = null)
     {
         ArgumentNullException.ThrowIfNull(manifestAssembly);
         ArgumentNullException.ThrowIfNull(applicationAssembly);
@@ -101,7 +111,32 @@ public sealed class DorotiApplicationBoundary : IDisposable
                 DartUiInvocation.Managed("Doroti.Hosting#LoadApplication"),
                 $"application targets RID '{manifest.TargetRid}', not '{targetRid}'",
                 targetRid);
-        return new(manifest, applicationAssembly, handlers ?? []);
+        return new(manifest, applicationAssembly, handlers ?? [], platformViewFactories ?? []);
+    }
+
+    public static PlatformViewFactoryRegistry CreatePlatformViewRegistry(
+        DorotiApplicationManifest manifest, IEnumerable<IPlatformViewFactory> factories)
+    {
+        var supplied = new PlatformViewFactoryRegistry(factories);
+        var registered = new List<IPlatformViewFactory>();
+        foreach (var registration in manifest.PlatformViews)
+        {
+            if (registration.Rid != manifest.TargetRid || supplied.Find(registration.ViewType) is not { } factory)
+                throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformViews, null,
+                    DartUiInvocation.Managed("application-platform-view:register"),
+                    $"factory '{registration.ViewType}' is missing or targets a different RID", manifest.TargetRid);
+            registered.Add(factory);
+        }
+        return new(registered);
+    }
+
+    /// <summary>Explicit optional registration. A coordinator must never be shared across owners.</summary>
+    public PlatformViewCoordinator ConfigurePlatformViews(DorotiViewCapabilities capabilities, ulong ownerViewId,
+        IPlatformViewDispatcher dispatcher)
+    {
+        var coordinator = new PlatformViewCoordinator(ownerViewId, capabilities.TargetIdentity, _platformViews, dispatcher);
+        capabilities.Register<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews, coordinator);
+        return coordinator;
     }
 
     public void Configure(DorotiViewCapabilities capabilities)

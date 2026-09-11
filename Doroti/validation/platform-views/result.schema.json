@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "doroti.platform-views.evidence/v1",
+  "type": "object",
+  "required": ["schemaVersion", "commit", "dirty", "target", "os", "rid", "device", "runtime", "renderer", "command", "exitCode", "timeoutSeconds", "sourceReviewed", "build", "automated", "productLive", "physical", "nativeAot", "capabilities", "artifacts", "remaining"],
+  "properties": {
+    "schemaVersion": {"const": "doroti.platform-views.evidence/v1"},
+    "commit": {"type": "string"}, "dirty": {"type": "array", "items": {"type": "string"}},
+    "target": {"type": "string"}, "os": {"type": "string"}, "rid": {"type": "string"},
+    "device": {"type": "string"}, "runtime": {"type": "string"}, "renderer": {"type": "string"},
+    "command": {"type": "string"}, "exitCode": {"type": ["integer", "null"]}, "timeoutSeconds": {"const": 1200},
+    "sourceReviewed": {"$ref": "#/$defs/status"}, "build": {"$ref": "#/$defs/status"},
+    "automated": {"$ref": "#/$defs/status"}, "productLive": {"$ref": "#/$defs/status"},
+    "physical": {"$ref": "#/$defs/status"}, "nativeAot": {"$ref": "#/$defs/status"},
+    "capabilities": {"type": "array", "items": {"type": "object", "required": ["request", "result"]}},
+    "artifacts": {"type": "array", "items": {"type": "string"}},
+    "remaining": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {"status": {"enum": ["passed", "failed", "PARTIAL", "notVerified", "skippedByUser"]}}
+}

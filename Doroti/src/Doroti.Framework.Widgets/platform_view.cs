@@ -107,7 +107,7 @@ public class HtmlElementView : StatelessWidget
 
     public static HtmlElementView CreateFromTagName(global::Doroti.Framework.Foundation.Key? key = null, string tagName = default!, bool isVisible = true, global::System.Action<object>? onElementCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque) => throw new NotSupportedException("HtmlElementView is only available on Flutter Web");
 
-    public override Widget build(BuildContext context) => throw new NotSupportedException("HtmlElementView is only available on Flutter Web");
+    public override Widget build(BuildContext context) => new RegisteredHtmlElementView(this);
 }
 
 internal class _AndroidViewState__platform_view : State<AndroidView>

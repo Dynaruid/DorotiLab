@@ -372,7 +372,7 @@ public class StandardMessageCodec : MessageCodec<object?>
                 }
             case var __case18639 when object.Equals(__case18639, _valueInt32):
                 {
-                    return buffer.getInt32();
+                    return (long)buffer.getInt32();
                 }
             case var __case18697 when object.Equals(__case18697, _valueInt64):
                 {
@@ -391,7 +391,7 @@ public class StandardMessageCodec : MessageCodec<object?>
             case var __case18980 when object.Equals(__case18980, _valueUint8List):
                 {
                     long lengthLocal = readSize(buffer);
-                    return buffer.getUint8List(lengthLocal);
+                    return new Uint8List(buffer.getUint8List(lengthLocal).ToArray());
                 }
             case var __case19097 when object.Equals(__case19097, _valueInt32List):
                 {
