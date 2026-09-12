@@ -39,6 +39,11 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     private nint _nativeWindow;
     private int _width, _height;
     private bool _pending, _live;
+    private Task? _retirement;
+    private bool _faulted;
+    private static int _retiringGenerations;
+    // Failed native cleanup must survive collection of a disconnected Java view.
+    private static readonly List<(GraphiteVulkanWindow Window, nint NativeWindow)> FailedRetirements = [];
     private long _generation;
     private readonly Java.Lang.Runnable _drawCallback;
     private readonly Java.Lang.Runnable _gpuCompletionCallback;
@@ -103,14 +108,14 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     internal void RequestFrame()
     {
-        if (_pending || !_live || _owner is null || _width <= 0 || _height <= 0) return;
+        if (_pending || !_live || _faulted || _retirement is not null || _owner is null || _width <= 0 || _height <= 0) return;
         _pending = true;
         PostOnAnimation(_drawCallback);
     }
 
     internal void DrawFromVsync()
     {
-        if (!_live || _owner is null || _width <= 0 || _height <= 0) return;
+        if (!_live || _faulted || _retirement is not null || _owner is null || _width <= 0 || _height <= 0) return;
         // MauiHostAdapter has already waited for Choreographer. Posting another
         // animation callback here would defer this frame by an entire refresh.
         // Consume any ordinary invalidation too, so it cannot replay next pulse.
@@ -122,12 +127,15 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     {
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 10) : default;
         _pending = false;
-        if (!_live || _owner is null) return;
+        if (!_live || _faulted || _retirement is not null || _owner is null) return;
         MauiSkiaPaintContext? paint = null;
         try
         {
             if (_window is null)
             {
+                // A replacement Activity/View must not evade a previous view's
+                // retirement hold and accumulate GPU generations during a stall.
+                if (Volatile.Read(ref _retiringGenerations) != 0) { RequestFrame(); return; }
                 if (!OperatingSystem.IsAndroidVersionAtLeast(24))
                     throw new PlatformNotSupportedException("Doroti Graphite requires Android API 24 or newer and a Vulkan 1.2 device for the official profile.");
                 _nativeWindow = ANativeWindowFromSurface(JNIEnv.Handle, Holder!.Surface!.Handle);
@@ -156,7 +164,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         {
             _owner.FailGraphite(paint?.Completion, exception);
             global::Android.Util.Log.Error("DorotiGraphite", exception.ToString());
-            if (_window?.IsDeviceLost == true) { ReleaseSurface(); RequestFrame(); }
+            _faulted = true;
+            if (_window is not null) ReleaseSurface();
             else if (_window is null && _nativeWindow != 0) { ANativeWindowRelease(_nativeWindow); _nativeWindow = 0; }
         }
     }
@@ -184,7 +193,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         {
             _owner?.FailGraphite(null, exception);
             global::Android.Util.Log.Error("DorotiGraphite", exception.ToString());
-            if (_window.IsDeviceLost) { ReleaseSurface(); RequestFrame(); }
+            _faulted = true;
+            ReleaseSurface();
         }
     }
     private void RecordFrameTiming(VulkanWindowFrameTiming timing)
@@ -209,16 +219,51 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         RemoveCallbacks(_gpuCompletionCallback);
         _gpuCompletionPending = false;
         _pending = false;
-        // SurfaceHolder callbacks and PostOnAnimation execute on this view's UI
-        // thread. Drain before Android can destroy the underlying native surface.
-        _window?.Dispose();
-        if (_window?.EnableFrameTiming == true)
-            global::Android.Util.Log.Info("DorotiFrameTiming", $"drained submitted={_window.SubmittedWindowFrames} completed={_window.CompletedWindowFrames} outstanding={_window.WindowFramesInFlight}");
+        if (_retirement is not null) return;
+        if (_window is not { } window)
+        {
+            if (_nativeWindow != 0) ANativeWindowRelease(_nativeWindow);
+            _nativeWindow = 0;
+            return;
+        }
+        // Close admission synchronously; never acquire/present after this callback.
+        // Keep the native window and generation alive while the GPU drains off the
+        // UI thread. Surface recreation waits for this exact retirement to finish.
+        var nativeWindow = _nativeWindow;
+        Interlocked.Increment(ref _retiringGenerations);
+        try { _retirement = window.DisposeAfterOwnerDetachedAsync(); }
+        catch (Exception exception) { _retirement = Task.FromException(exception); }
         _window = null;
-        if (_nativeWindow != 0) ANativeWindowRelease(_nativeWindow);
         _nativeWindow = 0;
+        _ = FinishRetirementAsync(window, nativeWindow, _retirement);
     }
 
+    private async Task FinishRetirementAsync(GraphiteVulkanWindow window, nint nativeWindow, Task retirement)
+    {
+        try
+        {
+            if (await Task.WhenAny(retirement, Task.Delay(TimeSpan.FromSeconds(5))).ConfigureAwait(false) != retirement)
+                global::Android.Util.Log.Error("DorotiGraphite", "Surface retirement exceeded five seconds; retaining generation and blocking replacement (not device loss).");
+            await retirement.ConfigureAwait(false);
+            ANativeWindowRelease(nativeWindow);
+            Interlocked.Decrement(ref _retiringGenerations);
+            if (window.EnableFrameTiming)
+                global::Android.Util.Log.Info("DorotiFrameTiming", $"drained submitted={window.SubmittedWindowFrames} completed={window.CompletedWindowFrames} outstanding={window.WindowFramesInFlight}");
+            Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _retirement = null;
+                _faulted = false;
+                RequestFrame();
+            });
+        }
+        catch (Exception exception)
+        {
+            // Keep the failed generation rooted. Neither its native window nor a
+            // replacement renderer may be released/admitted on uncertain cleanup.
+            lock (FailedRetirements) FailedRetirements.Add((window, nativeWindow));
+            global::Android.Util.Log.Error("DorotiGraphite", "Surface retirement failed; resources retained: " + exception);
+        }
+    }
     public override bool OnTouchEvent(MotionEvent? e)
     {
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 9) : default;

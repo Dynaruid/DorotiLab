@@ -1,0 +1,230 @@
+{
+  "status": "PARTIAL",
+  "utc": "2026-09-12T21:50:47.144879+00:00",
+  "head": "88cbb69e9774e23ec37a211fc8a0a68015ed8ea8",
+  "sdk": "10.0.400",
+  "device": "Galaxy S25 SM-S931N Android API 36 arm64 / Adreno 830",
+  "sourceSha256": {
+    "Doroti/src/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs": "a56ef7f06886d9856f27daf445ace7f2a7d10a0b504f09080796b64d255cde70",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs": "a5dd0df9a382c4d76851f87491269c4b1df0b36a59dd6b9d18edcc3e0aa090d3",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Frames.cs": "88536ec2ad9fca1bebe73a4fafb0b00f86c4e00a5322471fb8d3922f79559184",
+    "Doroti/templates/Doroti.Templates/content/doroti-app/android/Directory.Build.props": "ec5a7860e2e34a49a4aadcc5b237a4a6b29a7b2cf5e4926ac4c38a53bae2fbee",
+    "Doroti/templates/Doroti.Templates/content/doroti-app/android/AndroidManifest.xml": "3bf9572f20f51daa41d2d5c970f74c132fe0c9e98019bd1ebee934d2dfa02158",
+    "DorotiTestbedApp/android/AndroidManifest.xml": "3bf9572f20f51daa41d2d5c970f74c132fe0c9e98019bd1ebee934d2dfa02158",
+    "Doroti/validation/android-graphite-apk/device-lifecycle.py": "7c693035d419279f950f7f5a10835f268ed406c46c88604d4ded9068d16b377d",
+    "Doroti/validation/android-graphite-apk/testbed-input.py": "3831679b3c842a081370d9194d57281ead1b391e67d110d83d0760c90ae9f6cb",
+    "Doroti/validation/stock-graphite-vulkan/run-clean-android-template.py": "e73dd106ab2640ff3d724407f75d93cccb729e3affaff49a9584a6c243864241"
+  },
+  "results": {
+    "lifecycle-final": {
+      "status": "PASS-scoped-device-lifecycle",
+      "device": "R3CY30KZA4B",
+      "package": "dev.doroti.testbed",
+      "automated": true,
+      "timeoutSeconds": 1200,
+      "rotationBefore": [
+        "lock",
+        "0"
+      ],
+      "cases": [
+        {
+          "label": "portrait",
+          "pid": "7765"
+        },
+        {
+          "label": "landscape",
+          "pid": "7765"
+        },
+        {
+          "label": "reverse-landscape",
+          "pid": "7765"
+        },
+        {
+          "label": "portrait-restored",
+          "pid": "7765"
+        },
+        {
+          "label": "resume-1",
+          "pid": "7765"
+        },
+        {
+          "label": "resume-2",
+          "pid": "7765"
+        }
+      ],
+      "officialAssets": [
+        {
+          "apk": "/data/app/~~0bsX5EwPYtSlzw4fYA2RqA==/dev.doroti.testbed-wVGg3DcORW2IJm3wHohBnQ==/split_config.arm64_v8a.apk",
+          "entry": "lib/arm64-v8a/libSkiaSharp.so",
+          "sha256": "63af1ec283b86965542bca1400ae446e6a179a7be5b6187e69aa5fa0bd49e180"
+        }
+      ],
+      "drained": [
+        [
+          "19",
+          "19",
+          "0"
+        ],
+        [
+          "1",
+          "1",
+          "0"
+        ]
+      ],
+      "limits": "No physical input, sync-validation, delayed GPU/device-loss or performance claim",
+      "rotationAfter": "lock 0"
+    },
+    "input": {
+      "status": "PASS-automated-input",
+      "device": "R3CY30KZA4B",
+      "buttonCount": 1,
+      "text": "work0",
+      "materialOpened": true,
+      "koreanComposition": "notVerified",
+      "physicalInput": false
+    },
+    "material": {
+      "status": "PASS-automated-material-input",
+      "device": "R3CY30KZA4B",
+      "colorTab": true,
+      "componentsTab": true,
+      "scroll": true,
+      "physicalInput": false
+    },
+    "template-corrected": {
+      "status": "PASS-generated-package-app-install",
+      "consumer": "C:\\Users\\parti\\AppData\\Local\\Temp\\doroti-android-template-krn_l7dk",
+      "apk": "C:\\Users\\parti\\AppData\\Local\\Temp\\doroti-android-template-krn_l7dk\\app\\android\\bin\\android-arm64\\Release\\net10.0-android\\android-arm64\\dev.doroti.work0consumer-Signed.apk",
+      "nativeSha256": "63af1ec283b86965542bca1400ae446e6a179a7be5b6187e69aa5fa0bd49e180",
+      "runtime": "Run device-lifecycle.py separately; install is not rendering evidence"
+    },
+    "template-lifecycle-corrected": {
+      "status": "PASS-scoped-device-lifecycle",
+      "device": "R3CY30KZA4B",
+      "package": "dev.doroti.work0consumer",
+      "automated": true,
+      "timeoutSeconds": 1200,
+      "rotationBefore": [
+        "lock",
+        "0"
+      ],
+      "cases": [
+        {
+          "label": "portrait",
+          "pid": "10682"
+        },
+        {
+          "label": "landscape",
+          "pid": "10682"
+        },
+        {
+          "label": "reverse-landscape",
+          "pid": "10682"
+        },
+        {
+          "label": "portrait-restored",
+          "pid": "10682"
+        },
+        {
+          "label": "resume-1",
+          "pid": "10682"
+        },
+        {
+          "label": "resume-2",
+          "pid": "10682"
+        }
+      ],
+      "officialAssets": [
+        {
+          "apk": "/data/app/~~1tzr8QEZgtiThLYgpVxlHA==/dev.doroti.work0consumer-8RnxRvpqMpsu6TnrnsNRew==/split_config.arm64_v8a.apk",
+          "entry": "lib/arm64-v8a/libSkiaSharp.so",
+          "sha256": "63af1ec283b86965542bca1400ae446e6a179a7be5b6187e69aa5fa0bd49e180"
+        }
+      ],
+      "drained": [
+        [
+          "12",
+          "12",
+          "0"
+        ],
+        [
+          "1",
+          "1",
+          "0"
+        ]
+      ],
+      "limits": "No physical input, sync-validation, delayed GPU/device-loss or performance claim",
+      "rotationAfter": "lock 0"
+    },
+    "template-input": {
+      "status": "PASS-automated-template-input",
+      "device": "R3CY30KZA4B",
+      "count": 1,
+      "physicalInput": false
+    }
+  },
+  "evidence": [
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\build-install-final.log",
+      "sha256": "13af91dfd1f23041d90336042e31ce628dc7ce65e84d173e2c64282f181285b1"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\provenance-tests.log",
+      "sha256": "bd75516246ed6ec079c197e2a3c192d65f35db6dafde9d41b5c85aebac61a8dc"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\release-properties.json",
+      "sha256": "cdffbf1a0afefa39969c4b2157efb9387a189cbd527b04fa7e27d0dd34be0e7a"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\template-corrected\\install.log",
+      "sha256": "122d4d4019c7d1947bdfd3150456dad44648252e45e98152ee39033b092a7ea4"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\template-corrected\\commands.json",
+      "sha256": "2c58a2471abc872a95af7ef464081892b7df0ab769909893f640582cfa1fd494"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\template-corrected\\identity.log",
+      "sha256": "79a05e7b158332efcdbb84a0882e0d598d8afb77596453a23585b6d7ca6eec1f"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\template-corrected\\packages.json",
+      "sha256": "fb13521322a990bbc96a41ee43f41c2fff829a6a70d4b5edf792be53e15f5ea9"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\lifecycle-final\\process.log",
+      "sha256": "7974261099d7bbb705bb5e03c2cecfad55fd3ad19b4512b26e22229c4419ab1b"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\template-lifecycle-corrected\\process.log",
+      "sha256": "c319609cef8dcc83b337c21db47c402ff08160f2395a136a58666c5199ac9684"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\remove-wrong-identity-app.log",
+      "sha256": "df5f678c3e897e8db27b8c5de5ae1938a25aa084aeee89a1a44958f104316b3d"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\reject-stale.log",
+      "sha256": "9cefa6b6d856aa279b7cfb154ce38b25844bd35e1a03b58565e08ed9a3d6dbdd"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\remove-template-app.log",
+      "sha256": "df5f678c3e897e8db27b8c5de5ae1938a25aa084aeee89a1a44958f104316b3d"
+    },
+    {
+      "path": "Doroti\\artifacts\\validation\\android-work0-2026-09-13\\return-testbed.log",
+      "sha256": "214087bbea5cdb99ff31a9e86d73d0c9d83bb1bda0d354061ae055dddd04fd39"
+    }
+  ],
+  "limits": [
+    "Android synchronization validation",
+    "delayed/permanently stalled GPU",
+    "actual device loss",
+    "resize/failed-submit synchronous waits remain",
+    "full performance acceptance",
+    "x64 emulator not rerun",
+    "physical display/input",
+    "Korean IME composition/selection"
+  ]
+}

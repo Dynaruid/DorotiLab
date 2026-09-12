@@ -23,6 +23,21 @@ archives, missing entries, hash mismatch and verified/unverified load paths.
 These tests link the product verification helper; they do not load native Skia
 or claim device/GPU validation.
 
+`device-lifecycle.py --serial SERIAL --output ARTIFACT_DIRECTORY` checks an
+already installed app's official split asset, rotation and two background/resume
+cycles. It restores the rotation policy and retains screenshots/logs. Use
+`--package dev.doroti.work0consumer` for the generated package consumer.
+`testbed-input.py` then checks gallery button/text input and Material navigation;
+`--material-only` checks tabs/scroll on the Material screen. Run each through
+`validation/run-with-timeout.py`. These are automated device checks, not physical
+input, synchronization-validation or performance acceptance.
+For the generated app, `testbed-input.py --template-only` verifies its Increment
+button and shader counter after the lifecycle probe.
+
+See the [2026-09-13 review](../../../history/2026-09-13/android-work0/README.md)
+and `../stock-graphite-vulkan/run-clean-android-template.py` for actual generated
+package-app deployment rather than the older native TextView packaging fixture.
+
 For device validation, use the normal Release `dotnet run` deployment (AAB and
 bundletool splits), inspect `pm path --user 0 dev.doroti.testbed`, and confirm the
 `DorotiGraphite official ... apk=... loaded=...` log plus the displayed app screen.

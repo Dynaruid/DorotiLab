@@ -1,5 +1,30 @@
 # Graphite 유지 및 공식 SkiaSharp 바이너리 전환 작업계획
 
+## Android 재검토·보완 (2026-09-13)
+
+현재 소스와 연결된 Galaxy S25(API 36/arm64)를 다시 확인했다. 공식 NativeAssets,
+분할 APK의 실제 로드 경로·해시, Release Mono AOT/trim 구성은 확인했으나,
+**Android 전체 qualification은 여전히 PARTIAL**이다.
+
+- 테스트베드·생성 템플릿의 Vulkan manifest를 실제 요구 버전인 1.2로 맞췄다.
+- Android 템플릿이 상위 `Directory.Build.props`를 누락해 앱 ID·이름·버전을
+  잃던 오류를 수정했다. 생성 후 설치 전에 실제 평가된 application identity를 검사한다.
+- Android surface 종료에서 UI 스레드의 동기 GPU 회수를 분리했다. admission을
+  닫고 native window를 보존한 뒤 worker가 실제 완료/loss 이후 회수한다.
+  새 Activity/View도 이전 세대의 회수를 기다리며, 5초 초과·회수 실패에서
+  timeout을 device loss로 바꾸거나 미확인 자원을 해제하지 않는다.
+- 갤럭시 자동 분할 Release 설치, 세로/가로/반대 가로, background/resume,
+  버튼·텍스트 입력·Material 탭·스크롤을 확인했다. 정상 회수 outstanding은 0이다.
+- 실제 생성 앱을 위한 package-only build/install/runtime 검증 도구를 추가하고,
+  과거 출력의 `--no-build` 재포장과 중복 native entry를 통과시키지 않도록 했다.
+  수정된 생성 앱도 공식 arm64 split으로 설치·Graphite 표시·회전·복귀를 통과했다.
+- Android synchronization layer·GPU 지연/영구 stall·실제 device loss·전체 성능은
+  미검증이다. resize/실패 제출 경로의 동기 대기도 별도 남는다. 정상 실기기
+  실행을 이 경계의 PASS로 확대하지 않는다.
+
+[수정·검증·남은 조건·재실행 방법](history/2026-09-13/android-work0/README.md).
+이 절이 이번 Android 재검토 결과이며 아래 다른 플랫폼/과거 실행 기록은 보존한다.
+
 ## 후속 변경: 프로젝트의 하드웨어 GPU 차단 제거
 
 사용자 요청으로 장치가 하드웨어 GPU인지에 따른 실행 차단을 프로젝트 전체에서

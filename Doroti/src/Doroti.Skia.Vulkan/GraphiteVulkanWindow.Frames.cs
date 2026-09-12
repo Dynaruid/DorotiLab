@@ -53,6 +53,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
     public bool PollGpuWork()
     {
         CheckOwner();
+        if (_terminalShutdown) throw new InvalidOperationException("Vulkan surface admission is closed.");
         var complete = true;
         foreach (var slot in _windowFrames)
         {

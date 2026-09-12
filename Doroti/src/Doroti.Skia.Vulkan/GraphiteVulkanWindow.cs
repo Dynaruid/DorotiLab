@@ -206,6 +206,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         Action? beforePresent = null)
     {
         CheckOwner();
+        if (_terminalShutdown) throw new InvalidOperationException("Vulkan surface admission is closed.");
         if (width <= 0 || height <= 0) return false;
         if (_recreate || Width != width || Height != height) Resize(width, height);
         var startTime = FrameTimestamp();
@@ -531,6 +532,31 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         if (_ownsSurface) _surfaces.DestroySurface(_instance, _surface, null);
         if (_ownsInstance) _vk.DestroyInstance(_instance, null);
         _swapchains?.Dispose(); _surfaces?.Dispose(); _vk.Dispose(); _disposed = true;
+    }
+
+    private bool _terminalShutdown;
+
+    /// <summary>
+    /// Permanently detach a UI-owned Android renderer. The caller must remove all
+    /// render/poll callbacks first and retain its ANativeWindow until completion.
+    /// No further rendering or presentation occurs; only terminal GPU retirement
+    /// runs on the worker. A timeout must retain this task and block replacement.
+    /// </summary>
+    public Task DisposeAfterOwnerDetachedAsync()
+    {
+        CheckOwner();
+        if (_terminalShutdown) throw new InvalidOperationException("Vulkan surface is already retiring.");
+        _terminalShutdown = true;
+        _session?.StopAcceptingFrames();
+        // Invalidate host caches on their original thread while the context is
+        // still alive. Submitted Graphite work retains its own native references.
+        ResourcesReleasing?.Invoke();
+        ResourcesReleasing = null;
+        return Task.Run(() =>
+        {
+            TakeShutdownOwnershipAfterThreadJoined();
+            Dispose();
+        });
     }
 
     /// <summary>Terminal-only transfer after the host has successfully joined the render thread.</summary>
