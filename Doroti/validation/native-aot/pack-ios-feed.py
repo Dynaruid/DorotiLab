@@ -40,13 +40,16 @@ steps = []
 passed = False
 try:
     for project in projects:
-        command = ['dotnet', 'pack', str(project), '-c', 'Release', '--no-build', '-o', str(feed),
+        # Rebuild when source/inputs changed; --no-build can silently package
+        # an earlier handler even after the source product was republished.
+        command = ['dotnet', 'pack', str(project), '-c', 'Release', '-o', str(feed),
                    '-p:UseSharedCompilation=false', '-p:DorotiCompilationMode=NativeAot',
                    '-p:DorotiHostTargetFrameworks=net11.0-ios',
                    '-p:ArtifactsPath=' + str(args.artifacts.resolve()), '-v:minimal']
-        restore = ['dotnet', 'restore', str(project), '-p:DorotiCompilationMode=NativeAot',
-                   '-p:DorotiHostTargetFrameworks=net11.0-ios', '-p:ArtifactsPath=' + str(args.artifacts.resolve()), '-v:minimal']
-        subprocess.run([sys.executable, str(HERE / 'run.py'), '--log', str(output / (project.stem + '-restore.log')), '--', *restore], cwd=ROOT, timeout=1230, check=True)
+        if project.stem in ('Doroti.Host.Maui', 'Doroti.Target.iOS.Maui.ios-arm64'):
+            # The target's ProjectReference supplies the device RID at build
+            # time; make it available in the host's restore graph as well.
+            command.append('-p:RuntimeIdentifiers=ios-arm64')
         log = output / (project.stem + '.log')
         result = subprocess.run([sys.executable, str(HERE / 'run.py'), '--log', str(log), '--', *command],
                                 cwd=ROOT, timeout=1230, check=False)

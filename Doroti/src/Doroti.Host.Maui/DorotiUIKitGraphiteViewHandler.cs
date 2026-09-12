@@ -33,7 +33,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private DorotiGraphiteView? _owner;
     // All mutations, including retirement, run on the UIKit/recorder owner thread.
     // A failed terminal-marker submission must keep its native resources rooted.
-    private static readonly HashSet<DorotiUIKitGraphiteView> RetiringViews = [];
+    private static readonly HashSet<DorotiUIKitGraphiteView> RetiringViews = new(ReferenceEqualityComparer.Instance);
     // Native NSObject hashes can change when their handles are disposed.
     // Retirement identity must remain stable until the pending entry is removed.
     private readonly HashSet<PendingFrame> _pending = new(ReferenceEqualityComparer.Instance);
@@ -46,6 +46,12 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private CGSize _lastSize;
     private long _generation;
     private bool _drawing;
+    private NSTimer? _retirementTimer;
+#if IOS && !MACCATALYST
+    private NSObject? _inactiveObserver;
+    private NSObject? _activeObserver;
+    private bool _suspended;
+#endif
 
     public DorotiUIKitGraphiteView() : base(CGRect.Empty, MTLDevice.SystemDefault ??
         throw new PlatformNotSupportedException("Doroti Graphite requires a Metal-capable device."))
@@ -54,8 +60,16 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
         FramebufferOnly = false;
         AutoResizeDrawable = false;
+#if IOS && !MACCATALYST
+        // Keep text and controls at their rendered size as UIKit interpolates
+        // rotation bounds. Center the image without stretching either axis;
+        // LayoutSubviews renders the new layout at the exact drawable size.
+        ContentMode = UIViewContentMode.Center;
+        Layer.ContentsGravity = CALayer.GravityCenter;
+#else
         ContentMode = UIViewContentMode.Redraw;
         Layer.ContentsGravity = CALayer.GravityTopLeft;
+#endif
         Layer.MasksToBounds = true;
         Paused = true;
         EnableSetNeedsDisplay = true;
@@ -63,6 +77,17 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         BackgroundColor = UIColor.Clear;
         MultipleTouchEnabled = true;
         Delegate = this;
+#if IOS && !MACCATALYST
+        _suspended = UIApplication.SharedApplication.ApplicationState != UIApplicationState.Active;
+        _inactiveObserver = NSNotificationCenter.DefaultCenter.AddObserver(
+            UIApplication.WillResignActiveNotification, _ => { _suspended = true; _generation++; });
+        _activeObserver = NSNotificationCenter.DefaultCenter.AddObserver(
+            UIApplication.DidBecomeActiveNotification, _ =>
+            {
+                _suspended = false;
+                if (!_releaseRequested && !_faulted) SetNeedsDisplay();
+            });
+#endif
     }
 
     internal void Connect(DorotiGraphiteView owner)
@@ -80,10 +105,36 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _releaseRequested = true;
         _generation++;
         _owner = null;
+#if IOS && !MACCATALYST
+        RemoveLifecycleObserver(ref _inactiveObserver);
+        RemoveLifecycleObserver(ref _activeObserver);
+#endif
         _session?.StopAcceptingFrames();
         RetiringViews.Add(this);
         if (!_drawing && _pending.Count == 0) ReleaseGpuResources();
+        if (!_resourcesReleased)
+            _retirementTimer = NSTimer.CreateScheduledTimer(TimeSpan.FromSeconds(5), _ =>
+            {
+                if (_resourcesReleased) return;
+                _faulted = true;
+                // A deadline is diagnostic, never evidence of device loss.
+                // Keep this generation and its drawable leases until completion.
+                var error = new TimeoutException("UIKit Metal retirement exceeded five seconds; retaining GPU resources and rejecting new generations.");
+                System.Diagnostics.Trace.TraceError(error.ToString());
+                try { _resourceOwner?.FailGraphite(null, error); }
+                catch (Exception callbackError) { System.Diagnostics.Trace.TraceError(callbackError.ToString()); }
+            });
     }
+
+#if IOS && !MACCATALYST
+    private static void RemoveLifecycleObserver(ref NSObject? observer)
+    {
+        if (observer is null) return;
+        NSNotificationCenter.DefaultCenter.RemoveObserver(observer);
+        observer.Dispose();
+        observer = null;
+    }
+#endif
 
     public override void MovedToWindow()
     {
@@ -97,17 +148,36 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             (Bounds.Size.Equals(_lastSize) && ContentScaleFactor == _lastScale)) return;
         _lastSize = Bounds.Size;
         _lastScale = ContentScaleFactor;
+#if IOS && !MACCATALYST
+        var previousPresentation = PresentsWithTransaction;
+#endif
         CATransaction.Begin();
         try
         {
             CATransaction.DisableActions = true;
+#if IOS && !MACCATALYST
+            Layer.ContentsGravity = CALayer.GravityCenter;
+#else
             Layer.ContentsGravity = CALayer.GravityTopLeft;
+#endif
             Layer.ContentsScale = ContentScaleFactor;
             DrawableSize = new CGSize(Math.Max(1, Math.Round(Bounds.Width * ContentScaleFactor)),
                 Math.Max(1, Math.Round(Bounds.Height * ContentScaleFactor)));
+#if IOS && !MACCATALYST
+            // The new drawable must accompany UIKit's rotation geometry. An
+            // independently queued present can otherwise replace the old image
+            // partway through the rotation, making the layout visibly jump.
+            PresentsWithTransaction = true;
+#endif
             Draw();
         }
-        finally { CATransaction.Commit(); }
+        finally
+        {
+            CATransaction.Commit();
+#if IOS && !MACCATALYST
+            PresentsWithTransaction = previousPresentation;
+#endif
+        }
         SetNeedsDisplay();
     }
     public void DrawableSizeWillChange(MTKView view, CGSize size) { _generation++; }
@@ -115,6 +185,11 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     {
         var owner = _owner;
         if (_drawing || _releaseRequested || _faulted || Window is null || owner is null) return;
+#if IOS && !MACCATALYST
+        // Invalidation/layout can still arrive while UIKit is moving to the
+        // background. Metal must not receive new work until activation.
+        if (_suspended || UIApplication.SharedApplication.ApplicationState != UIApplicationState.Active) return;
+#endif
         if (_pending.Count >= 3)
         {
             _frameBackpressure = true;
@@ -187,7 +262,11 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         {
             using var command = _queue.CommandBuffer() ??
                 throw new InvalidOperationException("Metal terminal buffer creation failed; retaining GPU resources.");
-            if (present) command.PresentDrawable(pending.Drawable);
+            var transactionPresentation = false;
+#if IOS && !MACCATALYST
+            transactionPresentation = present && PresentsWithTransaction;
+#endif
+            if (present && !transactionPresentation) command.PresentDrawable(pending.Drawable);
             command.AddCompletedHandler(completed =>
             {
                 var status = completed.Status;
@@ -197,6 +276,15 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 UIApplication.SharedApplication.BeginInvokeOnMainThread(() => Retire(pending, status, error));
             });
             command.Commit();
+            if (transactionPresentation)
+            {
+                // Apple's transaction presentation contract requires scheduling
+                // first, then presenting the drawable directly in this layout
+                // transaction. This waits for scheduling, not GPU completion;
+                // resource retirement still belongs to the completion callback.
+                command.WaitUntilScheduled();
+                pending.Drawable.Present();
+            }
         }
         catch
         {
@@ -244,6 +332,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private void ReleaseGpuResources()
     {
         if (_resourcesReleased) return;
+        _retirementTimer?.Invalidate();
+        _retirementTimer?.Dispose();
+        _retirementTimer = null;
         _resourceOwner?.ReleaseGraphiteResources();
         _resourceOwner = null;
         _session?.Dispose();

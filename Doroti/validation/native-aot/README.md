@@ -204,6 +204,9 @@ bytes are 18,185,146; these are distinct from installed storage.
 `pack-ios-feed.py --artifacts <successful-source-build> --output <directory>`
 packs the evaluated iOS graph, including the SDKs and template. The resulting
 22-package feed is an experimental iOS net11 feed, not a multi-platform release.
+The packer now restores and builds each package with the same configuration,
+including the host's device RID assets; it does not repackage stale DLLs with
+`--no-build`. Existing successful source outputs remain incremental inputs.
 `consume-ios-template.py --feed <feed> --output <directory>` installs the actual
 template into an isolated hive, uses a local-only Doroti package mapping, adds
 external generic State/localization/action types, and publishes an iOS app.

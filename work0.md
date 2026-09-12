@@ -1,5 +1,75 @@
 # Graphite 유지 및 공식 SkiaSharp 바이너리 전환 작업계획
 
+## iPhone 회전 스트레칭 제거 (2026-09-13)
+
+사용자가 중심 정렬은 개선됐지만 ScaleToFill의 늘어나는 모양이 어색하다고 확인했다.
+iOS를 `ContentMode.Center`·`GravityCenter`로 바꿔 원래 크기·비율로 중심을 유지한다.
+회전 중 bounds 밖 내용은 clip하며 새 크기의 레이아웃을 다시 그린다.
+기존 중심 합성 검사에 20×20 표식의 가로·세로 크기 검사를 추가하고, 과거
+top-left 중심 밀림과 scale-to-fill 늘어남을 각각 negative control로 비교한다.
+아이폰 합성 6사례에서 중심·표식 크기 오차가 모두 0이며, 기존 수명 검사도 통과했다.
+Release NativeAOT 게시 경고·오류 0, 수정 앱 재설치·표시·복귀 검사도 통과했고
+폰에 실행해 두었다. 실제 회전의 자연스러움은 사용자 재확인이 필요하다.
+[현재 정책·이전 Flutter 비교·검증 범위](Doroti/validation/uikit-metal-lifecycle/rotation-center.md).
+
+## iPhone 회전 중심 정렬 후속 수정 (2026-09-13)
+
+사용자가 이전 표시 시점 수정 후에도 중심이 어긋난다고 보고해 Flutter iOS 소스와
+비교했다. 일반 FlutterView와 달리 Doroti는 매 layout에서 내용을 왼쪽 위에 고정했다.
+iOS를 `ScaleToFill`·`GravityResize`로 변경해 중간 bounds에서도 이미지 중심이
+레이어 중심과 일치하도록 했다. 기존 transaction 표시와 Catalyst 설정은 유지한다.
+Flutter의 midpoint metrics 지연도 검토했으며 이번에는 정렬 변경만 적용했다.
+iPhone 12의 Core Animation bitmap 합성 6사례에서 중심 오차 0, 이전 top-left
+negative control에서 최대 60 output pixels의 오프셋을 확인했다. 기존 수명 검사도
+통과했다. 이는 실제 OS 회전 화면 캡처가 아니며 **체감 개선은 사용자 재확인 필요**다.
+Release NativeAOT 게시 경고·오류 0, 수정 앱 재설치·Graphite 표시·동일 프로세스
+background/resume도 통과했고 폰에 실행해 두었다.
+[소스 비교·검증 범위·증거](Doroti/validation/uikit-metal-lifecycle/rotation-center.md).
+
+## iPhone 회전 시 레이아웃 표시 동기화 (2026-09-13)
+
+사용자가 보고한 회전 중 레이아웃 지연·덜컥거림에 대응해, iOS Graphite의
+크기 변경 프레임을 UIKit layout의 Core Animation transaction에서 표시하도록
+수정했다. 해당 프레임만 command scheduling을 기다린 뒤 drawable을 직접 표시하고,
+일반 프레임과 GPU 자원 회수는 기존 비동기 경로를 유지한다.
+iPhone 12에서 가로·세로 크기 교환 2회, layout 반환 전 새 크기의 paint,
+transaction 표시 모드 복원, 기존 GPU 수명 검사를 통과했다.
+이는 표시 계약 검증이며 **사용자의 실제 회전 체감 개선은 재확인 필요**다.
+Release NativeAOT 게시도 경고·오류 0으로 통과했고, 수정한 테스트베드를 아이폰에
+다시 설치해 Graphite 표시·background/resume을 확인한 뒤 실행 상태로 두었다.
+증거: `Doroti/artifacts/ios-rotation/lifecycle/runtime.json`,
+`Doroti/artifacts/ios-rotation/publish.result.json`,
+`Doroti/artifacts/ios-rotation/product/result.json`.
+
+## iOS 재검토·보완 (2026-09-13)
+
+이번 요청으로 iOS 검증을 재개했다. 아래 과거 Apple `skippedByUser`는 당시
+범위이며, 현재 iOS 결과는 이 절과 연결된 증거를 따른다.
+**iPhone 12의 Release NativeAOT·공식 Graphite/Metal 실행은 PASS-scoped,
+전체 qualification은 PARTIAL**이다.
+
+- UIKit Metal에서 비활성화 시 새 GPU 제출을 막고, 활성화 복귀 시 다시 그린다.
+  비활성화가 paint 중 재진입하면 해당 recording도 stale로 취소한다.
+- disconnect 후 5초 회수 지연을 오류로 보고한다. timeout을 device loss로
+  바꾸지 않으며 실제 완료 전 frame/drawable/session과 generation 차단을 유지한다.
+  회수 중인 native view의 identity도 Dispose에 영향받지 않도록 참조 비교한다.
+- iOS arm64 공식 NativeAssets와 최종 번들의 UUID·모든 file-backed section,
+  NuGet 서명, 실제 dyld 로드 경로·UUID를 확인했다. Release NativeAOT 게시가
+  경고·오류 0으로 통과했고, 실제 ILC·native link·최종 번들의 Mono 부재도 통과했다.
+- iPhone 12 / iOS 26.6.1에서 실제 표시·replay와 동일 프로세스의 OS background/resume을
+  확인했다. Debug 기기 수명 검사에서는 1초 GPU 지연·세 프레임 제한·크기 변경·취소·
+  완료 전 view dispose·owner-thread 회수·새 generation 거부/재허용을 통과했다.
+  deadline callback을 직접 호출한 fault/hold 검사도 통과했으나 실제 5초 이상 stall은 아니다.
+- iOS package 도구의 `--no-build` 재포장을 제거하고 host restore의 device RID 누락을
+  수정했다. 현재 소스로 22개 패키지를 만들고 격리된 package-only 생성 앱의
+  NativeAOT 게시·공식 자산·아이폰 실행·외부 generic API 검사를 통과했다.
+- 사용자가 실제 조작 후 정상 동작을 확인했다. 당시 표시 1,611프레임·실패 0,
+  마지막 입력/표시 sequence 485 일치를 기록했다. 검증 후 테스트베드 Release를 복원했다.
+- 전체 기능·성능 비교, 물리 IME/접근성, 모든 simulator RID, 실제 장시간/영구 stall·
+  device loss는 별도 남는다. 과거 성능 반복 중단을 유지하며 장시간 반복을 재시작하지 않는다.
+
+[수정·검증 범위·실패 기록·재실행 방법](history/2026-09-13/ios-work0/README.md).
+
 ## macOS·Mac Catalyst 재검토·보완 (2026-09-13)
 
 이번 요청으로 `osx-arm64` AppKit과 `maccatalyst-arm64`의 검토·실행을 재개했다.

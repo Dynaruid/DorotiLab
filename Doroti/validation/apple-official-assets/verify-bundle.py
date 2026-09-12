@@ -70,15 +70,17 @@ def identity(data):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('bundle', type=Path)
-    parser.add_argument('--platform', choices=['macos', 'maccatalyst'], required=True)
+    parser.add_argument('--platform', choices=['macos', 'maccatalyst', 'ios', 'iossimulator'], required=True)
     parser.add_argument('--packages', type=Path, default=Path.home() / '.nuget/packages')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    package = 'skiasharp.nativeassets.' + args.platform
+    package = 'skiasharp.nativeassets.' + ('ios' if args.platform == 'iossimulator' else args.platform)
     package_dir = args.packages / package / VERSION
     archive = package_dir / f'{package}.{VERSION}.nupkg'
-    native_entry = ('runtimes/osx/native/libSkiaSharp.dylib' if args.platform == 'macos'
-                    else 'runtimes/maccatalyst/native/libSkiaSharp.framework.zip')
+    native_entry = {'macos': 'runtimes/osx/native/libSkiaSharp.dylib',
+                    'maccatalyst': 'runtimes/maccatalyst/native/libSkiaSharp.framework.zip',
+                    'ios': 'runtimes/ios/native/libSkiaSharp.framework/libSkiaSharp',
+                    'iossimulator': 'runtimes/iossimulator/native/libSkiaSharp.framework/libSkiaSharp'}[args.platform]
     with zipfile.ZipFile(archive) as z:
         package_asset = z.read(native_entry)
     if (package_dir / native_entry).read_bytes() != package_asset:
@@ -97,7 +99,8 @@ def main():
     deployed_id = identity(deployed_bytes)
     if source_id != deployed_id:
         raise ValueError('Deployed UUID/file-backed sections differ from official arm64 asset')
-    with (args.bundle / 'Contents/Info.plist').open('rb') as f:
+    plist_path = args.bundle / ('Info.plist' if args.platform in ('ios', 'iossimulator') else 'Contents/Info.plist')
+    with plist_path.open('rb') as f:
         plist = plistlib.load(f)
     report = {'status': 'PASS', 'platform': args.platform, 'package': package, 'version': VERSION,
               'archive': str(archive), 'archiveSha256': sha(archive.read_bytes()),

@@ -12,6 +12,7 @@
     <MtouchLink>None</MtouchLink>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ios/**/*.cs" />
     <PackageReference Include="Microsoft.Maui.Controls" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" />
     <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
