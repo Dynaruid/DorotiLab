@@ -1,5 +1,21 @@
 # Graphite 유지 및 공식 SkiaSharp 바이너리 전환 작업계획
 
+## 후속 수정: Android 가로모드 방향 (2026-09-12)
+
+Vulkan swapchain이 실제로 회전하지 않은 그림에 `currentTransform`을 적용했다고 선언하던 오류를 수정했다.
+Android는 identity pre-transform과 실제 SurfaceView 크기를 사용하며, 회전 때문에 반환되는 사용 가능한
+`SuboptimalKhr`로 매 프레임 swapchain을 다시 만들지 않는다. 실제 크기 변경·OutOfDate 재생성은 유지한다.
+Galaxy arm64 자동 분할 Release 설치 후 사용자 물리 회전, 가로 표시, Color/Components 터치 전환을 확인했다.
+회전 시 generation 1→2 이후 탭 전환 중 추가 재생성은 없었다. [원인·검증 범위·증거](Doroti/docs/validation/android-graphite-orientation-2026-09-12.md).
+
+## 후속 수정: Android 자동 분할 APK 배포 (2026-09-12)
+
+폰 확인 중 단일 APK는 실행되지만 자동 AAB/bundletool 분할 배포에서는 기본 APK만 검사하여 시작이 실패했다.
+`SourceDir`와 `SplitSourceDirs` 전체에서 현재 ABI의 공식 라이브러리 한 개를 찾아 해시를 검사하고,
+실제 로드 경로를 해당 분할 APK 또는 검증된 추출 파일과 대조하도록 수정했다.
+13개 archive/path 회귀 사례와 Galaxy S25 arm64 Release 자동 분할 설치·Graphite 표시·cold 재실행을 통과했다.
+[수정 및 검증 기록](Doroti/validation/android-graphite-apk/README.md). 전체 성능/플랫폼 qualification의 `PARTIAL` 상태는 유지한다.
+
 작성일: 2026-09-11 · 검토 HEAD: `a6b30264bf5fe41cabdf4df67107ca906ce0e1df`
 
 기준: 사용자의 **Graphite를 유지하면서 공식 SkiaSharp 바이너리만 사용하는 구조로 프로젝트 수정** 요구, [연구 결과](research/graphite-official-binaries/README.md), [자산·API 조사 증거](research/graphite-official-binaries/evidence.json).

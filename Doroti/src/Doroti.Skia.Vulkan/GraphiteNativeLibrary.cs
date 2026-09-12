@@ -40,8 +40,12 @@ public static unsafe class GraphiteNativeLibrary
             windows ? "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1" : "3a7778cce23720da6503e0ca845b423ad366cfe7e6a6b9ad6eea052fc0c91e92", managedHash);
     }
 
-    /// <summary>Verify the final APK's native entry before normal Android/AOT binding.</summary>
-    public static void ConfigureOfficialAndroid(string apkPath, string nativeLibraryDirectory)
+    /// <summary>Verify a standalone APK's native entry before normal Android/AOT binding.</summary>
+    public static void ConfigureOfficialAndroid(string apkPath, string nativeLibraryDirectory) =>
+        ConfigureOfficialAndroid(apkPath, nativeLibraryDirectory, null);
+
+    /// <summary>Verify the installed base and split APKs before normal Android/AOT binding.</summary>
+    public static void ConfigureOfficialAndroid(string apkPath, string nativeLibraryDirectory, IEnumerable<string>? splitApkPaths)
     {
         if (!OperatingSystem.IsAndroid()) throw new PlatformNotSupportedException();
         lock (Gate)
@@ -58,19 +62,17 @@ public static unsafe class GraphiteNativeLibrary
                 _ => throw new PlatformNotSupportedException("Official Graphite supports Android arm64/x64.")
             };
             // Pins belong to SkiaSharp.NativeAssets.Android 4.154.0-preview.1.26454.9.
-            // The final APK check also catches old host AARs overriding that package.
-            using var apk = System.IO.Compression.ZipFile.OpenRead(apkPath);
-            var entries = apk.Entries.Where(e => e.FullName == $"lib/{abi}/libSkiaSharp.so").ToArray();
-            if (entries.Length != 1) throw new InvalidDataException("APK must contain exactly one official Skia library for this ABI.");
-            using (var entry = entries[0].Open())
-                if (!Convert.ToHexString(SHA256.HashData(entry)).Equals(hash, StringComparison.OrdinalIgnoreCase))
-                    throw new InvalidDataException("APK native Skia differs from the pinned official package.");
+            // ABI splits may own the native entry instead of base.apk. Check the
+            // complete installed set, retaining duplicate and package-hash guards.
+            var containingApk = AndroidGraphiteApkAsset.Verify(apkPath, splitApkPaths, abi, hash);
             var extracted = Path.Combine(nativeLibraryDirectory, "libSkiaSharp.so");
+            string? verifiedExtractedPath = null;
             if (File.Exists(extracted))
             {
                 using var file = File.OpenRead(extracted);
                 if (!Convert.ToHexString(SHA256.HashData(file)).Equals(hash, StringComparison.OrdinalIgnoreCase))
                     throw new InvalidDataException("Extracted Android library differs from APK provenance.");
+                verifiedExtractedPath = extracted;
             }
             var module = NativeLibrary.Load("libSkiaSharp.so", typeof(GraphiteNativeLibrary).Assembly, null);
             if (NativeLibrary.TryGetExport(module, "doroti_graphite_interop_version", out _))
@@ -78,13 +80,13 @@ public static unsafe class GraphiteNativeLibrary
             var available = (delegate* unmanaged[Cdecl]<int, byte>)NativeLibrary.GetExport(module, "sk_graphite_backend_is_available");
             if (DlAddress((nint)available, out var location) == 0) throw new InvalidDataException("Cannot identify the loaded Android Skia module.");
             var loadedPath = Marshal.PtrToStringUTF8(location.FileName)!;
-            if (loadedPath != extracted && loadedPath != apkPath + "!/lib/" + abi + "/libSkiaSharp.so")
+            if (!AndroidGraphiteApkAsset.IsVerifiedLoadPath(loadedPath, containingApk, abi, verifiedExtractedPath))
                 throw new InvalidDataException("Android loaded Skia outside the verified APK/native directory: " + loadedPath);
             if (available((int)SKGraphiteBackend.Vulkan) == 0) throw new PlatformNotSupportedException("Official Android asset lacks Graphite Vulkan.");
             NativeLibrary.SetDllImportResolver(typeof(SKGraphiteContext).Assembly,
                 (library, _, _) => library is "libSkiaSharp" or "libSkiaSharp.so" ? module : 0);
             _module = module; _officialAndroid = true;
-            Console.WriteLine($"DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0-preview.1.26454.9 abi={abi} sha256={hash} loaded={loadedPath}");
+            Console.WriteLine($"DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0-preview.1.26454.9 abi={abi} sha256={hash} apk={containingApk} loaded={loadedPath}");
         }
     }
 

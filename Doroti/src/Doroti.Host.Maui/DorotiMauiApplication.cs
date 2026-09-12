@@ -30,7 +30,7 @@ public static class DorotiMauiApplicationBuilderExtensions
         if (DorotiGraphiteView.Enabled)
         {
             var info = global::Android.App.Application.Context.ApplicationInfo!;
-            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficialAndroid(info.SourceDir!, info.NativeLibraryDir!);
+            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficialAndroid(info.SourceDir!, info.NativeLibraryDir!, info.SplitSourceDirs);
         }
 #elif WINDOWS
         if (WindowsCompositionSurfaceFeature.GraphiteEnabled) WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();
@@ -49,7 +49,7 @@ public static class DorotiMauiApplicationBuilderExtensions
         if (DorotiGraphiteView.Enabled)
         {
             var info = global::Android.App.Application.Context.ApplicationInfo!;
-            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficialAndroid(info.SourceDir!, info.NativeLibraryDir!);
+            Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficialAndroid(info.SourceDir!, info.NativeLibraryDir!, info.SplitSourceDirs);
         }
 #elif WINDOWS
         if (WindowsCompositionSurfaceFeature.GraphiteEnabled) WindowsCompositionSurfaceFeature.ConfigureGraphiteLibrary();

@@ -12,6 +12,12 @@ The required Vulkan profile is **1.2**, one color subresource and a supported su
 
 ## Platform scope
 
+Android automatic split deployment was repaired after a Galaxy startup failure:
+the loader now checks `SourceDir` plus `SplitSourceDirs` and verifies the actual
+containing APK's load path. Official hashes and duplicate rejection remain enforced.
+Release AAB/bundletool installation, direct ABI-split loading and cold relaunch
+passed on Galaxy arm64. See [regression cases and device evidence](../../validation/android-graphite-apk/README.md).
+
 | Host / RID | Configuration | Available evidence |
 |---|---|---|
 | Windows App SDK / win-x64 | Official Win32 default, D3D11 imports and Windows Presentation | Prior AMD/NVIDIA correctness and delayed close; final package-only default consumer restore/publish/resize/Acrylic/run |

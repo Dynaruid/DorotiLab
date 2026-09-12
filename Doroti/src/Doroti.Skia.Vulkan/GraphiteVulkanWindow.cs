@@ -292,7 +292,12 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 WaitSemaphoreCount = 1, PWaitSemaphores = &ready,
                 SwapchainCount = 1, PSwapchains = &swapchain, PImageIndices = &index };
             var result = _swapchains.QueuePresent(_queue, &present);
-            if (result is Result.ErrorOutOfDateKhr or Result.SuboptimalKhr) _recreate = true;
+            // Android reports Suboptimal when compositor rotation differs from
+            // our identity pre-transform. The image remains usable; recreating
+            // with the same transform would repeat on every landscape frame.
+            // SurfaceView size changes and OutOfDate still recreate normally.
+            if (result is Result.ErrorOutOfDateKhr or Result.SuboptimalKhr)
+                _recreate = result == Result.ErrorOutOfDateKhr || !OperatingSystem.IsAndroid();
             else CheckDevice(result, "vkQueuePresentKHR");
             _nextWindowFrame = (_nextWindowFrame + 1) % _windowFrames.Count;
             var presentedTime = FrameTimestamp();
@@ -330,6 +335,13 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         DrainWindowFrames();
         ReleaseImages();
         Check(_surfaces.GetPhysicalDeviceSurfaceCapabilities(_physical, _surface, out var caps), "surface capabilities");
+        // Android paints in SurfaceView coordinates, without pre-rotating the
+        // Graphite image. Identity lets the compositor apply device orientation.
+        // Claiming CurrentTransform here cancels that rotation even though the
+        // pixels were never rotated (and stretches a landscape buffer sideways).
+        var preTransform = OperatingSystem.IsAndroid() ? SurfaceTransformFlagsKHR.IdentityBitKhr : caps.CurrentTransform;
+        if ((caps.SupportedTransforms & preTransform) == 0)
+            throw new PlatformNotSupportedException("The surface does not support the renderer's orientation transform.");
         uint count = 0;
         Check(_surfaces.GetPhysicalDeviceSurfaceFormats(_physical, _surface, &count, null), "format count");
         var formats = new SurfaceFormatKHR[count];
@@ -341,7 +353,10 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         if (selected.Format == Format.Undefined || (caps.SupportedUsageFlags & ImageUsageFlags.TransferDstBit) == 0)
             throw new PlatformNotSupportedException("Vulkan output requires an RGBA/BGRA UNORM transfer-destination surface.");
         _format = selected.Format;
-        var extent = caps.CurrentExtent.Width == uint.MaxValue
+        // Android's currentExtent can lag SurfaceChanged during rotation.
+        // Use the view's pixel size (within supported bounds), as its image is
+        // unrotated. Desktop WSI retains its fixed-currentExtent contract.
+        var extent = OperatingSystem.IsAndroid() || caps.CurrentExtent.Width == uint.MaxValue
             ? new Extent2D(Math.Clamp((uint)width, caps.MinImageExtent.Width, caps.MaxImageExtent.Width),
                 Math.Clamp((uint)height, caps.MinImageExtent.Height, caps.MaxImageExtent.Height)) : caps.CurrentExtent;
         var images = Math.Max(2u, caps.MinImageCount);
@@ -352,7 +367,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         var info = new SwapchainCreateInfoKHR { SType = StructureType.SwapchainCreateInfoKhr,
             Surface = _surface, MinImageCount = images, ImageFormat = _format, ImageColorSpace = selected.ColorSpace,
             ImageExtent = extent, ImageArrayLayers = 1, ImageUsage = ImageUsageFlags.TransferDstBit,
-            ImageSharingMode = SharingMode.Exclusive, PreTransform = caps.CurrentTransform,
+            ImageSharingMode = SharingMode.Exclusive, PreTransform = preTransform,
             CompositeAlpha = alpha, PresentMode = PresentModeKHR.FifoKhr, Clipped = true };
         Check(_swapchains.CreateSwapchain(_device, &info, null, out _swapchain), "create swapchain");
         Check(_swapchains.GetSwapchainImages(_device, _swapchain, &count, null), "image count");
@@ -367,6 +382,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         foreach (var slot in _windowFrames) CreateWindowBacking(slot, extent);
         _nextWindowFrame = 0;
         Generation++; _recreate = false;
+        if (OperatingSystem.IsAndroid())
+            Console.WriteLine($"DorotiGraphite swapchain generation={Generation} requested={width}x{height} extent={Width}x{Height} currentTransform={caps.CurrentTransform} preTransform={preTransform}");
     }
 
     private void CreateWindowBacking(WindowFrameSlot slot, Extent2D extent)
