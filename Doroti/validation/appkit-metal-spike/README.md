@@ -1,6 +1,6 @@
 # AppKit Metal / Graphite qualification
 
-The existing `net10.0-macos` / `osx-arm64` validation app compares Ganesh with the shared native Graphite session. It is separate from product promotion.
+The existing `net10.0-macos` / `osx-arm64` validation app compares Ganesh with the shared public-API Graphite session. It is separate from product promotion.
 
 ```sh
 python3 Doroti/validation/appkit-metal-spike/run-graphite.py
@@ -16,4 +16,6 @@ Use `--mode contract|ganesh|graphite` to select a check and `--no-build` only wh
 
 Window completion callbacks return to the recorder's owner thread. A deliberately stale completion during shutdown is counted but never acknowledged as a new visible frame. Output resources and renderer GPU caches are returned before the session, queue and device are released. The v2 report records the actual loaded Skia managed/native identities instead of historical hardcoded package versions.
 
-The separately selected **product** candidate uses `DOROTI_MACOS_GRAPHITE=1` with the regular `DorotiTestbedApp` AppKit runner. See [session ownership](../../docs/architecture/native-graphite-session.md) and [Apple execution evidence](../../docs/validation/native-graphite-apple-2026-09-09.md). Device loss, physical screen/input/accessibility approval, iOS/Catalyst and performance qualification remain separate gates. The product default remains Ganesh/Metal.
+The regular `DorotiTestbedApp` AppKit runner defaults to Graphite/Metal; `DOROTI_MACOS_GRAPHITE=0` explicitly selects the Ganesh comparison path. See [session ownership](../../docs/architecture/native-graphite-session.md) and [Apple execution evidence](../../docs/validation/native-graphite-apple-2026-09-09.md). Device loss, physical screen/input/accessibility approval, iOS/Catalyst and performance qualification remain separate gates.
+
+The 2026-09-13 macOS/Mac Catalyst review and scoped results are recorded in [work0 evidence](../../../history/2026-09-13/apple-work0/README.md).

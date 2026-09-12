@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="..\Directory.Build.props" />
   <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)obj\**</DefaultItemExcludes>
   </PropertyGroup>

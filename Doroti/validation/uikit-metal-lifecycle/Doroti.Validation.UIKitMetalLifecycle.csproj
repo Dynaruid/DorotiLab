@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <ApplicationId>dev.doroti.validation.uikit-metal-lifecycle</ApplicationId>
+    <ApplicationTitle>Doroti UIKit Metal Lifecycle</ApplicationTitle>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Controls" />
+    <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
+    <ProjectReference Include="../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+    <Compile Include="../../src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs" Link="Production/DorotiUIKitGraphiteViewHandler.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/DorotiGraphiteView.cs" Link="Production/DorotiGraphiteView.cs" />
+  </ItemGroup>
+</Project>

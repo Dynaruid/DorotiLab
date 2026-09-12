@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <ApplicationTitle>Doroti AppKit Host Lifecycle</ApplicationTitle>
+    <ApplicationId>dev.doroti.validation.appkit-host-lifecycle</ApplicationId>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Doroti.Host.Maui/Doroti.Host.Maui.csproj"
+      AdditionalProperties="RuntimeIdentifier=osx-arm64" SetTargetFramework="TargetFramework=net10.0-macos"
+      SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+</Project>

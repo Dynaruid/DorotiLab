@@ -1,5 +1,29 @@
 # Graphite 유지 및 공식 SkiaSharp 바이너리 전환 작업계획
 
+## macOS·Mac Catalyst 재검토·보완 (2026-09-13)
+
+이번 요청으로 `osx-arm64` AppKit과 `maccatalyst-arm64`의 검토·실행을 재개했다.
+아래 과거 Apple `skippedByUser` 기록은 당시 범위이며, 이번 desktop 결과는 이 절을 따른다.
+**두 Release 제품의 기본 Graphite/Metal 실행·공식 자산 확인은 PASS-scoped,
+전체 qualification은 PARTIAL**이다. iOS 검증을 대신하지 않는다.
+
+- Catalyst의 host 복원/컴파일 TFM·RID 불일치로 발생하던 NETSDK1004를 수정했다.
+- 테스트베드·생성 템플릿의 macos props가 상위 앱 버전 설정을 누락하던 오류를 수정했다.
+- Catalyst의 매 프레임/실패 경로 동기 GPU 대기를 같은 queue의 완료 콜백으로 전환했다.
+  세 프레임 한도, owner-thread 회수, stale completion, disconnect 이후 drawable 보존과
+  새 generation 거부를 검증했다. 동일 크기의 배율 변경과 layout drawable 갱신도 반영했다.
+- AppKit의 미확인 terminal failure에서 사용 중인 frame/drawable/platform lease를 보존하고,
+  재진입 disconnect가 recording 자원을 먼저 해제하지 않도록 보완했다.
+- 두 Release 빌드가 경고·오류 0으로 통과했다. 실제 제품의 표시·replay와 `vmmap` 로드 경로,
+  공식 NuGet 서명, 최종 arm64 Mach-O UUID·section 일치와 앱 버전을 확인했다.
+- 실제 두 host의 1초 GPU 지연·세 프레임 제한·view dispose·완료 후 회수 검사를 통과했다.
+  7초 지연은 드라이버가 지연용 명령을 GPU timeout으로 취소해 **FAIL / 장시간 조건 미검증**이다.
+- 생성 템플릿의 버전 전달을 확인했다. package-only consumer 전체 실행, 성능 비교,
+  물리 입력/IME/접근성, 전체 DPI/다중 창, 실제 device loss·영구 stall·NativeAOT는 남는다.
+  제품 smoke의 SIGTERM 정리를 정상 종료 증거로 확대하지 않는다.
+
+[수정·실패·검증 범위·증거·재실행 방법](history/2026-09-13/apple-work0/README.md).
+
 ## Android 재검토·보완 (2026-09-13)
 
 현재 소스와 연결된 Galaxy S25(API 36/arm64)를 다시 확인했다. 공식 NativeAssets,
@@ -195,12 +219,12 @@ SkiaSharp 버전은 우선 현재 `4.154.0-preview.1.26454.9`를 유지한다. �
 | W0-6 | 공통 session·loader·host 계약 | W0-5 | 구현 — public API binding, 제출 상태 검증, desktop/APK provenance |
 | W0-7 | Windows App SDK·MAUI | W0-6 | PARTIAL — AppSDK 두 GPU resize/Acrylic/지연 close, MAUI 실제 화면·close PASS; 전체 기능/성능 미완료 |
 | W0-8 | Android·Linux Qt | W0-6 | Android arm64 실기기·API 36 x64 emulator 제품 PASS-scoped; API 33 emulator 필수 RP2 부재 FAIL 보존. Linux build/package/template/Qt ABI 및 llvmpipe headless PASS-scoped; 제품 depth sync FAIL, hardware GPU 미검증 |
-| W0-9 | Apple·Web | W0-6 | Apple 공식 package/Metal 구성, 검증 skippedByUser. Web Release 및 제품 10 tests PASS |
+| W0-9 | Apple·Web | W0-6 | macOS/Catalyst Release·공식 자산·제품 표시·1초 지연 회수 PASS-scoped (2026-09-13); 장시간 지연·iOS 등 잔여 범위는 상단 참조. Web Release 및 제품 10 tests PASS |
 | W0-10 | 기능·성능·trim/AOT 수용 | W0-7~9 | PARTIAL — Android Release/trim/Mono AOT·제품 입력/수명, Web 10 tests PASS. Windows MAUI 60초 1쌍에서 성능 증가 관측; 반복은 사용자 피드백 후 종료 |
-| W0-11 | 공식 배포·custom 빌드 제거 | 해당 W0-10 | 코드/배포 전환 완료 — 공식 기본값, custom prebuild/staging/ABI 제거·history 보존, Windows package consumer 및 Android APK 자산 확인. Linux clean template/공식 자산/publish PASS-scoped, hardware runtime 미검증. Apple은 skippedByUser |
+| W0-11 | 공식 배포·custom 빌드 제거 | 해당 W0-10 | 코드/배포 전환 완료 — 공식 기본값, custom prebuild/staging/ABI 제거·history 보존, Windows package consumer 및 Android APK 자산 확인. Linux clean template/공식 자산/publish PASS-scoped, hardware runtime 미검증. Apple desktop Release/자산/runtime PASS-scoped는 상단 결과 참조; iOS는 이번 범위 아님 |
 | W0-12 | clean consumer·문서·종결 | W0-11 | 문서/consumer 구현 완료 — 저장소 밖 Windows target package restore/publish/제품 실행, Android package-only APK, README·지원표·work1/work2 인계. 전체 qualification은 PARTIAL |
 
-W0-1~4의 통과는 명시된 profile/진단 경계에 한정된다. 실제 제품 통합 결과를 별도로 기록하며 필수 기능·성능 미검증을 PASS로 확대하지 않는다. Apple 검증 생략은 유지한다. Linux는 문서 맨 앞의 후속 검토 결과를 따른다.
+W0-1~4의 통과는 명시된 profile/진단 경계에 한정된다. 실제 제품 통합 결과를 별도로 기록하며 필수 기능·성능 미검증을 PASS로 확대하지 않는다. macOS/Catalyst와 Linux는 문서 맨 앞의 후속 검토 결과를 따른다. iOS는 이번 검토 범위가 아니다.
 
 제품별 작업은 공통 gate 이후 독립적으로 진행할 수 있다. 한 플랫폼이 통과해도 공통 package 소비자가 아직 구 ABI를 요구하면 해당 의존성을 먼저 분리하고, 모든 필수 소비자 전환 전 전역 제거를 하지 않는다.
 

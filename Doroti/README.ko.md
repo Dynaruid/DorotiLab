@@ -8,7 +8,7 @@ Material 테마는 Material 3 전용입니다. `ThemeData` factory, 생성자, `
 
 iOS 기기용(`ios-arm64`) Release는 NativeAOT가 기본입니다. Debug·시뮬레이터·다른 플랫폼은 기존 기본값을 유지하며, `-CompilationMode Mono`로 명시적 복구 프로필을 선택할 수 있습니다. [iOS 빌드 안내](validation/native-aot/README.md)를 참고하세요.
 
-공식 Graphite를 기본 경로로 전환했습니다. Windows는 manifest 지정 없이 공식 NativeAssets의 앱 디렉터리 DLL을 검증해 사용하고, Android는 공식 APK 자산을 검증합니다. Qt는 공식 desktop 자산과 Vulkan 1.2를 사용하도록 구성했습니다. 커스텀 Skia 빌드와 private ABI binding은 보관 후 활성 경로에서 제거했습니다. Apple 검증 생략은 유지합니다. Linux build/package/Qt ABI 검증은 재개했지만, llvmpipe Graphite는 기본으로 실행할 수 있습니다. 프로젝트의 하드웨어/소프트웨어 장치 구분에 따른 차단은 제거했습니다. headless 검사는 통과했고 Material 제품의 depth 동기화 오류와 하드웨어·성능 검증은 남아 있습니다. [Linux 후속 검토](docs/validation/linux-official-graphite-2026-09-12.md)를 참고하세요. [전환 결과와 지원표](docs/validation/official-graphite-cutover-2026-09-12.md), [work0 상태](../work0.md)를 참고하세요.
+공식 Graphite를 기본 경로로 전환했습니다. Windows는 manifest 지정 없이 공식 NativeAssets의 앱 디렉터리 DLL을 검증해 사용하고, Android는 공식 APK 자산을 검증합니다. Qt는 공식 desktop 자산과 Vulkan 1.2를 사용하도록 구성했습니다. 커스텀 Skia 빌드와 private ABI binding은 보관 후 활성 경로에서 제거했습니다. macOS/Mac Catalyst 검증을 재개했으며 [Apple 재검토](../history/2026-09-13/apple-work0/README.md)에 통과 범위와 남은 조건을 기록했습니다. iOS 실행은 미검증입니다. Linux build/package/Qt ABI 검증은 재개했지만, llvmpipe Graphite는 기본으로 실행할 수 있습니다. 프로젝트의 하드웨어/소프트웨어 장치 구분에 따른 차단은 제거했습니다. headless 검사는 통과했고 Material 제품의 depth 동기화 오류와 하드웨어·성능 검증은 남아 있습니다. [Linux 후속 검토](docs/validation/linux-official-graphite-2026-09-12.md)를 참고하세요. [전환 결과와 지원표](docs/validation/official-graphite-cutover-2026-09-12.md), [work0 상태](../work0.md)를 참고하세요.
 
 ## 개발 방식
 

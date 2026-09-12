@@ -17,6 +17,9 @@ namespace Doroti.Host.Maui;
 /// </summary>
 public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 {
+    private static readonly HashSet<DorotiMacOSMetalView> RetiringViews = [];
+    private readonly List<object> _heldGpuWork = [];
+    private bool _faulted;
     private readonly object _resourceGate = new();
     private readonly IMTLDevice _metalDevice;
     private readonly IMTLCommandQueue _commandQueue;
@@ -54,6 +57,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _cursorHidden;
     private bool _controlClick;
     private bool _drawingLayout;
+    private bool _drawingFrame;
     private int _frameRequestPending;
 
     public DorotiMacOSMetalView() : base(CGRect.Empty, RequireMetalDevice())
@@ -89,6 +93,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         if (_resourcesReleased || _releaseRequested)
             throw new InvalidOperationException("A disconnected Metal view requires a fresh handler/native view.");
+        if (RetiringViews.Count != 0)
+            throw new InvalidOperationException("Previous AppKit Metal resources are still retiring.");
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _resourceOwner = owner;
         _releaseRequested = false;
@@ -114,8 +120,9 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         lock (_resourceGate)
         {
             _releaseRequested = true;
+            RetiringViews.Add(this);
             _graphite?.StopAcceptingFrames();
-            if (_inFlight == 0) ReleaseGpuResources();
+            if (!_drawingFrame && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
         }
     }
 
@@ -262,7 +269,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _ = view;
         var owner = _owner;
         var size = DrawableSize;
-        if (owner is null || _releaseRequested || size.Width <= 0 || size.Height <= 0) return;
+        if (owner is null || _releaseRequested || _faulted || _drawingFrame || size.Width <= 0 || size.Height <= 0) return;
         if (_inFlight >= 3)
         {
             _frameBackpressure = true;
@@ -278,6 +285,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             return;
         }
 
+        _drawingFrame = true;
         var generation = Interlocked.Read(ref _surfaceGeneration);
         MauiPaintCompletion? completion = null;
         var commandBufferTracked = false;
@@ -380,13 +388,20 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             {
                 // Every segment uses this same queue. The terminal marker retains all
                 // submitted textures and native leases, including partial failures.
-                using var marker = _commandQueue.CommandBuffer();
-                if (marker is not null)
+                try
                 {
+                    using var marker = _commandQueue.CommandBuffer() ??
+                        throw new InvalidOperationException("Metal terminal marker unavailable; retaining GPU resources.");
                     TrackCommandBuffer(marker, owner, null, generation, graphiteFrame, drawable, platformFrame);
                     marker.Commit();
                     platformFrame = null;
                     Interlocked.Increment(ref _commandBuffersCommitted);
+                }
+                catch (Exception markerError)
+                {
+                    HoldGpuWork(graphiteFrame, drawable, platformFrame);
+                    platformFrame = null;
+                    System.Diagnostics.Trace.TraceError(markerError.ToString());
                 }
             }
             platformFrame?.Dispose();
@@ -394,11 +409,13 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         }
         finally
         {
+            _drawingFrame = false;
             if (compositionTransaction)
             {
                 CATransaction.Commit();
                 PresentsWithTransaction = _drawingLayout;
             }
+            if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
         }
     }
 
@@ -411,41 +428,51 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             var status = completedBuffer.Status;
             var error = completedBuffer.Error?.LocalizedDescription;
-            BeginInvokeOnMainThread(() =>
+            NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
             {
+                // A failed later marker is not proof that earlier queue work
+                // has retired. Preserve all borrowed outputs until proven safe.
+                if (status != MTLCommandBufferStatus.Completed && _graphite?.IsDeviceLost != true)
+                {
+                    Interlocked.Increment(ref _commandBuffersErrored);
+                    HoldGpuWork(graphiteFrame, drawable, platformFrame);
+                    owner.RaiseFailure(new InvalidOperationException(error ?? status.ToString()), completion);
+                    return;
+                }
                 try
                 {
-                    var stale = generation != Interlocked.Read(ref _surfaceGeneration) ||
-                                !ReferenceEquals(owner, _owner);
-                    if (stale) Interlocked.Increment(ref _staleCompletions);
-                    if (status == MTLCommandBufferStatus.Completed)
-                    {
-                        Interlocked.Increment(ref _commandBuffersCompleted);
-                        if (completion is { } value) owner.RaisePresent(value, stale);
-                    }
-                    else
-                    {
-                        Interlocked.Increment(ref _commandBuffersErrored);
-                        owner.RaiseFailure(new InvalidOperationException(
-                            error ?? status.ToString()),
-                            completion);
-                    }
-                }
-                finally
-                {
-                    platformFrame?.Dispose();
                     graphiteFrame?.CompleteGpuWork();
+                    platformFrame?.Dispose();
                     GC.KeepAlive(drawable);
-                    lock (_resourceGate)
-                    {
-                        _inFlight--;
-                        if (_releaseRequested && _inFlight == 0) ReleaseGpuResources();
-                    }
-                    if (_frameBackpressure && !_releaseRequested)
-                    {
-                        _frameBackpressure = false;
-                        RequestFrame();
-                    }
+                }
+                catch (Exception retirementError)
+                {
+                    HoldGpuWork(graphiteFrame, drawable, platformFrame);
+                    owner.RaiseFailure(retirementError, completion);
+                    return;
+                }
+                lock (_resourceGate)
+                {
+                    _inFlight--;
+                    if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
+                }
+                var stale = generation != Interlocked.Read(ref _surfaceGeneration) ||
+                            !ReferenceEquals(owner, _owner);
+                if (stale) Interlocked.Increment(ref _staleCompletions);
+                if (status == MTLCommandBufferStatus.Completed)
+                {
+                    Interlocked.Increment(ref _commandBuffersCompleted);
+                    if (completion is { } value) owner.RaisePresent(value, stale);
+                }
+                else
+                {
+                    Interlocked.Increment(ref _commandBuffersErrored);
+                    owner.RaiseFailure(new InvalidOperationException(error ?? status.ToString()), completion);
+                }
+                if (_frameBackpressure && !_releaseRequested && !_faulted)
+                {
+                    _frameBackpressure = false;
+                    RequestFrame();
                 }
             });
         });
@@ -457,8 +484,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         lock (_resourceGate)
         {
             _inFlight--;
-            if (_releaseRequested && _inFlight == 0) ReleaseGpuResources();
         }
+    }
+
+    private void HoldGpuWork(SkiaGraphiteSession.Frame? frame, ICAMetalDrawable drawable,
+        AppKitPlatformViewHost.PreparedFrame? platformFrame)
+    {
+        _faulted = true;
+        _graphite?.StopAcceptingFrames();
+        _heldGpuWork.Add((frame, drawable, platformFrame));
+        RetiringViews.Add(this);
     }
 
     public override void MouseEntered(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.add, 0);
@@ -655,6 +690,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _commandQueue.Dispose();
         _metalDevice.Dispose();
         _resourcesReleased = true;
+        RetiringViews.Remove(this);
     }
 }
 #endif
