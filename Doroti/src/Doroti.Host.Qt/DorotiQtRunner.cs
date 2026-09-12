@@ -125,7 +125,8 @@ public static unsafe partial class DorotiQtRunner
                 hostApi.SetCursor == null || hostApi.SetTextClient == null ||
                 hostApi.UpdateTextState == null || hostApi.SetCaretRect == null ||
                 hostApi.ClearTextClient == null || hostApi.UpdateSemantics == null ||
-                hostApi.ClearSemantics == null)
+                hostApi.ClearSemantics == null ||
+                (QtSkiaSurface.GraphiteEnabled && hostApi.PreparePresent == null))
             {
                 throw new InvalidDataException("The native Qt host API does not satisfy doroti.qt-host/v2.");
             }
@@ -206,6 +207,8 @@ public static unsafe partial class DorotiQtRunner
             Interlocked.Increment(ref _rasterized);
         }
 
+        internal void PreparePresent() => _hostApi.PreparePresent(_viewHandle);
+
         internal void RecordTerminal(ulong token, QtNativeV2.TerminalState terminal)
         {
             lock (_gate)
@@ -242,7 +245,8 @@ public static unsafe partial class DorotiQtRunner
         {
             if (key == "qpa") Surface.SetQpaPlatform(value);
             lock (_gate) _nativeDiagnostics[key] = value;
-            Console.Error.WriteLine($"doroti.qt {key}={value}");
+            if (key != "semantics.nodes")
+                Console.Error.WriteLine($"doroti.qt {key}={value}");
         }
 
         internal void WriteDiagnostics()
@@ -275,8 +279,9 @@ public static unsafe partial class DorotiQtRunner
                     semanticsNodes = _nativeDiagnostics.GetValueOrDefault("semantics.nodes", "0"),
                     renderer = renderer?.Backend,
                     softwareFallback = false,
+                    softwareVulkan = Surface.SoftwareVulkan,
                     fullFrameCpuCopies = 0,
-                    synchronousGuiWaits = 0,
+                    gpuRetirement = QtSkiaSurface.GraphiteEnabled ? "owner-thread-poll" : "OpenGL",
                 };
             }
             Console.Error.WriteLine($"doroti.qt.summary={JsonSerializer.Serialize(snapshot)}");
@@ -353,13 +358,23 @@ public static unsafe partial class DorotiQtRunner
                 state.RendererContextIdentity = surface->ContextIdentity;
             }
             state.Host.BeginFrame(in *surface);
-            SkiaPaintCompletion? completion = null;
-            presented = state.Surface.Render(in *surface, skiaSurface =>
-                completion = state.Renderer.Paint(skiaSurface, surface->PixelWidth, surface->PixelHeight));
+            SkiaPaintResult paint = default;
+            presented = state.Surface.Render(in *surface, (skiaSurface, width, height) =>
+                paint = state.Renderer.Paint(skiaSurface, width, height, state.Host.ResizeTarget),
+                shouldPresent: () => paint.ShouldPresent, beforePresent: state.PreparePresent);
+            var completion = paint.Completion;
             if (presented) state.RecordRasterized(frameToken, completion);
             else if (completion is { } pending) state.Renderer.FailPaint(pending, "Vulkan swapchain became out of date before presentation.");
         });
         return result == 0 && !presented ? 1 : result;
+    }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    internal static int OnPollGpuWork(nint context, nint viewHandle)
+    {
+        var complete = false;
+        var result = Guard(context, state => complete = state.Surface.PollGpuWork());
+        return result == 0 && !complete ? 1 : result;
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

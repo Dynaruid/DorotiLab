@@ -162,7 +162,7 @@ HRESULT AttachCompositionToWindow(
   return composition.composition_device->WaitForCommitCompletion();
 }
 
-HRESULT FindHardwareAdapter(
+HRESULT FindCompatibleAdapter(
     int32_t requested_luid_low, int32_t requested_luid_high,
     VulkanCompositionContext& composition,
     doroti_windows_vulkan_composition_probe_v1& snapshot) noexcept {
@@ -194,8 +194,6 @@ HRESULT FindHardwareAdapter(
     snapshot.adapter_device_id = description.DeviceId;
     snapshot.adapter_flags = description.Flags;
     snapshot.adapter_luid_matched = 1;
-    if ((description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0)
-      return DXGI_ERROR_UNSUPPORTED;
     composition.adapter = candidate;
     return S_OK;
   }
@@ -372,7 +370,7 @@ doroti_windows_vulkan_composition_create_v1(
   InitializeProbe(*snapshot, adapter_luid_low, adapter_luid_high);
   auto composition = std::make_unique<VulkanCompositionContext>();
 
-  auto result = FindHardwareAdapter(adapter_luid_low, adapter_luid_high,
+  auto result = FindCompatibleAdapter(adapter_luid_low, adapter_luid_high,
                                     *composition, *snapshot);
   if (FAILED(result)) return Result(result);
   result = CreateExactDevice(*composition, *snapshot);

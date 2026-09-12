@@ -254,14 +254,9 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
         var isAngle = AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase);
         var isD3D11 = AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
                       AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase);
-        var isSoftware = AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase) ||
-                         AdapterDescription.Contains("WARP", StringComparison.OrdinalIgnoreCase) ||
-                         AdapterDescription.Contains("Reference", StringComparison.OrdinalIgnoreCase) ||
-                         AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase) ||
-                         AdapterDescription.Contains("softpipe", StringComparison.OrdinalIgnoreCase);
-        if (!isAngle || !isD3D11 || isSoftware)
+        if (!isAngle || !isD3D11)
             throw new InvalidOperationException(
-                $"ANGLE did not select a hardware D3D11 renderer: '{AdapterDescription}'.");
+                $"ANGLE did not select a D3D11 renderer: '{AdapterDescription}'.");
         DeviceGeneration++;
     }
 

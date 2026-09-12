@@ -3,6 +3,11 @@
     <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
     <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native</DorotiQtNativeBuildDirectory>
   </PropertyGroup>
+  <Target Name="ValidateDorotiQtPublishMode" BeforeTargets="PrepareForBuild;PrepareForPublish"
+          Condition="'$(DorotiHostKind)' == 'Qt'">
+    <Error Code="DOROTIQT001" Condition="'$(PublishTrimmed)' == 'true' or '$(PublishSingleFile)' == 'true'"
+           Text="Qt official Graphite requires the original SkiaSharp managed assembly and a separate native library for package provenance. PublishTrimmed and PublishSingleFile are not supported; use an untrimmed framework-dependent or self-contained publish." />
+  </Target>
   <!-- CMake owns dependency/toolchain discovery and its incremental native graph.
        Keep configuration outputs separate and do not replace it with an mtime stamp. -->
   <Target Name="BuildDorotiQtNative" BeforeTargets="Build"

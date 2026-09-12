@@ -44,8 +44,8 @@ internal static class WindowsGpuSelection
     internal static int[] AnglePlatformAttributes()
     {
         const int eglNone = 0x3038;
-        // ANGLE D3D11, hardware only. NoPreference leaves ANGLE's default intact.
-        int[] attributes = [0x3203, 0x3208, 0x3209, 0x320A];
+        // Require the D3D11 backend without restricting the adapter's device type.
+        int[] attributes = [0x3203, 0x3208];
         var preference = RequestedPreference;
         if (preference == WindowsGpuPreference.NoPreference)
             return [.. attributes, eglNone];

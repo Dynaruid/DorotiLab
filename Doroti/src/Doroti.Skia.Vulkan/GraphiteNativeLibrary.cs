@@ -21,6 +21,8 @@ public static unsafe class GraphiteNativeLibrary
     private struct DlInfo { public nint FileName, Base, Symbol, Address; }
     [DllImport("libdl.so", EntryPoint = "dladdr")]
     private static extern int DlAddress(nint address, out DlInfo info);
+    [DllImport("libdl.so.2", EntryPoint = "dladdr")]
+    private static extern int DlAddressLinux(nint address, out DlInfo info);
 
     /// <summary>Version-pinned desktop package deployment; no custom staging directory.</summary>
     public static OfficialGraphiteAsset PackagedOfficialAsset()
@@ -150,10 +152,21 @@ public static unsafe class GraphiteNativeLibrary
                 throw new InvalidDataException("A custom ABI asset cannot be selected as an official asset.");
             var available = (delegate* unmanaged[Cdecl]<int, byte>)NativeLibrary.GetExport(module, "sk_graphite_backend_is_available");
             if (available((int)SKGraphiteBackend.Vulkan) == 0) throw new PlatformNotSupportedException("Official native asset has no Graphite Vulkan backend.");
+            var loadedPath = path;
+            if (OperatingSystem.IsLinux())
+            {
+                if (DlAddressLinux((nint)available, out var location) == 0)
+                    throw new InvalidDataException("Cannot identify the loaded Linux Skia module.");
+                loadedPath = Marshal.PtrToStringUTF8(location.FileName)!;
+                if (!Path.GetFullPath(loadedPath).Equals(path, StringComparison.Ordinal))
+                    throw new InvalidDataException("Linux loaded Skia outside the verified package path: " + loadedPath);
+            }
             NativeLibrary.SetDllImportResolver(typeof(SKGraphiteContext).Assembly,
                 (library, _, _) => library is "libSkiaSharp" or "libSkiaSharp.dll" or "libSkiaSharp.so" ? module : 0);
             _module = module;
             _official = normalized; // Module and resolver remain live through process exit.
+            if (OperatingSystem.IsLinux())
+                Console.WriteLine($"DorotiGraphite official package={package} version={asset.Version} rid={rid} sha256={normalized.Sha256} loaded={loadedPath}");
         }
     }
 

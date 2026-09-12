@@ -88,11 +88,6 @@ void D3D12Presenter::CreateDevice() {
             IID_PPV_ARGS(&candidate)) == DXGI_ERROR_NOT_FOUND) {
       break;
     }
-    DXGI_ADAPTER_DESC1 description{};
-    candidate->GetDesc1(&description);
-    if ((description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0) {
-      continue;
-    }
     if (SUCCEEDED(D3D12CreateDevice(candidate.Get(), D3D_FEATURE_LEVEL_11_0,
                                     IID_PPV_ARGS(&device_)))) {
       adapter_ = std::move(candidate);
@@ -100,7 +95,7 @@ void D3D12Presenter::CreateDevice() {
     }
   }
   if (!device_) {
-    throw std::runtime_error("No hardware D3D12 adapter satisfies feature level 11_0");
+    throw std::runtime_error("No D3D12 adapter satisfies feature level 11_0");
   }
   Check(device_.As(&info_queue_), "ID3D12InfoQueue is unavailable");
 

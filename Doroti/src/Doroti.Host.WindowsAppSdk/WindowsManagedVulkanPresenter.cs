@@ -1456,7 +1456,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             };
             _vk.GetPhysicalDeviceProperties2(candidate, &properties2);
             var properties = properties2.Properties;
-            if (properties.DeviceType == PhysicalDeviceType.Cpu) continue;
             var name = Marshal.PtrToStringUTF8((nint)properties.DeviceName) ?? "unnamed Vulkan device";
             var extensions = EnumerateDeviceExtensions(candidate);
             uint familyCount = 0;
@@ -1497,7 +1496,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         if (candidates.Count == 0)
             throw new InvalidOperationException(
-                "No hardware Vulkan device satisfies the graphics/LUID/external-memory requirements" +
+                "No Vulkan device satisfies the graphics/LUID/external-memory requirements" +
                 (rejectedCandidates.Count == 0 ? "." : $": {string.Join("; ", rejectedCandidates)}."));
         var selector = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_DEVICE")?.Trim();
         var preference = WindowsGpuSelection.RequestedPreference;
@@ -1558,10 +1557,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             selectedId.DeviceLuid[7] << 24;
         AdapterDescription = $"{selected.Name}; vendor=0x{selected.Properties.VendorID:x4}; " +
             $"device=0x{selected.Properties.DeviceID:x4}; api={FormatVersion(selected.Properties.ApiVersion)}";
-        if (AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase) ||
-            AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase) ||
-            AdapterDescription.Contains("softpipe", StringComparison.OrdinalIgnoreCase))
-            throw new InvalidOperationException($"Vulkan selected a software renderer: '{AdapterDescription}'.");
     }
 
     private void CreateLogicalDevice()

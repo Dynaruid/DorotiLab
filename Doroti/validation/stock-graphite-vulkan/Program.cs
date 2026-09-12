@@ -63,7 +63,8 @@ internal static unsafe partial class Program
 #if SHARED_SESSION
             if (Mode == "session")
             {
-                var asset = new Doroti.Skia.Vulkan.OfficialGraphiteAsset(path, "SkiaSharp.NativeAssets.Win32", "4.154.0-preview.1.26454.9", "win-x64",
+                var asset = OperatingSystem.IsLinux() ? Doroti.Skia.Vulkan.GraphiteNativeLibrary.PackagedOfficialAsset() with { NativePath = path }
+                    : new Doroti.Skia.Vulkan.OfficialGraphiteAsset(path, "SkiaSharp.NativeAssets.Win32", "4.154.0-preview.1.26454.9", "win-x64",
                     "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1", "7c8cdb451146fcb12899899286e279e6aa615a5fc9b610f01137a741819f210f");
                 bool hashRejected = false;
                 try { Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficial(asset with { Sha256 = new string('0', 64) }); }
@@ -80,13 +81,13 @@ internal static unsafe partial class Program
             else
 #endif
                 NativeLibrary.SetDllImportResolver(typeof(SKGraphiteContext).Assembly,
-                    (name, _, _) => name is "libSkiaSharp" or "libSkiaSharp.dll" ? SkiaModule : 0);
+                    (name, _, _) => name is "libSkiaSharp" or "libSkiaSharp.dll" or "libSkiaSharp.so" ? SkiaModule : 0);
             Report["managedAsset"] = Identity(typeof(SKGraphiteContext).Assembly.Location);
             Report["publicContextApi"] = typeof(SKGraphiteContext).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Select(m => m.ToString()).Order().ToArray();
             Report["vulkanAvailable"] = SKGraphiteContext.IsBackendAvailable(SKGraphiteBackend.Vulkan);
             Report["loadedAsset"] = Identity(Process.GetCurrentProcess().Modules.Cast<ProcessModule>()
-                .Single(m => m.ModuleName.Equals("libSkiaSharp.dll", StringComparison.OrdinalIgnoreCase)).FileName);
+                .Single(m => m.ModuleName.Equals(OperatingSystem.IsLinux() ? "libSkiaSharp.so" : "libSkiaSharp.dll", StringComparison.OrdinalIgnoreCase)).FileName);
             if (!SKGraphiteContext.IsBackendAvailable(SKGraphiteBackend.Vulkan)) throw new NotSupportedException("Graphite/Vulkan unavailable.");
             if (RetirementProbe)
             {
@@ -158,9 +159,13 @@ internal static unsafe partial class Program
 
     private static void Run(string selector, bool sync)
     {
-        var loader = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll");
-        Report["loader"] = Identity(loader);
+        var loader = OperatingSystem.IsLinux() ? "libvulkan.so.1"
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll");
         using var vk = new Vk(new DefaultNativeContext(loader));
+        if (OperatingSystem.IsLinux())
+            loader = Process.GetCurrentProcess().Modules.Cast<ProcessModule>()
+                .Single(m => m.ModuleName.StartsWith("libvulkan.so", StringComparison.Ordinal)).FileName;
+        Report["loader"] = Identity(loader);
         uint version = 0;
         Check(vk.EnumerateInstanceVersion(&version), "loader version");
         Report["loaderApiVersion"] = version;
@@ -203,7 +208,9 @@ internal static unsafe partial class Program
                 var name = Marshal.PtrToStringUTF8((nint)props.DeviceName)!;
                 if (!name.Contains(selector, StringComparison.OrdinalIgnoreCase)) continue;
                 if (selected.Handle != 0) throw new ArgumentException("Ambiguous GPU selector.");
-                if (props.DeviceType == PhysicalDeviceType.Cpu) throw new NotSupportedException("Software device rejected.");
+                var software = props.DeviceType == PhysicalDeviceType.Cpu;
+                Report["softwareVulkan"] = software;
+                if (software) Report["evidenceKind"] = "automated-headless-software-vulkan";
                 if (props.ApiVersion < ApiVersion) throw new NotSupportedException("Official stock profile requires Vulkan 1.2 for core driver properties.");
                 selected = candidate;
                 Report["device"] = new { name, props.VendorID, props.DeviceID, props.DriverVersion, props.ApiVersion, type = props.DeviceType.ToString() };

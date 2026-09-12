@@ -50,7 +50,15 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
                 await _initialize!();
                 // Async resource completion must return to the view's event
                 // loop, including when there is no root producing frames yet.
-                DartAsyncRuntime.scheduleMicrotask(AttachRoot);
+                DartAsyncRuntime.scheduleMicrotask(() =>
+                {
+                    if (!IsAttached()) return;
+                    // An idle microtask can run between native pointer events.
+                    // Attach during a frame so layout completes before input
+                    // can hit-test the newly created render tree.
+                    binding.scheduleFrameCallback(_ => AttachRoot(), scheduleNewFrame: false);
+                    binding.scheduleForcedFrame();
+                });
             }
             catch (Exception error)
             {

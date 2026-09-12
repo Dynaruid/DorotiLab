@@ -8,6 +8,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 {
     internal static bool GraphiteEnabled => Environment.GetEnvironmentVariable("DOROTI_LINUX_GRAPHITE") != "0";
     private GraphiteVulkanWindow? _vulkan;
+    internal bool SoftwareVulkan { get; private set; }
     internal event Action? GpuResourcesReleasing;
     private readonly GRGlGetProcedureAddressDelegate _getProcedureAddress =
         getProcedureAddress ?? throw new ArgumentNullException(nameof(getProcedureAddress));
@@ -26,7 +27,8 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     private bool _usePlatformGlResolver;
     private bool _disposed;
 
-    internal unsafe bool Render(in QtNativeV2.Surface descriptor, Action<SKSurface> render)
+    internal unsafe bool Render(in QtNativeV2.Surface descriptor, Action<SKSurface, int, int> render,
+        Func<bool>? shouldPresent = null, Action? beforePresent = null)
     {
         ArgumentNullException.ThrowIfNull(render);
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -42,18 +44,19 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                 if (extensions.Length > 65536) throw new InvalidDataException("Qt Vulkan extension list is too long.");
                 var names = Marshal.PtrToStringUTF8((nint)extensions.Data, (int)extensions.Length)!.Split('\n', StringSplitOptions.RemoveEmptyEntries);
                 _vulkan = GraphiteVulkanWindow.FromQtOfficial(descriptor.VulkanInstance, descriptor.VulkanSurface, names, descriptor.VulkanInstanceApiVersion);
+                SoftwareVulkan = _vulkan.IsSoftwareDevice;
                 _vulkan.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
                 _contextIdentity = descriptor.ContextIdentity;
                 _surfaceGeneration = descriptor.SurfaceGeneration;
             }
-            return _vulkan.Render(descriptor.PixelWidth, descriptor.PixelHeight, (surface, _, _) => render(surface));
+            return _vulkan.Render(descriptor.PixelWidth, descriptor.PixelHeight, render, shouldPresent, beforePresent);
         }
         if (RequiresRecreate(descriptor)) CreateSurface(descriptor);
         // The native host clears the Qt-bound FBO before this callback. Forget
         // Skia's cached GL state so it cannot assume state left by the previous
         // frame (notably scissor and color-write masks).
         _context!.ResetContext();
-        render(_surface!);
+        render(_surface!, descriptor.PixelWidth, descriptor.PixelHeight);
         _surface!.Canvas.Flush();
         _context!.Flush(_surface);
         _context.Submit(false);
@@ -66,6 +69,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         if (_surfaceGeneration != surfaceGeneration || _contextIdentity != contextIdentity) return;
         ReleaseGpuResources();
     }
+
+    // Qt invokes this on the render owner even when no new frame is requested.
+    internal bool PollGpuWork() => _vulkan?.PollGpuWork() ?? true;
 
     internal void SetQpaPlatform(string platform) =>
         _usePlatformGlResolver = string.Equals(platform, "xcb", StringComparison.OrdinalIgnoreCase);

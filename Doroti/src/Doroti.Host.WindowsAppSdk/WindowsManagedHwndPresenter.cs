@@ -219,11 +219,6 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
                 index, GpuPreference.HighPerformance, out IDXGIAdapter1? candidate);
             if (result == ResultCode.NotFound) break;
             result.CheckError();
-            if ((candidate!.Description1.Flags & AdapterFlags.Software) != 0)
-            {
-                candidate.Dispose();
-                continue;
-            }
             try
             {
                 _device = D3D12CreateDevice<ID3D12Device2>(candidate, FeatureLevel.Level110);
@@ -232,11 +227,11 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             }
             catch
             {
-                candidate.Dispose();
+                candidate!.Dispose();
             }
         }
         if (_device is null || _adapter is null)
-            throw new InvalidOperationException("No hardware D3D12 adapter is available.");
+            throw new InvalidOperationException("No adapter supports the required D3D12 device and feature level.");
         AdapterDescription = _adapter.Description1.Description;
         if (DebugLayerEnabled)
             _infoQueue = _device.QueryInterface<ID3D12InfoQueue>();

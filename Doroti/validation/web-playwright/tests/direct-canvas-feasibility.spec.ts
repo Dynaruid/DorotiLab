@@ -14,7 +14,7 @@ test("direct transferred canvas owns WebGL2 and Worker rAF cadence", async ({ pa
     const workerSource = `
       onmessage = (event) => {
         const canvas = event.data.canvas;
-        const gl = canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: true });
+        const gl = canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: false });
         if (!gl) { postMessage({ error: 'WebGL2 unavailable' }); return; }
         const values = [];
         const tick = (timestamp) => {

@@ -9,7 +9,7 @@ internal static partial class MountedPickerContracts
 {
     internal static void VerifyWidgetStartup()
     {
-        foreach (var mode in new[] { "default", "delayed", "detached", "shutdown", "failure" })
+        foreach (var mode in new[] { "default", "immediate", "delayed", "detached", "shutdown", "failure" })
         {
             using var dispatcher = new PlatformDispatcher();
             using var scope = dispatcher.EnterScope();
@@ -24,20 +24,31 @@ internal static partial class MountedPickerContracts
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
                 .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, host)
+                .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, new ClipboardFixtureHost())
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host));
             var ready = new TaskCompletionSource();
             var created = 0;
             var initialized = 0;
+            var pointerDowns = 0;
             Widget Root()
             {
                 if (!ReferenceEquals(PlatformDispatcher.instance, dispatcher))
                     throw new Exception("Root construction lost the owning dispatcher.");
                 created++;
-                return new ColoredBox(color: new Color(0xff1256ab), child: new SizedBox(width: 32, height: 32));
+                return new Listener(onPointerDown: _ => pointerDowns++,
+                    child: new ColoredBox(color: new Color(0xff1256ab), child: new SizedBox(width: 32, height: 32)));
             }
             var entrypoint = mode == "default"
                 ? new Doroti.Framework.DorotiWidgetEntrypoint(Root)
-                : new Doroti.Framework.DorotiWidgetEntrypoint(Root, () => { initialized++; return ready.Task; });
+                : new Doroti.Framework.DorotiWidgetEntrypoint(Root, () =>
+                {
+                    initialized++;
+                    return mode == "immediate" ? Task.CompletedTask : ready.Task;
+                });
+            void Pointer(PointerChange change) => host.SendPointer(new PointerDataPacket([
+                new PointerData(1, DorotiFrameClock.Now, change, PointerDeviceKind.mouse,
+                    1, 10, 10, 0, 0, change == PointerChange.down ? 1 : 0, pointerIdentifier: 1)
+            ]));
             var errors = new List<FlutterErrorDetails>();
             var previousError = FlutterError.onError;
             FlutterError.onError = errors.Add;
@@ -47,7 +58,7 @@ internal static partial class MountedPickerContracts
                 entrypoint.AttachView(view);
                 if (!host.HasPendingFrame) throw new Exception("Entrypoint did not schedule its own bootstrap.");
                 host.Fire();
-                if (mode != "default")
+                if (mode is not ("default" or "immediate"))
                 {
                     if (created != 0 || initialized != 1) throw new Exception("Root did not await initialization exactly once.");
                     if (mode == "detached") entrypoint.DetachView(view);
@@ -56,11 +67,19 @@ internal static partial class MountedPickerContracts
                     else ready.SetResult();
                     if (created != 0) throw new Exception("Async completion attached outside the host event loop.");
                 }
+                // Resource completion can drain after any native event, before
+                // the requested frame. Mouse discovery must be safe in this gap.
+                view.DispatchPlatformEvent(() => { });
+                Pointer(PointerChange.add);
+                Pointer(PointerChange.hover);
                 // Deliver only frames actually requested by production code.
                 for (var frame = 0; frame < 8 && host.HasPendingFrame; frame++) host.Fire();
-                var shouldAttach = mode is "default" or "delayed";
+                var shouldAttach = mode is "default" or "immediate" or "delayed";
                 if (shouldAttach)
                 {
+                    Pointer(PointerChange.down);
+                    Pointer(PointerChange.up);
+                    if (pointerDowns != 1) throw new Exception($"Widget startup {mode} lost input after layout.");
                     using var surface = SKSurface.Create(new SKImageInfo(Width, Height));
                     var completion = renderer.Paint(surface, Width, Height)
                         ?? throw new Exception($"Widget startup {mode} did not produce a paintable scene.");
@@ -686,7 +705,7 @@ internal static partial class MountedPickerContracts
             if ((bool)scrolledUnder.GetValue(sampleState)!) throw new Exception("Sample root app bar did not reset at the outer scroll origin");
             Console.WriteLine("sample app bars: inline section enters/exits viewport in the two-column sample; root state stable until outer scroll returns to zero PASS (reported flicker not reproduced)");
 
-            view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new MaterialSample.SampleApp())));
+            view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new MaterialSample.SampleApp(acrylicAvailable: false))));
             Pump("full-sample-initial");
             var homeBar = Elements(binding.rootElement!).Single(element => element.widget is M.AppBar { title: Text { data: "Doroti Material 3" } });
             var homeBarState = ((StatefulElement)homeBar).state;
@@ -891,7 +910,8 @@ internal static partial class MountedPickerContracts
         public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default) => ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
         public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
         public void RequestFocus(ViewFocusState state, ViewFocusDirection direction) { }
-        public event System.Action<PointerDataPacket>? PointerData { add { } remove { } }
+        public event System.Action<PointerDataPacket>? PointerData;
+        public void SendPointer(PointerDataPacket packet) => PointerData?.Invoke(packet);
         public event System.Action<KeyData>? KeyData;
         public void SendKey(KeyData data) => KeyData?.Invoke(data);
         public event System.Action<RawFocusData>? FocusData { add { } remove { } }

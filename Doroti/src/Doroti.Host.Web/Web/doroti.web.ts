@@ -29,7 +29,7 @@ interface GpuIdentity {
   api: "webgl2" | "webgpu";
   vendor: string;
   renderer: string;
-  hardware: true;
+  hardware: boolean;
   softwareFallbackUsed: boolean;
   contextGeneration?: number;
   surfaceGeneration?: number;

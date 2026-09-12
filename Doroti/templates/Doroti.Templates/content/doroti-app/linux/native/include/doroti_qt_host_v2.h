@@ -35,6 +35,8 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_SEMANTICS = 1ull << 9,
   DOROTI_QT_FEATURE_VULKAN_SURFACE = 1ull << 10,
   DOROTI_QT_FEATURE_VULKAN_API_VERSION = 1ull << 11,
+  DOROTI_QT_FEATURE_GPU_POLL = 1ull << 12,
+  DOROTI_QT_FEATURE_PRESENT_HOOK = 1ull << 13,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -191,6 +193,7 @@ struct doroti_qt_host_api_v2 {
   void (*clear_text_client)(void* view_handle);
   void (*update_semantics)(void* view_handle, doroti_qt_utf8_v2 json);
   void (*clear_semantics)(void* view_handle);
+  void (*prepare_present)(void* view_handle);
 };
 
 struct doroti_qt_callbacks_v2 {
@@ -242,6 +245,9 @@ struct doroti_qt_callbacks_v2 {
   void (*semantics_action)(void* callback_context, void* view_handle,
                            std::int64_t node_id, std::int64_t action,
                            doroti_qt_utf8_v2 arguments_json);
+  // Owner-thread nonblocking retirement, including while hidden/idle.
+  // 0 = all complete, 1 = pending, otherwise a fatal error code.
+  std::int32_t (*poll_gpu_work)(void* callback_context, void* view_handle);
 };
 
 DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
@@ -263,5 +269,7 @@ static_assert(sizeof(doroti_qt_key_v2) == 56);
 static_assert(sizeof(doroti_qt_text_configuration_v2) == 40);
 static_assert(sizeof(doroti_qt_text_state_v2) == 40);
 static_assert(offsetof(doroti_qt_callbacks_v2, callback_context) == 24);
-static_assert(sizeof(doroti_qt_host_api_v2) == 120);
-static_assert(sizeof(doroti_qt_callbacks_v2) == 176);
+static_assert(sizeof(doroti_qt_host_api_v2) == 128);
+static_assert(offsetof(doroti_qt_surface_v2, vulkan_instance_api_version) == 120);
+static_assert(offsetof(doroti_qt_callbacks_v2, poll_gpu_work) == 176);
+static_assert(sizeof(doroti_qt_callbacks_v2) == 184);

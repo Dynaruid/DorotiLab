@@ -29,8 +29,9 @@ internal static class SampleConstants
     internal static List<Widget> BarDestinations() => Destinations.Select((label, i) => (Widget)new M.NavigationDestination(icon: new Icon(DestinationIcons[i]), selectedIcon: new Icon(SelectedDestinationIcons[i]), tooltip: "", label: label)).ToList();
 }
 
-internal sealed class SampleApp : StatefulWidget
+internal sealed class SampleApp(bool acrylicAvailable) : StatefulWidget
 {
+    internal bool AcrylicAvailable => acrylicAvailable;
     public override IState createState() => new SampleAppState();
 }
 
@@ -38,7 +39,7 @@ internal sealed class SampleAppState : State<SampleApp>
 {
     private M.ThemeMode _mode = M.ThemeMode.system;
     private int _seed, _image, _revision;
-    private bool _fromImage, _loading;
+    private bool _fromImage, _loading, _acrylic;
     private string? _error;
     private M.ColorScheme? _imageScheme;
     private M.ThemeData? _light;
@@ -49,11 +50,19 @@ internal sealed class SampleAppState : State<SampleApp>
         _light = null;
         _dark = null;
     }
-    private M.ThemeData LightTheme() => _light ??= _fromImage
+    private M.ThemeData WindowTheme(M.ThemeData theme) => _acrylic
+        ? theme.copyWith(scaffoldBackgroundColor: theme.colorScheme.surface.withAlpha(153))
+        : theme;
+    private M.ThemeData LightTheme() => _light ??= WindowTheme(_fromImage
         ? M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorScheme: _imageScheme)
-        : M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[_seed].Color);
-    private M.ThemeData DarkTheme() => _dark ??= M.ThemeData.Create(fontFamilyFallback: ["Roboto"],
-        colorSchemeSeed: _fromImage ? _imageScheme!.primary : SampleConstants.Seeds[_seed].Color, brightness: Brightness.dark);
+        : M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[_seed].Color));
+    private M.ThemeData DarkTheme() => _dark ??= WindowTheme(M.ThemeData.Create(fontFamilyFallback: ["Roboto"],
+        colorSchemeSeed: _fromImage ? _imageScheme!.primary : SampleConstants.Seeds[_seed].Color, brightness: Brightness.dark));
+    private void ToggleAcrylic()
+    {
+        if (!widget.AcrylicAvailable) return;
+        setState(() => { _acrylic = !_acrylic; UpdateThemes(); });
+    }
     private void SelectSeed(int value) => setState(() =>
     {
         _revision++; _seed = value; _fromImage = false; _loading = false; _error = null; UpdateThemes();
@@ -79,11 +88,12 @@ internal sealed class SampleAppState : State<SampleApp>
         locale: new Doroti.Ui.Locale("en", "US"), themeFactory: LightTheme, darkThemeFactory: DarkTheme, themeMode: _mode,
         home: new SampleHome(_seed, _image, _fromImage, _loading, _error,
             () => setState(() => _mode = (_mode == M.ThemeMode.dark || (_mode == M.ThemeMode.system && View.of(context).platformDispatcher.platformBrightness == Brightness.dark)) ? M.ThemeMode.light : M.ThemeMode.dark),
-            SelectSeed, SelectImage));
+            SelectSeed, SelectImage, _acrylic, widget.AcrylicAvailable ? ToggleAcrylic : null));
 }
 
 internal sealed class SampleHome(int seed, int image, bool fromImage, bool loading, string? error,
-    Action brightness, System.Action<int> selectSeed, System.Action<int> selectImage) : StatefulWidget
+    Action brightness, System.Action<int> selectSeed, System.Action<int> selectImage,
+    bool acrylic = false, Action? toggleAcrylic = null) : StatefulWidget
 {
     internal int Seed => seed;
     internal int Image => image;
@@ -91,6 +101,8 @@ internal sealed class SampleHome(int seed, int image, bool fromImage, bool loadi
     internal bool Loading => loading;
     internal string? Error => error;
     internal Action Brightness => brightness;
+    internal bool Acrylic => acrylic;
+    internal Action? ToggleAcrylic => toggleAcrylic;
     internal System.Action<int> SelectSeed => selectSeed;
     internal System.Action<int> SelectImage => selectImage;
     public override IState createState() => new SampleHomeState();
@@ -155,6 +167,11 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         Scroll_notificationLibrary.defaultScrollNotificationPredicate(notification) &&
         (_destination != 0 || _components.currentState?.OwnsScrollNotification(notification) == true);
     private Widget BrightnessAction() => new M.IconButton(tooltip: "Toggle brightness", onPressed: widget.Brightness, icon: new Icon(M.Theme.of(context).brightness == Brightness.light ? M.Icons.dark_mode_outlined : M.Icons.light_mode_outlined));
+    private string AcrylicTooltip => widget.ToggleAcrylic is null ? "Acrylic is unavailable on this platform"
+        : widget.Acrylic ? "Turn off acrylic window" : "Turn on acrylic window";
+    private Widget AcrylicAction() => new M.IconButton(tooltip: AcrylicTooltip,
+        onPressed: widget.ToggleAcrylic, isSelected: widget.Acrylic,
+        icon: new Icon(M.Icons.blur_off), selectedIcon: new Icon(M.Icons.blur_on));
     private Widget SeedAction() => new M.PopupMenuButton<int>(tooltip: "Select a seed color", icon: new Icon(M.Icons.palette_outlined),
         shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10)), onSelected: widget.SelectSeed,
         itemBuilder: _ => SampleConstants.Seeds.Select((seed, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
@@ -181,6 +198,9 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             [
                 new Row(children: [new Text("Brightness"), new Expanded(child: SizedBox.CreateShrink()),
                     new M.Switch(value: M.Theme.of(context).brightness == Brightness.light, onChanged: _ => widget.Brightness())]),
+                new M.Tooltip(message: AcrylicTooltip, child: new Row(children:
+                    [new Text("Acrylic window"), new Expanded(child: SizedBox.CreateShrink()),
+                        new M.Switch(value: widget.Acrylic, onChanged: widget.ToggleAcrylic is null ? null : _ => widget.ToggleAcrylic())])),
                 new M.Divider(),
                 new ConstrainedBox(constraints: new BoxConstraints(maxHeight: 200), child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:
                     SampleConstants.Seeds.Select((seed, i) => (Widget)new M.IconButton(tooltip: seed.Label, color: seed.Color,
@@ -226,7 +246,10 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         };
         return new M.Scaffold(key: _scaffold,
             appBar: new M.AppBar(title: new Text("Doroti Material 3"), notificationPredicate: AcceptAppBarScroll,
-                actions: !_wide ? [BrightnessAction(), SeedAction(), ImageAction()] : [new Container()]),
+                backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
+                surfaceTintColor: widget.Acrylic ? M.Colors.transparent : null,
+                scrolledUnderElevation: widget.Acrylic ? 0 : null,
+                actions: !_wide ? [BrightnessAction(), AcrylicAction(), SeedAction(), ImageAction()] : [new Container()]),
             endDrawer: new GalleryDrawer(),
             body: new Column(children:
             [
@@ -237,7 +260,9 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
                 ])),
             ]),
             bottomNavigationBar: new AnimatedBuilder(animation: _controller,
-                child: new M.NavigationBar(selectedIndex: _destination, destinations: SampleConstants.BarDestinations(), onDestinationSelected: Navigate),
+                child: new M.NavigationBar(selectedIndex: _destination, destinations: SampleConstants.BarDestinations(), onDestinationSelected: Navigate,
+                    backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
+                    surfaceTintColor: widget.Acrylic ? M.Colors.transparent : null),
                 builder: (_, child) => new ExcludeSemantics(excluding: _barSize.value <= 0,
                     child: new ClipRect(child: new Align(alignment: Alignment.topLeft, heightFactor: _barSize.value,
                         child: new FractionalTranslation(translation: new Offset(0, 1 - _barOffset.value), child: child))))));
@@ -247,10 +272,11 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         var direction = Directionality.of(context) == TextDirection.ltr ? 1 : -1;
         return new AnimatedBuilder(animation: _controller,
             child: new M.NavigationRail(extended: _extended, selectedIndex: _destination,
+                backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
                 onDestinationSelected: Navigate, destinations: SampleConstants.Destinations.Select((label, i) =>
                     new M.NavigationRailDestination(icon: new Icon(SampleConstants.DestinationIcons[i]), selectedIcon: new Icon(SampleConstants.SelectedDestinationIcons[i]), label: new Text(label))).ToList(),
                 trailing: new Expanded(child: new Padding(padding: EdgeInsets.CreateOnly(bottom: 20), child: _extended ? Settings() :
-                    new Column(mainAxisAlignment: MainAxisAlignment.end, children: [new Flexible(child: BrightnessAction()), new Flexible(child: SeedAction()), new Flexible(child: ImageAction())])))),
+                    new Column(mainAxisAlignment: MainAxisAlignment.end, children: [new Flexible(child: BrightnessAction()), new Flexible(child: AcrylicAction()), new Flexible(child: SeedAction()), new Flexible(child: ImageAction())])))),
             builder: (_, child) => new ExcludeSemantics(excluding: _railSize.value <= 0,
                 child: new ClipRect(child: new Align(alignment: Alignment.topLeft, widthFactor: _railSize.value,
                     child: new FractionalTranslation(translation: new Offset((_railOffset.value - 1) * direction, 0), child: child)))));

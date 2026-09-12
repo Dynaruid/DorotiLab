@@ -597,8 +597,6 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         if (create != 0 || _presentationContext == 0 || _compositionSurfaceHandle == 0 ||
             _probe.PresentationSupported == 0)
             throw new PlatformNotSupportedException("The ANGLE D3D11 device does not support Composition Swapchain presentation.");
-        if (_probe.AdapterVendorId == 0x1414)
-            throw new PlatformNotSupportedException("experimentalAcrylic does not allow a Microsoft software/WARP adapter.");
         DeviceGeneration++;
     }
 
@@ -909,11 +907,9 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
             : Marshal.PtrToStringAnsi(renderer) ?? "ANGLE renderer unavailable";
         if (!AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) ||
             !(AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
-              AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase)) ||
-            AdapterDescription.Contains("WARP", StringComparison.OrdinalIgnoreCase) ||
-            AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase))
+              AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase)))
             throw new PlatformNotSupportedException(
-                $"ANGLE did not select a hardware D3D11 renderer: '{AdapterDescription}'.");
+                $"ANGLE did not select a D3D11 renderer: '{AdapterDescription}'.");
     }
 
     private void UnbindImportedSurface(ref bool madeCurrent)

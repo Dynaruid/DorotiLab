@@ -187,7 +187,7 @@ function mergeNewestResizeState(value: HostSnapshot): HostSnapshot {
       resizeEpoch: current.resizeEpoch,
     } : {}),
     surfaceGeneration: Math.max(value.surfaceGeneration, current.surfaceGeneration),
-    gpu: current.gpu.hardware && !current.gpu.softwareFallbackUsed ? current.gpu : value.gpu,
+    gpu: presenter ? current.gpu : value.gpu,
   };
 }
 
@@ -391,8 +391,7 @@ function gpuIdentity(gl: WebGL2RenderingContext) {
   const vendor = String(debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR));
   const renderer = String(debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
   const softwareFallbackUsed = /swiftshader|llvmpipe|software/.test(`${vendor} ${renderer}`.toLowerCase());
-  if (softwareFallbackUsed) throw new Error(`Doroti rejected software WebGL renderer '${renderer}'.`);
-  return { api: "webgl2", vendor, renderer, hardware: true, softwareFallbackUsed };
+  return { api: "webgl2", vendor, renderer, hardware: !softwareFallbackUsed, softwareFallbackUsed };
 }
 
 function ensurePresenter(): WorkerPresenter {
@@ -415,10 +414,10 @@ function ensurePresenter(): WorkerPresenter {
   const context = runtime.createContext(canvas, {
     alpha: 1, depth: 1, stencil: 8, antialias: 0, premultipliedAlpha: 1,
     preserveDrawingBuffer: 0, preferLowPowerToHighPerformance: 0,
-    failIfMajorPerformanceCaveat: 1, majorVersion: 2, minorVersion: 0,
+    failIfMajorPerformanceCaveat: 0, majorVersion: 2, minorVersion: 0,
     enableExtensionsByDefault: 1, explicitSwapControl: 0, renderViaOffscreenBackBuffer: 0,
   });
-  if (!context) throw new Error("Doroti worker requires an actual hardware OffscreenCanvas WebGL2 context.");
+  if (!context) throw new Error("Doroti worker requires an OffscreenCanvas WebGL2 context.");
   presenter = {
     canvas, context, contextGeneration: 1, extension: null,
     current: null, latest: null, draining: false, nextRequestId: 0, contextLost: false,
@@ -809,7 +808,6 @@ async function startManagedRuntime(): Promise<void> {
         if (presenter) presenter.contextLost = true;
         post("fatal", { error: String(error) });
       });
-      if (webgpuIdentity.softwareFallbackUsed) throw new Error("Doroti WebGPU rejects software adapters.");
       if (snapshot) snapshot = { ...snapshot, gpu: webgpuIdentity };
       await surface.InitializeGraphite(new URL("./doroti.webgpu.js", import.meta.url).href);
     }

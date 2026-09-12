@@ -81,7 +81,7 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.cspro
 
 Linux x64 호스트에서 실행합니다. Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake,
 C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`,
-`wayland` 또는 `xcb` QPA plugin이 필요하며 native shim도 함께 빌드합니다.
+`wayland` 또는 `xcb` QPA plugin, Vulkan 개발 헤더, Vulkan 1.2 장치와 fontconfig가 필요하며 native shim도 함께 빌드합니다. 하드웨어 GPU 여부로 실행을 차단하지 않으므로 llvmpipe VM에서도 별도 환경변수나 실행 프로필 없이 아래 명령으로 실행할 수 있습니다. 게시한 실행 파일에도 같은 정책을 적용합니다.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
@@ -196,7 +196,11 @@ Components → Communication → Progress indicators의 재생 버튼으로 애�
 ### Windows GPU와 Acrylic
 
 Windows App SDK의 기본 렌더러는 Vulkan이며 ANGLE을 명시적으로 선택할 수 있습니다.
-**Material 샘플은 불투명 surface**를 사용합니다. Acrylic은 진단 화면에서 확인하며,
+Material 샘플은 불투명 배경으로 시작합니다. Windows 11 24H2 이상 또는 Linux에서는
+밝기 조절 옆의 **Acrylic window**로 반투명 배경을 켜고 끌 수 있습니다.
+창 너비에 따라 상단 바, 내비게이션 레일, 확장 설정에 표시되며 다른 플랫폼에서는
+비활성화됩니다. 선택한 밝기와 색 팔레트는 유지됩니다. 네이티브 배경 효과는 시작할 때
+준비하고, 토글 시 창을 재생성하지 않고 샘플 배경의 불투명도를 변경합니다.
 Windows 11 24H2 이상에서는 일반 `WindowBackdropMode.acrylic`에 별도 실험 플래그가 필요 없습니다.
 
 | 환경변수 | 값 / 동작 |
@@ -215,7 +219,7 @@ Windows 11 24H2 이상에서는 일반 `WindowBackdropMode.acrylic`에 별도 �
 팔레트는 `ColorScheme.CreateFromSeed`로 만들며 위젯은 `Theme.of(context).colorScheme`을 사용합니다.
 창의 `backgroundColor`와 `darkBackgroundColor`도 같은 전환을 따릅니다.
 
-Linux의 진단 창은 Acrylic과 transparent fallback을 요청합니다. Wayland compositor가
+Linux의 샘플 및 진단 창은 Acrylic과 transparent fallback을 요청합니다. Wayland compositor가
 `ext-background-effect-v1` 또는 구형 KDE blur protocol을 제공하면 native blur를 요청하고,
 없으면 transparent fallback을 사용합니다.
 

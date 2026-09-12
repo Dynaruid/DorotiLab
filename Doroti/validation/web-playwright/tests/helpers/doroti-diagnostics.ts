@@ -219,8 +219,7 @@ export async function attachDiagnostics(
 
 export function assertPresenterContract(bundle: DiagnosticBundle): void {
   expect(bundle.snapshot.gpu.api).toBe(bundle.presenter.mode === "worker-direct-webgpu" ? "webgpu" : "webgl2");
-  expect(bundle.snapshot.gpu.hardware).toBe(true);
-  expect(bundle.snapshot.gpu.softwareFallbackUsed).toBe(false);
+  expect(bundle.snapshot.gpu.hardware).toBe(!bundle.snapshot.gpu.softwareFallbackUsed);
   expect(bundle.presenter.contextLost).toBe(false);
   expect(bundle.presenter.queueDepth).toBeLessThanOrEqual(2);
   expect(bundle.presenter.unpairedRequestCount ?? 0).toBe(0);

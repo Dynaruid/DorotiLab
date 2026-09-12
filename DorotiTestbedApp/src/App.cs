@@ -146,7 +146,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new PlatformViewFixture());
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "media-query")
             return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new MediaQueryFixture());
-        if (App.SampleEnabled) return new MaterialSample.SampleApp();
+        if (App.SampleEnabled) return new MaterialSample.SampleApp(App.SampleAcrylicAvailable);
         Widget Gallery() => Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is "F0" or "F1" or "F2"
             ? new ResizeFixture(Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE")!)
             : new MaterialGallery(
@@ -197,19 +197,23 @@ internal static class App
         Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is not ("F0" or "F1" or "F2") &&
         string.Equals(Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE"), "sample", StringComparison.OrdinalIgnoreCase);
 
-    internal static bool AcrylicEnabled => !SampleEnabled && (OperatingSystem.IsWindows() || ExperimentalAcrylicEnabled);
+    internal static bool SampleAcrylicAvailable =>
+        OperatingSystem.IsWindowsVersionAtLeast(10, 0, 26100) || OperatingSystem.IsLinux();
+
+    internal static bool AcrylicEnabled => SampleEnabled
+        ? SampleAcrylicAvailable
+        : OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || ExperimentalAcrylicEnabled;
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new("Doroti Material Testbed", SampleEnabled ? new Size(1280, 900) : new Size(720, 640),
-            // The Scaffold already paints the 80%-opaque Material surface.
-            // Keep the renderer base transparent in Acrylic mode so that tint
-            // is applied once and the system-blurred backdrop is not hidden by
-            // two stacked translucent fills.
+            // Prepare the native backdrop at startup. The sample toggles its
+            // Scaffold between opaque and translucent without recreating the window.
+            // A transparent renderer base avoids applying the surface tint twice.
             AcrylicEnabled
                 ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xfffffbfeL : 0xccfffbfeL),
             AcrylicEnabled
                 ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xff141218L : 0xcc141218L),
-            SampleEnabled ? new WindowBackdropOptions(WindowBackdropMode.solid) : ExperimentalAcrylicEnabled
+            SampleEnabled && !SampleAcrylicAvailable ? new WindowBackdropOptions(WindowBackdropMode.solid) : ExperimentalAcrylicEnabled
                 ? new WindowBackdropOptions(
                     WindowBackdropMode.experimentalAcrylic,
                     WindowBackdropFallback.transparent,

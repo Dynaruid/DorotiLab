@@ -25,3 +25,29 @@ if (roundTrip.DisplayFeatures!.Single().ToDisplayFeature() != feature)
     throw new Exception("Browser environment JSON round trip failed.");
 JsonSerializer.Deserialize<BrowserHostSnapshot>(json.Replace("[{\"bounds\":{\"left\":179,\"top\":0,\"right\":181,\"bottom\":800},\"type\":2,\"state\":1}]", "[]"), options);
 Console.WriteLine("Browser environment JSON wire DTOs PASS: feature/empty list, round-trip, fractional DPR and keyboard");
+
+// Exercise the managed admission boundary without requiring browser JS interop.
+var validate = typeof(BrowserHostAdapter)
+    .GetMethod("Validate", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
+    .CreateDelegate<Func<BrowserHostSnapshot, BrowserHostSnapshot>>();
+foreach (var api in new[] { "webgl2", "webgpu" })
+{
+    var software = snapshot with { Gpu = snapshot.Gpu with
+        { Api = api, Hardware = false, SoftwareFallbackUsed = true } };
+    var accepted = validate(software);
+    if (accepted.Gpu.Hardware || !accepted.Gpu.SoftwareFallbackUsed)
+        throw new Exception("Software renderer identity was lost during admission.");
+}
+try
+{
+    validate(snapshot with { Gpu = snapshot.Gpu with { Api = "2d" } });
+    throw new Exception("Unsupported canvas API was admitted.");
+}
+catch (PlatformNotSupportedException) { }
+try
+{
+    validate(snapshot with { LogicalWidth = 0 });
+    throw new Exception("Invalid canvas metrics were admitted.");
+}
+catch (InvalidDataException) { }
+Console.WriteLine("Browser renderer admission PASS: software WebGL2/WebGPU allowed; API and metrics requirements retained");

@@ -1,5 +1,61 @@
 # Graphite 유지 및 공식 SkiaSharp 바이너리 전환 작업계획
 
+## 후속 변경: 프로젝트의 하드웨어 GPU 차단 제거
+
+사용자 요청으로 장치가 하드웨어 GPU인지에 따른 실행 차단을 프로젝트 전체에서
+제거했다. 공통 Vulkan, Windows Vulkan/ANGLE/D3D 및 native adapter 선택,
+Qt OpenGL, WebGL/WebGPU가 필요한 API·버전·표시·상호운용 기능으로 장치를 판단한다.
+소프트웨어 장치명·종류는 진단 정보로 남기며 GPU 성능 검증 결과와는 구분한다.
+`DOROTI_LINUX_VULKAN_ALLOW_SOFTWARE`나 별도 Linux 실행 프로필은 필요 없다.
+이하의 opt-in·hardware rejection 기록은 이 변경 전 검증 결과다.
+
+Linux에서 원래 `dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64`
+명령의 실행·6회 resize 요청·종료를 확인했다. Web managed/TypeScript build 및
+소프트웨어 WebGL2/WebGPU admission·미지원 API/잘못된 metrics 거부 검사를 통과했다.
+Qt OpenGL 비교 경로의 native build도 통과했다. Windows managed 코드 빌드는 PRI 생성만
+비활성화한 확인에서 통과했다. Windows 전체 빌드는 Linux에서 MakePri.exe 실행 불가로
+제한되며 Windows native/제품 runtime은 미검증이다. 이 정책 변경이 기존 Material depth 동기화 오류를 해결한 것은 아니다.
+
+
+## 추가 확인: llvmpipe Vulkan 사용 (2026-09-12)
+
+사용자 요청에 따라 `DOROTI_LINUX_VULKAN_ALLOW_SOFTWARE=1`로 Linux Qt의 소프트웨어
+Vulkan 검증을 허용했다. 공식 Graphite·공식 NativeAssets는 유지한다.
+
+- 공통 session 360 frames, 2-slot copy/부분 갱신·픽셀 검사 3,000 frames,
+  7초 큐 지연 retirement 3 generations를 llvmpipe에서 통과했다. 이 검사들의 validation 오류는 0이다.
+- Wayland/XWayland 실제 제품의 표시 제출·6회 resize 요청·종료를 확인했고,
+  Material 3 화면도 캡처했다. 제품에서는 depth attachment `WRITE_AFTER_WRITE`가
+  각 5건 검출되어 correctness는 **FAIL / 전체 PARTIAL**이다.
+- 고정 Skia 소스의 depth barrier가 early-fragment stage만 포함하는 점과 오류 로그가
+  일치한다. 공식 내부 barrier 범위 부족이 유력하며, 오류를 숨기거나 커스텀 바이너리로
+  바꾸지 않았다. 수정된 공식 자산 또는 검증된 공개 API 해결책이 남는다.
+- llvmpipe 결과를 hardware GPU/성능/물리 입력 PASS로 확대하지 않는다.
+  [실행 방법·증거·남은 조건](Doroti/docs/validation/linux-official-graphite-2026-09-12.md).
+
+## 후속 검토: Linux Qt 구현·배포 검증 재개 (2026-09-12)
+
+이번 사용자 요청으로 Linux 작업을 실제 검토·수정·검증했다. 아래의 과거
+Linux `skippedByUser` 기록은 당시 범위이며, 현재 결과는 이 절과
+[Linux 상세 보고서](Doroti/docs/validation/linux-official-graphite-2026-09-12.md)를 따른다.
+
+- 생성 템플릿이 C++ `#ifdef`를 처리해 Graphite 코드를 삭제하던 배포 오류를
+  수정했다. Linux native 파일은 원문 복사하며 생성 결과를 패키지와 byte 단위로 검사한다.
+- Qt의 프레임별 동기 fence 대기를 2-slot 비동기 경로와 owner-thread idle polling으로
+  교체했다. ABI surface 128 bytes, GPU polling callback을 포함한 callbacks 184 bytes,
+  required features `0x1ffe`를 native/managed/template/계약 검사에 맞췄다.
+- 공식 Linux 모듈의 실제 로드 경로·해시 기록을 보강하고, 지원하지 않는
+  trimming/single-file 게시를 빌드 단계에서 명확히 거부한다.
+- 테스트베드 Release 게시, managed 계약, 실제 생성된 package-only 앱의
+  framework-dependent/self-contained 게시, NuGet 서명·공식 자산·loader 의존성,
+  Wayland/XWayland native callback 검사를 통과했다.
+- 현재 VMware에는 CPU Vulkan `llvmpipe`만 있다. Wayland/XWayland 제품은
+  공식 자산을 로드한 뒤 하드웨어 Vulkan 부재로 exit 69를 반환했다.
+  **실제 GPU 렌더링·동기화·지연 종료·성능은 notVerified이며 전체 상태는 PARTIAL**이다.
+  native X11·물리 입력/IME/접근성·device loss도 남는다. Apple 검증 생략은 유지한다.
+
+[원본 실패·명령·해시·결과 인덱스](Doroti/docs/validation/evidence/linux-official-graphite-2026-09-12/index.json).
+
 ## 후속 수정: Android 가로모드 방향 (2026-09-12)
 
 Vulkan swapchain이 실제로 회전하지 않은 그림에 `currentTransform`을 적용했다고 선언하던 오류를 수정했다.
@@ -113,13 +169,13 @@ SkiaSharp 버전은 우선 현재 `4.154.0-preview.1.26454.9`를 유지한다. �
 | W0-5 | 핵심 후보 채택 판정 | W0-0~4 | Vulkan 1.2 scoped correctness에 근거해 공식 기본 코드 경로 채택; 전체 성능 qualification은 별도 PARTIAL |
 | W0-6 | 공통 session·loader·host 계약 | W0-5 | 구현 — public API binding, 제출 상태 검증, desktop/APK provenance |
 | W0-7 | Windows App SDK·MAUI | W0-6 | PARTIAL — AppSDK 두 GPU resize/Acrylic/지연 close, MAUI 실제 화면·close PASS; 전체 기능/성능 미완료 |
-| W0-8 | Android·Linux Qt | W0-6 | Android arm64 실기기·API 36 x64 emulator 제품 PASS-scoped; API 33 emulator 필수 RP2 부재 FAIL 보존. Linux 코드 구성, 검증 skippedByUser |
+| W0-8 | Android·Linux Qt | W0-6 | Android arm64 실기기·API 36 x64 emulator 제품 PASS-scoped; API 33 emulator 필수 RP2 부재 FAIL 보존. Linux build/package/template/Qt ABI 및 llvmpipe headless PASS-scoped; 제품 depth sync FAIL, hardware GPU 미검증 |
 | W0-9 | Apple·Web | W0-6 | Apple 공식 package/Metal 구성, 검증 skippedByUser. Web Release 및 제품 10 tests PASS |
 | W0-10 | 기능·성능·trim/AOT 수용 | W0-7~9 | PARTIAL — Android Release/trim/Mono AOT·제품 입력/수명, Web 10 tests PASS. Windows MAUI 60초 1쌍에서 성능 증가 관측; 반복은 사용자 피드백 후 종료 |
-| W0-11 | 공식 배포·custom 빌드 제거 | 해당 W0-10 | 코드/배포 전환 완료 — 공식 기본값, custom prebuild/staging/ABI 제거·history 보존, Windows package consumer 및 Android APK 자산 확인. Apple/Linux 배포 실행은 skippedByUser |
+| W0-11 | 공식 배포·custom 빌드 제거 | 해당 W0-10 | 코드/배포 전환 완료 — 공식 기본값, custom prebuild/staging/ABI 제거·history 보존, Windows package consumer 및 Android APK 자산 확인. Linux clean template/공식 자산/publish PASS-scoped, hardware runtime 미검증. Apple은 skippedByUser |
 | W0-12 | clean consumer·문서·종결 | W0-11 | 문서/consumer 구현 완료 — 저장소 밖 Windows target package restore/publish/제품 실행, Android package-only APK, README·지원표·work1/work2 인계. 전체 qualification은 PARTIAL |
 
-W0-1~4의 통과는 명시된 profile/진단 경계에 한정된다. 실제 제품 통합 결과를 별도로 기록하며 필수 기능·성능 미검증을 PASS로 확대하지 않는다. Apple/Linux 검증 생략은 사용자 요청에 따른 범위 변경이다.
+W0-1~4의 통과는 명시된 profile/진단 경계에 한정된다. 실제 제품 통합 결과를 별도로 기록하며 필수 기능·성능 미검증을 PASS로 확대하지 않는다. Apple 검증 생략은 유지한다. Linux는 문서 맨 앞의 후속 검토 결과를 따른다.
 
 제품별 작업은 공통 gate 이후 독립적으로 진행할 수 있다. 한 플랫폼이 통과해도 공통 package 소비자가 아직 구 ABI를 요구하면 해당 의존성을 먼저 분리하고, 모든 필수 소비자 전환 전 전역 제거를 하지 않는다.
 

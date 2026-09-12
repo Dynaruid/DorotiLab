@@ -76,7 +76,7 @@ constexpr std::uint32_t kAbiVersion = 3;
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
 #ifdef DOROTI_QT_GRAPHITE
-    DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION |
+    DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION | DOROTI_QT_FEATURE_GPU_POLL | DOROTI_QT_FEATURE_PRESENT_HOOK |
 #else
     DOROTI_QT_FEATURE_OPENGL_FBO |
 #endif
@@ -158,6 +158,19 @@ class DorotiSurface final : public DorotiWindowBase {
     if (!vulkan_.create()) throw std::runtime_error("Qt Vulkan instance creation failed; no OpenGL fallback");
     setVulkanInstance(&vulkan_);
     vulkan_extensions_ = vulkan_.extensions().join('\n');
+    gpu_poll_timer_.setInterval(8);
+    connect(&gpu_poll_timer_, &QTimer::timeout, this, [this] {
+      if (closing_ || fatal_) { gpu_poll_timer_.stop(); return; }
+      const auto result = callbacks_.poll_gpu_work(callback_context_, this);
+      if (result == 1) return;
+      gpu_poll_timer_.stop();
+      if (result != DOROTI_QT_OK) {
+        fatal_ = true;
+        callbacks_.fatal(callback_context_, result, Utf8("managed GPU retirement callback failed"));
+        hide();
+        QCoreApplication::exit(result);
+      }
+    });
 #else
     connect(this, &QOpenGLWindow::frameSwapped, this, [this] { FrameSwapped(); });
 #endif
@@ -445,14 +458,25 @@ class DorotiSurface final : public DorotiWindowBase {
                               Qt::QueuedConnection);
   }
 
+  static void PreparePresent(void* view_handle) noexcept {
+#ifdef DOROTI_QT_GRAPHITE
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    surface->vulkan_.presentAboutToBeQueued(surface);
+#else
+    (void)view_handle;
+#endif
+  }
+
  protected:
 #ifdef DOROTI_QT_GRAPHITE
   QVulkanInstance vulkan_;
   QByteArray vulkan_extensions_;
+  QTimer gpu_poll_timer_;
+  bool render_retry_pending_ = false;
   double devicePixelRatioF() const { return devicePixelRatio(); }
   void update() { requestUpdate(); }
   void RenderVulkan() {
-    if (!isExposed() || width() <= 0 || height() <= 0 || fatal_) return;
+    if (!isExposed() || width() <= 0 || height() <= 0 || fatal_ || closing_) return;
     const auto surface = QVulkanInstance::surfaceForWindow(this);
     if (surface == VK_NULL_HANDLE) throw std::runtime_error("Qt Vulkan surface creation failed");
     if (context_identity_ == 0) {
@@ -462,6 +486,8 @@ class DorotiSurface final : public DorotiWindowBase {
       Diagnostic("qpa", QGuiApplication::platformName().toUtf8().constData());
       Diagnostic("graphics.backend", "Graphite-Vulkan");
       Diagnostic("presentation.completion", "queue-present-accepted-not-scanout");
+      Diagnostic("vulkan.instance.apiVersion", vulkan_.apiVersion().toString().toUtf8().constData());
+      Diagnostic("vulkan.instance.extensions", vulkan_.extensions().join(',').constData());
     }
     if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
     const auto token = std::exchange(pending_frame_token_, 0);
@@ -479,24 +505,36 @@ class DorotiSurface final : public DorotiWindowBase {
     descriptor.vulkan_instance = vulkan_.vkInstance();
     descriptor.vulkan_instance_extensions = Utf8(vulkan_extensions_);
     descriptor.vulkan_instance_api_version = VK_MAKE_VERSION(vulkan_.apiVersion().majorVersion(), vulkan_.apiVersion().minorVersion(), vulkan_.apiVersion().microVersion());
-    vulkan_.presentAboutToBeQueued(this);
     const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
-    vulkan_.presentQueued(this);
     if (result == 1) {
       Terminal(token, DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
-      update();
+      // No buffer was committed, so no compositor frame callback is promised.
+      // Retry on the owner event loop even if Wayland is waiting for one.
+      if (!render_retry_pending_) {
+        render_retry_pending_ = true;
+        QTimer::singleShot(8, this, [this] {
+          render_retry_pending_ = false;
+          if (!closing_ && !fatal_) {
+            QEvent retry(QEvent::UpdateRequest);
+            QCoreApplication::sendEvent(this, &retry);
+          }
+        });
+      }
       return;
     }
     if (result != DOROTI_QT_OK) {
       fatal_ = true;
       Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
       callbacks_.fatal(callback_context_, result, Utf8("managed Vulkan render callback failed"));
+      hide();
       QCoreApplication::exit(result);
       RequestClose(this);
       return;
     }
+    vulkan_.presentQueued(this);
     rasterized_frame_token_ = token;
     rasterized_generation_ = surface_generation_;
+    if (!gpu_poll_timer_.isActive()) gpu_poll_timer_.start();
     FrameSwapped();
   }
 #else
@@ -521,8 +559,9 @@ class DorotiSurface final : public DorotiWindowBase {
       Diagnostic("gl.renderer", renderer);
       Diagnostic("gl.version", reinterpret_cast<const char*>(functions->glGetString(GL_VERSION)));
       const auto normalized = QByteArray(renderer == nullptr ? "" : renderer).toLower();
-      software_renderer_ = normalized.contains("llvmpipe") || normalized.contains("softpipe") ||
-                           normalized.contains("swiftshader");
+      const bool software_renderer = normalized.contains("llvmpipe") || normalized.contains("softpipe") ||
+                                     normalized.contains("swiftshader");
+      Diagnostic("gl.softwareRenderer", software_renderer ? "true" : "false");
       const auto alpha_bits = QByteArray::number(current->format().alphaBufferSize());
       Diagnostic("surface.alphaBits", alpha_bits.constData());
       Diagnostic("surface.repaint", "full-transparent-clear");
@@ -570,15 +609,6 @@ class DorotiSurface final : public DorotiWindowBase {
       reported_stencil_bits_ = descriptor.stencil_bits;
       reported_device_pixel_ratio_ = descriptor.device_pixel_ratio;
       surface_diagnostics_reported_ = true;
-    }
-    if (software_renderer_) {
-      fatal_ = true;
-      Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
-      callbacks_.fatal(callback_context_, DOROTI_QT_ERROR_UNSUPPORTED_FEATURE,
-                       Utf8("Qt OpenGL software or non-accelerated renderer is not accepted by the Linux GPU backend"));
-      QCoreApplication::exit(DOROTI_QT_ERROR_UNSUPPORTED_FEATURE);
-      RequestClose(this);
-      return;
     }
     // A Wayland/EGL swapchain does not promise that a newly acquired buffer is
     // zeroed. Clear the complete native target before handing it to Skia so a
@@ -939,6 +969,9 @@ class DorotiSurface final : public DorotiWindowBase {
   void ReleaseSurface() {
     if (surface_released_ || context_identity_ == 0) return;
     surface_released_ = true;
+#ifdef DOROTI_QT_GRAPHITE
+    gpu_poll_timer_.stop();
+#endif
 #ifndef DOROTI_QT_GRAPHITE
     if (context() != nullptr && QOpenGLContext::currentContext() != context()) makeCurrent();
 #endif
@@ -1155,7 +1188,6 @@ class DorotiSurface final : public DorotiWindowBase {
   QByteArray backdrop_effective_;
   QByteArray backdrop_provider_;
   QTimer* backdrop_event_timer_ = nullptr;
-  bool software_renderer_ = false;
   bool fatal_ = false;
   bool closing_ = false;
   bool close_requested_ = false;
@@ -1407,6 +1439,7 @@ const doroti_qt_host_api_v2 kHostApi{
     &DorotiSurface::ClearTextClient,
     &DorotiSurface::UpdateSemantics,
     &DorotiSurface::ClearSemantics,
+    &DorotiSurface::PreparePresent,
 };
 
 std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
@@ -1429,6 +1462,12 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
       callbacks->clipboard_text == nullptr || callbacks->configuration_changed == nullptr ||
       callbacks->semantics_action == nullptr)
     return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+#ifdef DOROTI_QT_GRAPHITE
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_PRESENT_HOOK) == 0)
+    return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_GPU_POLL) == 0 || callbacks->poll_gpu_work == nullptr)
+    return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+#endif
   if (configuration->title.data == nullptr || configuration->title.length == 0 ||
       configuration->logical_width <= 0 || configuration->logical_height <= 0)
     return DOROTI_QT_ERROR_INVALID_ARGUMENT;

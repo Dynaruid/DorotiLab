@@ -29,20 +29,20 @@ internal static class GpuSelectionFixture
                 var attributes = WindowsGpuSelection.AnglePlatformAttributes();
                 if (preference == WindowsGpuPreference.NoPreference)
                 {
-                    Require(attributes.SequenceEqual(new[] { 0x3203, 0x3208, 0x3209, 0x320A, 0x3038 }),
-                        "Default ANGLE selection must remain unpinned.");
+                    Require(attributes.SequenceEqual(new[] { 0x3203, 0x3208, 0x3038 }),
+                        "Default ANGLE selection must remain unpinned and allow software devices.");
                 }
                 else
                 {
-                    Require(attributes.Length == 9 && attributes[4] == 0x34A0 && attributes[6] == 0x34A1 &&
-                        unchecked((uint)attributes[5]) == (uint)(luid >> 32) &&
-                        unchecked((uint)attributes[7]) == unchecked((uint)luid) && attributes[8] == 0x3038,
+                    Require(attributes.Length == 7 && attributes[2] == 0x34A0 && attributes[4] == 0x34A1 &&
+                        unchecked((uint)attributes[3]) == (uint)(luid >> 32) &&
+                        unchecked((uint)attributes[5]) == unchecked((uint)luid) && attributes[6] == 0x3038,
                         "ANGLE preference must use the selected DXGI adapter's LUID.");
                 }
                 // A single eligible device must win even if the requested preference ranks it last.
                 foreach (var otherPreference in Enum.GetValues<WindowsGpuPreference>())
                     Require(WindowsGpuSelection.SelectAdapter(otherPreference, [luid]) == luid,
-                        "Preference must not select outside the eligible hardware set.");
+                        "Preference must not select outside the eligible adapter set.");
                 results.Add(new { preference = preference.ToString(), luid = $"{luid:X16}" });
             }
             ExpectFailure<ArgumentException>(() => WindowsGpuSelection.SelectAdapter(WindowsGpuPreference.NoPreference, []));

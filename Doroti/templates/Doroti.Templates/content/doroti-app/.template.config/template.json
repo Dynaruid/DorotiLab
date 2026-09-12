@@ -11,6 +11,7 @@
     {
       "source": "./",
       "target": "./",
+      "copyOnly": ["**/node_modules/**/*", "linux/native/**/*"],
       "modifiers": [
         {
           "condition": "(nativeAndroidLanguage == \"java\")",

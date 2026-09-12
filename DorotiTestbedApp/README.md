@@ -81,7 +81,7 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.cspro
 
 Run on a Linux x64 host. Requires Qt 6.5 or later Core/Gui/Widgets/OpenGL, CMake,
 a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`,
-and the `wayland` or `xcb` QPA plugin. The command also builds the native shim.
+the `wayland` or `xcb` QPA plugin, Vulkan development headers, a Vulkan 1.2 device, and fontconfig. The command also builds the native shim. Hardware and software Vulkan devices are accepted based on API capabilities. The command below runs on llvmpipe VMs without environment overrides or launch profiles; published executables use the same policy.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
@@ -201,7 +201,12 @@ Add these query parameters to the sample URL only when measuring:
 ### Windows GPU and Acrylic
 
 Windows App SDK defaults to Vulkan; ANGLE is an explicit alternative.
-**The Material sample uses an opaque surface.** Use diagnostics to check Acrylic.
+The Material sample starts with an opaque surface. Use **Acrylic window** beside the
+brightness control to toggle a translucent surface on Windows 11 24H2+ or Linux.
+The control appears in the app bar, navigation rail, or expanded settings according
+to the window width, and is disabled on other platforms. It preserves the selected
+brightness and color palette. The native backdrop is prepared at startup; toggling
+changes the sample surface opacity without recreating the window.
 On Windows 11 24H2 or later, ordinary `WindowBackdropMode.acrylic` needs no experimental flag.
 
 | Environment variable | Values / behavior |
@@ -220,7 +225,7 @@ If you previously set a variable with `$env:`, clear it with `Remove-Item Env:VA
 Palettes use `ColorScheme.CreateFromSeed`; widgets read `Theme.of(context).colorScheme`.
 The window's `backgroundColor` and `darkBackgroundColor` follow the same transition.
 
-Linux diagnostic windows request Acrylic with a transparent fallback. A Wayland compositor
+Linux sample and diagnostic windows request Acrylic with a transparent fallback. A Wayland compositor
 supporting `ext-background-effect-v1` or the legacy KDE blur protocol receives a native blur request;
 otherwise, the transparent fallback applies.
 

@@ -6,7 +6,7 @@ internal static unsafe class QtNativeV2
 {
     internal const uint AbiVersion = 3;
     internal static ulong RequiredFeatures =>
-        (QtSkiaSurface.GraphiteEnabled ? (1UL << 10) | (1UL << 11) : (1UL << 0)) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
+        (QtSkiaSurface.GraphiteEnabled ? (1UL << 10) | (1UL << 11) | (1UL << 12) | (1UL << 13) : (1UL << 0)) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
         (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7) | (1UL << 8) | (1UL << 9);
 
     internal enum Result : int
@@ -174,6 +174,7 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, void> ClearTextClient;
         internal readonly delegate* unmanaged[Cdecl]<nint, Utf8, void> UpdateSemantics;
         internal readonly delegate* unmanaged[Cdecl]<nint, void> ClearSemantics;
+        internal readonly delegate* unmanaged[Cdecl]<nint, void> PreparePresent;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -202,6 +203,7 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, ulong, Utf8, void> ClipboardText;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, Utf8, uint, uint, uint, void> ConfigurationChanged;
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, long, long, Utf8, void> SemanticsAction;
+        internal readonly delegate* unmanaged[Cdecl]<nint, nint, int> PollGpuWork;
 
         internal Callbacks(nint callbackContext)
         {
@@ -228,6 +230,7 @@ internal static unsafe class QtNativeV2
             ClipboardText = &DorotiQtRunner.OnClipboardText;
             ConfigurationChanged = &DorotiQtRunner.OnConfigurationChanged;
             SemanticsAction = &DorotiQtRunner.OnSemanticsAction;
+            PollGpuWork = &DorotiQtRunner.OnPollGpuWork;
         }
     }
 
@@ -243,12 +246,14 @@ internal static unsafe class QtNativeV2
         RequireSize<Key>(56);
         RequireSize<TextConfiguration>(40);
         RequireSize<TextState>(40);
-        RequireSize<HostApi>(120);
-        RequireSize<Callbacks>(176);
+        RequireSize<HostApi>(128);
+        RequireSize<Callbacks>(184);
         RequireOffset<Surface>(nameof(Surface.SurfaceGeneration), 8);
         RequireOffset<Surface>(nameof(Surface.FramebufferObject), 24);
         RequireOffset<Surface>(nameof(Surface.DevicePixelRatio), 40);
         RequireOffset<Surface>(nameof(Surface.TimestampMicroseconds), 80);
+        RequireOffset<Surface>(nameof(Surface.VulkanInstanceApiVersion), 120);
+        RequireOffset<Callbacks>(nameof(Callbacks.PollGpuWork), 176);
         RequireOffset<Callbacks>(nameof(Callbacks.CallbackContext), 24);
     }
 

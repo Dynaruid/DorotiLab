@@ -213,7 +213,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
 
     public override Widget build(BuildContext context)
     {
-        if (_showSample) return new MaterialSample.SampleApp();
+        if (_showSample) return new MaterialSample.SampleApp(App.SampleAcrylicAvailable);
         BuildCount++;
         var palette = Material.Theme.of(context).colorScheme;
         var interactionOverlay = palette.primary.withOpacity(0.13);

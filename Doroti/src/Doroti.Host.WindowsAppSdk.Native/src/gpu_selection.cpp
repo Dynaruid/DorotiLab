@@ -20,7 +20,6 @@ doroti_windows_gpu_select_adapter_v1(
     DXGI_ADAPTER_DESC1 description{};
     const auto result = adapter->GetDesc1(&description);
     if (FAILED(result)) return result;
-    if ((description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0) return S_FALSE;
     const auto luid = static_cast<uint64_t>(description.AdapterLuid.LowPart) |
         (static_cast<uint64_t>(static_cast<uint32_t>(description.AdapterLuid.HighPart)) << 32);
     bool eligible = eligible_count == 0;

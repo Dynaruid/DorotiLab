@@ -50,6 +50,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     public int Height { get; private set; }
     public long Generation { get; private set; }
     public string DeviceName { get; private set; } = "";
+    public bool IsSoftwareDevice { get; private set; }
     public object ContextIdentity => _session ?? throw new InvalidOperationException("No Vulkan session.");
     public bool IsDeviceLost => _session?.IsDeviceLost == true;
     public event Action? ResourcesReleasing;
@@ -87,7 +88,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         if (instanceApiVersion < Api12) throw new PlatformNotSupportedException("Qt must create and report a real Vulkan 1.2 instance.");
         GraphiteNativeLibrary.ConfigureOfficial(GraphiteNativeLibrary.PackagedOfficialAsset());
         var vk = Vk.GetApi();
-        try { return new(vk, new(instance), new(surface), enabledInstanceExtensions, false, false); }
+        try { return new(vk, new(instance), new(surface), enabledInstanceExtensions, false, false, pipelinedWindowFrames: true); }
         catch { vk.Dispose(); throw; }
     }
 
@@ -109,7 +110,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             foreach (var candidate in devices)
             {
                 _vk.GetPhysicalDeviceProperties(candidate, out var properties);
-                if (properties.DeviceType == PhysicalDeviceType.Cpu || properties.ApiVersion < (Api12)) continue;
+                if (properties.ApiVersion < Api12) continue;
                 if (adapterLuid is { } requiredLuid)
                 {
                     var identity = new PhysicalDeviceIDProperties { SType = StructureType.PhysicalDeviceIDProperties };
@@ -132,11 +133,15 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                     }
                     _physical = candidate; _family = i;
                     DeviceName = Marshal.PtrToStringUTF8((nint)properties.DeviceName) ?? "Vulkan GPU";
+                    IsSoftwareDevice = properties.DeviceType == PhysicalDeviceType.Cpu;
+                    if (OperatingSystem.IsLinux())
+                        Console.WriteLine($"DorotiGraphite Vulkan device={DeviceName} type={properties.DeviceType}");
                     break;
                 }
                 if (_physical.Handle != 0) break;
             }
-            if (_physical.Handle == 0) throw new PlatformNotSupportedException("A hardware Vulkan 1.2 graphics/present queue is required; no software fallback.");
+            if (_physical.Handle == 0) throw new PlatformNotSupportedException(
+                "A Vulkan 1.2 device with a compatible graphics/present queue is required.");
             float priority = 1;
             var queueInfo = new DeviceQueueCreateInfo { SType = StructureType.DeviceQueueCreateInfo,
                 QueueFamilyIndex = _family, QueueCount = 1, PQueuePriorities = &priority };
@@ -197,7 +202,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         }
     }
 
-    public bool Render(int width, int height, Action<SKSurface, int, int> paint, Func<bool>? shouldPresent = null)
+    public bool Render(int width, int height, Action<SKSurface, int, int> paint, Func<bool>? shouldPresent = null,
+        Action? beforePresent = null)
     {
         CheckOwner();
         if (width <= 0 || height <= 0) return false;
@@ -291,6 +297,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             var present = new PresentInfoKHR { SType = StructureType.PresentInfoKhr,
                 WaitSemaphoreCount = 1, PWaitSemaphores = &ready,
                 SwapchainCount = 1, PSwapchains = &swapchain, PImageIndices = &index };
+            beforePresent?.Invoke();
             var result = _swapchains.QueuePresent(_queue, &present);
             // Android reports Suboptimal when compositor rotation differs from
             // our identity pre-transform. The image remains usable; recreating
@@ -333,7 +340,10 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     private void Resize(int width, int height)
     {
         DrainWindowFrames();
-        ReleaseImages();
+        // Keep the native window associated with its current swapchain until
+        // WSI creates the replacement. Destroying it first can expose an empty
+        // surface to the compositor during an interactive resize.
+        ReleaseImages(releaseSwapchain: false);
         Check(_surfaces.GetPhysicalDeviceSurfaceCapabilities(_physical, _surface, out var caps), "surface capabilities");
         // Android paints in SurfaceView coordinates, without pre-rotating the
         // Graphite image. Identity lets the compositor apply device orientation.
@@ -368,8 +378,25 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             Surface = _surface, MinImageCount = images, ImageFormat = _format, ImageColorSpace = selected.ColorSpace,
             ImageExtent = extent, ImageArrayLayers = 1, ImageUsage = ImageUsageFlags.TransferDstBit,
             ImageSharingMode = SharingMode.Exclusive, PreTransform = preTransform,
-            CompositeAlpha = alpha, PresentMode = PresentModeKHR.FifoKhr, Clipped = true };
-        Check(_swapchains.CreateSwapchain(_device, &info, null, out _swapchain), "create swapchain");
+            CompositeAlpha = alpha, PresentMode = PresentModeKHR.FifoKhr, Clipped = true,
+            OldSwapchain = _swapchain };
+        var oldSwapchain = _swapchain;
+        try
+        {
+            // A failed replacement also retires OldSwapchain; never acquire
+            // from it again, and retain neither handle outside owner cleanup.
+            Check(_swapchains.CreateSwapchain(_device, &info, null, out var replacement), "create swapchain");
+            _swapchain = replacement;
+        }
+        catch
+        {
+            _swapchain = default;
+            throw;
+        }
+        finally
+        {
+            if (oldSwapchain.Handle != 0) _swapchains.DestroySwapchain(_device, oldSwapchain, null);
+        }
         Check(_swapchains.GetSwapchainImages(_device, _swapchain, &count, null), "image count");
         _images = new VkImage[count]; _initialized = new bool[count];
         fixed (VkImage* values = _images)
@@ -447,7 +474,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         finally { foreach (var value in strings) Marshal.FreeCoTaskMem(value); }
     }
 
-    private void ReleaseImages()
+    private void ReleaseImages(bool releaseSwapchain = true)
     {
         ResourcesReleasing?.Invoke();
         foreach (var slot in _windowFrames)
@@ -462,11 +489,15 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         ReleaseOfficialIntermediate();
         if (_backing.Handle != 0) _vk.DestroyImage(_device, _backing, null);
         if (_memory.Handle != 0) _vk.FreeMemory(_device, _memory, null);
-        if (_swapchain.Handle != 0) _swapchains.DestroySwapchain(_device, _swapchain, null);
+        if (releaseSwapchain && _swapchain.Handle != 0)
+        {
+            _swapchains.DestroySwapchain(_device, _swapchain, null);
+            _swapchain = default;
+        }
         foreach (var semaphore in _presentReady)
             if (semaphore.Handle != 0) _vk.DestroySemaphore(_device, semaphore, null);
         _presentReady = [];
-        _backing = default; _memory = default; _swapchain = default;
+        _backing = default; _memory = default;
         _images = []; _initialized = [];
     }
 

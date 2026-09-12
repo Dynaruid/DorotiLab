@@ -8,7 +8,7 @@ Material 테마는 Material 3 전용입니다. `ThemeData` factory, 생성자, `
 
 iOS 기기용(`ios-arm64`) Release는 NativeAOT가 기본입니다. Debug·시뮬레이터·다른 플랫폼은 기존 기본값을 유지하며, `-CompilationMode Mono`로 명시적 복구 프로필을 선택할 수 있습니다. [iOS 빌드 안내](validation/native-aot/README.md)를 참고하세요.
 
-공식 Graphite를 기본 경로로 전환했습니다. Windows는 manifest 지정 없이 공식 NativeAssets의 앱 디렉터리 DLL을 검증해 사용하고, Android는 공식 APK 자산을 검증합니다. Qt는 공식 desktop 자산과 Vulkan 1.2를 사용하도록 구성했습니다. 커스텀 Skia 빌드와 private ABI binding은 보관 후 활성 경로에서 제거했습니다. Apple·Linux build/실행/AOT 검증은 사용자 요청으로 생략했으며 전체 성능 수용은 미완료입니다. [전환 결과와 지원표](docs/validation/official-graphite-cutover-2026-09-12.md), [work0 상태](../work0.md)를 참고하세요.
+공식 Graphite를 기본 경로로 전환했습니다. Windows는 manifest 지정 없이 공식 NativeAssets의 앱 디렉터리 DLL을 검증해 사용하고, Android는 공식 APK 자산을 검증합니다. Qt는 공식 desktop 자산과 Vulkan 1.2를 사용하도록 구성했습니다. 커스텀 Skia 빌드와 private ABI binding은 보관 후 활성 경로에서 제거했습니다. Apple 검증 생략은 유지합니다. Linux build/package/Qt ABI 검증은 재개했지만, llvmpipe Graphite는 기본으로 실행할 수 있습니다. 프로젝트의 하드웨어/소프트웨어 장치 구분에 따른 차단은 제거했습니다. headless 검사는 통과했고 Material 제품의 depth 동기화 오류와 하드웨어·성능 검증은 남아 있습니다. [Linux 후속 검토](docs/validation/linux-official-graphite-2026-09-12.md)를 참고하세요. [전환 결과와 지원표](docs/validation/official-graphite-cutover-2026-09-12.md), [work0 상태](../work0.md)를 참고하세요.
 
 ## 개발 방식
 
@@ -34,7 +34,7 @@ Widget 앱은 `new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())`�
 - `Doroti.Target.Windows.WindowsAppSdk.win-x64`: `HwndExactCpp`, native host/bootstrap, app-directory ANGLE runtime을 포함하는 self-contained unpackaged Windows target
 - `Doroti.Host.Maui`: Android, iOS, Mac Catalyst, AppKit 및 명시적 대안 Windows MAUI backend를 위한 MAUI lifecycle과 SKGLView/AppKit MTKView Metal adapter
 - `Doroti.Host.Web`: Worker 부팅, WebGL2 canvas, input, accessibility, resource bridge
-- `Doroti.Host.Qt`: managed-owned Linux process, Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop service와 accessibility adapter
+- `Doroti.Host.Qt`: managed-owned Linux process, Qt 6 `QWindow`, versioned C ABI v2, GPU surface, input, IME, desktop service와 accessibility adapter
 
 Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 기본 `worker-direct-webgpu`는 main에서 초기화한 단일 .NET runtime의 렌더 Worker에서 SkiaSharp Graphite/Dawn을 사용합니다. `worker-direct-webgl`을 명시하면 Ganesh/WebGL2를 사용합니다. 두 경로 모두 visible canvas를 한 번 이전합니다. `auto`와 미지원 값은 WebGPU를 선택하며 GPU 초기화 실패 시 자동 전환하지 않습니다. CanvasKit과 bitmap 표시 경로는 제거했습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
@@ -102,7 +102,7 @@ Material demo는 Windows에서 일반 `acrylic`을 요청하며 투명 renderer 
 
 Windows App SDK target/package, 기본 CLI 경로, hardware-D3D11 ANGLE runtime, first-frame ordering과 확인한 실제 resize/mixed-DPI 경계 동작에는 현재 evidence가 있습니다. C10은 관측한 opaque 조건에 대한 사용자 acceptance PASS이며 strict synthetic resize qualification과 pixel/cadence FAIL은 그대로 유지합니다. Experimental Acrylic 자동화와 실물 acceptance는 별도 evidence class이며, 실행하지 않은 DPI, refresh, edge/speed, monitor, scan-out, IME, accessibility, window-management, device-loss 조합은 모두 `notVerified`입니다. 마지막 Windows의 전체 `Doroti.Product.slnx` Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출하여 실패했으므로 Windows PASS와 global FAIL을 분리합니다.
 
-Linux Qt의 공용 renderer, 실제 Material gallery, swap 기반 terminal ACK, 기본 input callback, semantics tree, framework-dependent/self-contained publish는 Kubuntu 26.04 VMware의 Wayland/XWayland에서 확인했습니다. 물리 Linux, 실제 X11 session, 한글 IME/Orca, context 강제 재생성, 장기 soak와 성능은 `notVerified`입니다. 자세한 값은 archive한 [Linux Qt backend 요약](../history/26-08-20/linux-qt-backend-summary.md)을 참고하세요.
+과거 Linux Qt OpenGL 경로의 공용 renderer, 실제 Material gallery, swap 기반 terminal ACK, 기본 input callback, semantics tree, framework-dependent/self-contained publish는 Kubuntu 26.04 VMware의 Wayland/XWayland에서 확인했습니다. 물리 Linux, 실제 X11 session, 한글 IME/Orca, context 강제 재생성, 장기 soak와 성능은 `notVerified`입니다. 자세한 값은 archive한 [Linux Qt backend 요약](../history/26-08-20/linux-qt-backend-summary.md)을 참고하세요.
 
 AppKit의 live 범위와 남은 gate는 archive한 [AppKit dual-backend 요약](../history/26-08-20/macos-appkit-dual-backend-summary.md)에 따로 기록합니다. Build, native live, browser live, physical/device, accessibility 결과는 서로 대신하지 않습니다.
 

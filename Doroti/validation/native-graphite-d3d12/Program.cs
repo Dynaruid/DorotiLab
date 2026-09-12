@@ -31,7 +31,6 @@ internal static unsafe class Program
             {
                 using (adapter)
                 {
-                    if ((adapter.Description1.Flags & AdapterFlags.Software) != 0) continue;
                     using var device = D3D12CreateDevice<ID3D12Device>(adapter, FeatureLevel.Level110);
                     using var queue = device.CreateCommandQueue(CommandListType.Direct);
                     using var allocator = device.CreateCommandAllocator(CommandListType.Direct);

@@ -360,8 +360,6 @@ internal sealed class AngleDevice : IDisposable
     private const uint EglPlatformAngle = 0x3202;
     private const int EglPlatformAngleType = 0x3203;
     private const int EglPlatformAngleTypeD3D11 = 0x3208;
-    private const int EglPlatformAngleDeviceType = 0x3209;
-    private const int EglPlatformAngleDeviceTypeHardware = 0x320A;
     private const int EglSurfaceType = 0x3033;
     private const int EglPbufferBit = 0x0001;
     private const int EglRenderableType = 0x3040;
@@ -392,7 +390,6 @@ internal sealed class AngleDevice : IDisposable
         var platformAttributes = new[]
         {
             EglPlatformAngleType, EglPlatformAngleTypeD3D11,
-            EglPlatformAngleDeviceType, EglPlatformAngleDeviceTypeHardware,
             EglNone,
         };
         _display = EglGetPlatformDisplayExt(EglPlatformAngle, 0, platformAttributes);
