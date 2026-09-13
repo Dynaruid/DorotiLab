@@ -1014,7 +1014,11 @@ public sealed class Paragraph : IDisposable
             _lines.RemoveRange(checked((int)_maxLines.Value), _lines.Count - checked((int)_maxLines.Value));
         }
         numberOfLines = _lines.Count;
-        height = numberOfLines * _lineHeight;
+        // An empty paragraph still reserves the font's line height for its
+        // caret. It has no glyphs or line-metrics entries, matching dart:ui.
+        // A zero height collapses RenderEditable and clamps handle leaders to
+        // the top of the caret when an empty field is long-pressed or cleared.
+        height = (text.Length == 0 ? 1 : numberOfLines) * _lineHeight;
     }
     public List<TextBox> getBoxesForRange(long start, long end, BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight, BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight)
     {

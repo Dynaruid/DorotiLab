@@ -39,6 +39,12 @@ if (args is ["--magnifier-shadows"])
     return;
 }
 
+if (args is ["--touch-cursor-drag"])
+{
+    MountedPickerContracts.VerifyTouchCursorDrag();
+    return;
+}
+
 if (args is ["--ios-text-menu"])
 {
     MountedPickerContracts.VerifyIosTextMenu();

@@ -277,8 +277,19 @@ public sealed partial class MauiTextInputBridge : IDisposable
             _inputMutations.Enqueue((mutation, changesClient));
             if (changesClient) _pendingClientChanges++;
         }
+#if IOS && !MACCATALYST
+        // Becoming/resigning first responder synchronously publishes UIKit
+        // keyboard metrics. Those callbacks can drain framework focus work
+        // while TextInput is still attaching/detaching its client (for example
+        // when a tapped SearchBar opens its search route). The outer detach
+        // then clears the new connection, leaving a focused native field with
+        // no framework subscriber. Finish the framework operation before any
+        // UIKit mutation, even when it already originates on the UI thread.
+        _inputDispatcher.Dispatch(DrainInputMutations);
+#else
         if (_inputDispatcher.IsDispatchRequired) _inputDispatcher.Dispatch(DrainInputMutations);
         else DrainInputMutations();
+#endif
     }
 
     private void DrainInputMutations()

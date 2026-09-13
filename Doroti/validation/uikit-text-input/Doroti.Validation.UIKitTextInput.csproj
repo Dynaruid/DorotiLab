@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <RuntimeIdentifier>iossimulator-arm64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <AppBundleManifest>../uikit-metal-lifecycle/ios/Info.plist</AppBundleManifest>
+    <ApplicationId>dev.doroti.validation.uikit-text-input</ApplicationId>
+    <ApplicationTitle>Doroti UIKit Text Input</ApplicationTitle>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <MtouchLink>None</MtouchLink>
+    <UseInterpreter>true</UseInterpreter>
+    <DorotiTextInputBridgeSource Condition="'$(DorotiTextInputBridgeSource)' == ''">../../src/Doroti.Host.Maui/MauiTextInputBridge.cs</DorotiTextInputBridgeSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <ProjectReference Include="../../src/Doroti.Ui/Doroti.Ui.csproj" />
+    <Compile Include="$(DorotiTextInputBridgeSource)" Link="Production/MauiTextInputBridge.cs" />
+  </ItemGroup>
+</Project>

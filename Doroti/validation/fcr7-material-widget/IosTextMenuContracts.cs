@@ -64,6 +64,8 @@ internal static partial class MountedPickerContracts
             Pump();
             var editable = (EditableTextState)Elements(binding.rootElement!).OfType<StatefulElement>()
                 .Single(e => e.widget is EditableText).state;
+            if (editable.widget.selectionControls is not C.CupertinoTextSelectionHandleControls)
+                throw new Exception("iOS TextField must default to Cupertino selection handles.");
             var position = editable.renderEditable.localToGlobal(new Offset(20, 10));
             if (longPress) LongPress(position); else DoubleTap(position);
             Pump();
@@ -146,6 +148,12 @@ internal static partial class MountedPickerContracts
             if (controller.text != " Doroti") throw new Exception("Menu Cut failed");
             view.DispatchPlatformEvent(() => controller.text = "");
             Pump();
+            var collapsedHandle = editable.widget.selectionControls!.buildHandle(
+                editable.context, TextSelectionHandleType.collapsed, editable.renderEditable.preferredLineHeight);
+            if (collapsedHandle is not SizedBox { child: null })
+                throw new Exception("An iOS collapsed selection must retain an invisible drag target, without a painted handle.");
+            if (editable.renderEditable.size.height <= 0)
+                throw new Exception("Clearing an iOS text field collapsed its editable line height.");
             DoubleTap(position);
             Pump();
             PressMenuItem(ContextMenuButtonType.paste);

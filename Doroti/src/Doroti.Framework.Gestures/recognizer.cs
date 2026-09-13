@@ -286,7 +286,7 @@ public enum GestureRecognizerState
 
 public static partial class RecognizerLibrary
 {
-    internal static double _unsetTouchSlop = -1.0;
+    internal const double _unsetTouchSlop = -1.0;
 }
 
 public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecognizer
@@ -300,10 +300,13 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
     internal virtual bool _gestureAccepted { get; set; } = false;
     internal virtual Timer? _timer { get; set; } = default;
 
-    protected PrimaryPointerGestureRecognizer(Duration? deadline = null, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null, object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior)
+    protected PrimaryPointerGestureRecognizer(Duration? deadline = null, double? preAcceptSlopTolerance = RecognizerLibrary._unsetTouchSlop, double? postAcceptSlopTolerance = RecognizerLibrary._unsetTouchSlop, object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior)
     {
-        double? __preAcceptSlopTolerance = preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop;
-        double? __postAcceptSlopTolerance = postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop;
+        // Omission uses the device's touch slop; explicit null allows unlimited
+        // movement. LongPress passes null after acceptance so dragging can
+        // continue beyond the initial touch slop until the pointer is lifted.
+        double? __preAcceptSlopTolerance = preAcceptSlopTolerance;
+        double? __postAcceptSlopTolerance = postAcceptSlopTolerance;
         this.deadline = deadline;
         this._preAcceptSlopTolerance = __preAcceptSlopTolerance;
         this._postAcceptSlopTolerance = __postAcceptSlopTolerance;

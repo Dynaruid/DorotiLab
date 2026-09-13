@@ -9,6 +9,7 @@ internal static class CaretHandleAlignmentContracts
     {
         using var environment = new ImageFixtureEnvironment();
         environment.Renderer.RegisterFontAsync(File.ReadAllBytes("DorotiTestbedApp/assets/fonts/Roboto-medium.ttf"), "Roboto").GetAwaiter().GetResult();
+        VerifyEmptyFieldGeometry();
         var cases = 0;
         foreach (var platform in new[] { HostOperatingSystem.android, HostOperatingSystem.iOS, HostOperatingSystem.windows })
         using (PlatformEnvironmentContext.Enter(new PlatformConfiguration(
@@ -69,6 +70,57 @@ internal static class CaretHandleAlignmentContracts
             }
         }
         Console.WriteLine($"Caret/handle alignment PASS: {cases} collapsed cases, range and reversed-range edges, fractional parent origin, DPR, cursor width/offset, scrolling, LTR/RTL, Android/iOS/Windows.");
+    }
+
+    private static void VerifyEmptyFieldGeometry()
+    {
+        foreach (var platform in new[] { HostOperatingSystem.android, HostOperatingSystem.iOS })
+        using (PlatformEnvironmentContext.Enter(new PlatformConfiguration(
+            [new Locale("en", "US")], Brightness.light, false, false, platform)))
+        foreach (var direction in new[] { TextDirection.ltr, TextDirection.rtl })
+        foreach (var fontSize in new[] { 14.0, 24.0 })
+        {
+            var style = new Doroti.Framework.Painting.TextStyle(fontFamily: "Roboto", fontSize: fontSize);
+            var editable = new RenderEditable(
+                text: new TextSpan(text: "", style: style), textDirection: direction,
+                startHandleLayerLink: new LayerLink(), endHandleLayerLink: new LayerLink(),
+                offset: ViewportOffset.CreateFixed(0), selection: TextSelection.CreateCollapsed(0));
+            var owner = new PipelineOwner { rootNode = editable };
+            try
+            {
+                // InputDecorator gives its editable loose vertical constraints.
+                // A tight-height parent would mask an empty paragraph's zero height.
+                foreach (var text in new[] { "", "text", "" })
+                {
+                    editable.text = new TextSpan(text: text, style: style);
+                    editable.selection = TextSelection.CreateCollapsed(text.Length);
+                    editable.layout(new BoxConstraints(maxWidth: 180, maxHeight: 100));
+                    var endpoint = editable.getEndpointsForSelection(editable.selection!).Single().point;
+                    var lineHeight = editable.preferredLineHeight;
+                    Near(editable.size.height, lineHeight, $"{platform}/{direction}/{fontSize}/{text.Length}: editable line height");
+                    Near(Math.Clamp(endpoint.dy, 0, editable.size.height), lineHeight,
+                        "handle leader remains at line bottom after clearing text");
+                    if (text.Length == 0)
+                    {
+                        using var paragraph = new ParagraphBuilder(new ParagraphStyle(
+                            fontFamily: "Roboto", fontSize: fontSize, textDirection: direction)).build();
+                        paragraph.layout(new ParagraphConstraints(180));
+                        Near(paragraph.height, lineHeight, "empty paragraph reserves a line height");
+                        if (paragraph.numberOfLines != 0 || paragraph.computeLineMetrics().Count != 0 ||
+                            paragraph.getLineMetricsAt(0) is not null || paragraph.getGlyphInfoAt(0) is not null ||
+                            paragraph.getClosestGlyphInfoForOffset(Offset.zero) is not null)
+                            throw new InvalidOperationException("Empty paragraph invented line metrics or glyphs.");
+                    }
+                }
+            }
+            finally
+            {
+                owner.rootNode = null;
+                editable.dispose();
+                owner.dispose();
+            }
+        }
+        Console.WriteLine("Empty-field handle anchors: initial empty, populated, cleared; Android/iOS, LTR/RTL, font sizes PASS.");
     }
 
     private static void Near(double actual, double expected, string label)

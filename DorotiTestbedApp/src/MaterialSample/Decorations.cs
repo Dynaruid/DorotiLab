@@ -58,7 +58,9 @@ internal sealed class ComponentSectionState : State<ComponentSection>
             [new Text(widget.Label, style: M.Theme.of(context).textTheme.titleMedium),
              new M.Tooltip(message: widget.Tooltip, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 5), child: new Icon(M.Icons.info_outline, size: 16)))]),
             new ConstrainedBox(constraints: BoxConstraints.CreateTightFor(width: 450), child: new Focus(focusNode: _focus,
-                child: new GestureDetector(onTapDown: _ => _focus.requestFocus(), behavior: HitTestBehavior.opaque,
+                // Wait until the card wins the tap. onTapDown also fires while
+                // a child is recognizing a long press and steals its focus.
+                child: new GestureDetector(onTap: () => _focus.requestFocus(), behavior: HitTestBehavior.opaque,
                     child: new M.Card(elevation: 0, shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(12),
                         side: new BorderSide(color: M.Theme.of(context).colorScheme.outlineVariant)),
                         child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 5, vertical: 20), child: new Center(child: widget.Child))))))
