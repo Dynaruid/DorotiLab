@@ -191,8 +191,10 @@ if (args is ["--tabs"])
     return;
 }
 
-if (args is ["--mounted-text"])
+if (args is ["--mounted-text"] or ["--mounted-text", _])
 {
+    if (args.Length > 1) WindowsSampleContracts.OutputDirectory = args[1];
+    WordBoundaryContracts.Verify();
     Environment.SetEnvironmentVariable("DOROTI_VALIDATION_MOUNTED_TEXT", "1");
     MountedPickerContracts.Verify();
     return;

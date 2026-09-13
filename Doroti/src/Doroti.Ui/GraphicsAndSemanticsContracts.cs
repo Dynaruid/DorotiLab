@@ -1088,10 +1088,27 @@ public sealed class Paragraph : IDisposable
     public TextRange getWordBoundary(TextPosition position)
     {
         var offset = Math.Clamp(checked((int)position.offset), 0, text.Length);
+        if (offset == text.Length)
+        {
+            if (offset == 0 || char.IsWhiteSpace(text[offset - 1])) return new TextRange(offset, offset);
+            offset--;
+        }
+
+        // Boundaries describe the character at offset, including whitespace.
+        // Returning the preceding word at a space makes forward word movement
+        // return the current caret offset forever. Keep hard breaks separate so
+        // movement can still stop at a line boundary.
+        static int BoundaryClass(char value) => value switch
+        {
+            '\r' or '\n' or '\v' or '\f' or '\u0085' or '\u2028' or '\u2029' => 2,
+            _ => char.IsWhiteSpace(value) ? 1 : 0,
+        };
+        var boundaryClass = BoundaryClass(text[offset]);
+        if (boundaryClass == 2) return new TextRange(offset, offset + 1);
         var start = offset;
-        var end = offset;
-        while (start > 0 && !char.IsWhiteSpace(text[start - 1])) start--;
-        while (end < text.Length && !char.IsWhiteSpace(text[end])) end++;
+        var end = offset + 1;
+        while (start > 0 && BoundaryClass(text[start - 1]) == boundaryClass) start--;
+        while (end < text.Length && BoundaryClass(text[end]) == boundaryClass) end++;
         return new TextRange(start, end);
     }
     public TextRange getLineBoundary(TextPosition position)

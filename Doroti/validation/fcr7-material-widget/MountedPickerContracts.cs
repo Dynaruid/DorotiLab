@@ -404,6 +404,42 @@ internal static partial class MountedPickerContracts
                         throw new Exception($"Ctrl+Backspace must delete one word: text={controller.text}, selection={controller.selection}");
                 }
                 Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                // Repeat navigation past the first word: a single Ctrl+Right does not
+                // exercise the whitespace boundary where the caret used to get stuck.
+                foreach (var (text, right, left) in new (string, int[], int[])[] {
+                    ("abc def", [3, 7, 7], [4, 0, 0]),
+                    ("abc   def", [3, 9, 9], [6, 0, 0]),
+                    ("가나다\u00a0라마바", [3, 7, 7], [4, 0, 0]),
+                    (" abc def ", [4, 8, 9, 9], [5, 1, 0, 0]),
+                    ("   ", [3, 3], [0, 0]),
+                    ("", [0, 0], [0, 0]),
+                }) {
+                    foreach (var forward in new[] { true, false }) {
+                        foreach (var extend in new[] { false, true }) {
+                            var anchor = forward ? 0 : text.Length;
+                            view.DispatchPlatformEvent(() => {
+                                controller.text = text;
+                                controller.selection = Doroti.Framework.Services.TextSelection.CreateCollapsed(anchor);
+                            });
+                            Pump("text-word-navigation-initial", frames: 2);
+                            Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                            if (extend) Send(0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, KeyEventType.down);
+                            var physical = forward ? 0x7004f : 0x70050;
+                            var logical = forward ? Doroti.Framework.Services.LogicalKeyboardKey.arrowRight : Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft;
+                            foreach (var expected in forward ? right : left) {
+                                Send(physical, logical.keyId, KeyEventType.down);
+                                Send(physical, logical.keyId, KeyEventType.up);
+                                Pump("text-word-navigation", frames: 2);
+                                if (controller.text != text || controller.selection.extentOffset != expected ||
+                                    controller.selection.baseOffset != (extend ? anchor : expected))
+                                    throw new Exception($"Repeated Ctrl+{(extend ? "Shift+" : "")}{(forward ? "Right" : "Left")} in '{text}': expected {expected}, got {controller.selection}");
+                            }
+                            if (extend) Send(0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, KeyEventType.up);
+                            Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                        }
+                    }
+                }
+                Console.WriteLine("Mounted repeated word navigation and selection: PASS");
                 var longInput = string.Concat(Enumerable.Repeat("Long native input ", 20));
                 view.DispatchPlatformEvent(() => host.Edit(new DorotiTextEditingState(longInput, new(longInput.Length, longInput.Length), null)));
                 Pump("text-native-long");
