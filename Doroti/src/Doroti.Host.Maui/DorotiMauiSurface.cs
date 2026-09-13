@@ -47,7 +47,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
             (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
         _semanticsLayer = new AbsoluteLayout { SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None, InputTransparent = true, CascadeInputTransparent = false };
+        #if IOS && !MACCATALYST
+        _textInput = new(CreateHiddenInput<DorotiUIKitEntry>, CreateHiddenInput<DorotiUIKitEditor>, this, attachOnDemand: true);
+#else
         _textInput = new(CreateHiddenInput<Entry>, CreateHiddenInput<Editor>, this, attachOnDemand: true);
+#endif
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId);
 #elif WINDOWS

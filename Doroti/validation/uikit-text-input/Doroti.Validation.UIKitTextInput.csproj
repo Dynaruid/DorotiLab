@@ -19,6 +19,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" />
     <ProjectReference Include="../../src/Doroti.Ui/Doroti.Ui.csproj" />
+    <Compile Include="../../src/Doroti.Host.Maui/DorotiUIKitTextInput.cs" Link="Production/DorotiUIKitTextInput.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/MauiUIKitContextMenu.cs" Link="Production/MauiUIKitContextMenu.cs" />
     <Compile Include="$(DorotiTextInputBridgeSource)" Link="Production/MauiTextInputBridge.cs" />
   </ItemGroup>
 </Project>

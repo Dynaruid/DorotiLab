@@ -899,6 +899,8 @@ internal static partial class MountedPickerContracts
     private sealed class Host : IViewHostCapability, IFrameHostCapability, ISkiaSceneRendererHost, IPlatformMessageHostCapability, IPlatformEnvironmentHostCapability, IInputHostCapability, IViewFocusRequestCapability, ITextInputHostCapability
     {
         public event System.Action<DorotiTextEditingState>? EditingStateChanged;
+        public event System.Action<DorotiFloatingCursorEvent>? FloatingCursorChanged;
+        public void FloatCursor(DorotiFloatingCursorEvent point) => FloatingCursorChanged?.Invoke(point);
         public void Edit(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
         public event System.Action<DorotiTextInputAction>? ActionPerformed { add { } remove { } }
         public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState) { }
@@ -907,7 +909,12 @@ internal static partial class MountedPickerContracts
         public void ClearClient() { }
         private System.Action<TimeSpan>? _frame;
         internal bool HasPendingFrame => _frame is not null;
-        public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default) => ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+        public System.Action<string, ReadOnlyMemory<byte>?>? MessageSent;
+        public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default)
+        {
+            MessageSent?.Invoke(channel, data);
+            return ValueTask.FromResult<ReadOnlyMemory<byte>?>(channel == "flutter/platform" ? "[null]"u8.ToArray() : (ReadOnlyMemory<byte>?)null);
+        }
         public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
         public void RequestFocus(ViewFocusState state, ViewFocusDirection direction) { }
         public event System.Action<PointerDataPacket>? PointerData;

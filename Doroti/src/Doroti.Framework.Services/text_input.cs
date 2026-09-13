@@ -1239,6 +1239,7 @@ internal sealed class _HostTextInputControl : TextInputControl
             DartUiInvocation.Managed("package:flutter/services.dart#TextInput.attach"));
         _capability.EditingStateChanged += OnEditingStateChanged;
         _capability.ActionPerformed += OnActionPerformed;
+        _capability.FloatingCursorChanged += OnFloatingCursorChanged;
         _capability.ConnectionClosed += OnConnectionClosed;
         _capability.SetClient(ToHost(configuration), ToHost(client.currentTextEditingValue ?? TextEditingValue.empty));
     }
@@ -1312,6 +1313,23 @@ internal sealed class _HostTextInputControl : TextInputControl
         });
     }
 
+    private void OnFloatingCursorChanged(DorotiFloatingCursorEvent point)
+    {
+        var client = _client;
+        var view = _view;
+        if (client is null || view is null) return;
+        view.DispatchPlatformEvent(() =>
+        {
+            if (!ReferenceEquals(client, _client) || !ReferenceEquals(view, _view)) return;
+            client.updateFloatingCursor(new RawFloatingCursorPoint(offset: point.offset, state: point.phase switch
+            {
+                DorotiFloatingCursorPhase.start => FloatingCursorDragState.Start,
+                DorotiFloatingCursorPhase.update => FloatingCursorDragState.Update,
+                _ => FloatingCursorDragState.End,
+            }));
+        });
+    }
+
     private void OnActionPerformed(DorotiTextInputAction action)
     {
         var client = _client;
@@ -1364,6 +1382,7 @@ internal sealed class _HostTextInputControl : TextInputControl
         {
             _capability.EditingStateChanged -= OnEditingStateChanged;
             _capability.ActionPerformed -= OnActionPerformed;
+            _capability.FloatingCursorChanged -= OnFloatingCursorChanged;
             _capability.ConnectionClosed -= OnConnectionClosed;
             if (clearHost)
             {
@@ -1661,7 +1680,7 @@ public abstract class IOSSystemContextMenuItemData
             return new DartMap<string, object> { ["callbackId"] = GetHashCode(), ["title"] = title, ["type"] = _jsonType };
         }
     }
-    public override int GetHashCode() => title.GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(GetType(), title);
     public override bool Equals(object? other)
     {
         var __other = other as IOSSystemContextMenuItemData;

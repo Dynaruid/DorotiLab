@@ -22,10 +22,10 @@ internal static partial class MountedPickerContracts
         var sample = sampleController is not null;
         var os = target == TargetPlatform.iOS ? HostOperatingSystem.iOS : HostOperatingSystem.android;
         using var platform = PlatformEnvironmentContext.Enter(new PlatformConfiguration(
-            [new Locale("en", "US")], Brightness.light, false, false, os));
+            [new Locale("en", "US")], Brightness.light, false, false, os, supportsShowingSystemContextMenu: !sample && target == TargetPlatform.iOS));
         using var dispatcher = new PlatformDispatcher();
         using var scope = dispatcher.EnterScope();
-        using var host = new Host { Configuration = new([new Locale("en", "US")], Brightness.light, false, false, os) };
+        using var host = new Host { Configuration = new([new Locale("en", "US")], Brightness.light, false, false, os, supportsShowingSystemContextMenu: !sample && target == TargetPlatform.iOS) };
         const int viewportWidth = 390;
         host.Resize(viewportWidth);
         using var renderer = new SkiaSceneRenderer(1, host, new Color(0xffffffff), null,
@@ -41,6 +41,15 @@ internal static partial class MountedPickerContracts
             .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
             .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, host)
             .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, clipboard));
+        var platformMethods = new List<string>();
+        host.MessageSent = (channel, data) =>
+        {
+            if (channel == "flutter/platform" && data is { } bytes)
+            {
+                using var message = System.Text.Json.JsonDocument.Parse(bytes);
+                platformMethods.Add(message.RootElement.GetProperty("method").GetString()!);
+            }
+        };
         var binding = new WidgetsFlutterBinding(dispatcher);
         var errors = new List<FlutterErrorDetails>();
         var previousError = FlutterError.onError;
@@ -54,7 +63,7 @@ internal static partial class MountedPickerContracts
             Widget body = sample ? new MaterialSample.ComponentsScreen(false, scaffoldKey)
                 : new Align(alignment: Doroti.Framework.Painting.Alignment.topCenter,
                     child: new Padding(padding: Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: 120),
-                        child: new SizedBox(width: 300, child: new M.TextField(controller: controller, focusNode: focus))));
+                        child: new SizedBox(width: 300, child: new M.TextField(controller: controller, focusNode: focus, maxLines: 3))));
             view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(
                 new M.MaterialApp(locale: new Locale("en", "US"), theme: M.ThemeData.Create(platform: target, brightness: Brightness.light),
                     home: new M.Scaffold(key: scaffoldKey, body: body)))));
@@ -135,6 +144,31 @@ internal static partial class MountedPickerContracts
             if (render.floatingCursorOn)
                 throw new Exception($"{target}: floating cursor remained active after releasing the drag");
             Console.WriteLine($"{scenario}: long-press drag, continuous focus and release PASS");
+            if (!sample && target == TargetPlatform.iOS)
+            {
+                if (!platformMethods.Contains("ContextMenu.showSystemContextMenu"))
+                    throw new Exception("Supported iOS TextField did not request the native context menu.");
+                // Exercise the host capability boundary, as used by the iOS
+                // keyboard rather than a pointer gesture on the field.
+                view.DispatchPlatformEvent(() => editable.hideToolbar());
+                view.DispatchPlatformEvent(() => { controller.text = "Hello Doroti\nSecond line"; controller.selection = Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: 1); });
+                Pump();
+                var origin = Caret(1);
+                var destination = Caret(18);
+                host.FloatCursor(new(DorotiFloatingCursorPhase.start, Offset.zero));
+                host.FloatCursor(new(DorotiFloatingCursorPhase.update, destination - origin));
+                Pump(1);
+                if (!render.floatingCursorOn) throw new Exception("Host floating cursor event was not delivered to EditableText.");
+                host.FloatCursor(new(DorotiFloatingCursorPhase.end, Offset.zero));
+                Pump();
+                if (render.floatingCursorOn || controller.selection.extentOffset != 18)
+                    throw new Exception($"Host floating cursor did not commit selection: {controller.selection}");
+                CheckFocus();
+                if (!platformMethods.Contains("ContextMenu.hideSystemContextMenu"))
+                    throw new Exception("Native context menu did not receive the hide request.");
+                Console.WriteLine("iOS system context menu: default selection, serialization and dismissal PASS");
+                Console.WriteLine("iOS host floating cursor capability: start/update/end and selection commit PASS");
+            }
             if (sample)
             {
                 view.DispatchPlatformEvent(() => editable.hideToolbar());

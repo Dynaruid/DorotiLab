@@ -89,6 +89,10 @@ public sealed class MauiFrameworkHost : IDisposable
         IPlatformMessageHostCapability messages = new HapticFeedbackPlatformMessageCapability(
             new SystemSoundPlatformMessageCapability(new MauiPlatformMessageCapability(), MauiSystemSound.PlayAsync), (kind, cancellationToken) =>
                 MauiHapticFeedback.PerformAsync(kind, surface, cancellationToken));
+#if IOS && !MACCATALYST
+        var contextMenus = new MauiUIKitContextMenuChannel(messages, textInput);
+        messages = contextMenus;
+#endif
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
@@ -122,6 +126,9 @@ public sealed class MauiFrameworkHost : IDisposable
         {
             using var dispatcherScope = session.dispatcher.EnterScope();
             view = session.dispatcher.RegisterView(viewId, capabilities);
+#if IOS && !MACCATALYST
+            contextMenus.Dispatch = callback => view.DispatchPlatformEvent(callback);
+#endif
             graphics.AttachFrameworkTrace(view.FrameTrace);
             host.AttachFrameworkTrace(view.FrameTrace);
             session.AttachView(view);

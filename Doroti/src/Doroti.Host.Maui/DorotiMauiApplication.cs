@@ -75,7 +75,9 @@ public static class DorotiMauiApplicationBuilderExtensions
                     .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>());
 #elif IOS
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<SKGLView, DorotiIosMetalViewHandler>()
+                handlers.AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
+                    .AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()
+                    .AddHandler<SKGLView, DorotiIosMetalViewHandler>()
                     .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>());
 #elif ANDROID
             .ConfigureMauiHandlers(handlers =>

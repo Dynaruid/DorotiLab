@@ -11,7 +11,7 @@ UIApplication.Main(args, null, typeof(InputDelegate));
 [Register("InputDelegate")]
 public sealed class InputDelegate : MauiUIApplicationDelegate
 {
-    protected override MauiApp CreateMauiApp() => MauiApp.CreateBuilder().UseMauiApp<InputApplication>().Build();
+    protected override MauiApp CreateMauiApp() => MauiApp.CreateBuilder().UseMauiApp<InputApplication>().ConfigureMauiHandlers(handlers => handlers.AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>().AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()).Build();
 }
 
 public sealed class InputApplication : Application
@@ -32,8 +32,8 @@ public sealed class InputPage : ContentPage
     {
         var log = new List<string>();
         using var bridge = new MauiTextInputBridge(
-            () => new Entry { Opacity = 0, WidthRequest = 1, HeightRequest = 1 },
-            () => new Editor { Opacity = 0, WidthRequest = 1, HeightRequest = 1 },
+            () => new DorotiUIKitEntry { Opacity = 0, WidthRequest = 1, HeightRequest = 1 },
+            () => new DorotiUIKitEditor { Opacity = 0, WidthRequest = 1, HeightRequest = 1 },
             _layout, attachOnDemand: true);
         var edits = new List<DorotiTextEditingState>();
         bridge.EditingStateChanged += state => { edits.Add(state); log.Add($"edit: {state}"); bridge.UpdateState(state); };
@@ -93,6 +93,73 @@ public sealed class InputPage : ContentPage
             native.DeleteBackward();
             await Task.Delay(100);
             Require(edits[^1].text == "blue한", "Native Backspace did not reach the bridge.");
+            var cursorEvents = new List<DorotiFloatingCursorEvent>();
+            bridge.FloatingCursorChanged += cursorEvents.Add;
+            bridge.SetCaretRect(new Doroti.Ui.Rect(30, 40, 32, 60));
+            await Task.Delay(100);
+            Require(input.WidthRequest > 100 && input.HeightRequest > 100, "IME proxy bounds would clamp 2D keyboard movement.");
+            bridge.UpdateState(new(input.Text, new(0, 3), null));
+            await Task.Delay(100);
+            Require(native.GetSelectionRects(native.SelectedTextRange!).Length == 0,
+                "Hidden Entry exposes native selection-handle geometry.");
+            Require(native.GetCaretRectForPosition(native.SelectedTextRange!.Start).Height == 20,
+                "Suppressing native handles removed the keyboard's caret geometry.");
+            var cursorText = input.Text;
+            native.BeginFloatingCursor(new CoreGraphics.CGPoint(20, 30));
+            native.UpdateFloatingCursor(new CoreGraphics.CGPoint(90, 85));
+            native.UpdateFloatingCursor(new CoreGraphics.CGPoint(-10, 5));
+            native.EndFloatingCursor();
+            Require(cursorEvents.Count == 4 && cursorEvents[0].phase == DorotiFloatingCursorPhase.start &&
+                cursorEvents[1].offset == new Doroti.Ui.Offset(70, 55) && cursorEvents[2].offset == new Doroti.Ui.Offset(-30, -25) &&
+                cursorEvents[3].phase == DorotiFloatingCursorPhase.end, "Native keyboard did not forward both axes and drag lifecycle.");
+            Require(input.Text == cursorText, "Floating cursor changed text.");
+            bridge.ClearClient();
+            await Task.Delay(100);
+            native.UpdateFloatingCursor(new CoreGraphics.CGPoint(100, 100));
+            Require(cursorEvents.Count == 4, "Detached client delivered a stale keyboard drag.");
+            bridge.SetClient(configuration with { inputType = DorotiTextInputType.multiline }, new("first\nsecond", new(0, 5), null));
+            bridge.ShowTextInput();
+            await Task.Delay(300);
+            var editor = bridge.Inputs.OfType<Editor>().Single();
+            var textView = (UITextView)editor.Handler!.PlatformView!;
+            bridge.SetCaretRect(new Doroti.Ui.Rect(100, 180, 102, 200));
+            await Task.Delay(100);
+            Require(textView.GetSelectionRects(textView.SelectedTextRange!).Length == 0,
+                "Hidden Editor exposes native selection-handle geometry.");
+            Require(textView.GetCaretRectForPosition(textView.SelectedTextRange!.Start).Height == 20,
+                "Multiline keyboard lost its caret geometry.");
+            textView.BeginFloatingCursor(new CoreGraphics.CGPoint(0, 0));
+            textView.UpdateFloatingCursor(new CoreGraphics.CGPoint(40, 80));
+            textView.EndFloatingCursor();
+            Require(cursorEvents.Count == 7 && cursorEvents[5].offset == new Doroti.Ui.Offset(40, 80), "Multiline keyboard cursor lost Y displacement.");
+            if (OperatingSystem.IsIOSVersionAtLeast(16))
+            {
+                var menuEvents = new List<string>();
+                bridge.SystemContextMenuEvent += (method, _) => menuEvents.Add(method);
+                await bridge.RunUIKitMenuMutation(() => bridge.ShowSystemContextMenu(new CoreGraphics.CGRect(20, 100, 100, 30),
+                    [new("copy", null, null), new("cut", null, null), new("paste", null, null)]));
+                await Task.Delay(500);
+                var menu = ((UIView)_layout.Handler!.PlatformView!).Subviews.SelectMany(v => v.Interactions).OfType<UIEditMenuInteraction>().Single();
+                Require(menu.View is not null, "Native context menu was not attached to the visible view.");
+                Require(textView.IsFirstResponder, "Showing the native menu stole input focus.");
+                UIApplication.SharedApplication.SendAction(new ObjCRuntime.Selector("copy:"), textView, null, null);
+                Require(UIPasteboard.General.String == "first", "Native menu Copy lost the framework selection.");
+                UIApplication.SharedApplication.SendAction(new ObjCRuntime.Selector("cut:"), textView, null, null);
+                await Task.Delay(100);
+                Require(edits[^1].text == "\nsecond", "Native menu Cut was not published.");
+                UIApplication.SharedApplication.SendAction(new ObjCRuntime.Selector("paste:"), textView, null, null);
+                await Task.Delay(300);
+                Require(edits[^1].text == "first\nsecond", "Native menu Paste was not published.");
+                await bridge.RunUIKitMenuMutation(() => bridge.ShowSystemContextMenu(new CoreGraphics.CGRect(20, 100, 100, 30), [new("paste", null, null)]));
+                await Task.Delay(300);
+                ((UIView)_layout.Handler!.PlatformView!).Subviews.SelectMany(v => v.Interactions).OfType<UIEditMenuInteraction>().Single().DismissMenu();
+                await Task.Delay(500);
+                Require(menuEvents.Contains("ContextMenu.onDismissSystemContextMenu"), "Native menu dismissal was not published.");
+                bridge.HideSystemContextMenu();
+            }
+            log.Add("Native selection geometry: no duplicate handle rectangles, caret and selection preserved PASS");
+            log.Add("Native floating cursor: both axes, Entry/Editor, stale-client rejection PASS");
+            log.Add("Native edit menu: presentation, focus, Copy/Cut/Paste, dismissal PASS");
             log.Add("PASS");
         }
         catch (Exception error) { log.Add("FAIL: " + error); }

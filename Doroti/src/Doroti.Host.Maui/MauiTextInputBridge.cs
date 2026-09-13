@@ -59,6 +59,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private T Subscribe<T>(T input) where T : InputView
     {
+#if IOS && !MACCATALYST
+        input.HandlerChanged += HandleUIKitInputHandlerChanged;
+        AttachUIKitInput(input);
+#endif
         input.TextChanged += HandleTextChanged;
         input.PropertyChanged += HandleInputPropertyChanged;
         input.Focused += HandleFocused;
@@ -76,6 +80,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal event Action<DorotiTextEditingState>? EditingStateChanged;
     internal event Action<DorotiTextInputAction>? ActionPerformed;
     internal event Action<bool>? FocusChanged;
+#if IOS && !MACCATALYST
+    internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged;
+#else
+    internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged { add { } remove { } }
+#endif
     internal IReadOnlyList<InputView> Inputs =>
         _entry is null ? (_editor is null ? Array.Empty<InputView>() : new InputView[] { _editor })
             : (_editor is null ? new InputView[] { _entry } : new InputView[] { _entry, _editor });
@@ -92,6 +101,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         if (_disposed) return;
 #if MACOS
         _macOSNativeFocus = false;
+#endif
+#if IOS && !MACCATALYST
+        ResetUIKitInput();
 #endif
         _configuration = configuration;
         _hasClient = true;
@@ -192,6 +204,21 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var y = Math.Max(0, rect.top);
         var width = Math.Max(1, rect.width);
         var height = Math.Max(1, rect.height);
+#if IOS && !MACCATALYST
+        if (active.Handler?.PlatformView is IDorotiUIKitTextInput native && _visualHost is not null)
+        {
+            // UIKit clamps floating-cursor coordinates to the native view's
+            // bounds. Keep the invisible proxy as large as the surface.
+            native.CaretRect = new CoreGraphics.CGRect(x, y, width, height);
+            active.TranslationX = active.TranslationY = 0;
+            active.WidthRequest = Math.Max(1, _visualHost.Width);
+            active.HeightRequest = Math.Max(1, _visualHost.Height);
+            _lastCaretInput = active;
+            _lastCaretRect = rect;
+            _hasLastCaretRect = true;
+            return;
+        }
+#endif
         if (active.TranslationX != x) active.TranslationX = x;
         if (active.TranslationY != y) active.TranslationY = y;
         if (active.WidthRequest != width) active.WidthRequest = width;
@@ -209,6 +236,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     {
         if (_disposed) return;
         _hasClient = false;
+#if IOS && !MACCATALYST
+        ResetUIKitInput();
+#endif
         _pendingNativeText = null;
         _pendingNativeInput = null;
         DeactivateActiveInput(clearFocus: true);
@@ -227,6 +257,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private void SuspendCore()
     {
         if (_disposed || !_attachOnDemand) return;
+#if IOS && !MACCATALYST
+        ResetUIKitInput();
+#endif
         _suspended = true;
         DeactivateActiveInput(clearFocus: true);
         DetachInputs();
@@ -641,8 +674,17 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void DisposeCore()
     {
+#if IOS && !MACCATALYST
+        FloatingCursorChanged = null;
+        ResetUIKitInput();
+        SystemContextMenuEvent = null;
+#endif
         foreach (var input in Inputs)
         {
+#if IOS && !MACCATALYST
+            input.HandlerChanged -= HandleUIKitInputHandlerChanged;
+            if (input.Handler?.PlatformView is IDorotiUIKitTextInput native) native.FloatingCursorChanged = null;
+#endif
             input.TextChanged -= HandleTextChanged;
             input.PropertyChanged -= HandleInputPropertyChanged;
             input.Focused -= HandleFocused;

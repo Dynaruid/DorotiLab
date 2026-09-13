@@ -158,6 +158,9 @@ internal sealed class MauiHostAdapter :
 #endif
         , textScaleFactor: _environment.TextScale, accessibilityFeatures: _environment.Accessibility,
         fontSizeScaler: _environment.FontScaler
+#if IOS && !MACCATALYST
+        , supportsShowingSystemContextMenu: _textInput.SupportsSystemContextMenu
+#endif
     );
 
     public event Action<ViewMetrics>? MetricsChanged;
@@ -650,6 +653,12 @@ internal sealed class MauiHostAdapter :
             cancellationToken.ThrowIfCancellationRequested();
             return Clipboard.Default.HasText;
         });
+    }
+
+    public event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged
+    {
+        add => _textInput.FloatingCursorChanged += value;
+        remove => _textInput.FloatingCursorChanged -= value;
     }
 
     public void SetCursor(DorotiMouseCursorKind cursor) => _surface.SetCursor(cursor);

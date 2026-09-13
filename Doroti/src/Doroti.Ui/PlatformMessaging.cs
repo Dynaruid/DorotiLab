@@ -155,12 +155,23 @@ public readonly record struct DorotiTextInputStyle(
     double? wordSpacing,
     double? lineHeight);
 
+public enum DorotiFloatingCursorPhase { start, update, end }
+
+/// <summary>Logical pixel displacement from the native keyboard drag origin.</summary>
+public readonly record struct DorotiFloatingCursorEvent(DorotiFloatingCursorPhase phase, Offset offset);
+
 /// <summary>Host-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
 {
     event Action<DorotiTextEditingState>? EditingStateChanged;
 
     event Action<DorotiTextInputAction>? ActionPerformed;
+
+    event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged
+    {
+        add { }
+        remove { }
+    }
 
     /// <summary>
     /// Raised when the native endpoint closes an attached text connection
