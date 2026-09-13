@@ -13,10 +13,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
 
     // Test-only real Vulkan producer delay. No modified driver results, GPU spin,
     // reset, or false device loss. Normal product execution never enters this path.
-    private void DelayOfficialProducerForQualification()
+    private void DelayGraphiteProducerForQualification()
     {
         if (_diagnosticDelayMilliseconds == 0 || _diagnosticDelayUsed || PresentCount == 0) return;
-        if (!_officialGraphiteSelected) throw new InvalidOperationException("The delay fixture requires the official Vulkan 1.2 path.");
+        if (!_usesPackagedGraphiteAsset) throw new InvalidOperationException("The delay fixture requires the official Vulkan 1.2 path.");
         _diagnosticDelayUsed = true;
         var type = new SemaphoreTypeCreateInfo { SType = StructureType.SemaphoreTypeCreateInfo, SemaphoreType = SemaphoreType.Timeline };
         var ci = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo, PNext = &type };

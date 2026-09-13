@@ -14,13 +14,13 @@ public sealed unsafe partial class GraphiteVulkanWindow
 
     /// <summary>A Vulkan owner on the exact D3D12 adapter; no presentation surface is created.</summary>
     public static GraphiteVulkanWindow CreateD3D12(long adapterLuid) =>
-        CreateD3D12Official(adapterLuid, GraphiteNativeLibrary.PackagedOfficialAsset());
+        CreateD3D12(adapterLuid, GraphiteNativeLibrary.GetPackagedAsset());
 
     /// <summary>Official asset selection. R remains private; only P is imported from D3D12.</summary>
-    public static GraphiteVulkanWindow CreateD3D12Official(long adapterLuid, OfficialGraphiteAsset asset)
+    public static GraphiteVulkanWindow CreateD3D12(long adapterLuid, GraphiteNativeAsset asset)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-        GraphiteNativeLibrary.ConfigureOfficial(asset);
+        GraphiteNativeLibrary.Configure(asset);
         var vk = Vk.GetApi();
         var instance = CreateInstance(vk, [], Api12);
         try { return new(vk, instance, default, [], true, false, adapterLuid); }
@@ -66,7 +66,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
         }
         Check(_vk.BindImageMemory(_device, _backing, _memory, 0), "D3D12 image bind");
         Width = width; Height = height; Generation++; _externalInitialized = false;
-        CreateOfficialIntermediate(width, height, usage);
+        CreateIntermediateTarget(width, height, usage);
     }
 
     public SKSurface BeginD3D12Frame()
@@ -83,7 +83,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
         if (_externalFrame is null) throw new InvalidOperationException("No recording frame to flush.");
         _externalSubmitted = true;
         _externalFrame.Submit();
-        CopyOfficialIntermediateToD3D12();
+        CopyIntermediateTargetToD3D12();
     }
 
     public void ReleaseD3D12Frame()

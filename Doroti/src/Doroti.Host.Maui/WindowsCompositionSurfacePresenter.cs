@@ -35,7 +35,7 @@ internal static class WindowsCompositionSurfaceFeature
     {
         var manifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
         if (string.IsNullOrWhiteSpace(manifest)) GraphiteNativeLibrary.Configure();
-        else GraphiteNativeLibrary.ConfigureOfficial(GraphiteNativeLibrary.ReadOfficialManifest(manifest));
+        else GraphiteNativeLibrary.Configure(GraphiteNativeLibrary.ReadAssetManifest(manifest));
     }
 }
 
@@ -521,10 +521,10 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private void CreateGraphite()
     {
         var luid = _adapter!.Description1.Luid;
-        var officialManifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
+        var assetManifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
         var adapterLuid = System.Runtime.CompilerServices.Unsafe.As<Luid, long>(ref luid);
-        _graphite = string.IsNullOrWhiteSpace(officialManifest) ? GraphiteVulkanWindow.CreateD3D12(adapterLuid)
-            : GraphiteVulkanWindow.CreateD3D12Official(adapterLuid, GraphiteNativeLibrary.ReadOfficialManifest(officialManifest));
+        _graphite = string.IsNullOrWhiteSpace(assetManifest) ? GraphiteVulkanWindow.CreateD3D12(adapterLuid)
+            : GraphiteVulkanWindow.CreateD3D12(adapterLuid, GraphiteNativeLibrary.ReadAssetManifest(assetManifest));
         _graphite.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
     }
 

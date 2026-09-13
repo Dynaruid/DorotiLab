@@ -34,11 +34,11 @@ public sealed partial class SkiaGraphiteSession
     }
 
     /// <summary>Official asset path. Host state observation and safe retirement are mandatory.</summary>
-    public static SkiaGraphiteSession CreateOfficialVulkan(SkiaGraphiteOfficialVulkanOptions options, long generation, int maxFrames = 3)
+    public static SkiaGraphiteSession CreateVulkan(SkiaGraphiteVulkanOptions options, long generation, int maxFrames = 3)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(generation, 1);
         ArgumentOutOfRangeException.ThrowIfLessThan(maxFrames, 1);
-        var owner = new SkiaGraphiteOfficialVulkanInterop(options);
+        var owner = new SkiaGraphiteVulkanInterop(options);
         try { return new(owner.Context, generation, maxFrames) { _vulkanOwner = owner }; }
         catch { owner.Dispose(); throw; }
     }

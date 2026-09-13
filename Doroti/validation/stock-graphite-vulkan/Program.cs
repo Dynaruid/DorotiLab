@@ -63,17 +63,17 @@ internal static unsafe partial class Program
 #if SHARED_SESSION
             if (Mode == "session")
             {
-                var asset = OperatingSystem.IsLinux() ? Doroti.Skia.Vulkan.GraphiteNativeLibrary.PackagedOfficialAsset() with { NativePath = path }
-                    : new Doroti.Skia.Vulkan.OfficialGraphiteAsset(path, "SkiaSharp.NativeAssets.Win32", "4.154.0-preview.1.26454.9", "win-x64",
+                var asset = OperatingSystem.IsLinux() ? Doroti.Skia.Vulkan.GraphiteNativeLibrary.GetPackagedAsset() with { NativePath = path }
+                    : new Doroti.Skia.Vulkan.GraphiteNativeAsset(path, "SkiaSharp.NativeAssets.Win32", "4.154.0-preview.1.26454.9", "win-x64",
                     "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1", "7c8cdb451146fcb12899899286e279e6aa615a5fc9b610f01137a741819f210f");
                 bool hashRejected = false;
-                try { Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficial(asset with { Sha256 = new string('0', 64) }); }
+                try { Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure(asset with { Sha256 = new string('0', 64) }); }
                 catch (InvalidDataException) { hashRejected = true; }
                 if (!hashRejected) throw new InvalidOperationException("Official loader accepted an incorrect provenance hash.");
-                Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficial(asset);
-                Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficial(asset); // Same selection is idempotent.
+                Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure(asset);
+                Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure(asset); // Same selection is idempotent.
                 bool differentAssetRejected = false;
-                try { Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureOfficial(asset with { Sha256 = new string('1', 64) }); }
+                try { Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure(asset with { Sha256 = new string('1', 64) }); }
                 catch (InvalidOperationException) { differentAssetRejected = true; }
                 if (!differentAssetRejected) throw new InvalidOperationException("Official loader allowed a different asset identity.");
                 Report["productLoader"] = new { status = "PASS", hashRejected, differentAssetRejected, idempotentSelection = true };

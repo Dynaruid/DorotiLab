@@ -17,28 +17,28 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     private bool _graphiteSubmissionAttempted;
     private static readonly object GraphiteLibraryGate = new();
     private static string? _graphiteLibraryPath;
-    private const bool _officialGraphiteSelected = true;
-    private static string? _actualGraphiteLibraryPath, _officialGraphiteNativeHash;
+    private const bool _usesPackagedGraphiteAsset = true;
+    private static string? _actualGraphiteLibraryPath, _graphiteNativeHash;
     private VulkanObserver? _stockObserver;
     private ImageLayout _graphiteCopyRestoreLayout = ImageLayout.ColorAttachmentOptimal;
-    private uint RequiredVulkanApiVersion => _officialGraphiteSelected ? (1u << 22) | (2u << 12) : VulkanApiVersion11;
+    private uint RequiredVulkanApiVersion => _usesPackagedGraphiteAsset ? (1u << 22) | (2u << 12) : VulkanApiVersion11;
 
     // Select one packaged module before Skia calls. An explicit absolute override
     // is retained for qualification; no fallback to a different native module.
     internal static void ConfigureGraphiteLibrary()
     {
         var manifest = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
-        var asset = string.IsNullOrWhiteSpace(manifest) ? GraphiteNativeLibrary.PackagedOfficialAsset()
-            : GraphiteNativeLibrary.ReadOfficialManifest(manifest);
+        var asset = string.IsNullOrWhiteSpace(manifest) ? GraphiteNativeLibrary.GetPackagedAsset()
+            : GraphiteNativeLibrary.ReadAssetManifest(manifest);
         lock (GraphiteLibraryGate)
         {
-            GraphiteNativeLibrary.ConfigureOfficial(asset);
+            GraphiteNativeLibrary.Configure(asset);
             _graphiteLibraryPath = Path.GetFullPath(asset.NativePath);
             _actualGraphiteLibraryPath = Process.GetCurrentProcess().Modules.Cast<ProcessModule>()
                 .Single(module => module.ModuleName.Equals("libSkiaSharp.dll", StringComparison.OrdinalIgnoreCase)).FileName;
             if (!_actualGraphiteLibraryPath.Equals(_graphiteLibraryPath, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Actual loaded official Graphite path differs from provenance.");
-            _officialGraphiteNativeHash = asset.Sha256;
+            _graphiteNativeHash = asset.Sha256;
         }
     }
 
@@ -46,7 +46,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     {
         _stockObserver = new VulkanObserver(_vk, _instance, _device, _queue, _queueFamily,
             deviceExtensions.Contains("VK_KHR_create_renderpass2"));
-        _graphite = SkiaGraphiteSession.CreateOfficialVulkan(new(_instance.Handle, _physicalDevice.Handle,
+        _graphite = SkiaGraphiteSession.CreateVulkan(new(_instance.Handle, _physicalDevice.Handle,
             _device.Handle, _queue.Handle, _queueFamily, RequiredVulkanApiVersion,
             _stockObserver.Resolve, image => { var s = _stockObserver.State((ulong)image); return ((int)s.Layout, s.Family); }, _stockObserver.Check),
             checked((long)DeviceGeneration + 1), maxFrames: 1);

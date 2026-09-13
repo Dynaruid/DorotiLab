@@ -317,8 +317,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         PreparedReceiptsOver50Milliseconds: _preparedReceiptsOver50Milliseconds,
         ValidationErrors: _validationErrors, ValidationWarnings: _validationWarnings,
         ValidationCallbackFault: _validationCallbackFault, ValidationMessages: ValidationMessages(),
-        OfficialGraphiteAsset: _officialGraphiteSelected, GraphiteNativePath: _actualGraphiteLibraryPath,
-        GraphiteNativeSha256: _officialGraphiteNativeHash);
+        UsesPackagedGraphiteAsset: _usesPackagedGraphiteAsset, GraphiteNativePath: _actualGraphiteLibraryPath,
+        GraphiteNativeSha256: _graphiteNativeHash);
 
     bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
 
@@ -656,7 +656,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 // replace pixels that belong to the last displayed geometry.
                 if (_graphiteFrame is not null)
                 {
-                    DelayOfficialProducerForQualification();
+                    DelayGraphiteProducerForQualification();
                     _graphiteSubmissionAttempted = true;
                     try { _graphiteFrame.Submit(); }
                     catch (InvalidOperationException) when (_graphite!.IsDeviceLost)
@@ -1596,7 +1596,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             var timeline = new PhysicalDeviceTimelineSemaphoreFeatures { SType = StructureType.PhysicalDeviceTimelineSemaphoreFeatures };
             if (_diagnosticDelayMilliseconds != 0)
             {
-                if (!_officialGraphiteSelected) throw new InvalidOperationException("Qualification timeline requires official Vulkan 1.2.");
+                if (!_usesPackagedGraphiteAsset) throw new InvalidOperationException("Qualification timeline requires official Vulkan 1.2.");
                 var features = new PhysicalDeviceFeatures2 { SType = StructureType.PhysicalDeviceFeatures2, PNext = &timeline };
                 _vk.GetPhysicalDeviceFeatures2(_physicalDevice, &features);
                 if (!timeline.TimelineSemaphore) throw new PlatformNotSupportedException("Host timeline fixture unsupported.");
@@ -3194,6 +3194,6 @@ internal sealed record VulkanPresenterSnapshot(
     int ValidationWarnings = 0,
     bool ValidationCallbackFault = false,
     string[]? ValidationMessages = null,
-    bool OfficialGraphiteAsset = false,
+    bool UsesPackagedGraphiteAsset = false,
     string? GraphiteNativePath = null,
     string? GraphiteNativeSha256 = null);

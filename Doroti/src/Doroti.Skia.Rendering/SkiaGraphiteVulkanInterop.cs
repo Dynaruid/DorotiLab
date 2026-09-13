@@ -8,22 +8,22 @@ namespace Doroti.Skia.Rendering;
 /// completion fences. The selected official native asset must already be loaded.
 /// No enabled-feature descriptor is inferred or fabricated for Skia.
 /// </summary>
-public sealed record SkiaGraphiteOfficialVulkanOptions(
+public sealed record SkiaGraphiteVulkanOptions(
     nint Instance, nint PhysicalDevice, nint Device, nint Queue,
     uint QueueFamily, uint MaxApiVersion,
     Func<string, nint, nint, nint> GetProcedure,
     Func<nint, (int Layout, uint QueueFamily)> GetSubmittedImageState,
     Action CheckHostState);
 
-internal sealed class SkiaGraphiteOfficialVulkanInterop : SkiaGraphiteVulkanBinding
+internal sealed class SkiaGraphiteVulkanInterop : SkiaGraphiteVulkanBinding
 {
-    private readonly SkiaGraphiteOfficialVulkanOptions _options;
+    private readonly SkiaGraphiteVulkanOptions _options;
     private readonly Dictionary<nint, nint> _targets = [];
     private Exception? _dispatchFailure;
     private bool _disposed, _hostLost;
     internal override SKGraphiteContext Context { get; }
 
-    internal SkiaGraphiteOfficialVulkanInterop(SkiaGraphiteOfficialVulkanOptions options)
+    internal SkiaGraphiteVulkanInterop(SkiaGraphiteVulkanOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(options.GetProcedure);

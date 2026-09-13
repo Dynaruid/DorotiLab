@@ -9,7 +9,7 @@ internal static unsafe partial class Program
 {
     private static void ProbeSharedSession(Vk vk, Instance instance, PhysicalDevice physical, VkDevice device, Queue queue, uint family, VulkanObserver observer)
     {
-        var session = SkiaGraphiteSession.CreateOfficialVulkan(new(instance.Handle, physical.Handle, device.Handle, queue.Handle,
+        var session = SkiaGraphiteSession.CreateVulkan(new(instance.Handle, physical.Handle, device.Handle, queue.Handle,
             family, ApiVersion, observer.Resolve, image => { var s = observer.State((ulong)image); return ((int)s.Layout, s.Family); }, observer.Check),
             Convert.ToInt64(Report["generation"]), maxFrames: 1);
         VkImage image = default; DeviceMemory memory = default; Fence fence = default;

@@ -7,16 +7,16 @@ using SkiaSharp;
 namespace Doroti.Skia.Vulkan;
 
 /// <summary>Build/publish provenance for one official NuGet native asset.</summary>
-public sealed record OfficialGraphiteAsset(string NativePath, string PackageId, string Version, string Rid, string Sha256, string ManagedSha256);
+public sealed record GraphiteNativeAsset(string NativePath, string PackageId, string Version, string Rid, string Sha256, string ManagedSha256);
 
 /// <summary>Select one native asset for the process before creating any Skia object.</summary>
 public static unsafe class GraphiteNativeLibrary
 {
     private static readonly object Gate = new();
     private static nint _module;
-    private static OfficialGraphiteAsset? _official;
-    private static bool _officialAndroid;
-    public static bool IsOfficialSelected => _official is not null || _officialAndroid;
+    private static GraphiteNativeAsset? _selectedAsset;
+    private static bool _androidAssetSelected;
+    public static bool IsAssetSelected => _selectedAsset is not null || _androidAssetSelected;
     [StructLayout(LayoutKind.Sequential)]
     private struct DlInfo { public nint FileName, Base, Symbol, Address; }
     [DllImport("libdl.so", EntryPoint = "dladdr")]
@@ -25,7 +25,7 @@ public static unsafe class GraphiteNativeLibrary
     private static extern int DlAddressLinux(nint address, out DlInfo info);
 
     /// <summary>Version-pinned desktop package deployment; no custom staging directory.</summary>
-    public static OfficialGraphiteAsset PackagedOfficialAsset()
+    public static GraphiteNativeAsset GetPackagedAsset()
     {
         var windows = OperatingSystem.IsWindows();
         if (!windows && !OperatingSystem.IsLinux()) throw new PlatformNotSupportedException();
@@ -43,18 +43,18 @@ public static unsafe class GraphiteNativeLibrary
     }
 
     /// <summary>Verify a standalone APK's native entry before normal Android/AOT binding.</summary>
-    public static void ConfigureOfficialAndroid(string apkPath, string nativeLibraryDirectory) =>
-        ConfigureOfficialAndroid(apkPath, nativeLibraryDirectory, null);
+    public static void ConfigureAndroid(string apkPath, string nativeLibraryDirectory) =>
+        ConfigureAndroid(apkPath, nativeLibraryDirectory, null);
 
     /// <summary>Verify the installed base and split APKs before normal Android/AOT binding.</summary>
-    public static void ConfigureOfficialAndroid(string apkPath, string nativeLibraryDirectory, IEnumerable<string>? splitApkPaths)
+    public static void ConfigureAndroid(string apkPath, string nativeLibraryDirectory, IEnumerable<string>? splitApkPaths)
     {
         if (!OperatingSystem.IsAndroid()) throw new PlatformNotSupportedException();
         lock (Gate)
         {
             if (_module != 0)
             {
-                if (!_officialAndroid) throw new InvalidOperationException("Another Skia asset was already selected.");
+                if (!_androidAssetSelected) throw new InvalidOperationException("Another Skia asset was already selected.");
                 return;
             }
             var (abi, hash) = RuntimeInformation.ProcessArchitecture switch
@@ -87,12 +87,12 @@ public static unsafe class GraphiteNativeLibrary
             if (available((int)SKGraphiteBackend.Vulkan) == 0) throw new PlatformNotSupportedException("Official Android asset lacks Graphite Vulkan.");
             NativeLibrary.SetDllImportResolver(typeof(SKGraphiteContext).Assembly,
                 (library, _, _) => library is "libSkiaSharp" or "libSkiaSharp.so" ? module : 0);
-            _module = module; _officialAndroid = true;
+            _module = module; _androidAssetSelected = true;
             Console.WriteLine($"DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0-preview.1.26454.9 abi={abi} sha256={hash} apk={containingApk} loaded={loadedPath}");
         }
     }
 
-    public static OfficialGraphiteAsset ReadOfficialManifest(string manifestPath)
+    public static GraphiteNativeAsset ReadAssetManifest(string manifestPath)
     {
         if (!Path.IsPathFullyQualified(manifestPath)) throw new InvalidDataException("Official native manifest requires an absolute path.");
         using var json = JsonDocument.Parse(File.ReadAllText(manifestPath));
@@ -108,7 +108,7 @@ public static unsafe class GraphiteNativeLibrary
     /// This verifies the deployed file; it does not replace archive signature checks.
     /// Android AOT/static-link provenance requires its platform-specific package path.
     /// </summary>
-    public static void ConfigureOfficial(OfficialGraphiteAsset asset)
+    public static void Configure(GraphiteNativeAsset asset)
     {
         ArgumentNullException.ThrowIfNull(asset);
         if (!Path.IsPathFullyQualified(asset.NativePath)) throw new InvalidDataException("Official native asset requires an absolute path.");
@@ -137,7 +137,7 @@ public static unsafe class GraphiteNativeLibrary
         {
             if (_module != 0)
             {
-                if (_official != normalized) throw new InvalidOperationException("A different Skia asset was already selected for this process.");
+                if (_selectedAsset != normalized) throw new InvalidOperationException("A different Skia asset was already selected for this process.");
                 return;
             }
             using (var file = File.OpenRead(path))
@@ -164,12 +164,12 @@ public static unsafe class GraphiteNativeLibrary
             NativeLibrary.SetDllImportResolver(typeof(SKGraphiteContext).Assembly,
                 (library, _, _) => library is "libSkiaSharp" or "libSkiaSharp.dll" or "libSkiaSharp.so" ? module : 0);
             _module = module;
-            _official = normalized; // Module and resolver remain live through process exit.
+            _selectedAsset = normalized; // Module and resolver remain live through process exit.
             if (OperatingSystem.IsLinux())
                 Console.WriteLine($"DorotiGraphite official package={package} version={asset.Version} rid={rid} sha256={normalized.Sha256} loaded={loadedPath}");
         }
     }
 
     /// <summary>Select the pinned official desktop package before any Skia call.</summary>
-    public static void Configure() => ConfigureOfficial(PackagedOfficialAsset());
+    public static void Configure() => Configure(GetPackagedAsset());
 }

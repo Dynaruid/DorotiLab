@@ -24,8 +24,8 @@ internal static unsafe class Program
         try
         {
             var manifestPath = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_GRAPHITE_OFFICIAL_MANIFEST");
-            var official = string.IsNullOrWhiteSpace(manifestPath) ? null : GraphiteNativeLibrary.ReadOfficialManifest(manifestPath);
-            if (official == null) GraphiteNativeLibrary.Configure(); else GraphiteNativeLibrary.ConfigureOfficial(official);
+            var official = string.IsNullOrWhiteSpace(manifestPath) ? null : GraphiteNativeLibrary.ReadAssetManifest(manifestPath);
+            if (official == null) GraphiteNativeLibrary.Configure(); else GraphiteNativeLibrary.Configure(official);
             using var factory = CreateDXGIFactory2<IDXGIFactory6>(false);
             for (uint adapterIndex = 0; factory.EnumAdapters1(adapterIndex, out var adapter).Success; adapterIndex++)
             {
@@ -39,7 +39,7 @@ internal static unsafe class Program
                     using var fence = device.CreateFence(0);
                     var luid = adapter.Description1.Luid;
                     using var graphite = official == null ? GraphiteVulkanWindow.CreateD3D12(Unsafe.As<Luid, long>(ref luid))
-                        : GraphiteVulkanWindow.CreateD3D12Official(Unsafe.As<Luid, long>(ref luid), official);
+                        : GraphiteVulkanWindow.CreateD3D12(Unsafe.As<Luid, long>(ref luid), official);
                     ulong serial = 0;
                     foreach (var width in new[] { 64, 96, 64 })
                     {

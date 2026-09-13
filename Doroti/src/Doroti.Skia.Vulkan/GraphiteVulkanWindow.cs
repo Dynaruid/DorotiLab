@@ -57,7 +57,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 
     public static GraphiteVulkanWindow CreateAndroid(nint nativeWindow)
     {
-        if (!GraphiteNativeLibrary.IsOfficialSelected)
+        if (!GraphiteNativeLibrary.IsAssetSelected)
             throw new InvalidOperationException("Configure the official APK asset before creating an Android surface.");
         var vk = Vk.GetApi();
         string[] extensions = ["VK_KHR_surface", "VK_KHR_android_surface"];
@@ -83,10 +83,10 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         }
     }
 
-    public static GraphiteVulkanWindow FromQtOfficial(nint instance, ulong surface, string[] enabledInstanceExtensions, uint instanceApiVersion)
+    public static GraphiteVulkanWindow FromQt(nint instance, ulong surface, string[] enabledInstanceExtensions, uint instanceApiVersion)
     {
         if (instanceApiVersion < Api12) throw new PlatformNotSupportedException("Qt must create and report a real Vulkan 1.2 instance.");
-        GraphiteNativeLibrary.ConfigureOfficial(GraphiteNativeLibrary.PackagedOfficialAsset());
+        GraphiteNativeLibrary.Configure(GraphiteNativeLibrary.GetPackagedAsset());
         var vk = Vk.GetApi();
         try { return new(vk, new(instance), new(surface), enabledInstanceExtensions, false, false, pipelinedWindowFrames: true); }
         catch { vk.Dispose(); throw; }
@@ -176,7 +176,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 throw new PlatformNotSupportedException("VK_KHR_swapchain is required.");
             _stockObserver = new VulkanObserver(_vk, _instance, _device, _queue, _family,
                 extensionNames.Contains("VK_KHR_create_renderpass2"));
-            _session = SkiaGraphiteSession.CreateOfficialVulkan(new(_instance.Handle, _physical.Handle,
+            _session = SkiaGraphiteSession.CreateVulkan(new(_instance.Handle, _physical.Handle,
                 _device.Handle, _queue.Handle, _family, Api12, _stockObserver.Resolve,
                 image => { var state = _stockObserver.State((ulong)image); return ((int)state.Layout, state.Family); }, _stockObserver.Check), 1,
                 _pipelinedWindowFrames ? WindowFrameLimit : 1);
@@ -487,7 +487,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             slot.Backing = default; slot.Memory = default;
         }
         _target?.Dispose(); _target = null;
-        ReleaseOfficialIntermediate();
+        ReleaseIntermediateTarget();
         if (_backing.Handle != 0) _vk.DestroyImage(_device, _backing, null);
         if (_memory.Handle != 0) _vk.FreeMemory(_device, _memory, null);
         if (releaseSwapchain && _swapchain.Handle != 0)
