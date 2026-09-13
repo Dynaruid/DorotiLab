@@ -651,6 +651,7 @@ public enum WindowBackdropMode
     /// <summary>
     /// Requests Acrylic for this window. Windows App SDK supports this with
     /// the Vulkan (default) and ANGLE presenters on Windows 11 24H2 or newer.
+    /// Native macOS uses an AppKit behind-window visual effect material.
     /// </summary>
     acrylic,
     /// <summary>
@@ -658,6 +659,11 @@ public enum WindowBackdropMode
     /// as <see cref="acrylic"/>. Neither is selected by <see cref="system"/>.
     /// </summary>
     experimentalAcrylic,
+    /// <summary>
+    /// Requests native Liquid Glass on macOS 26 or newer. Native macOS hosts
+    /// use the acrylic visual effect material on earlier macOS versions.
+    /// </summary>
+    liquidGlass,
 }
 
 public enum WindowBackdropFallback

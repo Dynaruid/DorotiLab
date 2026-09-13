@@ -59,9 +59,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _drawingLayout;
     private bool _drawingFrame;
     private int _frameRequestPending;
+    private readonly AppKitWindowBackdrop _backdrop;
 
     public DorotiMacOSMetalView() : base(CGRect.Empty, RequireMetalDevice())
     {
+        _backdrop = new(this);
         _metalDevice = Device ?? throw new InvalidOperationException("MTKView did not retain its Metal device.");
         _commandQueue = _metalDevice.CreateCommandQueue() ??
             throw new InvalidOperationException("Metal command queue creation failed.");
@@ -70,6 +72,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
         SampleCount = 1;
         FramebufferOnly = false;
+        ClearColor = new MTLClearColor(0, 0, 0, 0);
         // MTKView's automatic resize lets AppKit scale the previous drawable
         // to the new bounds until the next Metal presentation. Own the backing
         // size in Layout so live resize never exposes a stretched frame.
@@ -79,6 +82,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             layer.ContentsGravity = CALayer.GravityTopLeft;
             layer.MasksToBounds = true;
+            layer.Opaque = false;
         }
         Paused = true;
         EnableSetNeedsDisplay = true;
@@ -86,6 +90,20 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     }
 
     public override bool AcceptsFirstResponder() => true;
+    public override bool IsOpaque => false;
+
+    /// <summary>The native material currently selected, including the pre-macOS-26 fallback.</summary>
+    public WindowBackdropMode AppliedBackdropMode => _backdrop.AppliedMode;
+
+    /// <summary>Changes this window's native backdrop. Call on the AppKit main thread.</summary>
+    public void SetBackdrop(WindowBackdropOptions options)
+    {
+        AppKitPlatformViewDispatcher.VerifyThread();
+        if (_releaseRequested || _resourcesReleased)
+            throw new InvalidOperationException("Cannot configure a disconnected Metal view.");
+        _backdrop.Configure(options);
+        RequestFrame();
+    }
 
     internal AppKitPlatformRasterSurface CreatePlatformRasterSurface() => new(_metalDevice, _commandQueue, _grContext);
 
@@ -98,6 +116,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _resourceOwner = owner;
         _releaseRequested = false;
+        _backdrop.Configure(owner.Backdrop);
         AttachWindowObservers();
         PublishDrawableMetrics(DrawableSize, force: true);
         RequestFrame();
@@ -107,6 +126,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         var owner = _owner;
         _owner = null;
+        _backdrop.Dispose();
         if (owner is null && _releaseRequested) return;
         Interlocked.Increment(ref _surfaceGeneration);
         DetachWindowObservers();
@@ -173,6 +193,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     public override void ViewDidMoveToWindow()
     {
         base.ViewDidMoveToWindow();
+        // AppKit may call this virtual method during the native base constructor.
+        if (!_releaseRequested) _backdrop?.Synchronize();
         AttachWindowObservers();
         _owner?.RaiseFocus(Window?.IsKeyWindow == true && ReferenceEquals(Window.FirstResponder, this));
         PublishDrawableMetrics(DrawableSize, force: true);
@@ -192,6 +214,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     public override void Layout()
     {
         base.Layout();
+        if (!_releaseRequested) _backdrop?.Synchronize();
         var logicalSize = Bounds.Size;
         var scale = BackingScale();
         if (_drawingLayout || logicalSize.Width <= 0 || logicalSize.Height <= 0) return;

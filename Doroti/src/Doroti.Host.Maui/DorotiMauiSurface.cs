@@ -53,7 +53,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _textInput = new(CreateHiddenInput<Entry>, CreateHiddenInput<Editor>, this, attachOnDemand: true);
 #endif
 #if MACOS
-        _renderSurface = new DorotiMacOSMetalSurface(_viewId);
+        _renderSurface = new DorotiMacOSMetalSurface(_viewId)
+        {
+            Backdrop = _application.ViewConfiguration.backdrop ?? new(),
+        };
+        // The renderer applies the configured base color once. A second MAUI
+        // background would cover the native material behind its Metal surface.
+        BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;
 #elif WINDOWS
         _renderSurface = new DorotiWindowsDxgiSurface();
 #else
@@ -421,9 +427,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     }
     private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args)
     {
+#if MACOS
+        BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;
+#else
         var color = ResolveBackgroundColor(args.RequestedTheme);
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
             (float)color.r, (float)color.g, (float)color.b, (float)color.a);
+#endif
     }
 
     private Doroti.Ui.Color ResolveBackgroundColor(AppTheme theme) =>

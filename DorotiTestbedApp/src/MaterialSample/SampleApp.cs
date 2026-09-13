@@ -39,7 +39,8 @@ internal sealed class SampleAppState : State<SampleApp>
 {
     private M.ThemeMode _mode = M.ThemeMode.system;
     private int _seed, _image, _revision;
-    private bool _fromImage, _loading, _acrylic;
+    private bool _fromImage, _loading;
+    private bool _acrylic = OperatingSystem.IsMacOS();
     private string? _error;
     private M.ColorScheme? _imageScheme;
     private M.ThemeData? _light;
@@ -167,8 +168,8 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         Scroll_notificationLibrary.defaultScrollNotificationPredicate(notification) &&
         (_destination != 0 || _components.currentState?.OwnsScrollNotification(notification) == true);
     private Widget BrightnessAction() => new M.IconButton(tooltip: "Toggle brightness", onPressed: widget.Brightness, icon: new Icon(M.Theme.of(context).brightness == Brightness.light ? M.Icons.dark_mode_outlined : M.Icons.light_mode_outlined));
-    private string AcrylicTooltip => widget.ToggleAcrylic is null ? "Acrylic is unavailable on this platform"
-        : widget.Acrylic ? "Turn off acrylic window" : "Turn on acrylic window";
+    private string AcrylicTooltip => widget.ToggleAcrylic is null ? "Window effects are unavailable on this platform"
+        : $"Turn {(widget.Acrylic ? "off" : "on")} {App.WindowEffectLabel}";
     private Widget AcrylicAction() => new M.IconButton(tooltip: AcrylicTooltip,
         onPressed: widget.ToggleAcrylic, isSelected: widget.Acrylic,
         icon: new Icon(M.Icons.blur_off), selectedIcon: new Icon(M.Icons.blur_on));
@@ -199,7 +200,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
                 new Row(children: [new Text("Brightness"), new Expanded(child: SizedBox.CreateShrink()),
                     new M.Switch(value: M.Theme.of(context).brightness == Brightness.light, onChanged: _ => widget.Brightness())]),
                 new M.Tooltip(message: AcrylicTooltip, child: new Row(children:
-                    [new Text("Acrylic window"), new Expanded(child: SizedBox.CreateShrink()),
+                    [new Text(App.WindowEffectLabel), new Expanded(child: SizedBox.CreateShrink()),
                         new M.Switch(value: widget.Acrylic, onChanged: widget.ToggleAcrylic is null ? null : _ => widget.ToggleAcrylic())])),
                 new M.Divider(),
                 new ConstrainedBox(constraints: new BoxConstraints(maxHeight: 200), child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:

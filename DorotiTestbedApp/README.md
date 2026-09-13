@@ -204,7 +204,8 @@ Windows App SDK defaults to Vulkan; ANGLE is an explicit alternative.
 The Material sample starts with an opaque surface. Use **Acrylic window** beside the
 brightness control to toggle a translucent surface on Windows 11 24H2+ or Linux.
 The control appears in the app bar, navigation rail, or expanded settings according
-to the window width, and is disabled on other platforms. It preserves the selected
+to the window width. Native macOS has the corresponding controls described below;
+unsupported platforms disable the control. It preserves the selected
 brightness and color palette. The native backdrop is prepared at startup; toggling
 changes the sample surface opacity without recreating the window.
 On Windows 11 24H2 or later, ordinary `WindowBackdropMode.acrylic` needs no experimental flag.
@@ -218,6 +219,37 @@ On Windows 11 24H2 or later, ordinary `WindowBackdropMode.acrylic` needs no expe
 For example, append `-e DOROTI_WINDOWS_GPU_PREFERENCE=HighPerformancePreference` to the Windows command above.
 If you previously set a variable with `$env:`, clear it with `Remove-Item Env:VARIABLE_NAME` and relaunch.
 `experimentalAcrylic` remains a compatibility option for reproducing earlier behavior.
+
+### macOS blur and Liquid Glass
+
+The native AppKit runner starts with window blur enabled. The **Window blur** control
+toggles the sample between translucent and opaque surfaces. Select Liquid Glass at launch:
+
+```sh
+DOROTI_TESTBED_MODE=sample DOROTI_MACOS_BACKDROP=liquidGlass \
+  dotnet run --project DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+```
+
+Use `DOROTI_MACOS_BACKDROP=acrylic` (or omit it) for `NSVisualEffectView` behind-window blur.
+`liquidGlass` uses `NSGlassEffectView` on macOS 26+, with blur on earlier macOS versions.
+The toggle is labeled **Liquid Glass** when the native glass API is available.
+These options apply to the native `osx-arm64` runner, not Mac Catalyst.
+
+Applications select the effect through `DorotiViewConfiguration.backdrop`:
+
+```csharp
+new WindowBackdropOptions(WindowBackdropMode.liquidGlass)
+// or: new WindowBackdropOptions(WindowBackdropMode.acrylic)
+```
+
+Set both renderer background colors to transparent and give the widgets that should
+reveal the effect transparent or translucent backgrounds. An opaque Scaffold covers
+the native effect. The AppKit host keeps the native material behind the Metal surface
+and platform-view overlays, and follows its size and window appearance. This is a window
+background, not automatic Liquid Glass styling of individual canvas widgets.
+Native AppKit owns accessibility adaptations and material appearance; Windows-specific
+luminosity settings do not map to AppKit. `tintColor`/`tintOpacity` tint Liquid Glass;
+`acrylicKind` selects the blur material. See the [native validation fixture](../Doroti/validation/appkit-backdrop/README.md).
 
 ### System dark mode and color palettes
 

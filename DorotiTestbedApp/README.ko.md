@@ -198,8 +198,9 @@ Components → Communication → Progress indicators의 재생 버튼으로 애�
 Windows App SDK의 기본 렌더러는 Vulkan이며 ANGLE을 명시적으로 선택할 수 있습니다.
 Material 샘플은 불투명 배경으로 시작합니다. Windows 11 24H2 이상 또는 Linux에서는
 밝기 조절 옆의 **Acrylic window**로 반투명 배경을 켜고 끌 수 있습니다.
-창 너비에 따라 상단 바, 내비게이션 레일, 확장 설정에 표시되며 다른 플랫폼에서는
-비활성화됩니다. 선택한 밝기와 색 팔레트는 유지됩니다. 네이티브 배경 효과는 시작할 때
+창 너비에 따라 상단 바, 내비게이션 레일, 확장 설정에 표시됩니다. 네이티브 macOS는
+아래의 대응 컨트롤을 사용하고, 미지원 플랫폼에서는 비활성화됩니다.
+선택한 밝기와 색 팔레트는 유지됩니다. 네이티브 배경 효과는 시작할 때
 준비하고, 토글 시 창을 재생성하지 않고 샘플 배경의 불투명도를 변경합니다.
 Windows 11 24H2 이상에서는 일반 `WindowBackdropMode.acrylic`에 별도 실험 플래그가 필요 없습니다.
 
@@ -212,6 +213,36 @@ Windows 11 24H2 이상에서는 일반 `WindowBackdropMode.acrylic`에 별도 �
 예를 들어 위 Windows 명령에 `-e DOROTI_WINDOWS_GPU_PREFERENCE=HighPerformancePreference`를 추가합니다.
 이전에 `$env:`로 지정했다면 `Remove-Item Env:변수이름`으로 해제한 뒤 앱을 다시 실행하세요.
 `experimentalAcrylic`은 이전 동작을 재현하는 호환 옵션입니다.
+
+### macOS 블러와 Liquid Glass
+
+네이티브 AppKit 샘플은 창 블러를 켠 상태로 시작합니다. **Window blur**로 샘플 배경을
+반투명/불투명으로 전환합니다. Liquid Glass는 다음처럼 선택합니다.
+
+```sh
+DOROTI_TESTBED_MODE=sample DOROTI_MACOS_BACKDROP=liquidGlass \
+  dotnet run --project DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+```
+
+`DOROTI_MACOS_BACKDROP=acrylic` 또는 미지정은 `NSVisualEffectView`의 창 뒤쪽 블러를 사용합니다.
+`liquidGlass`는 macOS 26 이상에서 `NSGlassEffectView`, 이전 버전에서는 블러를 사용합니다.
+네이티브 글래스 API를 사용할 때 토글 이름은 **Liquid Glass**입니다.
+이 설정은 `osx-arm64` AppKit runner에 적용되며 Mac Catalyst에는 적용되지 않습니다.
+
+앱에서는 `DorotiViewConfiguration.backdrop`에 다음 옵션을 전달합니다.
+
+```csharp
+new WindowBackdropOptions(WindowBackdropMode.liquidGlass)
+// 또는: new WindowBackdropOptions(WindowBackdropMode.acrylic)
+```
+
+렌더러의 밝은/어두운 배경색은 모두 투명으로, 효과를 보여 줄 위젯 배경은 투명 또는 반투명으로
+설정해야 합니다. 불투명 Scaffold는 네이티브 효과를 가립니다. 호스트가 Metal 표면과 네이티브
+플랫폼 뷰 뒤에 배경 효과를 배치하고 창 크기와 시스템 테마를 따라갑니다.
+이는 창 배경 효과이며 캔버스의 개별 위젯을 자동으로 Liquid Glass로 바꾸지는 않습니다.
+접근성 설정에 따른 조정은 AppKit이 담당합니다. Windows 전용 luminosity 설정은 AppKit에
+대응하지 않습니다. `tintColor`/`tintOpacity`는 Liquid Glass 색조, `acrylicKind`는 블러 재질을
+선택합니다. [네이티브 검증 fixture](../Doroti/validation/appkit-backdrop/README.md)를 참고하세요.
 
 ### 시스템 다크 모드와 색 팔레트
 

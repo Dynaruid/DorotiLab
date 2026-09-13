@@ -198,11 +198,19 @@ internal static class App
         string.Equals(Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE"), "sample", StringComparison.OrdinalIgnoreCase);
 
     internal static bool SampleAcrylicAvailable =>
-        OperatingSystem.IsWindowsVersionAtLeast(10, 0, 26100) || OperatingSystem.IsLinux();
+        OperatingSystem.IsWindowsVersionAtLeast(10, 0, 26100) || OperatingSystem.IsLinux() ||
+        OperatingSystem.IsMacOS();
+
+    internal static bool MacOSLiquidGlassRequested => OperatingSystem.IsMacOS() &&
+        string.Equals(Environment.GetEnvironmentVariable("DOROTI_MACOS_BACKDROP"), "liquidGlass", StringComparison.OrdinalIgnoreCase);
+
+    internal static string WindowEffectLabel => OperatingSystem.IsMacOS()
+        ? MacOSLiquidGlassRequested && OperatingSystem.IsMacOSVersionAtLeast(26) ? "Liquid Glass" : "Window blur"
+        : "Acrylic window";
 
     internal static bool AcrylicEnabled => SampleEnabled
         ? SampleAcrylicAvailable
-        : OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || ExperimentalAcrylicEnabled;
+        : OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || ExperimentalAcrylicEnabled;
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new("Doroti Material Testbed", SampleEnabled ? new Size(1280, 900) : new Size(720, 640),
@@ -213,6 +221,7 @@ internal static class App
                 ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xfffffbfeL : 0xccfffbfeL),
             AcrylicEnabled
                 ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xff141218L : 0xcc141218L),
+            MacOSLiquidGlassRequested ? new WindowBackdropOptions(WindowBackdropMode.liquidGlass) :
             SampleEnabled && !SampleAcrylicAvailable ? new WindowBackdropOptions(WindowBackdropMode.solid) : ExperimentalAcrylicEnabled
                 ? new WindowBackdropOptions(
                     WindowBackdropMode.experimentalAcrylic,

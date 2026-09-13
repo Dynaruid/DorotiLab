@@ -65,6 +65,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
     internal ulong ViewId => _viewId;
     internal DorotiMacOSMetalView? NativeView => _nativeView;
+    internal WindowBackdropOptions Backdrop { get; init; } = new();
     internal AppKitPlatformViewHost? PlatformViews { get; set; }
 
     internal void Connect(DorotiMacOSMetalView nativeView)

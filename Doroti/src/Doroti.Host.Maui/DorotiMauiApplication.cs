@@ -99,6 +99,9 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         var title = descriptor.ViewConfiguration.title;
         return new(new ContentPage
         {
+#if MACOS
+            BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
+#endif
             SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
             Title = title,
             Content = new DorotiMauiSurface(descriptor),
