@@ -1,0 +1,15 @@
+{
+  "archivedAt": "2026-09-13T21:33:00.5827202+09:00",
+  "reason": "User requested a summary under history/26-09-12. Includes source updates through 2026-09-13; root work0.md retained. Archival does not imply qualification completion.",
+  "originalLinksBase": "repository root",
+  "summary": "history/26-09-12/work0-summary.md",
+  "sourceRetained": true,
+  "files": [
+    {
+      "source": "work0.md",
+      "archive": "history/26-09-12/work0.original.md",
+      "bytes": 60362,
+      "sha256": "13BA7124F50DE21FFE17F0F785B2102FBFDAAE3ABB7B2E366569A582DCA6FD3B"
+    }
+  ]
+}
