@@ -31,7 +31,7 @@ function(doroti_generate_wayland_client protocol_name protocol_xml)
   target_sources(doroti_qt_host PRIVATE "${protocol_code}" "${protocol_header}")
 endfunction()
 
-add_library(doroti_qt_host SHARED src/doroti_qt_host.cpp)
+add_library(doroti_qt_host SHARED src/doroti_qt_host.cpp src/doroti_qt_platform_views.cpp)
 doroti_generate_wayland_client(ext-background-effect-v1
   "${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-background-effect-v1.xml")
 doroti_generate_wayland_client(kde-blur

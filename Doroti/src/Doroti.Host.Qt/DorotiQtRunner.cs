@@ -19,7 +19,12 @@ public static unsafe partial class DorotiQtRunner
 {
     private const string NativeLibraryName = "doroti_qt_host";
 
-    public static int Run(DorotiApplicationDescriptor descriptor)
+    public static int Run(DorotiApplicationDescriptor descriptor) => Run(descriptor, null);
+
+    /// <summary>Preparation runs on the future Qt GUI thread before QApplication.
+    /// Optional shims may register schemes here; keep their native modules loaded
+    /// until Run returns. Do not create QObjects or another application/event loop.</summary>
+    public static int Run(DorotiApplicationDescriptor descriptor, Action? prepareApplication)
     {
         ArgumentNullException.ThrowIfNull(descriptor);
         if (!OperatingSystem.IsLinux())
@@ -30,12 +35,13 @@ public static unsafe partial class DorotiQtRunner
 
         QtNativeV2.ValidateLayout();
         if (QtSkiaSurface.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure(Doroti.Skia.Vulkan.GraphiteNativeLibrary.GetPackagedAsset());
+        using var platformViews = new QtPlatformViewHost();
         using var application = DorotiApplicationBoundary.Load(
             descriptor.ManifestAssembly,
             descriptor.ApplicationAssembly,
-            descriptor.LaunchContext.RuntimeIdentifier);
+            descriptor.LaunchContext.RuntimeIdentifier, platformViewFactories: platformViews.Factories);
         using var session = new DorotiHostSession(descriptor.EntrypointFactory());
-        using var state = new QtManagedState(session, application, descriptor.ViewConfiguration);
+        using var state = new QtManagedState(session, application, descriptor.ViewConfiguration, platformViews, prepareApplication);
         var stateHandle = GCHandle.Alloc(state);
         try
         {
@@ -94,6 +100,9 @@ public static unsafe partial class DorotiQtRunner
         private readonly Dictionary<string, string> _nativeDiagnostics = new(StringComparer.Ordinal);
         private readonly DorotiApplicationBoundary _application;
         private readonly DorotiViewConfiguration _configuration;
+        internal QtPlatformViewHost PlatformViews { get; }
+        internal Action? PrepareApplication { get; }
+        private PlatformViewCoordinator? _platformCoordinator;
         private Exception? _fatal;
         private QtNativeV2.HostApi _hostApi;
         private nint _viewHandle;
@@ -108,8 +117,10 @@ public static unsafe partial class DorotiQtRunner
         private readonly GRGlGetProcedureAddressDelegate _glResolver;
 
         internal QtManagedState(DorotiHostSession session, DorotiApplicationBoundary application,
-            DorotiViewConfiguration configuration)
+            DorotiViewConfiguration configuration, QtPlatformViewHost platformViews, Action? prepareApplication)
         {
+            PlatformViews = platformViews;
+            PrepareApplication = prepareApplication;
             Session = session;
             _application = application;
             _configuration = configuration;
@@ -170,7 +181,17 @@ public static unsafe partial class DorotiQtRunner
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
                 .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, renderer);
-            _application.Configure(capabilities, messages);
+            if (_application.Manifest.PlatformViews.Length != 0)
+            {
+                PlatformViews.Bind(viewHandle, host.ClearClient, CaptureFatal, action => View?.DispatchPlatformEvent(action));
+                _platformCoordinator = _application.ConfigurePlatformViews(capabilities, 1, PlatformViews);
+                PlatformViews.Configure(_platformCoordinator);
+                var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(_platformCoordinator, messages);
+                _application.Configure(capabilities, channel);
+                renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+                    PlatformViews.Draw(renderer, canvas, commands, descriptor, width, height);
+            }
+            else _application.Configure(capabilities, messages);
             DorotiView? view = null;
             try
             {
@@ -245,6 +266,7 @@ public static unsafe partial class DorotiQtRunner
 
         internal void CaptureFatal(Exception exception)
         {
+            PlatformViews.CancelPending();
             ArgumentNullException.ThrowIfNull(exception);
             lock (_gate) _fatal ??= exception;
             Console.Error.WriteLine($"doroti.qt managed.fatal={exception}");
@@ -297,6 +319,12 @@ public static unsafe partial class DorotiQtRunner
             Console.Error.WriteLine($"doroti.qt.summary={JsonSerializer.Serialize(snapshot)}");
         }
 
+        internal void NativeClosed()
+        {
+            lock (_gate) _viewHandle = 0;
+            PlatformViews.NativeClosed();
+        }
+
         internal void RequestClose()
         {
             QtNativeV2.HostApi hostApi;
@@ -338,9 +366,15 @@ public static unsafe partial class DorotiQtRunner
                 view.Dispose();
                 View = null;
             }
+            PlatformViews.CancelPending();
+            _platformCoordinator?.DisposalCompletion.GetAwaiter().GetResult();
             Surface.Dispose();
         }
     }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    internal static int OnPrepareApplication(nint context) =>
+        Guard(context, state => state.PrepareApplication?.Invoke());
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     internal static int OnViewCreated(nint context, nint viewHandle, QtNativeV2.HostApi* hostApi) =>
@@ -368,6 +402,7 @@ public static unsafe partial class DorotiQtRunner
                 state.RendererContextIdentity = surface->ContextIdentity;
             }
             state.Host.BeginFrame(in *surface);
+            if (!state.PlatformViews.TryBeginFrame()) return;
             SkiaPaintResult paint = default;
             presented = state.Surface.Render(in *surface, (skiaSurface, width, height) =>
                 {
@@ -375,6 +410,7 @@ public static unsafe partial class DorotiQtRunner
                     QtTitlebarPainter.Paint(skiaSurface.Canvas, state.Title, in *surface);
                 },
                 shouldPresent: () => paint.ShouldPresent, beforePresent: state.PreparePresent);
+            state.PlatformViews.FinishFrame(presented);
             var completion = paint.Completion;
             if (presented) state.RecordRasterized(frameToken, completion);
             else if (completion is { } pending) state.Renderer.FailPaint(pending, "Vulkan swapchain became out of date before presentation.");
@@ -457,6 +493,7 @@ public static unsafe partial class DorotiQtRunner
         GuardVoid(context, state =>
         {
             _ = viewHandle;
+            state.NativeClosed();
             state.Host?.RaiseClosed();
         });
 

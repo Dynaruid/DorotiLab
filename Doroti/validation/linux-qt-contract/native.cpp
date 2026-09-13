@@ -25,14 +25,14 @@ int main(int argc, char** argv) {
   auto run = reinterpret_cast<decltype(&doroti_qt_run_v2)>(dlsym(library, "doroti_qt_run_v2"));
   if (!run) return 2;
   doroti_qt_configuration_v2 config{};
-  config.abi_version = 3;
+  config.abi_version = 4;
   config.struct_size = sizeof(config);
   config.required_features = 0x7ffe;
   const std::string title = "Doroti Qt ABI probe (no rendering)";
   config.title = {reinterpret_cast<const std::uint8_t*>(title.data()), title.size()};
   config.logical_width = 320; config.logical_height = 240;
   doroti_qt_callbacks_v2 cb{};
-  cb.abi_version = 3; cb.struct_size = sizeof(cb);
+  cb.abi_version = 4; cb.struct_size = sizeof(cb);
   cb.required_features = cb.feature_bits = config.required_features;
   cb.view_created = [](void*, void*, const doroti_qt_host_api_v2* host) {
     Check(host->struct_size == 128 && host->prepare_present != nullptr);
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
   };
   cb.render = [](void*, void*, const doroti_qt_surface_v2* surface, std::uint64_t token) {
     ++renders;
-    Check(token != 0 && surface->struct_size == 144 && surface->abi_version == 3);
+    Check(token != 0 && surface->struct_size == 144 && surface->abi_version == 4);
     Check(surface->vulkan_surface != 0 && surface->vulkan_instance != nullptr);
     Check(surface->vulkan_instance_api_version >= ((1u << 22) | (2u << 12)));
     Check(surface->pixel_width > 0 && surface->pixel_height > 0);

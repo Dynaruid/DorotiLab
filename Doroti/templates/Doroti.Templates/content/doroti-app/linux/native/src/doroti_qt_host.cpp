@@ -1,10 +1,15 @@
 #include "doroti_qt_host_v2.h"
+#include "doroti_qt_platform_views.h"
+#include <memory>
+#include <QSet>
+#include <atomic>
 
 #include <QApplication>
 #include <QAccessible>
 #include <QAccessibleEvent>
 #include <QClipboard>
 #include <QCoreApplication>
+#include <QCursor>
 #include <QElapsedTimer>
 #include <QEvent>
 #include <QGuiApplication>
@@ -68,7 +73,8 @@ class QPlatformNativeInterface : public QObject {
 QT_END_NAMESPACE
 
 namespace {
-constexpr std::uint32_t kAbiVersion = 3;
+constexpr std::uint32_t kAbiVersion = 4;
+std::atomic_bool run_active{false};
 // Acrylic covers the complete client surface. Wayland compositors clip effect
 // regions to the current surface bounds, so keep one deliberately oversized
 // region instead of replacing it after every resize. This also avoids the KDE
@@ -88,7 +94,8 @@ constexpr std::uint64_t kSupportedFeatures =
     DOROTI_QT_FEATURE_KEY_FOCUS_INPUT |
     DOROTI_QT_FEATURE_TEXT_INPUT |
     DOROTI_QT_FEATURE_PLATFORM_SERVICES |
-    DOROTI_QT_FEATURE_SEMANTICS | DOROTI_QT_FEATURE_TITLEBAR;
+    DOROTI_QT_FEATURE_SEMANTICS | DOROTI_QT_FEATURE_TITLEBAR |
+    DOROTI_QT_FEATURE_PRE_APPLICATION | DOROTI_QT_FEATURE_PLATFORM_VIEWS;
 constexpr std::uint32_t kGlRgba8 = 0x8058;
 
 doroti_qt_utf8_v2 Utf8(const char* value) {
@@ -122,6 +129,7 @@ struct SemanticNode {
 };
 
 class DorotiAccessibleNode;
+QSet<QObject*> accessible_surfaces;
 
 QString String(doroti_qt_utf8_v2 value) {
   if (value.data == nullptr || value.length == 0) return {};
@@ -191,12 +199,14 @@ class DorotiSurface final : public DorotiWindowBase {
 #endif
     connect(QGuiApplication::styleHints(), &QStyleHints::startDragDistanceChanged, this, [this] { SendMetrics(); });
     connect(this, &QWindow::screenChanged, this, [this](QScreen*) { SendMetrics(); });
-    connect(this, &QWindow::windowStateChanged, this, [this](Qt::WindowState) { SendMetrics(); RequestChromeFrame(); });
+    connect(this, &QWindow::windowStateChanged, this, [this](Qt::WindowState) { UpdateWindowCursor(); SendMetrics(); RequestChromeFrame(); });
     connect(QGuiApplication::styleHints(), &QStyleHints::colorSchemeChanged,
             this, [this](Qt::ColorScheme) { SendConfiguration(); });
   }
 
   ~DorotiSurface() override {
+    accessible_surfaces.remove(this);
+    DorotiQtClosePlatformOwner(this);
     ClearSemanticsTree();
     ReleaseBackdrop();
     ReleaseSurface();
@@ -376,7 +386,8 @@ class DorotiSurface final : public DorotiWindowBase {
         case 34: shape = Qt::BlankCursor; break;
         default: break;
       }
-      surface->setCursor(shape);
+      surface->client_cursor_ = shape;
+      surface->UpdateWindowCursor();
     }, Qt::QueuedConnection);
   }
 
@@ -711,6 +722,7 @@ class DorotiSurface final : public DorotiWindowBase {
         RequestChromeFrame();
         break;
       case QEvent::WindowStateChange:
+        UpdateWindowCursor();
         SendMetrics();
         RequestChromeFrame();
         break;
@@ -720,13 +732,19 @@ class DorotiSurface final : public DorotiWindowBase {
           callbacks_.close_requested(callback_context_, this);
         }
         closing_ = true;
+        DorotiQtClosePlatformOwner(this);
         break;
       case QEvent::Enter: {
         auto* enter = static_cast<QEnterEvent*>(event);
+        cursor_inside_ = true;
+        cursor_position_ = enter->position();
+        UpdateWindowCursor();
         SendPointer(enter->position(), QPointF{}, 1, 1, 0, 1, 0, 0, 0, 0);
         break;
       }
       case QEvent::Leave:
+        cursor_inside_ = false;
+        UpdateWindowCursor();
         caption_hovered_ = 0;
         RequestChromeFrame();
         SendPointer(last_pointer_position_, QPointF{}, 2, 1, 0, 1, 0, 0, 0, 0);
@@ -736,6 +754,9 @@ class DorotiSurface final : public DorotiWindowBase {
       case QEvent::MouseButtonDblClick:
       case QEvent::MouseMove: {
         auto* mouse = static_cast<QMouseEvent*>(event);
+        cursor_inside_ = true;
+        cursor_position_ = mouse->position();
+        UpdateWindowCursor();
         if (HandleCaptionMouse(mouse)) { event->accept(); return true; }
         const auto change = (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonDblClick) ? 4u
                             : event->type() == QEvent::MouseButtonRelease ? 6u
@@ -865,6 +886,37 @@ class DorotiSurface final : public DorotiWindowBase {
     return unified_titlebar_ && windowState() != Qt::WindowFullScreen ? 32u : 0u;
   }
 
+  Qt::Edges ResizeEdges(const QPointF& point) const {
+    if (CaptionHeight() == 0 || windowState() == Qt::WindowMaximized ||
+        point.x() < 0 || point.y() < 0 || point.x() >= width() || point.y() >= height()) return {};
+    constexpr int border = 5;  // Qt logical pixels, shared by hover and resize initiation.
+    Qt::Edges edges;
+    if (point.x() < border) edges |= Qt::LeftEdge;
+    if (point.x() >= width() - border) edges |= Qt::RightEdge;
+    if (point.y() < border) edges |= Qt::TopEdge;
+    if (point.y() >= height() - border) edges |= Qt::BottomEdge;
+    return edges;
+  }
+
+  void UpdateWindowCursor() {
+    auto shape = client_cursor_;
+    if (cursor_inside_) {
+      const auto edges = ResizeEdges(cursor_position_);
+      const bool horizontal = edges.testFlag(Qt::LeftEdge) || edges.testFlag(Qt::RightEdge);
+      const bool vertical = edges.testFlag(Qt::TopEdge) || edges.testFlag(Qt::BottomEdge);
+      if (horizontal && vertical) {
+        shape = edges.testFlag(Qt::LeftEdge) == edges.testFlag(Qt::TopEdge)
+            ? Qt::SizeFDiagCursor : Qt::SizeBDiagCursor;
+      } else if (horizontal) shape = Qt::SizeHorCursor;
+      else if (vertical) shape = Qt::SizeVerCursor;
+      else if (cursor_position_.y() >= 0 && cursor_position_.y() < CaptionHeight())
+        shape = Qt::ArrowCursor;
+    }
+    // Managed cursor changes arrive asynchronously; chrome takes precedence while
+    // retaining the latest client cursor to restore when the pointer returns.
+    if (cursor().shape() != shape) setCursor(shape);
+  }
+
   void DescribeTitlebar(doroti_qt_surface_v2& descriptor) const {
     descriptor.titlebar_height = CaptionHeight();
     descriptor.titlebar_state = (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark ? 1u : 0u) |
@@ -905,13 +957,7 @@ class DorotiSurface final : public DorotiWindowBase {
     }
     if (caption_pressed_ != 0) return true;
     if (mouse->type() == QEvent::MouseButtonPress && mouse->button() == Qt::LeftButton) {
-      Qt::Edges edges;
-      if (windowState() != Qt::WindowMaximized) {
-        if (point.x() < 5) edges |= Qt::LeftEdge;
-        if (point.x() >= width() - 5) edges |= Qt::RightEdge;
-        if (point.y() < 5) edges |= Qt::TopEdge;
-        if (point.y() >= height() - 5) edges |= Qt::BottomEdge;
-      }
+      const auto edges = ResizeEdges(point);
       if (edges != Qt::Edges{} && startSystemResize(edges)) return true;
       if (point.y() < CaptionHeight()) {
         if (button != 0) { caption_pressed_ = button; RequestChromeFrame(); }
@@ -1327,6 +1373,9 @@ class DorotiSurface final : public DorotiWindowBase {
   bool text_client_active_ = false;
   std::uint32_t lifecycle_state_ = 0;
   std::uint64_t metrics_generation_ = 0;
+  Qt::CursorShape client_cursor_ = Qt::ArrowCursor;
+  bool cursor_inside_ = false;
+  QPointF cursor_position_;
   QPointF last_pointer_position_;
   QString text_;
   int selection_base_ = 0;
@@ -1374,10 +1423,11 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     return node == nullptr ? 0 : node->children.size();
   }
   int indexOfChild(const QAccessibleInterface* child) const override {
-    const auto* accessible = dynamic_cast<const DorotiAccessibleNode*>(child);
     const auto* node = Node();
-    return accessible == nullptr || node == nullptr
-               ? -1 : node->children.indexOf(accessible->id_);
+    if (!node || !child) return -1;
+    for (int index = 0; index < node->children.size(); ++index)
+      if (surface_->Accessible(node->children[index]) == child) return index;
+    return -1;
   }
 
   QString text(QAccessible::Text type) const override {
@@ -1551,7 +1601,7 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
 }
 
 QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {
-  auto* surface = dynamic_cast<DorotiSurface*>(object);
+  auto* surface = accessible_surfaces.contains(object) ? static_cast<DorotiSurface*>(object) : nullptr;
   return surface == nullptr || surface->Semantic(0) == nullptr
              ? nullptr : new DorotiAccessibleNode(surface, 0);
 }
@@ -1602,6 +1652,11 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
   if ((callbacks->feature_bits & DOROTI_QT_FEATURE_GPU_POLL) == 0 || callbacks->poll_gpu_work == nullptr)
     return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
 #endif
+  if ((required & DOROTI_QT_FEATURE_PRE_APPLICATION) != 0 &&
+      (callbacks->feature_bits & DOROTI_QT_FEATURE_PRE_APPLICATION) == 0)
+    return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_PRE_APPLICATION) != 0 &&
+      callbacks->prepare_application == nullptr) return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
   if (configuration->title.data == nullptr || configuration->title.length == 0 ||
       configuration->logical_width <= 0 || configuration->logical_height <= 0)
     return DOROTI_QT_ERROR_INVALID_ARGUMENT;
@@ -1620,22 +1675,41 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     const auto validation = Validate(configuration, callbacks);
     if (validation != DOROTI_QT_OK) return validation;
 
+    if (run_active.exchange(true)) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+    struct RunAdmission { ~RunAdmission() { run_active = false; } } run_admission;
+    // The process owns one QApplication. Reject nesting before invoking plugin
+    // preparation; schemes and graphics API selection must precede QApplication.
+    if (QCoreApplication::instance()) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+    if ((callbacks->feature_bits & DOROTI_QT_FEATURE_PRE_APPLICATION) != 0) {
+      if (!callbacks->prepare_application) return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+      const auto prepared = callbacks->prepare_application(callbacks->callback_context);
+      if (prepared != DOROTI_QT_OK) return prepared;
+    }
     int argc = 1;
     char app_name[] = "doroti";
     char* argv[] = {app_name, nullptr};
     QApplication app(argc, argv);
-    QAccessible::installFactory(&AccessibleFactory);
+    struct AccessibleRegistration {
+      AccessibleRegistration() { QAccessible::installFactory(&AccessibleFactory); }
+      ~AccessibleRegistration() { QAccessible::removeFactory(&AccessibleFactory); }
+    } accessible_registration;
     const auto title = QString::fromUtf8(
         reinterpret_cast<const char*>(configuration->title.data),
         static_cast<qsizetype>(configuration->title.length));
-    auto* surface = new DorotiSurface(callbacks->callback_context, *callbacks,
+    auto surface_owner = std::make_unique<DorotiSurface>(callbacks->callback_context, *callbacks,
                                       configuration->backdrop_mode,
                                       configuration->backdrop_fallback,
                                       configuration->titlebar_style);
+    auto* surface = surface_owner.get();
+    accessible_surfaces.insert(surface);
+    DorotiQtRegisterPlatformOwner(surface);
     surface->setTitle(title);
     const auto created = callbacks->view_created(
         callbacks->callback_context, surface, &kHostApi);
-    if (created != DOROTI_QT_OK) return created;
+    if (created != DOROTI_QT_OK) {
+      surface_owner.reset();
+      return created;
+    }
     surface->resize(configuration->logical_width, configuration->logical_height);
     surface->show();
     surface->InitializeBackdrop();
@@ -1652,6 +1726,7 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
         if (*completed >= stress_cycles) {
           surface->setProperty("doroti.validation.resizeCycles", *completed);
           timer->stop();
+          DorotiQtRecordPlatformOwner(surface, qgetenv("DOROTI_QT_VALIDATION_PLATFORM_VIEWS").constData());
           delete completed;
           DorotiSurface::RequestClose(surface);
           return;
@@ -1663,8 +1738,7 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
       timer->start(80);
     }
     const auto result = app.exec();
-    delete surface;
-    QAccessible::removeFactory(&AccessibleFactory);
+    surface_owner.reset();
     return result;
   } catch (const std::exception&) {
     return DOROTI_QT_ERROR_NATIVE_EXCEPTION;

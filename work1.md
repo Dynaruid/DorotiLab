@@ -8,6 +8,43 @@ Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f28
 
 최초 재검토 시 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없었다. 후속 구현에서 계약/지원표를 복구했으며 실행 기록은 AppKit README를 사용한다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 양방향 겹침 기준 반영은 수행했으며, 기기별 성능 예산은 남아 있다.
 
+## Linux Qt 구현 — 2026-09-14
+
+**PV-9는 `PARTIAL`이다.** generic QPushButton/QLineEdit의 제한형 B 제품 경로와
+WebEngine 공동 attachment 실험을 구현·실행했다. C 양방향 전체·부분 겹침은 아직 지원하지 않는다.
+[구현·실행 기록](Doroti/artifacts/platform-views/2026-09-14/linux-qt/implementation.md),
+[재현 가능한 검증 명령과 지원 범위](Doroti/validation/linux-qt-contract/README.md)를 따른다.
+
+- **제품 연결:** Linux manifest 선택형 factory, owner coordinator/channel, scene painter와
+  native focus 이벤트를 연결했다. 기존 Graphite Vulkan QWindow 위에 서로 겹치지 않는 live
+  child Widgets를 배치한다. bounds는 Qt 정수 logical 좌표로 반올림하고 clip은 안쪽으로 제한한다.
+  native-native overlap·전경 raster·native와 shield의 조합·affine effect·C 요청은 명시적으로 거부한다.
+- **frame·수명:** frame 전에 native operation을 예약하고 경합 시 재시도한다. 전체 배치를 먼저
+  검증하고 queue-present 성공 후 적용한다. 실패 frame은 native 배치를 먼저 바꾸지 않는다.
+  물리 표시 원자성은 광고하지 않는다. Qt GUI queue의 owner/task ID와 종료 terminal,
+  Widget의 hide/clip/재표시·해제 및 Qt native-window 재생성 후 owner 재연결을 구현했다.
+- **work2 인계:** QApplication 이전 선택형 preparation hook과 native `adopt_widget` ABI를 제공한다.
+  generic host에 WebEngine/WebChannel/Quick 필수 링크를 추가하지 않았다. WebEngine의 load/JS/
+  편집 상태 보존은 실제 Qt probe에서 확인했으며 managed WebView 제품 adapter 자체는 work2 범위다.
+- **ABI·회귀:** v2 export 이름의 실제 ABI를 **4**, callback table을 **192 bytes**로 갱신했다.
+  prepare callback은 offset 184 / feature bit 15, 선택 attachment API는 bit 16이다.
+  managed·Testbed·template·CMake·validator를 동기화했다. 기존 접근성 factory의 WebEngine
+  foreign-object RTTI 충돌과 실패 startup cleanup도 수정했다.
+- **실행 범위:** Ubuntu 26.04.1 / 시스템 Qt 6.10.2 / VMware VM / llvmpipe Vulkan / DPR 1에서
+  XWayland(`xcb`)·Wayland의 attachment, 독립 2-owner queue와 100회 생성·해제,
+  실제 제품 50회 resize·종료를 통과했다. 제품 failed frame은 0이었다.
+  XWayland 제품 native 포함 캡처, Qt ABI·접근성·GL titlebar와 공통 16개 검사도 통과했다.
+  Wayland 캡처는 확보하지 못했고 WebEngine probe의 EGL surface 경고는 표시 승인에서 제외한다.
+
+**남은 범위:** PV-9A의 실제 R/N/R/N/R 및 선택형 Quick host spike, PV-9C/C1~C6,
+전체 pointer·Tab/Shift+Tab·한글 IME·Orca, native X11/물리 GPU, 두 제품 창,
+DPR/device-loss·성능·clean 배포·NativeAOT다. 독립 native harness의 성공을 전체 제품 C나
+물리 입력 승인으로 계산하지 않는다. `skippedByUser` 항목은 없다.
+
+기본 B fixture는 `DOROTI_TESTBED_MODE=platform-views`와
+`DOROTI_PLATFORM_VIEW_COMPOSITION=overlay`로 실행한다. 위 범위는 기존 Windows/AppKit 상태를
+변경하지 않으며, 아래 PV-9의 전체 완료 기준은 유지한다.
+
 ## Windows 제품 연결 — 2026-09-13
 
 **WindowsAppSdk + Graphite/Vulkan의 실제 제품 B/C 경로를 구성했다.** manifest의 선택형 factory 공급, HWND 생성 후 binding, owner coordinator/channel, UI dispatcher, scene painter, native 입력/포커스, 종료 정리를 연결했다. 현재 Windows 전체 지원 승인은 `PARTIAL`이지만, 이 제품 경로의 runner 연결과 교차 합성이 미구현인 상태는 아니다. Windows MAUI와 다른 presenter의 지원으로 확대해서 해석하지 않는다.
@@ -83,7 +120,7 @@ Windows checkout `69a43b10e09af4bddafb35220f854ab36edf677b`에서 최초로 수�
 | PV-6 | `TODO` | Android View/SurfaceView B/C host 및 emulator/실기기 검증 |
 | PV-7 | `TODO` | UIKit iOS/Catalyst B/C host, binding/ABI 및 각 runner·기기 검증 |
 | PV-8 | `PARTIAL` — AppKit B 및 제한된 C 다중 Metal surface·paint order·shield 경로, Graphite/Ganesh 제품 검증 추가 | 전체 C1~C6/PV-5, 한글 IME·VoiceOver·제품 두 창/close-reopen·device-loss·성능·배포 검증 |
-| PV-9 | `TODO` | WV-7A 시스템 Qt/ABI 범위, WV-7B 공동 host spike, generic 초기화·attachment와 X11/Wayland B/C 구현·검증 |
+| PV-9 | `PARTIAL` | Qt ABI 4·선택 초기화 hook·generic 제한형 B 제품 연결 및 WebEngine attachment probe 구현. XWayland/Wayland 수명·제품 resize 통과. C/Quick host·전체 입력·물리/배포 승인 미완료 |
 | PV-10 | `PARTIAL` — Testbed fixture와 자동 수명 시나리오 추가 | 실제 제품 0/1/4-view 성능, 두 창, route/lifecycle, 최종 runner/template/package 배포 회귀 |
 
 WindowsAppSdk Graphite/Vulkan과 AppKit은 제한된 제품 `InterleavedComposition` 경로를 제공한다. Windows는 2026-09-13 제품/독립 검증을 새로 실행했으며 증거는 위 구현 기록에 연결한다. 어느 backend도 모든 DPI·device-loss·물리 입력·접근성·성능을 포함한 전체 C1~C6/PV-5/PV-10 승인을 광고하지 않는다. 독립 native/DOM harness 성공은 제품 합성 증거와 분리한다. 다음 작업은 **Windows 성능·추가 승인 및 Windows MAUI → Web 제품 C와 PV-5 → PV-6~PV-9 확장**으로 나누며, 미실행 항목을 `skippedByUser`로 표시하지 않는다.
@@ -365,7 +402,7 @@ Mac Catalyst의 상태는 이 작업으로 승격하지 않는다.
 - **PV-9C — 제품 교차 합성:** PV-9A에서 정한 host 계층에 raster segment별 background/intermediate/foreground surface, native attachment, shield를 같은 paint order로 연결한다. frame/epoch별 준비·commit·실패 rollback·GPU retirement, resize/DPR/clip 및 동적 순서 변경을 구현한다. C1~C6와 PV-5는 실제 제품 native 포함 화면/입력으로 검증한다. 별도 popup 창이나 snapshot/hide 대체로 일반 C를 선언하지 않는다.
 - QWidget `createWindowContainer()`의 embedded window는 widget 위의 opaque box로 쌓이고 여러 겹친 container의 순서는 정의되지 않는다. 단순 reparent/raise/lower 또는 비겹침 B 성공을 C 설계 근거로 삼지 않는다. [Qt container 공식 제약](https://doc.qt.io/qt-6/qwidget.html#createWindowContainer). C가 불가능한 조합은 구체적 원인·제한형 B와 미충족 요구를 남긴다.
 - **의존성 경계:** generic `libdoroti_qt_host.so`에 WebEngine/WebChannel/Quick 필수 링크를 추가하지 않는다. Quick host가 필요하면 선택 구성으로 분리한다. 현재 generic Qt 하한 6.5와 WebView 선택 앱의 계획 API 하한 6.8을 구분하고, 같은 process의 host/shim은 WV-7A에서 검증한 시스템 Qt 조합을 사용한다. 시스템 WebEngine 패키징·진단은 WV-7E가 소유한다.
-- **실제 변경 접점:** [managed Qt host](Doroti/src/Doroti.Host.Qt/DorotiQtRunner.cs), [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs), [Testbed native host](DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp), [template native host](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp), 각 CMake/header와 [runner targets](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets)를 동기화한다. 현재 v2 이름/export의 실제 ABI 값은 3이므로 version/struct size/feature negotiation 및 validator를 함께 갱신한다.
+- **실제 변경 접점:** [managed Qt host](Doroti/src/Doroti.Host.Qt/DorotiQtRunner.cs), [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs), [Testbed native host](DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp), [template native host](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp), 각 CMake/header와 [runner targets](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets)를 동기화한다. 2026-09-14 구현에서 v2 이름/export의 실제 ABI 값은 4로, callback table은 192 bytes로 갱신했다. 후속 확장에서도 version/struct size/feature negotiation 및 validator를 함께 갱신한다.
 
 완료 기준: generic control과 WV-7F의 실제 WebEngine 각각 X11/Wayland B/C·입력·한글 IME·Orca·live resize·창 종료 증거가 있다. native X11/XWayland/WSLg/VM/물리 Linux를 구분하고 C 미해결 또는 미실행이면 Linux 목표는 `PARTIAL`이다. WV-7B와 PV-9A는 공동 spike여서 순환 선행 조건이 아니며, PV-9B 후 WebView 기능 개발을 진행할 수 있다.
 

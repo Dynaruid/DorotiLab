@@ -8,4 +8,7 @@
     <ProjectReference Include="../../src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
     <ProjectReference Include="../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
   </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+  </ItemGroup>
 </Project>

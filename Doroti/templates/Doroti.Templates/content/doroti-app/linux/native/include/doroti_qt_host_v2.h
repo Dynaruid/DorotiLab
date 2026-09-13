@@ -38,6 +38,8 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_GPU_POLL = 1ull << 12,
   DOROTI_QT_FEATURE_PRESENT_HOOK = 1ull << 13,
   DOROTI_QT_FEATURE_TITLEBAR = 1ull << 14,
+  DOROTI_QT_FEATURE_PRE_APPLICATION = 1ull << 15,
+  DOROTI_QT_FEATURE_PLATFORM_VIEWS = 1ull << 16,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -262,6 +264,8 @@ struct doroti_qt_callbacks_v2 {
   // Owner-thread nonblocking retirement, including while hidden/idle.
   // 0 = all complete, 1 = pending, otherwise a fatal error code.
   std::int32_t (*poll_gpu_work)(void* callback_context, void* view_handle);
+  // Optional when feature bit 15 is absent; runs before QApplication creation.
+  std::int32_t (*prepare_application)(void* callback_context);
 };
 
 DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
@@ -286,4 +290,5 @@ static_assert(offsetof(doroti_qt_callbacks_v2, callback_context) == 24);
 static_assert(sizeof(doroti_qt_host_api_v2) == 128);
 static_assert(offsetof(doroti_qt_surface_v2, vulkan_instance_api_version) == 120);
 static_assert(offsetof(doroti_qt_callbacks_v2, poll_gpu_work) == 176);
-static_assert(sizeof(doroti_qt_callbacks_v2) == 184);
+static_assert(offsetof(doroti_qt_callbacks_v2, prepare_application) == 184);
+static_assert(sizeof(doroti_qt_callbacks_v2) == 192);

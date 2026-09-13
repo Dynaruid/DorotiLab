@@ -4,7 +4,7 @@ using Doroti.Host.Qt;
 QtNativeV2.ValidateLayout();
 WindowAppearanceContracts.Verify();
 
-if (QtNativeV2.AbiVersion != 3 || QtNativeV2.RequiredFeatures != (QtSkiaSurface.GraphiteEnabled ? 0x7ffeUL : 0x43ffUL))
+if (QtNativeV2.AbiVersion != 4 || QtNativeV2.RequiredFeatures != (QtSkiaSurface.GraphiteEnabled ? 0x1fffeUL : 0x1c3ffUL))
     throw new InvalidOperationException("doroti.qt-host/v2 feature identity drifted.");
 if (Marshal.SizeOf<QtNativeV2.Surface>() != 144 ||
     Marshal.OffsetOf<QtNativeV2.Surface>("VulkanSurface").ToInt32() != 88 ||
@@ -16,7 +16,7 @@ if (Marshal.SizeOf<QtNativeV2.Configuration>() != 56)
 if (Marshal.SizeOf<QtNativeV2.HostApi>() != 128 ||
     Marshal.OffsetOf<QtNativeV2.HostApi>("PreparePresent").ToInt32() != 120)
     throw new InvalidOperationException("doroti.qt-host/v2 host API layout drifted.");
-if (Marshal.SizeOf<QtNativeV2.Callbacks>() != 184 ||
+if (Marshal.SizeOf<QtNativeV2.Callbacks>() != 192 ||
     Marshal.OffsetOf<QtNativeV2.Callbacks>("PollGpuWork").ToInt32() != 176)
     throw new InvalidOperationException("doroti.qt-host/v2 callback layout drifted.");
 if (Marshal.SizeOf<QtNativeV2.Metrics>() != 160 ||
@@ -83,3 +83,5 @@ static QtNativeV2.Key KeyPacket(long physical, long logical, uint type)
     System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(24), type);
     return MemoryMarshal.Read<QtNativeV2.Key>(bytes);
 }
+
+QtPlatformViewContracts.Run();

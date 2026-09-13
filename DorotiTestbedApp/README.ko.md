@@ -93,6 +93,17 @@ dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c R
   -e DOROTI_TESTBED_MODE=sample
 ```
 
+Linux Qt의 기본 native PlatformView 예제는 다음과 같이 실행합니다.
+
+```sh
+DOROTI_TESTBED_MODE=platform-views DOROTI_PLATFORM_VIEW_COMPOSITION=overlay \
+  dotnet run --project DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Debug -r linux-x64
+```
+
+현재 Qt 지원은 서로 겹치지 않는 native 버튼·편집기의 제한형 B입니다. Doroti 그림과
+native의 교차 겹침, 한글 IME·Orca 전체 승인은 아직 완료되지 않았습니다.
+[Qt 검증·지원 범위](../Doroti/validation/linux-qt-contract/README.md)를 참고하세요.
+
 ### Android 샘플
 
 Android workload, Android SDK와 OpenJDK 17–21을 준비하고 에뮬레이터를 먼저 시작하거나

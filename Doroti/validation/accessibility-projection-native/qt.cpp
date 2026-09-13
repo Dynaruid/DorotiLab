@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 int main(int argc, char** argv) {
-  QGuiApplication app(argc, argv);
+  QApplication app(argc, argv);
   std::vector<std::pair<int64_t, int64_t>> actions;
   doroti_qt_callbacks_v2 callbacks{};
   callbacks.semantics_action = [](void* context, void*, int64_t id, int64_t action, doroti_qt_utf8_v2) {
@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   };
   callbacks.lifecycle_changed = [](void*, void*, uint32_t, int64_t) {};
   callbacks.closed = [](void*, void*) {};
-  DorotiSurface surface(&actions, callbacks, DOROTI_QT_BACKDROP_SOLID, DOROTI_QT_BACKDROP_FALLBACK_SOLID);
+  DorotiSurface surface(&actions, callbacks, DOROTI_QT_BACKDROP_SOLID, DOROTI_QT_BACKDROP_FALLBACK_SOLID, DOROTI_QT_TITLEBAR_SOLID);
   const auto project = [&](bool enabled, bool readOnly, bool include = true) {
     const auto node = QString(R"({"id":1,"rect":[0,0,200,40],"label":"Action","value":"5","actions":65,"flags":{"enabled":%1,"readOnly":%2,"slider":true}})")
         .arg(enabled ? "true" : "false", readOnly ? "true" : "false");

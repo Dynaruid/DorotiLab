@@ -2,6 +2,8 @@
 #include "doroti_qt_host_v2.h"
 #include <QAccessible>
 #include <QCoreApplication>
+#include <QCursor>
+#include <QEnterEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QTimer>
@@ -23,6 +25,59 @@ void Mouse(QWindow* window, QEvent::Type type, QPointF point, Qt::MouseButton bu
   QMouseEvent event(type, point, window->mapToGlobal(point.toPoint()), button, buttons, Qt::NoModifier);
   QCoreApplication::sendEvent(window, &event);
 }
+void Hover(QWindow* window, QPointF point, Qt::CursorShape expected) {
+  Mouse(window, QEvent::MouseMove, point, Qt::NoButton, Qt::NoButton);
+  Check(window->cursor().shape() == expected, "Wrong hover cursor");
+}
+void ClientCursor(QWindow* window, std::uint32_t cursor) {
+  api->set_cursor(handle, cursor);
+  QCoreApplication::sendPostedEvents(window, QEvent::MetaCall);
+}
+void CheckResizeCursors(QWindow* window) {
+  ClientCursor(window, 7); // A client text field must recover its I-beam after chrome hover.
+  const auto edge = [=](Qt::CursorShape shape) { return unified ? shape : Qt::IBeamCursor; };
+  const double w = window->width(), h = window->height();
+  Hover(window, {2, h / 2}, edge(Qt::SizeHorCursor));
+  Hover(window, {w - 2, h / 2}, edge(Qt::SizeHorCursor));
+  Hover(window, {w / 2, 2}, edge(Qt::SizeVerCursor));
+  Hover(window, {w / 2, h - 2}, edge(Qt::SizeVerCursor));
+  Hover(window, {2, 2}, edge(Qt::SizeFDiagCursor));
+  Hover(window, {w - 2, h - 2}, edge(Qt::SizeFDiagCursor));
+  Hover(window, {w - 2, 2}, edge(Qt::SizeBDiagCursor));
+  Hover(window, {2, h - 2}, edge(Qt::SizeBDiagCursor));
+  Hover(window, {4.9, h / 2}, edge(Qt::SizeHorCursor));
+  Hover(window, {5, h / 2}, Qt::IBeamCursor);
+  Hover(window, {w - 5, h / 2}, edge(Qt::SizeHorCursor));
+  Hover(window, {w - 5.1, h / 2}, Qt::IBeamCursor);
+  Hover(window, {w / 2, 16}, unified ? Qt::ArrowCursor : Qt::IBeamCursor);
+  Hover(window, {2, h / 2}, edge(Qt::SizeHorCursor));
+  ClientCursor(window, 1); // A queued framework update must not overwrite a resize cursor.
+  Check(window->cursor().shape() == (unified ? Qt::SizeHorCursor : Qt::PointingHandCursor),
+        "Client cursor overwrote resize cursor");
+  Hover(window, {40, 100}, Qt::PointingHandCursor);
+  Hover(window, {2, h / 2}, unified ? Qt::SizeHorCursor : Qt::PointingHandCursor);
+  QEvent leave(QEvent::Leave);
+  QCoreApplication::sendEvent(window, &leave);
+  Check(window->cursor().shape() == Qt::PointingHandCursor, "Resize cursor persisted after leave");
+  const QPointF point(2, 2);
+  QEnterEvent enter(point, point, window->mapToGlobal(point.toPoint()));
+  QCoreApplication::sendEvent(window, &enter);
+  Check(window->cursor().shape() == (unified ? Qt::SizeFDiagCursor : Qt::PointingHandCursor),
+        "Entering a corner did not update cursor");
+  if (unified) {
+    window->showMaximized();
+    Check(window->cursor().shape() == Qt::ArrowCursor, "Maximize retained resize cursor");
+    Hover(window, {2, 100}, Qt::PointingHandCursor);
+    window->showNormal();
+    Check(window->cursor().shape() == Qt::SizeHorCursor, "Restore did not refresh resize cursor");
+    window->showFullScreen();
+    Check(window->cursor().shape() == Qt::PointingHandCursor, "Fullscreen retained resize cursor");
+    Hover(window, {2, 2}, Qt::PointingHandCursor);
+    window->showNormal();
+  }
+  Hover(window, {40, 100}, Qt::PointingHandCursor);
+  ClientCursor(window, 0);
+}
 void Click(QWindow* window, QPointF point) {
   Mouse(window, QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton);
   Mouse(window, QEvent::MouseButtonRelease, point, Qt::LeftButton, Qt::NoButton);
@@ -37,7 +92,7 @@ int main(int argc, char** argv) {
   auto run = reinterpret_cast<decltype(&doroti_qt_run_v2)>(dlsym(library, "doroti_qt_run_v2"));
   if (!run) return 2;
   doroti_qt_configuration_v2 config{};
-  config.abi_version = 3; config.struct_size = sizeof(config);
+  config.abi_version = 4; config.struct_size = sizeof(config);
   config.required_features = 0x43ff;
   const std::string title = "Doroti titlebar input probe";
   config.title = {reinterpret_cast<const std::uint8_t*>(title.data()), title.size()};
@@ -45,7 +100,7 @@ int main(int argc, char** argv) {
   config.backdrop_mode = DOROTI_QT_BACKDROP_ACRYLIC;
   config.titlebar_style = unified ? DOROTI_QT_TITLEBAR_UNIFIED : DOROTI_QT_TITLEBAR_SOLID;
   doroti_qt_callbacks_v2 cb{};
-  cb.abi_version = 3; cb.struct_size = sizeof(cb);
+  cb.abi_version = 4; cb.struct_size = sizeof(cb);
   cb.required_features = cb.feature_bits = config.required_features;
   cb.view_created = [](void*, void* view, const doroti_qt_host_api_v2* host) {
     api = host; handle = view;
@@ -54,6 +109,7 @@ int main(int argc, char** argv) {
     QTimer::singleShot(200, window, [window] {
       Check(renders > 0, "No caption surface descriptor received");
       Check(padding == (unified ? 32 : 0) * window->devicePixelRatio(), "Wrong caption safe area");
+      CheckResizeCursors(window);
       const auto before = pointers;
       Click(window, QPointF(40, 100));
       Check(pointers == before + 2, "Client pointer input was lost");
@@ -94,7 +150,8 @@ int main(int argc, char** argv) {
   cb.render = [](void*, void*, const doroti_qt_surface_v2* surface, std::uint64_t) {
     ++renders;
     Check(surface->struct_size == 144, "Wrong surface ABI size");
-    Check(surface->titlebar_height == (unified ? 32u : 0u), "Wrong caption height in render descriptor");
+    Check(surface->titlebar_height == (unified && static_cast<QWindow*>(handle)->windowState() != Qt::WindowFullScreen ? 32u : 0u),
+          "Wrong caption height in render descriptor");
     return 0;
   };
   cb.metrics_changed = [](void*, void*, const doroti_qt_metrics_v2* metrics) { padding = metrics->view_padding.top; };
@@ -115,6 +172,6 @@ int main(int argc, char** argv) {
   cb.semantics_action = [](void*, void*, std::int64_t, std::int64_t, doroti_qt_utf8_v2) { Check(false, "Caption action leaked to app semantics"); };
   const int result = run(&config, &cb);
   Check(result == 0 && closes == 1, "Window lifecycle failed");
-  std::printf("Qt %s caption input, safe area, accessibility: %s\n", unified ? "unified" : "solid", valid ? "PASS" : "FAIL");
+  std::printf("Qt %s caption input, resize cursors, safe area, accessibility: %s\n", unified ? "unified" : "solid", valid ? "PASS" : "FAIL");
   return valid ? 0 : 1;
 }

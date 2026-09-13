@@ -15,6 +15,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="buildTransitive\Doroti.Host.Qt.targets" Pack="true" PackagePath="buildTransitive\" />
