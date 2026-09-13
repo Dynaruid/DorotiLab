@@ -189,6 +189,8 @@ function Invoke-WorkspaceDotNet {
         }
         $runner = [IO.Path]::GetFullPath($mauiBackend[0])
     }
+    # The dotnet CLI selects global.json from its working directory.
+    $dotnetWorkingDirectory = if ($Platform -ceq 'ios') { Split-Path -Parent $runner } else { $workspace.Root }
     $CompilationMode = Resolve-DorotiCompilationMode $Platform $Configuration $CompilationMode $Rid
     if ($CompilationMode -eq 'NativeAot' -and -not $Rid) { $Rid = 'ios-arm64' }
     if ($CompilationMode -eq 'NativeAot' -and ($Platform -ne 'ios' -or $Rid -ne 'ios-arm64')) {
@@ -212,12 +214,12 @@ function Invoke-WorkspaceDotNet {
         $restoreArguments = @('restore', $runner, '--nologo', "-p:Configuration=$Configuration")
         if ($Rid) { $restoreArguments += "-p:RuntimeIdentifier=$Rid" }
         $restoreArguments += $compilationArguments
-        Invoke-Checked 'dotnet' $restoreArguments $workspace.Root
+        Invoke-Checked 'dotnet' $restoreArguments $dotnetWorkingDirectory
     }
     $fingerprintWatch = [Diagnostics.Stopwatch]::StartNew()
-    $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner $compilationArtifacts
-    $toolchain = Get-DorotiToolchainIdentity $workspace.Root
-    $dependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts
+    $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner $compilationArtifacts $dotnetWorkingDirectory
+    $toolchain = Get-DorotiToolchainIdentity $dotnetWorkingDirectory
+    $dependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $dotnetWorkingDirectory $CompilationMode $compilationArtifacts
     $fingerprintWatch.Stop()
     $stateDirectory = Join-Path $workspace.Root '.doroti/launch-state'
     $stateKey = @($Platform, $WindowsBackend, $Configuration, $CompilationMode, $(if ([string]::IsNullOrWhiteSpace($Rid)) { 'default-rid' } else { $Rid })) -join '-'
@@ -242,7 +244,7 @@ function Invoke-WorkspaceDotNet {
         }
     }
     if ($effectiveNoBuild) {
-        Assert-DorotiArtifactIdentity $state.artifact (Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts)
+        Assert-DorotiArtifactIdentity $state.artifact (Get-DorotiArtifactIdentity $runner $Configuration $Rid $dotnetWorkingDirectory $CompilationMode $compilationArtifacts)
     }
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
@@ -284,7 +286,7 @@ function Invoke-WorkspaceDotNet {
             }
             if ($Rid) { $buildArguments += "-p:RuntimeIdentifier=$Rid" }
             $buildArguments += $compilationArguments
-            Invoke-Checked 'dotnet' $buildArguments $workspace.Root
+            Invoke-Checked 'dotnet' $buildArguments $dotnetWorkingDirectory
             if ($Verb -ceq 'run') { $arguments += '--no-build' }
         }
         if ($Verb -cne 'run') {
@@ -292,10 +294,10 @@ function Invoke-WorkspaceDotNet {
                 Write-Host 'Doroti dependencies/toolchain changed or untracked: rebuilding before recording success.'
                 $arguments += @('-t:Rebuild', '-p:DorotiRebuildDependencies=true')
             }
-            Invoke-Checked 'dotnet' $arguments $workspace.Root
+            Invoke-Checked 'dotnet' $arguments $dotnetWorkingDirectory
         }
         if (-not $effectiveNoBuild) {
-            $builtDependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts
+            $builtDependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $dotnetWorkingDirectory $CompilationMode $compilationArtifacts
             if ($builtDependencies -cne $dependencies) {
                 throw 'Dependencies changed during the build; the artifact cannot be recorded or launched. Build again.'
             }
@@ -311,7 +313,7 @@ function Invoke-WorkspaceDotNet {
                 fingerprint = $launchFingerprint
                 toolchain = $toolchain
                 dependencies = $dependencies
-                artifact = Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root $CompilationMode $compilationArtifacts
+                artifact = Get-DorotiArtifactIdentity $runner $Configuration $Rid $dotnetWorkingDirectory $CompilationMode $compilationArtifacts
                 buildCompletedUtc = [DateTime]::UtcNow.ToString('O')
             }
             $temporaryStatePath = "$statePath.tmp-$PID"
@@ -319,7 +321,7 @@ function Invoke-WorkspaceDotNet {
             [IO.File]::Move($temporaryStatePath, $statePath, $true)
             Write-Host "Doroti successful artifact record: $statePath"
         }
-        if ($Verb -ceq 'run') { Invoke-Checked 'dotnet' $arguments $workspace.Root }
+        if ($Verb -ceq 'run') { Invoke-Checked 'dotnet' $arguments $dotnetWorkingDirectory }
     }
     finally {
         if ($hadAdapter) { $env:DOROTI_WINDOWS_ADAPTER = $previousAdapter }
@@ -333,13 +335,14 @@ function Get-DorotiLaunchFingerprint {
     param(
         [Parameter(Mandatory)] $Workspace,
         [Parameter(Mandatory)] [string] $Runner,
-        [string] $CompilationArtifacts
+        [string] $CompilationArtifacts,
+        [string] $WorkingDirectory = $Workspace.Root
     )
 
     $roots = @($Workspace.Root, (Join-Path $dorotiRoot 'src'), (Join-Path $dorotiRoot 'eng'))
     $files = @(Get-DorotiInputFiles $roots)
     $files += @(Get-DorotiInheritedInputs ($roots + @([IO.Path]::GetDirectoryName($Runner))))
-    $files += @(Get-DorotiEvaluatedInputFiles @($Workspace.ApplicationProject, $Runner) $Configuration $Rid $Workspace.Root $CompilationMode $CompilationArtifacts)
+    $files += @(Get-DorotiEvaluatedInputFiles @($Workspace.ApplicationProject, $Runner) $Configuration $Rid $WorkingDirectory $CompilationMode $CompilationArtifacts)
     $files += Get-Item -LiteralPath $Workspace.Manifest, $Workspace.ApplicationProject, $Runner
     Get-DorotiContentFingerprint $files "$Runner|$Platform|$WindowsBackend|$Configuration|$Rid|$CompilationMode|$CompilationArtifacts"
 

@@ -20,7 +20,8 @@ including after closing the app and reopening it from its icon on iPhone.
 
 Run all commands in PowerShell 7 from the **repository root, `DorotiLab`**.
 If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
-Use the **.NET SDK 10.0.400 feature band** selected by [global.json](../Doroti/global.json).
+Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../global.json).
+iOS alone uses **SDK 11.0.100 RC 1** from [ios/global.json](ios/global.json).
 Platform-specific workloads and tools are listed with each command below.
 
 The first run restores packages, builds, and deploys to a device where needed. All examples use Release.
@@ -129,15 +130,21 @@ and the opt-in `DOROTI_INPUT_TIMING` diagnostic.
 
 ### iOS sample
 
-Use Apple Silicon macOS with Xcode/iOS workloads, and start Simulator first.
+Use Apple Silicon macOS with the .NET 11 SDK and Xcode/iOS workloads, and start Simulator first.
+The SDK is selected from the current working directory, so enter `DorotiTestbedApp/ios` before invoking `dotnet` directly.
+The workspace CLI (`-Platform ios`) uses this directory automatically.
 
 ```powershell
+Push-Location ./DorotiTestbedApp/ios
+
 # List available simulator/device IDs
-dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj --list-devices
+dotnet run --project ./DorotiTestbedApp.iOS.csproj --list-devices
 
 # Replace simulator-udid with an actual ID from the list
-dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
+dotnet run --project ./DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
   --device simulator-udid -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+
+Pop-Location
 ```
 
 For an Intel Mac simulator, use `-r iossimulator-x64`. A physical iPhone/iPad requires

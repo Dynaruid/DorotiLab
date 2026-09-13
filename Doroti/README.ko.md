@@ -44,16 +44,58 @@ Android, iOS, native AppKit macOS, Mac Catalyst runner는 각각 앱 소유 기�
 
 ## 요구 사항
 
-- [global.json](global.json)에 고정한 .NET SDK 10.0.400 또는 호환 patch
-- PowerShell 7
-- 10.0.11의 .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime pack과 선택 target에 맞는 MAUI/WebAssembly workload
-- `web/tsconfig.json`이 있는 Web runner에서만 restore하는 `Microsoft.TypeScript.MSBuild` 7.0.0
+### 공통 도구와 SDK 선택
 
-기본 Windows target build에는 Visual Studio MSBuild, MSVC v145 C++ toolset, Windows SDK 10.0.26100.0도 필요합니다. Windows App SDK 2.4와 ANGLE runtime은 target과 함께 self-contained restore/deploy하며 machine-wide Windows App Runtime이나 presenter fallback을 전제로 하지 않습니다.
+- PowerShell 7: `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
+- **iOS 외 플랫폼: .NET SDK 10.0.400** 또는 같은 feature band의 호환 patch. [루트 global.json](../global.json)과 [Doroti/global.json](global.json)이 선택합니다.
+- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128** 또는 호환 patch. [iOS global.json](../DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
+- 선택한 SDK에 맞는 플랫폼 workload와 NuGet 패키지 복원이 필요합니다. .NET 10 경로의 runtime pack은 프로젝트가 지정한 10.0.11을 사용하며, 필요한 pack은 대상별로 복원합니다.
 
-Linux runner는 Linux x64 호스트에서 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, 실행할 QPA plugin(`wayland` 또는 `xcb`)을 system dependency로 사용합니다.
+`dotnet`은 **현재 작업 폴더**에서 상위로 `global.json`을 찾습니다. `--project` 경로만 iOS로 지정해도 SDK가 바뀌지는 않습니다. iOS 직접 실행은 `DorotiTestbedApp/ios`에서 하고, 다른 플랫폼은 저장소 루트에서 실행합니다. workspace CLI의 `build/run/publish -App ./DorotiTestbedApp -Platform ios`는 iOS 폴더를 자동으로 사용합니다.
 
-`reference/flutter-master` checkout은 명시적인 Flutter reference 비교에만 필요합니다. 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
+SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 `net11.0-ios`·MAUI `11.0.0-rc.1.26451.6`·NativeAOT를 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 빌드 안내](validation/native-aot/README.md)를 참고하세요.
+
+### 플랫폼별 구성
+
+선택한 플랫폼 행의 도구를 준비합니다. workload 이름은 설치 항목이며, 네이티브 SDK와 시스템 라이브러리는 별도로 준비해야 합니다.
+
+| 플랫폼 / RID | 빌드 호스트 | .NET SDK / workload | 추가 도구와 실행 조건 |
+| --- | --- | --- | --- |
+| Windows App SDK (기본) / `win-x64` | Windows x64 | 10 / 별도 MAUI workload 없음 | Visual Studio MSBuild, MSVC **v145** C++ toolset, Windows SDK **10.0.26100.0**. 기본 Vulkan presenter는 Vulkan 1.2 드라이버, D3D11 external-memory 공유와 Windows Presentation 지원이 필요합니다. Acrylic은 Windows 11 24H2 이상을 사용합니다. |
+| Windows MAUI (선택) / `win-x64` | Windows x64 | 10 / `maui-windows` | Windows SDK와 MAUI Windows 빌드 도구. workspace CLI에서 `-WindowsBackend Maui`로 선택합니다. |
+| macOS AppKit / `osx-arm64` | Apple Silicon Mac | 10 / `macos` | **macOS 14 이상**, workload와 호환되는 전체 Xcode 설치 및 Metal 지원. 앱 소유 Swift/Objective-C binding도 Xcode로 빌드합니다. |
+| Mac Catalyst / `maccatalyst-arm64` | Apple Silicon Mac | 10 / `maui-maccatalyst` | workload와 호환되는 전체 Xcode, Mac Catalyst SDK와 Metal 지원. AppKit과 별도 runner입니다. |
+| Android / `android-arm64`, `android-x64` | Windows 또는 macOS | 10 / `maui-android` | Android SDK Platforms·Build Tools·Platform Tools(`adb`), **OpenJDK 17–21**. .NET workload가 요구하는 SDK와 native bridge의 **API 34**를 준비합니다. Android 7.0/API 24 이상 기기 또는 해당 ABI 에뮬레이터가 필요합니다. |
+| iOS / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | macOS + Xcode | 11 / `maui-ios` | workload와 호환되는 전체 Xcode와 iOS SDK. 시뮬레이터는 해당 Simulator runtime, 실기기는 **iOS 15 이상**, 코드 서명 인증서와 provisioning profile이 필요합니다. Release NativeAOT는 `ios-arm64`용입니다. |
+| Linux Qt / `linux-x64` | Linux x64 | 10 / 별도 MAUI workload 없음 | **Qt 6.5 이상** Core/Gui/Widgets/OpenGL/OpenGLWidgets 개발 파일, **CMake 3.24 이상**, C/C++20 compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, Vulkan 개발 헤더, fontconfig. 실행 시 `wayland` 또는 `xcb` QPA plugin과 Vulkan 1.2 드라이버가 필요합니다. |
+| Web / `browser-wasm` | Windows, macOS 또는 Linux | 10 / `wasm-tools` | 기본 WebGPU 경로는 WebGPU·WASM threads 지원 브라우저, hardware WebGPU adapter와 COOP/COEP 격리가 필요합니다. `worker-direct-webgl`을 선택하면 WebGL2를 사용합니다. |
+
+Windows App SDK 2.4와 ANGLE runtime은 target의 NuGet 복원·배포에 포함됩니다. 별도의 machine-wide Windows App Runtime 설치는 요구하지 않습니다. Android native bridge는 저장소의 Gradle wrapper 8.10.2/AGP 8.6.1을 사용합니다. `JAVA_HOME`으로 지원 JDK를 지정하고 `adb`를 `PATH`에 추가합니다. Apple은 `xcode-select -p`와 `xcodebuild -version`으로 선택한 Xcode를 확인합니다.
+
+Linux는 API 조건을 충족하는 llvmpipe 같은 소프트웨어 Vulkan 장치도 허용합니다. Web의 `Microsoft.TypeScript.MSBuild` 7.0.0은 Web runner가 복원하며, 앱 빌드에 Node/npm/Bun 설치는 필요하지 않습니다.
+
+### 설치 상태 확인과 workload 복원
+
+```powershell
+# 저장소 루트: SDK 10 확인
+dotnet --version
+dotnet workload list
+pwsh -File ./Doroti/eng/doroti.ps1 doctor
+
+# macOS AppKit 예시: 현재 호스트에서 사용할 runner 경로로 변경
+dotnet workload restore ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+
+# iOS: SDK 11을 선택한 위치에서 확인 및 복원
+Push-Location ./DorotiTestbedApp/ios
+dotnet --version
+dotnet workload list
+dotnet workload restore ./DorotiTestbedApp.iOS.csproj
+Pop-Location
+```
+
+`workload restore`는 해당 SDK의 .NET workload를 준비합니다. 표에 있는 Xcode, Android SDK/JDK, MSVC, Qt 같은 외부 도구 설치까지 수행하지는 않습니다. `doctor`는 공통 도구 확인이며, 각 플랫폼의 전체 빌드·기기 실행 검증을 대신하지 않습니다.
+
+플랫폼별 실행 명령은 [Testbed 실행 안내](../DorotiTestbedApp/README.ko.md#material-샘플-모드)에 있습니다. `reference/flutter-master` checkout은 명시적인 Flutter 비교에만 필요하며, 필요할 때 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
 ## 명령
 

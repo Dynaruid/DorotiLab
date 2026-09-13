@@ -29,16 +29,19 @@ CLI rejects NativeAOT `run`, because a normal build/run does not compile NativeA
 The source Testbed NativeAot profile selects `net11.0-ios` and MAUI
 `11.0.0-rc.1.26451.6` across the runner, host, target and native binding. Use
 SDK `11.0.100-rc.1.26425.128` and the matching installed iOS workload.
-`Doroti/global.json` still selects SDK 10 inside the product directory; run
-these commands from the repository root. An isolated packaged-template consumer has published and run successfully.
+`global.json` and `Doroti/global.json` select SDK 10. The workspace CLI runs
+iOS commands from `DorotiTestbedApp/ios`, whose `global.json` selects SDK 11.
+For direct `dotnet` commands, enter that directory first. An isolated packaged-template consumer has published and run successfully.
 Direct invocation, including an optional isolated output path (without one, the
 SDK uses `.doroti/compilation/NativeAot/<rid>` under the runner directory):
 
 ```sh
-python3 Doroti/validation/native-aot/run.py --log Doroti/artifacts/native-aot/testbed.log -- \
-  dotnet publish DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 \
+cd DorotiTestbedApp/ios
+python3 ../../Doroti/validation/native-aot/run.py --log ../../Doroti/artifacts/native-aot/testbed.log -- \
+  dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 \
   -p:ArtifactsPath=/absolute/path/to/nativeaot-output \
-  -p:UseSharedCompilation=false -bl:Doroti/artifacts/native-aot/testbed.binlog -v:normal
+  -p:UseSharedCompilation=false -bl:../../Doroti/artifacts/native-aot/testbed.binlog -v:normal
+cd ../..
 ```
 
 Do not pass `PublishAot=true` globally to this multi-platform application graph:

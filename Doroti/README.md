@@ -44,16 +44,58 @@ Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a def
 
 ## Requirements
 
-- .NET SDK 10.0.400 or a compatible patch, pinned by [global.json](global.json)
-- PowerShell 7
-- .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
-- `Microsoft.TypeScript.MSBuild` 7.0.0 restored only by a Web runner that contains `web/tsconfig.json`
+### Shared tools and SDK selection
 
-Building the default Windows target also requires Visual Studio MSBuild with the MSVC v145 C++ toolset and Windows SDK 10.0.26100.0. Windows App SDK 2.4 and the ANGLE runtime are restored and deployed self-contained with the target; no machine-wide Windows App Runtime or presenter fallback is assumed.
+- PowerShell 7 runs repository scripts such as `eng/doroti.ps1`. Start the commands below in PowerShell at the **repository root, `DorotiLab`**.
+- **Platforms other than iOS: .NET SDK 10.0.400**, or a compatible patch in the same feature band, selected by the [root global.json](../global.json) and [Doroti/global.json](global.json).
+- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128**, or a compatible patch, selected by [iOS global.json](../DorotiTestbedApp/ios/global.json). Install it alongside .NET 10.
+- Restore the platform workloads and NuGet packages for the selected SDK. The .NET 10 paths use the project-pinned 10.0.11 runtime packs, restored as needed for each target.
 
-The Linux runner uses system dependencies on a Linux x64 host: Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the QPA plugin used at runtime (`wayland` or `xcb`).
+`dotnet` searches upward from the **current working directory** for `global.json`. Pointing `--project` at an iOS project does not change SDK selection. Run direct iOS commands from `DorotiTestbedApp/ios`, and other platform commands from the repository root. The workspace CLI's `build/run/publish -App ./DorotiTestbedApp -Platform ios` uses the iOS directory automatically.
 
-The `reference/flutter-master` checkout is needed only for explicit Flutter reference comparison. Prepare Flutter for that work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
+SDK selection is separate from the target framework. iOS device Release uses `net11.0-ios`, MAUI `11.0.0-rc.1.26451.6`, and NativeAOT. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS build instructions](validation/native-aot/README.md).
+
+### Platform prerequisites
+
+Prepare the tools for the selected platform. Workload names identify .NET installation components; native SDKs and system libraries must also be installed.
+
+| Platform / RID | Build host | .NET SDK / workload | Additional tools and runtime requirements |
+| --- | --- | --- | --- |
+| Windows App SDK (default) / `win-x64` | Windows x64 | 10 / no separate MAUI workload | Visual Studio MSBuild, MSVC **v145** C++ toolset, Windows SDK **10.0.26100.0**. The default Vulkan presenter requires a Vulkan 1.2 driver, D3D11 external-memory sharing, and Windows Presentation support. Acrylic requires Windows 11 24H2 or later. |
+| Windows MAUI (optional) / `win-x64` | Windows x64 | 10 / `maui-windows` | Windows SDK and MAUI Windows build tools. Select with `-WindowsBackend Maui` in the workspace CLI. |
+| macOS AppKit / `osx-arm64` | Apple Silicon Mac | 10 / `macos` | **macOS 14 or later**, a full Xcode installation compatible with the workload, and Metal support. Xcode also builds the app-owned Swift/Objective-C binding. |
+| Mac Catalyst / `maccatalyst-arm64` | Apple Silicon Mac | 10 / `maui-maccatalyst` | A full Xcode installation compatible with the workload, the Mac Catalyst SDK, and Metal support. This is a separate runner from AppKit. |
+| Android / `android-arm64`, `android-x64` | Windows or macOS | 10 / `maui-android` | Android SDK Platforms, Build Tools, Platform Tools (`adb`), and **OpenJDK 17–21**. Install the SDK required by the .NET workload plus **API 34** for the native bridge. Use an Android 7.0/API 24 or later device or an emulator with the matching ABI. |
+| iOS / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | macOS + Xcode | 11 / `maui-ios` | A full Xcode installation compatible with the workload and the iOS SDK. Simulators need the matching Simulator runtime; devices need **iOS 15 or later**, a signing certificate, and a provisioning profile. Release NativeAOT targets `ios-arm64`. |
+| Linux Qt / `linux-x64` | Linux x64 | 10 / no separate MAUI workload | **Qt 6.5 or later** Core/Gui/Widgets/OpenGL/OpenGLWidgets development files, **CMake 3.24 or later**, a C/C++20 compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, Vulkan development headers, and fontconfig. Runtime requires the `wayland` or `xcb` QPA plugin and a Vulkan 1.2 driver. |
+| Web / `browser-wasm` | Windows, macOS, or Linux | 10 / `wasm-tools` | The default WebGPU path requires a browser with WebGPU and WASM threads, a hardware WebGPU adapter, and COOP/COEP isolation. Explicit `worker-direct-webgl` uses WebGL2. |
+
+Windows App SDK 2.4 and the ANGLE runtime are restored through NuGet and deployed with the target; a separate machine-wide Windows App Runtime installation is not required. The Android native bridge uses the repository's Gradle 8.10.2 wrapper and AGP 8.6.1. Set `JAVA_HOME` to a supported JDK and add `adb` to `PATH`. On Apple hosts, check the selected Xcode with `xcode-select -p` and `xcodebuild -version`.
+
+Linux also accepts software Vulkan devices such as llvmpipe when they satisfy the API requirements. Web runners restore `Microsoft.TypeScript.MSBuild` 7.0.0; application builds do not require Node, npm, or Bun.
+
+### Check installations and restore workloads
+
+```powershell
+# Repository root: check SDK 10
+dotnet --version
+dotnet workload list
+pwsh -File ./Doroti/eng/doroti.ps1 doctor
+
+# macOS AppKit example: substitute the runner for the current host
+dotnet workload restore ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+
+# iOS: check and restore from the directory that selects SDK 11
+Push-Location ./DorotiTestbedApp/ios
+dotnet --version
+dotnet workload list
+dotnet workload restore ./DorotiTestbedApp.iOS.csproj
+Pop-Location
+```
+
+`workload restore` prepares .NET workloads for the selected SDK. It does not install external tools such as Xcode, Android SDK/JDK, MSVC, or Qt. `doctor` checks shared tools; it does not replace a complete platform build or device launch check.
+
+See [Testbed run instructions](../DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
 ## Commands
 

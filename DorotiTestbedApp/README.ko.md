@@ -20,7 +20,8 @@ Material 샘플은 Components, Color, Typography, Elevation, 9개 seed 색상과
 
 모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell 7로 실행합니다.
 macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
-.NET SDK는 [global.json](../Doroti/global.json)의 **10.0.400 계열**을 사용하고,
+.NET SDK는 저장소 루트 [global.json](../global.json)의 **10.0.400 계열**을 사용하고,
+iOS만 [ios/global.json](ios/global.json)의 **11.0.100 RC 1** SDK를 사용합니다.
 각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
 
 첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 예제는 모두 Release 구성입니다.
@@ -124,15 +125,21 @@ dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj 
 
 ### iOS 샘플
 
-Apple Silicon macOS에서 Xcode/iOS workload를 준비하고 Simulator를 먼저 시작합니다.
+Apple Silicon macOS에서 .NET 11 SDK와 Xcode/iOS workload를 준비하고 Simulator를 먼저 시작합니다.
+SDK는 현재 작업 폴더를 기준으로 선택되므로, 직접 실행할 때는 먼저 `DorotiTestbedApp/ios`로 이동합니다.
+workspace CLI(`-Platform ios`)는 이 폴더를 자동으로 사용합니다.
 
 ```powershell
+Push-Location ./DorotiTestbedApp/ios
+
 # 실행 가능한 시뮬레이터/기기의 ID 확인
-dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj --list-devices
+dotnet run --project ./DorotiTestbedApp.iOS.csproj --list-devices
 
 # simulator-udid를 위 목록의 실제 ID로 변경
-dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
+dotnet run --project ./DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
   --device simulator-udid -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+
+Pop-Location
 ```
 
 Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제 iPhone/iPad는
