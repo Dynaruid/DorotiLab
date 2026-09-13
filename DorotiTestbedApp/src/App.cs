@@ -147,11 +147,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "media-query")
             return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new MediaQueryFixture());
         if (App.SampleEnabled) return new MaterialSample.SampleApp(App.SampleAcrylicAvailable);
-        Widget Gallery() => Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is "F0" or "F1" or "F2"
-            ? new ResizeFixture(Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE")!)
-            : new MaterialGallery(
-                state => GalleryState = state,
-                scaffold => RootScaffold = scaffold);
+        Widget Gallery() => new MaterialGallery(
+            state => GalleryState = state,
+            scaffold => RootScaffold = scaffold);
 
         return EntryMode == DemoEntryMode.Builder
             ? new Material.MaterialApp(
@@ -194,7 +192,6 @@ internal static class App
         "1", StringComparison.Ordinal);
 
     internal static bool SampleEnabled =>
-        Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is not ("F0" or "F1" or "F2") &&
         string.Equals(Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE"), "sample", StringComparison.OrdinalIgnoreCase);
 
     internal static bool SampleAcrylicAvailable =>

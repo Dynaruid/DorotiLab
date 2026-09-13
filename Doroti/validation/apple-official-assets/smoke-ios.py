@@ -79,7 +79,7 @@ def main():
                '--destination', 'Documents/doroti-maui-evidence.json')
         device('launch', 'process', 'launch', '--terminate-existing', '--environment-variables',
                json.dumps({'DOROTI_MAUI_EVIDENCE': '1', 'MTL_DEBUG_LAYER': '1',
-                           'DOROTI_TESTBED_MODE': 'sample', 'DOROTI_RESIZE_FIXTURE': 'none'}), app)
+                           'DOROTI_TESTBED_MODE': 'sample'}), app)
         first = frames('initial')
         device('background', 'process', 'launch', 'com.apple.Preferences')
         time.sleep(2)

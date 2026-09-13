@@ -3,7 +3,7 @@ import { test, expect } from "./helpers/fixtures.js";
 import { PNG } from "pngjs";
 import { assertPresenterContract, captureDiagnostics, openDoroti } from "./helpers/doroti-diagnostics.js";
 
-for (const scenario of ["fixture-no-text", "testbed", "autofocus-dark"] as const) {
+for (const scenario of ["testbed", "autofocus-dark"] as const) {
   test(`Boot evidence: ${scenario}`, async ({ page, context, runtimeErrors }, testInfo) => {
     const wire: unknown[] = [];
     const pendingRequests: Promise<void>[] = [];
@@ -14,8 +14,7 @@ for (const scenario of ["fixture-no-text", "testbed", "autofocus-dark"] as const
       })());
     });
     if (scenario === "autofocus-dark") await page.emulateMedia({ colorScheme: "dark" });
-    const query = scenario === "fixture-no-text" ? "&dorotiResizeFixture=F0"
-      : scenario === "autofocus-dark" ? "&dorotiTestbedMode=boot-autofocus" : "&dorotiTestbedMode=sample";
+    const query = scenario === "autofocus-dark" ? "&dorotiTestbedMode=boot-autofocus" : "&dorotiTestbedMode=sample";
     let bundle = await openDoroti(page, query);
     expect(runtimeErrors).toEqual([]);
     expect(await page.locator("html").getAttribute("data-doroti-bootstrap-stage")).toBe("started");

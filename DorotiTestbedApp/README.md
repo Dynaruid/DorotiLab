@@ -34,7 +34,6 @@ Close a running native app before relaunching to apply a mode change.
 
 Native apps use `dotnet run -e` to pass `DOROTI_TESTBED_MODE=sample` to the app process.
 Setting only a shell environment variable does not guarantee propagation to Apple/Android apps.
-The accompanying `DOROTI_RESIZE_FIXTURE=none` disables F0/F1/F2 diagnostic fixtures, which take priority over the sample.
 Web selects the mode through its URL.
 
 ### Windows sample
@@ -43,7 +42,7 @@ Run on a Windows host. This selects the default Windows App SDK/Vulkan runner.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 For the independent MAUI backend, replace the project in this command with
@@ -58,7 +57,7 @@ Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 ### Mac Catalyst sample
@@ -75,7 +74,7 @@ to check light/dark hover and pressed states, shadows, and editing actions.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 ### Linux sample
@@ -86,7 +85,7 @@ the `wayland` or `xcb` QPA plugin, Vulkan development headers, a Vulkan 1.2 devi
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 ### Android sample
@@ -100,7 +99,7 @@ dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj 
 
 # x64 emulator: replace emulator-5554 with its actual ID
 dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64 `
-  --device emulator-5554 -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  --device emulator-5554 -e DOROTI_TESTBED_MODE=sample
 ```
 
 For an arm64 device or emulator, use `-r android-arm64` and its `--device` ID.
@@ -115,7 +114,7 @@ adb -s device-serial shell getprop ro.product.cpu.abi
 
 # Galaxy phone with the arm64-v8a ABI
 dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
-  --device device-serial -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  --device device-serial -e DOROTI_TESTBED_MODE=sample
 ```
 
 After installation, reopen **Doroti Material Testbed** from the app drawer.
@@ -142,7 +141,7 @@ dotnet run --project ./DorotiTestbedApp.iOS.csproj --list-devices
 
 # Replace simulator-udid with an actual ID from the list
 dotnet run --project ./DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
-  --device simulator-udid -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  --device simulator-udid -e DOROTI_TESTBED_MODE=sample
 
 Pop-Location
 ```
@@ -178,7 +177,6 @@ Close the native app, replace `-e DOROTI_TESTBED_MODE=sample` with
 
 ```powershell
 Remove-Item Env:DOROTI_TESTBED_MODE -ErrorAction SilentlyContinue
-Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
 ```
 
 On Web, switch screens using the URLs below without restarting the server. Omitting the mode also opens diagnostics.
@@ -431,7 +429,7 @@ If another profile, such as Galaxy Secure Folder, causes a shell permission erro
 
 ### The app opens without the sample
 
-- Native: close the app and rerun with `-e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none`.
+- Native: close the app and rerun with `-e DOROTI_TESTBED_MODE=sample`.
 - Android: rebuild and reinstall without `--no-build` when changing modes.
 - Web: include `dorotiTestbedMode=sample` in the URL. Renderer selection is separate from screen selection.
 - iOS: check that Simulator is running and the `--device` ID is correct. Physical devices also need signing/provisioning.

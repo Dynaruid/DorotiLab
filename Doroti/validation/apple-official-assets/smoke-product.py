@@ -29,7 +29,7 @@ def main():
     failure = Path(str(metrics) + '.exception.txt')
     failure.unlink(missing_ok=True)
     env = os.environ | {'DOROTI_MAUI_EVIDENCE': str(metrics), 'MTL_DEBUG_LAYER': '1',
-                        'DOROTI_TESTBED_MODE': 'sample', 'DOROTI_RESIZE_FIXTURE': 'none'}
+                        'DOROTI_TESTBED_MODE': 'sample'}
     for key in ('DOROTI_MACOS_GRAPHITE', 'DOROTI_IOS_GRAPHITE', 'DOROTI_EXIT_AFTER_EVIDENCE'):
         env.pop(key, None)  # Exercise the product defaults.
     report = {'status': 'FAIL', 'applicationId': plist['CFBundleIdentifier'], 'command': [str(binary)],

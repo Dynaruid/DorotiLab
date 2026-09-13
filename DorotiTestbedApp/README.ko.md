@@ -34,7 +34,6 @@ Debug가 필요하면 `dotnet run`은 `-c Debug`, workspace CLI는 `-Configurati
 
 Native 앱은 `dotnet run -e`로 앱 프로세스에 `DOROTI_TESTBED_MODE=sample`을 전달합니다.
 Apple/Android에서는 셸 환경변수만 설정하는 것으로 전달을 보장할 수 없습니다.
-함께 지정하는 `DOROTI_RESIZE_FIXTURE=none`은 샘플보다 우선하는 F0/F1/F2 진단 fixture를 해제합니다.
 Web은 URL로 모드를 선택합니다.
 
 ### Windows 샘플
@@ -43,7 +42,7 @@ Windows 호스트에서 실행합니다. 기본 Windows App SDK/Vulkan runner입
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 독립 MAUI backend를 사용하려면 위 명령의 project를
@@ -58,7 +57,7 @@ Graphite/Metal 실험 후보는 아래 `dotnet run` 명령에 `-e DOROTI_MACOS_G
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 ### Mac Catalyst 샘플
@@ -75,7 +74,7 @@ Mac UI idiom을 사용해 iPad 호환 모드의 77% 축소 없이 표시합니�
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 ### Linux 샘플
@@ -86,7 +85,7 @@ C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`,
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
-  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  -e DOROTI_TESTBED_MODE=sample
 ```
 
 ### Android 샘플
@@ -100,7 +99,7 @@ dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj 
 
 # x64 에뮬레이터: emulator-5554를 실제 ID로 변경
 dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64 `
-  --device emulator-5554 -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  --device emulator-5554 -e DOROTI_TESTBED_MODE=sample
 ```
 
 arm64 실기기 또는 arm64 에뮬레이터는 `-r android-arm64`로 바꾸고 해당 `--device` ID를 지정합니다.
@@ -115,7 +114,7 @@ adb -s device-serial shell getprop ro.product.cpu.abi
 
 # ABI가 arm64-v8a인 갤럭시폰
 dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
-  --device device-serial -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  --device device-serial -e DOROTI_TESTBED_MODE=sample
 ```
 
 설치 후 앱 목록의 **Doroti Material Testbed**로 다시 열 수 있습니다.
@@ -137,7 +136,7 @@ dotnet run --project ./DorotiTestbedApp.iOS.csproj --list-devices
 
 # simulator-udid를 위 목록의 실제 ID로 변경
 dotnet run --project ./DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
-  --device simulator-udid -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+  --device simulator-udid -e DOROTI_TESTBED_MODE=sample
 
 Pop-Location
 ```
@@ -173,7 +172,6 @@ Native 앱을 닫고 위 명령의 `-e DOROTI_TESTBED_MODE=sample`을
 
 ```powershell
 Remove-Item Env:DOROTI_TESTBED_MODE -ErrorAction SilentlyContinue
-Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
 ```
 
 Web은 서버 재시작 없이 아래 URL로 화면을 바꿉니다. 모드를 생략해도 진단 화면이 열립니다.
@@ -424,7 +422,7 @@ adb -s device-serial shell monkey -p dev.doroti.testbed -c android.intent.catego
 
 ### 실행했는데 샘플이 보이지 않을 때
 
-- Native: 앱을 닫고 `-e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none`을 포함해 다시 실행합니다.
+- Native: 앱을 닫고 `-e DOROTI_TESTBED_MODE=sample`을 포함해 다시 실행합니다.
 - Android: 모드 변경 시 `--no-build` 없이 빌드·재설치합니다.
 - Web: URL에 `dorotiTestbedMode=sample`을 넣습니다. renderer 변경과 화면 선택은 별개입니다.
 - iOS: Simulator 실행 상태와 `--device` ID를 확인합니다. 실제 기기는 서명·프로비저닝도 필요합니다.
