@@ -133,6 +133,7 @@ public static unsafe partial class DorotiQtRunner
         internal QtHostAdapter? Host { get; private set; }
         internal SkiaSceneRenderer? Renderer { get; private set; }
         internal string Title => _configuration.title;
+        internal QtTitlebarAppearance? TitlebarAppearance { get; private set; }
         internal DorotiView? View { get; private set; }
 
         internal void SetHost(nint viewHandle, in QtNativeV2.HostApi hostApi)
@@ -167,8 +168,10 @@ public static unsafe partial class DorotiQtRunner
                 enablePictureRasterCache: !QtSkiaSurface.GraphiteEnabled);
             Surface.GpuResourcesReleasing += renderer.InvalidateGpuContextResources;
             var messages = new QtPlatformMessageCapability();
+            TitlebarAppearance = new QtTitlebarAppearance(host.RequestInvalidate);
             var capabilities = new DorotiViewCapabilities(QtSkiaSurface.GraphiteEnabled ? "linux-x64/qt6-vulkan/graphite" : "linux-x64/qt6-opengl/skia-gl")
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+                .Register<IWindowTitlebarHostCapability>(DorotiCapabilityIds.WindowTitlebar, TitlebarAppearance)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
                 .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
@@ -407,7 +410,7 @@ public static unsafe partial class DorotiQtRunner
             presented = state.Surface.Render(in *surface, (skiaSurface, width, height) =>
                 {
                     paint = state.Renderer.Paint(skiaSurface, width, height, state.Host.ResizeTarget);
-                    QtTitlebarPainter.Paint(skiaSurface.Canvas, state.Title, in *surface);
+                    QtTitlebarPainter.Paint(skiaSurface.Canvas, state.Title, in *surface, state.TitlebarAppearance?.Theme);
                 },
                 shouldPresent: () => paint.ShouldPresent, beforePresent: state.PreparePresent);
             state.PlatformViews.FinishFrame(presented);

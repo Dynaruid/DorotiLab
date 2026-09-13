@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--window-titlebar"])
+{
+    MountedPickerContracts.VerifyWindowTitlebarTheme();
+    return;
+}
+
 if (args is ["--drag-tree"])
 {
     MountedPickerContracts.VerifyDragAndTreeContracts();

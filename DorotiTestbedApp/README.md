@@ -286,6 +286,10 @@ luminosity settings do not map to AppKit. `tintColor`/`tintOpacity` tint Liquid 
 Palettes use `ColorScheme.CreateFromSeed`; widgets read `Theme.of(context).colorScheme`.
 The window's `backgroundColor` and `darkBackgroundColor` follow the same transition.
 
+Qt unified captions follow the `MaterialApp` scaffold background color and brightness, including
+theme animations and sample palette, dark-mode and Acrylic changes. The diagnostic gallery uses
+the same 60% tint as its content surface.
+
 Linux sample and diagnostic windows request Acrylic with a transparent fallback. A Wayland compositor
 supporting `ext-background-effect-v1` or the legacy KDE blur protocol receives a native blur request;
 otherwise, the transparent fallback applies.

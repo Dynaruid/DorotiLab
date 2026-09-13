@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <Compile Include="..\..\..\DorotiTestbedApp\src\MaterialSample\*.cs" Link="MaterialSample\%(Filename)%(Extension)" />
+    <Compile Include="..\..\..\DorotiTestbedApp\src\PlatformViewFixture.cs" Link="MaterialSample\PlatformViewFixture.cs" />
     <EmbeddedResource Include="..\..\..\reference\flutter_sample_app\assets\images\mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />
     <ProjectReference Include="../image-pipeline/Doroti.Validation.ImagePipeline.csproj" />
     <Compile Include="..\..\src\Doroti.Host.WindowsAppSdk\WindowsKeyMap.cs" Link="WindowsKeyMap.cs" />

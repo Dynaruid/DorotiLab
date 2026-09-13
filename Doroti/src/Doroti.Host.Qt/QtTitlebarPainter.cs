@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Doroti.Ui;
 
 namespace Doroti.Host.Qt;
 
@@ -6,13 +7,16 @@ namespace Doroti.Host.Qt;
 // surface lets Wayland blur cover the caption and body as a single region.
 internal static class QtTitlebarPainter
 {
-    internal static void Paint(SKCanvas canvas, string title, in QtNativeV2.Surface surface)
+    internal static void Paint(SKCanvas canvas, string title, in QtNativeV2.Surface surface,
+        WindowTitlebarTheme? theme = null)
     {
         if (surface.TitlebarHeight == 0) return;
         var scale = (float)surface.DevicePixelRatio;
         var width = surface.PixelWidth / scale;
         var height = (float)surface.TitlebarHeight;
-        var dark = (surface.TitlebarState & 1) != 0;
+        var dark = theme is not null ? theme.Brightness == Brightness.dark : (surface.TitlebarState & 1) != 0;
+        var background = theme is not null ? new SKColor(unchecked((uint)theme.BackgroundColor.value))
+            : dark ? new SKColor(32, 32, 32, 153) : new SKColor(245, 245, 245, 153);
         var active = (surface.TitlebarState & 2) != 0;
         var maximized = (surface.TitlebarState & 4) != 0;
         canvas.Save();
@@ -21,7 +25,8 @@ internal static class QtTitlebarPainter
             canvas.ResetMatrix();
             canvas.Scale(scale);
             canvas.ClipRect(new(0, 0, width, height));
-            using var ink = new SKPaint { IsAntialias = true, BlendMode = SKBlendMode.Src, Color = SKColors.Transparent };
+            // Replace the caption pixels so translucent tint never accumulates on repaint.
+            using var ink = new SKPaint { IsAntialias = true, BlendMode = SKBlendMode.Src, Color = background };
             canvas.DrawRect(0, 0, width, height, ink);
             ink.BlendMode = SKBlendMode.SrcOver;
             var foreground = (dark ? SKColors.White : SKColors.Black).WithAlpha(active ? (byte)230 : (byte)150);

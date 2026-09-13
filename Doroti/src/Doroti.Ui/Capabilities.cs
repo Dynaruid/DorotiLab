@@ -4,6 +4,7 @@ namespace Doroti.Ui;
 public static class DorotiCapabilityIds
 {
     public const string WindowLifecycle = "window.lifecycle";
+    public const string WindowTitlebar = "window.titlebar";
     public const string ViewLifecycleMetrics = "view.lifecycle-metrics";
     public const string ViewFrameDispatch = "view.frame-dispatch";
     public const string InputEvents = "input.events";

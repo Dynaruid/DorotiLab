@@ -383,6 +383,20 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
             }))));
         }
         childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new ScaffoldMessenger(key: ((MaterialApp)this.widget).scaffoldMessengerKey, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: effectiveSelectionColor, cursorColor: effectiveCursorColor, child: childWidget)));
+        var view = View.maybeOf(context);
+        if (view?.registeredCapabilityIds.Contains(DorotiCapabilityIds.WindowTitlebar) == true)
+        {
+            var titlebar = view.RequireCapability<IWindowTitlebarHostCapability>(
+                DorotiCapabilityIds.WindowTitlebar, DartUiInvocation.Managed("MaterialApp.windowTitlebar"));
+            var themedChild = childWidget;
+            // Read below AnimatedTheme so the caption follows the same color transition as the body.
+            childWidget = new Builder(builder: themeContext =>
+            {
+                var currentTheme = Theme.of(themeContext);
+                titlebar.SetTheme(new WindowTitlebarTheme(currentTheme.scaffoldBackgroundColor, currentTheme.brightness));
+                return themedChild;
+            });
+        }
         if ((!object.Equals(((MaterialApp)this.widget).themeAnimationStyle, global::Doroti.Framework.Animation.AnimationStyle.noAnimation)))
         {
             childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new AnimatedTheme(data: theme, duration: (((MaterialApp)this.widget).themeAnimationStyle?.duration ?? ((MaterialApp)this.widget).themeAnimationDuration), curve: (((MaterialApp)this.widget).themeAnimationStyle?.curve ?? ((MaterialApp)this.widget).themeAnimationCurve), child: childWidget));

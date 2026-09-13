@@ -293,6 +293,9 @@ Qt/Linux 통합형은 창 버튼을 같은 GPU 표면에 그려 본문과 같은
 Linux의 샘플 및 진단 창은 Acrylic과 transparent fallback을 요청합니다. Wayland compositor가
 `ext-background-effect-v1` 또는 구형 KDE blur protocol을 제공하면 native blur를 요청하고,
 없으면 transparent fallback을 사용합니다.
+Qt의 unified 상단바는 `MaterialApp`의 `scaffoldBackgroundColor`와 밝기를 따라 틴트와 글자색을
+갱신합니다. 기본 진단 화면은 본문과 같은 60% 틴트를 사용하며, 샘플의 팔레트·다크 모드·Acrylic
+전환과 테마 애니메이션도 함께 반영합니다.
 
 ## 빌드와 개발
 
