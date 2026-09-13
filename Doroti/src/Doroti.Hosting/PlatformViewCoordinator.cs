@@ -26,6 +26,15 @@ public interface IPlatformViewFactory
         Action<PlatformViewHandle> onFocused, CancellationToken cancellationToken);
 }
 
+/// <summary>Reserves native operations for an entire placement transaction. Await
+/// each operation before disposal. Contended batches are retried without blocking UI.</summary>
+public interface IPlatformViewPlacementBatch : IDisposable
+{
+    bool Contains(PlatformViewHandle handle);
+    ValueTask AttachAsync(PlatformViewPlacement placement);
+    ValueTask DetachAsync(PlatformViewHandle handle);
+}
+
 /// <summary>Shares factory definitions only. Each owner receives a separate coordinator.</summary>
 public sealed class PlatformViewFactoryRegistry
 {
@@ -177,11 +186,11 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
         }, cancellationToken);
     }
 
-    internal void ValidatePlacementSupport(PlatformViewPlacement placement, bool interleaved)
+    internal void ValidatePlacementSupport(PlatformViewPlacement placement, bool interleaved, bool reserved = false)
     {
         lock (_gate)
         {
-            var entry = Require(placement.Handle);
+            var entry = Require(placement.Handle, live: !reserved);
             var effects = placement.Clip is null ? PlatformViewEffects.None : PlatformViewEffects.RectClip;
             if (placement.Transform.M11 != 1 || placement.Transform.M12 != 0 || placement.Transform.M21 != 0 || placement.Transform.M22 != 1)
                 effects |= PlatformViewEffects.AffineTransform;
@@ -203,6 +212,77 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
         }, cancellationToken);
     public ValueTask SetFocusAsync(PlatformViewHandle handle, bool focused, CancellationToken cancellationToken = default) =>
         OperateAsync(handle, entry => entry.Instance!.SetFocusAsync(focused), cancellationToken);
+
+    public bool TryBeginPlacementBatch(IEnumerable<PlatformViewHandle> handles, out IPlatformViewPlacementBatch? batch)
+    {
+        var entries = new Dictionary<PlatformViewHandle, Entry>();
+        lock (_gate)
+        {
+            batch = null;
+            if (_closed) return false;
+            try
+            {
+                foreach (var handle in handles.Distinct().OrderBy(h => h.InstanceId))
+                {
+                    var entry = Require(handle);
+                    if (!entry.Operations.Wait(0))
+                    {
+                        foreach (var acquired in entries.Values) acquired.Operations.Release();
+                        return false;
+                    }
+                    entries.Add(handle, entry);
+                }
+                batch = new PlacementBatch(this, entries);
+                return true;
+            }
+            catch
+            {
+                foreach (var acquired in entries.Values) acquired.Operations.Release();
+                throw;
+            }
+        }
+    }
+    private sealed class PlacementBatch(PlatformViewCoordinator owner, Dictionary<PlatformViewHandle, Entry> entries) : IPlatformViewPlacementBatch
+    {
+        private bool _disposed;
+        private int _pending;
+        public bool Contains(PlatformViewHandle handle) => !_disposed && entries.ContainsKey(handle);
+        public ValueTask AttachAsync(PlatformViewPlacement placement)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!entries.ContainsKey(placement.Handle)) throw owner.Error(placement.Handle, "native operation is outside the reserved batch");
+            placement.Validate();
+            // Disposal waits on the reservation. Finish this already-admitted
+            // operation without reviving its state, then allow removal to run.
+            owner.ValidatePlacementSupport(placement, false, reserved: true);
+            return Apply(placement.Handle, async entry =>
+            {
+                await entry.Instance!.ApplyAsync(placement);
+                lock (owner._gate) if (IsLive(entry.State))
+                    entry.State = placement.Visible && !placement.Bounds.isEmpty ? PlatformViewState.Attached : PlatformViewState.Hidden;
+            });
+        }
+        public ValueTask DetachAsync(PlatformViewHandle handle) => Apply(handle, async entry =>
+        {
+            await entry.Instance!.DetachAsync();
+            lock (owner._gate) if (IsLive(entry.State)) entry.State = PlatformViewState.Detached;
+        });
+        private async ValueTask Apply(PlatformViewHandle handle, Func<Entry, ValueTask> action)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!entries.TryGetValue(handle, out var entry)) throw owner.Error(handle, "native operation is outside the reserved batch");
+            Interlocked.Increment(ref _pending);
+            try { await owner._dispatcher.InvokeAsync(() => action(entry)).ConfigureAwait(false); }
+            finally { Interlocked.Decrement(ref _pending); }
+        }
+        public void Dispose()
+        {
+            if (_disposed) return;
+            if (Volatile.Read(ref _pending) != 0) throw new InvalidOperationException("Placement batch still has pending native operations.");
+            _disposed = true;
+            foreach (var entry in entries.Values) entry.Operations.Release();
+        }
+    }
     private async ValueTask OperateAsync(PlatformViewHandle handle, Func<Entry, ValueTask> action, CancellationToken cancellationToken)
     {
         Entry entry;

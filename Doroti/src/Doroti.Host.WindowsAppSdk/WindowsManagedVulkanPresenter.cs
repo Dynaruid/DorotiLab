@@ -108,6 +108,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private int _viewportHeight;
     private double _viewportScale = 1;
     private nint _topLevelWindow;
+    internal nint PlatformRasterWindow { get; set; }
+
+    internal Task<Doroti.Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
+        (_graphiteFrame ?? throw new NotSupportedException("Windows HWND interleaving currently requires Graphite/Vulkan."))
+            .RequestReadback(surface, info);
     private bool _backdropTargetAdded;
     private bool _contentIslandConnected;
     private bool _desktopWindowTargetConnected;
@@ -219,14 +224,21 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             : WindowsNativeV1.ExperimentalAcrylicFeature |
               WindowsNativeV1.VulkanAcrylicFeature);
     internal override bool UsesCompositionTopology => true;
-    internal override string VisibleOwner => _acrylicOptions is null
+    internal override string VisibleOwner => PlatformRasterWindow != 0
+        ? "background Vulkan child HWND with live native and GPU-raster sibling HWNDs"
+        : _acrylicOptions is null
         ? "top-level HWND DirectComposition Vulkan Presentation target"
         : "top-level HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target";
-    internal override string TopologySlug => _acrylicOptions is null
+    internal override string TopologySlug => PlatformRasterWindow != 0
+        ? "hwnd-interleaved-graphite-readback"
+        : _acrylicOptions is null
         ? "top-level-dcomp-vulkan-presentation-synchronous"
         : "top-level-dcomp-vulkan-presentation-synchronous-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
-    internal override string DiagnosticCoverage =>
+    internal override string DiagnosticCoverage => PlatformRasterWindow != 0
+        ? "Graphite/Vulkan shared-recorder raster atlas, readback after GPU completion, bounded premultiplied layered HWND slices and live native HWNDs; " +
+          "reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified"
+        :
         "Vulkan 1.2 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
         "external queue-family ownership transfers, CPU copy-fence completion before native Present, three-slot availability retirement, " +
         "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM wait, a native topmost DirectComposition target on the top-level HWND, " +
@@ -1363,8 +1375,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             throw new InvalidOperationException("The Vulkan Presentation surface handle is unavailable.");
         if (_topLevelWindow == 0)
             throw new InvalidOperationException("The Vulkan top-level HWND is unavailable.");
-        var attach = AttachCompositionWindow(
-            _presentationContext, unchecked((ulong)_topLevelWindow));
+        var attach = AttachCompositionWindow(_presentationContext,
+            unchecked((ulong)(PlatformRasterWindow != 0 ? PlatformRasterWindow : _topLevelWindow)));
         if (attach < 0) Marshal.ThrowExceptionForHR(attach);
         _compositionSurfaceConnected = true;
     }

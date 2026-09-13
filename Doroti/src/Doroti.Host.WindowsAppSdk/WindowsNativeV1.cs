@@ -17,6 +17,7 @@ internal static partial class WindowsNativeV1
     internal const ulong PreparedGeometryReceiptFeature = 1UL << 5;
     internal const ulong UnifiedTitlebarFeature = 1UL << 6;
     internal const ulong SolidTitlebarFeature = 1UL << 7;
+    internal const ulong PlatformViewSiblingWindowsFeature = 1UL << 8;
     internal const string LibraryName = "doroti_windows_appsdk_host_v1";
     private const uint LoadLibrarySearchDllLoadDir = 0x00000100;
     private const uint LoadLibrarySearchApplicationDir = 0x00000200;

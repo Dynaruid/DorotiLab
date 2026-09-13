@@ -73,6 +73,7 @@ public static class PlatformCompositionPlanner
         // are logical, while raster segments retain the original physical scene transforms.
         var state = new State(new(1 / token.DeviceScaleX, 0, 0, 1 / token.DeviceScaleY, 0, 0), null, null);
         var handles = new HashSet<PlatformViewHandle>();
+        var precedingNativeBounds = new List<Rect>();
         foreach (var command in flattened)
         {
             if (command.Operation == "platformView")
@@ -88,13 +89,26 @@ public static class PlatformCompositionPlanner
                 placement.Validate();
                 coordinator.ValidatePlacementSupport(placement, composition == PlatformViewComposition.InterleavedComposition);
                 parts.Add(new PlatformNativeSegment(placement));
+                if (composition == PlatformViewComposition.NativeOverlay && placement.Visible)
+                {
+                    if (!placement.Transform.IsAxisAligned) throw Failure("NativeOverlay requires axis-aligned native bounds");
+                    var a = placement.Transform.Map(placement.Bounds.topLeft);
+                    var b = placement.Transform.Map(placement.Bounds.bottomRight);
+                    var bounds = new Rect(a.dx, a.dy, b.dx, b.dy);
+                    if (placement.Clip is { } clip) bounds = bounds.intersect(clip);
+                    if (!bounds.isEmpty) precedingNativeBounds.Add(bounds);
+                }
                 raster.AddRange(scopes);
                 continue;
             }
             if (command.Operation == "inputShield")
             {
                 if (command.HostPayload is not SceneInputShieldPayload shield) throw Failure("untyped input shield");
-                if (state.Unsupported is not null) throw Failure(state.Unsupported);
+                // Opacity affects the raster but not framework hit testing. Modal
+                // fade transitions may contain shields, while native views inside
+                // such a saveLayer remain explicitly unsupported.
+                if (state.Unsupported is not null && state.Unsupported != "opacity across native content is unsupported")
+                    throw Failure(state.Unsupported);
                 FlushRaster();
                 parts.Add(new PlatformShieldSegment(new(shield.Bounds, state.Transform, state.Clip, parts.Count, shield.Debug)));
                 raster.AddRange(scopes);
@@ -111,6 +125,16 @@ public static class PlatformCompositionPlanner
                 states.Push(state);
                 scopes.Add(command);
                 state = Apply(state, command);
+            }
+            else if (precedingNativeBounds.Count != 0 &&
+                !(command.HostPayload is ScenePicturePayload { Commands.Count: 0 }))
+            {
+                // A picture's cull hint is not a clip (Canvas currently ignores cullRect).
+                // Unknown draw/effect bounds must not silently move foreground below HWNDs.
+                // Only an enclosing, supported rectangular clip proves non-overlap.
+                if (state.Unsupported is not null || state.Clip is not { } clip ||
+                    precedingNativeBounds.Any(bounds => !bounds.intersect(clip).isEmpty))
+                    throw Failure("NativeOverlay cannot prove that foreground raster avoids earlier native content; interleaved composition or an explicit disjoint rectangular clip is required");
             }
             raster.Add(command);
         }
@@ -179,6 +203,11 @@ public static class PlatformCompositionPlanner
     {
         switch (command.HostPayload)
         {
+            case SceneOpacityPayload opacity:
+                return state with {
+                    Transform = state.Transform.ThenLocal(new(1, 0, 0, 1, opacity.Offset.dx, opacity.Offset.dy)),
+                    Unsupported = state.Unsupported ?? "opacity across native content is unsupported"
+                };
             case SceneOffsetPayload offset:
                 return state with { Transform = state.Transform.ThenLocal(new(1, 0, 0, 1, offset.Dx, offset.Dy)) };
             case SceneTransformPayload transform:

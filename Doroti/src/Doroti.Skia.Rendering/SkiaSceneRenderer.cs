@@ -126,6 +126,7 @@ public sealed partial class SkiaSceneRenderer :
     /// <summary>Optional native compositor entry point, called under the render lock after exact-frame validation.
     /// The host must draw every raster part and retain native resources until its GPU work retires.</summary>
     public Action<SKCanvas, IReadOnlyList<SceneCommand>, DorotiFrameDescriptor, int, int>? PlatformScenePainter { get; set; }
+    public SKColor PlatformBackgroundColor => _backgroundColor;
 
     public SkiaFrameDiagnostics Diagnostics
     {

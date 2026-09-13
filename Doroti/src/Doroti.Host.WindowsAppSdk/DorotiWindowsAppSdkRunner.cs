@@ -70,13 +70,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         Exception? runFailure = null;
         try
         {
+            var platformViews = new WindowsPlatformViewHost();
             application = DorotiApplicationBoundary.Load(
                 descriptor.ManifestAssembly,
                 descriptor.ApplicationAssembly,
                 descriptor.LaunchContext.RuntimeIdentifier,
-                descriptor.NativePluginHandlers);
+                descriptor.NativePluginHandlers, platformViews.CreateFactories());
             session = new DorotiHostSession(descriptor.EntrypointFactory());
-            state = new WindowsManagedState(session, application, descriptor.ViewConfiguration, selectedPresenter);
+            state = new WindowsManagedState(session, application, descriptor.ViewConfiguration, selectedPresenter,
+                application.Manifest.PlatformViews.Length == 0 ? null : platformViews);
             // Presenter-specific Composition activation must occur on the HWND
             // thread during host-ready. Its process-wide DLL search restriction
             // is applied there immediately after attach and before first show.
@@ -213,15 +215,17 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private AcrylicPresenterSnapshot? _releasedAcrylicSnapshot;
         private string? _releasedAdapterDescription;
         private Task? _optionSmoke;
+        internal readonly WindowsPlatformViewHost? _platformViews;
 
         internal WindowsManagedState(
             DorotiHostSession session,
             DorotiApplicationBoundary application,
-            DorotiViewConfiguration configuration, string selectedPresenter)
+            DorotiViewConfiguration configuration, string selectedPresenter, WindowsPlatformViewHost? platformViews)
         {
             _session = session;
             _application = application;
             _configuration = configuration;
+            _platformViews = platformViews;
             _requestedDeviceResets = ResolveRequestedDeviceResets();
             RequestedPresenter = selectedPresenter;
             var backdrop = configuration.ResolveAppearance().ResolveBackdrop(isMacOS: false);
@@ -268,6 +272,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 EffectiveMode = "opaque";
             }
             NativeRequiredFeatures |= Presenter.NativeRequiredFeatures;
+            if (_platformViews is not null && Presenter is WindowsManagedVulkanPresenter && WindowsManagedVulkanPresenter.GraphiteEnabled)
+                NativeRequiredFeatures |= WindowsNativeV1.PlatformViewSiblingWindowsFeature;
         }
 
         internal WindowsManagedProductHost? Host { get; private set; }
@@ -327,6 +333,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var host = new WindowsManagedProductHost(in effectiveNative,
                 checked((int)_configuration.logicalSize.width),
                 checked((int)_configuration.logicalSize.height));
+            if (_platformViews is not null && WindowsManagedVulkanPresenter.GraphiteEnabled && Presenter is WindowsManagedVulkanPresenter platformPresenter)
+                platformPresenter.PlatformRasterWindow = host.ChildHwnd;
             var presenterSlug = Presenter.BackendName.ToLowerInvariant().Replace('/', '-');
             var topology = Presenter.TopologySlug;
             var target = $"win-x64/windowsappsdk-2.4/{topology}/managed-{presenterSlug}-skia";
@@ -354,7 +362,21 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer);
             capabilities.Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, renderer);
-            _application.Configure(capabilities, messages);
+            Host = host;
+            Renderer = renderer;
+            _capabilities = capabilities;
+            if (_platformViews is { } platformViews)
+            {
+                var dispatcher = platformViews.Bind(host,
+                    WindowsManagedVulkanPresenter.GraphiteEnabled ? Presenter as WindowsManagedVulkanPresenter : null);
+                var coordinator = _application.ConfigurePlatformViews(capabilities, 1, dispatcher);
+                platformViews.Configure(coordinator);
+                var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+                _application.Configure(capabilities, channel);
+                renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+                    platformViews.Draw(renderer, canvas, commands, descriptor, width, height);
+            }
+            else _application.Configure(capabilities, messages);
             DorotiView? view = null;
             try
             {
@@ -537,6 +559,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var resizeGeneration = request.Generation;
             var dispatchedFrameworkFrame = host.BeginFrame(in request);
             var requiresPresenterQualification =
+                _platformViews is { NeedsReplay: true } ||
                 _completedDeviceResets < _requestedDeviceResets ||
                 _vulkanRecoveryPending ||
                 Presenter is WindowsManagedVulkanPresenter { HasPendingInjectedResult: true };
@@ -626,6 +649,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 : Presenter.RenderAndPresent(Paint, ShouldPresent);
             var prepared = preparing && Presenter is WindowsManagedVulkanPresenter { LastPrepareSucceeded: true };
             presented &= Presenter.LastPresentSucceeded;
+            _platformViews?.FinishRaster(causalFrameId, presented || prepared);
             if (staleInputPrevented) Interlocked.Increment(ref _staleInputPresentPrevented);
             if (!presented && !prepared && result.Completion is { IsNewFrame: true } stale)
             {
@@ -692,6 +716,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         {
             var host = Host ?? throw new InvalidOperationException("Terminal arrived before host-ready.");
             host.CompleteTerminal(in terminal);
+            var compositionCommitted = _platformViews?.Terminal(checked((long)terminal.CausalFrameId),
+                terminal.TerminalKind == (uint)WindowsNativeV1.FrameTerminalKind.Presented,
+                checked((long)terminal.Generation)) ?? true;
             SkiaPaintCompletion? completion = null;
             lock (_gate)
             {
@@ -700,7 +727,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             switch ((WindowsNativeV1.FrameTerminalKind)terminal.TerminalKind)
             {
                 case WindowsNativeV1.FrameTerminalKind.Presented:
-                    if (completion is { } painted) Renderer?.CompletePaint(painted);
+                    if (completion is { } painted)
+                    {
+                        if (compositionCommitted) Renderer?.CompletePaint(painted);
+                        else
+                        {
+                            Renderer?.SupersedePaint(painted, "Native placement did not commit with this raster frame.");
+                            // Rebuild a scene on the framework owner. A deferred native
+                            // batch must not acknowledge a new scene as visible, nor
+                            // merely replay the preceding successfully presented scene.
+                            host.DispatchPlatformViewEvent(() => View?.DispatchPlatformEvent(_session.dispatcher.scheduleFrame));
+                        }
+                    }
                     _visibleAfterExactPresent |= IsWindowVisible(host.TopLevelHwnd);
                     if (_visibleAfterExactPresent) WriteReadyFile(host.TopLevelHwnd);
                     Interlocked.Increment(ref _presented);
@@ -980,6 +1018,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 QuarantineUnsafeGpuState(this);
             }
 
+            if (!UnsafeGpuCleanupQuarantined && _platformViews is { } platformViews)
+                Cleanup(platformViews.Dispose);
+
             var rendererCleanupCompleted = Renderer is null;
             if (!UnsafeGpuCleanupQuarantined && Renderer is { } renderer)
             {
@@ -1240,6 +1281,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (viewId != 1) throw new InvalidDataException("Native lifecycle view id differs.");
             (managed.Host ?? throw new InvalidOperationException("Lifecycle arrived before host-ready."))
                 .ApplyLifecycle(state);
+            if (state == 0) managed._platformViews?.BeginClose();
         });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

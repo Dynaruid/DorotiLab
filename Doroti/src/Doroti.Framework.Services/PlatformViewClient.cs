@@ -22,6 +22,12 @@ public sealed class PlatformViewClient : IAsyncDisposable
         _creation = CreateAsync(request);
     }
     public Task<PlatformViewHandle> Ready => _creation;
+    public ValueTask SetFocusAsync(bool focused)
+    {
+        lock (_gate)
+            return _disposal is null && _handle is { } handle
+                ? _host.SetFocusAsync(handle, focused, _lifetime.Token) : ValueTask.CompletedTask;
+    }
     private async Task<PlatformViewHandle> CreateAsync(PlatformViewRequest request)
     {
         var handle = await _host.CreateAsync(request, _lifetime.Token);

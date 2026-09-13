@@ -130,6 +130,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         private bool _submissionAttempted;
         private bool _returned;
         private SKImageInfo? _readbackInfo;
+        private SKSurface? _readbackSurface;
         private TaskCompletionSource<SkiaGraphiteReadback>? _readback;
         private bool _readbackPending;
         private readonly VulkanTarget? _vulkanTarget;
@@ -162,6 +163,24 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                 throw new InvalidOperationException("Readback must be requested once before frame submission.");
             if (info.Width != _backend.Dimensions.Width || info.Height != _backend.Dimensions.Height)
                 throw new ArgumentException("Readback dimensions must match the complete output texture.", nameof(info));
+            _readbackInfo = info;
+            _readbackSurface = _surface;
+            _readback = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            return _readback.Task;
+        }
+
+        /// <summary>Captures an owned compatible GPU surface in this recording. The caller
+        /// retains the surface until CompleteGpuWork; no CPU raster fallback is performed.</summary>
+        public Task<SkiaGraphiteReadback> RequestReadback(SKSurface surface, SKImageInfo info)
+        {
+            _session.CheckOwner();
+            if (_returned || _submissionAttempted || _readback is not null)
+                throw new InvalidOperationException("Readback must be requested once before frame submission.");
+            if (SkiaGpuSurfaces.RecorderFor(surface.Canvas) != _session._recorder ||
+                info.Width <= 0 || info.Height <= 0 || surface.Canvas.DeviceClipBounds.Width != info.Width ||
+                surface.Canvas.DeviceClipBounds.Height != info.Height)
+                throw new ArgumentException("Readback must match a surface owned by this frame's recorder.", nameof(surface));
+            _readbackSurface = surface;
             _readbackInfo = info;
             _readback = new(TaskCreationOptions.RunContinuationsAsynchronously);
             return _readback.Task;
@@ -203,7 +222,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                     _readbackPending = true;
                     try
                     {
-                        _session._context.RequestReadPixels(_surface, info, new SKRectI(0, 0, info.Width, info.Height),
+                        _session._context.RequestReadPixels(_readbackSurface!, info, new SKRectI(0, 0, info.Width, info.Height),
                             SKImageRescaleGamma.Src, SKImageRescaleMode.Nearest, result =>
                             {
                                 // Never propagate application exceptions across the native callback.

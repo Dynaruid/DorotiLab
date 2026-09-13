@@ -8,6 +8,7 @@
     <InternalsVisibleTo Include="Doroti.Hosting" />
     <InternalsVisibleTo Include="Doroti.Host.Web" />
     <InternalsVisibleTo Include="Doroti.Host.Maui" />
+    <InternalsVisibleTo Include="Doroti.Host.WindowsAppSdk" />
     <InternalsVisibleTo Include="Doroti.Host.Qt" />
     <InternalsVisibleTo Include="Doroti.Skia.Rendering" />
     <InternalsVisibleTo Include="Doroti.Skia.RuntimeEffects" />

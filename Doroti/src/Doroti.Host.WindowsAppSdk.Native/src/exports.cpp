@@ -702,6 +702,9 @@ class ProductHost final {
         break;
       case WM_SETFOCUS:
       case WM_KILLFOCUS:
+        if (message == WM_KILLFOCUS &&
+            (configuration_.required_features & DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1) != 0 &&
+            IsChild(top_, reinterpret_cast<HWND>(wparam))) return 0;
         EmitFocus(message == WM_SETFOCUS);
         return 0;
       case WM_GETOBJECT:
@@ -744,12 +747,17 @@ class ProductHost final {
                     wparam, lparam);
         return 0;
       case WM_MOUSELEAVE:
+        if (!mouse_inside_ || pointer_down_) return 0;
         mouse_inside_ = false;
         EmitPointer(2, 0, last_pointer_lparam_);
         return 0;
       case WM_LBUTTONDOWN:
       case WM_RBUTTONDOWN:
       case WM_MBUTTONDOWN:
+        if (!mouse_inside_) {
+          mouse_inside_ = true;
+          EmitPointer(1, wparam, lparam);
+        }
         SetFocus(window);
         SetCapture(window);
         pointer_down_ = true;
@@ -762,6 +770,8 @@ class ProductHost final {
         if ((wparam & (MK_LBUTTON | MK_RBUTTON | MK_MBUTTON)) == 0) {
           pointer_down_ = false;
           ReleaseCapture();
+          TRACKMOUSEEVENT tracking{sizeof(TRACKMOUSEEVENT), TME_LEAVE, window, 0};
+          TrackMouseEvent(&tracking);
         }
         return 0;
       case WM_CANCELMODE:
@@ -1107,7 +1117,8 @@ class ProductHost final {
     // The Composition path has no visible child. Non-Composition retained WSI
     // keeps its oversized child clipped by the top-level client.
     return WS_OVERLAPPEDWINDOW |
-           (retained_oversized_child_surface_ && !composition_active_
+           ((retained_oversized_child_surface_ && !composition_active_) ||
+                (configuration_.required_features & DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1) != 0
                 ? WS_CLIPCHILDREN
                 : 0u);
   }
@@ -1119,7 +1130,8 @@ class ProductHost final {
     // top/left resize. Remove that third plane; opaque Composition supplies its
     // own background visual and Acrylic supplies the non-topmost backdrop
     // target beneath the native topmost Vulkan target.
-    return composition_active_
+    return composition_active_ &&
+               (configuration_.required_features & DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1) == 0
                ? static_cast<DWORD>(WS_EX_NOREDIRECTIONBITMAP)
                : 0u;
   }
@@ -2606,7 +2618,8 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
            DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1 |
            DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1 |
            DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1 |
-           DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1)) != 0)
+           DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1 |
+           DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
   if ((configuration->required_features & DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1) != 0 &&
       (configuration->required_features & DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1) != 0)

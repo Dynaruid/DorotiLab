@@ -20,12 +20,16 @@ CASES = {
     "web-typescript": ["node", "validation/web-playwright/node_modules/typescript/bin/tsc", "--project", "src/Doroti.Host.Web/Web/tsconfig.json", "--noEmit"],
     "product-build": ["dotnet", "build", "Doroti.Product.slnx", "--nologo", "-m:1", "-p:UseSharedCompilation=false", "-v:q"],
     "windows-product-build": ["dotnet", "build", "../DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "--nologo", "-m:1", "-v:q"],
+    "windows-product-live": [sys.executable, "validation/platform-views/windows/product.py"],
+    "windows-product-overlay": [sys.executable, "validation/platform-views/windows/overlay.py"],
+    "windows-product-navigation": [sys.executable, "validation/platform-views/windows/navigation.py"],
     "testbed-build": ["dotnet", "build", "../DorotiTestbedApp/DorotiTestbedApp.csproj", "--nologo", "-m:1", "-v:q"],
     "macos-attachment": [sys.executable, "validation/platform-views/macos/run.py"],
     "macos-product-build": ["dotnet", "build", "../DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj", "-r", "osx-arm64", "--nologo", "-m:1", "-v:q"],
     "macos-product-live": [sys.executable, "validation/platform-views/macos/product.py"],
     "macos-interleaved": [sys.executable, "validation/platform-views/macos/interleaved.py"],
 }
+WINDOWS_LIVE = {"windows-product-live", "windows-product-overlay", "windows-product-navigation"}
 
 def git(*args):
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True, encoding="utf-8").strip()
@@ -34,7 +38,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("gate", choices=CASES)
     args = parser.parse_args()
-    out = DOROTI / "docs/validation/platform-views" / datetime.date.today().isoformat() / args.gate
+    out = DOROTI / "artifacts/platform-views" / datetime.date.today().isoformat() / args.gate / datetime.datetime.now().strftime("%H%M%S-%f")
     out.mkdir(parents=True, exist_ok=True)
     command = [sys.executable, "validation/run-with-timeout.py", *CASES[args.gate]]
     started = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -43,9 +47,13 @@ def main():
               if (ROOT / name).is_file() and "/docs/validation/" not in name and (ROOT / name).suffix in {".cs", ".csproj", ".ts", ".cpp", ".py", ".ps1", ".mjs", ".md", ".json"}}
     (out / "source-hashes.json").write_text(json.dumps(hashes, indent=2), encoding="utf-8")
     with (out / "command.log").open("w", encoding="utf-8") as log:
-        result = subprocess.run(command, cwd=DOROTI, stdout=log, stderr=subprocess.STDOUT)
+        environment = os.environ.copy()
+        if args.gate in WINDOWS_LIVE: environment["DOROTI_PLATFORM_VIEW_GATE_OUTPUT"] = str(out / "product")
+        result = subprocess.run(command, cwd=DOROTI, stdout=log, stderr=subprocess.STDOUT, env=environment)
     passed = result.returncode == 0
     artifacts = [str((out / name).relative_to(ROOT)).replace("\\", "/") for name in ["command.log", "source-hashes.json"]]
+    if args.gate in WINDOWS_LIVE:
+        artifacts += [str(file.relative_to(ROOT)).replace("\\", "/") for file in (out / "product").glob("*") if file.is_file()]
     if args.gate == "web-dom":
         for file in (DOROTI / "artifacts/validation/platform-views/web-dom").glob("*"):
             if file.suffix in {".png", ".json"}:
@@ -64,19 +72,21 @@ def main():
         "os": platform.platform(), "rid": ("osx-arm64" if platform.machine() == "arm64" else "osx-x64") if sys.platform == "darwin" else
             ("win-x64" if sys.platform == "win32" else "linux-" + platform.machine()), "device": platform.machine(),
         "runtime": "dotnet SDK " + subprocess.check_output(["dotnet", "--version"], cwd=DOROTI, text=True).strip(),
-        "renderer": "AppKit Graphite-Metal and Ganesh-Metal" if args.gate in {"macos-product-live", "macos-interleaved"} else
+        "renderer": "Windows Graphite/Vulkan GPU readback and layered HWND" if args.gate in WINDOWS_LIVE else
+            "AppKit Graphite-Metal and Ganesh-Metal" if args.gate in {"macos-product-live", "macos-interleaved"} else
             "AppKit NSControl harness" if args.gate == "macos-attachment" else
             "isolated DOM" if args.gate == "web-dom" else "CPU/fake" if args.gate == "common" else "notApplicable",
         "command": subprocess.list2cmdline(command), "workingDirectory": str(DOROTI),
         "startedUtc": started, "finishedUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "exitCode": result.returncode, "timeoutSeconds": 1200,
-        "sourceReviewed": "passed", "build": "notVerified" if args.gate in {"macos-product-live", "macos-interleaved"} else "passed" if passed else "failed",
+        "sourceReviewed": "passed", "build": "notVerified" if args.gate in {"macos-product-live", "macos-interleaved"} | WINDOWS_LIVE else "passed" if passed else "failed",
         "automated": ("passed" if passed else "failed") if not args.gate.endswith("-build") and args.gate != "web-typescript" else "notVerified",
-        "productLive": ("passed" if passed else "failed") if args.gate in {"macos-product-live", "macos-interleaved"} else "notVerified",
+        "productLive": ("passed" if passed else "failed") if args.gate in {"macos-product-live", "macos-interleaved"} | WINDOWS_LIVE else "notVerified",
         "physical": "notVerified", "nativeAot": "notVerified",
         "capabilities": [{"request": args.gate, "result": "passed" if passed else "failed"}],
         "artifacts": artifacts,
-        "remaining": ["AppKit acceptance beyond recorded C scenarios, physical display synchronization, gesture mediation and complete PV-5/PV-10 remain open." if args.gate.startswith("macos-") else
+        "remaining": ["Windows support is scoped to Graphite/Vulkan HWND composition and the recorded product scenarios; other presenters and Windows MAUI are not qualified." if args.gate in WINDOWS_LIVE else
+                      "AppKit acceptance beyond recorded C scenarios, physical display synchronization, gesture mediation and complete PV-5/PV-10 remain open." if args.gate.startswith("macos-") else
                       "Actual product compositor integration and all platform B/C acceptance gates remain open.",
                       "Korean IME, screen readers, physical devices, deployment and 0/1/4-view performance are not qualified."],
     }

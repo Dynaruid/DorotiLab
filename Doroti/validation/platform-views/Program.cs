@@ -163,6 +163,88 @@ await Check("unsupported-effects-zero-view-and-layout", async () =>
     using var scaledPlan = PlatformCompositionPlanner.Build(scaled.build(), new(7, 0, 2, 0, 2, 2), owner);
     Assert(scaledPlan.Parts.OfType<PlatformNativeSegment>().Single().Placement.Transform == PlatformViewTransform.Identity, "native placement applied DPR twice");
 });
+await Check("native-overlay-foreground-rejection", async () =>
+{
+    await using var owner = Owner(71, new FakeFactory());
+    var handle = await owner.CreateAsync(new(1, "control"));
+    PlatformCompositionPlan Plan(SceneBuilder builder) => PlatformCompositionPlanner.Build(
+        builder.build(), new(71, 0, 1, 0), owner, PlatformViewComposition.NativeOverlay);
+
+    var foreground = new SceneBuilder(71);
+    foreground.addPlatformView(handle, width: 20, height: 20);
+    Picture(foreground, 0xffff0000);
+    await Throws(() => Task.FromResult(Plan(foreground)));
+
+    var background = new SceneBuilder(71);
+    Picture(background, 0xffff0000);
+    background.addPlatformView(handle, width: 20, height: 20);
+    using (var plan = Plan(background)) Assert(plan.HasNativeContent, "background raster rejected");
+
+    var disjoint = new SceneBuilder(71);
+    disjoint.addPlatformView(handle, width: 20, height: 20);
+    disjoint.pushClipRect(Rect.fromLTWH(40, 40, 20, 20), Clip.hardEdge);
+    Picture(disjoint, 0xffff0000); disjoint.pop();
+    using (var plan = Plan(disjoint)) Assert(plan.HasNativeContent, "clipped non-overlap rejected");
+
+    var overlap = new SceneBuilder(71);
+    overlap.addPlatformView(handle, width: 20, height: 20);
+    overlap.pushClipRect(Rect.fromLTWH(10, 10, 20, 20), Clip.hardEdge);
+    Picture(overlap, 0xffff0000); overlap.pop();
+    await Throws(() => Task.FromResult(Plan(overlap)));
+
+    var retained = new SceneBuilder(71);
+    var layer = retained.pushOffset(10, 10);
+    retained.addPlatformView(handle, width: 20, height: 20);
+    Picture(retained, 0xffff0000); retained.pop();
+    var reuse = new SceneBuilder(71); reuse.addRetained(layer);
+    await Throws(() => Task.FromResult(Plan(reuse)));
+
+    var unknown = new SceneBuilder(71);
+    unknown.addPlatformView(handle, width: 20, height: 20);
+    unknown.addPerformanceOverlay(1, Rect.fromLTWH(40, 40, 20, 20));
+    await Throws(() => Task.FromResult(Plan(unknown)));
+
+    var hidden = new SceneBuilder(71);
+    hidden.addPlatformView(handle, width: 0, height: 0); Picture(hidden, 0xffff0000);
+    using (var plan = Plan(hidden)) Assert(plan.HasNativeContent, "zero-sized native blocked raster");
+});
+await Check("modal-opacity-shield-preserves-hit-geometry", async () =>
+{
+    await using var owner = Owner(72, new FakeFactory());
+    var handle = await owner.CreateAsync(new(1, "control"));
+    var builder = new SceneBuilder(72);
+    builder.addPlatformView(handle, width: 20, height: 20);
+    builder.pushOpacity(128, new Offset(10, 15));
+    builder.addInputShield(Rect.fromLTWH(0, 0, 100, 100));
+    Picture(builder, 0xffff0000); builder.pop();
+    using var plan = PlatformCompositionPlanner.Build(builder.build(), new(72, 0, 1, 0), owner);
+    var shield = plan.Parts.OfType<PlatformShieldSegment>().Single().Shield;
+    Assert(shield.Transform.Dx == 10 && shield.Transform.Dy == 15, "modal opacity lost shield offset");
+});
+await Check("placement-batch-defers-focus-contention-and-owns-cleanup", async () =>
+{
+    var factory = new FakeFactory();
+    await using var owner = Owner(73, factory);
+    var first = await owner.CreateAsync(new(1, "control"));
+    var second = await owner.CreateAsync(new(2, "control"));
+    factory.Instances[second].FocusGate = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    var focusing = owner.SetFocusAsync(second, true).AsTask();
+    Assert(!owner.TryBeginPlacementBatch([first, second], out _), "batch did not reject native focus contention");
+    // A failed multi-entry reservation must also release the earlier entry.
+    Assert(owner.TryBeginPlacementBatch([first], out var available), "failed batch retained the first native lock");
+    available!.Dispose();
+    factory.Instances[second].FocusGate!.SetResult(); await focusing;
+    Assert(owner.TryBeginPlacementBatch([first, second], out var batch), "batch did not recover after focus completed");
+    await batch!.AttachAsync(Placement(first));
+    await batch.AttachAsync(Placement(second));
+    var removal = owner.DisposeAsync(first).AsTask();
+    Assert(!removal.IsCompleted, "native cleanup passed an active placement reservation");
+    await batch.AttachAsync(Placement(first));
+    Assert(owner.GetState(first) == PlatformViewState.Disposing, "admitted placement revived a disposing native entry");
+    await Throws(() => owner.AttachAsync(Placement(first)).AsTask());
+    batch.Dispose(); await removal;
+    Assert(factory.Instances[first].Disposals == 1, "native batch cleanup did not release exactly once");
+});
 await Check("frame-rollback-stale-epoch-and-retirement", async () =>
 {
     var factory = new FakeFactory();
@@ -312,10 +394,11 @@ sealed class FakeFactory : IPlatformViewFactory
 sealed class FakeInstance : IPlatformViewInstance
 {
     public int Disposals;
+    public TaskCompletionSource? FocusGate;
     public TaskCompletionSource InputDisabled = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public ValueTask ApplyAsync(PlatformViewPlacement placement) => ValueTask.CompletedTask;
     public ValueTask DetachAsync() => ValueTask.CompletedTask;
-    public ValueTask SetFocusAsync(bool focused) => ValueTask.CompletedTask;
+    public ValueTask SetFocusAsync(bool focused) => FocusGate is { } gate ? new(gate.Task) : ValueTask.CompletedTask;
     public ValueTask DisableInputAsync() { InputDisabled.TrySetResult(); return ValueTask.CompletedTask; }
     public ValueTask DisposeAsync() { Disposals++; return ValueTask.CompletedTask; }
 }

@@ -22,6 +22,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
     <PackageReference Include="SkiaSharp.Vulkan.Silk.NET" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />

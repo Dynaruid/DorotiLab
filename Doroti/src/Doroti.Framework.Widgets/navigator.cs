@@ -325,7 +325,9 @@ public abstract class Route<T> : RouteBase
     }
     internal override bool _debugCheckCanConsumeResult(object? result, string methodName)
     {
-        if ((result is not T))
+        // Flutter checks T?: dismissing a dialog without a result is valid for
+        // every route result type, including a non-nullable value type.
+        if ((result is not null && result is not T))
         {
             throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A request was made to pop a route with a result of type {DartRuntimePrimitives.RuntimeType(result)}, but the route expected a value of type {typeof(T)}."), new global::Doroti.Framework.Foundation.ErrorDescription($"This usually happens when the type provided to Navigator.{methodName}() " + "is not a subtype of the type expected by the Route (e.g. DialogRoute<Null>), " + "or when a generic type is explicitly provided to a route creation method " + "(such as showDialog<T>()) but the popped value does not match this type."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("The route was", this), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>("The provided result was", result) }));
         }

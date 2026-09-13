@@ -27,6 +27,7 @@ typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1 = 1ull << 5,
   DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1 = 1ull << 6,
   DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1 = 1ull << 7,
+  DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1 = 1ull << 8,
 } doroti_windows_required_feature_v1;
 
 typedef enum doroti_windows_status_v1 {

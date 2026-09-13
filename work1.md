@@ -4,9 +4,49 @@
 
 Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f2880fd363da95`. [ref.md](ref.md)를 반영한 [work2 WV-7](work2.md)의 시스템 Qt WebEngine 직접 adapter 계획에 맞춰 PV-9와 인계 조건을 갱신했다. 이번 변경은 문서에 한정하며 기존 AppKit 증거와 다른 플랫폼 상태를 승격하지 않는다.
 
-기준: [idea.md](idea.md) 및 이번 사용자 요구인 **Doroti 위젯과 플랫폼 뷰의 양방향 전체·부분 겹침**. 공통 기반과 Windows/Web 선행 작업, AppKit NativeOverlay 제품 연결이 일부 진행되어 있다. **현재 전체 상태는 `PARTIAL`이며 사용자 요구를 아직 충족하지 못한다.** 기존 PV 단계는 유지하되 C 교차 합성을 필수 목표로 구체화한다. 최초 재검토는 문서 수정만 수행했으며, 이후 사용자 요청에 따른 macOS 제품 코드·검증 변경은 아래 후속 구현 절에 기록한다.
+기준: [idea.md](idea.md) 및 **Doroti 위젯과 플랫폼 뷰의 양방향 전체·부분 겹침**. WindowsAppSdk Graphite/Vulkan의 B/C 제품 연결과 scoped 실행 검증을 수행했고 AppKit에도 제한된 C 제품 경로가 있다. **모든 플랫폼과 전체 입력·성능 승인을 포함한 전체 상태는 `PARTIAL`이다.** 구현 완료 범위와 미검증 승인을 분리하며, Windows의 최신 결과는 바로 아래 절을 따른다.
 
 최초 재검토 시 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없었다. 후속 구현에서 계약/지원표를 복구했으며 실행 기록은 AppKit README를 사용한다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 양방향 겹침 기준 반영은 수행했으며, 기기별 성능 예산은 남아 있다.
+
+## Windows 제품 연결 — 2026-09-13
+
+**WindowsAppSdk + Graphite/Vulkan의 실제 제품 B/C 경로를 구성했다.** manifest의 선택형 factory 공급, HWND 생성 후 binding, owner coordinator/channel, UI dispatcher, scene painter, native 입력/포커스, 종료 정리를 연결했다. 현재 Windows 전체 지원 승인은 `PARTIAL`이지만, 이 제품 경로의 runner 연결과 교차 합성이 미구현인 상태는 아니다. Windows MAUI와 다른 presenter의 지원으로 확대해서 해석하지 않는다.
+
+- **실제 HWND 교차 합성:** 기존 Vulkan background child, live layered BUTTON/EDIT HWND, Graphite recorder로 그린 raster slice의 layered HWND를 sibling paint order로 배치한다. native 콘텐츠를 snapshot으로 대체하지 않는다. 투명 raster는 GPU atlas를 같은 queue에서 완료한 뒤 readback해 premultiplied bitmap으로 전달한다. texture/CPU renderer로의 자동 전환은 없다.
+- **Windows window 구성:** native feature bit 8로 parent의 `WS_CLIPCHILDREN`/redirection을 HWND 생성 시 결정한다. 기존 Acrylic lower target과 Vulkan target의 충돌을 피한다. template/Testbed manifest에 Windows 10 호환성을 명시했다. 실제 topology는 `hwnd-interleaved-graphite-readback`으로 진단한다.
+- **frame·수명:** 새 raster bank를 숨겨진 상태로 준비한 뒤 native/raster의 표시·geometry·z-order를 `DeferWindowPos` batch로 적용한다. 각 slice의 alpha region을 설정해 투명 영역 뒤의 GDI control이 다시 그려질 수 있게 한다. coordinator는 frame 전체의 native operation을 먼저 예약하며 focus와 경합하면 UI를 막지 않고 이전 화면을 유지한 채 재시도한다. GPU lease와 UI queue는 render 종료 후 정리한다.
+- **입력·포커스:** shield 안의 native 메시지는 UI thread에서 parent 입력 경로로 한 번 전달하고, 노출 native 입력은 원래 control이 받는다. 생성 완료는 framework isolate 이벤트로 직렬화한다. PlatformView FocusNode, native Tab/Shift+Tab 전달, native/Doroti text-client 양보를 연결했다. modal fade의 shield 좌표를 지원하고 `Navigator.pop`의 nullable 결과 검사 오류도 수정했다.
+- **실행 증거:** 실제 창의 10개 장면에서 부분/전체 가림·해제·역순·중간 그림·alpha·이동, 동일 HWND/실제 EDIT 내용 보존, shield on/off/역순, Tab/Shift+Tab, modal barrier, 제품 20회 생성·해제와 정상 종료가 통과했다. 공통 16개 검사와 독립 HWND 100회 수명도 통과했다. [Windows 구현·검증 기록](Doroti/artifacts/platform-views/2026-09-13/windows-implementation.md).
+
+**성능·승인 한계:** 192 DPI 제품 실행에서 raster/readback p95 약 10.7ms, UI commit p95 약 29.8ms를 관찰했다. UI commit을 60Hz 예산 내로 만족한다고 선언하지 않는다. atlas는 128 MiB/16384px, alpha region은 16384개 rect로 제한하며 raster HWND는 두 bank에서 재사용한다. 물리적 display 원자성, 한글 IME, Narrator/UIA 전체 탐색, 1/1.25/1.5 DPI·cross-monitor/device-loss, 같은 process의 두 제품 창, 0/1/4-view 성능 예산 및 NativeAOT/배포 승인은 별도 미검증이다. Windows MAUI는 여전히 별도 adapter 작업 대상이다.
+
+기본 C fixture: `DOROTI_TESTBED_MODE=platform-views`와 `DOROTI_PLATFORM_VIEW_COMPOSITION=interleaved`. B는 `overlay`로 명시한다. 검증 명령은 `python Doroti/validation/platform-views/record.py windows-product-live` 및 `windows-product-overlay`이며 각 실행은 외부 1200초 timeout과 고유 artifact 디렉터리를 사용한다.
+
+## Windows 최초 검토·수정 — 제품 연결 이전 기록
+
+Windows checkout `69a43b10e09af4bddafb35220f854ab36edf677b`에서 최초로 수행한 검토 기록이다. **아래 구성 계획의 당시 미구현 설명은 위 Windows 제품 연결 결과로 갱신한다.** Windows MAUI의 별도 작업 경계는 유지한다.
+
+- **전경 오표시 차단:** `NativeOverlay`에서 앞서 배치한 visible native 뒤의 raster는 명시적인 비겹침 rect clip으로 안전성이 입증된 경우만 허용한다. 겹침·알 수 없는 bounds·미지원 effect는 C 필요 오류로 거부한다. picture cull hint를 실제 clip으로 취급하지 않는다. 배경 그림과 zero-size native는 허용하며 retained subtree에도 같은 검사를 적용한다. 아직 그림 bounds를 정밀 분석하지 않으므로 실제로 겹치지 않는 그림도 clip 증거가 없으면 거부할 수 있다.
+- **HWND 소유권:** factory를 parent HWND의 UI thread에서 생성하도록 검사하고, 생성 시 parent 수명을 다시 확인한다. 다른 view type의 지원 조회와 외부 reparent 후 배치를 거부한다. `lowerCompositionTarget` 인자는 여전히 host의 명시적 전제이며 실제 DComp target 생성의 증거가 아니다.
+- **포커스·clip:** hidden/full clip/물리 0-pixel clip/detach 시 해당 control이 소유한 focus만 parent로 돌려준다. 숨겨진 control의 focus 요청을 거부하고, 표시 복구 시 HWND와 편집 내용을 유지한다. 이는 한글 IME·Tab/semantics 통합 검증을 대체하지 않는다.
+- **검증 구성:** 공통 foreground/retained 거부 회귀와 Windows 스레드·parent·focus·DPI·상태 보존·parent 선행 파괴 검사를 추가했다. recorder는 `Doroti/artifacts/platform-views/<date>/<gate>/<run>/`에 실행별 증거를 남겨 재실행 때 실패 기록을 덮어쓰지 않는다.
+
+실행별 명령·결과와 지원 범위는 [Windows 검토 기록](Doroti/artifacts/platform-views/2026-09-13/windows-review.md)에 기록한다. 현재 장비의 HWND DPI는 192(2.0)이며 1/1.25/1.5 배율과 제품 resize/IME/접근성은 별도 미검증이다. `skippedByUser` 항목은 없다.
+
+### Windows 구성 순서와 중단 조건
+
+| 단계 | 구체적 구성·소유권 | 다음 단계 진입 조건 |
+|---|---|---|
+| PV-3A: topology 결정 | 일반 HWND와 composition-native view를 별도 키로 구분한다. WindowsAppSdk Vulkan, ANGLE/opaque, ANGLE/acrylic, MAUI Composition, MAUI SwapChainPanel을 별도 행으로 관리한다. HWND B는 실제 lower DComp target 및 parent `WS_CLIPCHILDREN`이 확인된 조합에만 허용한다. | 선택 presenter에서 native를 포함한 창 픽셀과 hit-test가 일치. 독립 probe의 bool 설정이나 버튼 메시지만으로 제품 지원을 등록하지 않음. |
+| PV-3B-1: bootstrap | `RunCore`의 manifest load는 HWND 생성보다 앞선다. 이때는 owner별 deferred factory/provider 정의만 공급하고, native `host_ready`에서 parent·UI dispatcher·실제 topology를 한 번 결합한다. 현재 HWND factory는 live parent를 요구하므로 이를 조기에 직접 생성하지 않는다. registry는 manifest에 선택된 view만 등록한다. | 잘못된 RID/type/아직 bind되지 않은 parent는 create 전에 오류. capability 없는 앱의 시작 경로 유지. |
+| PV-3B-2: UI dispatch | 제품의 `RenderWorkerMain`/managed `Render`는 HWND UI thread와 다르다. create/apply/focus/dispose는 UI queue로 보내고, focus callback은 owner의 기존 framework 입력 queue로 돌려준다. WinForms 테스트의 SynchronizationContext를 제품에 있다고 가정하지 않는다. | create 중 close, 취소, 늦은 callback과 두 owner 분리 통과. native callback에서 managed 예외가 전파되지 않음. |
+| PV-3B-3: frame 연결 | owner coordinator와 legacy channel을 등록하고 `PlatformScenePainter`로 B planner를 실행한다. frame/metrics/surface token의 배치 batch를 UI에서 검사한 뒤 frame 완료와 연결한다. stale/rejected frame은 native 위치만 먼저 바꾸지 않는다. 일반 raster 0-native 경로를 보존한다. | 실제 제품 native 표시·clip·입력·이동 및 미지원 전경 오류 검증. `SynchronizedPlacement`는 별도 표시 증거 전 false. |
+| PV-3B-4: 종료·IME | native `StopRenderWorker`는 UI에서 render thread를 `join()`한다. render에서 UI `SendMessage`/동기 Wait를 추가하면 종료 교착이 생길 수 있으므로 금지한다. 먼저 batch admission을 닫고 미완료 요청을 terminal 처리한 뒤 render를 종료한다. plan lease/retirement와 coordinator `DisposalCompletion`을 모두 끝내고 task HWND/parent를 해제한다. native focus 시 Doroti text client/IME를 양보하고 framework focus 복귀를 명시적으로 연결한다. | 창 닫기·create/dispose 경쟁에 bounded completion, live instance 0, late HWND 접근 없음. 단순 `capabilities.Dispose()`는 async native cleanup 완료가 아님. |
+| PV-3C-1: 일반 HWND C 결정 | 동일 HWND에는 lower/upper DComp target 두 층만 있다. lower/upper 전환만으로 `native A → raster → native B → raster`를 만들 수 없다. 일반 HWND는 sibling raster HWND/입력 region 등의 별도 host prototype으로 C1~C6를 먼저 검증하고 경로를 결정한다. composition-native view는 공유 DComp device/visual tree에서 별도로 검증한다. | live native 상태 보존, 반투명 중간/전경과 동일 paint order의 실제 hit-test 성공. 실패하면 해당 종류 C는 미지원으로 유지. |
+| PV-3C-2: presenter·ABI | 결정된 topology에 segment identity·투명 raster surface·frame batch·commit rollback을 연결한다. 각 segment별 R/P와 GPU fence/front retirement를 구분한다. ABI version/struct size/feature negotiation, native header/export, managed layout, runner/package를 함께 갱신한다. | 실제 제품 C1~C6, 실패/resize/device-loss와 두 창 검증. 기존 buffer 3개는 한 surface의 교대 buffer로 유지. |
+| PV-3M: Windows MAUI | MAUI handler의 생성/교체/DisconnectHandler와 UI dispatcher에 별도 연결한다. Composition의 단일 SpriteVisual 및 SwapChainPanel은 서로 다른 topology로 검증한다. | MAUI 자체 제품 B/C·IME/UIA 증거. WindowsAppSdk DLL 변경이나 빌드 결과를 전용하지 않음. |
+
+구성 근거: [Microsoft DComp target의 두 층과 HWND clipping 규칙](https://learn.microsoft.com/en-us/windows/win32/api/dcomp/nf-dcomp-idcompositiondesktopdevice-createtargetforhwnd), [SetWindowSubclass의 동일 스레드 제약](https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-setwindowsubclass), 실제 [native bootstrap/render/shutdown](Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp), [managed runner](Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs). C 일반 HWND 경로는 구현 결정 전 prototype 후보이며 지원 선언이 아니다.
 
 ## macOS 후속 구현 — 2026-09-11
 
@@ -26,17 +66,17 @@ Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f28
 - **설계 방향은 유지한다.** 기존 `raster → native → raster` planner는 양방향 겹침을 위한 기반이다. registry·identity·수명·typed scene·segment 분할을 버리고 다시 만들 필요는 없다.
 - **제품 합성 구현은 추가·수정해야 한다.** 최초 재검토 당시 AppKit의 단일 Metal canvas는 한 방향의 겹침만 가능했다. 후속 구현에서는 segment별 투명 Metal surface로 제한된 C 제품 경로를 연결했다. 전체 수용 기준은 여전히 미완료다.
 - **B 성공을 목표 달성으로 보지 않는다.** NativeOverlay는 중간 단계다. 요구를 충족하는 경로는 `InterleavedComposition`이며, 전체/부분 가림·반대 순서·동적 순서 변경·입력 정합성을 실제 제품에서 검증해야 한다. `PointerInterceptor`만 추가해도 시각적 합성이 해결되지는 않는다.
-- **Windows/Web도 소스상 제품 연결이 미완성이다.** Windows HWND factory와 Web DOM registry는 존재하지만 각각 제품 runner/managed host에 연결되지 않았다. Windows MAUI는 WindowsAppSdk와 다른 presenter를 사용한다. 두 플랫폼 모두 B 제품 통합부터 마무리해야 하며 C에는 실제 다중 raster surface 합성이 추가로 필요하다. 상세 근거는 2.1~2.3에 기록한다.
+- **WindowsAppSdk Graphite/Vulkan은 제품 연결을 구현했다.** live HWND와 GPU raster의 B/C 합성·입력·포커스·수명을 실제 Testbed에서 검증했다. Windows MAUI는 별도 presenter/adapter 작업이 남고 Web DOM의 제품 host 연결도 미완료다. 2.1의 최초 Windows 정적 검토와 현재 구현 결과를 구분한다.
 
-## 실행 상태 — 2026-09-11
+## 실행 상태 — 2026-09-13 Windows 갱신, 다른 플랫폼은 기존 기준
 
 | 단계 | 구현/검증 상태 | 남은 필수 작업 |
 |---|---|---|
 | PV-0 | `PARTIAL` — typed 계약/evidence schema 및 계약·지원표 문서 복구, 양방향 겹침 기준 반영 | 플랫폼/기기별 성능 수치는 PV-10에서 확정 |
 | PV-1 | `PARTIAL` — typed capability/registry/coordinator, manifest 입력 검증, owner별 legacy messenger/focus handler, create 중 dispose, 공통 PlatformView/HtmlElementView facade 구현; 공통 자동 검증 통과 | SDK manifest 생성기와 각 runner의 factory/coordinator/channel 등록, 모든 기존 controller 전략의 제품 연결 |
 | PV-2 | `PARTIAL` — typed scene payload, retained planner, effect 거부, balanced raster segment, 실제 Skia CPU 픽셀, commit/retirement 계약, bounded overlay pool 구현·자동 검증; AppKit B/C scene·다중 surface·paint order 연결 | 다른 backend의 제품 다중 surface 연결, NativeOverlay 제한 검사, transaction 실패/retirement/device-loss 종합 검증 |
-| PV-3B | `PARTIAL` — HWND factory·독립 stacking/attachment harness 존재, 기존 실행 기록 보존; 제품 등록 호출 없음 | WindowsAppSdk의 HWND 생성 시점/factory 공급·coordinator/channel 연결, Windows MAUI 별도 adapter, DPI·입력/IME/close 제품 검증 |
-| PV-3C | `TODO` — 제품 Vulkan DComp는 여전히 topmost 단일 content root; HWND factory는 C 거부 | HWND/composition-native 별도 C 결정, WindowsAppSdk 다중 visual·C ABI·retirement, MAUI Composition/SwapChainPanel 경로별 구현·검증 |
+| PV-3B | `구현됨 / scoped productLive PASS` — WindowsAppSdk Graphite/Vulkan factory/dispatcher/coordinator/channel/scene/close 연결 및 명시적 B 제품 검증 | Windows MAUI·다른 presenter, 추가 DPI/IME/접근성 승인 |
+| PV-3C | `구현됨 / scoped productLive PASS` — live layered HWND와 GPU raster slice의 교차 합성, paint order batch와 operation 예약, 10개 제품 장면·shield·Tab/modal·20회 수명 검증 | 성능 예산, physical display/DPI/device-loss/두 창/IME/UIA 전체 승인과 Windows MAUI·composition-native WebView2는 별도 |
 | PV-4B | `PARTIAL` — DOM registry·불변 batch·stale 거부·HtmlElementView wrapper와 독립 DOM harness 존재; 제품 host/worker 연결 없음 | managed factory 공급·등록·codec·수명/응답 protocol, HtmlElementView 입력 정책, 실제 root 입력/focus 분리와 제품 실행 |
 | PV-4C | `TODO` — WebGPU/WebGL은 alpha 설정이 있으나 단일 canvas/presenter 경로 | segment별 endpoint/context 자원과 canvas/native/shield 순서, frame 단위 준비/commit·context-loss 및 두 renderer 실행 |
 | PV-5 | `PARTIAL` — PointerInterceptor widget/layer/DOM shield와 안팎 입력 단일 전달 검증 | native gesture arena, wheel/drag/capture 종합 검증, 한글 IME 상호 배제, semantics subtree·screen reader 제품 검증 |
@@ -46,7 +86,7 @@ Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f28
 | PV-9 | `TODO` | WV-7A 시스템 Qt/ABI 범위, WV-7B 공동 host spike, generic 초기화·attachment와 X11/Wayland B/C 구현·검증 |
 | PV-10 | `PARTIAL` — Testbed fixture와 자동 수명 시나리오 추가 | 실제 제품 0/1/4-view 성능, 두 창, route/lifecycle, 최종 runner/template/package 배포 회귀 |
 
-AppKit은 제한된 제품 `InterleavedComposition` 경로를 제공하지만, 어느 backend도 전체 C1~C6/PV-5 완료로 광고하지 않는다. 독립 native/DOM harness 성공은 제품 B/C 통과가 아니다. 위 Windows/Web 성공 기록은 기존 작업 기록을 보존한 것이며 이번 재검토에서 재실행하지 않았다. 해당 날짜별 결과 파일이 현재 checkout에 없으므로 재현·증거 복구 없이 검증 완료 범위를 확대하지 않는다. 미실행 항목은 사용자 생략이 아니므로 `skippedByUser`로 표시하지 않는다. 재개 순서는 **PV-0 요구/문서 정리 → PV-2의 제품 다중 surface 연결 → PV-3C/PV-4C와 PV-5 → PV-6~PV-9 C 확장**이다. AppKit PV-8C는 실제 제품 경로의 선행 검증을 수행했으며, 남은 플랫폼별 게이트는 독립적으로 진행한다.
+WindowsAppSdk Graphite/Vulkan과 AppKit은 제한된 제품 `InterleavedComposition` 경로를 제공한다. Windows는 2026-09-13 제품/독립 검증을 새로 실행했으며 증거는 위 구현 기록에 연결한다. 어느 backend도 모든 DPI·device-loss·물리 입력·접근성·성능을 포함한 전체 C1~C6/PV-5/PV-10 승인을 광고하지 않는다. 독립 native/DOM harness 성공은 제품 합성 증거와 분리한다. 다음 작업은 **Windows 성능·추가 승인 및 Windows MAUI → Web 제품 C와 PV-5 → PV-6~PV-9 확장**으로 나누며, 미실행 항목을 `skippedByUser`로 표시하지 않는다.
 
 ## 1. 목표와 work2 경계
 
@@ -103,9 +143,9 @@ WebView는 선택형 소비자다. 공통 PlatformView가 WebView 패키지를 �
 
 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md)에 따라 제품 프로젝트에서 직접 구현한다. [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md)에 따라 SDK/COM/native pointer는 backend/runner 경계 안에 두고 Apple runner와 binding의 독립성을 유지한다.
 
-### 2.1 Windows 소스 추적 결과
+### 2.1 Windows 최초 소스 추적 결과 — 제품 연결 이전
 
-macOS에서도 Windows 제품 소스와 호출부를 확인했다. 아래는 정적 검토 결과이며 Windows 실행 성공을 뜻하지 않는다.
+아래 표는 제품 연결 이전의 정적 검토 기록이다. 현재 WindowsAppSdk Graphite/Vulkan 상태와 실행 근거는 위 **Windows 제품 연결** 절과 [구현 기록](Doroti/artifacts/platform-views/2026-09-13/windows-implementation.md)을 따른다. Windows MAUI에 관한 미구현 판단은 유지한다.
 
 | 경로/근거 | 확인된 구현과 남은 문제 |
 |---|---|
@@ -173,7 +213,7 @@ macOS에서도 Windows 제품 소스와 호출부를 확인했다. 아래는 정
 7. 중간·전경 raster surface는 투명하게 초기화하고 내용이 없는 픽셀에서 아래 native가 보이도록 alpha를 유지한다. 각 segment에 불투명 앱 배경을 다시 칠하지 않는다. 전경 Doroti 그림 자체의 반투명 합성과 native까지 감싸는 group opacity는 별도 기능으로 판정한다.
 8. paint order가 바뀌면 native와 raster뿐 아니라 입력 shield 순서도 함께 갱신한다. 순서만 바뀌는 경우 동일 handle/key를 유지한 native를 재생성하지 않는다. 최상단 투명 surface가 창 전체의 native 입력을 가로채지 않도록 hit-test 영역을 구성한다.
 
-`NativeOverlay`의 제한 검사도 보강한다. 현재처럼 input shield와 native끼리의 겹침만 확인하면 `Stack(PlatformView, Container)`의 일반 전경 그림이 오류 없이 native 아래로 내려갈 수 있다. PV-2에서 후속 raster의 native 영역 침범을 판정하거나, 판정할 수 없는 scene은 보수적으로 거부하는 계약을 마련한다. bounds가 없는 picture/effect를 임의로 비겹침으로 간주하지 않는다. B에서는 잘못된 순서로 성공 처리하지 않고 C 필요 오류를 반환한다.
+`NativeOverlay`의 제한 검사는 2026-09-13 보강했다. 기존 input shield/native끼리 겹침 거부에 더해 `Stack(PlatformView, Container)`의 일반 전경도 확인한다. 앞선 visible native 뒤의 raster는 지원되는 명시적 rect clip이 모든 앞선 native와 비겹침을 입증해야 한다. bounds가 없는 picture/effect나 cull hint를 임의로 비겹침으로 간주하지 않으며, 증명할 수 없으면 C 필요 오류를 반환한다. 정밀한 draw bounds 분석은 후속 최적화이며 현재의 보수적 거부를 조용한 오표시로 완화하지 않는다.
 
 native view가 0개인 scene은 기존 단일 surface 경로를 유지한다. overlay pool에는 개수·메모리·재사용 상한을 둔다. WebView 콘텐츠 내부의 독립 rendering clock까지 원자 동기화한다고 약속하지 않는다.
 
@@ -232,6 +272,8 @@ support key는 backend·OS/runtime·view 종류·요청 효과다. rect/rounded/
 ### PV-3 — Windows 합성 선행 검증 및 host 구현
 
 선행: PV-2. work2 WV-2의 최소 WebView2 객체 spike와 함께 실행 가능.
+
+구체적 순서·중단 조건은 위 **Windows 구성 순서와 중단 조건**의 PV-3A → PV-3B-1~4 → PV-3C-1~2 및 별도 PV-3M을 따른다. HWND 생성 이전 factory load와 UI/render worker 종료 교착을 반드시 먼저 해결한다.
 
 - **PV-3B:** native button/편집기용 HWND attachment와 WebView2 composition attachment를 분리한다. 현재 topmost DComp 아래에서 generic child HWND가 실제 보이는지 먼저 확인한다. UI dispatcher, bounds/DPI, focus, close cleanup을 구현한다.
 - WindowsAppSdk는 `RunCore`의 boundary load와 host-ready의 HWND 확보 순서에 맞춰 factory 공급을 구성하고, owner별 coordinator·legacy channel·renderer scene callback·close cleanup을 연결한다. manifest만 추가하면 factory 누락으로 실패하는 현재 경로를 함께 수정한다. lower DComp target/parent style의 실제 구성을 검증하고 factory의 bool 인자로 이를 대신하지 않는다.

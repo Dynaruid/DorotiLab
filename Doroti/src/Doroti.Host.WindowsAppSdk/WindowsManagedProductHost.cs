@@ -626,6 +626,8 @@ internal sealed unsafe class WindowsManagedProductHost :
         }
     }
 
+    internal void DispatchPlatformViewEvent(Action dispatch) => EnqueueInput(dispatch);
+
     private void EnqueueInput(Action dispatch)
     {
         lock (_gate) _pendingInput.Enqueue(dispatch);

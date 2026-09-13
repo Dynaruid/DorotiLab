@@ -23,28 +23,63 @@ internal sealed class PlatformViewStateImpl : State<PlatformView>
     private PlatformViewClient? _client;
     private PlatformViewHandle? _handle;
     private Exception? _error;
+    private readonly FocusNode _focusNode = new(debugLabel: "PlatformView");
     public override void initState() { base.initState(); Start(); }
     private void Start()
     {
         _handle = null; _error = null;
         var client = new PlatformViewClient(widget.Owner, widget.Request);
         _client = client;
-        _ = InitializeAsync(client);
+        client.Focused += NativeFocused;
+        _ = InitializeAsync(client, widget.Owner);
     }
-    private async Task InitializeAsync(PlatformViewClient client)
+    private void NativeFocused()
     {
+        if (mounted) widget.Owner.DispatchPlatformEvent(() => { if (mounted) _focusNode.requestFocus(); });
+    }
+    private void FocusChanged(bool focused)
+    {
+        if (_client is { } client) _ = SetNativeFocusAsync(client, focused);
+    }
+    private async Task SetNativeFocusAsync(PlatformViewClient client, bool focused)
+    {
+        try { await client.SetFocusAsync(focused); }
+        catch (OperationCanceledException) { }
+        catch (Exception error)
+        {
+            if (mounted && ReferenceEquals(_client, client))
+                FlutterError.reportError(new FlutterErrorDetails(exception: error, library: "platform view focus"));
+        }
+    }
+    private async Task InitializeAsync(PlatformViewClient client, DorotiView owner)
+    {
+        // Native completion can arrive from the HWND UI queue while the framework
+        // is building on its render worker. Serialize the state change as a later
+        // isolate event, including when a factory completes synchronously.
+        await Task.Yield();
         try
         {
-            var handle = await client.Ready;
-            if (!mounted || !ReferenceEquals(_client, client)) return;
-            setState(() => _handle = handle);
-            widget.OnCreated?.Invoke(handle);
+            var handle = await client.Ready.ConfigureAwait(false);
+            owner.DispatchPlatformEvent(() =>
+            {
+                if (!mounted || !ReferenceEquals(_client, client)) return;
+                setState(() => _handle = handle);
+                widget.OnCreated?.Invoke(handle);
+            });
         }
+        catch (ObjectDisposedException) when (!mounted || !ReferenceEquals(_client, client)) { }
         catch (Exception exception)
         {
-            if (!mounted || !ReferenceEquals(_client, client)) return;
-            setState(() => _error = exception);
-            widget.OnError?.Invoke(exception);
+            try
+            {
+                owner.DispatchPlatformEvent(() =>
+                {
+                    if (!mounted || !ReferenceEquals(_client, client)) return;
+                    setState(() => _error = exception);
+                    widget.OnError?.Invoke(exception);
+                });
+            }
+            catch (ObjectDisposedException) { /* The owner closed before the completion event. */ }
         }
     }
     public override void didUpdateWidget(PlatformView oldWidget)
@@ -56,12 +91,15 @@ internal sealed class PlatformViewStateImpl : State<PlatformView>
     public override Widget build(BuildContext context)
     {
         if (_error is not null) throw new InvalidOperationException("PlatformView creation failed.", _error);
-        return new PlatformViewLeaf(_handle);
+        return new Focus(focusNode: _focusNode, onFocusChange: FocusChanged,
+            canRequestFocus: _handle is not null, includeSemantics: false, child: new PlatformViewLeaf(_handle));
     }
     public override void dispose()
     {
         var client = _client; _client = null;
+        if (client is not null) client.Focused -= NativeFocused;
         if (client is not null) _ = DisposeClientAsync(client, widget.OnError);
+        _focusNode.dispose();
         base.dispose();
     }
     private static async Task DisposeClientAsync(PlatformViewClient client, System.Action<Exception>? onError)
