@@ -204,6 +204,10 @@ internal static class App
     internal static bool MacOSLiquidGlassRequested => OperatingSystem.IsMacOS() &&
         string.Equals(Environment.GetEnvironmentVariable("DOROTI_MACOS_BACKDROP"), "liquidGlass", StringComparison.OrdinalIgnoreCase);
 
+    internal static WindowTitlebarStyle TitlebarStyle =>
+        string.Equals(Environment.GetEnvironmentVariable("DOROTI_TITLEBAR") ?? Environment.GetEnvironmentVariable("DOROTI_MACOS_TITLEBAR"), "solid", StringComparison.OrdinalIgnoreCase)
+            ? WindowTitlebarStyle.solid : WindowTitlebarStyle.unified;
+
     internal static string WindowEffectLabel => OperatingSystem.IsMacOS()
         ? MacOSLiquidGlassRequested && OperatingSystem.IsMacOSVersionAtLeast(26) ? "Liquid Glass" : "Window blur"
         : "Acrylic window";
@@ -221,15 +225,11 @@ internal static class App
                 ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xfffffbfeL : 0xccfffbfeL),
             AcrylicEnabled
                 ? new UiColor(0x00000000L) : new UiColor(SampleEnabled ? 0xff141218L : 0xcc141218L),
-            MacOSLiquidGlassRequested ? new WindowBackdropOptions(WindowBackdropMode.liquidGlass) :
-            SampleEnabled && !SampleAcrylicAvailable ? new WindowBackdropOptions(WindowBackdropMode.solid) : ExperimentalAcrylicEnabled
-                ? new WindowBackdropOptions(
-                    WindowBackdropMode.experimentalAcrylic,
-                    WindowBackdropFallback.transparent,
-                    WindowAcrylicKind.@default,
-                    WindowBackdropTheme.system)
-                : new WindowBackdropOptions(
-                    WindowBackdropMode.acrylic,
-                    WindowBackdropFallback.transparent),
-            terminateAfterLastWindowClosed: true);
+            terminateAfterLastWindowClosed: true,
+            appearance: new WindowAppearanceOptions(
+                backdrop: SampleEnabled && !SampleAcrylicAvailable
+                    ? new(WindowBackdropMode.solid)
+                    : new(ExperimentalAcrylicEnabled ? WindowBackdropMode.experimentalAcrylic : WindowBackdropMode.acrylic),
+                titlebarStyle: TitlebarStyle,
+                macOSBackdrop: new(MacOSLiquidGlassRequested ? WindowBackdropMode.liquidGlass : WindowBackdropMode.acrylic)));
 }

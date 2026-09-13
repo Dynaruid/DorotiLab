@@ -242,12 +242,31 @@ Use `DOROTI_MACOS_BACKDROP=acrylic` (or omit it) for `NSVisualEffectView` behind
 The toggle is labeled **Liquid Glass** when the native glass API is available.
 These options apply to the native `osx-arm64` runner, not Mac Catalyst.
 
-Applications select the effect through `DorotiViewConfiguration.backdrop`:
+Applications select the material and titlebar independently through `DorotiViewConfiguration.appearance`:
 
 ```csharp
-new WindowBackdropOptions(WindowBackdropMode.liquidGlass)
-// or: new WindowBackdropOptions(WindowBackdropMode.acrylic)
+new WindowAppearanceOptions(
+    backdrop: new(WindowBackdropMode.acrylic), // Shared Windows, Qt and macOS default
+    titlebarStyle: WindowTitlebarStyle.unified,
+    macOSBackdrop: new(WindowBackdropMode.liquidGlass)) // Override macOS only
 ```
+
+Omit `macOSBackdrop`, or select `acrylic`, to use Acrylic on macOS too.
+`titlebarStyle` defaults to `unified`; `solid` keeps a separate native titlebar.
+Both Acrylic and Liquid Glass honor the selection. Without a material effect, the native titlebar remains.
+The legacy `DorotiViewConfiguration.backdrop` option still works; an explicit `appearance` takes precedence.
+
+Select either style in the testbed with the shared `DOROTI_TITLEBAR=unified|solid` variable:
+
+```sh
+DOROTI_TESTBED_MODE=sample DOROTI_MACOS_BACKDROP=acrylic DOROTI_TITLEBAR=solid \
+  dotnet run --project DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
+```
+
+Windows App SDK uses a DWM Acrylic caption or a separate solid caption. Qt/Linux draws
+unified caption controls into the same GPU surface and compositor blur region as the body;
+solid mode retains the desktop's native decorations. Qt blur still requires compositor support.
+The caption area is reported as a safe area. See the [shared window appearance API](../Doroti/docs/window-appearance.md).
 
 Set both renderer background colors to transparent and give the widgets that should
 reveal the effect transparent or translucent backgrounds. An opaque Scaffold covers

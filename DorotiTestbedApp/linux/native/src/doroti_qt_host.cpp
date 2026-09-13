@@ -88,7 +88,7 @@ constexpr std::uint64_t kSupportedFeatures =
     DOROTI_QT_FEATURE_KEY_FOCUS_INPUT |
     DOROTI_QT_FEATURE_TEXT_INPUT |
     DOROTI_QT_FEATURE_PLATFORM_SERVICES |
-    DOROTI_QT_FEATURE_SEMANTICS;
+    DOROTI_QT_FEATURE_SEMANTICS | DOROTI_QT_FEATURE_TITLEBAR;
 constexpr std::uint32_t kGlRgba8 = 0x8058;
 
 doroti_qt_utf8_v2 Utf8(const char* value) {
@@ -139,10 +139,16 @@ using DorotiWindowBase = QOpenGLWindow;
 class DorotiSurface final : public DorotiWindowBase {
  public:
   DorotiSurface(void* callback_context, const doroti_qt_callbacks_v2& callbacks,
-                std::uint32_t backdrop_mode, std::uint32_t backdrop_fallback)
+                std::uint32_t backdrop_mode, std::uint32_t backdrop_fallback,
+                std::uint32_t titlebar_style)
       : DorotiWindowBase(),
         callback_context_(callback_context), callbacks_(callbacks),
-        backdrop_mode_(backdrop_mode), backdrop_fallback_(backdrop_fallback) {
+        backdrop_mode_(backdrop_mode), backdrop_fallback_(backdrop_fallback),
+        unified_titlebar_(titlebar_style == DOROTI_QT_TITLEBAR_UNIFIED && backdrop_mode == DOROTI_QT_BACKDROP_ACRYLIC) {
+    // Linux server decorations cannot share the client's blur surface. Keep
+    // unified chrome in that surface; solid chrome stays compositor-owned.
+    if (unified_titlebar_) setFlag(Qt::FramelessWindowHint);
+    if (unified_titlebar_) setMinimumSize(QSize(200, 100));
     // Wayland compositors can only preserve intentional transparent pixels when
     // the wl_buffer has an alpha channel. Request it before the native surface is
     // created, while retaining full-frame repaint semantics for every swapchain
@@ -185,6 +191,7 @@ class DorotiSurface final : public DorotiWindowBase {
 #endif
     connect(QGuiApplication::styleHints(), &QStyleHints::startDragDistanceChanged, this, [this] { SendMetrics(); });
     connect(this, &QWindow::screenChanged, this, [this](QScreen*) { SendMetrics(); });
+    connect(this, &QWindow::windowStateChanged, this, [this](Qt::WindowState) { SendMetrics(); RequestChromeFrame(); });
     connect(QGuiApplication::styleHints(), &QStyleHints::colorSchemeChanged,
             this, [this](Qt::ColorScheme) { SendConfiguration(); });
   }
@@ -209,6 +216,7 @@ class DorotiSurface final : public DorotiWindowBase {
   void ApplySemantics(const QByteArray& json);
   void ClearSemanticsTree();
   void InitializeBackdrop() {
+    Diagnostic("titlebar.effective", unified_titlebar_ ? "unified-client" : "solid-native");
     Diagnostic("backdrop.requested", BackdropModeName(backdrop_mode_));
     Diagnostic("backdrop.fallback", BackdropFallbackName(backdrop_fallback_));
     if (backdrop_mode_ != DOROTI_QT_BACKDROP_ACRYLIC) {
@@ -269,6 +277,8 @@ class DorotiSurface final : public DorotiWindowBase {
     if (closing_ || node == nullptr || !node->enabled || node->hidden ||
         action == 0 || (node->actions & action) != action) return;
     if (node->read_only && (action == (1ll << 6) || action == (1ll << 7))) return;
+    for (std::uint32_t button = 1; button <= 3; ++button)
+      if (id == CaptionId(button) && action == 1) { ActivateCaptionButton(button); return; }
     callbacks_.semantics_action(callback_context_, this, id, action, Utf8("null"));
   }
 
@@ -454,7 +464,10 @@ class DorotiSurface final : public DorotiWindowBase {
   static void ClearSemantics(void* view_handle) noexcept {
     auto* surface = static_cast<DorotiSurface*>(view_handle);
     if (surface == nullptr) return;
-    QMetaObject::invokeMethod(surface, [surface] { surface->ClearSemanticsTree(); },
+    QMetaObject::invokeMethod(surface, [surface] {
+      surface->ClearSemanticsTree();
+      surface->RefreshCaptionSemantics();
+    },
                               Qt::QueuedConnection);
   }
 
@@ -505,6 +518,7 @@ class DorotiSurface final : public DorotiWindowBase {
     descriptor.vulkan_instance = vulkan_.vkInstance();
     descriptor.vulkan_instance_extensions = Utf8(vulkan_extensions_);
     descriptor.vulkan_instance_api_version = VK_MAKE_VERSION(vulkan_.apiVersion().majorVersion(), vulkan_.apiVersion().minorVersion(), vulkan_.apiVersion().microVersion());
+    DescribeTitlebar(descriptor);
     const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
     if (result == 1) {
       Terminal(token, DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
@@ -573,7 +587,7 @@ class DorotiSurface final : public DorotiWindowBase {
     const auto token = std::exchange(pending_frame_token_, 0);
     const auto scale = devicePixelRatioF();
     const auto format = context() == nullptr ? QSurfaceFormat{} : context()->format();
-    const doroti_qt_surface_v2 descriptor{
+    doroti_qt_surface_v2 descriptor{
         kAbiVersion,
         sizeof(doroti_qt_surface_v2),
         surface_generation_,
@@ -591,6 +605,7 @@ class DorotiSurface final : public DorotiWindowBase {
         format.minorVersion(),
         Micros(),
     };
+    DescribeTitlebar(descriptor);
     if (!surface_diagnostics_reported_ ||
         reported_framebuffer_object_ != descriptor.framebuffer_object ||
         reported_sample_count_ != descriptor.sample_count ||
@@ -686,11 +701,18 @@ class DorotiSurface final : public DorotiWindowBase {
         lifecycle_state_ = 1;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
         callbacks_.focus(callback_context_, this, 1, Micros());
+        RequestChromeFrame();
         break;
       case QEvent::WindowDeactivate:
         lifecycle_state_ = 2;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
         callbacks_.focus(callback_context_, this, 0, Micros());
+        caption_pressed_ = 0;
+        RequestChromeFrame();
+        break;
+      case QEvent::WindowStateChange:
+        SendMetrics();
+        RequestChromeFrame();
         break;
       case QEvent::Close:
         if (!close_requested_) {
@@ -705,13 +727,17 @@ class DorotiSurface final : public DorotiWindowBase {
         break;
       }
       case QEvent::Leave:
+        caption_hovered_ = 0;
+        RequestChromeFrame();
         SendPointer(last_pointer_position_, QPointF{}, 2, 1, 0, 1, 0, 0, 0, 0);
         break;
       case QEvent::MouseButtonPress:
       case QEvent::MouseButtonRelease:
+      case QEvent::MouseButtonDblClick:
       case QEvent::MouseMove: {
         auto* mouse = static_cast<QMouseEvent*>(event);
-        const auto change = event->type() == QEvent::MouseButtonPress ? 4u
+        if (HandleCaptionMouse(mouse)) { event->accept(); return true; }
+        const auto change = (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonDblClick) ? 4u
                             : event->type() == QEvent::MouseButtonRelease ? 6u
                             : mouse->buttons() == Qt::NoButton ? 3u : 5u;
         const auto delta = mouse->position() - last_pointer_position_;
@@ -722,6 +748,7 @@ class DorotiSurface final : public DorotiWindowBase {
       }
       case QEvent::Wheel: {
         auto* wheel = static_cast<QWheelEvent*>(event);
+        if (wheel->position().y() < CaptionHeight()) { event->accept(); return true; }
         auto scroll = wheel->pixelDelta();
         if (scroll.isNull()) scroll = wheel->angleDelta() / 8;
         const auto factor = wheel->inverted() ? 1.0 : -1.0;
@@ -768,6 +795,11 @@ class DorotiSurface final : public DorotiWindowBase {
       case QEvent::KeyPress:
       case QEvent::KeyRelease: {
         auto* key = static_cast<QKeyEvent*>(event);
+        if (unified_titlebar_ && event->type() == QEvent::KeyPress &&
+            key->key() == Qt::Key_F4 && key->modifiers().testFlag(Qt::AltModifier)) {
+          close();
+          return true;
+        }
         const auto text = key->text().toUtf8();
         const doroti_qt_key_v2 descriptor{
             kAbiVersion, sizeof(doroti_qt_key_v2),
@@ -801,6 +833,7 @@ class DorotiSurface final : public DorotiWindowBase {
       case QEvent::ApplicationPaletteChange:
       case QEvent::ThemeChange:
         SendConfiguration();
+        RequestChromeFrame();
         break;
       case QEvent::DevicePixelRatioChange:
         SendMetrics();
@@ -828,6 +861,101 @@ class DorotiSurface final : public DorotiWindowBase {
   }
 
  private:
+  std::uint32_t CaptionHeight() const {
+    return unified_titlebar_ && windowState() != Qt::WindowFullScreen ? 32u : 0u;
+  }
+
+  void DescribeTitlebar(doroti_qt_surface_v2& descriptor) const {
+    descriptor.titlebar_height = CaptionHeight();
+    descriptor.titlebar_state = (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark ? 1u : 0u) |
+        (isActive() ? 2u : 0u) | (windowState() == Qt::WindowMaximized ? 4u : 0u);
+    descriptor.titlebar_hovered = caption_hovered_;
+    descriptor.titlebar_pressed = caption_pressed_;
+  }
+
+  void RequestChromeFrame() {
+    if (!unified_titlebar_ || closing_ || fatal_) return;
+    if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+    requestUpdate();
+  }
+
+  std::uint32_t CaptionButton(const QPointF& point) const {
+    if (point.y() < 0 || point.y() >= CaptionHeight() || point.x() < width() - 138 || point.x() >= width()) return 0;
+    return 1u + static_cast<std::uint32_t>((point.x() - (width() - 138)) / 46);
+  }
+
+  void ActivateCaptionButton(std::uint32_t button) {
+    if (button == 1) showMinimized();
+    else if (button == 2) {
+      if (windowState() == Qt::WindowMaximized) showNormal();
+      else showMaximized();
+    } else if (button == 3) close();
+  }
+
+  bool HandleCaptionMouse(QMouseEvent* mouse) {
+    if (CaptionHeight() == 0) return false;
+    const auto point = mouse->position();
+    const auto button = CaptionButton(point);
+    if (caption_hovered_ != button) { caption_hovered_ = button; RequestChromeFrame(); }
+    if (mouse->type() == QEvent::MouseButtonRelease && caption_pressed_ != 0) {
+      const auto pressed = std::exchange(caption_pressed_, 0);
+      RequestChromeFrame();
+      if (pressed == button) ActivateCaptionButton(button);
+      return true;
+    }
+    if (caption_pressed_ != 0) return true;
+    if (mouse->type() == QEvent::MouseButtonPress && mouse->button() == Qt::LeftButton) {
+      Qt::Edges edges;
+      if (windowState() != Qt::WindowMaximized) {
+        if (point.x() < 5) edges |= Qt::LeftEdge;
+        if (point.x() >= width() - 5) edges |= Qt::RightEdge;
+        if (point.y() < 5) edges |= Qt::TopEdge;
+        if (point.y() >= height() - 5) edges |= Qt::BottomEdge;
+      }
+      if (edges != Qt::Edges{} && startSystemResize(edges)) return true;
+      if (point.y() < CaptionHeight()) {
+        if (button != 0) { caption_pressed_ = button; RequestChromeFrame(); }
+        else startSystemMove();
+        return true;
+      }
+    }
+    if (mouse->type() == QEvent::MouseButtonDblClick && mouse->button() == Qt::LeftButton &&
+        point.y() < CaptionHeight() && button == 0) {
+      ActivateCaptionButton(2);
+      return true;
+    }
+    // Preserve client drags that cross the caption while a button is held.
+    return point.y() < CaptionHeight() && mouse->buttons() == Qt::NoButton;
+  }
+
+  static std::int64_t CaptionId(std::uint32_t button) {
+    return std::numeric_limits<std::int64_t>::min() + button;
+  }
+
+  void RefreshCaptionSemantics() {
+    if (!unified_titlebar_) return;
+    // Native window controls remain accessible even when the app has not
+    // published (or has cleared) its widget semantics tree.
+    if (!semantics_.contains(0)) {
+      SemanticNode root;
+      root.label = title();
+      root.rect = QRectF(0, 0, width(), height());
+      semantics_.insert(0, root);
+    }
+    for (std::uint32_t button = 1; button <= 3; ++button) {
+      SemanticNode node;
+      node.id = CaptionId(button);
+      node.label = button == 1 ? tr("Minimize") : button == 2
+          ? (windowState() == Qt::WindowMaximized ? tr("Restore") : tr("Maximize")) : tr("Close");
+      node.button = true;
+      node.actions = 1;
+      node.hidden = CaptionHeight() == 0;
+      node.rect = QRectF(width() - (4 - button) * 46, 0, 46, CaptionHeight());
+      semantics_.insert(node.id, node);
+      if (!semantics_[0].children.contains(node.id)) semantics_[0].children.append(node.id);
+    }
+  }
+
   std::int64_t Micros() const { return clock_.nsecsElapsed() / 1000; }
 
   void SendMetrics() {
@@ -841,6 +969,8 @@ class DorotiSurface final : public DorotiWindowBase {
     const auto safe = safeAreaMargins();
     metrics.view_padding = {safe.left() * scale, safe.top() * scale, safe.right() * scale, safe.bottom() * scale};
 #endif
+    metrics.view_padding.top = std::max(metrics.view_padding.top, CaptionHeight() * scale);
+    RefreshCaptionSemantics();
     // QInputMethod's rectangle is in window coordinates. A floating keyboard
     // cannot be represented by a full-width bottom inset.
     const auto keyboard = QGuiApplication::inputMethod()->keyboardRectangle();
@@ -1173,6 +1303,9 @@ class DorotiSurface final : public DorotiWindowBase {
   double reported_device_pixel_ratio_ = 0.0;
   std::uint32_t backdrop_mode_ = DOROTI_QT_BACKDROP_SYSTEM;
   std::uint32_t backdrop_fallback_ = DOROTI_QT_BACKDROP_FALLBACK_TRANSPARENT;
+  bool unified_titlebar_ = false;
+  std::uint32_t caption_hovered_ = 0;
+  std::uint32_t caption_pressed_ = 0;
   wl_display* wayland_display_ = nullptr;
   wl_compositor* wayland_compositor_ = nullptr;
   wl_surface* wayland_surface_ = nullptr;
@@ -1407,6 +1540,7 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
     it = accessible_ids_.erase(it);
   }
   semantics_ = std::move(next);
+  RefreshCaptionSemantics();
   QAccessibleEvent changed(this, QAccessible::ObjectReorder);
   QAccessible::updateAccessibility(&changed);
   if (qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_ACCESSIBILITY_DUMP")) {
@@ -1472,7 +1606,8 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
       configuration->logical_width <= 0 || configuration->logical_height <= 0)
     return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   if (configuration->backdrop_mode > DOROTI_QT_BACKDROP_ACRYLIC ||
-      configuration->backdrop_fallback > DOROTI_QT_BACKDROP_FALLBACK_SOLID)
+      configuration->backdrop_fallback > DOROTI_QT_BACKDROP_FALLBACK_SOLID ||
+      configuration->titlebar_style > DOROTI_QT_TITLEBAR_SOLID)
     return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   return DOROTI_QT_OK;
 }
@@ -1495,7 +1630,8 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
         static_cast<qsizetype>(configuration->title.length));
     auto* surface = new DorotiSurface(callbacks->callback_context, *callbacks,
                                       configuration->backdrop_mode,
-                                      configuration->backdrop_fallback);
+                                      configuration->backdrop_fallback,
+                                      configuration->titlebar_style);
     surface->setTitle(title);
     const auto created = callbacks->view_created(
         callbacks->callback_context, surface, &kHostApi);

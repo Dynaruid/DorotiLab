@@ -98,10 +98,17 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     /// <summary>Changes this window's native backdrop. Call on the AppKit main thread.</summary>
     public void SetBackdrop(WindowBackdropOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        SetWindowAppearance(new(options));
+    }
+
+    /// <summary>Changes the native material and titlebar style on the AppKit main thread.</summary>
+    public void SetWindowAppearance(WindowAppearanceOptions appearance)
+    {
         AppKitPlatformViewDispatcher.VerifyThread();
         if (_releaseRequested || _resourcesReleased)
             throw new InvalidOperationException("Cannot configure a disconnected Metal view.");
-        _backdrop.Configure(options);
+        _backdrop.Configure(appearance);
         RequestFrame();
     }
 
@@ -116,7 +123,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _resourceOwner = owner;
         _releaseRequested = false;
-        _backdrop.Configure(owner.Backdrop);
+        _backdrop.Configure(owner.Appearance);
         AttachWindowObservers();
         PublishDrawableMetrics(DrawableSize, force: true);
         RequestFrame();

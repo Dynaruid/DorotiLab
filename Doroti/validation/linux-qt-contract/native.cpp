@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   doroti_qt_configuration_v2 config{};
   config.abi_version = 3;
   config.struct_size = sizeof(config);
-  config.required_features = 0x3ffe;
+  config.required_features = 0x7ffe;
   const std::string title = "Doroti Qt ABI probe (no rendering)";
   config.title = {reinterpret_cast<const std::uint8_t*>(title.data()), title.size()};
   config.logical_width = 320; config.logical_height = 240;
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
   };
   cb.render = [](void*, void*, const doroti_qt_surface_v2* surface, std::uint64_t token) {
     ++renders;
-    Check(token != 0 && surface->struct_size == 128 && surface->abi_version == 3);
+    Check(token != 0 && surface->struct_size == 144 && surface->abi_version == 3);
     Check(surface->vulkan_surface != 0 && surface->vulkan_instance != nullptr);
     Check(surface->vulkan_instance_api_version >= ((1u << 22) | (2u << 12)));
     Check(surface->pixel_width > 0 && surface->pixel_height > 0);

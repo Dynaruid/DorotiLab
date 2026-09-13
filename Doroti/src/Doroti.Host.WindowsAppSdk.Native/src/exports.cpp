@@ -2192,6 +2192,20 @@ class ProductHost final {
         platform_brightness_ == DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_DARK_V1;
     DwmSetWindowAttribute(top_, DWMWA_USE_IMMERSIVE_DARK_MODE, &use_dark_mode,
                           sizeof(use_dark_mode));
+    const auto features = configuration_.required_features;
+    if ((features & (DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1 |
+                     DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1)) == 0) return;
+    const bool unified = (features & DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1) != 0 &&
+        (features & (DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 |
+                     DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1)) != 0;
+    if (!unified && (features & DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1) == 0) return;
+    // DWM owns the caption and its buttons. Give it Desktop Acrylic as well
+    // as the client compositor, without changing client metrics or hit tests.
+    const DWM_SYSTEMBACKDROP_TYPE backdrop = unified ? DWMSBT_TRANSIENTWINDOW : DWMSBT_NONE;
+    DwmSetWindowAttribute(top_, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(backdrop));
+    const COLORREF caption = unified ? DWMWA_COLOR_DEFAULT
+        : use_dark_mode ? RGB(32, 32, 32) : RGB(243, 243, 243);
+    DwmSetWindowAttribute(top_, DWMWA_CAPTION_COLOR, &caption, sizeof(caption));
   }
 
   void ConfigureSmokeTimer() {
@@ -2590,8 +2604,13 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
            DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 |
            DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1 |
            DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1 |
-           DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1)) != 0)
+           DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1 |
+           DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1 |
+           DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
+  if ((configuration->required_features & DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1) != 0 &&
+      (configuration->required_features & DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1) != 0)
+    return DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1;
   if ((configuration->required_features &
        DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1) != 0 &&
       (callbacks->moving_frame == nullptr ||

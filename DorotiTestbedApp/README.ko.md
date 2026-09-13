@@ -236,12 +236,31 @@ DOROTI_TESTBED_MODE=sample DOROTI_MACOS_BACKDROP=liquidGlass \
 네이티브 글래스 API를 사용할 때 토글 이름은 **Liquid Glass**입니다.
 이 설정은 `osx-arm64` AppKit runner에 적용되며 Mac Catalyst에는 적용되지 않습니다.
 
-앱에서는 `DorotiViewConfiguration.backdrop`에 다음 옵션을 전달합니다.
+앱에서는 `DorotiViewConfiguration.appearance`로 배경과 상단바를 독립적으로 선택합니다.
 
 ```csharp
-new WindowBackdropOptions(WindowBackdropMode.liquidGlass)
-// 또는: new WindowBackdropOptions(WindowBackdropMode.acrylic)
+new WindowAppearanceOptions(
+    backdrop: new(WindowBackdropMode.acrylic), // Windows·Qt와 macOS의 공통 기본값
+    titlebarStyle: WindowTitlebarStyle.unified,
+    macOSBackdrop: new(WindowBackdropMode.liquidGlass)) // macOS만 Liquid Glass
 ```
+
+macOS에서도 아크릴을 사용하려면 `macOSBackdrop`을 생략하거나 `acrylic`으로 지정합니다.
+`titlebarStyle`은 `unified`가 기본이며, `solid`는 분리된 네이티브 상단바를 사용합니다.
+아크릴과 Liquid Glass 모두 이 옵션을 따릅니다. 배경 효과가 없으면 기본 네이티브 상단바를 유지합니다.
+기존 `DorotiViewConfiguration.backdrop`도 지원하며, `appearance`를 지정하면 이 설정이 우선합니다.
+
+테스트 앱에서는 공통 환경변수 `DOROTI_TITLEBAR=unified|solid`로 선택합니다. 예를 들어:
+
+```sh
+DOROTI_TESTBED_MODE=sample DOROTI_MACOS_BACKDROP=acrylic DOROTI_TITLEBAR=solid \
+  dotnet run --project DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
+```
+
+Windows App SDK는 DWM의 아크릴 상단바 또는 별도 단색 상단바를 사용합니다.
+Qt/Linux 통합형은 창 버튼을 같은 GPU 표면에 그려 본문과 같은 compositor 블러 영역을 공유하며,
+분리형은 데스크톱 환경의 네이티브 창 장식을 사용합니다. Qt 블러 자체는 compositor 지원이 필요합니다.
+창 버튼 영역은 safe-area로 전달됩니다. [공통 창 외형 API](../Doroti/docs/window-appearance.md)를 참고하세요.
 
 렌더러의 밝은/어두운 배경색은 모두 투명으로, 효과를 보여 줄 위젯 배경은 투명 또는 반투명으로
 설정해야 합니다. 불투명 Scaffold는 네이티브 효과를 가립니다. 호스트가 Metal 표면과 네이티브

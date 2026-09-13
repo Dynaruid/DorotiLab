@@ -155,7 +155,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     private static void Validate(in QtNativeV2.Surface descriptor)
     {
-        if (descriptor.AbiVersion != QtNativeV2.AbiVersion || descriptor.StructSize < 88)
+        if (descriptor.AbiVersion != QtNativeV2.AbiVersion || descriptor.StructSize < 144)
             throw new InvalidDataException("The Qt surface descriptor does not match doroti.qt-host/v2.");
         if (descriptor.ContextIdentity == 0 || descriptor.PixelWidth <= 0 || descriptor.PixelHeight <= 0)
             throw new InvalidDataException("The Qt surface descriptor is missing a current context or physical size.");

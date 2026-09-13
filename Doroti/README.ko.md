@@ -140,6 +140,8 @@ Vulkan의 moving-origin resize는 준비된 frame을 HWND geometry 변경 직후
 
 Material demo는 Windows에서 일반 `acrylic`을 요청하며 투명 renderer 배경 위에 반투명 Material surface를 한 번 그립니다. `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`은 이전 mode를 재현할 때만 필요합니다. Runtime kind/theme/tint/luminosity 변경과 상태 조회는 호환성을 위해 기존 `doroti/windows/experimental-acrylic` platform channel을 유지합니다. 아크릴이 보이려면 앱의 배경도 투명 또는 반투명이어야 합니다.
 
+창 배경과 상단바는 `DorotiViewConfiguration.appearance`에서 독립적으로 선택합니다. 통합형 `unified`가 기본이며 `solid`는 분리형 상단바입니다. Windows App SDK·Qt에는 아크릴을, macOS에는 아크릴 또는 Liquid Glass를 지정할 수 있습니다. [공통 창 외형 API와 플랫폼별 동작](docs/window-appearance.md)을 참고하세요.
+
 ## 플랫폼 evidence 경계
 
 Windows App SDK target/package, 기본 CLI 경로, hardware-D3D11 ANGLE runtime, first-frame ordering과 확인한 실제 resize/mixed-DPI 경계 동작에는 현재 evidence가 있습니다. C10은 관측한 opaque 조건에 대한 사용자 acceptance PASS이며 strict synthetic resize qualification과 pixel/cadence FAIL은 그대로 유지합니다. Experimental Acrylic 자동화와 실물 acceptance는 별도 evidence class이며, 실행하지 않은 DPI, refresh, edge/speed, monitor, scan-out, IME, accessibility, window-management, device-loss 조합은 모두 `notVerified`입니다. 마지막 Windows의 전체 `Doroti.Product.slnx` Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출하여 실패했으므로 Windows PASS와 global FAIL을 분리합니다.

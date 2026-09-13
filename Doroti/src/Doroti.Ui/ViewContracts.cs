@@ -686,6 +686,15 @@ public enum WindowBackdropTheme
     dark,
 }
 
+/// <summary>Desktop titlebar treatment, independent of the selected window material.</summary>
+public enum WindowTitlebarStyle
+{
+    /// <summary>Extends Acrylic or Liquid Glass behind the title and window controls, without a separator.</summary>
+    unified,
+    /// <summary>Keeps a separate native titlebar background above the window's backdrop.</summary>
+    solid,
+}
+
 public sealed record WindowBackdropOptions(
     WindowBackdropMode mode = WindowBackdropMode.system,
     WindowBackdropFallback fallback = WindowBackdropFallback.transparent,
@@ -695,13 +704,28 @@ public sealed record WindowBackdropOptions(
     double? tintOpacity = null,
     double? luminosityOpacity = null);
 
+/// <summary>Window material and chrome. A macOS override allows Liquid Glass there while other desktops use Acrylic.</summary>
+public sealed record WindowAppearanceOptions(
+    WindowBackdropOptions? backdrop = null,
+    WindowTitlebarStyle titlebarStyle = WindowTitlebarStyle.unified,
+    WindowBackdropOptions? macOSBackdrop = null)
+{
+    public WindowBackdropOptions ResolveBackdrop(bool isMacOS) =>
+        (isMacOS ? macOSBackdrop : null) ?? backdrop ?? new();
+}
+
 public sealed record DorotiViewConfiguration(
     string title,
     Size logicalSize,
     Color? backgroundColor = null,
     Color? darkBackgroundColor = null,
     WindowBackdropOptions? backdrop = null,
-    bool terminateAfterLastWindowClosed = false);
+    bool terminateAfterLastWindowClosed = false,
+    WindowAppearanceOptions? appearance = null)
+{
+    /// <summary>Explicit appearance takes precedence over the legacy backdrop-only option.</summary>
+    public WindowAppearanceOptions ResolveAppearance() => appearance ?? new(backdrop);
+}
 
 /// <summary>Legacy window facade bound to one explicit view rather than a process-global current window.</summary>
 public sealed class SingletonDorotiWindow(DorotiView view)

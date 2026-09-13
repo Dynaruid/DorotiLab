@@ -2,7 +2,7 @@
 
 This directory is the app-owned CMake customization point. The managed runner owns process startup and calls the append-only `doroti.qt-host/v2` C ABI exported by `libdoroti_qt_host.so`.
 
-The default native host uses a Qt 6 `QWindow` and `QVulkanInstance`. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 3) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in a 128-byte surface descriptor. Feature bit 12 requires the appended GPU polling callback (184-byte callback table); rebuild the shim when updating the managed host. Managed Graphite/Vulkan owns the device and swapchain, and reports queue-present acceptance separately from physical scan-out.
+The default native host uses a Qt 6 `QWindow` and `QVulkanInstance`. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 3) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (184-byte callback table); rebuild the shim when updating the managed host. Managed Graphite/Vulkan owns the device and swapchain, and reports queue-present acceptance separately from physical scan-out.
 
 Feature bit 13 requires `prepare_present` in the appended 128-byte host API table. Managed rendering calls it only immediately before queuing a Vulkan presentation, after rejecting empty or superseded scenes. Qt completes its presentation notification only on success. A skipped frame retries on an owner-thread timer because no compositor frame callback is promised. Rebuild the shim together with the managed host.
 
@@ -15,3 +15,8 @@ Qt is a system dependency for this target. Build and runtime require a Vulkan-en
 Official deployment uses the pinned `SkiaSharp.NativeAssets.Linux` package and checks both original managed and native hashes, plus the loaded native module path. The Linux asset needs glibc, libstdc++, fontconfig and their runtime dependencies. Framework-dependent and self-contained directory publishing are supported. Trimming, single-file and NativeAOT publishing are unsupported for this target; the runner rejects them before producing an unusable package. Hardware rendering, permanent GPU stalls and physical input require separate validation.
 
 Hardware and software renderers are accepted by default; llvmpipe needs no environment override. The official Graphite Vulkan backend and Vulkan 1.2 requirements remain in use; the selected device type is logged. This is software validation, not hardware/performance qualification. Current Material scenes report an upstream depth-attachment synchronization issue under validation; preserve those failures.
+
+Feature bit 14 negotiates window titlebars: the configuration is 56 bytes and the
+surface descriptor is 144 bytes. Unified Acrylic uses client caption controls in the
+same GPU/blur surface, with native move/resize and accessible min/max/close actions.
+Solid uses native decorations. Rebuild the shim with the managed host and template.

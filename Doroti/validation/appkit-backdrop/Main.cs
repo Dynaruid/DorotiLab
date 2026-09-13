@@ -16,11 +16,21 @@ NSApplication.Main(args);
 public sealed class BackdropDelegate : NSApplicationDelegate
 {
     private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
-    private readonly WindowBackdropMode[] _modes = [WindowBackdropMode.transparent, WindowBackdropMode.acrylic,
-        WindowBackdropMode.liquidGlass, WindowBackdropMode.solid, WindowBackdropMode.system, WindowBackdropMode.acrylic];
+    private readonly WindowAppearanceOptions[] _options = [
+        new(new(WindowBackdropMode.transparent)),
+        new(new(WindowBackdropMode.acrylic)),
+        new(new(WindowBackdropMode.acrylic), titlebarStyle: WindowTitlebarStyle.solid),
+        new(new(WindowBackdropMode.acrylic)),
+        new(new(WindowBackdropMode.liquidGlass)),
+        new(new(WindowBackdropMode.liquidGlass), titlebarStyle: WindowTitlebarStyle.solid),
+        new(new(WindowBackdropMode.liquidGlass)),
+        new(new(WindowBackdropMode.solid)),
+        new(new(WindowBackdropMode.system)),
+        new(new(WindowBackdropMode.acrylic))];
     private readonly List<object> _results = [];
     private readonly Stopwatch _clock = Stopwatch.StartNew();
     private readonly string _output = Environment.GetEnvironmentVariable("DOROTI_BACKDROP_EVIDENCE") ?? "/tmp/doroti-backdrop";
+    private readonly bool _fullSize = Environment.GetEnvironmentVariable("DOROTI_BACKDROP_FULL_SIZE") == "1";
     private NSWindow _window = null!;
     private NSWindow _background = null!;
     private DorotiMacOSMetalView _view = null!;
@@ -38,11 +48,19 @@ public sealed class BackdropDelegate : NSApplicationDelegate
         _background = new NSWindow(new CGRect(100, 150, 760, 540), NSWindowStyle.Borderless, NSBackingStore.Buffered, false)
         { ContentView = new PatternView { Frame = new CGRect(0, 0, 760, 540) } };
         _background.OrderFront(null);
-        _window = new NSWindow(new CGRect(160, 210, 600, 400), NSWindowStyle.Titled | NSWindowStyle.Resizable,
+        var style = NSWindowStyle.Titled | NSWindowStyle.Resizable;
+        if (_fullSize) style |= NSWindowStyle.FullSizeContentView;
+        _window = new NSWindow(new CGRect(160, 210, 600, 400), style,
             NSBackingStore.Buffered, false) { Title = "Doroti native backdrop", BackgroundColor = NSColor.Orange, IsOpaque = true };
-        _view = new DorotiMacOSMetalView { Frame = new CGRect(0, 0, 600, 400),
+        // Match the product: the renderer is nested below the titlebar while
+        // a unified backdrop must reach the window root above that container.
+        var content = _window.ContentView!;
+        var container = new NSView { Frame = content.ConvertRectFromView(_window.ContentLayoutRect, null),
             AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable };
-        _window.ContentView!.AddSubview(_view);
+        content.AddSubview(container);
+        _view = new DorotiMacOSMetalView { Frame = container.Bounds,
+            AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable };
+        container.AddSubview(_view);
         _owner = (DorotiMacOSMetalSurface)Activator.CreateInstance(typeof(DorotiMacOSMetalSurface), Private, null, new object[] { 1UL }, null)!;
         var paint = _owner.GetType().GetEvent("Paint", Private)!;
         paint.GetAddMethod(true)!.Invoke(_owner, [Delegate.CreateDelegate(paint.EventHandlerType!, this, GetType().GetMethod(nameof(Paint))!)]);
@@ -62,6 +80,8 @@ public sealed class BackdropDelegate : NSApplicationDelegate
 
     private T Field<T>(string name) => (T)_view.GetType().GetField(name, Private)!.GetValue(_view)!;
     private static void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+    private static IEnumerable<NSView> Descendants(NSView view) =>
+        view.Subviews.SelectMany(child => new[] { child }.Concat(Descendants(child)));
     private void Tick()
     {
         try
@@ -71,8 +91,10 @@ public sealed class BackdropDelegate : NSApplicationDelegate
             if (_detached)
             {
                 if (!Field<bool>("_resourcesReleased")) return;
-                Check(!_window.ContentView!.Subviews.Any(v => v.Identifier == "doroti-window-backdrop"), "Effect leaked after detachment.");
+                Check(!Descendants(_window.ContentView!).Any(v => v.Identifier == "doroti-window-backdrop"), "Effect leaked after detachment.");
                 Check(_window.IsOpaque && _window.BackgroundColor.Equals(NSColor.Orange), "Original window state was not restored.");
+                Check(!_window.TitlebarAppearsTransparent && _window.TitlebarSeparatorStyle == NSTitlebarSeparatorStyle.Automatic,
+                    "Original titlebar state was not restored.");
                 Finish(null);
                 return;
             }
@@ -82,15 +104,23 @@ public sealed class BackdropDelegate : NSApplicationDelegate
                 { _view.NeedsDisplay = true; return; }
                 ValidateStage();
             }
-            if (++_stage == _modes.Length)
+            if (++_stage == _options.Length)
             {
                 typeof(DorotiMacOSMetalView).GetMethod("Disconnect", Private)!.Invoke(_view, null);
                 _view.RemoveFromSuperview();
                 _detached = true;
                 return;
             }
-            _window.Title = _modes[_stage].ToString();
-            _view.SetBackdrop(new(_modes[_stage], theme: WindowBackdropTheme.light));
+            var appearance = _options[_stage];
+            var options = appearance.ResolveBackdrop(isMacOS: true) with { theme = WindowBackdropTheme.light };
+            appearance = appearance with { backdrop = options };
+            _window.Title = $"{options.mode} / {appearance.titlebarStyle}";
+            var surfaceFrame = _view.Frame;
+            var containerFrame = _view.Superview!.Frame;
+            _view.SetWindowAppearance(appearance);
+            _view.SetWindowAppearance(appearance);
+            Check(_view.Frame.Equals(surfaceFrame) && _view.Superview.Frame.Equals(containerFrame),
+                "Changing the titlebar style moved the renderer.");
             _window.SetContentSize(new CGSize(600 + _stage * 12, 400 + _stage * 8));
             _view.LayoutSubtreeIfNeeded();
             _stageStart = _clock.Elapsed.TotalSeconds;
@@ -101,18 +131,21 @@ public sealed class BackdropDelegate : NSApplicationDelegate
 
     private void ValidateStage()
     {
-        var requested = _modes[_stage];
+        var requested = _options[_stage].ResolveBackdrop(isMacOS: true).mode;
+        var titlebarStyle = _options[_stage].titlebarStyle;
         var expected = requested == WindowBackdropMode.liquidGlass && !OperatingSystem.IsMacOSVersionAtLeast(26)
             ? WindowBackdropMode.acrylic : requested;
         Check(_view.AppliedBackdropMode == expected, "Unexpected applied mode.");
         Check(!_view.IsOpaque && _view.Layer?.Opaque == false, "Metal surface blocks alpha compositing.");
-        var effects = _window.ContentView!.Subviews.Where(v => v.Identifier == "doroti-window-backdrop").ToArray();
+        var effects = Descendants(_window.ContentView!).Where(v => v.Identifier == "doroti-window-backdrop").ToArray();
         var needsEffect = expected is WindowBackdropMode.acrylic or WindowBackdropMode.liquidGlass;
+        var unified = _fullSize && needsEffect && titlebarStyle == WindowTitlebarStyle.unified;
         Check(effects.Length == (needsEffect ? 1 : 0), "Missing or duplicate native backdrop.");
         if (needsEffect)
         {
             var effect = effects.Single();
-            Check(effect.Frame.Equals(_view.Frame), "Backdrop did not follow resized Metal bounds.");
+            Check(effect.Superview == (unified ? _window.ContentView : _view.Superview), "Backdrop is in the wrong container.");
+            Check(effect.Frame.Equals(unified ? _window.ContentView!.Bounds : _view.Frame), "Backdrop did not follow resized bounds.");
             Check(effect.HitTest(new CGPoint(50, 50)) is null, "Backdrop intercepted input.");
             if (expected == WindowBackdropMode.acrylic)
                 Check(effect is NSVisualEffectView blur && blur.BlendingMode == NSVisualEffectBlendingMode.BehindWindow,
@@ -120,6 +153,10 @@ public sealed class BackdropDelegate : NSApplicationDelegate
             if (OperatingSystem.IsMacOSVersionAtLeast(26) && expected == WindowBackdropMode.liquidGlass)
                 Check(effect is NSGlassEffectView, "Liquid Glass did not use the native glass API.");
         }
+        Check(_window.TitlebarAppearsTransparent == unified, "Titlebar transparency mismatch.");
+        Check(_window.TitlebarSeparatorStyle == (unified ? NSTitlebarSeparatorStyle.None : NSTitlebarSeparatorStyle.Automatic),
+            "Titlebar separator mismatch.");
+        Check(_window.TitleVisibility == NSWindowTitleVisibility.Visible, "Backdrop hid the window title.");
         Check(_window.IsOpaque == (expected is WindowBackdropMode.solid or WindowBackdropMode.system), "Window opacity mismatch.");
         var start = new ProcessStartInfo("/usr/sbin/screencapture") { RedirectStandardError = true };
         foreach (var arg in new[] { "-x", "-o", "-l", _window.WindowNumber.ToString(), Path.Combine(_output, $"{_stage}-{requested}.png") })
@@ -138,6 +175,8 @@ public sealed class BackdropDelegate : NSApplicationDelegate
         _results.Add(new { requested = requested.ToString(), applied = expected.ToString(),
             nativeType = effects.FirstOrDefault()?.GetType().BaseType?.Name,
             windowActive = _window.IsKeyWindow,
+            fullSizeContent = _fullSize, titlebarTransparent = _window.TitlebarAppearsTransparent,
+            titlebarStyle = titlebarStyle.ToString(),
             completed = Field<long>("_commandBuffersCompleted"), width = (double)_view.Bounds.Width, height = (double)_view.Bounds.Height });
     }
 

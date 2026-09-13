@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 #if MACOS
 using Microsoft.Maui.Platforms.MacOS.Essentials;
 using Microsoft.Maui.Platforms.MacOS.Hosting;
+using Microsoft.Maui.Platforms.MacOS.Platform;
 #else
 using SkiaSharp.Views.Maui.Controls.Hosting;
 #if MACCATALYST
@@ -97,7 +98,7 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
     {
         _ = activationState;
         var title = descriptor.ViewConfiguration.title;
-        return new(new ContentPage
+        var window = new Window(new ContentPage
         {
 #if MACOS
             BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
@@ -109,5 +110,15 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         {
             Title = title,
         };
+#if MACOS
+        // Allow the native backdrop to cover the titlebar. The AppKit page
+        // container keeps interactive content below the window controls.
+        // AppKitWindowBackdrop applies the requested unified or solid titlebar
+        // without changing content layout when the option changes.
+        MacOSWindow.SetFullSizeContentView(window, true);
+        MacOSWindow.SetTitlebarTransparent(window, false);
+        MacOSWindow.SetTitleVisibility(window, MacOSTitleVisibility.Visible);
+#endif
+        return window;
     }
 }

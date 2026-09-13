@@ -43,12 +43,21 @@ public static unsafe partial class DorotiQtRunner
             var titleBytes = Encoding.UTF8.GetBytes(descriptor.ViewConfiguration.title);
             fixed (byte* title = titleBytes)
             {
+                var appearance = descriptor.ViewConfiguration.ResolveAppearance();
+                var backdrop = appearance.ResolveBackdrop(isMacOS: false);
+                var backdropMode = backdrop.mode switch
+                {
+                    WindowBackdropMode.experimentalAcrylic => WindowBackdropMode.acrylic,
+                    WindowBackdropMode.liquidGlass => backdrop.fallback == WindowBackdropFallback.solid
+                        ? WindowBackdropMode.solid : WindowBackdropMode.transparent,
+                    _ => backdrop.mode,
+                };
                 var configuration = new QtNativeV2.Configuration(
                     new QtNativeV2.Utf8(title, checked((ulong)titleBytes.Length)),
                     checked((int)descriptor.ViewConfiguration.logicalSize.width),
                     checked((int)descriptor.ViewConfiguration.logicalSize.height),
-                    (uint)(descriptor.ViewConfiguration.backdrop?.mode ?? WindowBackdropMode.system),
-                    (uint)(descriptor.ViewConfiguration.backdrop?.fallback ?? WindowBackdropFallback.transparent));
+                    (uint)backdropMode,
+                    (uint)backdrop.fallback, (uint)appearance.titlebarStyle);
                 var callbacks = new QtNativeV2.Callbacks(GCHandle.ToIntPtr(stateHandle));
                 var exitCode = NativeMethods.Run(in configuration, in callbacks);
                 if (exitCode is >= 64 and <= 70)
@@ -112,6 +121,7 @@ public static unsafe partial class DorotiQtRunner
         internal QtSkiaSurface Surface { get; }
         internal QtHostAdapter? Host { get; private set; }
         internal SkiaSceneRenderer? Renderer { get; private set; }
+        internal string Title => _configuration.title;
         internal DorotiView? View { get; private set; }
 
         internal void SetHost(nint viewHandle, in QtNativeV2.HostApi hostApi)
@@ -360,7 +370,10 @@ public static unsafe partial class DorotiQtRunner
             state.Host.BeginFrame(in *surface);
             SkiaPaintResult paint = default;
             presented = state.Surface.Render(in *surface, (skiaSurface, width, height) =>
-                paint = state.Renderer.Paint(skiaSurface, width, height, state.Host.ResizeTarget),
+                {
+                    paint = state.Renderer.Paint(skiaSurface, width, height, state.Host.ResizeTarget);
+                    QtTitlebarPainter.Paint(skiaSurface.Canvas, state.Title, in *surface);
+                },
                 shouldPresent: () => paint.ShouldPresent, beforePresent: state.PreparePresent);
             var completion = paint.Completion;
             if (presented) state.RecordRasterized(frameToken, completion);

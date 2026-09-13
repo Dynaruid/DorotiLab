@@ -1,7 +1,8 @@
 # AppKit window backdrop validation
 
 This fixture references the production Host.Maui Metal view and switches between
-transparent, acrylic, Liquid Glass, solid, system, and acrylic again. A striped native
+transparent, acrylic, Liquid Glass, solid, system, and acrylic again, including
+unified/solid/unified titlebar transitions for both material effects. A striped native
 window behind it makes blur and glass visible; the Metal surface draws a magenta marker
 over a transparent clear. It checks real completed GPU frames, native effect types,
 resize alignment, input pass-through, duplicate removal and restoration of window state
@@ -25,6 +26,12 @@ The fixture requires screen capture access. `result.json` reports assertions and
 inspect the PNGs to assess visual output. On macOS 14/15 the Liquid Glass stage expects
 the blur fallback. Running on macOS 26 does not exercise that older-OS runtime branch.
 System accessibility adaptations and physical input remain separate manual checks.
+
+Set `DOROTI_BACKDROP_FULL_SIZE=1` to exercise the product's unified titlebar layout.
+In this mode one native effect covers the entire content view, including the titlebar.
+The fixture checks title visibility, separator removal, nested effect placement, resize coverage, repeated configuration, and restoration
+of the original titlebar when switching to a mode without a native effect or disconnecting.
+Run without this variable to check the ordinary content-only window path as well.
 
 ## Recorded run — 2026-09-13
 

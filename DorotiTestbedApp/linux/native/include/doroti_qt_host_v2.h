@@ -37,6 +37,7 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_VULKAN_API_VERSION = 1ull << 11,
   DOROTI_QT_FEATURE_GPU_POLL = 1ull << 12,
   DOROTI_QT_FEATURE_PRESENT_HOOK = 1ull << 13,
+  DOROTI_QT_FEATURE_TITLEBAR = 1ull << 14,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -58,6 +59,11 @@ enum doroti_qt_backdrop_fallback_v2 : std::uint32_t {
   DOROTI_QT_BACKDROP_FALLBACK_SOLID = 1,
 };
 
+enum doroti_qt_titlebar_style_v2 : std::uint32_t {
+  DOROTI_QT_TITLEBAR_UNIFIED = 0,
+  DOROTI_QT_TITLEBAR_SOLID = 1,
+};
+
 struct doroti_qt_utf8_v2 {
   const std::uint8_t* data;
   std::uint64_t length;
@@ -72,6 +78,7 @@ struct doroti_qt_configuration_v2 {
   std::int32_t logical_height;
   std::uint32_t backdrop_mode;
   std::uint32_t backdrop_fallback;
+  std::uint32_t titlebar_style;
 };
 
 struct doroti_qt_surface_v2 {
@@ -96,6 +103,13 @@ struct doroti_qt_surface_v2 {
   void* vulkan_instance;
   doroti_qt_utf8_v2 vulkan_instance_extensions;
   std::uint32_t vulkan_instance_api_version;
+  std::uint32_t reserved;
+  // Feature-gated caption in the same GPU surface. Height is in logical pixels;
+  // state bits: dark=1, active=2, maximized=4. Buttons: none=0, min=1, max=2, close=3.
+  std::uint32_t titlebar_height;
+  std::uint32_t titlebar_state;
+  std::uint32_t titlebar_hovered;
+  std::uint32_t titlebar_pressed;
 };
 
 struct doroti_qt_insets_v3 { double left, top, right, bottom; };
@@ -257,12 +271,12 @@ DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
 }  // extern "C"
 
 static_assert(sizeof(doroti_qt_utf8_v2) == 16);
-static_assert(sizeof(doroti_qt_configuration_v2) == 48);
+static_assert(sizeof(doroti_qt_configuration_v2) == 56);
 static_assert(offsetof(doroti_qt_surface_v2, surface_generation) == 8);
 static_assert(offsetof(doroti_qt_surface_v2, framebuffer_object) == 24);
 static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);
 static_assert(offsetof(doroti_qt_surface_v2, timestamp_microseconds) == 80);
-static_assert(sizeof(doroti_qt_surface_v2) == 128);
+static_assert(sizeof(doroti_qt_surface_v2) == 144);
 static_assert(sizeof(doroti_qt_metrics_v2) == 160);
 static_assert(sizeof(doroti_qt_pointer_v2) == 120);
 static_assert(sizeof(doroti_qt_key_v2) == 56);

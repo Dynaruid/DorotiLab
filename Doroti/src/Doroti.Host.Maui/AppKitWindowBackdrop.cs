@@ -6,7 +6,7 @@ using Doroti.Ui;
 
 namespace Doroti.Host.Maui;
 
-/// <summary>Owns the native background sibling and restores window state on detachment.</summary>
+/// <summary>Owns the native window background and restores window state on detachment.</summary>
 internal sealed class AppKitWindowBackdrop : IDisposable
 {
     // Background effects must never intercept the renderer's pointer or scroll input.
@@ -23,21 +23,26 @@ internal sealed class AppKitWindowBackdrop : IDisposable
 
     private readonly DorotiMacOSMetalView _surface;
     private WindowBackdropOptions _options = new();
+    private WindowAppearanceOptions _appearance = new();
     private NSWindow? _window;
     private NSColor? _originalBackground;
     private bool _originalOpaque;
+    private bool _originalTitlebarTransparent;
+    private NSTitlebarSeparatorStyle _originalTitlebarSeparator;
+    private bool _changedTitlebar;
     private bool _changedWindow;
     private NSView? _effect;
 
     internal AppKitWindowBackdrop(DorotiMacOSMetalView surface) => _surface = surface;
     internal WindowBackdropMode AppliedMode { get; private set; }
 
-    internal void Configure(WindowBackdropOptions options)
+    internal void Configure(WindowAppearanceOptions appearance)
     {
-        ArgumentNullException.ThrowIfNull(options);
-        if (_options == options) { Synchronize(); return; }
+        ArgumentNullException.ThrowIfNull(appearance);
+        if (_appearance == appearance) { Synchronize(); return; }
         Detach();
-        _options = options;
+        _appearance = appearance;
+        _options = appearance.ResolveBackdrop(isMacOS: true);
         Synchronize();
     }
 
@@ -50,6 +55,8 @@ internal sealed class AppKitWindowBackdrop : IDisposable
             _window = window;
             _originalOpaque = window.IsOpaque;
             _originalBackground = window.BackgroundColor;
+            _originalTitlebarTransparent = window.TitlebarAppearsTransparent;
+            _originalTitlebarSeparator = window.TitlebarSeparatorStyle;
             AppliedMode = _options.mode;
             if (AppliedMode == WindowBackdropMode.liquidGlass && !OperatingSystem.IsMacOSVersionAtLeast(26))
                 AppliedMode = WindowBackdropMode.acrylic;
@@ -90,12 +97,26 @@ internal sealed class AppKitWindowBackdrop : IDisposable
             }
         }
         if (_effect is not { } effect) return;
+        // A single material covers both titlebar and body, without stacking a
+        // second blur over the titlebar. Keep the renderer's layout untouched.
+        var fullSizeContent = window.StyleMask.HasFlag(NSWindowStyle.FullSizeContentView) && window.ContentView is not null;
+        var fullWindow = fullSizeContent && _appearance.titlebarStyle == WindowTitlebarStyle.unified;
+        if (fullSizeContent)
+        {
+            _changedTitlebar = true;
+            if (window.TitlebarAppearsTransparent != fullWindow) window.TitlebarAppearsTransparent = fullWindow;
+            var separator = fullWindow ? NSTitlebarSeparatorStyle.None : NSTitlebarSeparatorStyle.Automatic;
+            if (window.TitlebarSeparatorStyle != separator) window.TitlebarSeparatorStyle = separator;
+        }
+        if (fullWindow) parent = window.ContentView!;
         if (effect.Superview != parent)
         {
             effect.RemoveFromSuperview();
-            parent.AddSubview(effect, NSWindowOrderingMode.Below, _surface);
+            parent.AddSubview(effect, NSWindowOrderingMode.Below, fullWindow ? null : _surface);
         }
-        effect.Frame = _surface.Frame;
+        effect.AutoresizingMask = fullWindow
+            ? NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable : NSViewResizingMask.NotSizable;
+        effect.Frame = fullWindow ? parent.Bounds : _surface.Frame;
     }
 
     private NSView CreateBlur() => new BlurView
@@ -130,8 +151,14 @@ internal sealed class AppKitWindowBackdrop : IDisposable
             window.IsOpaque = _originalOpaque;
             if (_originalBackground is { } background) window.BackgroundColor = background;
         }
+        if (_changedTitlebar && _window is { } titledWindow)
+        {
+            titledWindow.TitlebarAppearsTransparent = _originalTitlebarTransparent;
+            titledWindow.TitlebarSeparatorStyle = _originalTitlebarSeparator;
+        }
         _window = null;
         _changedWindow = false;
+        _changedTitlebar = false;
         _originalBackground = null;
         AppliedMode = WindowBackdropMode.system;
     }

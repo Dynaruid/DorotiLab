@@ -55,7 +55,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId)
         {
-            Backdrop = _application.ViewConfiguration.backdrop ?? new(),
+            Appearance = _application.ViewConfiguration.ResolveAppearance(),
         };
         // The renderer applies the configured base color once. A second MAUI
         // background would cover the native material behind its Metal surface.

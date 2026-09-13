@@ -100,7 +100,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     InitialWidthPx = ToDimension(descriptor.ViewConfiguration.logicalSize.width * initialScale),
                     InitialHeightPx = ToDimension(descriptor.ViewConfiguration.logicalSize.height * initialScale),
                     NCmdShow = 1,
-                    RequiredFeatures = state.NativeRequiredFeatures,
+                    RequiredFeatures = state.NativeRequiredFeatures |
+                        (descriptor.ViewConfiguration.ResolveAppearance().titlebarStyle == WindowTitlebarStyle.unified
+                            ? WindowsNativeV1.UnifiedTitlebarFeature : WindowsNativeV1.SolidTitlebarFeature),
                     CompositionBackgroundArgb =
                         state.EffectiveMode == "opaque" && state.Presenter.UsesCompositionTopology
                             ? descriptor.ViewConfiguration.backgroundColor?.value ?? 0xff000000U
@@ -222,13 +224,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _configuration = configuration;
             _requestedDeviceResets = ResolveRequestedDeviceResets();
             RequestedPresenter = selectedPresenter;
-            var acrylicRequested = configuration.backdrop?.mode is
+            var backdrop = configuration.ResolveAppearance().ResolveBackdrop(isMacOS: false);
+            var acrylicRequested = backdrop.mode is
                 WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic;
-            RequestedMode = acrylicRequested ? configuration.backdrop!.mode.ToString() : "opaque";
+            RequestedMode = acrylicRequested ? backdrop.mode.ToString() : "opaque";
             if (acrylicRequested && RequestedPresenter == "Vulkan")
             {
                 Presenter = new WindowsManagedVulkanPresenter(
-                    ShouldWriteDiagnostics(), configuration.backdrop!, Brightness.light);
+                    ShouldWriteDiagnostics(), backdrop, Brightness.light);
                 EffectiveMode = RequestedMode;
             }
             else if (acrylicRequested && RequestedPresenter != "AngleD3D11")
@@ -243,7 +246,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                         Console.Error.WriteLine("doroti.windows.experimental-acrylic=pre-window-probe-start");
                     Presenter = new WindowsManagedAcrylicCompositionPresenter(
                         ShouldWriteDiagnostics(),
-                        configuration.backdrop!,
+                        backdrop,
                         Brightness.light);
                     EffectiveMode = RequestedMode;
                     NativeRequiredFeatures = WindowsNativeV1.ExperimentalAcrylicFeature;

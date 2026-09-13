@@ -2,15 +2,16 @@ using System.Runtime.InteropServices;
 using Doroti.Host.Qt;
 
 QtNativeV2.ValidateLayout();
+WindowAppearanceContracts.Verify();
 
-if (QtNativeV2.AbiVersion != 3 || QtNativeV2.RequiredFeatures != (QtSkiaSurface.GraphiteEnabled ? 0x3ffeUL : 0x3ffUL))
+if (QtNativeV2.AbiVersion != 3 || QtNativeV2.RequiredFeatures != (QtSkiaSurface.GraphiteEnabled ? 0x7ffeUL : 0x43ffUL))
     throw new InvalidOperationException("doroti.qt-host/v2 feature identity drifted.");
-if (Marshal.SizeOf<QtNativeV2.Surface>() != 128 ||
+if (Marshal.SizeOf<QtNativeV2.Surface>() != 144 ||
     Marshal.OffsetOf<QtNativeV2.Surface>("VulkanSurface").ToInt32() != 88 ||
     Marshal.OffsetOf<QtNativeV2.Surface>("VulkanInstanceExtensions").ToInt32() != 104 ||
     Marshal.OffsetOf<QtNativeV2.Surface>("VulkanInstanceApiVersion").ToInt32() != 120)
     throw new InvalidOperationException("Qt Vulkan descriptor extension layout drifted.");
-if (Marshal.SizeOf<QtNativeV2.Configuration>() != 48)
+if (Marshal.SizeOf<QtNativeV2.Configuration>() != 56)
     throw new InvalidOperationException("doroti.qt-host/v2 configuration layout drifted.");
 if (Marshal.SizeOf<QtNativeV2.HostApi>() != 128 ||
     Marshal.OffsetOf<QtNativeV2.HostApi>("PreparePresent").ToInt32() != 120)

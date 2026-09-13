@@ -7,7 +7,7 @@ internal static unsafe class QtNativeV2
     internal const uint AbiVersion = 3;
     internal static ulong RequiredFeatures =>
         (QtSkiaSurface.GraphiteEnabled ? (1UL << 10) | (1UL << 11) | (1UL << 12) | (1UL << 13) : (1UL << 0)) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
-        (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7) | (1UL << 8) | (1UL << 9);
+        (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7) | (1UL << 8) | (1UL << 9) | (1UL << 14);
 
     internal enum Result : int
     {
@@ -33,7 +33,7 @@ internal static unsafe class QtNativeV2
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct Configuration(
         Utf8 title, int logicalWidth, int logicalHeight,
-        uint backdropMode, uint backdropFallback)
+        uint backdropMode, uint backdropFallback, uint titlebarStyle = 0)
     {
         internal readonly uint AbiVersion = QtNativeV2.AbiVersion;
         internal readonly uint StructSize = checked((uint)sizeof(Configuration));
@@ -43,6 +43,7 @@ internal static unsafe class QtNativeV2
         internal readonly int LogicalHeight = logicalHeight;
         internal readonly uint BackdropMode = backdropMode;
         internal readonly uint BackdropFallback = backdropFallback;
+        internal readonly uint TitlebarStyle = titlebarStyle;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -68,6 +69,11 @@ internal static unsafe class QtNativeV2
         internal readonly nint VulkanInstance;
         internal readonly Utf8 VulkanInstanceExtensions;
         internal readonly uint VulkanInstanceApiVersion;
+        internal readonly uint Reserved;
+        internal readonly uint TitlebarHeight;
+        internal readonly uint TitlebarState;
+        internal readonly uint TitlebarHovered;
+        internal readonly uint TitlebarPressed;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -237,8 +243,8 @@ internal static unsafe class QtNativeV2
     internal static void ValidateLayout()
     {
         RequireSize<Utf8>(16);
-        RequireSize<Configuration>(48);
-        RequireSize<Surface>(128);
+        RequireSize<Configuration>(56);
+        RequireSize<Surface>(144);
         RequireSize<Metrics>(160);
         RequireOffset<Metrics>(nameof(Metrics.ViewInsets), 88);
         RequireOffset<Metrics>(nameof(Metrics.PhysicalTouchSlop), 152);
@@ -253,6 +259,8 @@ internal static unsafe class QtNativeV2
         RequireOffset<Surface>(nameof(Surface.DevicePixelRatio), 40);
         RequireOffset<Surface>(nameof(Surface.TimestampMicroseconds), 80);
         RequireOffset<Surface>(nameof(Surface.VulkanInstanceApiVersion), 120);
+        RequireOffset<Surface>(nameof(Surface.TitlebarHeight), 128);
+        RequireOffset<Configuration>(nameof(Configuration.TitlebarStyle), 48);
         RequireOffset<Callbacks>(nameof(Callbacks.PollGpuWork), 176);
         RequireOffset<Callbacks>(nameof(Callbacks.CallbackContext), 24);
     }
