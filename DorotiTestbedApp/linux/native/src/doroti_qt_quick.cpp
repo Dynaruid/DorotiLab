@@ -27,6 +27,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <vector>
+#include <bit>
 
 namespace {
 struct TextureNode final : QSGSimpleTextureNode { std::uint64_t identity=0; };
@@ -44,8 +45,11 @@ class RasterItem final : public QQuickItem {
     if(!node || node->identity!=identity || !native || reinterpret_cast<std::uint64_t>(native->nativeImage())!=image || texture->textureSize()!=pixels) {
       texture=QNativeInterface::QSGVulkanTexture::fromNative(reinterpret_cast<VkImage>(image),
           VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,window(),pixels,QQuickWindow::TextureHasAlphaChannel);
-      if(!texture) return nullptr;
-      if(!node)node=new TextureNode;
+      if(!texture) { delete node; return nullptr; }
+      // Destroy the old node together with its owned wrapper. Replacing the
+      // pointer alone leaves imported texture resources alive across resize.
+      delete node;
+      node=new TextureNode;
       node->identity=identity;
       node->setTexture(texture);node->setOwnsTexture(true);
       node->setFiltering(QSGTexture::Nearest);
@@ -62,6 +66,8 @@ struct Owner {
   std::map<std::uint64_t,Pending> pending;
   std::vector<RasterItem*> rasters;
   std::vector<doroti_qt_quick_part> parts;
+  QQuickItem* sourceGroup=nullptr;
+  QQuickItem* effect=nullptr;
   bool nativeDrag=false;
 };
 std::mutex gate;
@@ -83,6 +89,7 @@ void Place(Control& c,QRectF bounds,QRectF clip,int z,bool visible) {
 int Post(std::uint64_t id,void(*callback)(void*,int),void* context) {
   if(!callback)return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   std::lock_guard lock(gate);auto* owner=Find(id);if(!owner)return DOROTI_QT_PV_CLOSED;
+  if(owner->pending.size()>=1024)return DOROTI_QT_PV_UNSUPPORTED;
   auto task=++nextId;owner->pending.emplace(task,Pending{callback,context});
   bool posted=QMetaObject::invokeMethod(owner->window,[id,task]{
     Pending work{};
@@ -91,18 +98,26 @@ int Post(std::uint64_t id,void(*callback)(void*,int),void* context) {
   },Qt::QueuedConnection);
   if(!posted) { owner->pending.erase(task);return DOROTI_QT_PV_CLOSED; }return 0;
 }
-int Create(std::uint64_t id,std::uint32_t kind,doroti_qt_utf8_v2,void(*focused)(void*,std::uint64_t),void* context,std::uint64_t* result) {
+int Create(std::uint64_t id,std::uint32_t kind,doroti_qt_utf8_v2 text,void(*focused)(void*,std::uint64_t),void* context,std::uint64_t* result) {
   Owner* owner;auto status=Lookup(id,owner);if(status)return status;
-  if(kind>1||!result)return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  if(kind>2||!result||text.length>1024*1024||(text.length&&!text.data))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+#ifndef DOROTI_QT_WEBENGINE
+  if(kind==2)return DOROTI_QT_PV_UNSUPPORTED;
+#endif
   QQmlComponent component(owner->engine.get());
-  component.setData(kind?QByteArray("import QtQuick\nimport QtQuick.Controls\nTextField { objectName: 'doroti-quick-editor'; text: 'Edit native Qt Quick text'; selectByMouse: true; property int pressCount: 0; onPressed: pressCount++ }"):
+  component.setData(kind==2?QByteArray("import QtQuick\nimport QtWebEngine\nWebEngineView { objectName: 'doroti-quick-webview'; property string initialHtml; Component.onCompleted: loadHtml(initialHtml) }"):
+      kind==1?QByteArray("import QtQuick\nimport QtQuick.Controls\nTextField { objectName: 'doroti-quick-editor'; text: 'Edit native Qt Quick text'; selectByMouse: true; property int pressCount: 0; onPressed: pressCount++ }"):
       QByteArray("import QtQuick\nimport QtQuick.Controls\nButton { objectName: 'doroti-quick-button'; text: 'Native Qt Quick button'; property int clickCount: 0; onClicked: clickCount++ }"),QUrl());
-  auto* item=qobject_cast<QQuickItem*>(component.create());
+  QVariantMap properties;
+  if(kind==2)properties.insert("initialHtml",QString::fromUtf8(reinterpret_cast<const char*>(text.data),qsizetype(text.length)));
+  std::unique_ptr<QObject> created(component.createWithInitialProperties(properties));
+  auto* item=qobject_cast<QQuickItem*>(created.get());
   if(!item) { qWarning()<<component.errors();return DOROTI_QT_PV_UNSUPPORTED; }
   auto* clip=new QQuickItem(owner->window->contentItem());clip->setClip(true);clip->setVisible(false);
   item->setParent(clip);item->setParentItem(clip);
   std::uint64_t token;{ std::lock_guard lock(gate);token=++nextId; }
   owner->controls.emplace(token,Control{clip,item,focused,context});
+  created.release();
   QObject::connect(item,&QQuickItem::activeFocusChanged,owner->window,[id,token]{
     auto* owner=Find(id);if(!owner)return;auto it=owner->controls.find(token);if(it==owner->controls.end()||!it->second.item->hasActiveFocus())return;
     QMetaObject::invokeMethod(owner->window,[id,token]{auto* o=Find(id);if(!o)return;auto c=o->controls.find(token);
@@ -135,7 +150,11 @@ int Remove(std::uint64_t id,std::uint64_t token) {
 }
 template<auto>struct Boundary;
 template<typename...Args,int(*Function)(Args...)>struct Boundary<Function>{static int Call(Args...args)noexcept{try{return Function(args...);}catch(...){return DOROTI_QT_ERROR_NATIVE_EXCEPTION;}}};
-const doroti_qt_pv_api api{1,sizeof(doroti_qt_pv_api),3,Boundary<Post>::Call,Boundary<Create>::Call,Boundary<Adopt>::Call,
+const doroti_qt_pv_api api{1,sizeof(doroti_qt_pv_api),11
+#ifdef DOROTI_QT_WEBENGINE
+  |4
+#endif
+  ,Boundary<Post>::Call,Boundary<Create>::Call,Boundary<Adopt>::Call,
   Boundary<Commit>::Call,Boundary<Focus>::Call,Boundary<Remove>::Call};
 }
 void DorotiQtRegisterPlatformOwner(QWindow* window) {
@@ -151,6 +170,8 @@ void DorotiQtClosePlatformOwner(QWindow* window) {
   for(auto&[id,work]:owner->pending)work.callback(work.context,DOROTI_QT_PV_CLOSED);
   for(auto&[id,c]:owner->controls)delete c.clip;
   for(auto* item:owner->rasters)delete item;
+  delete owner->effect;
+  delete owner->sourceGroup;
 }
 extern "C" DOROTI_QT_EXPORT int doroti_qt_get_platform_views(void* window,std::uint32_t version,std::uint32_t size,std::uint64_t* result,doroti_qt_pv_api* output) {
   if(!Gui())return DOROTI_QT_PV_WRONG_THREAD;
@@ -179,24 +200,74 @@ extern "C" DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti
     if(!Gui())return DOROTI_QT_PV_WRONG_THREAD;
     auto* owner=Find(static_cast<QWindow*>(window));if(!owner)return DOROTI_QT_PV_CLOSED;
     if(count>64||(count&&!parts))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
-    std::set<std::uint64_t> seen;std::size_t rasters=0;
+    std::set<std::uint64_t> seen;std::size_t rasters=0;const doroti_qt_quick_part* effect=nullptr;
     for(std::uint64_t i=0;i<count;i++) { const auto&p=parts[i];
-      if(p.size!=sizeof(p)||p.kind>2||!Valid(p.bounds)||!Valid(p.clip))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+      if(p.size!=sizeof(p)||p.kind>3||!Valid(p.bounds)||!Valid(p.clip))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
       if(p.kind==1&&(!owner->controls.contains(p.id)||!seen.insert(p.id).second))return DOROTI_QT_PV_STALE;
       if(p.kind==0&&(!p.image||!p.pixel_width||!p.pixel_height||p.pixel_width>16384||p.pixel_height>16384||++rasters>17))return DOROTI_QT_PV_UNSUPPORTED;
+      if(p.kind==3) {
+        const auto sigma=std::bit_cast<double>(p.id);
+        const auto dpr=owner->window->devicePixelRatio();
+        const auto required=Rect(p.bounds).adjusted(-3*sigma,-3*sigma,3*sigma,3*sigma);
+        const auto sample=Rect(p.clip);
+        const bool sameSample=std::abs(sample.x()-required.x())<1e-7&&std::abs(sample.y()-required.y())<1e-7&&
+            std::abs(sample.width()-required.width())<1e-7&&std::abs(sample.height()-required.height())<1e-7;
+        if(effect||!std::isfinite(sigma)||sigma<=0||sigma>32||Rect(p.bounds).isEmpty()||
+            !sameSample||p.clip.width*dpr>4096||p.clip.height*dpr>4096||
+            std::ceil(p.clip.width*dpr)*std::ceil(p.clip.height*dpr)>4*1024*1024)
+          return DOROTI_QT_PV_UNSUPPORTED;
+        effect=&p;
+      }
     }
     if(!apply)return 0;
-    // Allocate all raster items before changing the displayed batch.
+    // Prepare fallible QML/resource allocations before changing the displayed batch.
+    std::unique_ptr<QObject> newEffect;
+    std::unique_ptr<QQuickItem> newGroup;
+    if(effect&&!owner->effect) {
+      QQmlComponent component(owner->engine.get(),QUrl("qrc:/doroti/qml/Backdrop.qml"));
+      newEffect.reset(component.create());
+      if(!qobject_cast<QQuickItem*>(newEffect.get())) { qWarning()<<component.errors();return DOROTI_QT_PV_UNSUPPORTED; }
+      newGroup=std::make_unique<QQuickItem>();
+    }
+    std::vector<doroti_qt_quick_part> next;
+    if(count)next.assign(parts,parts+count);
     while(owner->rasters.size()<rasters)owner->rasters.push_back(new RasterItem(owner->window->contentItem()));
-    std::vector<doroti_qt_quick_part> next(parts,parts+count);
-    for(auto&[id,c]:owner->controls)if(!seen.contains(id))c.clip->setVisible(false);
+    auto* root=owner->window->contentItem();
+    if(newEffect) {
+      owner->effect=qobject_cast<QQuickItem*>(newEffect.release());
+      owner->effect->setParent(root);owner->effect->setParentItem(root);
+      owner->sourceGroup=newGroup.release();
+      owner->sourceGroup->setParent(root);owner->sourceGroup->setParentItem(root);
+    }
+    if(effect) {
+      owner->sourceGroup->setSize(root->size());owner->sourceGroup->setZ(0);
+      owner->effect->setProperty("background",QVariant::fromValue(owner->sourceGroup));
+      owner->effect->setProperty("sampleRect",Rect(effect->clip));
+      owner->effect->setProperty("outputRect",Rect(effect->bounds));
+      owner->effect->setProperty("sigma",std::bit_cast<double>(effect->id));
+      owner->effect->setZ(effect-parts+1);
+    }
+    // Reparent visual items only; QObject ownership and native identity stay stable.
+    QPointer<QQuickItem> focused=owner->window->activeFocusItem();
+    for(auto&[id,c]:owner->controls)if(!seen.contains(id)) {
+      c.clip->setVisible(false);
+      if(c.clip->parentItem()!=root)c.clip->setParentItem(root);
+    }
     std::size_t raster=0;
     for(std::uint64_t i=0;i<count;i++) { const auto&p=parts[i];
-      if(p.kind==1)Place(owner->controls.at(p.id),Rect(p.bounds),Rect(p.clip),i,true);
+      auto* parent=effect && &p<effect?owner->sourceGroup:root;
+      if(p.kind==1) { auto& c=owner->controls.at(p.id);
+        if(c.clip->parentItem()!=parent)c.clip->setParentItem(parent);
+        Place(c,Rect(p.bounds),Rect(p.clip),i+1,true); }
       else if(p.kind==0) { auto* item=owner->rasters[raster++];item->image=p.image;item->identity=p.id;item->pixels=QSize(p.pixel_width,p.pixel_height);
-        item->setPosition(Rect(p.bounds).topLeft());item->setSize(Rect(p.bounds).size());item->setZ(i);item->setVisible(true);item->update(); }
+        item->setParentItem(parent);
+        item->setPosition(Rect(p.bounds).topLeft());item->setSize(Rect(p.bounds).size());item->setZ(i+1);item->setVisible(true);item->update(); }
     }
-    for(;raster<owner->rasters.size();++raster)owner->rasters[raster]->setVisible(false);
+    // Hidden QSG nodes must not retain wrappers for images that managed retirement
+    // will reclaim on the next GUI/render iteration.
+    while(owner->rasters.size()>rasters) { delete owner->rasters.back();owner->rasters.pop_back(); }
+    if(!effect) { delete owner->effect;owner->effect=nullptr;delete owner->sourceGroup;owner->sourceGroup=nullptr; }
+    if(focused&&focused->isVisible()&&!focused->hasActiveFocus())focused->forceActiveFocus(Qt::OtherFocusReason);
     owner->parts=std::move(next);return 0;
   }catch(...){return DOROTI_QT_ERROR_NATIVE_EXCEPTION;}
 }
@@ -219,7 +290,7 @@ bool DorotiQtQuickNativeInput(QWindow* window,QEvent* event) {
   else if(auto* wheel=dynamic_cast<QWheelEvent*>(event))point=wheel->position();
   else return false;
   bool native=false;
-  for(auto it=o->parts.rbegin();it!=o->parts.rend();++it)if(it->kind!=0&&Rect(it->bounds).intersected(Rect(it->clip)).contains(point)) {
+  for(auto it=o->parts.rbegin();it!=o->parts.rend();++it)if((it->kind==1||it->kind==2)&&Rect(it->bounds).intersected(Rect(it->clip)).contains(point)) {
     native=it->kind==1&&o->controls.contains(it->id)&&o->controls.at(it->id).clip->isVisible();break;
   }
   if(mouse) {
@@ -233,8 +304,15 @@ void DorotiQtRecordPlatformOwner(QWindow* window,const char* path) {
   if(!path||!*path)return;auto* o=Find(window);if(!o)return;
   QJsonArray controls;
   for(auto&[id,c]:o->controls)controls.append(QJsonObject{{"id",qint64(id)},{"visible",c.clip->isVisible()},
-    {"kind",c.item->objectName()},{"text",c.item->property("text").toString()}, {"x",c.clip->x()},{"y",c.clip->y()},{"z",c.clip->z()}});
-  auto capture=window->screen()->grabWindow(window->winId());bool saved=!capture.isNull()&&capture.save(QString::fromUtf8(path)+".png");
+    {"kind",c.item->objectName()},{"text",c.item->property("text").toString()},
+    {"clickCount",c.item->property("clickCount").toInt()},{"pressCount",c.item->property("pressCount").toInt()},
+    {"focused",c.item->hasActiveFocus()},
+    {"x",c.clip->x()},{"y",c.clip->y()},{"width",c.clip->width()},{"height",c.clip->height()},{"z",c.clip->z()}});
+  // Validation-only GPU readback; QScreen::grabWindow cannot capture Wayland clients.
+  auto capture=o->window->grabWindow();bool saved=!capture.isNull()&&capture.save(QString::fromUtf8(path)+".png");
   QFile file(QString::fromUtf8(path)+".json");if(file.open(QIODevice::WriteOnly))file.write(QJsonDocument(QJsonObject{
-    {"qpa",QGuiApplication::platformName()},{"composition","qt-quick-vulkan-gpu-textures"},{"cpuReadback",false},{"controls",controls},{"windowCapture",saved}}).toJson());
+    {"qpa",QGuiApplication::platformName()},{"composition","qt-quick-vulkan-gpu-textures"},{"cpuReadback",false},
+    {"validationCaptureReadback",saved},{"rasterItems",int(o->rasters.size())},{"effectItems",o->effect?1:0},
+    {"frameworkEffectState",QString::fromUtf8(qgetenv("DOROTI_PLATFORM_EFFECT_PROBE_STATE"))},
+    {"effectSourceGroup",o->sourceGroup!=nullptr},{"controls",controls},{"windowCapture",saved}}).toJson());
 }

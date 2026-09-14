@@ -1,5 +1,25 @@
 # PlatformView 재구성 작업계획
 
+## 최신 실행 업데이트 — Linux Qt (2026-09-14)
+
+사용자의 Linux Qt 구현 요청으로 HEAD `20298446d098b6fa1325fd90621c3063b080b1a0`의 clean worktree에서 시작했다.
+이 절은 아래 Windows 실행 및 설계 시점의 Linux `notVerified` 상태를 갱신한다. **Linux Qt 전체 상태는 PARTIAL**이다.
+
+**반복 횟수 변경:** 후속 사용자 요청에 따라 이후 Linux Qt 수명·GPU·resize 반복 검증은 **10회 기준**으로 수행한다. 아래 100회 결과는 요청 전에 이미 종료된 실행 이력이며 다시 실행하지 않는다. 검증 스크립트 기본값도 10회로 변경했다.
+
+**Release 실행 오류 수정:** `dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64`에서 `Qt6ShaderTools`를 찾지 못하는 오류를 재현했다. Debug 캐시에만 적용했던 도구 경로 의존성을 제거하고, Qt 6.4 호환 형식의 Vulkan `.qsb`를 소스·hash metadata와 함께 번들에 포함했다. 일반 Debug/Release 빌드에는 ShaderTools/qsb 설정이 필요 없고 셰이더 소스를 수정할 때만 재생성한다. 같은 Release 명령으로 앱 시작·10회 resize·정상 종료를 확인했으며 Release WebView/effect 자동 검증 18개도 PASS했다. 로그는 `Doroti/artifacts/platform-views/2026-09-14/linux-qt/release-fix/`에 보존했다.
+
+- R0: 현재 Ubuntu 26.04 / Qt 6.10.2 환경에서 기준 빌드는 성공했으나 실행은 Pointer ABI 검사(120/168바이트 불일치)로 실패했다. 이를 수정했다. 사라진 과거 Quick/Widgets 검증 파일을 PASS로 복원하지 않고 새 검증 소스와 README를 작성했다. 변경 전 성능 baseline은 없다.
+- R3/R5: Quick의 fractional geometry를 보존하고, 표시 중인 P image를 staging으로 덮어쓰지 않도록 bank를 분리했다. 취소·실패·resize와 QSG wrapper 수명, 1,024개 GUI queue 상한, 실제 frameSwapped/미교환 프레임 supersede → 공통 session 연결을 구현했다. basic loop와 queue drain은 유지했다.
+- R6/R-E: 선택적 WebEngine Quick의 초기 HTML attachment와 앞선 R/N/R/N 전체를 sample하는 live ShaderEffectSource + 두 Gaussian GPU pass를 연결했다. effect/선명한 child는 sample에서 제외하며 native identity를 보존한다. 1개 isotropic effect, sigma ≤32, sample ≤4M physical pixels로 제한한다. work2의 navigation/JS/profile 공개 API는 별도다.
+- 검증: XWayland와 native Wayland에서 실제 WebView animation/blur, native click·shield·wheel·편집 상태, 전경 버튼, 두 WebView, effect 이동·제거·재생성의 **19개 자동 gate가 각각 PASS**다. 두 실행 모두 Vulkan validation layer의 실제 로딩을 확인했고 오류가 없었다. 실제 Qt GPU queue에서 100회 submit 뒤 commit 거부/resize 취소·복구와 budget 거부, native two-owner·stale/prepare/100회 수명·queue close 계약 및 공통 계약 fixture도 PASS다. Testbed/template의 native 소스를 동기화했다.
+- 추가 완료 이력: 실제 Material Quick Controls의 10개 합성 장면 캡처와 100회 해제/재생성도 native 해제 완료를 기다리는 방식으로 PASS했다. Widgets는 별도 빌드·20회 resize·정상 종료를 확인했고, WebEngine을 제외한 Quick template 빌드도 PASS했다. 이 반복 횟수들은 위 사용자 요청 이전의 결과다.
+- 잔여: 빠른 XWayland resize에서는 Qt WSI가 757×677 swapchain을 요청할 때 X surface가 720×640을 보고한 `VUID-VkSwapchainCreateInfoKHR-pNext-07781` 1건을 재현했다. 이 실패는 남겨 둔다. llvmpipe 결과를 물리 GPU·성능 승인으로 승격하지 않으며, native-origin GestureArena/전체 Tab·한국어 IME·Orca·device loss·공통 시각 허용편차·배포/NativeAOT 승인은 남아 있다.
+
+현재 계약은 [linux-qt.md](Doroti/docs/platform-views/linux-qt.md), 재현은
+[Quick 검증](Doroti/validation/linux-qt-quick/README.md)과 [관리 ABI/Widgets 검증](Doroti/validation/linux-qt-contract/README.md),
+이번 명령·실패·hash·캡처는 `Doroti/artifacts/platform-views/2026-09-14/linux-qt/rearchitecture/`에 둔다.
+
 ## 0. 2026-09-14 실행 업데이트 — Windows 우선
 
 사용자의 이번 구현 지시에 따라 작업을 시작했다. 실제 출발 HEAD는 `ed98776992f7a084fd3f6c0a11b00a6baa569e49`이며 작업 시작 시 worktree는 clean이었다. 아래의 `227a0b4...`와 "계획 작성만" 문구는 앞선 설계 시점의 기록이다. **현재 전체 상태는 PARTIAL**이며 이 실행표가 이전 TODO 상태보다 우선한다.

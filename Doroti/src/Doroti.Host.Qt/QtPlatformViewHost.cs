@@ -44,6 +44,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private PlatformViewCoordinator? _coordinator;
     private PlatformCompositionSession? _session;
     private long _compositionFrame;
+    internal long CommittedFrames { get; private set; }
     private PlatformCompositionPlan? _pending;
     private IPlatformViewPlacementBatch? _reservation;
     private Placement[] _next = [];
@@ -52,14 +53,18 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private Action<Exception>? _fatal;
     internal QtSkiaSurface? QuickSurface { get; set; }
     private bool IsQuick => (_api.Features & 2) != 0;
+    private bool HasWebEngine => IsQuick && (_api.Features & 4) != 0;
+    private bool HasEffects => IsQuick && (_api.Features & 8) != 0;
+    private static readonly PlatformEffectSupport QuickEffects = new(true, 1, 32,
+        Reason: "Qt Quick supports one bounded live Gaussian source group, sigma <=32; saturation is unsupported.");
     internal IEnumerable<IPlatformViewFactory> Factories =>
-        [new Factory(this, false), new Factory(this, true)];
+        [new Factory(this, 0), new Factory(this, 1), new Factory(this, 2)];
 
     internal unsafe void Bind(nint window, Action yieldText, Action<Exception> fatal, Action<Action> dispatchFocus)
     {
         if (_owner != 0) throw new InvalidOperationException("Qt PlatformView owner is already bound.");
         Check(GetApi(window, 1, (uint)sizeof(Api), out _owner, out _api));
-        if (_api.Version != 1 || _api.Size != sizeof(Api) || _api.Features is not (1 or 3) ||
+        if (_api.Version != 1 || _api.Size != sizeof(Api) || (_api.Features & 1) == 0 || (_api.Features & ~15UL) != 0 ||
             _api.Post == null || _api.Create == null || _api.Commit == null || _api.Focus == null || _api.Remove == null)
             throw new InvalidDataException("Invalid Qt PlatformView ABI table.");
         _thread = Environment.CurrentManagedThreadId;
@@ -80,34 +85,38 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             throw new InvalidOperationException("Qt PlatformView requires its bound GUI thread.");
     }
 
-    private sealed class Factory(QtPlatformViewHost host, bool editor) : IPlatformViewFactory
+    private sealed class Factory(QtPlatformViewHost host, uint kind) : IPlatformViewFactory
     {
-        public string ViewType => editor ? "doroti/native-editor" : "doroti/native-button";
+        public string ViewType => kind switch { 0 => "doroti/native-button", 1 => "doroti/native-editor", _ => "doroti/webview" };
         public PlatformViewSupport QuerySupport(PlatformViewRequest request) => new(
             host.IsQuick ? "linux/qt-quick-gpu" : "linux/qt-native-child-widgets", "Qt6", ViewType,
-            !host._closed && host._owner != 0 && request.ViewType == ViewType &&
+            !host._closed && host._owner != 0 && request.ViewType == ViewType && (kind != 2 || host.HasWebEngine) &&
             (request.Composition == PlatformViewComposition.NativeOverlay ||
                 host.IsQuick && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0,
             host.IsQuick ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
+            NativeBackdropBlur: host.HasEffects,
             Capabilities: new(PlatformViewRepresentation.NativeHierarchy,
                 host.IsQuick ? PlatformViewTransport.GpuShared : PlatformViewTransport.Native,
-                PlatformViewInputPolicy.DirectNative, PlatformEffectSupport.Unsupported),
-            Reason: host.IsQuick ? "Qt Quick Controls and Graphite Vulkan GPU images; translation and rect clip. Physical presentation atomicity is not qualified." :
+                PlatformViewInputPolicy.DirectNative, host.HasEffects ? QuickEffects : PlatformEffectSupport.Unsupported),
+            Reason: kind == 2 && !host.HasWebEngine ? "WebEngine Quick requires DorotiQtQuick=true and DorotiQtWebEngine=true; rebuild the native shim." :
+                host.IsQuick ? "Live Qt Quick items and Graphite Vulkan GPU images; translation and rect clip. Physical presentation atomicity is not qualified." :
                 "Limited B: disjoint Widgets, rounded logical translation/inward rect clip. Interleaving, shields, affine transforms and synchronized placement are unsupported.");
         public unsafe ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle,
             ReadOnlyMemory<byte> parameters, Action<PlatformViewHandle> focused, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             host.Verify();
-            if (parameters.Length != 0) throw new NotSupportedException("Qt built-in controls do not accept creation parameters.");
+            if (kind != 2 && parameters.Length != 0) throw new NotSupportedException("Qt built-in controls do not accept creation parameters.");
+            if (kind == 2 && (!host.HasWebEngine || parameters.Length > 1024 * 1024))
+                throw new NotSupportedException("Qt WebEngine Quick must be enabled; initial UTF-8 HTML is limited to 1 MiB.");
             var instance = new Instance(host, handle, focused);
             var context = host._focusContext;
-            var bytes = Encoding.UTF8.GetBytes(editor ? "Edit native Qt text" : "Native Qt button");
+            var bytes = kind == 2 ? parameters.ToArray() : Encoding.UTF8.GetBytes(kind == 1 ? "Edit native Qt text" : "Native Qt button");
             fixed (byte* text = bytes)
             {
                 ulong id;
-                Check(host._api.Create(host._owner, editor ? 1u : 0u,
+                Check(host._api.Create(host._owner, kind,
                     new(text, (ulong)bytes.Length), &Focused, GCHandle.ToIntPtr(context), &id));
                 instance.Id = id;
             }
@@ -126,7 +135,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             host.Verify();
             if (!host._committing)
             {
-                var next = host._visible.Where(p => p.Id != Id).Append(Translate(placement, Id)).ToArray();
+                var next = host._visible.Where(p => p.Id != Id).Append(Translate(placement, Id, host.IsQuick)).ToArray();
                 host.Commit(next, apply: true);
                 host._visible = next;
                 host._visibleHandles = host._visibleHandles.Where(h => h != handle).Append(handle).ToArray();
@@ -208,7 +217,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         catch (Exception error) { work.Completion.TrySetException(error); }
     }
 
-    internal static Placement Translate(PlatformViewPlacement p, ulong id)
+    internal static Placement Translate(PlatformViewPlacement p, ulong id, bool quick = false)
     {
         p.Validate();
         var t = p.Transform;
@@ -216,11 +225,12 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             throw new NotSupportedException("Qt native child Widgets only support translation.");
         var bounds = p.Bounds.shift(new Offset(t.Dx, t.Dy));
         var clip = p.Clip is { } c ? bounds.intersect(c) : bounds;
-        static NativeRect Convert(Rect r, bool inward)
+        NativeRect Convert(Rect r, bool inward)
         {
             foreach (var value in new[] { r.left, r.top, r.right, r.bottom })
                 if (!double.IsFinite(value) || Math.Abs(value) > 1e6)
                     throw new NotSupportedException("Qt native child Widgets require finite geometry within 1,000,000 logical pixels.");
+            if (quick) return new(r.left, r.top, Math.Max(0, r.width), Math.Max(0, r.height));
             var x = inward ? Math.Ceiling(r.left) : Math.Round(r.left);
             var y = inward ? Math.Ceiling(r.top) : Math.Round(r.top);
             var right = inward ? Math.Floor(r.right) : Math.Round(r.right);
@@ -254,13 +264,14 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
             ++_compositionFrame, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
         var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!,
-            IsQuick ? PlatformViewComposition.InterleavedComposition : PlatformViewComposition.NativeOverlay);
+            IsQuick ? PlatformViewComposition.InterleavedComposition : PlatformViewComposition.NativeOverlay,
+            HasEffects ? QuickEffects : null);
         try
         {
             if (!IsQuick && plan.HasNativeContent && plan.Parts.OfType<PlatformShieldSegment>().Any())
                 throw new NotSupportedException("Qt NativeOverlay does not support input shields; interleaving is required.");
             var placements = plan.Parts.OfType<PlatformNativeSegment>().Select(p => p.Placement).ToArray();
-            var native = placements.Select(p => Translate(p, _instances[p.Handle].Id)).ToArray();
+            var native = placements.Select(p => Translate(p, _instances[p.Handle].Id, IsQuick)).ToArray();
             if (_reservation is null || placements.Any(p => !_reservation.Contains(p.Handle)))
                 throw new InvalidOperationException("Qt PlatformView frame references an unreserved instance.");
             Commit(native, apply: false);
@@ -289,8 +300,17 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                     parts.Add(new() { Size=96,Kind=0,Id=gpu.Identity(rasterIndex),Image=gpu.Image(rasterIndex++),PixelWidth=(uint)width,PixelHeight=(uint)height,Bounds=viewport,Clip=viewport });
                     break;
                 case PlatformNativeSegment native:
-                    var placement=Translate(native.Placement,_instances[native.Placement.Handle].Id);
+                    var placement=Translate(native.Placement,_instances[native.Placement.Handle].Id, quick: true);
                     parts.Add(new() { Size=96,Kind=1,Id=placement.Id,Bounds=placement.Bounds,Clip=placement.Visible!=0?placement.Clip:default });
+                    break;
+                case PlatformBackdropSegment effect:
+                    if (effect.SigmaX != effect.SigmaY) throw new NotSupportedException("Qt Quick backdrop requires isotropic Gaussian blur.");
+                    var output = effect.Bounds;
+                    if (output.isEmpty) break;
+                    var sample = effect.SampleBounds;
+                    parts.Add(new() { Size=96, Kind=3, Id=BitConverter.DoubleToUInt64Bits(effect.SigmaX),
+                        Bounds=new(output.left,output.top,output.width,output.height),
+                        Clip=new(sample.left,sample.top,sample.width,sample.height) });
                     break;
                 case PlatformShieldSegment shield:
                     var t=shield.Shield.Transform;
@@ -301,6 +321,8 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                     parts.Add(new() { Size=96,Kind=2,Bounds=new(bounds.left,bounds.top,bounds.width,bounds.height),
                         Clip=new(clip.left,clip.top,Math.Max(0,clip.width),Math.Max(0,clip.height)) });
                     break;
+                default:
+                    throw new NotSupportedException($"Unsupported Qt Quick composition part {part.GetType().Name}.");
             }
         }
         surface.QuickParts=parts.ToArray();
@@ -310,7 +332,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         if (!presented || _pending is null || _closed) { FinishFrameCore(presented); return; }
         var plan = _pending;
         _session ??= new(plan.Token.OwnerViewId);
-        _session.CommitRetiredFrame(plan, () => { FinishFrameCore(presented); return true; });
+        if (_session.CommitRetiredFrame(plan, () => { FinishFrameCore(presented); return true; })) CommittedFrames++;
     }
     private void FinishFrameCore(bool presented)
     {

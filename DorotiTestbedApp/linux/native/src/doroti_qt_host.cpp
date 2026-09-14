@@ -5,6 +5,9 @@
 #include <QQuickWindow>
 #include <QQuickGraphicsConfiguration>
 #include <QQuickItem>
+#ifdef DOROTI_QT_WEBENGINE
+#include <QtWebEngineQuick/qtwebenginequickglobal.h>
+#endif
 #include <QSGRendererInterface>
 #endif
 #include <memory>
@@ -591,6 +594,13 @@ class DorotiSurface final : public DorotiWindowBase {
     descriptor.vulkan_instance_extensions = Utf8(vulkan_extensions_);
     descriptor.vulkan_instance_api_version = VK_MAKE_VERSION(vulkan_.apiVersion().majorVersion(), vulkan_.apiVersion().minorVersion(), vulkan_.apiVersion().microVersion());
     DescribeTitlebar(descriptor);
+#ifdef DOROTI_QT_QUICK
+    // A render-only pass (for example grabWindow), or a superseded scene, may
+    // never emit frameSwapped. Retire that token BEFORE managed admission of
+    // the next frame, while its placement reservation still identifies it.
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+#endif
     const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
     if (result == 1) {
       Terminal(token, DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
@@ -1888,6 +1898,9 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
       return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
     qputenv("QSG_RENDER_LOOP", "basic");
     QQuickWindow::setGraphicsApi(QSGRendererInterface::Vulkan);
+#ifdef DOROTI_QT_WEBENGINE
+    QtWebEngineQuick::initialize();
+#endif
 #endif
     QApplication app(argc, argv);
     struct AccessibleRegistration {

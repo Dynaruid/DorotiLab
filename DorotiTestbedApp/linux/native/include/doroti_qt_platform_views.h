@@ -1,7 +1,7 @@
 #pragma once
 #include "doroti_qt_host_v2.h"
 
-// Optional Widgets attachment ABI. All calls except post require the Qt GUI
+// Optional owner attachment ABI for Widgets or Quick. All calls except post require the Qt GUI
 // thread. IDs are process-monotonic, owner-scoped tokens, never QObject pointers.
 // A post accepted with OK invokes its callback exactly once, including on close.
 // A rejected post invokes no callback. Keep callback code/context loaded until
@@ -21,7 +21,9 @@ struct doroti_qt_pv_placement {
 };
 struct doroti_qt_pv_api {
   std::uint32_t abi_version, struct_size;
-  std::uint64_t feature_bits; // bit 0: non-overlapping native child Widgets B only
+  // bit 0: owner operations; bit 1: Quick interleaving; bit 2: WebEngine Quick;
+  // bit 3: Quick live backdrop. Without bit 1 this is Widgets B only.
+  std::uint64_t feature_bits;
   std::int32_t (*post)(std::uint64_t owner, void (*callback)(void*, std::int32_t), void* context);
   std::int32_t (*create)(std::uint64_t owner, std::uint32_t kind, doroti_qt_utf8_v2 text,
       void (*focused)(void*, std::uint64_t), void* context, std::uint64_t* id);

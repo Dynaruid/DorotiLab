@@ -8,6 +8,7 @@
   "plugins": [],
   "platformViews": [
     { "viewType": "doroti/native-button", "rid": "linux-x64" },
-    { "viewType": "doroti/native-editor", "rid": "linux-x64" }
+    { "viewType": "doroti/native-editor", "rid": "linux-x64" },
+    { "viewType": "doroti/webview", "rid": "linux-x64" }
   ]
 }

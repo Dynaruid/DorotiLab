@@ -17,3 +17,8 @@ The common console fixture checks owner/generation, snapshot/admission races, le
 The Windows effect fixture is also accessible with `DOROTI_TESTBED_MODE=platform-effects`, or **WebView effects** at the bottom of the native Platform views page. Its own synthetic-HWND input gate is separate from the existing gallery gate's OS SendInput. Both remain separate from physical human input and Korean IME approval. Test runs use isolated WebView profiles under artifacts.
 
 The Web gate compiles the real DOM adapter, then uses a separate headless Chrome profile and a loopback HTTP server. Its result is explicitly a DOM adapter harness, not product Worker integration or GPU visual qualification.
+
+The restored [Linux Qt gates](../linux-qt-quick/README.md) cover real Quick
+WebEngine/effect product input and captures, native owner/batch contracts, and
+published-image preservation on a Qt-owned Vulkan queue. Quick and Widgets,
+XWayland and native Wayland, and automated versus physical input are separate.

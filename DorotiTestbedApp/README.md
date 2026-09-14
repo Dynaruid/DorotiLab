@@ -84,8 +84,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.cspro
 
 ### Linux sample
 
-Run on a Linux x64 host. Requires Qt 6.6 or later Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2,
-the `QtQuick` and `QtQuick.Controls` runtime QML modules, CMake,
+Run on a Linux x64 host. Requires Qt 6.6 or later Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2/WebEngineQuick,
+the `QtQuick`, `QtQuick.Controls` and `QtWebEngine` runtime QML modules, CMake,
 a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`,
 the `wayland` or `xcb` QPA plugin, Vulkan development headers, a Vulkan 1.2 device, and fontconfig. The command also builds the native shim. Hardware and software Vulkan devices are accepted based on API capabilities. The command below runs on llvmpipe VMs without environment overrides or launch profiles; published executables use the same policy.
 
@@ -99,8 +99,12 @@ buttons/editors interleave with Doroti raster layers, including translucent cove
 popups and modals, without presentation readback to the CPU. Run the standalone example with
 `DOROTI_TESTBED_MODE=platform-views`.
 See [the implementation, validation and limits](../Doroti/validation/linux-qt-quick/README.md).
-Arbitrary QWidget and WebEngine Quick adapters are separate work. Select the legacy
-Widgets overlay backend with `-p:DorotiQtQuick=false`.
+The WebEngine Quick attachment and a bounded live Gaussian PlatformEffect are
+available through **WebView effects** or `DOROTI_TESTBED_MODE=platform-effects`.
+Native animation, editable state and sharp Doroti children stay live. Disable the
+optional WebEngine dependency with `-p:DorotiQtWebEngine=false`. Arbitrary QWidget
+adoption, full IME/accessibility and performance qualification remain separate.
+Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false`.
 
 ### Android sample
 

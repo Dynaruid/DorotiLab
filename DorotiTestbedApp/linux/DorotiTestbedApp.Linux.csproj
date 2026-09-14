@@ -10,6 +10,7 @@
     <DorotiNativeEntryKind>Qt-Main</DorotiNativeEntryKind>
     <SelfContained>false</SelfContained>
     <DorotiQtQuick>true</DorotiQtQuick>
+    <DorotiQtWebEngine Condition="'$(DorotiQtWebEngine)' == '' and '$(DorotiQtQuick)' == 'true'">true</DorotiQtWebEngine>
   </PropertyGroup>
   <ItemGroup>
     <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main"

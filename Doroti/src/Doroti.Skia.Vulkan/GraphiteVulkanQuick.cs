@@ -35,6 +35,8 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     public bool IsSoftwareDevice { get; }
     public long Frames { get; private set; }
     public ulong ReservedBytes => _bytes;
+    public ulong PeakReservedBytes { get; private set; }
+    public int RetiringLayers => _retired.Count;
     public event Action? ResourcesReleasing;
     private sealed class Layer
     {
@@ -44,6 +46,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         internal SkiaGraphiteSession.VulkanTarget? Target;
         internal bool Initialized;
         internal ulong Identity;
+        internal int Width, Height;
     }
     public GraphiteVulkanQuick(nint instance, nint physical, nint device, nint queue, uint family, uint apiVersion)
     {
@@ -83,14 +86,15 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         // Qt submitted the preceding scene-graph frame before this GUI-thread sync.
         // Do not overwrite or free any P while Qt can still sample it.
         Check(_vk.QueueWaitIdle(_queue), "Qt sampling retirement");
-        // A superseded resize never replaced Qt's front textures. Keep that
-        // published generation until an accepted native batch actually switches it.
+        // Never render/copy into the published bank, even at the same extent.
+        // A rejected native commit must leave its pixels as well as geometry intact.
+        _retired.AddRange(_layers); _layers.Clear();
+        _width = width; _height = height;
         foreach (var old in _retired.Where(layer => !_published.Contains(layer)).ToArray())
-        { Destroy(old); _retired.Remove(old); }
-        if (_width != width || _height != height)
         {
-            _retired.AddRange(_layers); _layers.Clear();
-            _width = width; _height = height;
+            _retired.Remove(old);
+            if (old.Width == width && old.Height == height) _layers.Add(old);
+            else Destroy(old);
         }
         _used = 0;
         Canvas(0);
@@ -109,7 +113,13 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     }
     public ulong Image(int index) => _layers[index].P.Handle;
     public ulong Identity(int index) => _layers[index].Identity;
-    public void MarkPublished() { Verify(); _published = _layers.Take(_used).ToHashSet(); }
+    public void MarkPublished()
+    {
+        Verify();
+        _published = _layers.Take(_used).ToHashSet();
+        // Unused staging targets have never been handed to QSG this frame.
+        foreach (var unused in _layers.Skip(_used).ToArray()) { Destroy(unused); _layers.Remove(unused); }
+    }
     public void Cancel()
     {
         Verify();
@@ -172,7 +182,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             SubresourceRange=new(ImageAspectFlags.ColorBit,0,1,0,1) };
     private Layer CreateLayer()
     {
-        var layer=new Layer { Identity=++_nextIdentity };
+        var layer=new Layer { Identity=++_nextIdentity, Width=_width, Height=_height };
         try
         {
             var info = new ImageCreateInfo { SType=StructureType.ImageCreateInfo,ImageType=ImageType.Type2D,
@@ -207,6 +217,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         var allocate=new MemoryAllocateInfo { SType=StructureType.MemoryAllocateInfo,AllocationSize=requirements.Size,MemoryTypeIndex=type };
         Check(_vk.AllocateMemory(_device,&allocate,null,out memory),"Quick image memory");
         _bytes+=requirements.Size;layer.Bytes+=requirements.Size;
+        PeakReservedBytes = Math.Max(PeakReservedBytes, _bytes);
         Check(_vk.BindImageMemory(_device,image,memory,0),"Quick image bind");
     }
     private void Destroy(Layer layer)

@@ -248,6 +248,11 @@ public static unsafe partial class DorotiQtRunner
 
         internal void RecordTerminal(ulong token, QtNativeV2.TerminalState terminal)
         {
+            if (_quickCompositionToken == token)
+            {
+                _quickCompositionToken = 0;
+                PlatformViews.FinishFrame(terminal is QtNativeV2.TerminalState.Presented or QtNativeV2.TerminalState.Replayed);
+            }
             lock (_gate)
             {
                 if (!_terminalTokens.Add(token))
@@ -276,6 +281,13 @@ public static unsafe partial class DorotiQtRunner
                     default: throw new InvalidDataException($"Unknown Qt terminal frame state {(uint)terminal}.");
                 }
             }
+        }
+
+        private ulong _quickCompositionToken;
+        internal void AwaitQuickCompositionTerminal(ulong token)
+        {
+            if (_quickCompositionToken != 0) throw new InvalidOperationException("Qt Quick composition is awaiting frameSwapped.");
+            _quickCompositionToken = token;
         }
 
         internal void CaptureFatal(Exception exception)
@@ -323,6 +335,8 @@ public static unsafe partial class DorotiQtRunner
                         rendererPending = renderer?.PendingScene,
                     },
                     inputCount = Host?.InputSequence ?? 0,
+                    compositionFrames = PlatformViews.CommittedFrames,
+                    quickPeakReservedBytes = Surface.QuickPeakReservedBytes,
                     semanticsNodes = _nativeDiagnostics.GetValueOrDefault("semantics.nodes", "0"),
                     renderer = renderer?.Backend,
                     softwareFallback = false,
@@ -427,7 +441,8 @@ public static unsafe partial class DorotiQtRunner
                     QtTitlebarPainter.Paint(caption, state.Title, in *surface, state.TitlebarAppearance?.Theme);
                 },
                 shouldPresent: () => paint.ShouldPresent, beforePresent: state.PreparePresent);
-            state.PlatformViews.FinishFrame(presented);
+            if (presented && state.Surface.QuickEnabled) state.AwaitQuickCompositionTerminal(frameToken);
+            else state.PlatformViews.FinishFrame(presented);
             var completion = paint.Completion;
             if (presented) state.RecordRasterized(frameToken, completion);
             else if (completion is { } pending) state.Renderer.FailPaint(pending, "Vulkan swapchain became out of date before presentation.");

@@ -257,7 +257,9 @@ internal static unsafe class QtNativeV2
         RequireSize<Metrics>(160);
         RequireOffset<Metrics>(nameof(Metrics.ViewInsets), 88);
         RequireOffset<Metrics>(nameof(Metrics.PhysicalTouchSlop), 152);
-        RequireSize<Pointer>(120);
+        RequireSize<Pointer>(168);
+        RequireOffset<Pointer>(nameof(Pointer.PanX), 120);
+        RequireOffset<Pointer>(nameof(Pointer.Rotation), 160);
         RequireSize<Key>(56);
         RequireSize<TextConfiguration>(40);
         RequireSize<TextState>(40);

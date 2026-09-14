@@ -34,18 +34,21 @@ Graphite QWindow, with translation and inward rect clip. Logical geometry is rou
 Qt integer coordinates. Native-native overlap, foreground raster, input shields,
 non-translation transforms and C interleaving are rejected. There is no CPU readback or
 renderer switch. Native placement is applied after queue-present acceptance, so atomic
-physical display is not advertised. The optional WebEngine probe uses `adopt_widget`;
-it does not register a product WebView factory or add WebEngine/Quick to this library.
+physical display is not advertised. Widgets `adopt_widget` is separate from the
+optional product WebEngine Quick attachment below; Widgets gains no interleaving or effects.
 
 The Qt GUI queue uses owner generations and exactly-once accepted task completion.
 Owner close cancels queued work and deletes Widgets before the managed closed callback.
 Qt-driven native window recreation rebinds each clip container to the same owner.
 Callers must keep adopted-widget and callback modules loaded until owner teardown ends.
-See `Doroti/validation/linux-qt-contract/record-platform-views.py` for recorded gates.
+See `Doroti/validation/linux-qt-contract/README.md` for current contract checks.
 
 ## Optional Qt Quick GPU composition
 
 `-DDOROTI_QT_QUICK=ON` builds the Quick/Qml/QuickControls2 backend (Qt 6.6+).
+Its bundled Gaussian shader is embedded without ShaderTools or `qsb` at build
+time. These tools are needed only to regenerate the shader after source edits;
+see `shaders/README.md`. Debug and Release use the same hash-checked asset.
 The Testbed selects it through `DorotiQtQuick=true`; the generic runner/template
 keeps it optional. Runtime QML modules `QtQuick` and `QtQuick.Controls` are required.
 
@@ -59,3 +62,22 @@ The Vulkan instance must outlive QQuickWindow/QRhi destruction. The basic GUI/re
 loop is required. Physical scanout atomicity and arbitrary native view types are
 not implied by enabling this option. See the repository's `linux-qt-quick` product
 validation for input, overlap, lifetime and Vulkan-layer checks.
+
+`-DDOROTI_QT_WEBENGINE=ON` additionally links WebEngineQuick and initializes it
+before QApplication. MSBuild exposes this as `DorotiQtWebEngine=true`; the
+Testbed enables it with Quick, while templates keep it optional. PV feature bit
+2 negotiates `create` kind 2 (initial UTF-8 HTML, <=1 MiB); bit 3 negotiates a
+bounded live backdrop part in the existing 96-byte Quick packet. See the header
+for the Gaussian sigma and sample-bound encoding. Quick owns a source group of
+all earlier raster/native items, with the effect and sharp child outside it.
+One isotropic effect (sigma <=32; <=4M physical sample pixels) is supported.
+Saturation and cross-platform visual matching remain unqualified.
+
+Quick retains separate published/staging P banks and uses the actual frameSwapped
+terminal for common session completion. A superseded render-only pass is closed
+before admitting the next frame. The basic loop and queue drain remain; 1,024
+pending GUI operations and 128 MiB of active/staging/retiring R/P images are
+defensive bounds, not accepted frame-time budgets. No effect host/sample textures
+remain at zero native effects. Rapid XWayland resize still has an observed Qt WSI
+extent race (`VUID-VkSwapchainCreateInfoKHR-pNext-07781`); physical GPU, IME/Orca,
+full device-loss, performance and deployment approvals remain separate.
