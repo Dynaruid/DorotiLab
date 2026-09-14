@@ -368,7 +368,8 @@ internal static class MauiNativeInput
         private void AttachCurrent()
         {
             DetachCurrent();
-            foreach (var native in new object?[] { _view.Handler?.PlatformView }
+            foreach (var native in new object?[] { _view.Handler?.PlatformView,
+                (_view.Handler?.PlatformView as DorotiAndroidViewContainer)?.Surface }
                 .Concat(_textInput.Inputs.Select(input => input.Handler?.PlatformView))
                 .OfType<Android.Views.View>().Distinct())
             {

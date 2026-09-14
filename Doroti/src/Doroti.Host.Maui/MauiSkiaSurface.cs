@@ -173,6 +173,11 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     }
     public void RequestFocus(bool focused)
     {
+#if ANDROID
+        // Framework focus activation also runs when a native PlatformView's
+        // FocusNode becomes primary. Preserve its already-focused descendant.
+        if (focused && _view.Handler?.PlatformView is DorotiAndroidViewContainer { HasFocus: true }) return;
+#endif
         if (focused) _view.Focus();
         else _view.Unfocus();
     }

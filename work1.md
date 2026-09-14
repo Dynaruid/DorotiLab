@@ -8,6 +8,84 @@ Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f28
 
 최초 재검토 시 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없었다. 후속 구현에서 계약/지원표를 복구했으며 실행 기록은 AppKit README를 사용한다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 양방향 겹침 기준 반영은 수행했으며, 기기별 성능 예산은 남아 있다.
 
+## Android 제품 연결 — 2026-09-14
+
+**PV-6B와 제한된 PV-6C를 Android MAUI/Graphite 제품 경로에 연결했다.**
+arm64 Galaxy S25(Android 16)와 x64 emulator(Android 13)의 실행을 구분해 검증했다.
+전체 입력·성능·배포 승인은 계속 `PARTIAL`이다.
+[구현·실행 기록](Doroti/artifacts/platform-views/2026-09-14/android/implementation.md),
+[재현 명령과 지원 범위](Doroti/validation/platform-views/android/README.md)를 따른다.
+
+- **등록·수명:** RID별 manifest 선택 factory, owner coordinator/channel, UI dispatcher와
+  FrameLayout container를 연결했다. native Button/EditText의 생성·배치·rect clip·focus·해제를
+  UI thread에서 처리한다. SurfaceView/Vulkan surface 재생성과 native instance 수명을 분리한다.
+- **합성:** window 아래 SurfaceView와 같은 window의 live native/raster/shield View 순서를 사용한다.
+  첫 raster와 B는 기존 SurfaceView에 직접 그린다. C에서 바뀐 전경 그림만 현재 Graphite recorder의
+  RGBA atlas에 그려 readback하며, 실제 rect clip으로 제한된 작은 영역과 정적 그림 재사용을 적용한다.
+  native snapshot·가림에 따른 native 재생성·CPU renderer fallback은 사용하지 않는다.
+  이는 별도 최상단 foreground SurfaceView나 SurfaceControl/HCPP 구현이 아니다.
+- **프레임:** native operation 전체를 예약한 뒤 bitmap을 준비하고 native geometry·paint order를
+  UI에서 적용한다. 제거된 instance를 참조하는 이전 장면 및 경합 frame은 superseded로 처리한다.
+  readback의 packed stride와 GPU transfer stride를 혼용하던 공통 helper도 수정했다.
+  GPU fence/queue-present와 Android window의 실제 표시 원자성은 구분한다.
+- **입력:** raster는 touch를 통과시키고 shield가 Doroti에 한 번 전달한다. native 버튼 단일 클릭,
+  편집기 입력·포커스 보존, shield on/off·역순·전경 modal을 제품에서 확인했다.
+  native focus의 framework owner 활성화가 편집기 focus를 빼앗지 않도록 수정했다.
+  Tab 전달과 native semantics placeholder 중복 제거를 연결했으나 전체 탐색 승인은 별도다.
+- **검증:** 두 ABI의 Release APK build/install, 실제 10개 겹침 장면, 동일 native identity와 편집
+  내용 보존, 생성·해제, 회전·insets·background/resume를 통과했다. Galaxy의 B도 검증했으며
+  가로 모드에서 viewport 밖 editor는 clip/hide 후 세로 복귀 때 같은 instance로 돌아왔다.
+  캐시·실제 clip 픽셀 검사를 포함한 공통 18개 검사도 통과했다. 자동 입력·창 buffer capture
+  증거이며 물리 입력/scanout 승인은 아니다.
+
+**후속 프레임 개선·로딩 스피너:** native 버튼 위에 32×32 logical-pixel `CircularProgressIndicator`를
+추가했다. 후속 잘림 수정에서 stroke를 안쪽으로 정렬하고 2px logical 여백을 둔 36×36 slot으로
+확장했다. 중심과 실제 indicator 크기는 유지하며 별도 repaint boundary와 실제 scene ClipRect로 분리해 작은 영역만
+전송한다. scope-only raster는 제거하고, 독립 picture를 나눠 static bitmap을 재사용한다.
+동적 그림·opacity/group effect·이동·resize·GPU generation 변경은 적절히 다시 그리며,
+색/opacity group을 독립 picture로 쪼개지 않는다. bitmap 내용만 바뀌면 기존 Android View,
+shield와 geometry/order를 유지한다. picture cull hint를 crop 근거로 사용하지 않는다.
+
+동일 Release APK·Galaxy·8초 spinner workload 비교에서 프레임 처리(owner) 평균
+**206.19 → 5.99ms**, p95 **307.37 → 7.89ms**, 관찰된 queue-accepted frame 빈도
+**4.38 → 117.66fps**였다. readback은 프레임당 **40,435,200 → 40,400 bytes**로 줄었다.
+스피너 영역의 연속 캡처 픽셀 변화와 스피너 위치를 통한 native 단일 클릭도 확인했다.
+[비교 결과](Doroti/artifacts/platform-views/2026-09-14/android/performance/R3CY30KZA4B-120619/result.json),
+[최적화 설계·범위](Doroti/artifacts/platform-views/2026-09-14/android/performance.md).
+이는 idle spinner 장면의 제한된 측정이며 display scanout FPS나 전체 장면 성능 승인이 아니다.
+
+**빨간 영역 backdrop·체크무늬 후속:** 실제 `DorotiTestbedApp` Material 샘플의 `Platform views`
+페이지에서 하늘색 배경을 20px 회색 체크무늬로 바꿨다. Android 31+ C 경로는 빨간 사각형에만
+sigma 6의 clipped backdrop를 적용한다. 앞선 live native/raster View를 HWUI RenderNode에
+그린 뒤 RenderEffect로 블러하고, 빨간 tint는 선명하게 위에 그린다. 초록 사각형은 유지한다.
+첫 Doroti raster는 블러 sample ROI만 추가 캐시하며 native CPU bitmap snapshot은 만들지 않는다.
+공통 planner는 명시적 opt-in의 단일 rect Gaussian만 허용하고 기존 caller·B·group/native child는
+계속 거부한다. 공통 검증은 20개로 늘었다. 실제 sample 페이지의 A/B 픽셀·입력·재진입 증거는
+[후속 기록](Doroti/artifacts/platform-views/2026-09-14/android/backdrop/README.md)을 따른다.
+위 8초 성능 수치는 블러·체크무늬 추가 전 측정이며 새 장면의 성능 수치로 재사용하지 않는다.
+
+**성능·남은 범위:** 개선 전 Galaxy의 C fixture 60-frame 구간 평균 약 74.9ms/40.7ms는
+이전 baseline 기록이다. 개선 후에도 큰 전경 변경·modal transition·p99 spike와 전체 0/1/4-view
+예산은 별도 미승인이다. GPU atlas·readback·scratch·두 bitmap bank 추정 합계
+256 MiB/atlas 축 16384px를 제한하며 HWUI/driver cache와 장시간 메모리 승인은 별도다.
+부모 scroll gesture 중재·multi-touch/capture 변경, 전체 Tab/한글 IME/TalkBack,
+두 제품 owner·100회 제품 수명·device loss·clean package/NativeAOT는 `notVerified`다.
+내부 SurfaceView를 가진 임의 control, native group effects 및 work2의 WebView adapter는
+지원에 포함하지 않는다. Android 최소 OS와 PV-X 범위는 변경하지 않았다.
+
+**스크롤 후속·작업 중단 지점:** Material `Platform views` 하단에 400 logical-pixel 박스를 추가했다.
+큰 scroll clip을 공유하는 독립 그림들을 합쳐 중복 atlas 할당을 줄이고, 이전 native bounds와
+backdrop sample 밖의 그림은 SurfaceView에 직접 그린다. overlay 영역은 배경에서 제외해
+반투명 전경을 이중 적용하지 않는다. Raster View는 위치·크기가 바뀌어도 동일 slot을 재사용하고,
+위치만 변할 때는 Android 전체 layout 요청 대신 offset을 갱신한다. IME·하단 박스·초록 영역에
+실제 clip/repaint boundary를 추가했다. 공통 21개 검사 통과. 스크롤 성능·마지막 빌드 증거와
+남은 작업은 [마무리 기록](Doroti/artifacts/platform-views/2026-09-14/android/scroll/README.md)을 따른다.
+사용자 외출 요청으로 추가 구조 확장은 중단했다. 이 페이지의 stretch는 현재 비활성화되어 있다.
+로컬 Flutter의 ImageFilterEntry에도 native image-filter mutator가 없으며, native를 포함한
+비선형 stretch 지원은 구현하지 않았다. native 위에서 시작한 drag의 부모 scroll 중재,
+전체 frame-budget 승인은 후속 확인 대상으로 남긴다. 마지막 arm64 빌드는 통과했으나 기기 연결이
+끊겨 추가 clip/repaint boundary 변경의 설치·실행은 `notVerified`이며, 최종 x64 빌드·실행도 남았다.
+
 ## Linux Qt Quick GPU 제품 연결 — 2026-09-14
 
 **사용자 선택에 따라 Qt Quick GPU 합성안을 실제 Linux Testbed 실행기에 연결했다.**
@@ -423,6 +501,10 @@ support key는 backend·OS/runtime·view 종류·요청 효과다. rect/rounded/
 ### PV-6 — Android host
 
 선행: PV-2/PV-5 공통 계약.
+
+2026-09-14: 위 Android 제품 연결 절의 B/제한된 C 구현 및 실제 두 기기 증거를 기준으로 한다.
+아래 C의 foreground 요구는 Graphite raster readback을 window View hierarchy에 교차 배치하는
+구성으로 구현했다. 별도 최상단 SurfaceView/HCPP나 성능 승인으로 해석하지 않는다.
 
 - **PV-6B:** SurfaceView와 native View용 container, UI-thread attachment, layout/clip/hide/focus를 구현한다.
 - **PV-6C:** 별도 Doroti foreground surface와 ordering을 연결한다. SurfaceView z-order와 실제 alpha 동작을 확인하고 frame/placement 오차를 계측한다.

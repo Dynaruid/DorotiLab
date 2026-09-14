@@ -15,6 +15,7 @@ namespace Doroti.Skia.Vulkan;
 /// </summary>
 public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 {
+    private const uint Api11 = (1u << 22) | (1u << 12);
     private const uint Api12 = (1u << 22) | (2u << 12);
     private const ulong Timeout = 5_000_000_000;
     private readonly Vk _vk;
@@ -176,8 +177,19 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 throw new PlatformNotSupportedException("VK_KHR_swapchain is required.");
             _stockObserver = new VulkanObserver(_vk, _instance, _device, _queue, _family,
                 extensionNames.Contains("VK_KHR_create_renderpass2"));
+            var graphiteApiVersion = Api12;
+            // Android 13 goldfish can report Vulkan 1.3 while its device dispatch
+            // omits RenderPass2. Instance lookups return non-callable trampolines.
+            // Use Skia's public API ceiling to select its real Vulkan 1.1 render
+            // passes; never substitute a stub or change physical-device properties.
+            if (OperatingSystem.IsAndroid() &&
+                _stockObserver.Resolve("vkCreateRenderPass2", 0, _device.Handle) == 0)
+            {
+                graphiteApiVersion = Api11;
+                Console.WriteLine("DorotiGraphite Vulkan API ceiling=1.1: device RenderPass2 unavailable");
+            }
             _session = SkiaGraphiteSession.CreateVulkan(new(_instance.Handle, _physical.Handle,
-                _device.Handle, _queue.Handle, _family, Api12, _stockObserver.Resolve,
+                _device.Handle, _queue.Handle, _family, graphiteApiVersion, _stockObserver.Resolve,
                 image => { var state = _stockObserver.State((ulong)image); return ((int)state.Layout, state.Family); }, _stockObserver.Check), 1,
                 _pipelinedWindowFrames ? WindowFrameLimit : 1);
             var poolInfo = new CommandPoolCreateInfo { SType = StructureType.CommandPoolCreateInfo,
@@ -200,6 +212,17 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             ReleaseDevice();
             throw;
         }
+    }
+
+    private SkiaGraphiteSession.Frame? _platformRecording;
+    private bool _platformReadback;
+    public Task<SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info)
+    {
+        CheckOwner();
+        var frame = _platformRecording ?? throw new InvalidOperationException("Platform readback requires an active paint callback.");
+        var result = frame.RequestReadback(surface, info);
+        _platformReadback = true;
+        return result;
     }
 
     public bool Render(int width, int height, Action<SKSurface, int, int> paint, Func<bool>? shouldPresent = null,
@@ -227,7 +250,10 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         {
             frame = _session!.BeginVulkanFrame(slot.Target!);
             frame.Surface.Canvas.Clear(SKColors.Transparent);
-            paint(frame.Surface, Width, Height);
+            _platformReadback = false;
+            _platformRecording = frame;
+            try { paint(frame.Surface, Width, Height); }
+            finally { _platformRecording = null; }
             var paintedTime = FrameTimestamp();
             if (shouldPresent?.Invoke() == false)
             {
@@ -285,7 +311,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             frame = null;
             SubmittedWindowFrames++;
             MaximumWindowFramesInFlight = Math.Max(MaximumWindowFramesInFlight, WindowFramesInFlight);
-            if (!_pipelinedWindowFrames)
+            if (!_pipelinedWindowFrames || _platformReadback)
             {
                 // Qt has no idle completion callback yet; preserve its
                 // synchronous retirement contract until its host adopts one.

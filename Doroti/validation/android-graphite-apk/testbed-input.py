@@ -35,7 +35,8 @@ def main():
         return ET.fromstring(xml)
 
     def tap(tree, label):
-        node = next(n for n in tree.iter("node") if label in (n.get("text"), n.get("content-desc")))
+        node = next(n for n in tree.iter("node") if label in
+                    ((n.get("text") or "").split("\n")[0], (n.get("content-desc") or "").split("\n")[0]))
         left, top, right, bottom = map(int, re.findall(r"\d+", node.get("bounds")))
         adb("shell", "input", "tap", (left + right) // 2, (top + bottom) // 2)
         time.sleep(.6)
@@ -50,12 +51,16 @@ def main():
             device=args.serial, count=1, physicalInput=False), indent=2), encoding="utf-8")
         return
     if args.material_only:
-        tap(tree, "Color\nTab 2 of 4")
+        tap(tree, "Color")
         tree = capture("color")
         assert any("Primary" in n.get("text", "") for n in tree.iter("node")), "Color content not shown"
-        tap(tree, "Components\nTab 1 of 4")
+        tap(tree, "Components")
         tree = capture("components")
-        adb("shell", "input", "swipe", "520", "1750", "520", "850", "400")
+        viewport = next(tree.iter("node"))
+        left, top, right, bottom = map(int, re.findall(r"\d+", viewport.get("bounds")))
+        x = left + (right - left) // 2
+        adb("shell", "input", "swipe", x, top + (bottom - top) * 4 // 5,
+            x, top + (bottom - top) * 2 // 5, "400")
         time.sleep(1)
         after = capture("scrolled")
         assert ET.tostring(tree) != ET.tostring(after), "Scroll did not change visible content"

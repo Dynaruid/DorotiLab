@@ -6,6 +6,7 @@ public abstract record PlatformCompositionPart(int PaintOrder);
 public sealed record PlatformRasterSegment(int PaintOrder, IReadOnlyList<SceneCommand> Commands) : PlatformCompositionPart(PaintOrder);
 public sealed record PlatformNativeSegment(PlatformViewPlacement Placement) : PlatformCompositionPart(Placement.PaintOrder);
 public sealed record PlatformShieldSegment(PlatformInputShield Shield) : PlatformCompositionPart(Shield.PaintOrder);
+public sealed record PlatformBackdropSegment(int PaintOrder, Rect Bounds, double SigmaX, double SigmaY) : PlatformCompositionPart(PaintOrder);
 
 /// <summary>Immutable plan plus native lifetime leases. Dispose only after presentation resources retire.</summary>
 public sealed class PlatformCompositionPlan : IDisposable
@@ -36,17 +37,18 @@ public static class PlatformCompositionPlanner
     private sealed record State(PlatformViewTransform Transform, Rect? Clip, string? Unsupported);
 
     public static PlatformCompositionPlan Build(Scene scene, PlatformCompositionToken token, PlatformViewCoordinator coordinator,
-        PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition)
+        PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition, bool allowNativeBackdrop = false)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ObjectDisposedException.ThrowIf(scene.debugDisposed, scene);
         if (scene.viewId != token.OwnerViewId) throw new InvalidOperationException("Platform composition scene owner is invalid.");
-        return Build(scene.Commands, token, coordinator, composition);
+        return Build(scene.Commands, token, coordinator, composition, allowNativeBackdrop);
     }
 
     /// <summary>Plans the immutable commands retained by a product renderer.</summary>
     public static PlatformCompositionPlan Build(IReadOnlyList<SceneCommand> commands, PlatformCompositionToken token,
-        PlatformViewCoordinator coordinator, PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition)
+        PlatformViewCoordinator coordinator, PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition,
+        bool allowNativeBackdrop = false)
     {
         ArgumentNullException.ThrowIfNull(commands);
         if (composition is not (PlatformViewComposition.NativeOverlay or PlatformViewComposition.InterleavedComposition))
@@ -62,7 +64,8 @@ public static class PlatformCompositionPlanner
             return new(token, [new PlatformRasterSegment(0, Array.AsReadOnly(flattened.ToArray()))], []);
         if (nativeCount > MaximumNativeViews) throw Failure("native/overlay limit exceeded");
         // Backdrop sampling may reach earlier native siblings even outside their scope.
-        if (nativeCount != 0 && flattened.Any(command => command.Operation == "backdropFilter"))
+        if (nativeCount != 0 && flattened.Any(command => command.Operation == "backdropFilter") &&
+            (!allowNativeBackdrop || composition != PlatformViewComposition.InterleavedComposition))
             throw Failure("backdrop sampling across native content is unsupported");
 
         var parts = new List<PlatformCompositionPart>();
@@ -76,6 +79,26 @@ public static class PlatformCompositionPlanner
         var precedingNativeBounds = new List<Rect>();
         foreach (var command in flattened)
         {
+            if (allowNativeBackdrop && nativeCount != 0 && command.Operation == "backdropFilter")
+            {
+                if (command.HostPayload is not SceneBackdropFilterPayload backdrop || state.Clip is not { } clip ||
+                    state.Unsupported is not null || !state.Transform.IsAxisAligned ||
+                    backdrop.BlendMode != BlendMode.srcOver || backdrop.BackdropId is not null ||
+                    backdrop.Filter is not { Outer: null, Inner: null, ColorFilter: null, Matrix4: null, Shader: null, TileMode: TileMode.clamp } filter ||
+                    !double.IsFinite(filter.SigmaX) || !double.IsFinite(filter.SigmaY) ||
+                    filter.SigmaX <= 0 || filter.SigmaY <= 0 || filter.SigmaX > 32 || filter.SigmaY > 32)
+                    throw Failure("native backdrop requires a clipped, ungrouped srcOver Gaussian blur with sigma in (0,32]");
+                if (parts.Any(p => p is PlatformBackdropSegment)) throw Failure("one native backdrop region per frame is supported");
+                FlushRaster();
+                parts.Add(new PlatformBackdropSegment(parts.Count, clip,
+                    filter.SigmaX * state.Transform.M11, filter.SigmaY * state.Transform.M22));
+                // The host draws the filtered backdrop. Keep a balanced no-op scope
+                // for its sharp foreground child, and reject native children inside it.
+                var scope = new SceneCommand("offset", null) { HostPayload = new SceneOffsetPayload(0, 0) };
+                states.Push(state); scopes.Add(scope); raster.AddRange(scopes);
+                state = state with { Unsupported = "native views inside a backdrop scope are unsupported" };
+                continue;
+            }
             if (command.Operation == "platformView")
             {
                 if (command.HostPayload is not ScenePlatformViewPayload native) throw Failure("untyped native payload");

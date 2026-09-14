@@ -117,6 +117,16 @@ public sealed class MauiFrameworkHost : IDisposable
             graphics.AttachPlatformViews(platformViews, channel);
         }
 #endif
+#if ANDROID
+        if (application?.Manifest.PlatformViews.Length > 0 && surface.Element is DorotiGraphiteView { PlatformViews: { } platformViews })
+        {
+            var coordinator = application.ConfigurePlatformViews(capabilities, viewId, new AndroidPlatformViewDispatcher());
+            platformViews.Configure(coordinator);
+            var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            messages = channel;
+            graphics.AttachPlatformViews(platformViews, channel);
+        }
+#endif
         if (application is null)
             capabilities.Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
         else

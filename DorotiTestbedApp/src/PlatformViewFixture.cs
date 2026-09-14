@@ -18,6 +18,22 @@ internal sealed class PlatformViewFixture : StatefulWidget
 {
     internal PlatformViewFixture(bool embedded = false) { Embedded = embedded; }
     internal bool Embedded { get; }
+    private sealed class CheckerboardPainter : CustomPainter
+    {
+        public override void paint(Canvas canvas, Size size)
+        {
+            const double cell = 20;
+            var paint = new Paint { color = new Color(0xfff5f5f5), isAntiAlias = false };
+            canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+            paint.color = new Color(0xffc7c7c7);
+            for (var row = 0; row * cell < size.height; row++)
+                for (var column = row % 2; column * cell < size.width; column += 2)
+                    canvas.drawRect(Rect.fromLTWH(column * cell, row * cell,
+                        Math.Min(cell, size.width - column * cell), Math.Min(cell, size.height - row * cell)), paint);
+        }
+        public override bool shouldRepaint(CustomPainter oldDelegate) => false;
+    }
+    private static readonly CheckerboardPainter Checkerboard = new();
     internal static bool UsesNativeOverlay(BuildContext context)
     {
         var owner = View.of(context);
@@ -126,21 +142,33 @@ internal sealed class PlatformViewFixture : StatefulWidget
                                 child: new M.AlertDialog(title: new Text("Native overlay shield"),
                                     content: new M.TextField()))), debug: true)), child: new Text("Open modal")),
                     ]),
+                    .. (!widget.Embedded ? new Widget[] { new Text($"Foreground taps: {PlatformViewFixtureProbe.ForegroundClicks}") } : []),
                     widget.Embedded
                         ? new SingleChildScrollView(scrollDirection: Axis.horizontal, child: new SizedBox(width: 440, height: 240,
-                            child: new Stack(children: BuildScene(Native))))
-                        : new SizedBox(height: 360, child: new Stack(children: BuildScene(Native))),
-                    new Padding(padding: EdgeInsets.CreateAll(16), child: new M.TextField(decoration: new M.InputDecoration(labelText: "Doroti IME / native focus return"))),
+                            child: new Stack(children: BuildScene(Native, support.NativeBackdropBlur))))
+                        : new SizedBox(height: 360, child: new Stack(children: BuildScene(Native, support.NativeBackdropBlur))),
+                    new ClipRect(child: new RepaintBoundary(child:
+                        new Padding(padding: EdgeInsets.CreateAll(16), child: new M.TextField(decoration: new M.InputDecoration(labelText: "Doroti IME / native focus return"))))),
+                    .. (widget.Embedded ? new Widget[] {
+                        new ClipRect(child: new RepaintBoundary(child:
+                            new Container(key: new ValueKey<string>("platform-view-scroll-box"), height: 400,
+                                color: M.Theme.of(context).colorScheme.surfaceContainerHighest))),
+                    } : []),
                 ];
-            return widget.Embedded ? new ListView(children: content) :
+            // Android's stretch overscroll wraps the entire list in an image filter;
+            // live native children cannot participate in that group effect.
+            return widget.Embedded ? new ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(overscroll: false),
+                child: new ListView(physics: new ClampingScrollPhysics(), children: content)) :
                 new M.Scaffold(appBar: new M.AppBar(title: new Text($"PlatformView — owner {owner.viewId}")),
                     body: new Column(children: content));
         }
 
-        private List<Widget> BuildScene(Func<long, string, Widget> native)
+        private List<Widget> BuildScene(Func<long, string, Widget> native, bool nativeBackdropBlur)
         {
             var children = new List<Widget> {
-                new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new Container(color: new Color(0xffddeaff)))
+                new Positioned(left: 0, top: 0, right: 0, bottom: 0,
+                    child: new RepaintBoundary(child: new CustomPaint(painter: Checkerboard)))
             };
             Widget Button() => new Positioned(key: new ValueKey<string>("native-button-slot"), left: 20, top: 20,
                 width: 220, height: 100, child: native(1, "doroti/native-button"));
@@ -151,14 +179,26 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 width: _stage == 2 ? 440 : 100, height: _stage == 2 ? 220 : 80,
                 child: new PointerInterceptor(new GestureDetector(onTap: () =>
                     setState(() => PlatformViewFixtureProbe.ForegroundClicks++),
-                    child: new Container(color: new Color(_stage >= 5 ? 0x99ff3300u : 0xffff3300u))),
+                    child: new ClipRect(child: new BackdropFilter(
+                        filterConfig: Doroti.Framework.Rendering.ImageFilterConfig.CreateBlur(sigmaX: 6, sigmaY: 6, tileMode: TileMode.clamp, bounded: true),
+                        enabled: nativeBackdropBlur && Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_BACKDROP") != "0",
+                        child: new Container(color: new Color(_stage >= 5 ? 0x99ff3300u : 0xffff3300u))))),
                     intercepting: _stage != 7));
             if (_stage is 4 or 8) children.Add(Foreground());
             if (_mounted) children.Add(Button());
             if (_stage == 5) children.Add(new Positioned(left: 120, top: 60, width: 240, height: 80,
-                child: new Container(color: new Color(0xff00aa55))));
+                child: new ClipRect(child: new RepaintBoundary(child: new Container(color: new Color(0xff00aa55))))));
             if (_mounted) children.Add(Editor());
             if (_stage is 1 or 2 or 5 or 6 or 7 or 9) children.Add(Foreground());
+            if (_mounted) children.Add(new Positioned(key: new ValueKey<string>("native-loading-spinner"),
+                // Keep the 32px indicator centered at (68,68), with room for AA.
+                // The default centered stroke would extend outside its own clip.
+                left: 50, top: 50, width: 36, height: 36,
+                child: new IgnorePointer(child: new ClipRect(child: new RepaintBoundary(
+                    child: new M.CircularProgressIndicator(strokeWidth: 3,
+                        strokeAlign: M.CircularProgressIndicator.strokeAlignInside, padding: EdgeInsets.CreateAll(2),
+                        color: new Color(0xff0099ff),
+                        semanticsLabel: "Native view loading"))))));
             return children;
         }
 

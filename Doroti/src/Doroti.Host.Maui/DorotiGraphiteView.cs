@@ -10,6 +10,9 @@ namespace Doroti.Host.Maui;
 // never construct a SkiaSharp GL/Ganesh platform view or publish a fake GRContext.
 public sealed class DorotiGraphiteView : SKGLView
 {
+#if ANDROID
+    internal AndroidPlatformViewHost? PlatformViews { get; set; }
+#endif
     internal static bool Enabled => Environment.GetEnvironmentVariable(
 #if ANDROID
         "DOROTI_ANDROID_GRAPHITE"

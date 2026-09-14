@@ -57,6 +57,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             if (!hidden.Add(id) || !nodes.TryGetValue(id, out var node)) continue;
             foreach (var child in node.children) pending.Push(child);
         }
+        hidden.UnionWith(nodes.Values.Where(node => node.platformViewId is not null).Select(node => node.id));
         foreach (var id in hidden) nodes.Remove(id);
         var visible = update.nodes.Where(node => nodes.ContainsKey(node.id)).ToArray();
         if (!SemanticsUpdateDiffer.Diff(_nodes, visible).HasChanges) { _suppressed++; return; }
@@ -92,9 +93,10 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
     private void Attach(object? sender, EventArgs args)
     {
-        if (_disposed || ReferenceEquals(_native, _element.Handler?.PlatformView)) return;
+        if (_disposed || ReferenceEquals(_native, (_element.Handler?.PlatformView as DorotiAndroidViewContainer)?.Surface)) return;
         Detach();
-        if (_element.Handler?.PlatformView is not DorotiAndroidVulkanView native) return;
+        if (_element.Handler?.PlatformView is not DorotiAndroidViewContainer container) return;
+        var native = container.Surface;
         _native = native;
         _helper = new VirtualNodes(native, this);
         native.SemanticsHelper = _helper;

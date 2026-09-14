@@ -163,6 +163,59 @@ await Check("unsupported-effects-zero-view-and-layout", async () =>
     using var scaledPlan = PlatformCompositionPlanner.Build(scaled.build(), new(7, 0, 2, 0, 2, 2), owner);
     Assert(scaledPlan.Parts.OfType<PlatformNativeSegment>().Single().Placement.Transform == PlatformViewTransform.Identity, "native placement applied DPR twice");
 });
+await Check("native-backdrop-opt-in-clipped-order-and-balanced-raster", async () =>
+{
+    await using var owner = Owner(44, new FakeFactory());
+    var handle = await owner.CreateAsync(new(1, "control"));
+    var builder = new SceneBuilder(44);
+    builder.addPlatformView(handle, width: 100, height: 80);
+    builder.pushOffset(10, 20);
+    builder.pushClipRect(Rect.fromLTWH(0, 0, 40, 30));
+    builder.pushBackdropFilter(new ImageFilter(6, 6));
+    Picture(builder, 0x99ff3300);
+    builder.pop(); builder.pop(); builder.pop();
+    using var scene = builder.build();
+    await Throws(() => Task.FromResult(PlatformCompositionPlanner.Build(scene, new(44, 0, 1, 0), owner)));
+    await Throws(() => Task.FromResult(PlatformCompositionPlanner.Build(scene, new(44, 0, 1, 0), owner,
+        PlatformViewComposition.NativeOverlay, allowNativeBackdrop: true)));
+    using var plan = PlatformCompositionPlanner.Build(scene, new(44, 0, 1, 0), owner, allowNativeBackdrop: true);
+    var blur = plan.Parts.OfType<PlatformBackdropSegment>().Single();
+    Assert(blur.Bounds == Rect.fromLTWH(10, 20, 40, 30) && blur.SigmaX == 6 && blur.SigmaY == 6, "blur clip/transform");
+    Assert(plan.Parts.OfType<PlatformNativeSegment>().Single().PaintOrder < blur.PaintOrder &&
+        plan.Parts.OfType<PlatformRasterSegment>().Last().PaintOrder > blur.PaintOrder, "backdrop/foreground order");
+    foreach (var raster in plan.Parts.OfType<PlatformRasterSegment>())
+    {
+        var depth = 0;
+        foreach (var command in raster.Commands)
+        {
+            Assert(command.Operation != "backdropFilter", "foreground filtered twice");
+            if (command.Operation is "offset" or "clipRect") depth++;
+            if (command.Operation == "pop") depth--;
+            Assert(depth >= 0, "unbalanced native backdrop raster");
+        }
+        Assert(depth == 0, "unclosed native backdrop raster");
+    }
+});
+await Check("native-backdrop-rejects-unbounded-grouped-multiple-and-native-child", async () =>
+{
+    await using var owner = Owner(45, new FakeFactory());
+    var handle = await owner.CreateAsync(new(1, "control"));
+    foreach (var invalid in new[] { "unbounded", "grouped", "multiple", "native-child", "too-wide" })
+    {
+        var builder = new SceneBuilder(45);
+        if (invalid != "native-child") builder.addPlatformView(handle, width: 100, height: 80);
+        if (invalid != "unbounded") builder.pushClipRect(Rect.fromLTWH(0, 0, 40, 30));
+        if (invalid == "grouped") builder.pushOpacity(128);
+        builder.pushBackdropFilter(new ImageFilter(invalid == "too-wide" ? 33 : 6, 6));
+        if (invalid == "native-child") builder.addPlatformView(handle, width: 100, height: 80);
+        Picture(builder, 0x99ff3300); builder.pop();
+        if (invalid == "multiple") { builder.pushBackdropFilter(new ImageFilter(6, 6)); builder.pop(); }
+        if (invalid == "grouped") builder.pop();
+        if (invalid != "unbounded") builder.pop();
+        using var scene = builder.build();
+        await Throws(() => Task.FromResult(PlatformCompositionPlanner.Build(scene, new(45, 0, 1, 0), owner, allowNativeBackdrop: true)));
+    }
+});
 await Check("native-overlay-foreground-rejection", async () =>
 {
     await using var owner = Owner(71, new FakeFactory());
@@ -355,6 +408,100 @@ await Check("raster-segment-pixels-and-overlay-budget", async () =>
     Assert(pool.LiveSurfaces == 2, "context loss freed in-flight surfaces");
     first.Dispose(); second.Dispose();
     Assert(pool.LiveSurfaces == 0 && pool.ReservedBytes == 0, "old generation surfaces leaked");
+});
+await Check("platform-raster-cache-content-and-invalidation", () =>
+{
+    var recorder = new PictureRecorder();
+    new Canvas(recorder).drawRect(Rect.fromLTWH(0, 0, 8, 8), new Paint { color = new Color(0xffff0000) });
+    using var picture = recorder.endRecording();
+    Scene Build(double dx = 0, bool changing = false, long alpha = 255)
+    {
+        var builder = new SceneBuilder(42);
+        builder.pushTransform(new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, dx, 0, 0, 1 });
+        builder.pushOpacity(alpha);
+        builder.addPicture(Offset.zero, picture, willChangeHint: changing);
+        builder.pop(); builder.pop(); return builder.build();
+    }
+    using var a = Build(); using var same = Build(); using var moved = Build(1);
+    using var fading = Build(alpha: 128); using var dynamic = Build(changing: true);
+    Assert(SkiaPlatformRasterContent.HasDrawing(a.Commands), "real raster was removed");
+    Assert(SkiaPlatformRasterContent.Equivalent(a.Commands, same.Commands), "immutable snapshot with equivalent new scope arrays missed cache");
+    Assert(!SkiaPlatformRasterContent.Equivalent(a.Commands, moved.Commands), "moving raster reused old coordinates");
+    Assert(!SkiaPlatformRasterContent.Equivalent(a.Commands, fading.Commands), "opacity change reused stale alpha");
+    Assert(!SkiaPlatformRasterContent.Equivalent(dynamic.Commands, dynamic.Commands), "willChange snapshot cached");
+    var empty = new SceneBuilder(42); empty.pushOffset(8, 9); empty.pushOpacity(128); empty.pop(); empty.pop();
+    using var blank = empty.build();
+    Assert(!SkiaPlatformRasterContent.HasDrawing(blank.Commands), "scope-only segment copied a full viewport");
+    var unknown = new[] { new SceneCommand("future-dynamic-effect", null) };
+    Assert(SkiaPlatformRasterContent.HasDrawing(unknown) && !SkiaPlatformRasterContent.Equivalent(unknown, unknown), "unknown drawing/effect was removed or cached");
+    return Task.CompletedTask;
+});
+await Check("platform-raster-slices-real-clip-pixels-and-group-effects", () =>
+{
+    var builder = new SceneBuilder(43);
+    builder.pushOffset(3, 4); builder.pushClipRect(Rect.fromLTWH(2, 3, 8, 9), Clip.hardEdge);
+    Picture(builder, 0xffff0000); builder.pop(); builder.pop();
+    using var scene = builder.build();
+    var slices = SkiaPlatformRasterContent.Split(scene.Commands, 32, 32);
+    Assert(slices.Count == 1 && slices[0].Bounds.Width < 32 && slices[0].Bounds.Height < 32, "real clip was not cropped");
+    using var renderer = new SkiaSceneRenderer(43, new FakeSkiaHost(), null, null, "fake", "cpu-test", "cpu-test", enablePictureRasterCache: false);
+    using var full = SKSurface.Create(new SKImageInfo(32, 32));
+    using var reconstructed = SKSurface.Create(new SKImageInfo(32, 32));
+    full.Canvas.Clear(SKColors.Transparent); reconstructed.Canvas.Clear(SKColors.Transparent);
+    renderer.DrawPlatformRasterSegment(full.Canvas, scene.Commands, 32, 32);
+    foreach (var slice in slices)
+    {
+        using var cropped = SKSurface.Create(new SKImageInfo(slice.Bounds.Width, slice.Bounds.Height));
+        cropped.Canvas.Clear(SKColors.Transparent); cropped.Canvas.Translate(-slice.Bounds.Left, -slice.Bounds.Top);
+        renderer.DrawPlatformRasterSegment(cropped.Canvas, slice.Commands, 32, 32);
+        using var image = cropped.Snapshot(); reconstructed.Canvas.DrawImage(image, slice.Bounds.Left, slice.Bounds.Top, SKSamplingOptions.Default);
+    }
+    using var expected = full.PeekPixels(); using var actual = reconstructed.PeekPixels();
+    for (var y = 0; y < 32; y++) for (var x = 0; x < 32; x++)
+        Assert(expected.GetPixelColor(x, y) == actual.GetPixelColor(x, y), "cropped reconstruction changed pixels");
+    var grouped = new SceneBuilder(43); grouped.pushOpacity(128);
+    Picture(grouped, 0xffff0000); Picture(grouped, 0xff00ff00); grouped.pop();
+    using var group = grouped.build();
+    Assert(SkiaPlatformRasterContent.Split(group.Commands, 32, 32).Count == 1, "group opacity split into independently blended pictures");
+    var recorder = new PictureRecorder();
+    new Canvas(recorder, Rect.fromLTWH(0, 0, 1, 1)).drawRect(Rect.fromLTWH(0, 0, 20, 20), new Paint());
+    using var hinted = recorder.endRecording(); var hintBuilder = new SceneBuilder(43); hintBuilder.addPicture(Offset.zero, hinted);
+    using var hintScene = hintBuilder.build();
+    Assert(SkiaPlatformRasterContent.Split(hintScene.Commands, 32, 32)[0].Bounds == new SKRectI(0, 0, 32, 32), "picture cull hint was used as a clipping contract");
+    return Task.CompletedTask;
+});
+await Check("scroll-raster-merge-and-translucent-routing-pixels", () =>
+{
+    var builder = new SceneBuilder(46);
+    // Slightly smaller than the viewport, as with a scroll view under an app bar.
+    builder.pushClipRect(Rect.fromLTWH(0, 4, 32, 28));
+    Picture(builder, 0x8000ff00); Picture(builder, 0x80ff0000); builder.pop();
+    using var scene = builder.build();
+    var slices = SkiaPlatformRasterContent.Split(scene.Commands, 32, 32);
+    Assert(slices.Count == 1, "scroll clips multiplied large bitmap allocations");
+    using var renderer = new SkiaSceneRenderer(46, new FakeSkiaHost(), null, null, "fake", "cpu-test", "cpu-test", enablePictureRasterCache: false);
+    using var expected = SKSurface.Create(new SKImageInfo(32, 32));
+    using var routed = SKSurface.Create(new SKImageInfo(32, 32));
+    using var overlay = SKSurface.Create(new SKImageInfo(32, 32));
+    var native = new SKRect(8, 8, 24, 24);
+    using var nativePaint = new SKPaint { Color = new SKColor(0, 0, 255, 128) };
+    expected.Canvas.Clear(SKColors.White); routed.Canvas.Clear(SKColors.White); overlay.Canvas.Clear(SKColors.Transparent);
+    expected.Canvas.DrawRect(native, nativePaint);
+    renderer.DrawPlatformRasterSegment(expected.Canvas, scene.Commands, 32, 32);
+    routed.Canvas.Save(); routed.Canvas.ClipRect(native, SKClipOperation.Difference, false);
+    renderer.DrawPlatformRasterSegment(routed.Canvas, slices[0].Commands, 32, 32); routed.Canvas.Restore();
+    routed.Canvas.DrawRect(native, nativePaint);
+    overlay.Canvas.ClipRect(native, SKClipOperation.Intersect, false);
+    renderer.DrawPlatformRasterSegment(overlay.Canvas, slices[0].Commands, 32, 32);
+    using var image = overlay.Snapshot(); routed.Canvas.DrawImage(image, 0, 0, SKSamplingOptions.Default);
+    using var a = expected.PeekPixels(); using var b = routed.PeekPixels();
+    for (var y = 0; y < 32; y++) for (var x = 0; x < 32; x++)
+    {
+        var ca = a.GetPixelColor(x, y); var cb = b.GetPixelColor(x, y);
+        Assert(Math.Abs(ca.Red-cb.Red) <= 1 && Math.Abs(ca.Green-cb.Green) <= 1 && Math.Abs(ca.Blue-cb.Blue) <= 1 && ca.Alpha == cb.Alpha,
+            "raster routing double-blended foreground or changed pixels");
+    }
+    return Task.CompletedTask;
 });
 Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { schemaVersion = "doroti.platform-views.tests/v1", automated = "passed", tests = results, productLive = "notVerified", physical = "notVerified" }));
 

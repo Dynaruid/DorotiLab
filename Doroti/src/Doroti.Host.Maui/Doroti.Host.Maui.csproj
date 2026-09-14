@@ -46,7 +46,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
     <PackageReference Include="SkiaSharp.NativeAssets.macOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
-    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
   </ItemGroup>

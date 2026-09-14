@@ -14,22 +14,36 @@ using SkiaSharp.Views.Maui;
 
 namespace Doroti.Host.Maui;
 
-public sealed class DorotiAndroidVulkanViewHandler : ViewHandler<DorotiGraphiteView, DorotiAndroidVulkanView>
+public sealed class DorotiAndroidVulkanViewHandler : ViewHandler<DorotiGraphiteView, DorotiAndroidViewContainer>
 {
     private static readonly CommandMapper<DorotiGraphiteView, DorotiAndroidVulkanViewHandler> Commands =
         new(ViewCommandMapper) { [nameof(ISKGLView.InvalidateSurface)] = (handler, _, _) => handler.PlatformView.RequestFrame() };
     public DorotiAndroidVulkanViewHandler() : base(ViewMapper, Commands) { }
-    protected override DorotiAndroidVulkanView CreatePlatformView() => new(Context);
-    protected override void ConnectHandler(DorotiAndroidVulkanView platformView)
+    protected override DorotiAndroidViewContainer CreatePlatformView() => new(Context);
+    protected override void ConnectHandler(DorotiAndroidViewContainer platformView)
     {
         base.ConnectHandler(platformView);
         platformView.Connect(VirtualView);
     }
-    protected override void DisconnectHandler(DorotiAndroidVulkanView platformView)
+    protected override void DisconnectHandler(DorotiAndroidViewContainer platformView)
     {
         platformView.Disconnect();
         base.DisconnectHandler(platformView);
     }
+}
+
+public sealed class DorotiAndroidViewContainer : Android.Widget.FrameLayout
+{
+    internal DorotiAndroidVulkanView Surface { get; }
+    public DorotiAndroidViewContainer(Context context) : base(context)
+    {
+        Surface = new(context);
+        AddView(Surface, new LayoutParams(-1, -1));
+    }
+    internal void Connect(DorotiGraphiteView owner) => Surface.Connect(owner);
+    internal void Disconnect() => Surface.Disconnect();
+    internal void RequestFrame() => Surface.RequestFrame();
+    internal void DrawFromVsync() => Surface.DrawFromVsync();
 }
 
 public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallback
@@ -53,6 +67,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     private readonly double[] _timingSums = new double[7];
     private readonly double[] _timingMaxima = new double[7];
     private bool _inputTiming;
+    private bool _platformFrameTiming;
     private double _density = 1;
     internal double SemanticsDensity => _density;
     internal AndroidX.CustomView.Widget.ExploreByTouchHelper? SemanticsHelper { get; set; }
@@ -77,9 +92,12 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     internal void Connect(DorotiGraphiteView owner)
     {
         _owner = owner;
+        owner.PlatformViews?.Bind(this, (DorotiAndroidViewContainer)Parent!);
         RefreshDensity();
         _inputTiming = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?
             .Intent?.GetStringExtra("DOROTI_INPUT_TIMING") == "1";
+        _platformFrameTiming = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?
+            .Intent?.GetStringExtra("DOROTI_PLATFORM_FRAME_PROFILE") == "1";
         Holder!.AddCallback(this);
         _live = Holder.Surface?.IsValid == true;
         if (_live && Holder.SurfaceFrame is { } bounds) { _width = bounds.Width(); _height = bounds.Height(); }
@@ -129,6 +147,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         _pending = false;
         if (!_live || _faulted || _retirement is not null || _owner is null) return;
         MauiSkiaPaintContext? paint = null;
+        var frameStarted = _platformFrameTiming ? Stopwatch.GetTimestamp() : 0;
         try
         {
             if (_window is null)
@@ -142,7 +161,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 if (_nativeWindow == 0) throw new InvalidOperationException("ANativeWindow_fromSurface failed.");
                 _window = GraphiteVulkanWindow.CreateAndroid(_nativeWindow);
                 _window.EnableFrameTiming = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?
-                    .Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1" || _inputTiming;
+                    .Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1" || _inputTiming || _platformFrameTiming;
                 _window.ResourcesReleasing += ReleaseRendererResources;
                 _generation++;
                 global::Android.Util.Log.Info("DorotiGraphite", $"Vulkan device={_window.DeviceName} generation={_generation}");
@@ -152,9 +171,13 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 paint = new(surface, _window.ContextIdentity, width, height, _density,
                     (_generation << 32) | _window.Generation, GetType().FullName!, "Android/SurfaceView/Graphite-Vulkan");
                 _owner.PaintGraphite(paint);
-            }, () => paint is { SkipPresent: false, SkipRaster: false });
+            }, () => paint is { SkipPresent: false, SkipRaster: false } && _owner.PlatformViews?.RejectFrame != true);
+            if (_owner.PlatformViews is { } platformViews) presented = platformViews.Finish(presented);
             if (paint?.Completion is { } completion) _owner.CompleteGraphite(completion, !presented);
             if (presented && _window.EnableFrameTiming) RecordFrameTiming(_window.LastFrameTiming);
+            if (presented && _platformFrameTiming)
+                global::Android.Util.Log.Info("DorotiPlatformTiming", FormattableString.Invariant(
+                    $"frame={_window.SubmittedWindowFrames} ownerMs={Stopwatch.GetElapsedTime(frameStarted).TotalMilliseconds:F3} vulkanMs={_window.LastFrameTiming.TotalMs:F3} paintMs={_window.LastFrameTiming.PaintMs:F3} fenceMs={_window.LastFrameTiming.FenceMs:F3}"));
             if (presented && _inputTiming && _window.LastFrameTiming.TotalMs > 12)
                 global::Android.Util.Log.Info("DorotiInputTiming", $"frame={_window.LastFrameTiming}");
             ScheduleGpuCompletion();
@@ -162,7 +185,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         }
         catch (Exception exception)
         {
-            _owner.FailGraphite(paint?.Completion, exception);
+            _owner?.PlatformViews?.Finish(false);
+            _owner?.FailGraphite(paint?.Completion, exception);
             global::Android.Util.Log.Error("DorotiGraphite", exception.ToString());
             _faulted = true;
             if (_window is not null) ReleaseSurface();
@@ -171,6 +195,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     }
 
     private void ReleaseRendererResources() => _owner?.ReleaseGraphiteResources();
+    internal Task<Doroti.Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
+        (_window ?? throw new InvalidOperationException("Android Vulkan window is unavailable.")).RequestPlatformReadback(surface, info);
     private void ScheduleGpuCompletion()
     {
         if (_gpuCompletionPending || !_live || _window?.WindowFramesInFlight is not > 0) return;

@@ -229,7 +229,9 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                                 try
                                 {
                                     if (result is null) throw new InvalidOperationException("Graphite asynchronous readback failed.");
-                                    _readback!.TrySetResult(new(info, result.GetPlaneRowBytes(0), result.ToArray(0)));
+                                    // ToArray strips transfer-buffer row padding. Its stride is
+                                    // the requested packed image stride, not GetPlaneRowBytes.
+                                    _readback!.TrySetResult(new(info, info.RowBytes, result.ToArray(0)));
                                 }
                                 catch (Exception exception) { _readback!.TrySetException(exception); }
                                 finally { _session._pendingReadbacks--; _readbackPending = false; }

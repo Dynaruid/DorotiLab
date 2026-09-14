@@ -291,6 +291,14 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal void HideTextInput()
         => DispatchInputMutation(HideTextInputCore);
 
+#if ANDROID
+    internal void YieldAndroidNativeFocus()
+    {
+        DeactivateActiveInput(clearFocus: true);
+        DetachInputs();
+    }
+#endif
+
     private void HideTextInputCore()
     {
         if (_disposed) return;
