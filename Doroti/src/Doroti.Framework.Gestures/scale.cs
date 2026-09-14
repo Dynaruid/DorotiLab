@@ -40,24 +40,21 @@ internal class _PointerPanZoomData__scale
     internal virtual double _scale { get; private set; } = default!;
     internal virtual double _rotation { get; private set; } = default!;
 
-    internal _PointerPanZoomData__scale(ScaleGestureRecognizer parent, PointerPanZoomStartEvent @event)
+    private _PointerPanZoomData__scale(ScaleGestureRecognizer parent, Offset position, Offset pan, double scale, double rotation)
     {
         this.parent = parent;
-        this._position = @event.position;
-        this._pan = Offset.zero;
-        this._scale = 1;
-        this._rotation = 0;
+        this._position = position;
+        this._pan = pan;
+        this._scale = scale;
+        this._rotation = rotation;
     }
+
+    internal _PointerPanZoomData__scale(ScaleGestureRecognizer parent, PointerPanZoomStartEvent @event)
+        : this(parent, @event.position, Offset.zero, 1, 0) { }
 
     internal static _PointerPanZoomData__scale CreateFromUpdateEvent(ScaleGestureRecognizer parent, PointerPanZoomUpdateEvent @event)
     {
-        var __instance = new _PointerPanZoomData__scale(parent, default!);
-        __instance.parent = parent;
-        __instance._position = @event.position;
-        __instance._pan = ((PointerPanZoomUpdateEvent)@event).pan;
-        __instance._scale = ((PointerPanZoomUpdateEvent)@event).scale;
-        __instance._rotation = ((PointerPanZoomUpdateEvent)@event).rotation;
-        return __instance;
+        return new _PointerPanZoomData__scale(parent, @event.position, @event.pan, @event.scale, @event.rotation);
     }
 
     public virtual global::Doroti.Ui.Offset focalPoint

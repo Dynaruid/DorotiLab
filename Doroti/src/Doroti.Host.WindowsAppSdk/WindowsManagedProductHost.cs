@@ -34,6 +34,8 @@ internal sealed unsafe class WindowsManagedProductHost :
     private ulong _nextClipboardRequest;
     private long _nativeClockOrigin = -1;
     private TimeSpan _dorotiClockOrigin;
+    private readonly Doroti.Hosting.WindowsPrecisionTrackpad _trackpad;
+    private readonly Doroti.Hosting.WindowsNativePointerInput _nativePointers;
 
     internal WindowsManagedProductHost(in WindowsNativeV1.Host native, int logicalWidth, int logicalHeight)
     {
@@ -54,6 +56,17 @@ internal sealed unsafe class WindowsManagedProductHost :
             ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
         Configuration = new(ResolveLocales(), (Brightness)native.InitialPlatformBrightness,
             false, false, HostOperatingSystem.windows);
+        void DispatchNativePacket(PointerDataPacket packet)
+        {
+            var sequence = Interlocked.Increment(ref _inputSequence);
+            EnqueueInput(() =>
+            {
+                PointerData?.Invoke(packet);
+                InputReceived?.Invoke(sequence, packet.data[^1].timeStamp);
+            });
+        }
+        _trackpad = new(native.ChildHwnd, 1, DispatchNativePacket);
+        _nativePointers = new(native.ChildHwnd, 1, DispatchNativePacket);
     }
 
     internal nint ChildHwnd => _native.ChildHwnd;
@@ -526,6 +539,8 @@ internal sealed unsafe class WindowsManagedProductHost :
     {
         if (_disposed) return;
         _disposed = true;
+        _trackpad.Dispose();
+        _nativePointers.Dispose();
         _coordinator.Close();
         lock (_gate) _pendingFrame = null;
         lock (_gate)

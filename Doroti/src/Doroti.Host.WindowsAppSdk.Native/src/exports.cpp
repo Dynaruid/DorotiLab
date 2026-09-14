@@ -2302,9 +2302,16 @@ class ProductHost final {
     if ((wparam & MK_LBUTTON) != 0) buttons |= 1;
     if ((wparam & MK_RBUTTON) != 0) buttons |= 2;
     if ((wparam & MK_MBUTTON) != 0) buttons |= 4;
+    // Match Flutter's GetFlutterPointerDeviceKind for promoted WM_MOUSE input.
+    // Leave/capture cancellation has no origin signature; retain that session's kind.
+    if (change != 0 && change != 2) {
+      const auto info = static_cast<uint32_t>(GetMessageExtraInfo());
+      pointer_kind_ = (info & 0xffffff00u) == 0xff515700u
+                          ? ((info & 0x80u) != 0 ? 0u : 2u) : 1u;
+    }
     doroti_windows_pointer_v1 pointer{
         DOROTI_WINDOWS_ABI_VERSION_V1, sizeof(doroti_windows_pointer_v1),
-        1, QpcNow(), change, 1, 1, x, y,
+        1, QpcNow(), change, pointer_kind_, 1, x, y,
         pointer_sequence_ == 0 ? 0.0 : x - previous_x,
         pointer_sequence_ == 0 ? 0.0 : y - previous_y,
         buttons, scroll_x, scroll_y,
@@ -2458,6 +2465,7 @@ class ProductHost final {
   bool pointer_down_{};
   LPARAM last_pointer_lparam_{};
   uint64_t pointer_sequence_{};
+  uint32_t pointer_kind_{1};
   std::atomic<uint32_t> cursor_kind_{};
   doroti_windows_text_configuration_v1 text_configuration_{};
   std::wstring text_;

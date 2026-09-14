@@ -69,6 +69,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     private bool _inputTiming;
     private bool _platformFrameTiming;
     private double _density = 1;
+    private readonly AndroidTrackpadGesture _trackpadInput;
     internal double SemanticsDensity => _density;
     internal AndroidX.CustomView.Widget.ExploreByTouchHelper? SemanticsHelper { get; set; }
 
@@ -77,6 +78,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     public DorotiAndroidVulkanView(Context context) : base(context)
     {
+        _trackpadInput = new(data => _owner?.DispatchNativePointer(data));
         _drawCallback = new(DrawFrame);
         _gpuCompletionCallback = new(PollGpuCompletion);
         _allocationProfileCallback = new(() =>
@@ -105,6 +107,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     }
     internal void Disconnect()
     {
+        CancelTrackpads();
         Holder?.RemoveCallback(this);
         _live = false;
         ReleaseSurface(); _owner = null;
@@ -112,7 +115,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     public void SurfaceCreated(ISurfaceHolder holder) { _live = true; RequestFrame(); }
     public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
     { _width = width; _height = height; RefreshDensity(); RequestFrame(); }
-    public void SurfaceDestroyed(ISurfaceHolder holder) { _live = false; ReleaseSurface(); }
+    public void SurfaceDestroyed(ISurfaceHolder holder) { CancelTrackpads(); _live = false; ReleaseSurface(); }
 
     protected override void OnConfigurationChanged(Android.Content.Res.Configuration? newConfig)
     {
@@ -296,24 +299,18 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         if (e is null || _owner?.EnableTouchEvents != true) return false;
         var started = _inputTiming ? Stopwatch.GetTimestamp() : 0;
         if (e.ActionMasked == MotionEventActions.Down) RequestFocus();
-        var action = e.ActionMasked switch {
-            MotionEventActions.Down or MotionEventActions.PointerDown => SKTouchAction.Pressed,
-            MotionEventActions.Up or MotionEventActions.PointerUp => SKTouchAction.Released,
-            MotionEventActions.Cancel => SKTouchAction.Cancelled, _ => SKTouchAction.Moved };
+        var change = e.ActionMasked switch {
+            MotionEventActions.Down or MotionEventActions.PointerDown => PointerChange.down,
+            MotionEventActions.Up or MotionEventActions.PointerUp => PointerChange.up,
+            MotionEventActions.Cancel => PointerChange.cancel,
+            MotionEventActions.Move => PointerChange.move,
+            _ => (PointerChange?)null };
+        if (change is null) return base.OnTouchEvent(e);
         var all = e.ActionMasked is MotionEventActions.Move or MotionEventActions.Cancel;
         for (var i = 0; i < e.PointerCount; i++)
         {
             if (!all && i != e.ActionIndex) continue;
-            var contact = action is SKTouchAction.Pressed or SKTouchAction.Moved;
-            var device = e.GetToolType(i) switch {
-                MotionEventToolType.Mouse => SKTouchDeviceType.Mouse,
-                MotionEventToolType.Stylus or MotionEventToolType.Eraser => SKTouchDeviceType.Pen,
-                _ => SKTouchDeviceType.Touch };
-            var button = (e.ButtonState & MotionEventButtonState.Secondary) != 0 ? SKMouseButton.Right :
-                (e.ButtonState & MotionEventButtonState.Tertiary) != 0 ? SKMouseButton.Middle : SKMouseButton.Left;
-            var args = new SKTouchEventArgs(e.GetPointerId(i), action, button, device,
-                new SKPoint(e.GetX(i), e.GetY(i)), contact, 0, e.GetPressure(i));
-            ((ISKGLView)_owner).OnTouch(args);
+            DispatchPointer(e, i, change.Value);
         }
         if (_inputTiming && (e.ActionMasked != MotionEventActions.Move || Stopwatch.GetElapsedTime(started).TotalMilliseconds > 8))
             global::Android.Util.Log.Info("DorotiInputTiming", $"action={e.ActionMasked} eventMs={e.EventTime} dispatchMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
@@ -328,17 +325,41 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     public override bool OnGenericMotionEvent(MotionEvent? e)
     {
         if (e is null || _owner?.EnableTouchEvents != true) return base.OnGenericMotionEvent(e);
-        var action = e.ActionMasked switch {
-            MotionEventActions.HoverEnter => SKTouchAction.Entered,
-            MotionEventActions.HoverExit => SKTouchAction.Exited,
-            MotionEventActions.HoverMove => SKTouchAction.Moved,
-            MotionEventActions.Scroll => SKTouchAction.WheelChanged,
-            _ => (SKTouchAction?)null };
-        if (action is null) return base.OnGenericMotionEvent(e);
-        ((ISKGLView)_owner).OnTouch(new SKTouchEventArgs(e.GetPointerId(0), action.Value,
-            SKMouseButton.Left, SKTouchDeviceType.Mouse, new(e.GetX(), e.GetY()), false,
-            (int)(e.GetAxisValue(Axis.Vscroll) * 48), 0));
+        var change = e.ActionMasked switch {
+            MotionEventActions.HoverEnter => PointerChange.add,
+            MotionEventActions.HoverExit => PointerChange.remove,
+            MotionEventActions.HoverMove or MotionEventActions.Scroll => PointerChange.hover,
+            _ => (PointerChange?)null };
+        if (change is null || e.PointerCount == 0) return base.OnGenericMotionEvent(e);
+        DispatchPointer(e, 0, change.Value);
         return true;
+    }
+
+    private void DispatchPointer(MotionEvent e, int index, PointerChange change)
+    {
+        var kind = AndroidPointerMapping.Kind((int)e.GetToolType(index));
+        var device = ((ulong)(uint)e.DeviceId << 32) | (uint)e.GetPointerId(index);
+        if (_trackpadInput.Handle(device, change, kind, e.Source == InputSourceType.Mouse,
+            (int)e.ButtonState, e.GetX(index), e.GetY(index), DorotiFrameClock.Now)) return;
+        var scroll = e.ActionMasked == MotionEventActions.Scroll;
+        var config = scroll ? Android.Views.ViewConfiguration.Get(Context!) : null;
+        var horizontalFactor = scroll && OperatingSystem.IsAndroidVersionAtLeast(26) ? config!.ScaledHorizontalScrollFactor : 48;
+        var verticalFactor = scroll && OperatingSystem.IsAndroidVersionAtLeast(26) ? config!.ScaledVerticalScrollFactor : 48;
+        _owner?.DispatchNativePointer(new(DorotiFrameClock.Now, change, kind,
+            device, e.GetX(index), e.GetY(index),
+            AndroidPointerMapping.Buttons(kind, (int)e.ButtonState),
+            scroll ? -e.GetAxisValue(Axis.Hscroll) * horizontalFactor : 0,
+            scroll ? -e.GetAxisValue(Axis.Vscroll) * verticalFactor : 0,
+            scroll ? PointerSignalKind.scroll : PointerSignalKind.none, e.GetPressure(index),
+            Orientation: e.GetOrientation(index), Tilt: e.GetAxisValue(Axis.Tilt, index)));
+    }
+
+    private void CancelTrackpads() => _trackpadInput.Cancel(DorotiFrameClock.Now);
+
+    public override void OnWindowFocusChanged(bool hasWindowFocus)
+    {
+        if (!hasWindowFocus) CancelTrackpads();
+        base.OnWindowFocusChanged(hasWindowFocus);
     }
 
     [DllImport("android", EntryPoint = "ANativeWindow_fromSurface")]

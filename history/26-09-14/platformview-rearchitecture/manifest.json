@@ -1,0 +1,23 @@
+{
+  "sourceHead": "227a0b4c7c9534aff2cf2c9edb5b038c9d2656cc",
+  "files": [
+    {
+      "source": "idea.md",
+      "archive": "history/26-09-14/platformview-rearchitecture/idea.original.md",
+      "bytes": 42999,
+      "sha256": "ab11362d4b5521d5ef07f1f54d52dddf1cf65138fb55b3f947773cd12779bc05"
+    },
+    {
+      "source": "work1.md",
+      "archive": "history/26-09-14/platformview-rearchitecture/work1.original.md",
+      "bytes": 90597,
+      "sha256": "016dcd86b7d7247e487937a30a310047cb7c4357ee7623509396940b08384b35"
+    },
+    {
+      "source": "work2.md",
+      "archive": "history/26-09-14/platformview-rearchitecture/work2.original.md",
+      "bytes": 46733,
+      "sha256": "cebe6c010e42a27b4bda32048bd1ad60d306c27c3f066c10d63e4357b2b8bdf9"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 using CoreGraphics;
 using CoreAnimation;
 using Doroti.Skia.Rendering;
+using Doroti.Ui;
 using Foundation;
 using Metal;
 using MetalKit;
@@ -344,21 +345,32 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         RetiringViews.Remove(this);
     }
 
-    private void DispatchTouches(NSSet touches, SKTouchAction action, bool contact)
+    private void DispatchTouches(NSSet touches, UIEvent? evt, PointerChange change)
     {
         if (_owner?.EnableTouchEvents != true) return;
         foreach (UITouch touch in touches.Cast<UITouch>())
         {
             var point = touch.LocationInView(this);
-            var args = new SKTouchEventArgs(((IntPtr)touch.Handle).ToInt64(), action,
-                new SKPoint((float)(point.X * ContentScaleFactor), (float)(point.Y * ContentScaleFactor)), contact);
-            ((ISKGLView)_owner).OnTouch(args);
+            var kind = touch.Type switch
+            {
+                UITouchType.Direct or UITouchType.Indirect => PointerDeviceKind.touch,
+                UITouchType.Stylus => PointerDeviceKind.stylus,
+                UITouchType.IndirectPointer => PointerDeviceKind.mouse,
+                _ => PointerDeviceKind.touch,
+            };
+            var buttons = change is PointerChange.up or PointerChange.cancel ? 0
+                : kind == PointerDeviceKind.mouse ? (int)(evt?.ButtonMask ?? 0) : 1;
+            _owner.DispatchNativePointer(new(TimeSpan.FromSeconds(touch.Timestamp), change, kind,
+                checked((ulong)((IntPtr)touch.Handle).ToInt64()),
+                point.X * ContentScaleFactor, point.Y * ContentScaleFactor,
+                buttons, 0, 0, PointerSignalKind.none,
+                touch.MaximumPossibleForce > 0 ? touch.Force / touch.MaximumPossibleForce : 1));
         }
     }
-    public override void TouchesBegan(NSSet touches, UIEvent? evt) { base.TouchesBegan(touches, evt); DispatchTouches(touches, SKTouchAction.Pressed, true); }
-    public override void TouchesMoved(NSSet touches, UIEvent? evt) { base.TouchesMoved(touches, evt); DispatchTouches(touches, SKTouchAction.Moved, true); }
-    public override void TouchesEnded(NSSet touches, UIEvent? evt) { base.TouchesEnded(touches, evt); DispatchTouches(touches, SKTouchAction.Released, false); }
-    public override void TouchesCancelled(NSSet touches, UIEvent? evt) { base.TouchesCancelled(touches, evt); DispatchTouches(touches, SKTouchAction.Cancelled, false); }
+    public override void TouchesBegan(NSSet touches, UIEvent? evt) { base.TouchesBegan(touches, evt); DispatchTouches(touches, evt, PointerChange.down); }
+    public override void TouchesMoved(NSSet touches, UIEvent? evt) { base.TouchesMoved(touches, evt); DispatchTouches(touches, evt, PointerChange.move); }
+    public override void TouchesEnded(NSSet touches, UIEvent? evt) { base.TouchesEnded(touches, evt); DispatchTouches(touches, evt, PointerChange.up); }
+    public override void TouchesCancelled(NSSet touches, UIEvent? evt) { base.TouchesCancelled(touches, evt); DispatchTouches(touches, evt, PointerChange.cancel); }
 
     protected override void Dispose(bool disposing)
     {

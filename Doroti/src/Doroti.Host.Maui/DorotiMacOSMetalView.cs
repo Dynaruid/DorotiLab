@@ -60,10 +60,17 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _drawingFrame;
     private int _frameRequestPending;
     private readonly AppKitWindowBackdrop _backdrop;
+    private readonly MauiTrackpadGesture _trackpad;
+    private int _trackpadParts;
+    private double _trackpadPanX, _trackpadPanY, _trackpadMagnification, _trackpadRotation;
+    private double _lastTrackpadMomentum;
 
     public DorotiMacOSMetalView() : base(CGRect.Empty, RequireMetalDevice())
     {
         _backdrop = new(this);
+        _trackpad = new(2, data => _owner?.RaisePointer(data));
+        this.SetAllowedTouchTypes(NSTouchTypeMask.Indirect);
+        WantsRestingTouches = true;
         _metalDevice = Device ?? throw new InvalidOperationException("MTKView did not retain its Metal device.");
         _commandQueue = _metalDevice.CreateCommandQueue() ??
             throw new InvalidOperationException("Metal command queue creation failed.");
@@ -131,6 +138,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     internal void Disconnect()
     {
+        ResetTrackpad();
         var owner = _owner;
         _owner = null;
         _backdrop.Dispose();
@@ -550,6 +558,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     public override void ScrollWheel(NSEvent theEvent)
     {
+        if (DispatchTrackpad(theEvent, 1)) return;
         var scale = BackingScale();
         // AppKit reports precise trackpad deltas in points, but a discrete
         // mouse wheel reports lines. Match Flutter's macOS normalization so a
@@ -561,6 +570,61 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             (deltaX, deltaY) = (deltaY, deltaX);
         DispatchPointer(theEvent, PointerChange.hover, Buttons(),
             deltaX, deltaY, PointerSignalKind.scroll);
+    }
+
+    public override void MagnifyWithEvent(NSEvent theEvent) => DispatchTrackpad(theEvent, 2);
+    public override void RotateWithEvent(NSEvent theEvent) => DispatchTrackpad(theEvent, 4);
+
+    private bool DispatchTrackpad(NSEvent native, int part)
+    {
+        var phase = native.Phase;
+        var time = TimeSpan.FromSeconds(native.Timestamp);
+        if (native.MomentumPhase != NSEventPhase.None)
+        {
+            if (native.MomentumPhase == NSEventPhase.Changed) _lastTrackpadMomentum = native.Timestamp;
+            return true; // Flutter's scroll physics owns inertia after panZoomEnd.
+        }
+        if (phase == NSEventPhase.None) return part != 1;
+        if ((phase & (NSEventPhase.Began | NSEventPhase.MayBegin | NSEventPhase.Changed)) != 0)
+        {
+            if (!_trackpad.Active)
+            {
+                _trackpadPanX = _trackpadPanY = _trackpadMagnification = _trackpadRotation = 0;
+                var point = ConvertPointFromView(native.LocationInWindow, null!);
+                var ratio = BackingScale();
+                _trackpad.Begin(time, point.X * ratio, (Bounds.Height - point.Y) * ratio);
+            }
+            _trackpadParts |= part;
+            if (part == 1) _lastTrackpadMomentum = 0;
+            if ((phase & NSEventPhase.Changed) != 0)
+            {
+                if (part == 1) { _trackpadPanX += native.ScrollingDeltaX * BackingScale(); _trackpadPanY += native.ScrollingDeltaY * BackingScale(); }
+                if (part == 2) _trackpadMagnification += native.Magnification;
+                if (part == 4) _trackpadRotation -= native.Rotation * Math.PI / 180;
+                _trackpad.Update(time, _trackpadPanX, _trackpadPanY, Math.Pow(2, _trackpadMagnification), _trackpadRotation);
+            }
+        }
+        if ((phase & (NSEventPhase.Ended | NSEventPhase.Cancelled)) != 0)
+        {
+            _trackpadParts &= ~part;
+            if (_trackpadParts == 0) _trackpad.End(time);
+        }
+        return true;
+    }
+
+    public override void TouchesBeganWithEvent(NSEvent theEvent)
+    {
+        base.TouchesBeganWithEvent(theEvent);
+        if (_lastTrackpadMomentum > 0 && theEvent.Timestamp - _lastTrackpadMomentum < .050)
+            _trackpad.CancelInertia(TimeSpan.FromSeconds(theEvent.Timestamp));
+        _lastTrackpadMomentum = 0;
+    }
+
+    private void ResetTrackpad()
+    {
+        _trackpad.Remove(DorotiFrameClock.Now);
+        _trackpadParts = 0;
+        _lastTrackpadMomentum = 0;
     }
 
     public override void KeyDown(NSEvent theEvent) => DispatchKey(theEvent,
@@ -639,7 +703,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _windowBecameKeyObserver = NSNotificationCenter.DefaultCenter.AddObserver(
             NSWindow.DidBecomeKeyNotification, _ => _owner?.RaiseFocus(true), Window);
         _windowResignedKeyObserver = NSNotificationCenter.DefaultCenter.AddObserver(
-            NSWindow.DidResignKeyNotification, _ => { ReleasePressedKeys(); _owner?.RaiseFocus(false); }, Window);
+            NSWindow.DidResignKeyNotification, _ => { ResetTrackpad(); ReleasePressedKeys(); _owner?.RaiseFocus(false); }, Window);
     }
 
     private void DetachWindowObservers()

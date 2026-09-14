@@ -357,6 +357,8 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 _topLevelResizeSource = topLevelSource;
             }
             topLevelSource.Start();
+            if (_view.Window?.Handler?.PlatformView is Microsoft.UI.Xaml.Window window)
+                AttachTrackpad(WinRT.Interop.WindowNative.GetWindowHandle(window));
             return;
         }
         if (_disposed || _nativeResizeSource is not null) return;
@@ -368,6 +370,8 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             HandleNativeResizeTimeout,
             HandleNativePointer);
         if (source is null) return;
+        AttachTrackpad(source.RenderWindowHandle);
+        _nativePointers ??= new(source.RenderWindowHandle, 1, DispatchNativePointerPacket);
         var attached = false;
         var cursor = DorotiMouseCursorKind.basic;
         lock (_gate)
@@ -386,6 +390,24 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             source.SetCursor(cursor);
             source.Start();
         }
+    }
+
+    private Doroti.Hosting.WindowsPrecisionTrackpad? _trackpad;
+    private Doroti.Hosting.WindowsNativePointerInput? _nativePointers;
+    private void AttachTrackpad(nint window)
+    {
+        if (_trackpad is not null || window == 0) return;
+        _trackpad = new(window, 1, DispatchNativePointerPacket);
+    }
+
+    private void DispatchNativePointerPacket(PointerDataPacket packet)
+    {
+            foreach (var data in packet.data)
+                HandleNativePointer(new(data.timeStamp, data.change, data.kind, data.pointerIdentifier,
+                    data.physicalX, data.physicalY, (int)data.buttons, data.scrollDeltaX, data.scrollDeltaY,
+                    data.signalKind ?? PointerSignalKind.none, data.pressure,
+                    data.panX, data.panY, data.panDeltaX, data.panDeltaY, data.scale, data.rotation, data.device,
+                    data.orientation, data.tilt));
     }
 
     private long HandleNativeResize() =>
@@ -1004,7 +1026,16 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         var buttons = (point.Properties.IsLeftButtonPressed ? 1 : 0) |
                       (point.Properties.IsRightButtonPressed ? 2 : 0) |
                       (point.Properties.IsMiddleButtonPressed ? 4 : 0);
-        Pointer?.Invoke(new(DorotiFrameClock.Now, change, PointerDeviceKind.mouse,
+        var kind = point.PointerDeviceType switch
+        {
+            Microsoft.UI.Input.PointerDeviceType.Touch => PointerDeviceKind.touch,
+            Microsoft.UI.Input.PointerDeviceType.Pen => point.Properties.IsEraser || point.Properties.IsInverted
+                ? PointerDeviceKind.invertedStylus : PointerDeviceKind.stylus,
+            Microsoft.UI.Input.PointerDeviceType.Mouse => PointerDeviceKind.mouse,
+            _ => PointerDeviceKind.unknown,
+        };
+        if (change == PointerChange.move && !point.IsInContact) change = PointerChange.hover;
+        Pointer?.Invoke(new(DorotiFrameClock.Now, change, kind,
             point.PointerId, point.Position.X * scale, point.Position.Y * scale, buttons,
             point.Properties.IsHorizontalMouseWheel ? point.Properties.MouseWheelDelta : 0,
             point.Properties.IsHorizontalMouseWheel ? 0 : -point.Properties.MouseWheelDelta,
@@ -1082,6 +1113,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             _disposed = true;
         }
         _view.SizeChanged -= HandleMauiSizeChanged;
+        _trackpad?.Dispose();
+        _nativePointers?.Dispose();
+        _nativePointers = null;
+        _trackpad = null;
         _view.Loaded -= HandleMauiLoaded;
         _view.Unloaded -= HandleMauiUnloaded;
         if (_host is { } host) Disconnect(host);
@@ -1632,6 +1667,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
 
     private void HandleMouseMessage(nint windowHandle, uint message, nuint wParam, nint lParam)
     {
+        _pointerKind = WindowsPointerMapping.Kind(GetMessageExtraInfo());
         var point = message is WmMouseWheel or WmMouseHorizontalWheel
             ? ScreenPointToClient(lParam)
             : ClientPoint(lParam);
@@ -1705,6 +1741,8 @@ internal sealed class WindowsClientResizeSource : IDisposable
         point.X >= rect.Left && point.X < rect.Right &&
         point.Y >= rect.Top && point.Y < rect.Bottom;
 
+    private PointerDeviceKind _pointerKind = PointerDeviceKind.mouse;
+
     private void DispatchPointer(
         PointerChange change,
         int x,
@@ -1716,7 +1754,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
         _pointer(new(
             DorotiFrameClock.Now,
             change,
-            PointerDeviceKind.mouse,
+            _pointerKind,
             1,
             x,
             y,
@@ -1978,6 +2016,9 @@ internal sealed class WindowsClientResizeSource : IDisposable
 
     [DllImport("user32.dll", ExactSpelling = true)]
     private static extern nint GetCapture();
+
+    [DllImport("user32.dll", ExactSpelling = true)]
+    private static extern nint GetMessageExtraInfo();
 
     [DllImport("user32.dll", ExactSpelling = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

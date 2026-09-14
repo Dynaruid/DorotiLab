@@ -122,7 +122,7 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
     public virtual bool synthesized { get; private set; } = default!;
     public virtual Matrix4? transform { get; private set; }
     public virtual PointerEvent? original { get; private set; }
-    public PointerEvent() { }
+    public PointerEvent() : this(viewId: 0) { }
 
 
     protected PointerEvent(long viewId = 0, long embedderId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool down = false, bool obscured = false, double pressure = 1.0, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long platformData = 0, bool synthesized = false, Matrix4? transform = null, PointerEvent? original = null)
@@ -320,7 +320,7 @@ public interface _CopyPointerAddedEvent__events
 
 public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerAddedEvent__events
 {
-    public PointerAddedEvent() { }
+    public PointerAddedEvent() : this(viewId: 0) { }
 
 
     public PointerAddedEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, pressure: 0.0)
@@ -467,7 +467,7 @@ public interface _CopyPointerRemovedEvent__events
 
 public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerRemovedEvent__events
 {
-    public PointerRemovedEvent() { }
+    public PointerRemovedEvent() : this(viewId: 0) { }
 
 
     public PointerRemovedEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distanceMax = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, PointerRemovedEvent? original = null, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distanceMax: distanceMax, radiusMin: radiusMin, radiusMax: radiusMax, original: original, embedderId: embedderId, pressure: 0.0)
@@ -614,7 +614,7 @@ public interface _CopyPointerHoverEvent__events
 
 public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerHoverEvent__events
 {
-    public PointerHoverEvent() { }
+    public PointerHoverEvent() : this(viewId: 0) { }
 
 
     public PointerHoverEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.touch, long pointer = 0, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, pointer: pointer, device: device, position: position, delta: delta, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, synthesized: synthesized, embedderId: embedderId, down: false, pressure: 0.0)
@@ -761,7 +761,7 @@ public interface _CopyPointerEnterEvent__events
 
 public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerEnterEvent__events
 {
-    public PointerEnterEvent() { }
+    public PointerEnterEvent() : this(viewId: 0) { }
 
 
     public PointerEnterEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, bool down = false, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, delta: delta, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, down: down, synthesized: synthesized, embedderId: embedderId, pressure: 0.0)
@@ -925,7 +925,7 @@ public interface _CopyPointerExitEvent__events
 
 public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerExitEvent__events
 {
-    public PointerExitEvent() { }
+    public PointerExitEvent() : this(viewId: 0) { }
 
 
     public PointerExitEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.touch, long pointer = 0, long device = 0, Offset position = default, Offset delta = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, bool down = false, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, pointer: pointer, device: device, position: position, delta: delta, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, down: down, synthesized: synthesized, embedderId: embedderId, pressure: 0.0)
@@ -1089,7 +1089,7 @@ public interface _CopyPointerDownEvent__events
 
 public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerDownEvent__events
 {
-    public PointerDownEvent() { }
+    public PointerDownEvent() : this(viewId: 0) { }
 
 
     public PointerDownEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, long? buttons = null, bool obscured = false, double pressure = 1.0, double pressureMin = 1.0, double pressureMax = 1.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, buttons: buttons ?? EventsLibrary.kPrimaryButton, obscured: obscured, pressure: pressure, pressureMin: pressureMin, pressureMax: pressureMax, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, down: true, distance: 0.0)
@@ -1237,7 +1237,7 @@ public interface _CopyPointerMoveEvent__events
 
 public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerMoveEvent__events
 {
-    public PointerMoveEvent() { }
+    public PointerMoveEvent() : this(viewId: 0) { }
 
 
     public PointerMoveEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, Offset delta = default, long? buttons = null, bool obscured = false, double pressure = 1.0, double pressureMin = 1.0, double pressureMax = 1.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long platformData = 0, bool synthesized = false, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, delta: delta, buttons: buttons ?? EventsLibrary.kPrimaryButton, obscured: obscured, pressure: pressure, pressureMin: pressureMin, pressureMax: pressureMax, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, platformData: platformData, synthesized: synthesized, embedderId: embedderId, down: true, distance: 0.0)
@@ -1385,7 +1385,7 @@ public interface _CopyPointerUpEvent__events
 
 public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerUpEvent__events
 {
-    public PointerUpEvent() { }
+    public PointerUpEvent() : this(viewId: 0) { }
 
 
     public PointerUpEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, long buttons = 0, bool obscured = false, double pressure = 0.0, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, buttons: buttons, obscured: obscured, pressure: pressure, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, down: false)
@@ -1556,7 +1556,7 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
 {
     public virtual Offset scrollDelta { get; private set; } = default!;
     internal virtual Action<bool>? _onRespond { get; private set; }
-    public PointerScrollEvent() { }
+    public PointerScrollEvent() : this(viewId: 0) { }
 
 
     public PointerScrollEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, Offset scrollDelta = default, long embedderId = 0, Action<bool>? onRespond = null) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
@@ -1724,7 +1724,7 @@ public interface _CopyPointerScrollInertiaCancelEvent__events
 
 public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEventDescription__events, _CopyPointerScrollInertiaCancelEvent__events
 {
-    public PointerScrollInertiaCancelEvent() { }
+    public PointerScrollInertiaCancelEvent() : this(viewId: 0) { }
 
 
     public PointerScrollInertiaCancelEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
@@ -1877,7 +1877,7 @@ public interface _CopyPointerScaleEvent__events
 public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__events, _CopyPointerScaleEvent__events
 {
     public virtual double scale { get; private set; } = default!;
-    public PointerScaleEvent() { }
+    public PointerScaleEvent() : this(viewId: 0) { }
 
 
     public PointerScaleEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, long embedderId = 0, double scale = 1.0) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
@@ -2030,7 +2030,7 @@ public interface _CopyPointerPanZoomStartEvent__events
 
 public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerPanZoomStartEvent__events
 {
-    public PointerPanZoomStartEvent() { }
+    public PointerPanZoomStartEvent() : this(viewId: 0) { }
 
 
     public PointerPanZoomStartEvent(long viewId = 0, Duration timeStamp = default, long device = 0, long pointer = 0, Offset position = default, long embedderId = 0, bool synthesized = false) : base(viewId: viewId, timeStamp: timeStamp, device: device, pointer: pointer, position: position, embedderId: embedderId, synthesized: synthesized, kind: PointerDeviceKind.trackpad)
@@ -2189,7 +2189,7 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
     public virtual Offset panDelta { get; private set; } = default!;
     public virtual double scale { get; private set; } = default!;
     public virtual double rotation { get; private set; } = default!;
-    public PointerPanZoomUpdateEvent() { }
+    public PointerPanZoomUpdateEvent() : this(viewId: 0) { }
 
 
     public PointerPanZoomUpdateEvent(long viewId = 0, Duration timeStamp = default, long device = 0, long pointer = 0, Offset position = default, long embedderId = 0, Offset pan = default, Offset panDelta = default, double scale = 1.0, double rotation = 0.0, bool synthesized = false) : base(viewId: viewId, timeStamp: timeStamp, device: device, pointer: pointer, position: position, embedderId: embedderId, synthesized: synthesized, kind: PointerDeviceKind.trackpad)
@@ -2376,7 +2376,7 @@ public interface _CopyPointerPanZoomEndEvent__events
 
 public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerPanZoomEndEvent__events
 {
-    public PointerPanZoomEndEvent() { }
+    public PointerPanZoomEndEvent() : this(viewId: 0) { }
 
 
     public PointerPanZoomEndEvent(long viewId = 0, Duration timeStamp = default, long device = 0, long pointer = 0, Offset position = default, long embedderId = 0, bool synthesized = false) : base(viewId: viewId, timeStamp: timeStamp, device: device, pointer: pointer, position: position, embedderId: embedderId, synthesized: synthesized, kind: PointerDeviceKind.trackpad)
@@ -2525,7 +2525,7 @@ public interface _CopyPointerCancelEvent__events
 
 public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events, _CopyPointerCancelEvent__events
 {
-    public PointerCancelEvent() { }
+    public PointerCancelEvent() : this(viewId: 0) { }
 
 
     public PointerCancelEvent(long viewId = 0, Duration timeStamp = default, long pointer = 0, PointerDeviceKind kind = PointerDeviceKind.touch, long device = 0, Offset position = default, long buttons = 0, bool obscured = false, double pressureMin = 1.0, double pressureMax = 1.0, double distance = 0.0, double distanceMax = 0.0, double size = 0.0, double radiusMajor = 0.0, double radiusMinor = 0.0, double radiusMin = 0.0, double radiusMax = 0.0, double orientation = 0.0, double tilt = 0.0, long embedderId = 0) : base(viewId: viewId, timeStamp: timeStamp, pointer: pointer, kind: kind, device: device, position: position, buttons: buttons, obscured: obscured, pressureMin: pressureMin, pressureMax: pressureMax, distance: distance, distanceMax: distanceMax, size: size, radiusMajor: radiusMajor, radiusMinor: radiusMinor, radiusMin: radiusMin, radiusMax: radiusMax, orientation: orientation, tilt: tilt, embedderId: embedderId, down: false, pressure: 0.0)

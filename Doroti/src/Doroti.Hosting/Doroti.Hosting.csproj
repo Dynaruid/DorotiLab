@@ -3,6 +3,7 @@
     <AssemblyName>Doroti.Hosting</AssemblyName>
     <PackageId>Doroti.Hosting</PackageId>
     <IsDorotiProduct>true</IsDorotiProduct>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />

@@ -1,353 +1,278 @@
-# 플랫폼별 WebView 작업계획
+# WebView 작업계획 — 재구성 PlatformView 소비자
 
-작성일: 2026-09-11 · 검토 HEAD: `cf83abd603aa06b942051cabdeb5132f4dd774c7`
+2026-09-14 · 기준 HEAD `227a0b4c7c9534aff2cf2c9edb5b038c9d2656cc`.
 
-Linux 계획 재검토: 2026-09-11 · HEAD: `b2f7555438e6f865fd1b17c2a7f2880fd363da95`. [ref.md](ref.md), 현재 Qt host/runner와 공식 Qt·배포판 문서를 대조했다. 이번 변경은 Linux 계획 및 work1 인계 정리이며 구현·패키지 설치·제품 실행은 수행하지 않았다.
+**WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 변경은 문서 재구성이며 제품 WebView adapter를 구현하지 않았다. 단계는 `TODO`, 제품 기능 검증은 `notVerified`다.
 
-기준: [idea.md](idea.md), 공통 호스팅 선행 계획: [work1.md](work1.md). 이 문서는 **계획 작성 결과**다. 아래 단계는 모두 `TODO`, WebView 제품 실행·성능·NativeAOT 검증은 `notVerified`다. API/패키지/신규 산출물 경로는 구현 단계에서 확정할 제안이다.
+이전 WV-0~WV-9/WV-X 상세 요구는 [원본](history/26-09-14/platformview-rearchitecture/work2.original.md)에 보존했다. 새 계획은 그 기능 범위를 유지하고, Linux **Qt Quick 제품 합성 + 시스템 Qt WebEngine**에 맞춰 표시 접점·선행 조건을 수정한다. 예전 Widgets 우선·Qt callback ABI 3·부재 `ref.md` 전제를 현재 기준으로 사용하지 않는다.
 
-## 1. 목표와 구현 범위
+**현재 요구:** WebView는 플랫폼별로 더 적합한 구성을 선택하며 HCPP를 강제하지 않는다. [work1 R6](work1.md)에서 실제 합성·입력/접근성·효과 호환성·성능/메모리·안정성을 비교한다. R-E의 `PlatformEffect`는 공통 효과 의미와 최대한 유사한 비주얼을 제공한다. WebView 위 실제 backdrop와 선명한 Doroti 전경이라는 제품 요구는 유지한다.
 
-공통 `WebViewController + WebViewWidget`를 제공하고 Windows WebView2, Android WebView, iOS/Mac Catalyst WKWebView, native AppKit macOS WKWebView, Web iframe, Linux Qt backend로 연결한다. WebView2·Qt WebEngine 등의 의존성은 해당 backend를 선택한 앱에만 부여한다. Linux Qt WebEngine은 시스템 패키지로 공급하고 Doroti 배포물에는 managed adapter와 자체 native shim을 포함한다.
+**Windows controller 확정:** WindowsAppSdk와 Windows MAUI는 `Microsoft.Web.WebView2.Core.CoreWebView2CompositionController`를 사용한다. 이는 우선 후보가 아닌 필수 선택이다. windowed controller·기본 MAUI WebView handler를 대체 backend로 자동 선택하지 않는다. 기능 adapter를 공유하되 두 runner의 host 결합·실행 증거는 별도로 남긴다.
 
-주 레퍼런스는 [로컬 flutter_inappwebview](reference/flutter_inappwebview-master/README.md)다. 공통 기능·생성 옵션·controller·이벤트·keep-alive/profile 의미를 참고하되 API 전체를 일괄 포팅하지 않는다. 로컬 pubspec의 `6.2.0-beta.3`는 참조 스냅샷 표기이며 최신 배포 버전이나 Doroti 검증 버전이 아니다. Linux는 idea.md의 **Qt 계열** 선택을 유지하면서 **Qt WebEngine 공개 C++ API 직접 adapter**로 구체화한다. idea.md의 QWebView 우선 실험 및 API 미결정 항목은 이번 WV-7 계획으로 대체하며, WPE/CEF/Wry/WebKitGTK 병행이나 자동 fallback은 도입하지 않는다.
+## 1. 기능과 소유권
 
-| work1이 제공하는 기반 | 이 문서가 구현하는 기능 |
+| work1 소유 | work2 소유 |
 |---|---|
-| 생성/attachment/placement/수명과 generic capability | WebView factory, controller/widget, typed options |
-| compositor·foreground surface·PointerInterceptor | WebView 위 앱 메뉴/modal을 사용하는 통합 시나리오 |
-| native 입력/focus/IME/semantics 경계 | 웹 문서 입력·selection·탐색·JS·process 이벤트 |
-| frame/epoch/instance generation | navigation ID/request ID/profile ID와 비동기 취소 |
+| owner registry, factory, native attachment, generation, dispose completion | controller/widget/settings, SDK environment/profile 수명 |
+| scene/mutator, raster/native 순서, transport, frame commit/retirement | navigation/document state, JS·message·request ID |
+| input policy/shield, focus·IME 양보, native semantics anchor | 웹 콘텐츠 내부 정책·permission/popup/file/download/fullscreen |
+| HWND/native visual/UIView/NSView/Quick item/DOM 부착 계약 | 해당 타입을 제공하는 WebView SDK adapter |
+| PlatformEffect 위젯·native/CSS 효과·sample 의존성·frame 수명 | 실제 WebView source의 sample 가능 여부·content invalidation·결합 fixture |
 
-work1 전체 완료를 기다려야 모든 기능 작업을 시작할 수 있는 구조로 만들지 않는다. backend의 기본 배치 B가 준비되면 기능을 개발하고, 겹침 제품 지원은 C와 입력 검증 이후 승인한다. WebView 전용 코드에서 공통 compositor를 중복 구현하지 않는다.
+WebView가 별도 native ID registry·compositor·gesture shield를 만들지 않는다. PlatformView도 URL·cookie·JS 객체를 알지 않는다. host의 attachment 종류에 맞지 않는 SDK object는 명시적으로 거부한다. WebViewController, native instance, attachment, navigation/document, profile/environment는 각각 독립 수명이다.
 
-## 2. 기능 범위와 지원 의미
+### 1.0 플랫폼별 전략 선택과 효과 수용 조건
 
-### 2.1 필수 공통 기반과 선택 기능
+기본 정책은 `PlatformPreferred`다. native hierarchy/visual·live texture·GPU compositor·bounded readback·DOM/canvas 중 제품 요구를 충족하는 후보를 선택한다. HCPP 대응은 Android 후보 중 하나이며 Flutter의 API 34+/Impeller 조건을 Doroti WebView 전체의 요구조건으로 올리지 않는다. [Flutter HCPP 참고](https://docs.flutter.dev/platform-integration/android/platform-views)
 
-| 분류 | 계획 범위 | 완료 기준 |
+- WebView identity·문서 상태·실시간 갱신·입력/IME/접근성을 보존하고 raster/native/effect를 scene 순서로 합성한다. live texture도 이 계약이 검증되면 채택 가능하다. 정지 snapshot 교체는 정상 표시 전략이 아니다.
+- GPU import/copy를 우선 검토하되 bounded readback/upload를 금지하지 않는다. 실제 영역·빈도·지연·메모리를 비교하고 사전 예산으로 결정한다. 방식 이름이나 readback 0만으로 성공을 판정하지 않는다.
+- 선택은 renderer/OS/runtime/provider/control subtree·scene 요구에 따라 협상하고 actual strategy/선택 이유를 기록한다. focus/IME/capture/navigation을 잃는 runtime 재생성은 하지 않는다. 생성 시 선택을 우선하고 runtime handoff는 검증된 조합만 허용한다.
+- 효과를 요청한 scene은 실제 backdrop source·동적 갱신·공통 시각 유사성까지 검증한다. PlatformEffect의 자동 material/parameter 보정은 정상 구현이다. source를 못 읽는 tint-only 결과를 정상 blur 근사로 반환하지 않는다. 효과 없는 WebView 지원과 별도로 조회한다.
+- 최종 fixture는 `배경 → WebView A → 중간 raster → WebView B → PlatformEffect → 선명한 Doroti child` 및 한 view 위 부분 effect를 포함한다. 공통 strength/tint/테마를 바꿔 플랫폼 간 유사성을 비교한다.
+- strategy 지원과 실제 frame atomicity/scanout·성능 승인은 별도다. browser commit 관측을 Android surface transaction ACK와 같은 값으로 보고하지 않는다.
+
+### 1.1 필수 및 선택 범위
+
+| 기능 | 계획상 수용 조건 |
+|---|---|
+| 공통 필수 | async create/ready/dispose, LoadUri, feature query, typed 오류, attach/detach 상태 보존 |
+| 합성·효과 필수 | 선택한 플랫폼 전략으로 실제 WebView source·공통 PlatformEffect 비주얼·입력/전경 shield·동적 content freshness 충족 |
+| 기본 탐색 | LoadHtml/base URI, reload/stop/back/forward, URI/title/loading/progress를 가능한 SDK에 연결. 관측 불가 상태는 Unknown |
+| 탐색 정책 | redirect/main-frame·subresource 오류, allow/cancel/external, popup. sync policy와 deferral 가능 범위 구분 |
+| 앱 콘텐츠 | `LoadAppContentAsync(resourceKey)`, 기존 manifest resolver, 상대 CSS/JS/image/fetch, MIME·origin·Range/media seek |
+| JS/메시지 | 명시적 enable, typed 평가 결과, user script/handler, origin/frame·document 제한, timeout/cancel |
+| 세션 | persistent/ephemeral profile, 공유/격리, cookies/cache/storage별 명시적 삭제·완료 관측 |
+| 실사용 | file chooser·download·permission·fullscreen·process failure/복구. 미지원 feature는 거부/제한 공개 |
+| 후속 WV-X | headless, 고급 keep-alive pool, 인증 challenge·proxy·고급 interception·devtools·추가 inappwebview 호환 |
+
+조건부 기능은 WV-0에서 backend별 필수/선택/미지원으로 확정한다. 필수 요구를 제외할 때는 범위 변경과 이유를 기록한다. 기본 detach/reattach는 필수지만 화면 없이 실행하는 headless와 같지 않다. 전체 inappwebview API 동등성은 이번 목표가 아니다.
+
+## 2. 참조와 현재 상태
+
+주 기능 레퍼런스는 [flutter_inappwebview widget](reference/flutter_inappwebview-master/flutter_inappwebview/lib/src/in_app_webview/in_app_webview.dart), [controller interface](reference/flutter_inappwebview-master/flutter_inappwebview_platform_interface/lib/src/in_app_webview/platform_inappwebview_controller.dart), [Windows adapter](reference/flutter_inappwebview-master/flutter_inappwebview_windows/windows/in_app_webview/in_app_webview.cpp), [Web element](reference/flutter_inappwebview-master/flutter_inappwebview_web/lib/web/in_app_web_view_web_element.dart)다. 로컬 pubspec의 `6.2.0-beta.3`는 참조 스냅샷 버전이며 최신 release나 Doroti 검증 버전이 아니다.
+
+현재 generic native controls의 B/C와 Qt WebEngine 독립 probe에 관한 기록이 있지만 `Doroti/src`의 WebView 제품 구현을 확인하지 못했다. generic control 생성·iframe load·Qt probe를 WebView API/합성/JS/profile 제품 완료로 계산하지 않는다. 과거 증거 부재는 work1 상태표를 따른다.
+
+| backend | native 기능 adapter / 표시 접점 | 공통 PlatformView 의존성 |
 |---|---|---|
-| 필수 공통 기반 | async create/ready/dispose, widget attach, LoadUri, capability query, typed 오류 | 모든 backend가 실제 지원/제약을 보고하며 늦은 응답·dispose 경쟁을 처리 |
-| 기본 탐색 | LoadHtml/base URI, reload/stop/back/forward, URI/title/loading/progress | 플랫폼별 가능 기능을 구현하고 unavailable/unknown 상태를 명시 |
-| 탐색 정책 | allow/cancel/external, redirect, main-frame/subresource error, popup | callback timing/취소 가능 범위를 실제 SDK와 대응시킴 |
-| 앱 콘텐츠 | `LoadAppContentAsync(resourceKey)`, 상대 리소스/fetch/media | 기존 resource manifest와 연결하고 origin·경로·MIME 정책 검증 |
-| JS/메시지 | 명시적 JS enable, async 평가, typed 결과, user script, handler 등록/해제 | native backend 우선 구현, Web은 동작 가능한 origin/협력 페이지 범위만 제공 |
-| 세션 | persistent/ephemeral profile, cookies/storage/cache, 명시적 data clear | native backend별 지원 범위·삭제 범위·수명 분리 검증 |
-| 실사용 확장 | file chooser, download, permission, media/fullscreen, process recovery | 지원 feature는 구현·검증, 미지원 feature는 typed 오류/정책으로 처리 |
-| 후속 확장 | headless, 고급 keep-alive pool, devtools UI, 인증·고급 request interception | WV-X로 분리. API 전체 동등성은 이번 필수 범위가 아님 |
+| WindowsAppSdk | CoreWebView2CompositionController + 호환 raster/effect visual | controller는 고정. GPU/기타 raster 전송은 제품 결과로 선택. 현재 layered BUTTON/EDIT C와 호환을 가정하지 않음 |
+| Windows MAUI | 동일 CoreWebView2CompositionController 기능 adapter, runner 결합 별도 | MAUI presenter와 RootVisualTarget/input 연결 검증 |
+| Android | `android.webkit.WebView` + 플랫폼별 선택 전략 | hierarchy/live texture/bounded readback/HCPP 대응 후보 비교. 실제 subtree/OS/provider의 입력·효과·성능 검증 |
+| iOS / Mac Catalyst | WKWebView / UIView | UIKit R5 및 runner별 R4/R7 |
+| AppKit | WKWebView / NSView | AppKit R5 및 responder/IME/semantics |
+| Web | iframe / main DOM / CSS backdrop effect | R5 multi-canvas와 R-E CSS effect 제품 연결, 협력 가능 origin 범위의 입력/JS |
+| Linux | 시스템 Qt WebEngine Quick / 같은 QQuickWindow의 item | Quick attachment·graphics backend 공존 spike, X11/Wayland별 R5 |
 
-기본 attach/detach 상태 보존은 필수 수명 계약이다. widget과 독립적인 명시적 keep-alive token/profile 소유권은 WV-1에서 정하고 지원 backend에서 구현한다. 화면 없이 독립 실행하는 headless는 별도 후속 기능이다.
+Qt Widgets/QWebEngineView는 기존 B probe·제한 경로로 남긴다. Quick Controls C가 WebEngine Quick C를 보장하지 않는다. Qt WebView wrapper 대신 WebEngine 직접 adapter와 C ABI를 사용한다. Qt WebEngine은 Widgets/Quick 접점을 구분하므로 현재 Quick host에 맞는 접점을 검증한다. [Qt WebEngine overview](https://doc.qt.io/qt-6/qtwebengine-overview.html), [Qt WebView 문서](https://doc.qt.io/qt-6/qtwebview-index.html)
 
-### 2.2 플랫폼별 목표표
+## 3. 공통 API와 수명 계약
 
-아래는 **구현 목표/확정할 제한**이며 현재 지원표가 아니다. `조건부` 기능은 WV-0 대응표에서 필수·선택·미지원으로 확정하고, 필수 기능을 제외하면 사유와 범위 변경을 기록한다.
+### 3.1 패키지 구조
 
-| 대상 | 엔진/API | 기본 탐색 | JS/message | profile/assets | 겹침 의존성 |
-|---|---|---|---|---|---|
-| WindowsAppSdk | WebView2 composition controller | 목표 | 목표 | 목표 | PV-3C/PV-5 |
-| Windows MAUI | 같은 WebView2 기능 adapter, 별도 host 결합 | 목표 | 목표 | 목표 | 해당 runner PV-3C/PV-5 |
-| Android | `android.webkit.WebView` | 목표 | 목표 | OS/provider별 조건부 격리, asset loader | PV-6C/PV-5 |
-| iOS | WKWebView / UIKit | 목표 | 목표 | data store와 scheme 정책 검증 | PV-7C/PV-5 |
-| Mac Catalyst | WKWebView / UIKit, 별도 runner | 목표 | 목표 | iOS 결과와 별도 검증 | PV-7C/PV-5 |
-| AppKit macOS | WKWebView / NSView | 목표 | 목표 | 목표, 실제 API별 확인 | PV-8C/PV-5 |
-| Web | iframe / main DOM | LoadUri 중심, history/정밀 상태 조건부 | same-origin/협력 페이지만 조건부 | 브라우저 저장소 정책, same-origin asset | PV-4C/PV-5 |
-| Linux | 시스템 Qt WebEngine 공개 API + C ABI shim | 목표 | QWebEnginePage/Script + 제한된 QWebChannel bridge 목표 | QWebEngineProfile/UrlSchemeHandler 목표 | WV-7B + PV-9C/PV-5, X11/Wayland 분리 |
-
-Web의 cross-origin iframe은 임의 JS/history/cookie/탐색 차단을 native WebView와 동등하게 제공할 수 없다. `UnsupportedFeature`, `Unknown` 상태와 협력 bridge 지원을 구분한다. progress를 관측할 수 없으면 임의 비율을 만들지 않고, iframe load event를 HTTP 성공 또는 첫 content 표시로 단정하지 않는다.
-
-## 3. 공통 구조와 계약
-
-### 3.1 패키지와 실제 변경 위치
-
-| 위치 | 책임 / 예정 산출물 |
-|---|---|
-| 신규 `Doroti/src/Doroti.WebView/` | controller/widget, navigation/state/settings, typed message·profile·resource 계약 |
-| 신규 `Doroti.WebView.Windows`, `.Android`, `.UIKit`, `.AppKit`, `.Web`, `.Linux.Qt` | 플랫폼 factory·SDK adapter·옵션·feature query. 최종 프로젝트/TFM 분리는 WV-0에서 확정 |
-| 신규 `Doroti/src/Doroti.WebView.Linux.Qt/native/` | WebEngine 공개 API를 감싼 선택형 `libdoroti_webview_qt.so` 제안. 시스템 Qt에 동적 링크하며 C ABI만 managed에 노출 |
-| [Qt runner build](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets), [Testbed native](DorotiTestbedApp/linux/native/CMakeLists.txt), [template native](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/CMakeLists.txt) | opt-in shim build/copy/publish와 generic pre-application hook 연결. Testbed·생성 template 모두 반영 |
-| [DorotiApplicationBoundary](Doroti/src/Doroti.Hosting/DorotiApplicationBoundary.cs) | 기존 manifest/plugin/resource 등록 접점 재사용 |
-| [native bridge](Doroti/src/Doroti.Hosting/DorotiNativePlatformBridge.cs)와 runner/native/binding | SDK 객체를 backend 안에 유지하고 callback을 UI thread로 marshaling |
-| [templates](Doroti/templates/Doroti.Templates/content/doroti-app) 및 각 runner | opt-in package/native asset/build item 등록, final publish 배포 |
-| 신규 `DorotiTestbedApp/src/WebViewFixture.cs` | 동일 local content로 플랫폼별 기능·입력·겹침·복구 검증 |
-| 신규 `Doroti/validation/webview/`, `Doroti/docs/webview/` | 기능 대응표, focused validator, 배포/오류 문서 |
-
-공통 `net10.0` 앱은 platform SDK/binding/native pointer를 노출받지 않는다. UIKit 코드 공유가 iOS/Catalyst final runner·ABI를 합치는 근거가 되지 않는다. NativeAOT를 위해 동적 reflection 객체 노출 대신 명시적 DTO/직렬화 계약을 쓴다.
+- 제안 `Doroti.WebView.Core`: controller, settings, navigation/document/profile DTO·feature query. framework Widget 의존성을 피한다.
+- 제안 `Doroti.WebView`: `WebViewWidget`과 Core·기존 typed PlatformView 연결. 앱이 쓰는 진입 패키지다.
+- 제안 `.Windows/.Android/.UIKit/.AppKit/.Web/.Linux.Qt`: SDK adapter·manifest factory·native asset 등록. 실제 TFM/project 수는 WV-0에서 확정한다.
+- Linux의 자체 `libdoroti_webview_qt.so`는 opt-in shim이며 시스템 Qt/WebEngine에 동적으로 연결한다. generic host에 WebEngine dependency를 강제로 추가하지 않는다.
+- 기존 [application boundary](Doroti/src/Doroti.Hosting/DorotiApplicationBoundary.cs), [runner targets](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets), Testbed/template 등록 흐름을 사용한다. public 계약에 native pointer/SDK 객체를 노출하지 않는다.
 
 ### 3.2 Controller·명령·이벤트
 
-- controller는 widget rebuild와 독립적이며 한 시점에 native attachment 하나를 소유한다. `CreateAsync` 또는 readiness task를 선택해 생성 실패·취소·dispose 결과를 노출한다.
-- 준비 전 명령은 제한된 queue에서 순서를 보장하거나 명시적 NotReady로 거부한다. WV-1에서 정책·queue 상한을 고정한다. UI thread 동기 wait는 사용하지 않는다.
-- `owner/instance generation + navigationId + requestId`로 응답을 검증한다. document 교체 시 이전 document JS pending request를 취소한다. SPA navigation과 새 document navigation은 구분한다.
-- native created, navigation started/committed/completed, first content frame은 별도 개념이다. backend가 관측 못 하는 이벤트는 합성해서 성공 처리하지 않는다.
-- navigation 오류는 main-frame/subresource와 취소/네트워크/정책/엔진 종료를 구분한다. URL/title 등의 이벤트 순서와 redirect 관계를 대응표로 남긴다.
-- sync 결정만 가능한 API에는 사전 policy를 사용한다. deferral 가능 API는 timeout/cancel을 두고 UI thread를 막지 않는다.
-- 외부 열기와 popup은 앱의 명시적 policy로 처리한다. WebView package가 무조건 URL launcher를 실행하거나 새 창을 띄우지 않는다.
+`WebViewController`는 widget rebuild와 독립이고 같은 owner의 PlatformView controller/handle을 소유한다. `CreateAsync` 완료는 native ready이며 page loaded·첫 content frame이 아니다. 초기 명령은 준비 전 NotReady로 거부하는 단순 정책을 기본안으로 하고, 필요한 대기 기능은 explicit `Ready` 이후 사용한다. backend 작업 queue는 상한을 두며 navigation·JS·dispose 순서를 정의한다.
 
-### 3.3 JS bridge·세션·로컬 콘텐츠
+명령/응답은 `(owner, instanceGeneration, navigationId, documentGeneration, requestId)`로 식별한다. 새 document에서 이전 JS pending을 취소하고 late 결과를 폐기한다. SPA same-document navigation과 새 document navigation을 구분한다. widget detach 때 살아 있는 native를 재생성하지 않는다.
 
-JS message envelope에는 version, request ID, navigation/document 식별자, 이름, 직렬화 가능한 payload를 둔다. SDK가 제공하는 origin/frame/source를 검증하고 부족한 metadata 때문에 안전한 범위를 보장할 수 없으면 bridge 활성 범위를 제한한다. trusted app content와 임의 원격 페이지를 같은 권한으로 취급하지 않는다.
+SDK의 main-frame navigation started/committed/completed/error와 first content frame은 별도 이벤트다. 관측 못 하는 값은 Unknown/unsupported이며 임의 progress나 synthetic Presented를 만들지 않는다. 외부 URL·popup은 앱의 명시적 policy를 거치고 UI thread를 동기 대기시키지 않는다. sync 결정 API에는 사전 정책, deferral API에는 timeout/cancel을 사용한다.
 
-handler는 허용된 origin/frame만 대상으로 등록하고 navigation/dispose 시 오래된 handler/listener를 정리한다. 최대 message 크기·timeout·pending 수와 binary/직렬화 불가 결과 오류를 정의한다. native 객체/reflection을 웹에 공개하지 않으며 TLS 오류 무시·전체 파일 접근·권한 자동 승인을 기본값으로 넣지 않는다.
+dispose는 새 명령 admission 차단 → pending 취소·handler 해제 → attachment/input 차단 → 공통 retirement → native SDK 해제 순서의 의존성을 가진다. profile/environment는 마지막 view와 별도 소유자가 해제할 때 닫는다. close/failed process 후 callback도 generation 검사를 거친다.
 
-profile/environment는 view보다 긴 수명을 가질 수 있다. view dispose, profile dispose, cookie/storage/cache 삭제를 분리한다. Android 등에서 독립 profile 생성에 제약이 있으면 cookie 저장소 일부 분리만으로 완전한 격리를 선언하지 않는다.
+### 3.3 JS·origin·profile·앱 콘텐츠
 
-| Backend | 앱 콘텐츠 구현 접점 | 확인할 사항 |
+| 계약 | 필수 조건 |
+|---|---|
+| message envelope | version·request/document 식별·이름·typed payload, 크기/pending/timeout 상한 |
+| 출처 검증 | SDK가 제공한 origin/frame/source를 사용. payload의 자칭 origin을 신뢰하지 않음 |
+| bridge | 허용 origin/world/frame만 노출, native 객체/reflection 공개 금지, navigation/dispose 때 listener 회수 |
+| JS 결과 | primitive/배열/map/null·undefined·평가 실패·직렬화 불가 구분, Promise 의미는 SDK별로 명시 |
+| profile | shared/isolated/ephemeral 지원 범위를 실제 SDK에 맞춤. Android cookie 일부 분리로 완전한 profile 격리 주장 금지 |
+| data clear | cookie/cache/localStorage/IndexedDB 등 삭제 범위·완료를 별도로 확인. view dispose와 혼동 금지 |
+| content | manifest의 resource key→정규화 경로, origin·MIME·relative fetch, 취소/response 수명, Range/media |
+| 기본 정책 | TLS 오류 무시·전체 file 접근·권한 자동 승인 없음. popup/download/외부 protocol은 명시적 앱 정책 |
+
+앱 콘텐츠 접점은 Windows virtual-host mapping/resource interception, Android WebViewAssetLoader, Apple WKURLSchemeHandler/제한 file base, Linux UrlSchemeHandler, Web same-origin URL이다. 이들은 구현 후보이며 API별 `since`·fetch/보안 컨텍스트·Range 지원을 WV-0와 각 adapter 단계에서 공식 SDK 문서 및 실제 페이지로 검증한다. loopback HTTP 서버는 기본 의존성으로 추가하지 않는다.
+
+Web cross-origin iframe에는 임의 JS/history/cookie·navigation interception·native와 같은 pointer 중재를 약속하지 않는다. same-origin 또는 협력 페이지 bridge만 별도 feature로 제공하며 COOP/COEP/CSP/sandbox·frame source와 source window를 검증한다. iframe load를 HTTP 성공이나 첫 표시로 간주하지 않는다. [HtmlElementView의 DOM/iframe 제약](https://api.flutter.dev/flutter/widgets/HtmlElementView-class.html)
+
+## 4. 실행 gate
+
+아래 backend 구현의 R6/R-E/WV-H 선행은 **attachment·effect 계약과 조기 probe 준비**를 뜻한다. 공통 host와 WebView adapter를 함께 구현한 뒤 R6 합성, R-E 효과 결합, WV-H 제품 검증을 마감한다. work1 R7과 WV-9는 동일 제품 증거를 공유하는 공동 승인으로 수행하며 서로의 최종 완료를 기다리는 순환 의존성을 만들지 않는다.
+
+### WV-H — 플랫폼별 전략 + 공통 PlatformEffect 조기 결합 gate
+
+선행: work1 R1/R3 계약. 최소 native SDK probe는 WV-0와 함께 시작하며 최종 제품 승인은 해당 R6/R-E와 WV-2~WV-7 구현 뒤에 수행한다. 새 상태 `TODO`/`notVerified`.
+
+WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻하지 않는다. 후보별 기능/입력·시각 fidelity를 먼저 확인한 뒤 성능·메모리·안정성을 비교한다.
+
+| backend | 먼저 확인할 결합 | 실패 시 처리 |
 |---|---|---|
-| Windows | virtual-host mapping 또는 resource interception | origin, path traversal, MIME, fetch, Range/seek, runtime 지원 |
-| Android | AndroidX WebViewAssetLoader | asset/resource mapping, HTTPS origin, file 접근 제한, fetch/media |
-| Apple | WKURLSchemeHandler 또는 제한된 file/base URL | custom scheme에서 필요한 fetch/media/보안 컨텍스트 동작, read 범위 |
-| Linux Qt | QWebEngineUrlScheme + QWebEngineUrlSchemeHandler | application 생성 전 scheme 등록, profile별 handler, origin/경로/MIME/fetch/Range·seek 검증 |
-| Web | 앱 서버의 same-origin URL | base URI, CSP/sandbox, origin, 상대 경로 |
+| Android | hierarchy·live texture·bounded readback·HCPP 후보로 동일 WebView+effect 장면 비교 | source sample/입력/예산 불충족 후보 제외. 충족한 다른 전략으로 선택 가능 |
+| Windows | CoreWebView2CompositionController RootVisualTarget + raster/effect visual의 호환 tree·전송 방식 | controller 선택 유지. API 객체 혼용 또는 host backdrop만 성공하면 결합 미완료 |
+| UIKit/AppKit | WKWebView + 공통 effect intent의 public material/blur/tint 매핑 + 선명한 전경 | 강도/색감 유사성과 source 검증. native alpha/mask/겹침 제약은 다른 lowering 또는 명시적 제한, private CAFilter 사용 안 함 |
+| Linux Quick | 같은 QQuickWindow의 WebEngine item·GPU raster를 live source로 sample, effect/child 제외 | GPU backend 불일치·sample 누락·recursive feedback이면 미완료. QWidget B로 대체하지 않음 |
+| Web | canvas/iframe/effect DOM/foreground 순서, CSS backdrop root, pointer pass-through | CSS.supports만 성공하거나 iframe pixels가 실제로 흐려지지 않으면 미승인. cross-origin JS를 요구하지 않음 |
 
-loopback HTTP 서버는 기본 의존성으로 두지 않는다. 플랫폼 기능으로 충족하지 못하는 요구가 확인되면 별도 결정을 남긴다.
+최소 결과는 handle/topology/actual transport·선택 이유·source coverage/freshness·입력/clip·공통 reference 대비 blur 강도/색감·전송 비용·실패 이유다. 선명한 child와 native blur를 같은 capture에서 확인하고 framework repaint 없이 변하는 WebView animation도 검사한다. 보호된 media/별도 surface는 별도 행으로 기록한다. generic native 표시 probe만으로 gate를 생략하지 않는다.
 
-## 4. 단계별 실행 계획
+### WV-0 — 기능 대응·attachment·배포 범위 고정
 
-모든 단계는 `TODO`다. 공통 계약 → Windows/Web 선행 제품 경로 → Android/Apple/Qt → 통합 검증 순서로 실행한다. Qt 시스템 패키지·ABI 조사와 최소 host 합성 spike는 초기부터 진행할 수 있다.
+선행: work1 R0/R1 계약 초안. 구현 상태 `TODO`.
 
-### WV-0 — 기능 대응표·플랫폼 결정·검증 fixture 설계
+- backend별 기능표에 SDK API/버전·thread·callback·지원/조건/미지원·검증 fixture를 연결한다. wrapper 이름만으로 기능 동등성을 정하지 않는다.
+- 공개 API/프로젝트·TFM·NativeAOT 직렬화 전략, OS/RID/runtime/provider 최소 범위를 고정한다. 새 계획 작성 중에는 SDK 지원 버전을 임의 승격하지 않는다.
+- Windows composition visual과 Linux Quick item의 최소 실제 WebView attach probe를 조기에 수행한다. 결과로 work1 attachment 계약을 보정한다.
+- WV-H에서 각 backend의 후보 전략과 effect source·공통 비주얼을 함께 검증한다. Android는 같은 scene으로 입력/효과/비용을 비교하고 HCPP 채택 필요성을 판단한다.
+- local HTML fixture에 navigation/redirect/history, JS 왕복, editable/IME, media, popup/permission, profile data를 준비한다. 0/1/4 view·두 owner·route lifecycle 기준을 연결한다.
 
-선행: work1 PV-0 계약 초안. PV-1 구현과 독립적으로 조사 가능.
+완료: 요청 기능별 소유권·API 접점·인계/실패 조건이 있으며 generic control만으로 WebView support를 등록하지 않는다.
 
-- 로컬 inappwebview widget/controller/settings/creation params/keep-alive/environment/native backend를 조사해 `Doroti/docs/webview/feature-map.md`를 작성한다.
-- 각 기능에 reference symbol, Doroti API, native API, OS/runtime 하한, callback 의미, 지원 수준, 담당 WV 단계, 검증 fixture를 연결한다.
-- 패키지/TFM/RID/native ABI, JS enable 기본값, trusted origin, profile 기본 수명, navigation 정책 timeout을 확정한다.
-- 동일 테스트 콘텐츠를 설계한다: relative CSS/JS/image/fetch, history/redirect, main-frame/subresource 실패, input/selection, delayed message, popup/file input, media seek, cookie/storage.
-- same-origin, 다른 origin의 협력 페이지, 비협력 페이지, embedding 거부 페이지를 독립 fixture로 구성한다. 외부 사이트 상태에만 의존하지 않도록 재현 서버를 계획한다.
+### WV-1 — 공통 controller/widget/profile
 
-완료 기준: 모든 목표 기능의 범위와 제약이 대응표에 있고, 최소 runtime과 성능 예산을 실제 착수 환경에서 결정할 작업이 배정되어 있다. Linux는 WebEngine 직접 API를 기준으로 WV-7A에서 버전·패키지·ABI를, WV-7B/PV-9에서 host 구조를 확정한다.
+선행: WV-0 + work1 R1. 실제 제품 attachment 통합은 해당 R3/R5에 의존한다.
 
-### WV-1 — 공통 package·controller·widget·profile 계약
+- Core/widget·feature query·typed error·create/ready/dispose·bounded queue·native handle facade를 구현한다.
+- owner/instance/document/request generation, handler/JS cancellation, keep-alive lease, profile/environment 소유권을 연결한다.
+- navigation policy·origin/frame·content resolver·JS 직렬화 공통 계약을 만든다. 플랫폼 지원 차이는 capability로 노출한다.
 
-선행: WV-0 및 PV-1/PV-2 공통 기반. UI 표시 전 fake backend 검증 가능.
+완료: 두 owner, create/close race, stale navigation/JS callback, timeout·직렬화 실패, profile scope 테스트. fake SDK 결과는 제품 WebView 검증과 분리한다.
 
-- 공통 typed API와 backend factory 선택을 구현하고 PlatformView handle에 widget을 연결한다.
-- readiness/명령 queue/취소/navigation ID/event subscription 및 idempotent dispose를 구현한다.
-- feature query, 미지원 기능 오류, 플랫폼 options, navigation policy, local resource resolver를 구현한다.
-- profile/environment 소유권과 keep-alive token을 구현한다. keep-alive 재attach와 동시 attach 거부를 검증한다.
+### WV-2 — Windows CoreWebView2CompositionController
 
-완료 기준: fake backend에서 생성 중 dispose, 준비 전 명령, navigation 후 late JS, profile 종료 중 callback, 두 controller 격리, handler 중복 등록/해제가 통과한다. 신규 core만 참조하는 앱에 WebView2/Qt native runtime 의존성이 들어가지 않는다.
+선행: WV-1 + WV-H 조기 probe 및 work1 Windows R6/R-E attachment/commit 계약. Windows MAUI는 별도 gate다.
 
-### WV-2 — Windows WebView2
+- STA/UI dispatcher에서 CoreWebView2Environment와 profile options를 준비하고 `CreateCoreWebView2CompositionControllerAsync(parentHwnd[, options])`로 생성한다. owner별 controller를 보존하고 runtime 부재·생성 실패·생성 중 close/late completion을 구분한다.
+- `RootVisualTarget`를 host 소유 visual에 연결한다. 위치/transform/clip/z-order와 `Bounds`·DPI/rasterization scale의 의미를 맞춘다. parent HWND는 owner 수명과 입력 접점이며 windowed WebView의 표시 경로로 사용하지 않는다. resize/순서 변경만으로 controller를 재생성하지 않는다.
+- `SendMouseInput`으로 mouse/wheel/leave를, `SendPointerInput`으로 touch/pen을 전달한다. 좌표·capture·pointer sequence와 CursorChanged/cursor 갱신을 공통 input bridge에서 관리한다. 전경 shield는 WebView 전달 전에 적용하며 keyboard/focus/IME·Tab 경로는 controller/host의 실제 계약으로 별도 연결한다.
+- 종료는 새 입력/명령 차단·event 해제·RootVisualTarget 연결 해제와 frame retirement를 조율한 뒤 SDK controller Close 및 참조 해제로 마감한다. 생성 중 owner close 뒤 도착한 controller도 같은 UI dispatcher에서 닫는다. SDK Close를 GPU/presentation retirement 완료 신호로 취급하지 않는다.
+- navigation·JS/messages·app content·data clear·popup/file/download/permission/process failure를 feature표에 맞춰 구현한다.
+- 실제 WebView A/Doroti 중간/WebView B/전경 modal로 C1~C6, resize/DPI·한글 IME·접근성을 검사한다.
+- 호환 tree의 backdrop effect와 선명한 전경을 검증한다. raster 전송·effect sample·frame retirement는 공통 host가 담당하며 WebView adapter 안에 별도 compositor를 만들지 않는다.
 
-선행: WV-1, PV-3B. 최소 composition 객체 spike는 PV-3와 공동 진행 가능.
+완료: 실제 페이지 기능·합성·공통 효과 비주얼·dispose race·clean 배포·NativeAOT를 검증한다. CoreWebView2CompositionController 선택은 유지하며 raster/effect 후보 변경은 actual strategy와 비교 결과에 기록한다. 어떤 호환 구성도 요구를 충족하지 못하면 `PARTIAL`이다. 기존 BUTTON/EDIT 결과와 분리한다.
 
-- **WV-2A 생성/표시:** environment·composition controller를 message pump가 있는 STA UI thread에서 생성한다. runtime 부재/지원 버전 미달/비동기 초기화 실패를 구분한다. wrapper와 C++ COM adapter 중 현재 ABI/AOT와 맞는 방식을 spike로 결정한다.
-- **WV-2B 기능:** navigation/history/errors/policy, JS/user scripts/message, profile/storage/cookie, app content mapping을 구현한다. COM event token을 보관해 dispose 시 해제한다.
-- **WV-2C 입력/확장:** composition controller의 mouse/pointer, cursor/capture/focus/IME를 PV-3/PV-5와 연결한다. popup/file chooser/download/permission/fullscreen/process failure는 지원표에 따라 구현한다.
-- **WV-2D 배포:** WindowsAppSdk와 Windows MAUI runner를 각각 검증한다. 선택한 runtime 배포 방식, 초기화 진단, native asset 및 NativeAOT 실제 publish를 확인한다.
+추가 확인: 실제 생성 경로가 CoreWebView2CompositionController인지, RootVisualTarget 연결·단일 입력 전달·resize 시 같은 controller 유지·생성 중 close 회수가 되는지 검사한다. managed SDK/COM interop를 포함한 NativeAOT publish/run도 검증하며 controller 선택 자체를 다른 backend로 바꾸어 AOT gate를 통과시키지 않는다.
 
-완료 기준: local fixture 탐색·JS·profile 격리/삭제, 초기화 중 창 닫기, process 종료/재생성, 한글 입력·selection·Tab이 실제 창에서 동작한다. 겹침 승인은 PV-3C/PV-5까지 통과해야 한다. WebView2 composition 성공은 generic HWND 전체 지원의 증거가 아니다.
+공식 계약: [CreateCoreWebView2CompositionControllerAsync](https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2environment.createcorewebview2compositioncontrollerasync?view=webview2-dotnet-1.0.3856.49), [CoreWebView2CompositionController visual/input API](https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/winrt/microsoft_web_webview2_core/corewebview2compositioncontroller?view=webview2-winrt-1.0.3856.49). 문서의 SDK 버전은 참조본이며 Doroti 패키지 버전 pin은 실제 의존성/AOT 검증 단계에서 확정한다.
 
-WebView2의 STA/message loop와 비동기 호출 원칙은 [Microsoft threading 문서](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/threading-model)를 따른다. 로컬 inappwebview의 Flutter texture bridge를 Doroti의 직접 DComp 출력으로 그대로 옮기지 않는다.
+### WV-3 — Web iframe
 
-### WV-3 — Web iframe / EmbeddedWebContent
+선행: WV-1 + work1 R5 Web 제품 연결, R6 browser compositor 계약 및 R-E CSS effect.
 
-선행: WV-1, PV-4B. 겹침 완료에는 PV-4C/PV-5 필요.
+- main DOM factory와 stable iframe을 typed handle에 연결하고 navigation 시 src/document revision을 관리한다. 위치/순서 변경 때 iframe reparent/recreate로 state를 잃지 않는다.
+- cross-origin·same-origin·협력 bridge를 기능표로 나눈다. unknown progress/history·JS unsupported를 정직하게 반환한다.
+- worker-direct WebGPU/WebGL, multi-canvas·shield·DOM focus·2 owner·DPR·context loss·stale packet을 실제 제품에서 확인한다.
+- main DOM effect element를 iframe 뒤·Doroti child 앞에 배치한다. source iframe은 이동/가림 때 재생성하지 않는다. backdrop root·ancestor opacity·rounded clip·cross-origin iframe/영상과 browser별 실제 sample을 확인한다. 효과는 기본 pointer-events none이며 필요한 전경 입력은 기존 shield로 보호한다.
 
-- **WV-3A 수명/로드:** stable iframe/container와 controller를 연결하고 rebuild/resize/offstage/keep-alive에서 불필요한 reload를 막는다. LoadUri와 same-origin 앱 콘텐츠를 구현한다.
-- **WV-3B 제한 계약:** same-origin·협력 cross-origin·비협력 cross-origin별 지원표를 반환한다. 임의 history/cookie/JS 제어와 navigation interception을 지원한다고 가정하지 않는다.
-- **WV-3C 메시지:** exact targetOrigin, event.origin/source, document handshake/request ID로 협력 bridge를 검증한다. navigation 후 이전 페이지 응답과 다른 iframe의 위조 메시지를 거부한다.
-- **WV-3D embedding/입력:** CSP frame-ancestors/X-Frame-Options, iframe sandbox/allow와 호스트 COOP/COEP 조합을 확인한다. `iframe → shield → Doroti foreground`의 시각/입력 순서와 메뉴 종료 후 복귀를 검증한다.
-- **WV-3E renderer 회귀:** WebGPU/WebGL을 명시적으로 선택해 각각 검증하고 main/worker protocol·context loss·iframe 수명 정합성을 확인한다.
-
-완료 기준: 지원 범위 안의 load/message가 동작하고 범위 밖 API가 명시적 오류를 반환한다. embedding 거부를 항상 세밀하게 관측할 수 있다고 약속하지 않는다. 관측 가능한 실패 또는 앱 timeout으로 상태를 종료하고 외부 열기는 앱이 선택한다. iframe load만으로 실제 content 표시를 성공 처리하지 않는다.
-
-검토 시 보완한 점: cross-origin isolation은 SharedArrayBuffer 등과 관련된 조건이다. 이를 WebGPU API 자체의 일률적 요구로 표현하지 않고 **Doroti 현재 worker/runtime의 요구와 iframe 응답 헤더 호환성**을 확인한다. [MDN crossOriginIsolated](https://developer.mozilla.org/en-US/docs/Web/API/Window/crossOriginIsolated), [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage).
+완료: load·identity·선택 bridge·origin 거부·modal·dispose 기능이 제품에서 동작한다. 독립 web-dom harness와 iframe load만으로 gate를 닫지 않는다.
 
 ### WV-4 — Android WebView
 
-선행: WV-1, PV-6B. 겹침 완료에는 PV-6C/PV-5 필요.
+선행: WV-1 + work1 R4/R5/R6 Android 및 R-E, WV-H의 전략/효과 조기 비교.
 
-- **WV-4A 생성/기본 탐색:** Activity/UI-thread 소유권, WebViewClient/WebChromeClient, lifecycle 연결과 create/close 경쟁을 구현한다.
-- **WV-4B 앱 기능:** navigation callback 차이, evaluateJavascript/message adapter, WebViewAssetLoader, cookie/storage/cache, user script 가능 시점과 backend options를 매핑한다. OS API와 WebView provider/version을 별도로 기록한다.
-- **WV-4C 실사용:** file chooser/permission/fullscreen video/process 종료 복구를 구현한다. callback 종료·취소를 보장하고 확대/selection/키보드 inset을 확인한다.
-- **WV-4D 수명/배포:** Activity 재생성, background/foreground, native Surface 재생성과 WebView 수명을 분리한다. AAR/binding/runner 및 실제 설치 패키지를 검증한다.
+- 실제 WebView factory·UI lifecycle·provider feature query·설정·앱 콘텐츠·navigation/JS를 구현한다. cookie/profile 격리 제약을 공개한다.
+- native-origin 부모 scroll와 WebView 내부 scroll/selection·pinch, IME·autofill·accessibility, media/SurfaceView 자식의 representation 제약을 검증한다.
+- rotate/insets/background/resume·renderer process 종료·owner close를 재현한다. API/ABI/provider별 feature와 실제 device 결과를 남긴다.
+- WebView 생성 시 PlatformPreferred 정책으로 후보를 협상한다. 선택한 hierarchy/texture/transfer 경로를 제품에 연결해 blur source·공통 비주얼·입력·성능을 검증한다. SurfaceControl/HCPP는 유리할 때만 채택한다. 일반 View.Draw 또는 API31 cross-window blur 성공을 inline backdrop 지원으로 계산하지 않는다.
 
-완료 기준: emulator x64와 arm64 기기에서 로컬 HTML/fetch/media seek, JS/message, 부모 scroll 경쟁, 한글 IME/selection, background 복귀와 route 100회 후 instance 정리를 확인한다. process cache 때문에 메모리가 즉시 0이 되지 않는 것과 Activity/WebView 참조 누수를 구분한다. texture 기반 scroll 성능을 측정 없이 더 빠르다고 채택하지 않는다.
+완료: 실제 WebView에서 C1~C6·기능/오류/취소·배포가 통과한다. generic EditText·기존 spinner baseline을 WebView 성능으로 전용하지 않는다.
 
-### WV-5 — iOS / Mac Catalyst WKWebView
+### WV-5 — UIKit iOS / Mac Catalyst
 
-선행: WV-1, PV-7B. 겹침 완료에는 PV-7C/PV-5 필요.
+선행: WV-1 + work1 UIKit R4/R5/R6/R-E.
 
-- **WV-5A UIKit backend:** WKWebView configuration·navigation/UI delegate·script message handler·website data store를 연결한다. delegate/handler의 참조 수명과 unsubscribe를 관리한다.
-- **WV-5B 기능:** navigation decision, user script 주입 시점, JS 결과/오류, app content scheme/read 범위, persistent/ephemeral session을 구현한다.
-- **WV-5C 입력/복구:** touch/scroll/selection menu/키보드 inset, permission/file/media capability, web content process 종료/재생성 정책을 검증한다.
-- **WV-5D 제품/NativeAOT:** iOS와 Catalyst 각각 binding·RID·native link·sign/install/run을 확인한다. 새 delegate/message bridge를 실제 publish 산출물로 실행한다.
+- WKWebView configuration/data store/script message handler·navigation delegate·scheme handler를 생성 전에 설정한다. UIView attachment·async callback·handler retain cycle·dispose를 연결한다.
+- native gesture/scroll/selection·키보드 inset·한글 IME·focus·VoiceOver·mixed foreground를 검증한다. group effects는 지원표대로 처리한다.
+- UIVisualEffectView 등의 public material/blur·tint를 공통 strength/비주얼에 매핑하고 선명한 child를 유지한다. alpha/mask·Reduce Transparency·입력 통과·source animation을 검증하며 private filter로 numeric sigma를 맞추지 않는다.
 
-완료 기준: iOS simulator와 실제 iPhone/iPad 해당 대상, Mac Catalyst 실행을 별도 기록한다. local content/JS/profile, 한글 조합/selection, 전경 modal/shield, VoiceOver, 재진입/종료를 확인한다. 기존 host probe나 Mono full-trim을 신규 WebView NativeAOT 성공으로 기록하지 않는다.
+완료: simulator/device와 iOS/Catalyst runner를 별도 승인한다. 앱 배포·AOT는 신규 binding/bridge가 포함된 final runner에서 검증한다. 과거 renderer-only Apple 생략 기록을 이번 WV 작업의 사용자 생략으로 확대하지 않는다.
 
-### WV-6 — native AppKit macOS WKWebView
+### WV-6 — AppKit macOS
 
-선행: WV-1, PV-8B. 겹침 완료에는 PV-8C/PV-5 필요.
+선행: WV-1 + work1 AppKit R4/R5/R6/R-E.
 
-- UIKit과 공유 가능한 WebKit 메시지·탐색 의미만 공통화하고 NSView/responder/focus/좌표 adapter는 별도로 구현한다.
-- macOS file chooser/download/popup/permission과 profile/local content capability를 구현한다.
-- 두 owner 창, 키보드 탐색, pointer/wheel, window activation, close 중 callback을 검증한다.
-- AppKit runner의 framework/binding/native asset와 실제 publish 실행을 확인한다.
+- NSView/WKWebView responder·좌표·backing scale·focus/IME·VoiceOver와 Metal/native 합성을 연결한다. UIKit 코드를 이름만 바꿔 이식하지 않는다.
+- navigation/JS/profile/assets와 두 WebView·modal·resize·close를 실제 AppKit 제품에서 검증한다.
+- NSVisualEffectView withinWindow를 WKWebView 위에 배치한다. 기존 BehindWindow backdrop와 수명/설정을 분리하고 Apple이 금지하는 effect view끼리 겹침은 명시적으로 거부한다. material theme·focus·screen reader·선명한 Doroti 전경을 확인한다.
 
-완료 기준: AppKit 실제 앱에서 기능 fixture와 한글 IME/selection/VoiceOver·겹침·live resize가 통과한다. Catalyst 결과를 복사하지 않는다. 지원 RID별 빌드·실행·AOT 결과를 분리한다.
+완료: 실제 창 픽셀·입력·data store·late callback·배포 증거가 있다. 현재 부재한 과거 AppKit artifact를 근거로 미실행 기능을 승인하지 않는다.
 
-### WV-7 — Linux 시스템 Qt WebEngine
+### WV-7 — Linux 시스템 Qt WebEngine Quick
 
-#### 재검토 결정과 현재 기반
+현재 기준은 [Testbed Linux 설정](DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj)의 Quick 선택, [QtPlatformViewHost](Doroti/src/Doroti.Host.Qt/QtPlatformViewHost.cs), [Quick native host](DorotiTestbedApp/linux/native/src/doroti_qt_quick.cpp)다. [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs)는 이름과 달리 callback ABI **4 / 192 bytes**, preparation offset 184이며 [Quick 기능](Doroti/src/Doroti.Host.Qt/QtQuickNative.cs)은 선택 bit 17이다. 새 WebView ABI는 이들을 덮어쓰지 않고 version/size/features를 협상한다.
 
-`ref.md`의 시스템 패키지 활용·WebEngine 직접 연결·C ABI shim 제안을 채택한다. Linux Qt WebView도 WebEngine에 의존하므로 wrapper가 엔진 설치를 없애지는 않는다. Qt WebView의 QML overlap 제한 역시 일반 합성 지원을 보장하지 않는다. 따라서 QWebView/Qt 6.11을 필수 출발점으로 두지 않는다. [Qt WebView 공식 문서](https://doc.qt.io/qt-6/qtwebview-index.html).
+공급 정책은 유지한다. 배포판의 Qt/WebEngine runtime을 사용하고 Chromium·Qt 엔진을 앱/NuGet에 복사하거나 직접 다운로드·빌드하지 않는다. 자체 shim과 managed adapter만 Doroti가 공급한다. WebEngine 미사용 앱에는 해당 의존성을 추가하지 않는다. 시스템 패키지의 helper/resources/locales/QML module 비용은 별도로 기록한다. [Qt 배포 구성](https://doc.qt.io/qt-6/qtwebengine-deploying.html)
 
-- **공급 정책:** 배포판 저장소의 Qt WebEngine을 사용한다. 앱/NuGet에 Chromium·Qt WebEngine runtime을 복사하거나 엔진을 직접 빌드·다운로드하는 경로는 이번 범위에 넣지 않는다. 시스템 설치에 드는 디스크·메모리 비용은 별도로 측정한다.
-- **단일 backend:** `Doroti.WebView.Linux.Qt → 자체 C ABI shim → 시스템 Qt WebEngine`으로 연결한다. ref.md 앞부분의 WPE 우선·WebKitGTK fallback 제안은 기존 Qt 선택과 맞지 않아 채택하지 않는다. 로컬 inappwebview Linux 구현도 WPE이므로 기능 의미만 참고한다.
-- **API 기준:** QWebEnginePage/Profile/Script/UrlSchemeHandler와 QWebChannel을 사용한다. 표시 접점은 QWebEngineView/Widgets부터 검증하되, 현재 Graphite QWindow와의 합성이 가능하다는 뜻은 아니다. WebEngine Quick은 WV-7B에서 Widgets 경로의 구체적 제약이 확인될 때만 비교하고 제품 경로 하나를 고정한다.
-- **버전 기준:** WebView 선택 앱의 Qt/WebEngine API 하한은 **6.8을 계획 기준**으로 두고 WV-7A에서 실제 최소 patch·배포판 build를 확정한다. 신규 API는 `since`/compile guard와 capability로 구분한다. WebView 미사용 generic Qt host의 현재 CMake 하한 6.5를 일괄 올리지 않는다.
-
-아래는 2026-09-11 공식 패키지 페이지 확인값이며 지원 인증표가 아니다. ref.md의 전체 배포판 최신 버전표나 고정 설치 용량을 요구조건으로 옮기지 않는다. 설치 단계에서 저장소·architecture·보안 업데이트 상태를 다시 기록한다.
-
-| 시스템 패키지 후보 | 확인된 WebEngine 패키지 | 계획상 용도 |
+| 단계 | 작업 | 완료/중단 조건 |
 |---|---|---|
-| Debian 13 stable | `qt6-webengine-dev 6.8.2+dfsg-4` | 6.8 API 하한 검증 후보. [공식 패키지](https://packages.debian.org/trixie/qt6-webengine-dev) |
-| Ubuntu 26.04 LTS | `qt6-webengine-dev 6.10.2+dfsg-1`, Universe | 최신 LTS 통합 후보. [공식 패키지](https://packages.ubuntu.com/resolute/qt6-webengine-dev) |
-| Arch Linux x86_64 | `qt6-webengine 6.11.2-1` | rolling update 호환성 후보. [공식 패키지](https://archlinux.org/packages/extra/x86_64/qt6-webengine/) |
+| WV-7A 패키지/API | linux-x64부터 시스템 Core/Quick/Qml/WebEngineQuick/WebChannel·QML module·toolchain/QPA closure 조사. 이전 6.8 API 하한은 후보이며 Quick 공개 API 요구와 함께 재확정 | 최소 patch·배포판 build·현재 보안 업데이트·required API표. 예전 패키지 버전을 최신 지원표로 복사하지 않음 |
+| WV-7B 실제 Quick spike | 현재 Quick GPU 구성을 우선해 공개 WebEngineView + effect + 선명한 child·공통 비주얼 비교. graphics backend·Chromium GPU 공존 검사 | XWayland/native Wayland C1~C6/E1~E3·비용 통과. 실패 시 시스템 Qt 정책 안의 다른 공개 구성을 비교하고 선택 이유/지원 범위를 갱신. private texture extraction 금지 |
+| WV-7C C ABI·startup | existing pre-application hook에 scheme/WebEngineQuick 초기화 순서 연결, opt-in shim load·Quick item attachment·focus/event·owner close. 공개 C ABI만 managed에 노출 | 같은 QApplication/event loop/Qt build, version/size/features 거부, 두 owner·late callback·모듈 종료 수명 검사 |
+| WV-7D 기능 | 공개 Quick WebEngineView/WebEngineProfile·script/navigation/message API를 기능표에 매핑. 필요한 QWebChannel/scheme 기능은 공개 API로만 연결 | Quick에 없는 QWebEnginePage/Widgets API를 있다고 가정하지 않음. JS/origin/profile/content 성공·오류·취소 재현 |
+| WV-7E 배포 | runner targets·Testbed/template·CMake에 shim build/copy/publish, distro dependency·helper/data/QML manifest 연결 | 개발 Qt 경로 없는 clean install/run, runtime/버전/helper/QML 누락별 typed 오류, 미사용 앱 무의존성 |
+| WV-7F 제품 승인 | work1 Quick R4/R5/R6/R-E/R7과 함께 native/GPU 합성·효과·입력·IME·Orca·DPR/resize·두 owner·0/1/4-view·process recovery | QPA·VM/물리 GPU·OS/runtime별 결과 분리. generic Quick Controls/Widgets probe로 WebEngine 승인 금지 |
 
-현재 [Testbed runner](DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj)는 `linux-x64`다. [native host](DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp)는 QApplication 하나를 만들며 Graphite에서는 QWindow, 비교 경로에서는 QOpenGLWindow를 사용한다. [CMake](DorotiTestbedApp/linux/native/CMakeLists.txt)는 Qt 6.5 Core/Gui/Widgets/OpenGL/OpenGLWidgets를 참조하며 WebEngine 연결은 없다. [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs)의 이름/export는 v2이지만 실제 `AbiVersion`은 **3**이다. [runner targets](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets)는 현재 `libdoroti_qt_host.so`만 복사하므로 새 shim의 build/publish 연결이 필요하다.
+WV-7B는 WV-0부터 최소 조사/probe를 시작한다. WV-7C는 WV-1과 공통 attachment 계약 확정 후 구현한다. QWebEngineView/Widgets B 경로는 비교·제한 지원으로만 남기며 C 실패를 B 성공으로 종료하지 않는다.
 
-선행 순서: **WV-7A → WV-7B(PV-9 공동 spike) → WV-7C → WV-7D → WV-7E → WV-7F**. A와 B의 최소 native 실험은 WV-0부터 시작할 수 있다. C의 controller 연결은 WV-1 및 PV-9B에 의존한다. 기능 개발은 B 표시 후 진행하되 전체 겹침 완료에는 PV-9C/PV-5가 필요하다. 아래 구현·제품 검증은 모두 `TODO`/`notVerified`다.
+Qt Quick rendering은 현재 Qt 소유 Vulkan instance/device/queue, Graphite R→P copy, basic render loop·retirement를 유지한다. WebEngine 내부 texture 소유권은 Chromium/Qt에 맡긴다. 공개 API가 제공하지 않는 native pointer를 추출하지 않는다. [Qt Quick 소유권·thread 구조](https://doc.qt.io/qt-6/qtquick-visualcanvas-scenegraph.html)
 
-#### WV-7A: 시스템 패키지·API 하한·ABI 범위 확정
+startup은 profile/scheme 설정 시점과 application 생성 전 요구를 SDK 버전별로 확인한다. shim의 live QObject·callback·process hook이 남으면 unload하지 않는다. native/managed 예외가 ABI 밖으로 전파되지 않도록 오류로 변환한다. custom scheme response device·cancel·Range/media 기능은 별도 검사한다.
 
-- 우선 `linux-x64`의 하한/최신 조합을 고르고 distro/release/repository/Qt Core·WebEngine build/compiler/glibc/libstdc++/QPA/GPU를 기록한다. arm64는 별도 runner·native build·실행 증거를 확보하기 전 지원표에 추가하지 않는다. Fedora/backports 등 추가 조합도 패키지 공급과 제품 지원을 구분한다.
-- 기능표의 API별 도입 버전과 실제 제공 모듈을 확인한다. Widgets 기준 직접 의존 후보는 `Qt6::WebEngineCore`, `Qt6::WebEngineWidgets`, `Qt6::WebChannel`이다. Qt WebView/QML/Quick은 직접 의존으로 강제하지 않되 배포판 패키지가 끌어오는 전이 의존성은 실제 설치 비용에 포함한다.
-- host와 shim은 같은 배포판 Qt 계열/toolchain으로 빌드한다. C ABI는 managed 경계를 안정화할 뿐 Qt C++ ABI나 glibc 차이를 제거하지 않는다. 최신 Qt에서 빌드한 바이너리를 구버전에 로드할 수 있다고 가정하지 않고, 배포판별 빌드 또는 검증된 하한 빌드의 호환 범위를 고정한다. 서로 다른 Qt 배포본을 한 process에 혼합하지 않는다.
-- `Doroti/docs/webview/linux-qt.md`에 engine 선택, 최소/검증 버전, 필수/선택 기능, 개발·runtime 패키지 구분, build/RID 행렬을 작성한다. 버전 숫자만으로 Chromium 보안 수정 수준을 판정하지 않고 저장소 업데이트 정보도 기록한다.
+QWebChannel message 안의 origin은 신뢰 근거가 아니다. native에서 검증할 수 있는 world/frame 범위가 부족하면 trusted app content/main-frame bridge로 제한한다. profile 저장 정책은 page/item 생성 전에 결정하고 cookie/cache 삭제와 전체 storage 삭제를 구분한다.
 
-완료 기준: 재현 가능한 시스템 패키지/toolchain 명세와 기능 대응표가 있으며, 6.8 기준 충족 여부·제외 조합·지원 범위 변경이 명시되어 있다. 조사만으로 해당 배포판 제품 지원을 승인하지 않는다.
+일반 사용자와 기본 Chromium sandbox 조건에서 clean 실행한다. no-sandbox/root 진단 결과는 제품 PASS가 아니다. 배포판·Qt build·QPA plugin·sandbox/GPU 실패를 각각 기록한다. 시스템 Qt 보안 업데이트 후의 재실행 조건도 문서화한다. [Qt WebEngine 플랫폼 조건](https://doc.qt.io/qt-6/qtwebengine-platform-notes.html)
 
-#### WV-7B: 표시·교차 합성 구조 조기 검증 — PV-9 공동 게이트
+### WV-8 — 정책·복구·상태 보존 마감
 
-- 실제 Graphite Vulkan QWindow와 QWebEngineView를 한 owner 안에 연결하는 최소 native spike를 만든다. generic host의 attachment/container/foreground/shield는 PV-9가 소유하고, WV-7B는 최소 live HTML 객체와 기능 probe를 공급한다. 별도 QApplication/event loop를 만들지 않는다.
-- QWidget shell/`createWindowContainer()`로 비겹침 B를 검증하더라도, embedded window가 불투명하게 위에 쌓이고 겹친 여러 container의 순서가 정의되지 않는 제약을 C 설계에 그대로 적용한다. [Qt container 제약](https://doc.qt.io/qt-6/qwidget.html#createWindowContainer).
-- **두 live WebView 사이와 위에 Doroti 중간·전경을 겹치는 spike**를 X11/Wayland에서 각각 실행한다. alpha, 부분/전체 가림, 역순, shield, resize와 GPU backend 공존을 확인한다. hidden/스크린샷 대체 또는 단순 raise/lower 성공으로 C를 판정하지 않는다.
-- Widgets가 C를 충족하지 못하면 WebEngine Quick의 공개 API와 Qt scene graph 결합 비용을 비교한다. Quick 도입 시 pre-application 초기화·graphics API·모듈·presenter 변경 범위를 기록한다. private Chromium/Qt texture extraction이나 renderer의 조용한 전환은 채택하지 않는다.
-- 결정은 `표시 API + host 계층 + renderer + QPA + B/C 제약` 단위로 남긴다. C 미해결이어도 B 기능 작업은 진행 가능하나 Linux 전체 목표는 `PARTIAL`이다. host 재설계가 필요하면 PV-9 작업에 반영하고 WebView adapter 안에 compositor를 중복 구현하지 않는다.
+선행: 해당 WV-2~WV-7 기능 구현. 각 backend 개발 중에도 해당 검증을 수행한다.
 
-완료 기준: PV-9B 인계 가능한 attachment 구조와 C의 실행 가능한 설계 또는 구체적 실패 근거가 있다. 이 spike 통과와 제품 C1~C6/PV-5 최종 승인은 분리한다.
+- redirect/popup/외부 protocol, file chooser cancel, download 수명, permission 허용/거부, fullscreen 복귀를 같은 fixture로 비교한다.
+- trusted/untrusted origin/frame, oversized·late message, TLS 오류, 리소스 경로 이탈을 거부한다.
+- profile 공유/격리/ephemeral 종료·명시적 데이터 삭제, keep-alive 재attach·dispose race를 검증한다.
+- process failure의 terminal·재생성 정책을 명확히 한다. 새 엔진이 복구하지 못한 history/form/media 상태를 복구 성공으로 표시하지 않는다.
 
-#### WV-7C: 선택형 C ABI shim·초기화·수명
+완료: 광고한 기능의 성공/실패/취소·복구 경로가 있고 UI deadlock, stale JS 실행, listener/native instance 누수가 없다.
 
-- WebEngine에 동적 링크한 별도 `libdoroti_webview_qt.so`와 managed adapter를 만든다. C#은 Qt의 C++ symbol을 직접 P/Invoke하지 않고 version/struct size/feature bits, opaque handle, UTF-8 pointer+length, typed status를 가진 자체 C ABI만 호출한다. buffer allocator/free와 callback context 소유자를 명시한다.
-- generic `libdoroti_qt_host.so`에 WebEngine의 필수 `DT_NEEDED`를 넣지 않는다. 앱 manifest opt-in에 따라 전용 shim을 로드하고 generic host hook을 통해 결합한다. ABI 변경은 native header/managed layout/Testbed/template/contract validator를 함께 갱신한다.
-- **첫 widget 생성 시점보다 앞선 process 준비 단계를 둔다.** opt-in shim 준비와 앱 scheme 등록을 현 `doroti_qt_run_v2`의 QApplication 생성 전에 실행한다. instance/page/profile 생성은 QApplication 이후 Qt GUI thread에서 수행한다. Qt WebView 모듈을 쓰지 않으므로 `QtWebView::initialize()`를 기본 호출로 복사하지 않는다. Quick 선택 시 해당 초기화 순서를 별도 적용한다. [scheme 초기화 계약](https://doc.qt.io/qt-6/qwebengineurlscheme.html).
-- create/ready/dispose, attach/detach, signal disconnect, UI-thread dispatch와 비동기 request 취소를 연결한다. page 파괴 중 발생하는 늦은 JS callback도 generation으로 거부한다. page/view 종료 뒤 profile을 정리하고 event loop 종료 전에 필요한 deferred deletion을 처리한다.
-- live QObject/callback가 남은 동안 shim을 unload하지 않는다. 등록된 process hook을 포함한 module 수명을 정하고 기본적으로 process 동안 유지한다. native 예외를 ABI 밖으로 전파하지 않으며 managed callback 예외도 경계 안에서 오류로 변환한다.
-- runtime 부재, 버전/ABI 불일치, helper/resources 누락, 초기화 실패를 구분한다. 선택 feature가 없으면 미로딩 상태를 유지하고, opt-in 준비 실패는 정의한 typed 오류로 반환한다. 앱 전체 종료/기능 unavailable 정책을 WV-1 계약에 맞춘다.
+### WV-9 — 제품 Lab·성능·배포 승인
 
-완료 기준: 미사용 앱은 WebEngine 없이 실행되고 선택 앱은 생성·종료 및 두 owner/late callback 검증을 통과한다. 새 shim이 build와 final publish에 실제 포함되며, v2 이름만 보고 ABI 2로 연결하지 않는다.
+선행: 해당 WV-8, WV-H 최종 제품 검증 및 work1 R4/R5/R6/R-E/R7의 WebView 종류에 대한 게이트.
 
-#### WV-7D: 탐색·JS bridge·profile·앱 콘텐츠
+- `WebViewFixture`와 실제 sample에 navigation/local content/feature query·미지원 안내·IME·modal·여러 view·profile 선택을 연결한다.
+- 공통 PlatformEffect strength/tint·부분 clip·선명한 child·입력·동적 source를 fixture에 추가한다. 같은 reference content의 blur/색감 유사성을 비교하고 effect 수·sample pixels·GPU pass·copy/readback bytes·메모리를 예산으로 평가한다. 정상 시각 근사와 degraded/접근성 대체 상태를 구분한다.
+- 0/1/4 view의 frame p50/p95/p99, JS 왕복·입력 지연, native/process/GPU memory·listener/overlay 수를 측정한다. 생성 완료·GPU submit을 첫 content 표시 시간으로 대체하지 않는다.
+- 같은 OS/runtime/device/content/소스로 변경 전후를 비교한다. iframe 내부 관측 불가 항목은 미산출로 남긴다.
+- template부터 final runner publish/install/run과 NativeAOT ILC/native link/bridge 실행을 검증한다. 미사용 앱 dependency/크기 회귀도 확인한다.
+- 지원표·API 예제·runtime 준비/typed 오류·iframe 제한·profile 삭제·리소스·배포·재현 명령을 작성한다.
 
-| 기능 | 공개 API 접점 | 구현·수용 조건 |
+완료: 광고할 backend/feature에 증거가 있다. 환경·합성·실기기·배포 미완료가 남으면 전체 상태는 `PARTIAL`이다.
+
+### WV-X — 선택 확장
+
+headless, 고급 keep-alive/pooling, 인증/proxy/interception, devtools, inappwebview 추가 API는 별도 요구에 따른다. 확장점을 두되 no-op 성공 stub을 공개하지 않는다. 기본 C/입력/JS/profile/배포 미완료를 WV-X로 옮겨 범위를 축소하지 않는다.
+
+플랫폼별 적합한 WebView 구성과 공통 PlatformEffect 결합은 필수 목표다. HCPP 구현 자체는 필요성이 입증될 때 선택하는 연구/전략이며 필수가 아니다.
+
+## 5. 검증·기록 및 인계
+
+검증 source는 `Doroti/validation/webview/`, 산출물은 `Doroti/artifacts/webview/<date>/<target>/<run>/`에 둔다. 신규 API 가이드는 구현과 함께 작성한다. `[sourceReviewed, build, automated, productLive, physical, nativeAot]`와 OS/RID/SDK/runtime/provider/QPA/renderer·source hash·명령/exit/실패를 분리한다. 없는 과거 파일은 unavailable로 기록한다.
+
+모든 build/test/run child는 [.github 지침](.github/copilot-instructions.md)의 20분 timeout과 [기존 wrapper](Doroti/validation/run-with-timeout.py)를 사용한다. 이번 문서 변경에서는 실행하지 않았다. 기존 동일 source/환경의 통과 증거는 재사용하고 변경/실패가 필요한 검증만 추가한다. `skippedByUser`는 실제 사용자 생략 지시가 있을 때만 사용한다.
+
+| 미결정 항목 | 종료 단계 | 필요한 근거 |
 |---|---|---|
-| 탐색/state/policy | QWebEnginePage/View, history, loadingChanged, acceptNavigationRequest | redirect·취소·실패의 의미 매핑, sync 정책에서 UI wait 금지, loadFinished와 첫 표시 구분 |
-| JS/user script | runJavaScript, QWebEngineScript | world/document generation·typed 직렬화·timeout·취소, 지원 못 하는 결과와 Promise 처리 범위를 명시 |
-| 양방향 메시지 | QWebChannel + 제한된 QObject facade | 명시적 등록 API만 노출, 크기/요청 수 제한, document 교체 시 해제 |
-| 세션 | QWebEngineProfile, cookieStore, cache API | persistent/off-the-record·공유/격리·보관 경로, 페이지보다 긴 profile 수명, 데이터별 삭제 및 완료 관측 |
-| 앱 콘텐츠 | QWebEngineUrlScheme/Handler/RequestJob | 기존 manifest resolver, 정규화 경로·MIME·origin·상대 fetch, response device 수명과 Range/media seek |
-
-API 대응 근거: [QWebEnginePage](https://doc.qt.io/qt-6/qwebenginepage.html), [QWebChannel](https://doc.qt.io/qt-6/qwebchannel.html), [QWebEngineProfile](https://doc.qt.io/qt-6/qwebengineprofile.html).
-
-- QWebChannel은 JS와 QObject를 연결하는 transport다. 메시지 안의 자칭 origin/frame을 신뢰 근거로 쓰지 않는다. native에서 검증 가능한 문서/프레임과 격리 world·주입 범위를 조사하고, 보장이 부족하면 bridge를 trusted app content/main frame으로 제한한다. 임의 원격 페이지에 일반 native 객체를 공개하지 않는다.
-- profile 저장 경로/정책은 page 생성 전에 설정한다. cookie/cache 삭제를 전체 localStorage/IndexedDB 삭제로 보고하지 않고 데이터 종류별 API·완료 callback·재실행 결과를 기록한다. 미지원 삭제 범위는 capability로 노출한다.
-- 앱 scheme의 보안/fetch 관련 flag는 필요한 범위만 설정한다. handler 설치는 profile별로 수행하고 close/cancel 중 QIODevice와 pending 요청을 정리한다. custom scheme이 HTTP의 모든 응답/Range 의미를 제공한다고 가정하지 않으며 media fixture 실패는 제한으로 남긴다.
-- popup/file chooser/download/permission/fullscreen 및 render process 종료는 WV-0 기능표에 따라 구현하고 WV-8의 허용·거부·취소·복구 시나리오에 연결한다. Qt 버전에 따라 없는 API를 성공 stub으로 채우지 않는다.
-
-완료 기준: 실제 페이지에서 기본 탐색·JS 왕복·origin 거부·profile 격리/삭제·상대 asset/fetch/media와 dispose 경쟁을 검증한다. page/widget의 상태 보존과 Chromium process 재생성 후 잃은 상태를 구분한다.
-
-#### WV-7E: 시스템 의존성 패키징·clean 배포
-
-- Doroti가 배포하는 파일(managed adapter, 자체 shim, host/앱 산출물)과 시스템이 공급하는 파일(Qt libraries, WebEngineProcess, resources/locales, QPA plugins, 필요한 codec)을 manifest에서 분리한다. 시스템 파일을 앱 output에 복사해 no-bundle 정책을 무효화하지 않는다. [Qt WebEngine 배포 구성](https://doc.qt.io/qt-6/qtwebengine-deploying.html).
-- `.deb`는 빌드용 `qt6-webengine-dev`와 실행용 library/helper/data 패키지를 분리하고 distro의 dependency 도구와 설치 파일 목록으로 Depends를 검증한다. Core만 나열하거나 Quick library를 무조건 요구하지 않는다. Arch 및 추가 배포 형식도 해당 저장소의 실제 package closure로 작성한다.
-- 시스템 prefix/QLibraryInfo와 패키지 설치 위치에 따라 helper/resources/plugins를 찾는다. 개발 PC의 절대 경로·혼합 Qt plugin·임의 LD_LIBRARY_PATH에 의존하지 않으며, resolved path와 패키지 소유자·버전을 진단에 남긴다. missing component에 필요한 설치 패키지를 안내하되 앱 시작 중 자동 설치하지 않는다.
-- 일반 사용자·기본 Chromium sandbox 상태에서 clean 환경을 실행한다. `--no-sandbox`나 root 실행으로 실패를 우회한 결과를 제품 PASS로 기록하지 않는다. QPA·GPU·sandbox 실패를 각각 진단한다. [Qt 플랫폼 조건](https://doc.qt.io/qt-6/qtwebengine-platform-notes.html).
-- WebEngine 없는 미사용 앱, 정상 설치된 선택 앱, runtime/버전/helper 누락 negative fixture를 분리한다. 최종 앱 크기·추가 시스템 패키지 설치량·process memory를 따로 측정하고, 보안 업데이트 후 재실행과 라이선스/notice 배포 항목을 기록한다. AppImage/Flatpak 등 별도 runtime 모델은 이번 시스템 패키지 지원과 구분해 후속으로 둔다.
-
-완료 기준: 개발 Qt SDK 경로 없이 final publish/install/run이 재현되고 dependency manifest에 helper/data까지 포함된다. 사용하지 않는 Linux 앱에 WebEngine·WebChannel·Quick 의존성이 추가되지 않는다. NativeAOT 지원은 신규 shim/bridge가 포함된 실제 ILC/native link/publish/run으로 별도 입증한다.
-
-#### WV-7F: X11/Wayland 제품·입력·합성·성능 승인
-
-- `배포판/build × RID × QPA(xcb/wayland) × compositor × GPU/driver × Qt/WebEngine 버전`으로 결과를 나눈다. XWayland를 native X11과, WSLg/VM을 물리 Linux와 구분한다. 최초 지원 RID는 linux-x64이며 미실행 후보는 `notVerified`다.
-- Testbed 제품에서 기본 기능/JS/profile/asset, 두 WebView, keep-alive 재attach, 생성 중 close, process failure, live resize/DPR/scroll을 실행한다. generic control 성공과 실제 WebEngine view 성공을 분리한다.
-- PV-9C/PV-5와 함께 C1~C6, 한글 IME 조합/selection·Tab 왕복, wheel/drag/capture·modal shield, 접근성/Orca를 확인한다. native 포함 창 캡처·입력 trace로 검증하며 raster readback만으로 native 화면을 판정하지 않는다.
-- WV-9 기준 0/1/4 view의 frame/JS 왕복/입력 지연·process/GPU memory를 같은 환경에서 비교한다. 제품 Graphite와 WebEngine GPU의 공존 여부, software 경로 사용 여부를 기록한다. renderer 전환으로 성공시킨 진단 결과는 원래 조합의 PASS가 아니다.
-
-완료 기준: 광고할 각 조합의 기능·배포·C1~C6/PV-5 증거가 있고 잔여 제한이 지원표와 일치한다. B만 가능하거나 물리 입력/접근성/합성이 미검증이면 Linux 목표는 `PARTIAL`이며 다른 backend 성공으로 승격하지 않는다.
-
-### WV-8 — 공통 실사용·보안·복구·상태 보존 마감
-
-선행: WV-2~WV-7의 구현 또는 명시적 제한 결정. 플랫폼별 구현 중에도 해당 검증을 수행한다.
-
-- navigation/redirect/popup/외부 protocol 정책, file chooser 취소, download 수명, permission 거부/허용, fullscreen 진입/복귀를 같은 fixture로 비교한다.
-- trusted/untrusted origin, 잘못된 frame/source, oversized/late message, TLS 오류, 앱 리소스 경로 이탈의 거부 동작을 확인한다.
-- profile 공유/격리/ephemeral 종료/명시적 data clear, keep-alive 재attach, dispose 후 late callback을 검증한다.
-- process 종료 후 기존 controller의 terminal 상태와 재생성 정책을 정리한다. 엔진이 보존하지 못한 history/form/media 상태를 복구된 것처럼 보고하지 않는다.
-
-완료 기준: 지원표상 구현 feature마다 성공·실패·취소 경로가 있고 미지원 feature는 무응답/no-op으로 끝나지 않는다. UI thread deadlock, stale JS 실행, handler/listener/native instance 누수가 없다.
-
-### WV-9 — 제품 Lab·패키지·문서·최종 승인
-
-선행: WV-8 및 해당 플랫폼 work1 B/C·PV-5 게이트.
-
-- WebViewFixture에 탐색 도구, local content, feature query/미지원 UI, 한글 입력/selection, 메뉴/modal, 여러 WebView, session 선택, 반복 수명 시나리오를 연결한다.
-- 0/1/4 view에서 frame p50/p95/p99, native/JS 왕복 지연, 첫 content 표시 관측 가능 여부, native/GPU memory, process·listener·overlay 수를 기록한다.
-- 같은 OS/runtime/기기/콘텐츠와 고정된 반복 수로 baseline 대비 측정한다. native 생성 완료나 GPU submit을 표시 시간/사용자 입력 지연으로 대신하지 않는다.
-- 생성 template부터 최종 runner publish/install/run까지 선택 package가 포함되는지 확인하고 WebView 미사용 앱의 dependency/크기 회귀도 확인한다.
-- API 사용 예제, 지원표, runtime 설치/초기화 오류, iframe 제한, profile/data 삭제, local content, 배포 및 재현 명령을 문서화한다.
-
-완료 기준: 지원한다고 광고할 플랫폼/기능에 실제 증거가 있고 필수 게이트가 통과한다. target 일부의 환경 부재/합성 미해결/실기기 미검증이 남으면 전체 완료는 `PARTIAL`; 해당 기능은 `notVerified` 또는 명시적 unsupported로 유지한다.
-
-### WV-X — 후속 확장
-
-headless WebView, 고급 keep-alive pool, devtools UI, 인증 challenge·프록시·세밀한 request interception, 고급 browser window 관리, inappwebview 추가 API 호환은 별도 요구/성능 측정에 따라 계획한다. 공통 계약에 확장점을 두되 미구현 API를 성공하는 stub으로 공개하지 않는다.
-
-## 5. 검증 행렬과 증거 규칙
-
-| 게이트 | 필수 사례 | 증거 |
-|---|---|---|
-| Core | create/dispose 경쟁, command 순서, stale navigation, 2 owner | focused validator 결과, callback/ID trace |
-| Navigation | URI/HTML/history/redirect/취소/main-frame 오류 | 재현 페이지, native 이벤트 순서, 실제 화면 |
-| App content | 상대 CSS/JS/image/fetch, media Range/seek, 경로 거부 | 요청/응답 trace와 제품 표시/입력 |
-| JS/message | 허용/거부 origin/frame, timeout, navigation 후 late 결과 | typed 결과·거부 원인·pending 수 복귀 |
-| Session | 공유/격리, ephemeral 종료, cache/cookie/storage 삭제 | 지정 profile 데이터 확인, 다른 profile 보존 |
-| 입력/겹침 | 한글 IME/selection, 부모 scroll, 메뉴/modal/shield | 실제 기기 입력, 전경/배경 클릭 카운터, video |
-| Lifecycle | route 100회, create 중 close, background/foreground, process 종료 | crash/instance/listener/메모리 추이, 재진입 화면 |
-| Deploy/AOT | final publish/install/run, 새 binding/JS bridge | TFM/RID/toolchain, ILC/native link, 산출물 hash, 기능 실행 |
-
-target 행은 WindowsAppSdk, Windows MAUI, Android emulator x64/실기기 arm64, iOS simulator/device, Mac Catalyst, AppKit macOS, WebGPU/WebGL의 브라우저별 결과, Linux X11/Wayland다. 실제 지원 RID·OS·기기·browser/provider/runtime 버전은 WV-0에서 고정한다. 물리 기기 결과를 다른 OS/runtime 조합으로 확대하지 않는다.
-
-`Doroti/artifacts/webview/<date>/<target>/`에 commit/dirty 식별, 환경, 명령·exit code·1200초 timeout 여부, feature-map 행, trace/capture/video, 실패·잔여 작업·재개 명령을 기록한다. 검증 보고서도 같은 경로에 작성하며 `Doroti/docs/validation/`에 별도 문서를 생성할 필요는 없다. 단계별 `sourceReviewed/build/automated/productLive/physical/nativeAot`를 독립적으로 남긴다. 사용자 요청 없이 `skippedByUser`로 처리하지 않는다.
-
-모든 테스트는 [.github 지침](.github/copilot-instructions.md)의 **20분 외부 timeout**을 적용한다. 기존 [run-with-timeout.py](Doroti/validation/run-with-timeout.py)를 사용하고 플랫폼별 실제 명령은 각 adapter/validator를 구현할 때 고정한다. 계획 작성만 수행하는 이번 변경에서는 제품 build/runtime 테스트를 실행하지 않는다.
-
-## 6. 착수 순서와 미결정 항목의 종료 지점
-
-1. PV-0와 WV-0에서 공통 계약/기능표를 고정하고 WV-7A의 시스템 Qt 버전/패키지/ABI 조사를 시작한다. WV-7B/PV-9A에서 최소 WebEngine 표시·합성 구조를 조기에 검증한다.
-2. PV-1/PV-2 및 WV-1을 구현한다. Windows PV-3/WV-2로 실제 합성·WebView 경로를 먼저 확인한다.
-3. Web PV-4/PV-5/WV-3으로 DOM/worker/iframe·입력 보호를 확인한다. 두 선행 플랫폼의 결과로 공통 계약을 보정한다.
-4. Android PV-6/WV-4, UIKit PV-7/WV-5, AppKit PV-8/WV-6, Qt PV-9/WV-7C~F를 진행한다. Linux는 WV-7B/PV-9B 인계 후 기능을 개발하고 PV-9C/PV-5 제품 승인과 시스템 패키지 배포 검증을 완료한다.
-5. PV-10과 WV-8/WV-9에서 제품·성능·배포를 마감한다. 선택 연구 PV-X/WV-X는 분리한다.
-
-| 미결정 항목 | 결정 단계 | 결정 완료에 필요한 자료 |
-|---|---|---|
-| Windows wrapper/C ABI, runtime 배포 | WV-2A/D + PV-3 | 실제 DComp 결합, STA callback, AOT/배포 spike |
-| 초기 profile 범위·명령 queue·policy timeout | WV-0/1 | 기능 대응표와 native API 제약, 오류/취소 fixture |
-| Web same-origin/협력 bridge 범위 | WV-0/3 | origin별 동작표, CSP/COOP/COEP·sandbox 재현 |
-| Linux Qt/WebEngine 최소 patch·시스템 패키지·ABI 지원 범위 | WV-7A/E | 6.8 API 기준 검증, distro별 build/runtime closure, clean publish/install/run |
-| Linux WebEngine 표시 API·host 계층 | WV-7B + PV-9A/B/C | QWebEngineView 우선 spike, 필요 시 Quick 비교, Graphite 공존·실제 겹침·입력 증거 |
-| backend별 interleaved 지원·효과 | 해당 PV-C + PV-5 | 실제 foreground/입력·alpha/clip·frame 정합성 |
-| 기기별 성능 예산 | PV-0/WV-0, 최종 WV-9 | 기존 baseline과 동일 workload 측정, 허용 회귀 수치 |
-
-주요 로컬 레퍼런스: [공통 widget](reference/flutter_inappwebview-master/flutter_inappwebview/lib/src/in_app_webview/in_app_webview.dart), [controller interface](reference/flutter_inappwebview-master/flutter_inappwebview_platform_interface/lib/src/in_app_webview/platform_inappwebview_controller.dart), [Windows 구현](reference/flutter_inappwebview-master/flutter_inappwebview_windows/windows/in_app_webview/in_app_webview.cpp), [Web element 수명](reference/flutter_inappwebview-master/flutter_inappwebview_web/lib/web/in_app_web_view_web_element.dart). reference의 구현 존재는 Doroti 기능 구현·제품 검증 완료를 뜻하지 않는다.
-
-
-## work0 renderer contract handoff (2026-09-12)
-
-공식 SkiaSharp NativeAssets `4.154.0-preview.1.26454.9`가 기본이다. Vulkan은 실제 1.2 profile, 공개 session 생성, 성공한 queue submit 순서의 observer 상태를 사용한다. 각 raster segment의 일반 R과 플랫폼 소유 P를 구분하고 GPU copy 뒤 R을 관찰된 L/ownership으로 복원한다. host fence 완료와 플랫폼 front/present retirement는 별도 경계다. segment identity·paint order·alpha·frame admission 계약을 유지해야 한다.
-
-구 `SkiaGraphiteVulkanOptions`/private ABI 생성 경로는 제거했다. 새 직접 소비자는 `CreateOfficialVulkan`의 typed observed-state/retirement 계약을 사용한다. 정상 desktop 제품은 manifest 없이 표준 공식 DLL을 검증하고, 프로세스 안에서 native 자산을 교체하지 않는다. timeout을 device loss로 바꾸거나 미완료 generation을 재사용하지 않는다. Apple 검증은 `skippedByUser`를 유지한다. Linux는 후속 요청으로 build/package/template/Qt ABI를 검증했으며 llvmpipe Graphite의 headless 검사는 통과했으나 제품 depth 동기화 오류와 hardware GPU 검증이 남아 있다. Qt shim은 GPU polling callback을 포함한 184-byte callback table과 feature bit 12를 함께 갱신해야 한다. [Linux 후속 검토](Doroti/docs/validation/linux-official-graphite-2026-09-12.md)를 따른다. 전체 성능 수용은 미완료다. [전환 및 검증 범위](Doroti/docs/validation/official-graphite-cutover-2026-09-12.md)를 따른다.
+| Core/Widget assembly·TFM·기능 최소값 | WV-0/1 | SDK 대응·AOT boundary·실제 caller |
+| Windows visual family·GPU interop·AOT | WV-0 probe/WV-2 + work1 R5/R6 | CoreWebView2CompositionController 선택은 확정. RootVisualTarget/input/GPU raster/effect·final publish 실제 결합 검증 |
+| 플랫폼별 전략·공통 효과 결합 | WV-H + work1 R6/R-E | 실제 source·동적 갱신·입력·비주얼 유사성·전송/메모리/지연·공개 API와 선택 이유 |
+| Android WebView profile/gesture 범위 | WV-0/WV-4 + work1 R4 | OS/provider feature와 실제 scroll/IME |
+| Web 협력 bridge·origin 범위 | WV-0/WV-3 | browser policy·메시지 source 검증 |
+| Linux Quick 공개 API·Vulkan 공존·최소 Qt build | WV-7A/B | 시스템 패키지·실제 C 장면·private API 미사용 |
+| 성능/clean deployment/NativeAOT 승인 | WV-9 + work1 R7 | 해당 신규 WebView 포함 final 제품 증거 |

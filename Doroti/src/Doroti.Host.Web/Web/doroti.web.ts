@@ -16,7 +16,7 @@ interface ManagedCallbacks {
     logicalWidth: number, logicalHeight: number, physicalWidth: number, physicalHeight: number,
     devicePixelRatio: number, timestampMicroseconds: number): void;
   dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, inputSequence: number, samples: number[]): void;
-  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number, kind: number, inputSequence: number): void;
+  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number, kind: number, inputSequence: number, signalKind?: number, scale?: number): void;
   dispatchKey(hostId: number, pressed: boolean, repeat: boolean, synthesized: boolean, code: string, key: string, timestamp: number, inputSequence: number): void;
   dispatchFocus(hostId: number, focused: boolean, timestamp: number, inputSequence: number): void;
   dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number, inputSequence: number): void;
@@ -309,7 +309,8 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
     case "wheel":
       callbacks.dispatchWheel(
         id, Number(payload.x), Number(payload.y), Number(payload.deltaX), Number(payload.deltaY),
-        Number(payload.timestamp), Number(payload.kind), Number(message.inputSequence));
+        Number(payload.timestamp), Number(payload.kind), Number(message.inputSequence),
+        Number(payload.signalKind ?? 1), Number(payload.scale ?? 1));
       break;
     case "key":
       callbacks.dispatchKey(
@@ -889,7 +890,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const colorScheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
   if (colorScheme) observe(colorScheme, "change", () => emit(host));
 
-  const pointerKind = (type: string): number => type === "touch" ? 1 : type === "pen" ? 2 : 0;
+  // Keep the existing wire values; an unrecognized PointerEvent is not a mouse.
+  const pointerKind = (type: string): number => type === "mouse" ? 0 : type === "touch" ? 1 : type === "pen" ? 2 : 4;
   const pointerSamples = (event: PointerEvent): number[] => {
     const source = event.type === "pointermove" && typeof event.getCoalescedEvents === "function"
       ? event.getCoalescedEvents() : [event];
@@ -958,6 +960,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         ? Math.max(1, root.clientHeight)
         : 1;
     const kind = isTrackpadWheel(host, wheel) ? 3 : 0;
+    // Flutter Web treats ctrl-wheel as pinch. A physically held Control key
+    // on macOS is ordinary scrolling, not the browser's synthetic pinch flag.
+    const physicalControl = host.pressedKeys.has("ControlLeft") || host.pressedKeys.has("ControlRight");
+    const pinch = wheel.ctrlKey && !(browserOperatingSystem() === "macOS" && physicalControl);
+    const signalKind = pinch ? 3 : 1;
+    const gestureScale = pinch ? Math.exp(-wheel.deltaY * deltaScale / 200) : 1;
     const inputSequence = ++host.inputSequence;
     const detail = JSON.stringify({
       deltaMode: wheel.deltaMode,
@@ -976,7 +984,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     requireManaged().dispatchWheel(
       host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
       wheel.deltaX * deltaScale, wheel.deltaY * deltaScale,
-      wheel.timeStamp, kind, inputSequence);
+      wheel.timeStamp, kind, inputSequence, signalKind, gestureScale);
     recordResize(host, "wheel-framework-dispatch", "managed-callback", { inputSequence, detail });
     wheel.preventDefault();
   });
@@ -1788,8 +1796,8 @@ export async function startDorotiWorkerHost(
     dispatchResizeEpoch: queueWorkerResizeEpoch,
     dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples) =>
       postInput("pointer", hostId, inputSequence, { phase, kind, pointerId, buttons, modifiers, samples }),
-    dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind, inputSequence) =>
-      postInput("wheel", hostId, inputSequence, { x, y, deltaX, deltaY, timestamp, kind }),
+    dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind, inputSequence, signalKind = 1, scale = 1) =>
+      postInput("wheel", hostId, inputSequence, { x, y, deltaX, deltaY, timestamp, kind, signalKind, scale }),
     dispatchKey: (hostId, pressed, repeat, synthesized, code, key, timestamp, inputSequence) =>
       postInput("key", hostId, inputSequence, { pressed, repeat, synthesized, code, key, timestamp }),
     dispatchFocus: (hostId, focused, timestamp, inputSequence) =>

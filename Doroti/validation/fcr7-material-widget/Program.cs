@@ -60,7 +60,7 @@ if (args is ["--ios-text-menu"])
 if (args is ["--mac-text-menu"])
 {
     MacMenuRenderingContracts.Verify();
-    ScrollMomentumContracts.Verify();
+    TrackpadContracts.Verify();
     MountedPickerContracts.VerifyMacTextMenu();
     return;
 }

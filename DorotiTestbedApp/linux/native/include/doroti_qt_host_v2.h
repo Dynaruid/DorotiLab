@@ -154,6 +154,10 @@ struct doroti_qt_pointer_v2 {
   double scroll_delta_x;
   double scroll_delta_y;
   std::int64_t timestamp_microseconds;
+  // Optional tail (struct_size >= 168); the legacy 120-byte prefix is unchanged.
+  double pan_x, pan_y, pan_delta_x, pan_delta_y;
+  double scale = 1;
+  double rotation = 0;
 };
 
 struct doroti_qt_key_v2 {
@@ -284,7 +288,7 @@ static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);
 static_assert(offsetof(doroti_qt_surface_v2, timestamp_microseconds) == 80);
 static_assert(sizeof(doroti_qt_surface_v2) == 144);
 static_assert(sizeof(doroti_qt_metrics_v2) == 160);
-static_assert(sizeof(doroti_qt_pointer_v2) == 120);
+static_assert(sizeof(doroti_qt_pointer_v2) == 168);
 static_assert(sizeof(doroti_qt_key_v2) == 56);
 static_assert(sizeof(doroti_qt_text_configuration_v2) == 40);
 static_assert(sizeof(doroti_qt_text_state_v2) == 40);

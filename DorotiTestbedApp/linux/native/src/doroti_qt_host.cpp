@@ -31,6 +31,7 @@
 #include <QLocale>
 #include <QMetaObject>
 #include <QMouseEvent>
+#include <QNativeGestureEvent>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLWindow>
@@ -781,6 +782,7 @@ class DorotiSurface final : public DorotiWindowBase {
         SendConfiguration();
         break;
       case QEvent::Hide:
+        ResetTrackpad();
         lifecycle_state_ = 3;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
         SendMetrics();
@@ -798,6 +800,7 @@ class DorotiSurface final : public DorotiWindowBase {
         RequestChromeFrame();
         break;
       case QEvent::WindowDeactivate:
+        ResetTrackpad();
         lifecycle_state_ = 2;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
         callbacks_.focus(callback_context_, this, 0, Micros());
@@ -810,6 +813,7 @@ class DorotiSurface final : public DorotiWindowBase {
         RequestChromeFrame();
         break;
       case QEvent::Close:
+        ResetTrackpad();
         if (!close_requested_) {
           close_requested_ = true;
           callbacks_.close_requested(callback_context_, this);
@@ -857,6 +861,28 @@ class DorotiSurface final : public DorotiWindowBase {
         if (wheel->position().y() < CaptionHeight()) { event->accept(); return true; }
         auto scroll = wheel->pixelDelta();
         if (scroll.isNull()) scroll = wheel->angleDelta() / 8;
+        if (wheel->pointingDevice()->type() == QInputDevice::DeviceType::TouchPad) {
+          if (wheel->phase() == Qt::ScrollMomentum) {
+            EndTrackpad(1);
+            trackpad_momentum_ = true;
+          } else if (wheel->phase() == Qt::ScrollEnd) {
+            EndTrackpad(1);
+          } else {
+            BeginTrackpad(wheel->position(), 1);
+            const auto delta = QPointF(scroll);
+            trackpad_pan_ += delta;
+            SendTrackpad(8, delta);
+            // Some Qt platform plugins expose no scroll-stop phase. Bound that
+            // stream by inactivity instead of leaving a recognizer down forever.
+            const auto epoch = ++trackpad_wheel_epoch_;
+            if (wheel->phase() == Qt::NoScrollPhase)
+              QTimer::singleShot(100, this, [this, epoch] {
+                if (trackpad_wheel_epoch_ == epoch) EndTrackpad(1);
+              });
+          }
+          event->accept();
+          return true;
+        }
         const auto factor = wheel->inverted() ? 1.0 : -1.0;
         SendPointer(wheel->position(), QPointF{}, 3, 1,
                     static_cast<std::int64_t>(wheel->buttons()), 1, 0, 1,
@@ -864,14 +890,32 @@ class DorotiSurface final : public DorotiWindowBase {
                     wheel->phase(), scroll.x() * factor, scroll.y() * factor);
         break;
       }
+      case QEvent::NativeGesture: {
+        auto* gesture = static_cast<QNativeGestureEvent*>(event);
+        const auto type = gesture->gestureType();
+        if (type == Qt::EndNativeGesture) EndTrackpad(2);
+        else if (type == Qt::BeginNativeGesture || type == Qt::PanNativeGesture ||
+                 type == Qt::ZoomNativeGesture || type == Qt::RotateNativeGesture) {
+          BeginTrackpad(gesture->position(), 2);
+          QPointF delta;
+          if (type == Qt::PanNativeGesture) { delta = gesture->delta(); trackpad_pan_ += delta; }
+          if (type == Qt::ZoomNativeGesture) trackpad_scale_ *= 1 + gesture->value();
+          if (type == Qt::RotateNativeGesture) trackpad_rotation_ += gesture->value() * 3.141592653589793 / 180;
+          if (type != Qt::BeginNativeGesture) SendTrackpad(8, delta);
+        } else break;
+        event->accept();
+        return true;
+      }
       case QEvent::TabletPress:
       case QEvent::TabletMove:
       case QEvent::TabletRelease: {
         auto* tablet = static_cast<QTabletEvent*>(event);
         const auto change = event->type() == QEvent::TabletPress ? 4u
-                            : event->type() == QEvent::TabletRelease ? 6u : 5u;
+                            : event->type() == QEvent::TabletRelease ? 6u
+                            : tablet->buttons() == Qt::NoButton ? 3u : 5u;
         const auto delta = tablet->position() - last_pointer_position_;
-        SendPointer(tablet->position(), delta, change, 2,
+        const auto kind = tablet->pointerType() == QPointingDevice::PointerType::Eraser ? 3u : 2u;
+        SendPointer(tablet->position(), delta, change, kind,
                     static_cast<std::int64_t>(tablet->buttons()),
                     static_cast<std::uint64_t>(tablet->device()->systemId()),
                     static_cast<std::uint64_t>(tablet->pointingDevice()->uniqueId().numericId()),
@@ -1152,6 +1196,41 @@ class DorotiSurface final : public DorotiWindowBase {
         logical_delta.y() * scale, pressure, tilt, signal_kind,
         modifiers | (phase << 24), scroll_x * scale, scroll_y * scale, Micros()};
     callbacks_.pointer(callback_context_, this, &descriptor);
+  }
+
+  void SendTrackpad(std::uint32_t change, QPointF delta = {}, std::uint32_t signal = 0) {
+    const auto ratio = devicePixelRatio();
+    doroti_qt_pointer_v2 data{};
+    data.abi_version = kAbiVersion; data.struct_size = sizeof(data);
+    data.device = 0x4000000000000001ULL;
+    data.pointer_identifier = trackpad_pointer_; data.kind = 4; data.change = change;
+    data.physical_x = trackpad_origin_.x() * ratio; data.physical_y = trackpad_origin_.y() * ratio;
+    data.pan_x = trackpad_pan_.x() * ratio; data.pan_y = trackpad_pan_.y() * ratio;
+    data.pan_delta_x = delta.x() * ratio; data.pan_delta_y = delta.y() * ratio;
+    data.scale = trackpad_scale_; data.rotation = trackpad_rotation_;
+    data.signal_kind = signal; data.timestamp_microseconds = Micros();
+    callbacks_.pointer(callback_context_, this, &data);
+  }
+  void BeginTrackpad(QPointF position, unsigned source) {
+    if (trackpad_momentum_) { SendTrackpad(3, {}, 2); trackpad_momentum_ = false; }
+    if (trackpad_sources_ == 0) {
+      trackpad_origin_ = position; trackpad_pan_ = {}; trackpad_scale_ = 1; trackpad_rotation_ = 0;
+      ++trackpad_pointer_;
+      if (!trackpad_added_) { SendTrackpad(1); trackpad_added_ = true; }
+      SendTrackpad(7);
+    }
+    trackpad_sources_ |= source;
+  }
+  void EndTrackpad(unsigned source) {
+    if ((trackpad_sources_ & source) == 0) return;
+    trackpad_sources_ &= ~source;
+    if (trackpad_sources_ == 0) SendTrackpad(9);
+  }
+  void ResetTrackpad() {
+    if (trackpad_sources_ != 0) SendTrackpad(9);
+    if (trackpad_added_) SendTrackpad(2);
+    trackpad_sources_ = 0; trackpad_added_ = false; trackpad_momentum_ = false;
+    ++trackpad_wheel_epoch_;
   }
 
   Qt::InputMethodHints InputMethodHints() const {
@@ -1482,6 +1561,11 @@ class DorotiSurface final : public DorotiWindowBase {
   bool cursor_inside_ = false;
   QPointF cursor_position_;
   QPointF last_pointer_position_;
+  QPointF trackpad_origin_, trackpad_pan_;
+  double trackpad_scale_ = 1, trackpad_rotation_ = 0;
+  std::uint64_t trackpad_pointer_ = 0x100000000000000ULL, trackpad_wheel_epoch_ = 0;
+  unsigned trackpad_sources_ = 0;
+  bool trackpad_added_ = false, trackpad_momentum_ = false;
   QString text_;
   int selection_base_ = 0;
   int selection_extent_ = 0;

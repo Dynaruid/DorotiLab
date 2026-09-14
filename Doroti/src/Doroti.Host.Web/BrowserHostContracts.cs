@@ -207,8 +207,8 @@ internal static partial class BrowserInterop
     [JSExport]
     internal static void DispatchWheel(
         int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind,
-        [JSMarshalAs<JSType.Number>] long inputSequence) =>
-        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds, kind, inputSequence);
+        [JSMarshalAs<JSType.Number>] long inputSequence, int signalKind, double scale) =>
+        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds, kind, inputSequence, signalKind, scale);
 
     [JSExport]
     internal static void DispatchKey(
@@ -673,7 +673,7 @@ public sealed class BrowserHostAdapter :
                 host._viewId,
                 TimeSpan.FromMilliseconds(samples[index + 6]),
                 change,
-                kind switch { 1 => PointerDeviceKind.touch, 2 => PointerDeviceKind.stylus, _ => PointerDeviceKind.mouse },
+                kind switch { 0 => PointerDeviceKind.mouse, 1 => PointerDeviceKind.touch, 2 => PointerDeviceKind.stylus, _ => PointerDeviceKind.unknown },
                 pointer,
                 x,
                 y,
@@ -694,7 +694,7 @@ public sealed class BrowserHostAdapter :
 
     internal static void DispatchWheel(
         int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind,
-        long inputSequence)
+        long inputSequence, int signalKind = 1, double scale = 1)
     {
         if (!TryGet(hostId, out var host)) return;
         host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
@@ -703,7 +703,8 @@ public sealed class BrowserHostAdapter :
             new(host._viewId, TimeSpan.FromMilliseconds(timestampMilliseconds), PointerChange.hover,
                 kind == 3 ? PointerDeviceKind.trackpad : PointerDeviceKind.mouse,
                 0, x * ratio, y * ratio, 0, 0, 0,
-                deltaX * ratio, deltaY * ratio, PointerSignalKind.scroll),
+                deltaX * ratio, deltaY * ratio,
+                signalKind == 3 ? PointerSignalKind.scale : PointerSignalKind.scroll, scale: scale),
         ]));
     }
 

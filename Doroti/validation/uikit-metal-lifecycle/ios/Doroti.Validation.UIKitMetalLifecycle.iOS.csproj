@@ -23,6 +23,7 @@
     <Compile Include="../Main.cs;../PaintContract.cs" />
     <Compile Include="../../../src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs" Link="Production/DorotiUIKitGraphiteViewHandler.cs" />
     <Compile Include="../../../src/Doroti.Host.Maui/DorotiGraphiteView.cs" Link="Production/DorotiGraphiteView.cs" />
+    <Compile Include="../../../src/Doroti.Host.Maui/MauiSurfacePointerData.cs" Link="Production/MauiSurfacePointerData.cs" />
     <Compile Include="../../../src/Doroti.Host.Maui/DorotiSkiaView.cs" Link="Production/DorotiSkiaView.cs" />
     <Using Include="Microsoft.Maui.Controls" />
   </ItemGroup>

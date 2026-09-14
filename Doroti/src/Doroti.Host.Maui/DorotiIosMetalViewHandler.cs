@@ -223,9 +223,18 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
             foreach (UITouch touch in touches.Cast<UITouch>())
             {
                 var location = touch.LocationInView(View);
+                var device = touch.Type switch
+                {
+                    UITouchType.Stylus => SKTouchDeviceType.Pen,
+                    UITouchType.IndirectPointer => SKTouchDeviceType.Mouse,
+                    _ => SKTouchDeviceType.Touch,
+                };
+                var button = ((ulong)evt.ButtonMask & 2) != 0 ? SKMouseButton.Right
+                    : ((ulong)evt.ButtonMask & 4) != 0 ? SKMouseButton.Middle : SKMouseButton.Left;
                 var args = new SKTouchEventArgs(
                     ((IntPtr)touch.Handle).ToInt64(), action,
-                    scale(location.X, location.Y), inContact);
+                    button, device, scale(location.X, location.Y), inContact, 0,
+                    touch.MaximumPossibleForce > 0 ? (float)(touch.Force / touch.MaximumPossibleForce) : 1);
                 dispatch(args);
                 if (ignoreUnhandled && !args.Handled) IgnoreTouch(touch, evt);
             }

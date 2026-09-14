@@ -200,7 +200,13 @@ internal sealed unsafe class QtHostAdapter :
                 Enum.IsDefined((PointerSignalKind)value.SignalKind)
                     ? (PointerSignalKind)value.SignalKind : PointerSignalKind.unknown,
                 value.PointerIdentifier, pressure: value.Pressure, tilt: value.Tilt,
-                platformData: value.PlatformData)
+                platformData: value.PlatformData,
+                panX: value.StructSize >= 168 ? value.PanX : 0,
+                panY: value.StructSize >= 168 ? value.PanY : 0,
+                panDeltaX: value.StructSize >= 168 ? value.PanDeltaX : 0,
+                panDeltaY: value.StructSize >= 168 ? value.PanDeltaY : 0,
+                scale: value.StructSize >= 168 ? value.Scale : 1,
+                rotation: value.StructSize >= 168 ? value.Rotation : 0)
         ]));
         InputReceived?.Invoke(sequence, timestamp);
     }

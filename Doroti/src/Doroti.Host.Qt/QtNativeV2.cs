@@ -116,6 +116,12 @@ internal static unsafe class QtNativeV2
         internal readonly double ScrollDeltaX;
         internal readonly double ScrollDeltaY;
         internal readonly long TimestampMicroseconds;
+        internal readonly double PanX;
+        internal readonly double PanY;
+        internal readonly double PanDeltaX;
+        internal readonly double PanDeltaY;
+        internal readonly double Scale;
+        internal readonly double Rotation;
     }
 
     [StructLayout(LayoutKind.Sequential)]

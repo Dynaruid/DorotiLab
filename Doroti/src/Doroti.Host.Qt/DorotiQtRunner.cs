@@ -520,7 +520,7 @@ public static unsafe partial class DorotiQtRunner
         {
             _ = viewHandle;
             if (pointer == null || pointer->AbiVersion != QtNativeV2.AbiVersion ||
-                pointer->StructSize < sizeof(QtNativeV2.Pointer)) return;
+                pointer->StructSize < 120) return; // Legacy ABI prefix; pan-zoom tail is optional.
             state.Host?.ApplyPointer(in *pointer);
         });
 

@@ -818,9 +818,9 @@ internal sealed class MauiHostAdapter :
         var keepAndroidVsyncArmed = false;
         lock (_gate)
         {
-            if (change == PointerChange.down)
+            if (change is PointerChange.down or PointerChange.panZoomStart)
                 _androidActiveTouchPointers.Add(pointer);
-            else if (change is PointerChange.up or PointerChange.cancel or PointerChange.remove)
+            else if (change is PointerChange.up or PointerChange.cancel or PointerChange.remove or PointerChange.panZoomEnd)
                 _androidActiveTouchPointers.Remove(pointer);
             keepAndroidVsyncArmed = _androidActiveTouchPointers.Count > 0;
         }
@@ -830,12 +830,14 @@ internal sealed class MauiHostAdapter :
         var x = args.X;
         var y = args.Y;
         PointerData?.Invoke(new((PointerData[])[new(_viewId, timestamp, change,
-            args.Kind, pointer, x, y,
+            args.Kind, args.Device ?? pointer, x, y,
             hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, args.Buttons,
             scrollDeltaX: args.ScrollDeltaX, scrollDeltaY: args.ScrollDeltaY,
             signalKind: args.SignalKind,
-            pointerIdentifier: pointer, pressure: args.Pressure, pressureMin: 0, pressureMax: 1) ]));
-        if (change is PointerChange.remove or PointerChange.cancel) _pointerPositions.Remove(pointer);
+            pointerIdentifier: pointer, pressure: args.Pressure, pressureMin: 0, pressureMax: 1,
+            panX: args.PanX, panY: args.PanY, panDeltaX: args.PanDeltaX, panDeltaY: args.PanDeltaY,
+            scale: args.Scale, rotation: args.Rotation, orientation: args.Orientation, tilt: args.Tilt) ]));
+        if (change is PointerChange.remove or PointerChange.cancel or PointerChange.panZoomEnd) _pointerPositions.Remove(pointer);
         else _pointerPositions[pointer] = (x, y);
     }
 
