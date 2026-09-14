@@ -11,8 +11,12 @@ public sealed class PlatformView : StatefulWidget
     public PlatformView(DorotiView owner, PlatformViewRequest request, System.Action<PlatformViewHandle>? onCreated = null,
         System.Action<Exception>? onError = null, Key? key = null) : base(key: key)
     { Owner = owner; Request = request; OnCreated = onCreated; OnError = onError; }
+    public PlatformView(DorotiView owner, PlatformViewDescriptor descriptor, System.Action<PlatformViewHandle>? onCreated = null,
+        System.Action<Exception>? onError = null, Key? key = null) : base(key: key)
+    { Owner = owner; Descriptor = descriptor; OnCreated = onCreated; OnError = onError; }
     public DorotiView Owner { get; }
-    public PlatformViewRequest Request { get; }
+    public PlatformViewRequest? Request { get; }
+    public PlatformViewDescriptor? Descriptor { get; }
     public System.Action<PlatformViewHandle>? OnCreated { get; }
     public System.Action<Exception>? OnError { get; }
     public override IState createState() => new PlatformViewStateImpl();
@@ -28,7 +32,8 @@ internal sealed class PlatformViewStateImpl : State<PlatformView>
     private void Start()
     {
         _handle = null; _error = null;
-        var client = new PlatformViewClient(widget.Owner, widget.Request);
+        var client = widget.Descriptor is { } descriptor ? new PlatformViewClient(widget.Owner, descriptor) :
+            new PlatformViewClient(widget.Owner, widget.Request!);
         _client = client;
         client.Focused += NativeFocused;
         _ = InitializeAsync(client, widget.Owner);
@@ -85,7 +90,7 @@ internal sealed class PlatformViewStateImpl : State<PlatformView>
     public override void didUpdateWidget(PlatformView oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (oldWidget.Owner != widget.Owner || oldWidget.Request != widget.Request)
+        if (oldWidget.Owner != widget.Owner || oldWidget.Request != widget.Request || oldWidget.Descriptor != widget.Descriptor)
             throw new InvalidOperationException("Changing PlatformView owner/request requires a new widget key so disposal completes before ID reuse.");
     }
     public override Widget build(BuildContext context)

@@ -11,6 +11,7 @@ public sealed class PlatformViewClient : IAsyncDisposable
     private Task? _disposal;
     private readonly object _gate = new();
     private PlatformViewHandle? _handle;
+    private readonly long _instanceId;
     public event Action? Focused;
     public PlatformViewClient(DorotiView owner, PlatformViewRequest request)
         : this(owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
@@ -18,10 +19,28 @@ public sealed class PlatformViewClient : IAsyncDisposable
     public PlatformViewClient(IPlatformViewHostCapability host, PlatformViewRequest request)
     {
         _host = host;
+        _instanceId = request.InstanceId;
+        _host.ViewFocused += OnFocused;
+        _creation = CreateAsync(request);
+    }
+    public PlatformViewClient(DorotiView owner, PlatformViewDescriptor descriptor)
+        : this(owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
+            DartUiInvocation.Managed("PlatformViewClient.create")), descriptor) { }
+    public PlatformViewClient(IPlatformViewHostCapability host, PlatformViewDescriptor descriptor)
+    {
+        _host = host;
+        _instanceId = host.AllocateInstanceId();
+        if (descriptor.Input != PlatformViewInputPolicy.DirectNative)
+            throw new NotSupportedException("Gesture arena dispatch requires an explicitly qualified host.");
+        var request = new PlatformViewRequest(_instanceId, descriptor.ViewType, descriptor.Composition,
+            CreationParameters: descriptor.CreationParameters);
+        if (descriptor.Strategy == PlatformViewStrategyPolicy.PlatformPreferred && !host.QuerySupport(request).Supported)
+            request = request with { Composition = PlatformViewComposition.NativeOverlay };
         _host.ViewFocused += OnFocused;
         _creation = CreateAsync(request);
     }
     public Task<PlatformViewHandle> Ready => _creation;
+    public Task DisposalCompletion { get { lock (_gate) return _disposal ?? Task.CompletedTask; } }
     public ValueTask SetFocusAsync(bool focused)
     {
         lock (_gate)
@@ -56,7 +75,13 @@ public sealed class PlatformViewClient : IAsyncDisposable
         {
             PlatformViewHandle handle;
             try { handle = await _creation; }
-            catch { return; } // Creation failed/cancelled; coordinator owns partial resource recovery.
+            catch
+            {
+                // Ready may report cancellation before a slow SDK factory returns its native object.
+                // Disposal completion includes that late object's actual recovery.
+                await _host.GetDisposalCompletion(_instanceId).ConfigureAwait(false);
+                return;
+            }
             await _host.DisposeAsync(handle);
         }
         finally { _lifetime.Dispose(); }

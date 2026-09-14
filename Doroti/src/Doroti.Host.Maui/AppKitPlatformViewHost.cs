@@ -40,6 +40,9 @@ internal sealed class AppKitPlatformViewHost : IDisposable
     private Brightness _brightness = Brightness.light;
     private Brightness? _appliedBrightness;
     private PlatformViewCoordinator? _coordinator;
+    private PlatformCompositionSession? _session;
+    private readonly CommitPresenter _presenter = new();
+    private long _compositionFrame;
     private PlatformViewPlacement[] _placements = [];
     private readonly List<AppKitPlatformRasterSurface> _rasters = [];
     private readonly List<ShieldView> _shields = [];
@@ -103,7 +106,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             return;
         }
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
-            descriptor.SceneSequence, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
+            ++_compositionFrame, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
         var plan = PlatformCompositionPlanner.Build(commands, token, coordinator, PlatformViewComposition.InterleavedComposition);
         var frames = new List<AppKitPlatformRasterSurface.RasterFrame>();
         try
@@ -208,17 +211,40 @@ internal sealed class AppKitPlatformViewHost : IDisposable
     }
 
     internal sealed class PreparedFrame(AppKitPlatformViewHost host, PlatformCompositionPlan plan,
-        AppKitPlatformRasterSurface.RasterFrame[] frames) : IDisposable
+        AppKitPlatformRasterSurface.RasterFrame[] frames) : IDisposable, IPreparedPlatformComposition
     {
         private readonly PlatformViewPlacement[] _previous = host._placements;
         private readonly (AppKitPlatformRasterSurface Slot, int Order)[] _previousRasters = host._visibleRasters;
         private readonly PlatformInputShield[] _previousShields = host._visibleShields;
         private readonly PlatformViewPlacement[] _next = plan.Parts.OfType<PlatformNativeSegment>().Select(part => part.Placement).ToArray();
         private bool _committed;
+        private bool _sessionOwned;
+        private readonly TaskCompletionSource _retired = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public Task Retirement => _retired.Task;
         public bool HasSubmitted => frames.Any(frame => frame.Submitted);
         public void Submit() { foreach (var frame in frames) frame.Submit(); }
         public void Present() { foreach (var frame in frames) frame.Present(); }
         public void Commit()
+        {
+            host._session ??= new(plan.Token.OwnerViewId, host._presenter);
+            var epoch = host._session.SetEpochAsync(plan.Token.ViewEpoch, plan.Token.SurfaceGeneration);
+            if (!epoch.IsCompleted) throw new InvalidOperationException("AppKit composition epoch cannot wait on the UI thread.");
+            epoch.GetAwaiter().GetResult();
+            host._presenter.Prepared = this;
+            _sessionOwned = true;
+            try
+            {
+                var submission = host._session.SubmitAsync(plan);
+                if (!submission.IsCompleted) throw new InvalidOperationException("AppKit native commit unexpectedly suspended.");
+                submission.GetAwaiter().GetResult();
+            }
+            finally { host._presenter.Prepared = null; }
+        }
+        public ValueTask CommitAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested(); CommitNative(); return ValueTask.CompletedTask;
+        }
+        private void CommitNative()
         {
             try
             {
@@ -244,8 +270,24 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             }
             _committed = false;
         }
-        public void Dispose() { foreach (var frame in frames) frame.Dispose(); plan.Dispose(); }
+        public void Dispose()
+        {
+            try { foreach (var frame in frames) frame.Dispose(); }
+            finally { _retired.TrySetResult(); if (!_sessionOwned) plan.Dispose(); }
+        }
+        // Native/GPU resources are retired by the product frame owner above.
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
         public void Abort() { if (_committed) Rollback(); }
+    }
+
+    private sealed class CommitPresenter : IPlatformCompositionPresenter
+    {
+        internal PreparedFrame? Prepared;
+        public ValueTask<IPreparedPlatformComposition> PrepareAsync(PlatformCompositionPlan plan, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return ValueTask.FromResult<IPreparedPlatformComposition>(Prepared ?? throw new InvalidOperationException("No AppKit frame prepared."));
+        }
     }
 
     internal void DetachSurface()
@@ -265,6 +307,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         if (_disposed) return;
         _disposed = true;
         DetachSurface();
+        if (_session is { } session) _ = session.DisposeAsync();
         // Instance cleanup runs through the dispatcher; keep their native parent alive until then.
         var overlay = _overlay; _overlay = null;
         if (_coordinator is { } coordinator) _ = ReleaseAsync(coordinator, overlay);

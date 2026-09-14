@@ -16,12 +16,15 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private readonly Dictionary<PlatformViewHandle, nint> _controls = [];
     private readonly Dictionary<long, Frame> _ready = [];
     private readonly object _gate = new();
+    private WindowsWebViewComposition? _webViews;
     private readonly List<CompositionRaster>[] _banks = [[], []];
-    private readonly Dictionary<string, WindowsHwndPlatformViewFactory> _factories = [];
+    private readonly Dictionary<string, IPlatformViewFactory> _factories = [];
     private WindowsPlatformViewDispatcher? _dispatcher;
     private WindowsManagedProductHost? _host;
     private WindowsManagedVulkanPresenter? _presenter;
     private PlatformViewCoordinator? _coordinator;
+    private PlatformCompositionSession? _session;
+    private long _compositionFrame;
     private Frame? _recording;
     private PlatformCompositionPart[] _visible = [];
     private int _visibleBank;
@@ -42,12 +45,12 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private sealed record WindowPosition(nint Hwnd, int X, int Y, int Width, int Height, uint Flags);
 
     internal IEnumerable<IPlatformViewFactory> CreateFactories() =>
-        [new DeferredFactory(this, "doroti/native-button"), new DeferredFactory(this, "doroti/native-editor")];
+        [new DeferredFactory(this, "doroti/native-button"), new DeferredFactory(this, "doroti/native-editor"), new DeferredFactory(this, "doroti/webview")];
 
     private sealed class DeferredFactory(WindowsPlatformViewHost owner, string type) : IPlatformViewFactory
     {
         public string ViewType => type;
-        private WindowsHwndPlatformViewFactory Resolve() => owner._factories.GetValueOrDefault(type)
+        private IPlatformViewFactory Resolve() => owner._factories.GetValueOrDefault(type)
             ?? throw new InvalidOperationException("Windows PlatformView parent/presenter is not bound yet.");
         public PlatformViewSupport QuerySupport(PlatformViewRequest request) => Resolve().QuerySupport(request);
         public ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle, ReadOnlyMemory<byte> parameters,
@@ -63,6 +66,14 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         _host = host;
         _presenter = presenter;
         _dispatcher = new();
+        _webViews = new(_parent, () =>
+        {
+            if (_closed) return;
+            // Native navigation/messages can finish after the framework becomes idle.
+            // Force replay so the next receipt observes the completed native revision.
+            Volatile.Write(ref _needsReplay, true); host.RequestInvalidate();
+        }, host.ClearClient, presenter is not null);
+        _factories.Add(_webViews.ViewType, _webViews);
         if (presenter is not null)
         {
             Native.SetWindowLongPtrW(_parent, -16, Native.GetWindowLongPtrW(_parent, -16) | 0x02000000);
@@ -116,10 +127,14 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         if (!HasPlatformCommands(commands) && !Volatile.Read(ref _hasVisibleParts))
         { renderer.DrawPlatformRasterSegment(canvas, commands, width, height); return; }
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
-            descriptor.SceneSequence, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
+            Interlocked.Increment(ref _compositionFrame), descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
         var composition = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION") == "overlay"
             ? PlatformViewComposition.NativeOverlay : PlatformViewComposition.InterleavedComposition;
-        var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!, composition);
+        var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!, composition,
+            effects: WindowsWebViewComposition.Effects);
+        if (plan.Parts.OfType<PlatformBackdropSegment>().Any() &&
+            plan.Parts.OfType<PlatformNativeSegment>().Any(p => !_webViews!.Contains(p.Placement.Handle)))
+        { plan.Dispose(); throw new NotSupportedException("Windows native backdrop requires CompositionVisual attachments, not legacy HWNDs."); }
         SKSurface? atlas = null;
         try
         {
@@ -132,23 +147,41 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 _recording = new(plan, null, null, width, height, []) { Started = started };
                 return;
             }
-            var atlasHeight = checked(height * rasters.Length);
-            if (width > 16384 || atlasHeight > 16384 || (long)width * atlasHeight * 4 > 128L * 1024 * 1024)
-                throw new InvalidOperationException("Windows PlatformView GPU atlas exceeds its 128 MiB / 16384 pixel limit.");
-            var info = new SKImageInfo(width, atlasHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+            var visualComposition = plan.Parts.OfType<PlatformNativeSegment>().All(p => _webViews!.Contains(p.Placement.Handle));
+            var slices = new List<WindowsCompositionSlice>();
+            var atlasHeight = 0;
+            foreach (var raster in rasters)
+            {
+                if (visualComposition && raster.PaintOrder != 0 && !SkiaPlatformRasterContent.HasDrawing(raster.Commands)) continue;
+                var bounds = new SKRectI(0, 0, width, height);
+                if (visualComposition && raster.PaintOrder != 0)
+                {
+                    var coverage = SkiaPlatformRasterContent.Split(raster.Commands, width, height);
+                    if (coverage.Count == 0) continue;
+                    bounds = new(coverage.Min(s => s.Bounds.Left), coverage.Min(s => s.Bounds.Top),
+                        coverage.Max(s => s.Bounds.Right), coverage.Max(s => s.Bounds.Bottom));
+                }
+                slices.Add(new(raster, bounds, atlasHeight)); atlasHeight = checked(atlasHeight + bounds.Height);
+            }
+            var atlasWidth = slices.Max(s => s.Bounds.Width);
+            // Account for GPU atlas, CPU readback, and current/prepared compositor surfaces.
+            var reservedBytes = (long)atlasWidth * atlasHeight * 16;
+            if (atlasWidth > 16384 || atlasHeight > 16384 || reservedBytes > 256L * 1024 * 1024)
+                throw new InvalidOperationException("Windows PlatformView active/staging resources exceed 256 MiB / 16384 pixels.");
+            var info = new SKImageInfo(atlasWidth, atlasHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
             atlas = SkiaGpuSurfaces.CreateCompatible(canvas, info, null);
             atlas.Canvas.Clear(SKColors.Transparent);
-            for (var index = 0; index < rasters.Length; index++)
+            foreach (var slice in slices)
             {
                 atlas.Canvas.Save();
-                atlas.Canvas.Translate(0, index * height);
-                atlas.Canvas.ClipRect(SKRect.Create(width, height), SKClipOperation.Intersect, false);
-                if (index == 0) atlas.Canvas.DrawColor(renderer.PlatformBackgroundColor);
-                renderer.DrawPlatformRasterSegment(atlas.Canvas, rasters[index].Commands, width, height);
+                atlas.Canvas.ClipRect(SKRect.Create(0, slice.AtlasY, slice.Bounds.Width, slice.Bounds.Height), SKClipOperation.Intersect, false);
+                atlas.Canvas.Translate(-slice.Bounds.Left, slice.AtlasY - slice.Bounds.Top);
+                if (slice.Segment.PaintOrder == 0) atlas.Canvas.DrawColor(renderer.PlatformBackgroundColor);
+                renderer.DrawPlatformRasterSegment(atlas.Canvas, slice.Segment.Commands, width, height);
                 atlas.Canvas.Restore();
             }
             var readback = _presenter!.RequestPlatformReadback(atlas, info);
-            _recording = new(plan, atlas, readback, width, height, rasters) { Started = started };
+            _recording = new(plan, atlas, readback, width, height, rasters) { Started = started, Slices = slices.ToArray() };
             atlas = null;
         }
         catch { atlas?.Dispose(); plan.Dispose(); throw; }
@@ -195,6 +228,17 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             var started = System.Diagnostics.Stopwatch.GetTimestamp();
             if (!presented || _closed || frame.Plan.Token.SurfaceGeneration != generation ||
                 !_host!.IsLatestResizeGeneration(checked((ulong)generation))) return false;
+            _session ??= new(frame.Plan.Token.OwnerViewId);
+            if (!_session.CommitRetiredFrame(frame.Plan, () => CommitFrame(frame, started))) return false;
+            try { WriteEvidence(frame); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+            { System.Diagnostics.Trace.TraceWarning($"PlatformView evidence could not be written: {error.Message}"); }
+            return true;
+        }
+    }
+
+    private bool CommitFrame(Frame frame, long started)
+    {
             var next = frame.Plan.Parts.ToArray();
             try
             {
@@ -204,7 +248,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             catch (DorotiCapabilityException) { return false; }
             var handles = next.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle)
                 .Concat(_visible.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle))
-                .Where(handle => _controls.ContainsKey(handle)).Distinct().ToArray();
+                .Where(handle => _controls.ContainsKey(handle) || _webViews!.Contains(handle)).Distinct().ToArray();
             IPlatformViewPlacementBatch? reservation;
             try
             {
@@ -222,6 +266,17 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 return false;
             }
             using var batch = reservation!;
+            if (next.OfType<PlatformNativeSegment>().Any(p => _webViews!.Contains(p.Placement.Handle)))
+            {
+                _webViews!.Commit(frame.Plan, frame.Pixels, frame.Slices, batch);
+                foreach (var layer in _banks[_visibleBank]) layer.Hide();
+                _visible = next;
+                Volatile.Write(ref _hasVisibleParts, next.Length != 0);
+                Volatile.Write(ref _needsReplay, false);
+                _commits++;
+                return true;
+            }
+            if (_webViews!.HasVisibleContent) _webViews.Clear(batch);
             // Repainting a spinner or hover must not replace the HWND underneath
             // the pointer. Keep the visible siblings until their layer topology
             // changes; alternating hidden banks on every frame flickers Acrylic
@@ -266,11 +321,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 CommitPositions();
                 throw;
             }
-            try { WriteEvidence(frame); }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
-            { System.Diagnostics.Trace.TraceWarning($"PlatformView evidence could not be written: {error.Message}"); }
             return true;
-        }
     }
 
     private bool HasSameWindowTopology(PlatformCompositionPart[] next)
@@ -385,12 +436,19 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         // Render worker has joined. Its pending frame has no GPU leases remaining.
         // In-flight scene planning must retain live instances until that join;
         // disposing them at WM_CLOSE races Resolve/Retain on the raster thread.
+        if (_session is { } session)
+        {
+            var close = session.DisposeAsync();
+            if (!close.IsCompleted) throw new InvalidOperationException("Windows composition retirement remained after raster shutdown.");
+            close.GetAwaiter().GetResult();
+        }
         _coordinator?.Dispose();
         _recording?.Dispose(); _recording = null;
         lock (_gate) { foreach (var frame in _ready.Values) frame.Dispose(); _ready.Clear(); }
         foreach (var bank in _banks) foreach (var layer in bank) layer.Dispose();
         _visible = [];
         if (_coordinator is { } coordinator) _dispatcher.DrainShutdown(coordinator.DisposalCompletion);
+        _webViews?.Dispose();
         _dispatcher.Dispose(); _dispatcher = null;
     }
     private void WriteEvidence(Frame frame)
@@ -401,15 +459,20 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         lock (_gate) rasterTimings = _rasterMilliseconds.ToArray();
         var payload = new
         {
-            backend = "Graphite/Vulkan GPU atlas -> premultiplied DirectComposition HWND", commits = _commits,
+            backend = _webViews?.HasVisibleContent == true ? "Graphite/Vulkan atlas -> Windows.UI.Composition/WebView2/backdrop" :
+                "Graphite/Vulkan GPU atlas -> premultiplied DirectComposition HWND", commits = _commits,
             readbackBytes = Interlocked.Read(ref _readbackBytes), dpi = Native.GetDpiForWindow(_parent),
             frame = frame.Plan.Token, native = _visible.OfType<PlatformNativeSegment>().Select(p => new {
                 handle = p.Placement.Handle, hwnd = _controls.GetValueOrDefault(p.Placement.Handle).ToInt64(),
                 bounds = Coordinates(p.Placement.Bounds), transform = p.Placement.Transform, order = p.PaintOrder }),
             shields = _visible.OfType<PlatformShieldSegment>().Select(p => new { bounds = Coordinates(ShieldBounds(p.Shield)), order = p.PaintOrder }),
+            sessionCommit = _session?.LastCommit, sessionPendingRetirements = _session?.PendingRetirements,
             rasterCount = frame.Rasters.Length, physicalAtomicDisplay = "notVerified",
+            rasterSlices = frame.Slices.Select(slice => new { order = slice.Segment.PaintOrder,
+                bounds = new[] { slice.Bounds.Left, slice.Bounds.Top, slice.Bounds.Right, slice.Bounds.Bottom }, slice.AtlasY }),
             alphaRegionRectangles = _banks[_visibleBank].Take(frame.Rasters.Length).Select(layer => layer.RegionRectangles),
             probe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_PROBE_STATE"),
+            effectProbe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_EFFECT_PROBE_STATE"), webView = _webViews?.Evidence,
             timings = new { sampleLimit = 128, rasterAndReadbackP50Ms = Percentile(rasterTimings, .5),
                 rasterAndReadbackP95Ms = Percentile(rasterTimings, .95), uiCommitP95Ms = Percentile(_uiMilliseconds.ToArray(), .95) },
         };
@@ -432,6 +495,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         internal SkiaGraphiteReadback? Pixels;
         internal int Width = width, Height = height;
         internal PlatformRasterSegment[] Rasters = rasters;
+        internal WindowsCompositionSlice[] Slices = [];
         public void Dispose() { Atlas?.Dispose(); Plan.Dispose(); }
     }
     private static void Check(bool success) { if (!success) throw new Win32Exception(Marshal.GetLastWin32Error()); }

@@ -62,6 +62,8 @@ internal sealed class AndroidPlatformBackdropView : NativeView
         canvas.Translate(_sampleBounds.Left - Left, _sampleBounds.Top - Top);
         canvas.DrawRenderNode(_node);
         canvas.Restore();
+        // WebView animations can change without a Doroti scene revision. Resample while visible.
+        if (IsShown) PostInvalidateOnAnimation();
     }
 
     public override bool OnTouchEvent(MotionEvent? e) => false;

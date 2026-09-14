@@ -73,6 +73,7 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
     private readonly IPlatformViewDispatcher _dispatcher;
     private readonly string _backend;
     private long _generation;
+    private long _allocatedId;
     private bool _closed;
     private Task? _closeTask;
     public PlatformViewCoordinator(ulong ownerViewId, string backend, PlatformViewFactoryRegistry factories, IPlatformViewDispatcher dispatcher)
@@ -86,6 +87,70 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
     public int LiveInstanceCount { get { lock (_gate) return _entries.Count; } }
     public event Action<PlatformViewHandle>? ViewFocused;
     public Task DisposalCompletion { get { lock (_gate) return _closeTask ?? Task.CompletedTask; } }
+
+    public long AllocateInstanceId()
+    {
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_closed, this);
+            do { _allocatedId = checked(_allocatedId + 1); } while (_entries.ContainsKey(_allocatedId));
+            return _allocatedId;
+        }
+    }
+    public Task GetDisposalCompletion(long instanceId)
+    {
+        lock (_gate)
+            return _entries.TryGetValue(instanceId, out var entry) ? entry.Disposal ?? Task.CompletedTask : Task.CompletedTask;
+    }
+
+    public ValueTask<PlatformViewHandle> CreateAsync(PlatformViewDescriptor descriptor, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+        if (descriptor.Input != PlatformViewInputPolicy.DirectNative)
+            throw new NotSupportedException("Gesture arena admission has not been qualified for this host.");
+        var request = new PlatformViewRequest(AllocateInstanceId(), descriptor.ViewType,
+            descriptor.Composition, CreationParameters: descriptor.CreationParameters);
+        if (descriptor.Strategy == PlatformViewStrategyPolicy.PlatformPreferred && !QuerySupport(request).Supported)
+            request = request with { Composition = PlatformViewComposition.NativeOverlay };
+        return CreateAsync(request, cancellationToken);
+    }
+
+    public PlatformViewSnapshot CaptureSnapshot(PlatformViewComposition composition)
+    {
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_closed, this);
+            var instances = new Dictionary<PlatformViewHandle, IReadOnlyDictionary<PlatformViewEffects, PlatformViewSupport>>();
+            foreach (var entry in _entries.Values.Where(entry => IsLive(entry.State)))
+            {
+                var variants = new Dictionary<PlatformViewEffects, PlatformViewSupport>();
+                foreach (var effects in new[] { PlatformViewEffects.None, PlatformViewEffects.RectClip,
+                    PlatformViewEffects.AffineTransform, PlatformViewEffects.RectClip | PlatformViewEffects.AffineTransform })
+                    variants.Add(effects, entry.Factory.QuerySupport(entry.Request with { Composition = composition, Effects = effects }));
+                instances.Add(entry.Handle, variants.AsReadOnly());
+            }
+            return new(OwnerViewId, composition, instances);
+        }
+    }
+
+    /// <summary>Rechecks identities atomically after pure planning, then retains the whole batch.</summary>
+    public void Admit(PlatformCompositionPlan plan)
+    {
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_closed, this);
+            if (plan.Token.OwnerViewId != OwnerViewId) throw Error(default, "foreign frame owner");
+            var handles = plan.Parts.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle).Distinct().ToArray();
+            foreach (var handle in handles) Require(handle);
+            var leases = new List<IDisposable>();
+            try
+            {
+                foreach (var handle in handles) leases.Add(Retain(handle));
+                plan.Admit(leases.ToArray());
+            }
+            catch { foreach (var lease in leases) lease.Dispose(); throw; }
+        }
+    }
 
     public PlatformViewSupport QuerySupport(PlatformViewRequest request)
     {

@@ -42,6 +42,8 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private GCHandle _focusContext;
     private Action<Action>? _dispatchFocus;
     private PlatformViewCoordinator? _coordinator;
+    private PlatformCompositionSession? _session;
+    private long _compositionFrame;
     private PlatformCompositionPlan? _pending;
     private IPlatformViewPlacementBatch? _reservation;
     private Placement[] _next = [];
@@ -88,6 +90,9 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                 host.IsQuick && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0,
             host.IsQuick ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
+            Capabilities: new(PlatformViewRepresentation.NativeHierarchy,
+                host.IsQuick ? PlatformViewTransport.GpuShared : PlatformViewTransport.Native,
+                PlatformViewInputPolicy.DirectNative, PlatformEffectSupport.Unsupported),
             Reason: host.IsQuick ? "Qt Quick Controls and Graphite Vulkan GPU images; translation and rect clip. Physical presentation atomicity is not qualified." :
                 "Limited B: disjoint Widgets, rounded logical translation/inward rect clip. Interleaving, shields, affine transforms and synchronized placement are unsupported.");
         public unsafe ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle,
@@ -247,7 +252,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         Verify();
         if (_pending is not null) throw new InvalidOperationException("Qt PlatformView has an unretired frame.");
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
-            descriptor.SceneSequence, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
+            ++_compositionFrame, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
         var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!,
             IsQuick ? PlatformViewComposition.InterleavedComposition : PlatformViewComposition.NativeOverlay);
         try
@@ -302,6 +307,13 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     }
     internal void FinishFrame(bool presented)
     {
+        if (!presented || _pending is null || _closed) { FinishFrameCore(presented); return; }
+        var plan = _pending;
+        _session ??= new(plan.Token.OwnerViewId);
+        _session.CommitRetiredFrame(plan, () => { FinishFrameCore(presented); return true; });
+    }
+    private void FinishFrameCore(bool presented)
+    {
         if (_pending is null) { CancelPending(); return; }
         try
         {
@@ -329,7 +341,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         _next = []; _nextPlacements = [];
     }
     // Called from native closed only after pending post callbacks and QWidgets die.
-    internal void NativeClosed() { _closed = true; CancelPending(); }
+    internal void NativeClosed() { _closed = true; CancelPending(); _session?.DisposeAsync().GetAwaiter().GetResult(); }
     public void Dispose()
     {
         NativeClosed();

@@ -40,6 +40,8 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             (request.Effects & ~PlatformViewEffects.RectClip) == 0;
         return new("Windows-HWND", Environment.OSVersion.VersionString, ViewType, supported,
             supported ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
+            Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.BoundedReadback,
+                PlatformViewInputPolicy.DirectNative, PlatformEffectSupport.Unsupported),
             Reason: supported ? null : SiblingRasterTopology
                 ? "The Windows sibling HWND path supports matching view types, B/C composition, translation and rectangular clipping only."
                 : "Generic HWND requires an explicit lower DComp target with WS_CLIPCHILDREN; standalone interleaving is not enabled.");

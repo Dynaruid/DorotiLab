@@ -6,12 +6,21 @@ public abstract record PlatformCompositionPart(int PaintOrder);
 public sealed record PlatformRasterSegment(int PaintOrder, IReadOnlyList<SceneCommand> Commands) : PlatformCompositionPart(PaintOrder);
 public sealed record PlatformNativeSegment(PlatformViewPlacement Placement) : PlatformCompositionPart(Placement.PaintOrder);
 public sealed record PlatformShieldSegment(PlatformInputShield Shield) : PlatformCompositionPart(Shield.PaintOrder);
-public sealed record PlatformBackdropSegment(int PaintOrder, Rect Bounds, double SigmaX, double SigmaY) : PlatformCompositionPart(PaintOrder);
+/// <summary>Samples only preceding parts. Output clipping is separate from the expanded kernel input.</summary>
+public abstract record PlatformEffectSegment(int PaintOrder, Rect Bounds) : PlatformCompositionPart(PaintOrder);
+public sealed record PlatformBackdropSegment(int PaintOrder, Rect Bounds, double SigmaX, double SigmaY) : PlatformEffectSegment(PaintOrder, Bounds)
+{
+    public Rect SampleBounds => Rect.fromLTRB(Bounds.left - 3 * SigmaX, Bounds.top - 3 * SigmaY,
+        Bounds.right + 3 * SigmaX, Bounds.bottom + 3 * SigmaY);
+}
 
 /// <summary>Immutable plan plus native lifetime leases. Dispose only after presentation resources retire.</summary>
 public sealed class PlatformCompositionPlan : IDisposable
 {
     private IDisposable[]? _leases;
+    private readonly object _gate = new();
+    private bool _disposed;
+    private bool _admitted;
     internal PlatformCompositionPlan(PlatformCompositionToken token, IEnumerable<PlatformCompositionPart> parts, IDisposable[] leases)
     {
         Token = token;
@@ -22,10 +31,22 @@ public sealed class PlatformCompositionPlan : IDisposable
     public IReadOnlyList<PlatformCompositionPart> Parts { get; }
     public bool HasNativeContent => Parts.Any(part => part is PlatformNativeSegment);
     public bool RasterCaptureIncludesNative => !HasNativeContent;
-    public bool IsDisposed => Volatile.Read(ref _leases) is null;
+    public bool IsDisposed { get { lock (_gate) return _disposed; } }
+    public bool IsAdmitted { get { lock (_gate) return _admitted; } }
+    internal void Admit(IDisposable[] leases)
+    {
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (_admitted) throw new InvalidOperationException("Frame was already admitted.");
+            _leases = leases; _admitted = true;
+        }
+    }
     public void Dispose()
     {
-        foreach (var lease in Interlocked.Exchange(ref _leases, null) ?? []) lease.Dispose();
+        IDisposable[]? leases;
+        lock (_gate) { if (_disposed) return; _disposed = true; leases = _leases; _leases = null; }
+        foreach (var lease in leases ?? []) lease.Dispose();
     }
 }
 
@@ -37,23 +58,34 @@ public static class PlatformCompositionPlanner
     private sealed record State(PlatformViewTransform Transform, Rect? Clip, string? Unsupported);
 
     public static PlatformCompositionPlan Build(Scene scene, PlatformCompositionToken token, PlatformViewCoordinator coordinator,
-        PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition, bool allowNativeBackdrop = false)
+        PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition, PlatformEffectSupport? effects = null)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ObjectDisposedException.ThrowIf(scene.debugDisposed, scene);
         if (scene.viewId != token.OwnerViewId) throw new InvalidOperationException("Platform composition scene owner is invalid.");
-        return Build(scene.Commands, token, coordinator, composition, allowNativeBackdrop);
+        return Build(scene.Commands, token, coordinator, composition, effects);
     }
 
     /// <summary>Plans the immutable commands retained by a product renderer.</summary>
     public static PlatformCompositionPlan Build(IReadOnlyList<SceneCommand> commands, PlatformCompositionToken token,
         PlatformViewCoordinator coordinator, PlatformViewComposition composition = PlatformViewComposition.InterleavedComposition,
-        bool allowNativeBackdrop = false)
+        PlatformEffectSupport? effects = null)
+    {
+        var plan = Analyze(commands, token, coordinator.CaptureSnapshot(composition), effects);
+        try { coordinator.Admit(plan); return plan; }
+        catch { plan.Dispose(); throw; }
+    }
+
+    /// <summary>Pure analysis: no host calls, native operations, or lifetime retention.</summary>
+    public static PlatformCompositionPlan Analyze(IReadOnlyList<SceneCommand> commands, PlatformCompositionToken token,
+        PlatformViewSnapshot snapshot, PlatformEffectSupport? effects = null)
     {
         ArgumentNullException.ThrowIfNull(commands);
+        var composition = snapshot.Composition;
+        var allowNativeBackdrop = effects?.LiveSourceSampling == true;
         if (composition is not (PlatformViewComposition.NativeOverlay or PlatformViewComposition.InterleavedComposition))
             throw new ArgumentOutOfRangeException(nameof(composition));
-        if (coordinator.OwnerViewId != token.OwnerViewId || token.ViewEpoch < 0 || token.FrameNumber < 0 || token.SurfaceGeneration < 0)
+        if (snapshot.OwnerViewId != token.OwnerViewId || token.ViewEpoch < 0 || token.FrameNumber < 0 || token.SurfaceGeneration < 0)
             throw new InvalidOperationException("Platform composition token/scene owner is invalid.");
         if (!double.IsFinite(token.DeviceScaleX) || !double.IsFinite(token.DeviceScaleY) || token.DeviceScaleX <= 0 || token.DeviceScaleY <= 0)
             throw new InvalidOperationException("Platform composition device scale is invalid.");
@@ -86,9 +118,11 @@ public static class PlatformCompositionPlanner
                     backdrop.BlendMode != BlendMode.srcOver || backdrop.BackdropId is not null ||
                     backdrop.Filter is not { Outer: null, Inner: null, ColorFilter: null, Matrix4: null, Shader: null, TileMode: TileMode.clamp } filter ||
                     !double.IsFinite(filter.SigmaX) || !double.IsFinite(filter.SigmaY) ||
-                    filter.SigmaX <= 0 || filter.SigmaY <= 0 || filter.SigmaX > 32 || filter.SigmaY > 32)
-                    throw Failure("native backdrop requires a clipped, ungrouped srcOver Gaussian blur with sigma in (0,32]");
-                if (parts.Any(p => p is PlatformBackdropSegment)) throw Failure("one native backdrop region per frame is supported");
+                    filter.SigmaX <= 0 || filter.SigmaY <= 0)
+                    throw Failure("native backdrop requires a clipped, ungrouped srcOver Gaussian blur with positive finite sigma");
+                try { effects!.Validate(filter.SigmaX * state.Transform.M11, filter.SigmaY * state.Transform.M22,
+                    parts.Count(p => p is PlatformBackdropSegment) + 1); }
+                catch (NotSupportedException error) { throw Failure(error.Message); }
                 FlushRaster();
                 parts.Add(new PlatformBackdropSegment(parts.Count, clip,
                     filter.SigmaX * state.Transform.M11, filter.SigmaY * state.Transform.M22));
@@ -102,7 +136,7 @@ public static class PlatformCompositionPlanner
             if (command.Operation == "platformView")
             {
                 if (command.HostPayload is not ScenePlatformViewPayload native) throw Failure("untyped native payload");
-                if (native.Handle.OwnerViewId != token.OwnerViewId || coordinator.Resolve(native.Handle.InstanceId) != native.Handle)
+                if (native.Handle.OwnerViewId != token.OwnerViewId || !snapshot.Contains(native.Handle))
                     throw Failure($"stale native identity {native.Handle}");
                 if (!handles.Add(native.Handle)) throw Failure($"simultaneous multiple attachment of {native.Handle}");
                 if (state.Unsupported is not null) throw Failure(state.Unsupported);
@@ -110,7 +144,7 @@ public static class PlatformCompositionPlanner
                 var placement = new PlatformViewPlacement(native.Handle, native.Bounds, state.Transform, state.Clip, parts.Count,
                     !native.Bounds.isEmpty && !(state.Clip?.isEmpty ?? false));
                 placement.Validate();
-                coordinator.ValidatePlacementSupport(placement, composition == PlatformViewComposition.InterleavedComposition);
+                snapshot.Validate(placement);
                 parts.Add(new PlatformNativeSegment(placement));
                 if (composition == PlatformViewComposition.NativeOverlay && placement.Visible)
                 {
@@ -185,13 +219,7 @@ public static class PlatformCompositionPlanner
                 occupied.Add(bounds);
             }
         }
-        var leases = new List<IDisposable>();
-        try
-        {
-            foreach (var handle in handles) leases.Add(coordinator.Retain(handle));
-            return new(token, parts, leases.ToArray());
-        }
-        catch { foreach (var lease in leases) lease.Dispose(); throw; }
+        return new(token, parts, []);
 
         void FlushRaster()
         {
@@ -263,15 +291,62 @@ public interface IPlatformCompositionPresenter
     ValueTask<IPreparedPlatformComposition> PrepareAsync(PlatformCompositionPlan plan, CancellationToken cancellationToken);
 }
 
-/// <summary>Serializes atomic commits and rejects stale frame/epoch/surface batches.</summary>
+/// <summary>Serializes backend commits and rejects stale frame/epoch/surface batches.
+/// Backend acceptance does not imply compositor acknowledgement or physical atomicity.</summary>
 public sealed class PlatformCompositionSession(ulong ownerViewId, IPlatformCompositionPresenter presenter) : IAsyncDisposable
 {
+    public PlatformCompositionSession(ulong ownerViewId) : this(ownerViewId, new RetiredFramePresenter()) { }
     private readonly SemaphoreSlim _gate = new(1, 1);
     private readonly List<Task> _retirements = [];
     private long _epoch;
     private long _surfaceGeneration;
     private long _frame = -1;
     private bool _closed;
+    private int _pendingRetirements;
+    public const int MaximumPendingFrames = 3;
+    public PlatformCompositionCommitResult? LastCommit { get; private set; }
+    public int PendingRetirements => Volatile.Read(ref _pendingRetirements);
+
+    /// <summary>UI-thread adapter for producers whose GPU reads have already completed.
+    /// Native commit must copy/adopt its resources inline; no compositor receipt is implied.</summary>
+    public bool CommitRetiredFrame(PlatformCompositionPlan plan, Func<bool> commit)
+    {
+        if (presenter is not RetiredFramePresenter inline || inline.Commit is not null || _gate.CurrentCount == 0)
+        { plan.Dispose(); throw new InvalidOperationException("Retired frame commit cannot reenter or await the UI thread."); }
+        try
+        {
+            var epoch = SetEpochAsync(plan.Token.ViewEpoch, plan.Token.SurfaceGeneration);
+            if (!epoch.IsCompleted) throw new InvalidOperationException("UI epoch update unexpectedly suspended.");
+            epoch.GetAwaiter().GetResult();
+            inline.Commit = commit;
+            var submission = SubmitAsync(plan);
+            if (!submission.IsCompleted) throw new InvalidOperationException("Retired frame commit unexpectedly suspended.");
+            submission.GetAwaiter().GetResult(); return true;
+        }
+        catch (RetiredFrameRejectedException) { return false; }
+        finally { inline.Commit = null; plan.Dispose(); }
+    }
+    private sealed class RetiredFrameRejectedException : Exception;
+    private sealed class RetiredFramePresenter : IPlatformCompositionPresenter
+    {
+        internal Func<bool>? Commit;
+        public ValueTask<IPreparedPlatformComposition> PrepareAsync(PlatformCompositionPlan plan, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return ValueTask.FromResult<IPreparedPlatformComposition>(new Prepared(Commit ?? throw new InvalidOperationException("No native commit staged.")));
+        }
+        private sealed class Prepared(Func<bool> commit) : IPreparedPlatformComposition
+        {
+            public Task Retirement => Task.CompletedTask;
+            public ValueTask CommitAsync(CancellationToken cancellationToken)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!commit()) throw new RetiredFrameRejectedException();
+                return ValueTask.CompletedTask;
+            }
+            public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+        }
+    }
 
     public async ValueTask SetEpochAsync(long epoch, long surfaceGeneration)
     {
@@ -297,12 +372,17 @@ public sealed class PlatformCompositionSession(ulong ownerViewId, IPlatformCompo
             await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
             entered = true;
             ObjectDisposedException.ThrowIf(_closed || plan.IsDisposed, this);
+            if (!plan.IsAdmitted) throw new InvalidOperationException("Composition plan requires lifetime admission.");
+            if (PendingRetirements >= MaximumPendingFrames)
+                throw new InvalidOperationException("Composition retirement backlog exceeded three frames.");
             var token = plan.Token;
             if (token.OwnerViewId != ownerViewId || token.ViewEpoch != _epoch || token.SurfaceGeneration != _surfaceGeneration || token.FrameNumber <= _frame)
                 throw new InvalidOperationException("Stale platform composition token.");
             prepared = await presenter.PrepareAsync(plan, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
             await prepared.CommitAsync(cancellationToken).ConfigureAwait(false);
             _frame = token.FrameNumber;
+            LastCommit = new(token, PlatformCommitObservation.BackendAccepted);
             _retirements.RemoveAll(task => task.IsCompletedSuccessfully);
             _retirements.Add(RetireAsync(prepared, plan));
             prepared = null;
@@ -312,7 +392,13 @@ public sealed class PlatformCompositionSession(ulong ownerViewId, IPlatformCompo
         {
             try
             {
-                if (prepared is not null) await prepared.DisposeAsync().ConfigureAwait(false);
+                // A rejected/cancelled native commit may follow a successful GPU submission.
+                // Its producer still owns Retirement; never return its leases early.
+                if (prepared is not null)
+                {
+                    _retirements.Add(RetireAsync(prepared, plan));
+                    prepared = null; plan = null!;
+                }
             }
             finally
             {
@@ -321,13 +407,14 @@ public sealed class PlatformCompositionSession(ulong ownerViewId, IPlatformCompo
             }
         }
     }
-    private static async Task RetireAsync(IPreparedPlatformComposition prepared, PlatformCompositionPlan plan)
+    private async Task RetireAsync(IPreparedPlatformComposition prepared, PlatformCompositionPlan plan)
     {
+        Interlocked.Increment(ref _pendingRetirements);
         try { await prepared.Retirement.ConfigureAwait(false); }
         finally
         {
             try { await prepared.DisposeAsync().ConfigureAwait(false); }
-            finally { plan.Dispose(); }
+            finally { plan.Dispose(); Interlocked.Decrement(ref _pendingRetirements); }
         }
     }
     public async ValueTask DisposeAsync()

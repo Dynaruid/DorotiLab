@@ -56,6 +56,8 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
             (request.Effects & ~PlatformViewEffects.RectClip) == 0;
         return new("AppKit-NSView", Environment.OSVersion.VersionString, ViewType, supported,
             request.Composition, PlatformViewEffects.RectClip,
+            Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.GpuShared,
+                PlatformViewInputPolicy.DirectNative, PlatformEffectSupport.Unsupported),
             Reason: supported ? null : "This AppKit attachment requires a matching compositor and supports only translation and rectangular clipping.");
     }
 

@@ -25,7 +25,7 @@ public sealed record PlatformViewSupport(
     PlatformViewComposition Composition, PlatformViewEffects Effects,
     bool CaptureIncludesNative = false, bool GestureMediation = false,
     bool Accessibility = false, bool SynchronizedPlacement = false, string? Reason = null,
-    bool NativeBackdropBlur = false);
+    bool NativeBackdropBlur = false, PlatformViewCapabilities? Capabilities = null);
 
 /// <summary>Column-vector 2D affine transform in logical pixels.</summary>
 public readonly record struct PlatformViewTransform(double M11, double M12, double M21, double M22, double Dx, double Dy)
@@ -64,6 +64,10 @@ public interface IPlatformViewHostCapability
 {
     ulong OwnerViewId { get; }
     PlatformViewSupport QuerySupport(PlatformViewRequest request);
+    ValueTask<PlatformViewHandle> CreateAsync(PlatformViewDescriptor descriptor, CancellationToken cancellationToken = default) =>
+        throw new NotSupportedException("This host does not implement descriptor-based allocation.");
+    long AllocateInstanceId() => throw new NotSupportedException("This host does not allocate instance IDs.");
+    Task GetDisposalCompletion(long instanceId) => Task.CompletedTask;
     ValueTask<PlatformViewHandle> CreateAsync(PlatformViewRequest request, CancellationToken cancellationToken = default);
     PlatformViewHandle Resolve(long instanceId);
     PlatformViewState GetState(PlatformViewHandle handle);

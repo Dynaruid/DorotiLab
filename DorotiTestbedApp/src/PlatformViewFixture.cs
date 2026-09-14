@@ -149,6 +149,11 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         : new SizedBox(height: 360, child: new Stack(children: BuildScene(Native, support.NativeBackdropBlur))),
                     new ClipRect(child: new RepaintBoundary(child:
                         new Padding(padding: EdgeInsets.CreateAll(16), child: new M.TextField(decoration: new M.InputDecoration(labelText: "Doroti IME / native focus return"))))),
+                        .. (host.QuerySupport(new PlatformViewRequest(0, "doroti/webview", PlatformViewComposition.InterleavedComposition)).Supported
+                            ? new Widget[] { new M.TextButton(onPressed: () => Navigator.push<object>(context,
+                                new PageRouteBuilder<object>(pageBuilder: (_, _, _) => new PlatformEffectFixture(),
+                                    transitionDuration: new Doroti.Runtime.Duration(0), reverseTransitionDuration: new Doroti.Runtime.Duration(0),
+                                    maintainState: false, allowSnapshotting: false)), child: new Text("WebView effects")) } : []),
                     .. (widget.Embedded ? new Widget[] {
                         new ClipRect(child: new RepaintBoundary(child:
                             new Container(key: new ValueKey<string>("platform-view-scroll-box"), height: 400,

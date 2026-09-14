@@ -1,5 +1,5 @@
 /** Main-DOM ownership. This extension is not enabled in the worker protocol until runner integration. */
-export const platformViewBatchVersion = 1 as const;
+export const platformViewBatchVersion = 2 as const;
 export interface NativeIdentity { readonly owner: string; readonly id: string; readonly generation: string; }
 export interface NativeResource { readonly element: HTMLElement; dispose(): void; }
 export type NativeFactory = (identity: NativeIdentity, parameters: unknown, signal: AbortSignal) => NativeResource | Promise<NativeResource>;
@@ -9,10 +9,16 @@ export interface NativePlacement {
   readonly visible: boolean; readonly order: number;
 }
 export interface ShieldPlacement { readonly id: string; readonly bounds: NativeBounds; readonly clip?: NativeBounds; readonly order: number; readonly debug: boolean; }
+/** Logical CSS pixels. The source is preceding siblings, never this element or its foreground child. */
+export interface EffectPlacement {
+  readonly id: string; readonly bounds: NativeBounds; readonly clip?: NativeBounds; readonly order: number;
+  readonly strength: number; readonly tint: string; readonly saturation: number;
+}
 export interface NativeBatch {
   readonly version: typeof platformViewBatchVersion; readonly owner: string;
   readonly epoch: number; readonly surfaceGeneration: number; readonly frame: number;
   readonly views: readonly NativePlacement[]; readonly shields: readonly ShieldPlacement[];
+  readonly effects?: readonly EffectPlacement[];
 }
 interface Entry {
   readonly identity: NativeIdentity; readonly abort: AbortController;
@@ -26,6 +32,7 @@ export class DorotiPlatformViewDomRegistry {
   readonly #factories = new Map<string, NativeFactory>();
   readonly #entries = new Map<string, Entry>();
   readonly #shields = new Map<string, { element: HTMLDivElement; dispose(): void }>();
+  readonly #effects = new Map<string, HTMLDivElement>();
   #epoch = 0;
   #surfaceGeneration = 0;
   #frame = -1;
@@ -38,6 +45,7 @@ export class DorotiPlatformViewDomRegistry {
   }
   get liveCount(): number { return this.#entries.size; }
   get shieldCount(): number { return this.#shields.size; }
+  get effectCount(): number { return this.#effects.size; }
   register(viewType: string, factory: NativeFactory): void {
     this.#requireOpen();
     if (!viewType || this.#factories.has(viewType)) throw new Error("Duplicate/empty native DOM factory.");
@@ -115,7 +123,19 @@ export class DorotiPlatformViewDomRegistry {
       batch.surfaceGeneration !== this.#surfaceGeneration || !Number.isSafeInteger(batch.frame) || batch.frame <= this.#frame)
       throw new Error("Stale/version-mismatched native DOM batch.");
     if (batch.views.length > 16 || batch.shields.length > 16) throw new Error("Native DOM overlay limit exceeded.");
+    const effects = batch.effects ?? [];
+    if (effects.length > 4) throw new Error("Native DOM effect limit exceeded.");
+    const effectIds = new Set<string>();
     const ids = new Set<string>(); const shieldIds = new Set<string>(); const orders = new Set<number>();
+    for (const effect of effects) {
+      validateBounds(effect.bounds); if (effect.clip) validateBounds(effect.clip); validateOrder(effect.order, orders);
+      if (!effect.id || effectIds.has(effect.id) || !Number.isFinite(effect.strength) || effect.strength < 0 || effect.strength > 1 ||
+          !Number.isFinite(effect.saturation) || effect.saturation < 0 || effect.saturation > 2 ||
+          !/^#[0-9a-f]{8}$/i.test(effect.tint)) throw new Error("Invalid native DOM effect intent.");
+      const css = this.root.ownerDocument.defaultView?.CSS;
+      if (!css?.supports("backdrop-filter", "blur(1px)")) throw new Error("Live CSS backdrop filtering is unavailable.");
+      effectIds.add(effect.id);
+    }
     for (const placement of batch.views) {
       this.#validateOwner(placement.identity); validateBounds(placement.bounds); if (placement.clip) validateBounds(placement.clip);
       validateOrder(placement.order, orders);
@@ -165,6 +185,20 @@ export class DorotiPlatformViewDomRegistry {
       apply(shield.element, placement.bounds, placement.clip, placement.order, true);
       shield.element.style.background = placement.debug ? "rgba(255,0,0,.18)" : "transparent";
     }
+    for (const [id, element] of this.#effects) if (!effectIds.has(id)) { element.remove(); this.#effects.delete(id); }
+    for (const effect of effects) {
+      let element = this.#effects.get(effect.id);
+      if (!element) {
+        element = this.root.ownerDocument.createElement("div");
+        element.dataset.dorotiPlatformEffect = effect.id;
+        element.setAttribute("aria-hidden", "true");
+        Object.assign(element.style, { position: "absolute", pointerEvents: "none" });
+        this.root.append(element); this.#effects.set(effect.id, element);
+      }
+      apply(element, effect.bounds, effect.clip, effect.order, true);
+      element.style.backdropFilter = `blur(${effect.strength * 16}px) saturate(${effect.saturation})`;
+      element.style.backgroundColor = effect.tint;
+    }
     this.#frame = batch.frame;
   }
   focus(handle: NativeIdentity, focused: boolean): void {
@@ -180,6 +214,8 @@ export class DorotiPlatformViewDomRegistry {
   dispose(): Promise<void> {
     if (this.#close) return this.#close;
     this.#closed = true;
+    for (const element of this.#effects.values()) element.remove();
+    this.#effects.clear();
     for (const shield of this.#shields.values()) shield.dispose();
     this.#shields.clear(); this.#factories.clear();
     this.#close = Promise.allSettled([...this.#entries.values()].map(entry => this.remove(entry.identity))).then(results => {

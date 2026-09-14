@@ -1,8 +1,28 @@
 # PlatformView 재구성 작업계획
 
+## 0. 2026-09-14 실행 업데이트 — Windows 우선
+
+사용자의 이번 구현 지시에 따라 작업을 시작했다. 실제 출발 HEAD는 `ed98776992f7a084fd3f6c0a11b00a6baa569e49`이며 작업 시작 시 worktree는 clean이었다. 아래의 `227a0b4...`와 "계획 작성만" 문구는 앞선 설계 시점의 기록이다. **현재 전체 상태는 PARTIAL**이며 이 실행표가 이전 TODO 상태보다 우선한다.
+
+| 단계 | 이번 구현 / 검증 | 현재 상태 |
+|---|---|---|
+| R0 | 현 소스와 누락된 검증 source 확인, 20분 timeout wrapper·공통/Windows/Web gate 재구성, 현재 artifact 생성 | Windows 현재 증거 확보; 이전 source와 동일한 성능 baseline 없음 |
+| R1 | descriptor/strategy/input/effect/representation/transport/ack DTO, owner allocator, 기존 request/channel과 같은 coordinator, client late-create disposal completion | PARTIAL — mutable settings·public keep-alive·Flutter gesture facade 이관 남음 |
+| R2 | 불변 capability/identity snapshot → 순수 Analyze → 별도 Admit, effect segment/sample bounds, backend effect limits 분리, Windows 보수적 clip crop | PARTIAL — 전체 mutator/coverage/damage shadow comparison·pixel golden 남음 |
+| R3 | Windows 실제 terminal을 공통 session에 연결. Android/Qt 완료 경로와 AppKit prepared retirement도 source 연결. 실패/취소 뒤 GPU retirement lease 유지, pending 3-frame 상한 | Windows live 및 공통 계약 PASS; 다른 host build/source만 확인, 전체 fault matrix 남음 |
+| R4 | Windows WebView mouse/capture/hover/cursor/focus 및 committed shield, 기존 HWND gallery OS SendInput 회귀 | PARTIAL — native-origin GestureArena·pen/touch·full Tab/한국어 IME/UIA 남음 |
+| R5 | WindowsAppSdk 새 CompositionVisual attachment, Android native WebView, 각 기존 host 공통 계약/세션 대응, Web DOM effect protocol v2 | PARTIAL — Web Worker 제품 연결·UIKit/Catalyst·Windows MAUI 별도 adapter 남음 |
+| R6 | Windows CoreWebView2CompositionController + Windows.UI.Composition tree 실제 연결, environment/core 수명 보존, bounded readback/upload 선택 경로 구현 | Windows 제한 live scene 통과; 전체 플랫폼 전략 비교·WebView 기능·성능 승인 남음 |
+| R-E | bounded PlatformEffect + MatchCommon strength/tint·sharp child. Windows backdrop effect brush, Android RenderNode sampling, Web CSS adapter | Windows live source/입력/2-native/effect 이동·수명 확인. Apple/Qt adapter·시각 허용편차·saturation 공통 구현 남음 |
+| R7 | 현재 Windows 제품 증거와 다른 host build, DOM harness, API/지원표 작성 | PARTIAL — 전체 workload/performance/device-loss/두 owner/물리/NativeAOT 배포 승인 남음 |
+
+공통 계약 fixture는 owner isolation, old generation, 순수 분석의 무보존, admission race, retirement, stale frame, 실패·취소, 늦은 native 생성과 client disposal을 검사한다. Windows에서는 live WebView의 픽셀을 blur하면서 Doroti child가 선명하게 남고, pass-through/shield/전경 click을 실제 제품에서 확인했다. native object를 snapshot으로 바꾸지 않는다. legacy BUTTON/EDIT HWND 위 블러는 여전히 지원하지 않는다.
+
+자세한 현재 계약은 [contract.md](Doroti/docs/platform-views/contract.md), runner별 범위는 [support-matrix.md](Doroti/docs/platform-views/support-matrix.md), 명령은 [검증 안내](Doroti/validation/platform-views/README.md), 이번 실행 기록은 [implementation.md](Doroti/artifacts/platform-views/2026-09-14/rearchitecture/implementation.md)에 둔다. 다른 플랫폼의 build 성공은 실행·물리·시각 유사성 승인으로 승격하지 않았다.
+
 2026-09-14 · 기준 HEAD `227a0b4c7c9534aff2cf2c9edb5b038c9d2656cc`.
 
-설계 기준은 [idea.md](idea.md)다. **이번 수행은 소스·공식 문서 검토와 계획 재작성까지**이며 아래 R0~R7 구현은 시작하지 않았다. 기존 제품 경로는 `PARTIAL`, 재구성 단계는 `TODO`다. 과거 PV-0~PV-10 결과를 지우지 않고 [원본](history/26-09-14/platformview-rearchitecture/work1.original.md)에 보존했다.
+설계 기준은 [idea.md](idea.md)다. **계획 작성 당시 수행은 소스·공식 문서 검토와 계획 재작성까지**이며 아래 R0~R7 구현은 시작하지 않았다. 기존 제품 경로는 `PARTIAL`, 재구성 단계는 `TODO`다. 과거 PV-0~PV-10 결과를 지우지 않고 [원본](history/26-09-14/platformview-rearchitecture/work1.original.md)에 보존했다.
 
 현재 요구에 따라 **R6는 플랫폼별 WebView 전략 비교·통합, R-E는 공통 효과 의미와 비주얼 유사성을 목표로 하는 위젯**이다. HCPP 구현은 필수가 아니며 native hierarchy·live texture·bounded readback·GPU compositor 중 적합한 구성을 선택한다. Windows CoreWebView2CompositionController 선택은 유지한다. 상태는 `TODO`/`notVerified`이며 이번에도 제품 코드는 변경하지 않았다.
 
@@ -111,7 +131,7 @@ Stop: 분석 불확실성을 근거로 native 위 전경을 base로 내리거나
 - commit 직전 owner/epoch/instance/surface generation을 재검사한다. 실패나 경합에서는 이전 프레임을 유지한다. 제출 후 취소·partial native commit·owner close 경로를 명시한다.
 - scene/picture/texture와 native lease를 admission에서 함께 보존하고 마지막 소비 이후 반환한다. 마지막 native 제거·빈 batch·route 전환 때 이전 native/shield가 남지 않는지 확인한다.
 - framework/render/UI 작업 queue와 buffer/resource 상한을 둔다. UI thread가 자신에게 보낸 작업을 기다리지 않도록 한다. GPU 대기 중 input/focus queue starvation도 관측한다.
-- 하나의 host를 먼저 연결한다. Android를 첫 제품 대상으로 하고 Windows readback·Qt GPU 경로로 계약의 과도한 플랫폼 가정을 검사한다.
+- 하나의 host를 먼저 연결한다. 이번 수행은 사용자 지시에 따라 Windows를 첫 제품 대상으로 하고 Android readback·Qt GPU·AppKit 경로로 계약의 과도한 플랫폼 가정을 검사한다.
 
 완료: prepare 실패, submit 실패, submit 이후 취소, resize 중 supersede, commit 실패, focus reservation 경합, 늦은 ACK, device/context loss·close에서 double free/조기 재사용 없음. 실제 host trace가 공통 session을 통과함을 확인한다. fault injection은 별도 fixture 결과로 표시한다.
 
@@ -208,13 +228,13 @@ Stop: 선택한 조합이 실제 source sample·live 갱신·공통 시각 편�
 
 검증 source는 `Doroti/validation/`에, build/capture/trace/report/cache는 `Doroti/artifacts/platform-views/<date>/<target>/<run>/`에 둔다. 원본/개정 이력은 `history/`에 둔다. `[sourceReviewed, build, automated, productLive, physical, nativeAot]`를 독립적으로 기록하고 source hash·dirty state·명령/exit/timeout·실제 renderer/GPU·실패·재개 명령을 보존한다.
 
-모든 build/test/run child는 [.github 지침](.github/copilot-instructions.md)의 **20분 외부 timeout**을 적용한다. 아래는 후속 구현 시 사용할 기존 명령이며 이번 문서 변경에서는 실행하지 않았다.
+모든 build/test/run child는 [.github 지침](.github/copilot-instructions.md)의 **20분 외부 timeout**을 적용한다. 현재 구현에서 사용하는 명령은 다음과 같다. 각 gate의 최근 실행 결과와 source hash는 위 실행 기록에 따로 보존한다.
 
 ```powershell
-# 저장소 루트. record.py가 내부에서 1200초 timeout과 artifact 출력을 적용한다.
-python Doroti/validation/platform-views/record.py common
-python Doroti/validation/platform-views/record.py windows-product-live
-python Doroti/validation/platform-views/record.py web-dom
+# 저장소 루트. 모든 child에 1200초 외부 timeout을 적용한다.
+python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/platform-views/Common/Common.csproj --artifacts-path Doroti/artifacts/platform-views/common-build
+python Doroti/validation/run-with-timeout.py python Doroti/validation/platform-views/verify-windows-effects.py
+python Doroti/validation/run-with-timeout.py python Doroti/validation/platform-views/verify-web-dom.py
 
 # 개별 새 child 명령은 Doroti 디렉터리에서 timeout wrapper로 실행한다.
 # python validation/run-with-timeout.py <실제 명령과 인자>

@@ -66,7 +66,7 @@ public sealed class PlatformViewChannelAdapter : IPlatformMessageHostCapability,
                         }
                         try
                         {
-                            var handle = await _host.CreateAsync(new(id, viewType, CreationParameters: parameters), pending.Token);
+                            var handle = await _host.CreateAsync(new PlatformViewRequest(id, viewType, CreationParameters: parameters), pending.Token);
                             bool dispose;
                             lock (_gate)
                             {

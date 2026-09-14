@@ -3040,7 +3040,7 @@ internal static class SystemDesktopCompositionInterop
 
     internal static unsafe SystemCompositionDesktop.DesktopWindowTarget CreateDesktopWindowTarget(
         SystemComposition.Compositor compositor,
-        nint window)
+        nint window, bool topmost = false)
     {
         ArgumentNullException.ThrowIfNull(compositor);
         if (window == 0) throw new ArgumentOutOfRangeException(nameof(window));
@@ -3050,7 +3050,7 @@ internal static class SystemDesktopCompositionInterop
         var vtable = *(nint**)thisPointer;
         var create = (delegate* unmanaged[Stdcall]<nint, nint, int, nint*, int>)vtable[3];
         nint result = 0;
-        var hresult = create(thisPointer, window, 0, &result);
+        var hresult = create(thisPointer, window, topmost ? 1 : 0, &result);
         if (hresult < 0) Marshal.ThrowExceptionForHR(hresult);
         try
         {

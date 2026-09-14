@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>Doroti.Validation.PlatformViews</AssemblyName></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../../src/Doroti.Hosting/Doroti.Hosting.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../../../src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" /></ItemGroup>
+</Project>

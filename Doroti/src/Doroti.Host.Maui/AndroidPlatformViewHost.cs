@@ -31,9 +31,13 @@ public sealed class AndroidPlatformViewDispatcher : IPlatformViewDispatcher
 /// The SurfaceView remains below that window. No native snapshot or texture fallback.</summary>
 internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiTextInputBridge textInput) : IDisposable
 {
+    private static readonly PlatformEffectSupport NativeEffects = new(true, 1, 32,
+        Reason: "Android RenderNode supports one bounded Gaussian backdrop with logical sigma at most 32.");
     private DorotiAndroidVulkanView? _surface;
     private FrameLayout? _container;
     private PlatformViewCoordinator? _coordinator;
+    private PlatformCompositionSession? _session;
+    private long _compositionFrame;
     private readonly Dictionary<PlatformViewHandle, Instance> _instances = [];
     private PlatformViewPlacement[] _visible = [];
     private readonly List<RasterView> _rasters = [];
@@ -48,7 +52,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     private readonly bool _profile = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1";
     private const int SliceStride = 128;
     internal bool RejectFrame { get; private set; }
-    internal IEnumerable<IPlatformViewFactory> CreateFactories() => [new Factory(this, false), new Factory(this, true)];
+    internal IEnumerable<IPlatformViewFactory> CreateFactories() => [new Factory(this, false), new Factory(this, true), new Factory(this, true, webView: true)];
     internal void Configure(PlatformViewCoordinator coordinator)
     { _coordinator = coordinator; owner.GpuResourcesReleasing += InvalidateRasterCache; }
     private void InvalidateRasterCache() => _rasterEpoch++;
@@ -85,12 +89,12 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         { renderer.DrawPlatformRasterSegment(canvas, commands, width, height); return; }
         var parent = Container;
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
-            descriptor.SceneSequence, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
+            ++_compositionFrame, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
         var mode = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION") == "overlay"
             ? PlatformViewComposition.NativeOverlay : PlatformViewComposition.InterleavedComposition;
         PlatformCompositionPlan plan;
         try { plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!, mode,
-            allowNativeBackdrop: OperatingSystem.IsAndroidVersionAtLeast(31)); }
+            effects: OperatingSystem.IsAndroidVersionAtLeast(31) ? NativeEffects : null); }
         catch (DorotiCapabilityException) when (HasStaleNative(commands))
         {
             // Widget removal disables native input before the replacement scene arrives.
@@ -238,6 +242,14 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         c.HostPayload is ScenePlatformViewPayload native && !IsLive(native.Handle) ||
         c.HostPayload is SceneRetainedPayload retained && HasStaleNative(retained.Commands));
     internal bool Finish(bool accepted)
+    {
+        AndroidPlatformViewDispatcher.VerifyThread();
+        if (!accepted || _pending is null || _disposed) return FinishCore(accepted);
+        var plan = _pending.Plan;
+        _session ??= new(plan.Token.OwnerViewId);
+        return _session.CommitRetiredFrame(plan, () => FinishCore(accepted));
+    }
+    private bool FinishCore(bool accepted)
     {
         AndroidPlatformViewDispatcher.VerifyThread();
         var frame = _pending; _pending = null;
@@ -438,9 +450,9 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             { LeftMargin = left, TopMargin = top, Gravity = GravityFlags.Left | GravityFlags.Top };
         view.Layout(left, top, Math.Max(left, right), Math.Max(top, bottom));
     }
-    private sealed class Factory(AndroidPlatformViewHost host, bool editor) : IPlatformViewFactory
+    private sealed class Factory(AndroidPlatformViewHost host, bool editor, bool webView = false) : IPlatformViewFactory
     {
-        public string ViewType => editor ? "doroti/native-editor" : "doroti/native-button";
+        public string ViewType => webView ? "doroti/webview" : editor ? "doroti/native-editor" : "doroti/native-button";
         public PlatformViewSupport QuerySupport(PlatformViewRequest request)
         {
             var supported = request.ViewType == ViewType &&
@@ -448,14 +460,16 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                 (request.Effects & ~PlatformViewEffects.RectClip) == 0;
             return new("Android/View/Graphite-readback", Environment.OSVersion.VersionString, ViewType, supported,
                 request.Composition, PlatformViewEffects.RectClip, Reason: supported ? null : "Only native button/editor, translation and rect clip are supported.",
-                NativeBackdropBlur: supported && request.Composition == PlatformViewComposition.InterleavedComposition && OperatingSystem.IsAndroidVersionAtLeast(31));
+                NativeBackdropBlur: supported && request.Composition == PlatformViewComposition.InterleavedComposition && OperatingSystem.IsAndroidVersionAtLeast(31),
+                Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.BoundedReadback,
+                    PlatformViewInputPolicy.DirectNative, OperatingSystem.IsAndroidVersionAtLeast(31) ? NativeEffects : PlatformEffectSupport.Unsupported));
         }
         public ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle, ReadOnlyMemory<byte> parameters,
             Action<PlatformViewHandle> onFocused, CancellationToken cancellationToken)
         {
             AndroidPlatformViewDispatcher.VerifyThread(); cancellationToken.ThrowIfCancellationRequested();
             var instance = new Instance(host, handle, editor, parameters.IsEmpty ? (editor ? "Native editor" : "Native button") :
-                System.Text.Encoding.UTF8.GetString(parameters.Span), onFocused);
+                System.Text.Encoding.UTF8.GetString(parameters.Span), onFocused, webView);
             host._instances.Add(handle, instance);
             return ValueTask.FromResult<IPlatformViewInstance>(instance);
         }
@@ -464,32 +478,42 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     {
         private readonly AndroidPlatformViewHost _host;
         private readonly PlatformViewHandle _handle;
-        private readonly TextView _control;
+        private readonly NativeView _control;
         private readonly Action<PlatformViewHandle> _focused;
         internal FrameLayout Clip { get; }
         private bool _disabled, _disposed;
         private int _clicks;
-        internal Instance(AndroidPlatformViewHost host, PlatformViewHandle handle, bool editor, string text, Action<PlatformViewHandle> focused)
+        internal Instance(AndroidPlatformViewHost host, PlatformViewHandle handle, bool editor, string text, Action<PlatformViewHandle> focused, bool webView = false)
         {
             _host = host; _handle = handle; _focused = focused;
             var parent = host.Container;
             Clip = new(parent.Context!) { Visibility = ViewStates.Invisible };
             Clip.SetClipChildren(true);
-            _control = editor ? new EditText(parent.Context!) : new Android.Widget.Button(parent.Context!);
-            _control.Text = text;
+            if (webView)
+            {
+                var browser = new Android.Webkit.WebView(parent.Context!);
+                browser.Settings.JavaScriptEnabled = true;
+                browser.LoadDataWithBaseURL(null, text, "text/html", "UTF-8", null);
+                _control = browser;
+            }
+            else
+            {
+                TextView control = editor ? new EditText(parent.Context!) : new Android.Widget.Button(parent.Context!);
+                control.Text = text; _control = control;
+            }
             _control.ContentDescription = $"doroti-platform-view-{handle.InstanceId}-{handle.InstanceGeneration}";
             _control.FocusableInTouchMode = editor;
             _control.FocusChange += FocusChanged;
             _control.KeyPress += KeyPressed;
             _control.Touch += NativeTouch;
-            _control.TextChanged += TextChanged;
-            if (!editor) _control.Click += Click;
+            if (_control is TextView textControl) textControl.TextChanged += TextChanged;
+            if (!editor && !webView) _control.Click += Click;
             Clip.AddView(_control); parent.AddView(Clip);
             global::Android.Util.Log.Info("DorotiPlatformView", $"create handle={handle} native={_control.Handle}");
         }
         private void Click(object? sender, EventArgs e)
         {
-            if (!_disabled && !_disposed) { _control.Text = $"Native clicks: {++_clicks}";
+            if (!_disabled && !_disposed && _control is TextView textControl) { textControl.Text = $"Native clicks: {++_clicks}";
                 global::Android.Util.Log.Info("DorotiPlatformView", $"click handle={_handle} count={_clicks}"); }
         }
         private void KeyPressed(object? sender, NativeView.KeyEventArgs e)
@@ -557,7 +581,8 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             if (_disposed) return ValueTask.CompletedTask;
             ReleaseFocus(); _disposed = true;
             _control.FocusChange -= FocusChanged; _control.Click -= Click; _control.KeyPress -= KeyPressed; _control.Touch -= NativeTouch;
-            _control.TextChanged -= TextChanged;
+            if (_control is TextView textControl) textControl.TextChanged -= TextChanged;
+            if (_control is Android.Webkit.WebView browser) { browser.StopLoading(); browser.Destroy(); }
             (Clip.Parent as Android.Views.ViewGroup)?.RemoveView(Clip);
             Clip.RemoveView(_control); _control.Dispose(); Clip.Dispose(); _host._instances.Remove(_handle);
             global::Android.Util.Log.Info("DorotiPlatformView", $"dispose handle={_handle}");
@@ -571,6 +596,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     {
         if (_disposed) return;
         Finish(false); _disposed = true;
+        if (_session is { } session) CompleteNow(session.DisposeAsync());
         owner.PlatformViews = null;
         owner.GpuResourcesReleasing -= InvalidateRasterCache;
         _coordinator?.Dispose();
