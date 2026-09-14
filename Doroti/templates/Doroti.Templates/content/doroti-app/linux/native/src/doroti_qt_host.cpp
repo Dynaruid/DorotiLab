@@ -1,5 +1,12 @@
 #include "doroti_qt_host_v2.h"
 #include "doroti_qt_platform_views.h"
+#ifdef DOROTI_QT_QUICK
+#include "doroti_qt_quick.h"
+#include <QQuickWindow>
+#include <QQuickGraphicsConfiguration>
+#include <QQuickItem>
+#include <QSGRendererInterface>
+#endif
 #include <memory>
 #include <QSet>
 #include <atomic>
@@ -81,6 +88,9 @@ std::atomic_bool run_active{false};
 // blur protocol retaining its first committed bounds across Qt surface resizes.
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
+#ifdef DOROTI_QT_QUICK
+    DOROTI_QT_FEATURE_QUICK_COMPOSITION |
+#endif
 #ifdef DOROTI_QT_GRAPHITE
     DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION | DOROTI_QT_FEATURE_GPU_POLL | DOROTI_QT_FEATURE_PRESENT_HOOK |
 #else
@@ -139,7 +149,9 @@ QString String(doroti_qt_utf8_v2 value) {
                            static_cast<qsizetype>(value.length));
 }
 
-#ifdef DOROTI_QT_GRAPHITE
+#ifdef DOROTI_QT_QUICK
+using DorotiWindowBase = QQuickWindow;
+#elif defined(DOROTI_QT_GRAPHITE)
 using DorotiWindowBase = QWindow;
 #else
 using DorotiWindowBase = QOpenGLWindow;
@@ -148,8 +160,15 @@ class DorotiSurface final : public DorotiWindowBase {
  public:
   DorotiSurface(void* callback_context, const doroti_qt_callbacks_v2& callbacks,
                 std::uint32_t backdrop_mode, std::uint32_t backdrop_fallback,
-                std::uint32_t titlebar_style)
+                std::uint32_t titlebar_style
+#ifdef DOROTI_QT_QUICK
+                , QVulkanInstance& quick_vulkan
+#endif
+                )
       : DorotiWindowBase(),
+#ifdef DOROTI_QT_QUICK
+        vulkan_(quick_vulkan),
+#endif
         callback_context_(callback_context), callbacks_(callbacks),
         backdrop_mode_(backdrop_mode), backdrop_fallback_(backdrop_fallback),
         unified_titlebar_(titlebar_style == DOROTI_QT_TITLEBAR_UNIFIED && backdrop_mode == DOROTI_QT_BACKDROP_ACRYLIC) {
@@ -169,9 +188,23 @@ class DorotiSurface final : public DorotiWindowBase {
 #ifdef DOROTI_QT_GRAPHITE
     setSurfaceType(QSurface::VulkanSurface);
     vulkan_.setApiVersion(QVersionNumber(1, 2));
+#ifdef DOROTI_QT_QUICK
+    vulkan_.setExtensions(QQuickGraphicsConfiguration::preferredInstanceExtensions());
+#endif
     if (!vulkan_.create()) throw std::runtime_error("Qt Vulkan instance creation failed; no OpenGL fallback");
     setVulkanInstance(&vulkan_);
     vulkan_extensions_ = vulkan_.extensions().join('\n');
+#ifdef DOROTI_QT_QUICK
+    setColor(Qt::transparent);
+    connect(this, &QQuickWindow::beforeSynchronizing, this, [this] {
+      try { RenderVulkan(); } catch (const std::exception& e) {
+        fatal_ = true; callbacks_.fatal(callback_context_, DOROTI_QT_ERROR_NATIVE_EXCEPTION, Utf8(e.what()));
+        QCoreApplication::exit(DOROTI_QT_ERROR_NATIVE_EXCEPTION);
+      }
+    }, Qt::DirectConnection);
+    connect(this, &QQuickWindow::frameSwapped, this, [this] { FrameSwapped(); }, Qt::DirectConnection);
+    connect(this, &QQuickWindow::sceneGraphInvalidated, this, [this] { ReleaseSurface(); }, Qt::DirectConnection);
+#endif
     gpu_poll_timer_.setInterval(8);
     connect(&gpu_poll_timer_, &QTimer::timeout, this, [this] {
       if (closing_ || fatal_) { gpu_poll_timer_.stop(); return; }
@@ -206,11 +239,15 @@ class DorotiSurface final : public DorotiWindowBase {
 
   ~DorotiSurface() override {
     accessible_surfaces.remove(this);
+#ifdef DOROTI_QT_QUICK
+    setPersistentSceneGraph(false); setPersistentGraphics(false);
+    hide(); releaseResources();
+#endif
     DorotiQtClosePlatformOwner(this);
     ClearSemanticsTree();
     ReleaseBackdrop();
     ReleaseSurface();
-#ifdef DOROTI_QT_GRAPHITE
+#if defined(DOROTI_QT_GRAPHITE) && !defined(DOROTI_QT_QUICK)
     // QWindow's VkSurface must die before the member QVulkanInstance.
     destroy();
 #endif
@@ -493,14 +530,31 @@ class DorotiSurface final : public DorotiWindowBase {
 
  protected:
 #ifdef DOROTI_QT_GRAPHITE
+#ifdef DOROTI_QT_QUICK
+  // The instance must outlive QQuickWindow's base destructor and its QRhi.
+  QVulkanInstance& vulkan_;
+#else
   QVulkanInstance vulkan_;
+#endif
   QByteArray vulkan_extensions_;
   QTimer gpu_poll_timer_;
   bool render_retry_pending_ = false;
+#ifdef DOROTI_QT_QUICK
+  bool quick_has_frame_ = false;
+#endif
   double devicePixelRatioF() const { return devicePixelRatio(); }
-  void update() { requestUpdate(); }
+  void update() {
+#ifdef DOROTI_QT_QUICK
+    QQuickWindow::update();
+#else
+    requestUpdate();
+#endif
+  }
   void RenderVulkan() {
     if (!isExposed() || width() <= 0 || height() <= 0 || fatal_ || closing_) return;
+#ifdef DOROTI_QT_QUICK
+    if (quick_has_frame_ && pending_frame_token_ == 0) return;
+#endif
     const auto surface = QVulkanInstance::surfaceForWindow(this);
     if (surface == VK_NULL_HANDLE) throw std::runtime_error("Qt Vulkan surface creation failed");
     if (context_identity_ == 0) {
@@ -508,7 +562,13 @@ class DorotiSurface final : public DorotiWindowBase {
       ++surface_generation_;
       surface_released_ = false;
       Diagnostic("qpa", QGuiApplication::platformName().toUtf8().constData());
+#ifdef DOROTI_QT_QUICK
+      Diagnostic("graphics.backend", "QtQuick-Graphite-Vulkan");
+      Diagnostic("composition", "interleaved-gpu-images");
+      Diagnostic("raster.cpuReadback", "false");
+#else
       Diagnostic("graphics.backend", "Graphite-Vulkan");
+#endif
       Diagnostic("presentation.completion", "queue-present-accepted-not-scanout");
       Diagnostic("vulkan.instance.apiVersion", vulkan_.apiVersion().toString().toUtf8().constData());
       Diagnostic("vulkan.instance.extensions", vulkan_.extensions().join(',').constData());
@@ -540,8 +600,13 @@ class DorotiSurface final : public DorotiWindowBase {
         QTimer::singleShot(8, this, [this] {
           render_retry_pending_ = false;
           if (!closing_ && !fatal_) {
+#ifdef DOROTI_QT_QUICK
+            if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+            update();
+#else
             QEvent retry(QEvent::UpdateRequest);
             QCoreApplication::sendEvent(this, &retry);
+#endif
           }
         });
       }
@@ -556,11 +621,20 @@ class DorotiSurface final : public DorotiWindowBase {
       RequestClose(this);
       return;
     }
+#ifndef DOROTI_QT_QUICK
     vulkan_.presentQueued(this);
+#endif
+#ifdef DOROTI_QT_QUICK
+    quick_has_frame_ = true;
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+#endif
     rasterized_frame_token_ = token;
     rasterized_generation_ = surface_generation_;
     if (!gpu_poll_timer_.isActive()) gpu_poll_timer_.start();
+    #ifndef DOROTI_QT_QUICK
     FrameSwapped();
+    #endif
   }
 #else
   void initializeGL() override {
@@ -656,6 +730,11 @@ class DorotiSurface final : public DorotiWindowBase {
       RequestClose(this);
       return;
     }
+#ifdef DOROTI_QT_QUICK
+    quick_has_frame_ = true;
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+#endif
     rasterized_frame_token_ = token;
     rasterized_generation_ = surface_generation_;
   }
@@ -673,8 +752,12 @@ class DorotiSurface final : public DorotiWindowBase {
 
 #endif
   bool event(QEvent* event) override {
+#ifdef DOROTI_QT_QUICK
+    if (DorotiQtQuickNativeInput(this, event)) return DorotiWindowBase::event(event);
+    if (event->type() == QEvent::MouseButtonPress) DorotiQtQuickClearFocus(this);
+#endif
     switch (event->type()) {
-#ifdef DOROTI_QT_GRAPHITE
+#if defined(DOROTI_QT_GRAPHITE) && !defined(DOROTI_QT_QUICK)
       case QEvent::UpdateRequest:
         try { RenderVulkan(); }
         catch (const std::exception& exception) {
@@ -732,7 +815,9 @@ class DorotiSurface final : public DorotiWindowBase {
           callbacks_.close_requested(callback_context_, this);
         }
         closing_ = true;
+#ifndef DOROTI_QT_QUICK
         DorotiQtClosePlatformOwner(this);
+#endif
         break;
       case QEvent::Enter: {
         auto* enter = static_cast<QEnterEvent*>(event);
@@ -862,6 +947,17 @@ class DorotiSurface final : public DorotiWindowBase {
       default:
         break;
     }
+#ifdef DOROTI_QT_QUICK
+    // Native-target events returned above. Never deliver a managed press/key a
+    // second time to the Quick controls underneath a Doroti input shield.
+    switch (event->type()) {
+      case QEvent::MouseButtonPress: case QEvent::MouseButtonRelease: case QEvent::MouseButtonDblClick:
+      case QEvent::MouseMove: case QEvent::Wheel: case QEvent::TouchBegin: case QEvent::TouchUpdate:
+      case QEvent::TouchEnd: case QEvent::TouchCancel: case QEvent::KeyPress: case QEvent::KeyRelease:
+        event->accept(); return true;
+      default: break;
+    }
+#endif
     return DorotiWindowBase::event(event);
   }
 
@@ -928,7 +1024,7 @@ class DorotiSurface final : public DorotiWindowBase {
   void RequestChromeFrame() {
     if (!unified_titlebar_ || closing_ || fatal_) return;
     if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
-    requestUpdate();
+    update();
   }
 
   std::uint32_t CaptionButton(const QPointF& point) const {
@@ -1143,8 +1239,17 @@ class DorotiSurface final : public DorotiWindowBase {
   }
 
   void ReleaseSurface() {
+#ifdef DOROTI_QT_QUICK
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+    if (pending_frame_token_ != 0)
+      Terminal(std::exchange(pending_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
+#endif
     if (surface_released_ || context_identity_ == 0) return;
     surface_released_ = true;
+#ifdef DOROTI_QT_QUICK
+    quick_has_frame_ = false;
+#endif
 #ifdef DOROTI_QT_GRAPHITE
     gpu_poll_timer_.stop();
 #endif
@@ -1636,6 +1741,10 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
     return DOROTI_QT_ERROR_ABI_SIZE;
   const auto required = configuration->required_features | callbacks->required_features;
   if ((required & ~kSupportedFeatures) != 0) return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+#ifdef DOROTI_QT_QUICK
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_QUICK_COMPOSITION) == 0)
+    return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+#endif
   if (callbacks->view_created == nullptr || callbacks->render == nullptr ||
       callbacks->frame_terminal == nullptr || callbacks->surface_destroying == nullptr ||
       callbacks->diagnostic == nullptr || callbacks->fatal == nullptr ||
@@ -1688,6 +1797,14 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     int argc = 1;
     char app_name[] = "doroti";
     char* argv[] = {app_name, nullptr};
+#ifdef DOROTI_QT_QUICK
+    // The managed owner/coordinator and Qt native controls currently share the
+    // basic GUI/render loop. Reject a conflicting loop instead of racing them.
+    if (!qgetenv("QSG_RENDER_LOOP").isEmpty() && qgetenv("QSG_RENDER_LOOP") != "basic")
+      return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+    qputenv("QSG_RENDER_LOOP", "basic");
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::Vulkan);
+#endif
     QApplication app(argc, argv);
     struct AccessibleRegistration {
       AccessibleRegistration() { QAccessible::installFactory(&AccessibleFactory); }
@@ -1696,10 +1813,17 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     const auto title = QString::fromUtf8(
         reinterpret_cast<const char*>(configuration->title.data),
         static_cast<qsizetype>(configuration->title.length));
+#ifdef DOROTI_QT_QUICK
+    QVulkanInstance quick_vulkan;
+#endif
     auto surface_owner = std::make_unique<DorotiSurface>(callbacks->callback_context, *callbacks,
                                       configuration->backdrop_mode,
                                       configuration->backdrop_fallback,
-                                      configuration->titlebar_style);
+                                      configuration->titlebar_style
+#ifdef DOROTI_QT_QUICK
+                                      , quick_vulkan
+#endif
+                                      );
     auto* surface = surface_owner.get();
     accessible_surfaces.insert(surface);
     DorotiQtRegisterPlatformOwner(surface);

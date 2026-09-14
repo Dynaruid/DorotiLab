@@ -40,6 +40,8 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_TITLEBAR = 1ull << 14,
   DOROTI_QT_FEATURE_PRE_APPLICATION = 1ull << 15,
   DOROTI_QT_FEATURE_PLATFORM_VIEWS = 1ull << 16,
+  // Qt owns device/queue/WSI; optional quick API exposes GPU image composition.
+  DOROTI_QT_FEATURE_QUICK_COMPOSITION = 1ull << 17,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {

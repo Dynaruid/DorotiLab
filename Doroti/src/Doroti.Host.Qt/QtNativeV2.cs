@@ -218,7 +218,7 @@ internal static unsafe class QtNativeV2
             AbiVersion = QtNativeV2.AbiVersion;
             StructSize = checked((uint)sizeof(Callbacks));
             RequiredFeatures = QtNativeV2.RequiredFeatures;
-            FeatureBits = QtNativeV2.RequiredFeatures;
+            FeatureBits = QtNativeV2.RequiredFeatures | QtQuickNative.Feature;
             CallbackContext = callbackContext;
             ViewCreated = &DorotiQtRunner.OnViewCreated;
             Render = &DorotiQtRunner.OnRender;

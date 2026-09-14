@@ -173,13 +173,13 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     private Widget AcrylicAction() => new M.IconButton(tooltip: AcrylicTooltip,
         onPressed: widget.ToggleAcrylic, isSelected: widget.Acrylic,
         icon: new Icon(M.Icons.blur_off), selectedIcon: new Icon(M.Icons.blur_on));
-    private Widget SeedAction() => new M.PopupMenuButton<int>(tooltip: "Select a seed color", icon: new Icon(M.Icons.palette_outlined),
+    private Widget SeedAction() => new M.PopupMenuButton<int>(enabled: !BasicNativePage, tooltip: "Select a seed color", icon: new Icon(M.Icons.palette_outlined),
         shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10)), onSelected: widget.SelectSeed,
         itemBuilder: _ => SampleConstants.Seeds.Select((seed, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
             enabled: widget.FromImage || widget.Seed != i, child: new Wrap(children: [
                 new Padding(padding: EdgeInsets.CreateOnly(left: 10), child: new Icon(!widget.FromImage && widget.Seed == i ? M.Icons.color_lens : M.Icons.color_lens_outlined, color: seed.Color)),
                 new Padding(padding: EdgeInsets.CreateOnly(left: 20), child: new Text(seed.Label))]))).ToList());
-    private Widget ImageAction() => new M.PopupMenuButton<int>(tooltip: "Select a color extraction image", icon: new Icon(M.Icons.image_outlined),
+    private Widget ImageAction() => new M.PopupMenuButton<int>(enabled: !BasicNativePage, tooltip: "Select a color extraction image", icon: new Icon(M.Icons.image_outlined),
         shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10)), onSelected: widget.SelectImage,
         itemBuilder: _ => SampleConstants.Images.Select((label, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
             enabled: !widget.FromImage || widget.Image != i, child: new Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
@@ -236,8 +236,10 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             _homeDirection = direction;
             _home = BuildAnimatedHome();
         }
-        return _home;
+        // Basic native hosts cannot composite foreground tooltip/menu entries.
+        return new M.TooltipVisibility(visible: !BasicNativePage, child: _home);
     }
+    private bool BasicNativePage => _destination == 4 && PlatformViewFixture.UsesNativeOverlay(context);
     private Widget BuildAnimatedHome()
     {
         Widget body = _destination switch
@@ -247,13 +249,15 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             4 => new PlatformViewFixture(embedded: true),
             _ => throw new ArgumentOutOfRangeException(nameof(_destination)),
         };
-        return new M.Scaffold(key: _scaffold,
-            appBar: new M.AppBar(title: new Text("Doroti Material 3"), notificationPredicate: AcceptAppBarScroll,
+        var appBar = new M.AppBar(title: new Text("Doroti Material 3"), notificationPredicate: AcceptAppBarScroll,
                 backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
                 surfaceTintColor: widget.Acrylic ? M.Colors.transparent : null,
                 scrolledUnderElevation: widget.Acrylic ? 0 : null,
-                actions: !_wide ? [BrightnessAction(), AcrylicAction(), SeedAction(), ImageAction()] : [new Container()]),
-            endDrawer: new GalleryDrawer(),
+                actions: !_wide ? [BrightnessAction(), AcrylicAction(), SeedAction(), ImageAction()] : [new Container()]);
+        return new M.Scaffold(key: _scaffold,
+            appBar: BasicNativePage
+                ? new PreferredSize(preferredSize: appBar.preferredSize, child: new ClipRect(child: appBar)) : appBar,
+            endDrawer: BasicNativePage ? null : new GalleryDrawer(),
             body: new Column(children:
             [
                 ifLoading(),

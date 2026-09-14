@@ -42,3 +42,20 @@ Owner close cancels queued work and deletes Widgets before the managed closed ca
 Qt-driven native window recreation rebinds each clip container to the same owner.
 Callers must keep adopted-widget and callback modules loaded until owner teardown ends.
 See `Doroti/validation/linux-qt-contract/record-platform-views.py` for recorded gates.
+
+## Optional Qt Quick GPU composition
+
+`-DDOROTI_QT_QUICK=ON` builds the Quick/Qml/QuickControls2 backend (Qt 6.6+).
+The Testbed selects it through `DorotiQtQuick=true`; the generic runner/template
+keeps it optional. Runtime QML modules `QtQuick` and `QtQuick.Controls` are required.
+
+Feature bit 17 negotiates the Quick path without changing callback ABI 4. Qt owns
+Vulkan device/queue/WSI; the managed renderer lends completed GPU images through
+the separate 48-byte GPU / 96-byte part API in `doroti_qt_quick.h`. Old managed
+callbacks without bit 17 are rejected before startup. Quick controls are live QML
+items, and QWidget adoption is explicitly unsupported by this backend.
+
+The Vulkan instance must outlive QQuickWindow/QRhi destruction. The basic GUI/render
+loop is required. Physical scanout atomicity and arbitrary native view types are
+not implied by enabling this option. See the repository's `linux-qt-quick` product
+validation for input, overlap, lifetime and Vulkan-layer checks.

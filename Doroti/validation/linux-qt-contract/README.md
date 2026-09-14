@@ -39,6 +39,13 @@ and template source must stay identical.
 
 ## Linux PlatformView (PV-9)
 
+The Testbed now defaults to the [Qt Quick GPU product path](../linux-qt-quick/README.md),
+which interleaves live Quick Controls and Graphite Vulkan images. The section below
+covers the **legacy Widgets backend** selected with `-p:DorotiQtQuick=false`.
+Its recorded product-build and sample-tab gates explicitly select that backend.
+The earlier QWidget/WebEngine topology comparison remains at
+[Linux Qt interleaving](../linux-qt-interleaving/README.md).
+
 The Qt product runner now supplies the optional `doroti/native-button` and
 `doroti/native-editor` factories selected by the application manifest. The Testbed
 Linux manifest selects both. Set `DOROTI_TESTBED_MODE=platform-views` and
@@ -50,9 +57,24 @@ queue-present acceptance; failed or contended admission leaves native placement
 unchanged. This does not guarantee physical atomic presentation. Coordinates
 are logical pixels: bounds round to Qt integers and clip edges round inward.
 Foreground raster, native-native overlap, affine transforms and shields with
-native content are explicitly rejected. The sample's interleaved page reports
-unavailability. `CaptureIncludesNative`, accessibility qualification, gesture
+native content are explicitly rejected. The sample's **Platform views** tab
+automatically chooses the supported basic layout. Explicit `interleaved` requests
+still report unavailability. The basic tab clips the app bar, suppresses foreground
+scroll decorations, and disables popup menus/drawers/tooltips that require overlap.
+`CaptureIncludesNative`, accessibility qualification, gesture
 mediation and synchronized placement remain false.
+
+The sample-tab regression builds the Release runner and opens the real tab with
+synthetic Qt input. It checks live button clicks/editor input, disposal/recreation,
+navigation away/back, resize across the rail/bar breakpoint, text preservation,
+and the popup/tooltip guard. Every subprocess uses the external 1200-second wrapper.
+It needs Qt Test development files; artifacts and available native window captures
+are written under `Doroti/artifacts/validation/linux-platform-view-sample/`.
+
+```sh
+python3 Doroti/validation/linux-qt-contract/sample-platform-views.py xcb
+python3 Doroti/validation/linux-qt-contract/sample-platform-views.py wayland
+```
 
 The `doroti.qt-host/v2` export now carries **ABI 4**: callbacks are **192 bytes**,
 with pre-application preparation at offset 184 / feature bit 15. Feature bit 16

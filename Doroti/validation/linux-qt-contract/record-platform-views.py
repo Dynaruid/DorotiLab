@@ -74,7 +74,7 @@ try:
         run(["dotnet", "run", "--project", VALIDATION / "Doroti.Validation.LinuxQtContract.csproj"])
         result["automated"] = True
     elif gate == "product-build":
-        run(["dotnet", "build", ROOT / "DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj", "-c", "Debug", "-r", "linux-x64", "-m:1"])
+        run(["dotnet", "build", ROOT / "DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj", "-c", "Debug", "-r", "linux-x64", "-m:1", "-p:DorotiQtQuick=false"])
         result["build"] = True
     elif gate.startswith("product-"):
         qpa = gate.split("-")[1]

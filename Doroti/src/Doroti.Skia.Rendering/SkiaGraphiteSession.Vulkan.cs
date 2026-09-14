@@ -101,6 +101,12 @@ public sealed partial class SkiaGraphiteSession
 
         public long Generation => _session.Generation;
 
+        /// <summary>Draw additional persistent targets in the owner's current recorder transaction.</summary>
+        public SKCanvas Canvas
+        {
+            get { _session.CheckOwner(); ObjectDisposedException.ThrowIf(_disposed, this); return Surface.Canvas; }
+        }
+
         /// <summary>Scheduled state for external barriers; this is not a GPU completion receipt.</summary>
         public (int Layout, uint QueueFamily) GetState()
         {

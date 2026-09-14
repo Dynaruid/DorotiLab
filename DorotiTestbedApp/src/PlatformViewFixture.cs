@@ -18,6 +18,35 @@ internal sealed class PlatformViewFixture : StatefulWidget
 {
     internal PlatformViewFixture(bool embedded = false) { Embedded = embedded; }
     internal bool Embedded { get; }
+    internal static bool UsesNativeOverlay(BuildContext context)
+    {
+        var owner = View.of(context);
+        if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews)) return false;
+        var selection = SelectComposition(owner.RequireCapability<IPlatformViewHostCapability>(
+            DorotiCapabilityIds.PlatformViews, DartUiInvocation.Managed("PlatformViewExample.support")), 1, 2);
+        return selection.Support.Supported && selection.Composition == PlatformViewComposition.NativeOverlay;
+    }
+    private static (PlatformViewComposition Composition, PlatformViewSupport Support) SelectComposition(
+        IPlatformViewHostCapability host, long buttonId, long editorId)
+    {
+        PlatformViewSupport Support(PlatformViewComposition composition)
+        {
+            var button = host.QuerySupport(new PlatformViewRequest(buttonId, "doroti/native-button", composition));
+            return button.Supported
+                ? host.QuerySupport(new PlatformViewRequest(editorId, "doroti/native-editor", composition)) : button;
+        }
+        var requested = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION");
+        var composition = requested == "overlay"
+            ? PlatformViewComposition.NativeOverlay : PlatformViewComposition.InterleavedComposition;
+        var support = Support(composition);
+        // Prefer overlap examples where available. Explicit probes never fall back.
+        if (!support.Supported && string.IsNullOrEmpty(requested))
+        {
+            composition = PlatformViewComposition.NativeOverlay;
+            support = Support(composition);
+        }
+        return (composition, support);
+    }
     // Navigation can remount while the previous controls are still disposing asynchronously.
     private static long _nextExampleId = 1_000_000;
     private static readonly string[] Scenarios = [
@@ -49,7 +78,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
         private Widget Unavailable(string reason)
         {
             Widget message = new Padding(padding: EdgeInsets.CreateAll(24), child: new Text(
-                $"Platform views\n\nThis example needs live native buttons, text input and interleaved composition.\n\n{reason}"));
+                $"Platform views\n\nThis example needs live native buttons and text input.\n\n{reason}"));
             return widget.Embedded ? new ListView(children: [message]) :
                 new M.Scaffold(appBar: new M.AppBar(title: new Text("PlatformView")), body: new Center(child: message));
         }
@@ -66,19 +95,11 @@ internal sealed class PlatformViewFixture : StatefulWidget
             var owner = View.of(context);
             if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.PlatformViews))
                 return Unavailable($"{owner.targetIdentity}: platform views are unavailable on this host.");
-            if (widget.Embedded)
-            {
-                var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
-                    DartUiInvocation.Managed("PlatformViewExample.support"));
-                foreach (var type in new[] { "doroti/native-button", "doroti/native-editor" })
-                {
-                    var support = host.QuerySupport(new PlatformViewRequest(InstanceId(1), type,
-                        PlatformViewComposition.InterleavedComposition));
-                    if (!support.Supported) return Unavailable(support.Reason ?? $"{type} is unavailable on this host.");
-                }
-            }
-            if (!widget.Embedded && Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION") == "overlay")
-                return BuildOverlay(owner);
+            var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
+                DartUiInvocation.Managed("PlatformViewExample.support"));
+            var (composition, support) = SelectComposition(host, InstanceId(1), InstanceId(2));
+            if (!support.Supported) return Unavailable(support.Reason ?? "Native controls are unavailable on this host.");
+            if (composition == PlatformViewComposition.NativeOverlay) return BuildOverlay(owner);
             PlatformViewFixtureProbe.SetStage = stage => setState(() =>
             {
                 _stage = stage;
@@ -144,13 +165,12 @@ internal sealed class PlatformViewFixture : StatefulWidget
         private Widget BuildOverlay(DorotiView owner)
         {
             Widget Native(long id, string type) => new SizedBox(width: 240, height: 64,
-                child: new PlatformView(owner, new PlatformViewRequest(_generation * 10L + id, type),
+                child: new PlatformView(owner, new PlatformViewRequest(InstanceId(id), type),
                     key: new ValueKey<string>($"overlay/{_generation}/{id}")));
-            return new M.Scaffold(
-                body: new Column(children: [
+            List<Widget> children = [
                     new Padding(padding: EdgeInsets.CreateAll(16), child: new Text($"NativeOverlay — owner {owner.viewId}")),
-                    new Padding(padding: EdgeInsets.CreateAll(16), child: new Text("Basic native placement. Foreground menus and modals require InterleavedComposition.")),
-                    new M.TextButton(onPressed: () => setState(() => { _mounted = !_mounted; if (_mounted) _generation++; }),
+                    new Padding(padding: EdgeInsets.CreateAll(16), child: new Text("Try a native button and editor. This host supports separate native controls; overlapping Doroti layers and popup menus are unavailable here.")),
+                    new M.TextButton(onPressed: ToggleControls,
                         child: new Text(_mounted ? "Dispose controls" : "Create controls")),
                     new SizedBox(height: 24),
                     new Padding(padding: EdgeInsets.CreateAll(24), child: new M.TextField(
@@ -158,7 +178,13 @@ internal sealed class PlatformViewFixture : StatefulWidget
                     .. (_mounted ? new Widget[] {
                         Native(1, "doroti/native-button"), new SizedBox(height: 24), Native(2, "doroti/native-editor")
                     } : []),
-                ]));
+                ];
+            // Scrollbar/glow painters are foreground layers; the basic native host
+            // cannot composite them above controls. Wheel/touch scrolling still works.
+            Widget body = new ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false, overscroll: false),
+                child: new SingleChildScrollView(child: new Column(children: children)));
+            return widget.Embedded ? body : new M.Scaffold(body: body);
         }
     }
 }

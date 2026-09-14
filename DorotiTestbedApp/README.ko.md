@@ -84,7 +84,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.cspro
 
 ### Linux 샘플
 
-Linux x64 호스트에서 실행합니다. Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake,
+Linux x64 호스트에서 실행합니다. Qt 6.6 이상 Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2,
+`QtQuick`·`QtQuick.Controls` 런타임 QML 모듈, CMake,
 C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`,
 `wayland` 또는 `xcb` QPA plugin, Vulkan 개발 헤더, Vulkan 1.2 장치와 fontconfig가 필요하며 native shim도 함께 빌드합니다. 하드웨어 GPU 여부로 실행을 차단하지 않으므로 llvmpipe VM에서도 별도 환경변수나 실행 프로필 없이 아래 명령으로 실행할 수 있습니다. 게시한 실행 파일에도 같은 정책을 적용합니다.
 
@@ -93,16 +94,20 @@ dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c R
   -e DOROTI_TESTBED_MODE=sample
 ```
 
-Linux Qt의 기본 native PlatformView 예제는 다음과 같이 실행합니다.
+샘플의 **Platform views** 탭은 기본적으로 Qt Quick GPU 합성을 사용합니다.
+실제 Qt Quick 버튼·입력창과 Doroti 위젯의 양방향 겹침, 반투명 전경, 팝업·모달을 지원합니다.
+표시용 CPU readback 없이 같은 Vulkan 장치의 GPU 이미지를 합성하며, 별도의 합성 환경변수는 필요하지 않습니다.
+독립 PlatformView 예제는 다음과 같이 실행합니다.
 
 ```sh
-DOROTI_TESTBED_MODE=platform-views DOROTI_PLATFORM_VIEW_COMPOSITION=overlay \
-  dotnet run --project DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Debug -r linux-x64
+DOROTI_TESTBED_MODE=platform-views \
+  dotnet run --project DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64
 ```
 
-현재 Qt 지원은 서로 겹치지 않는 native 버튼·편집기의 제한형 B입니다. Doroti 그림과
-native의 교차 겹침, 한글 IME·Orca 전체 승인은 아직 완료되지 않았습니다.
-[Qt 검증·지원 범위](../Doroti/validation/linux-qt-contract/README.md)를 참고하세요.
+현재 제품 지원 대상은 Qt Quick Controls의 버튼·입력창과 translation/rect clip입니다.
+임의 QWidget이나 WebEngine Quick adapter, 한글 IME·Orca 전체 승인은 별도 범위입니다.
+[구현·검증·지원 범위](../Doroti/validation/linux-qt-quick/README.md)를 참고하세요.
+기존 QWidget 기본 배치는 `-p:DorotiQtQuick=false`로 선택할 수 있습니다.
 
 ### Android 샘플
 

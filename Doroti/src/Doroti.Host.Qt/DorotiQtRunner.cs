@@ -107,6 +107,7 @@ public static unsafe partial class DorotiQtRunner
         private QtNativeV2.HostApi _hostApi;
         private nint _viewHandle;
         private long _rasterized;
+        private long _rasterizedSuperseded;
         private long _presented;
         private long _replayed;
         private long _superseded;
@@ -157,6 +158,7 @@ public static unsafe partial class DorotiQtRunner
                 _viewHandle = viewHandle;
                 _hostApi = hostApi;
             }
+            Surface.ConfigureQuick(viewHandle, (hostApi.FeatureBits & QtQuickNative.Feature) != 0);
             var host = new QtHostAdapter(viewHandle, hostApi,
                 checked((int)_configuration.logicalSize.width),
                 checked((int)_configuration.logicalSize.height));
@@ -164,7 +166,7 @@ public static unsafe partial class DorotiQtRunner
                 _configuration.backgroundColor, _configuration.darkBackgroundColor,
                 QtSkiaSurface.GraphiteEnabled ? "linux-x64/qt6-vulkan/graphite" : "linux-x64/qt6-opengl/skia-gl",
                 QtSkiaSurface.GraphiteEnabled ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.QtGpuBackend,
-                QtSkiaSurface.GraphiteEnabled ? "Qt/QWindow/Graphite-Vulkan" : DorotiSkiaRuntimeEffects.QtGpuBackend,
+                Surface.QuickEnabled ? "Qt/Quick/Graphite-Vulkan" : QtSkiaSurface.GraphiteEnabled ? "Qt/QWindow/Graphite-Vulkan" : DorotiSkiaRuntimeEffects.QtGpuBackend,
                 enablePictureRasterCache: !QtSkiaSurface.GraphiteEnabled);
             Surface.GpuResourcesReleasing += renderer.InvalidateGpuContextResources;
             var messages = new QtPlatformMessageCapability();
@@ -187,6 +189,7 @@ public static unsafe partial class DorotiQtRunner
             if (_application.Manifest.PlatformViews.Length != 0)
             {
                 PlatformViews.Bind(viewHandle, host.ClearClient, CaptureFatal, action => View?.DispatchPlatformEvent(action));
+                PlatformViews.QuickSurface = Surface.QuickEnabled ? Surface : null;
                 _platformCoordinator = _application.ConfigurePlatformViews(capabilities, 1, PlatformViews);
                 PlatformViews.Configure(_platformCoordinator);
                 var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(_platformCoordinator, messages);
@@ -249,12 +252,20 @@ public static unsafe partial class DorotiQtRunner
             {
                 if (!_terminalTokens.Add(token))
                     throw new InvalidDataException($"Qt frame token {token} received more than one terminal ACK.");
-                if (_paintCompletions.Remove(token, out var completion) && completion is { } painted)
+                var hadRaster = _paintCompletions.Remove(token, out var completion);
+                if (hadRaster && terminal == QtNativeV2.TerminalState.Superseded)
                 {
-                    Renderer?.CompletePaint(painted);
-                    terminal = painted.IsNewFrame
-                        ? QtNativeV2.TerminalState.Presented
-                        : QtNativeV2.TerminalState.Replayed;
+                    _rasterizedSuperseded++;
+                    if (completion is { } cancelled) Renderer?.SupersedePaint(cancelled, "Qt replaced or closed an unpresented GPU frame.");
+                }
+                else if (hadRaster && completion is { } painted)
+                {
+                    if (terminal == QtNativeV2.TerminalState.Failed) Renderer?.FailPaint(painted, "Qt presentation failed.");
+                    else
+                    {
+                        Renderer?.CompletePaint(painted);
+                        terminal = painted.IsNewFrame ? QtNativeV2.TerminalState.Presented : QtNativeV2.TerminalState.Replayed;
+                    }
                 }
                 switch (terminal)
                 {
@@ -306,6 +317,7 @@ public static unsafe partial class DorotiQtRunner
                     frames = new
                     {
                         rasterized = _rasterized, presented = _presented, replayed = _replayed,
+                        rasterizedSuperseded = _rasterizedSuperseded,
                         superseded = _superseded, failed = _failed,
                         rendererSubmitted = renderer?.Submitted,
                         rendererPending = renderer?.PendingScene,
@@ -316,7 +328,7 @@ public static unsafe partial class DorotiQtRunner
                     softwareFallback = false,
                     softwareVulkan = Surface.SoftwareVulkan,
                     fullFrameCpuCopies = 0,
-                    gpuRetirement = QtSkiaSurface.GraphiteEnabled ? "owner-thread-poll" : "OpenGL",
+                    gpuRetirement = Surface.QuickEnabled ? "Qt-queue-drain-and-copy-fence" : QtSkiaSurface.GraphiteEnabled ? "owner-thread-poll" : "OpenGL",
                 };
             }
             Console.Error.WriteLine($"doroti.qt.summary={JsonSerializer.Serialize(snapshot)}");
@@ -353,7 +365,7 @@ public static unsafe partial class DorotiQtRunner
             {
                 if (_failed != 0)
                     throw new InvalidOperationException($"Qt reported {_failed} failed frame terminal ACKs.");
-                if (_rasterized != _presented + _replayed)
+                if (_paintCompletions.Count != 0 || _rasterized != _presented + _replayed + _rasterizedSuperseded)
                     throw new InvalidOperationException(
                         $"Qt frame ACK mismatch: rasterized={_rasterized}, presented={_presented}, replayed={_replayed}, superseded={_superseded}.");
             }
@@ -410,7 +422,9 @@ public static unsafe partial class DorotiQtRunner
             presented = state.Surface.Render(in *surface, (skiaSurface, width, height) =>
                 {
                     paint = state.Renderer.Paint(skiaSurface, width, height, state.Host.ResizeTarget);
-                    QtTitlebarPainter.Paint(skiaSurface.Canvas, state.Title, in *surface, state.TitlebarAppearance?.Theme);
+                    var caption = state.Surface.QuickEnabled && surface->TitlebarHeight != 0
+                        ? state.Surface.QuickCaptionCanvas(in *surface) : skiaSurface.Canvas;
+                    QtTitlebarPainter.Paint(caption, state.Title, in *surface, state.TitlebarAppearance?.Theme);
                 },
                 shouldPresent: () => paint.ShouldPresent, beforePresent: state.PreparePresent);
             state.PlatformViews.FinishFrame(presented);

@@ -6,6 +6,9 @@ internal static class QtPlatformViewContracts
 {
     internal static void Run()
     {
+        if (Marshal.SizeOf<QtQuickNative.Gpu>() != 48 || Marshal.SizeOf<QtQuickNative.Part>() != 96 ||
+            Marshal.OffsetOf<QtQuickNative.Part>("Bounds").ToInt32() != 32)
+            throw new InvalidOperationException("Qt Quick optional GPU ABI layout drifted.");
         if (Marshal.SizeOf<QtPlatformViewHost.Api>() != 64 || Marshal.SizeOf<QtPlatformViewHost.Placement>() != 80)
             throw new Exception("Qt optional attachment ABI layout changed.");
         using var host = new QtPlatformViewHost();

@@ -2,6 +2,9 @@
   <PropertyGroup Condition="'$(DorotiHostKind)' == 'Qt'">
     <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
     <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native</DorotiQtNativeBuildDirectory>
+    <DorotiQtQuick Condition="'$(DorotiQtQuick)' == ''">false</DorotiQtQuick>
+    <_DorotiQtQuickFlag Condition="'$(DorotiQtQuick)' == 'true'">ON</_DorotiQtQuickFlag>
+    <_DorotiQtQuickFlag Condition="'$(DorotiQtQuick)' != 'true'">OFF</_DorotiQtQuickFlag>
   </PropertyGroup>
   <Target Name="ValidateDorotiQtPublishMode" BeforeTargets="PrepareForBuild;PrepareForPublish"
           Condition="'$(DorotiHostKind)' == 'Qt'">
@@ -13,7 +16,7 @@
   <Target Name="BuildDorotiQtNative" BeforeTargets="Build"
           Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiBuildQtNative)' == 'true'">
     <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
-    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration)" Timeout="1200000" />
+    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag)" Timeout="1200000" />
     <PropertyGroup>
       <_DorotiQtCleanFirst Condition="'$(DorotiRebuildDependencies)' == 'true'">--clean-first</_DorotiQtCleanFirst>
     </PropertyGroup>

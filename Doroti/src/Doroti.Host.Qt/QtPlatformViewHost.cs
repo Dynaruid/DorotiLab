@@ -8,8 +8,8 @@ using SkiaSharp;
 
 namespace Doroti.Host.Qt;
 
-/// <summary>Limited B: disjoint native child Widgets above the existing GPU QWindow.
-/// No raster readback, interleaving, synchronized display claim. Qt integer logical geometry is quantized explicitly.</summary>
+/// <summary>Owner-local native controls. The optional Quick ABI composes GPU raster
+/// images with live Quick Controls; the legacy ABI places disjoint child Widgets.</summary>
 internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDisposable
 {
     [StructLayout(LayoutKind.Sequential)]
@@ -48,6 +48,8 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private PlatformViewPlacement[] _nextPlacements = [];
     private Action? _yieldText;
     private Action<Exception>? _fatal;
+    internal QtSkiaSurface? QuickSurface { get; set; }
+    private bool IsQuick => (_api.Features & 2) != 0;
     internal IEnumerable<IPlatformViewFactory> Factories =>
         [new Factory(this, false), new Factory(this, true)];
 
@@ -55,7 +57,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     {
         if (_owner != 0) throw new InvalidOperationException("Qt PlatformView owner is already bound.");
         Check(GetApi(window, 1, (uint)sizeof(Api), out _owner, out _api));
-        if (_api.Version != 1 || _api.Size != sizeof(Api) || _api.Features != 1 ||
+        if (_api.Version != 1 || _api.Size != sizeof(Api) || _api.Features is not (1 or 3) ||
             _api.Post == null || _api.Create == null || _api.Commit == null || _api.Focus == null || _api.Remove == null)
             throw new InvalidDataException("Invalid Qt PlatformView ABI table.");
         _thread = Environment.CurrentManagedThreadId;
@@ -80,12 +82,14 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     {
         public string ViewType => editor ? "doroti/native-editor" : "doroti/native-button";
         public PlatformViewSupport QuerySupport(PlatformViewRequest request) => new(
-            "linux/qt-native-child-widgets", "Qt6", ViewType,
+            host.IsQuick ? "linux/qt-quick-gpu" : "linux/qt-native-child-widgets", "Qt6", ViewType,
             !host._closed && host._owner != 0 && request.ViewType == ViewType &&
-            request.Composition == PlatformViewComposition.NativeOverlay &&
+            (request.Composition == PlatformViewComposition.NativeOverlay ||
+                host.IsQuick && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0,
-            PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
-            Reason: "Limited B: disjoint Widgets, rounded logical translation/inward rect clip. Interleaving, shields, affine transforms and synchronized placement are unsupported.");
+            host.IsQuick ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
+            Reason: host.IsQuick ? "Qt Quick Controls and Graphite Vulkan GPU images; translation and rect clip. Physical presentation atomicity is not qualified." :
+                "Limited B: disjoint Widgets, rounded logical translation/inward rect clip. Interleaving, shields, affine transforms and synchronized placement are unsupported.");
         public unsafe ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle,
             ReadOnlyMemory<byte> parameters, Action<PlatformViewHandle> focused, CancellationToken cancellationToken)
         {
@@ -244,21 +248,57 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         if (_pending is not null) throw new InvalidOperationException("Qt PlatformView has an unretired frame.");
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
             descriptor.SceneSequence, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
-        var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!, PlatformViewComposition.NativeOverlay);
+        var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!,
+            IsQuick ? PlatformViewComposition.InterleavedComposition : PlatformViewComposition.NativeOverlay);
         try
         {
-            if (plan.HasNativeContent && plan.Parts.OfType<PlatformShieldSegment>().Any())
+            if (!IsQuick && plan.HasNativeContent && plan.Parts.OfType<PlatformShieldSegment>().Any())
                 throw new NotSupportedException("Qt NativeOverlay does not support input shields; interleaving is required.");
             var placements = plan.Parts.OfType<PlatformNativeSegment>().Select(p => p.Placement).ToArray();
             var native = placements.Select(p => Translate(p, _instances[p.Handle].Id)).ToArray();
             if (_reservation is null || placements.Any(p => !_reservation.Contains(p.Handle)))
                 throw new InvalidOperationException("Qt PlatformView frame references an unreserved instance.");
             Commit(native, apply: false);
-            foreach (var raster in plan.Parts.OfType<PlatformRasterSegment>())
+            if (IsQuick) DrawQuick(renderer, plan, width, height, descriptor);
+            else foreach (var raster in plan.Parts.OfType<PlatformRasterSegment>())
                 renderer.DrawPlatformRasterSegment(canvas, raster.Commands, width, height);
             _pending = plan; _next = native; _nextPlacements = placements;
         }
         catch { _reservation?.Dispose(); _reservation = null; plan.Dispose(); throw; }
+    }
+    private void DrawQuick(SkiaSceneRenderer renderer, PlatformCompositionPlan plan, int width, int height, DorotiFrameDescriptor descriptor)
+    {
+        var surface=QuickSurface ?? throw new InvalidOperationException("Qt Quick surface is not configured.");
+        var gpu=surface.QuickGpu ?? throw new InvalidOperationException("Qt Quick GPU is not initialized.");
+        var parts=new List<QtQuickNative.Part>();
+        var rasterIndex=0;
+        var viewport=new NativeRect(0,0,width/descriptor.DeviceScaleX,height/descriptor.DeviceScaleY);
+        foreach(var part in plan.Parts)
+        {
+            switch(part)
+            {
+                case PlatformRasterSegment raster:
+                    var target=gpu.Canvas(rasterIndex);
+                    if(rasterIndex==0)target.DrawColor(renderer.PlatformBackgroundColor);
+                    renderer.DrawPlatformRasterSegment(target,raster.Commands,width,height);
+                    parts.Add(new() { Size=96,Kind=0,Id=gpu.Identity(rasterIndex),Image=gpu.Image(rasterIndex++),PixelWidth=(uint)width,PixelHeight=(uint)height,Bounds=viewport,Clip=viewport });
+                    break;
+                case PlatformNativeSegment native:
+                    var placement=Translate(native.Placement,_instances[native.Placement.Handle].Id);
+                    parts.Add(new() { Size=96,Kind=1,Id=placement.Id,Bounds=placement.Bounds,Clip=placement.Visible!=0?placement.Clip:default });
+                    break;
+                case PlatformShieldSegment shield:
+                    var t=shield.Shield.Transform;
+                    if(!t.IsAxisAligned)throw new NotSupportedException("Qt Quick input shields require axis-aligned bounds.");
+                    var a=t.Map(shield.Shield.Bounds.topLeft);var b=t.Map(shield.Shield.Bounds.bottomRight);
+                    var bounds=new Rect(a.dx,a.dy,b.dx,b.dy);
+                    var clip=shield.Shield.Clip is {} c?bounds.intersect(c):bounds;
+                    parts.Add(new() { Size=96,Kind=2,Bounds=new(bounds.left,bounds.top,bounds.width,bounds.height),
+                        Clip=new(clip.left,clip.top,Math.Max(0,clip.width),Math.Max(0,clip.height)) });
+                    break;
+            }
+        }
+        surface.QuickParts=parts.ToArray();
     }
     internal void FinishFrame(bool presented)
     {
@@ -266,7 +306,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         try
         {
             if (!presented || _closed) return;
-            Commit(_next, apply: true);
+            if (!IsQuick) Commit(_next, apply: true);
             _visible = _next;
             _committing = true;
             foreach (var placement in _nextPlacements)

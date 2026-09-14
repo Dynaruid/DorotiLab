@@ -8,7 +8,44 @@ Linux 계획 추가 재검토: 2026-09-11 · HEAD `b2f7555438e6f865fd1b17c2a7f28
 
 최초 재검토 시 checkout에는 기존 문서가 참조하던 `Doroti/docs/platform-views/contract.md`, `support-matrix.md`, `Doroti/docs/validation/platform-views/2026-09-11/README.md`가 없었다. 후속 구현에서 계약/지원표를 복구했으며 실행 기록은 AppKit README를 사용한다. 계약의 실제 구현은 [Ui 계약](Doroti/src/Doroti.Ui/PlatformViewContracts.cs)과 [composition plan](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), 확인 가능한 범위·증거는 [AppKit 문서](Doroti/docs/platform-views/appkit.md), [AppKit 실행 기록](Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md), [검증 안내](Doroti/validation/platform-views/README.md)를 기준으로 한다. 공통 계약·지원표 문서 복구와 양방향 겹침 기준 반영은 수행했으며, 기기별 성능 예산은 남아 있다.
 
-## Linux Qt 구현 — 2026-09-14
+## Linux Qt Quick GPU 제품 연결 — 2026-09-14
+
+**사용자 선택에 따라 Qt Quick GPU 합성안을 실제 Linux Testbed 실행기에 연결했다.**
+기본 `dotnet run`은 `DorotiQtQuick=true`를 선택한다. Qt Quick Controls의 native 버튼·입력창과
+실제 Doroti 위젯을 같은 Vulkan 장치에서 양방향으로 겹친다. 아래 QWidget/readback 우선안은
+이전 비교 기록이며, 현재 제품화 경로는 이 절의 Quick 구현이다.
+[구현과 재현 명령](Doroti/validation/linux-qt-quick/README.md)을 따른다.
+
+- **합성:** Qt Quick이 device/queue/swapchain을 소유하고 Graphite가 같은 장치를 빌린다.
+  raster R을 표시용 P로 GPU copy하고 QSG Vulkan texture로 가져온다. 표시용 CPU readback,
+  native snapshot, 가릴 때 native hide/recreate를 사용하지 않는다. 같은 scene의 paint order와
+  별도 input shield로 부분·전체 가림, alpha, native/native 겹침, 전경 메뉴·모달을 처리한다.
+- **frame·수명:** basic GUI/render loop와 queue drain/copy fence로 직렬화한다. 취소된 resize
+  frame과 실제 published generation을 구분해 이전 Qt texture를 조기 해제하지 않는다.
+  VkImage와 독립된 identity로 handle 재사용을 구분하며 R/P/retiring images 합계 128 MiB를 제한한다.
+  Vulkan instance는 QQuickWindow base destructor 이후에 해제한다. swap ACK가 없는 종료·교체
+  frame은 superseded로 끝내고, 실제 presented ACK로 바꾸지 않는다.
+- **입력:** 노출 native에는 Qt pointer/key 경로를, shield 영역에는 managed 경로를 한 번 전달한다.
+  Qt Quick 버튼 단일 click, 입력창 text, shield on/off, 같은 instance의 이동·가림·복원,
+  create/dispose와 샘플 popup·탭 왕복·좁은 창·modal을 제품에서 확인했다.
+- **ABI·배포 구성:** 기존 callback ABI 4/192 bytes에 선택 feature bit 17을 추가한다.
+  이를 모르는 managed callback은 Quick host 시작 전에 거부한다. 별도 GPU/part ABI는 48/96 bytes다.
+  Testbed·template native 소스와 runner CMake 옵션을 동기화한다. 일반 runner는 기본 Quick OFF이며
+  기존 Widgets B는 `-p:DorotiQtQuick=false`로 유지한다.
+- **검증:** Qt 6.10.2 / VMware / llvmpipe / DPR 1에서 XWayland·Wayland의 실제 fixture와
+  Material sample을 실행하고 GPU 합성 캡처를 검사했다. Khronos Vulkan layer의 실제 삽입을
+  확인했고 네 실행 모두 validation 오류 0, failed frame 0이었다. managed ABI·기존 native ABI도 통과했다.
+  [최종 실행 기록](Doroti/artifacts/platform-views/2026-09-14/linux-qt-quick/005943-534160/result.json).
+  별도 50회 급격한 XWayland resize는 종료/failed frame 0이지만 Qt swapchain extent validation 메시지
+  2건이 남아 미승인이다. [추가 스트레스 기록](Doroti/artifacts/platform-views/2026-09-14/linux-qt-quick/rapid-resize-followup/result.json).
+
+**남은 범위:** 임의 QWidget, WebEngine Quick adapter, native group effects/affine transforms,
+전체 Tab·touch·IME·Orca, fractional/cross-monitor DPR, 두 제품 owner, 물리 GPU·scanout,
+device loss·성능/메모리·NativeAOT/clean package다. 현재는 Qt Quick Controls의 제한된 제품 C이며
+PV-9 전체 승인은 계속 `PARTIAL`이다. 기존 WebEngine widget-shell probe의 성공을 Quick WebView
+지원으로 확대하지 않는다. QWidget readback 실험은 비교 자료로 보존한다.
+
+## Linux Qt Widgets 구현 — 이전 B 경로 기록 (2026-09-14)
 
 **PV-9는 `PARTIAL`이다.** generic QPushButton/QLineEdit의 제한형 B 제품 경로와
 WebEngine 공동 attachment 실험을 구현·실행했다. C 양방향 전체·부분 겹침은 아직 지원하지 않는다.
@@ -36,7 +73,7 @@ WebEngine 공동 attachment 실험을 구현·실행했다. C 양방향 전체·
   XWayland 제품 native 포함 캡처, Qt ABI·접근성·GL titlebar와 공통 16개 검사도 통과했다.
   Wayland 캡처는 확보하지 못했고 WebEngine probe의 EGL surface 경고는 표시 승인에서 제외한다.
 
-**남은 범위:** PV-9A의 실제 R/N/R/N/R 및 선택형 Quick host spike, PV-9C/C1~C6,
+**남은 범위:** PV-9A의 실제 Graphite 연결 R/N/R/N/R 및 선택형 Quick host spike, PV-9C/C1~C6,
 전체 pointer·Tab/Shift+Tab·한글 IME·Orca, native X11/물리 GPU, 두 제품 창,
 DPR/device-loss·성능·clean 배포·NativeAOT다. 독립 native harness의 성공을 전체 제품 C나
 물리 입력 승인으로 계산하지 않는다. `skippedByUser` 항목은 없다.
@@ -44,6 +81,36 @@ DPR/device-loss·성능·clean 배포·NativeAOT다. 독립 native harness의 �
 기본 B fixture는 `DOROTI_TESTBED_MODE=platform-views`와
 `DOROTI_PLATFORM_VIEW_COMPOSITION=overlay`로 실행한다. 위 범위는 기존 Windows/AppKit 상태를
 변경하지 않으며, 아래 PV-9의 전체 완료 기준은 유지한다.
+
+### Linux 겹침 구조 검토·독립 실험 — 2026-09-14
+
+**이전 검토의 우선안은 단일 QWidget shell + Graphite raster readback layer였다.**
+후속 사용자 요청과 위 Qt Quick 제품 연결로 우선순위를 변경했으며, 아래는 독립 실험 당시 기록이다.
+현재 QWindow presenter의 자식 창을 재배치하는 방식이 아니라, 같은 QWidget parent의
+`raster → live native A → raster → live native B → raster` 순서를 구성한다.
+네이티브 컨트롤 자체를 snapshot으로 바꾸거나, 가려졌다고 hide/recreate하지 않는다.
+[설계 비교·제품 연결 단계·성능 비용](Doroti/validation/linux-qt-interleaving/README.md)과
+[실행 가능한 probe](Doroti/validation/linux-qt-interleaving/probe.cpp)를 추가했다.
+
+- Qt 6.10.2 / VMware / DPR 1의 XWayland에서 QPushButton/QLineEdit 및 실제 QWebEngineView
+  두 개 모두 교차 순서·alpha·전체 가림/복원·이동·rect clip의 **창 buffer 픽셀 12개**를 통과했다.
+  합성 입력의 shield on/off·단일 native 전달, 편집 상태와 전체 가림 중 WebEngine timer도 확인했다.
+- Wayland는 같은 입력·수명·상태 검사를 통과했으나 창 캡처가 없어 픽셀은 `notVerified`다.
+  XWayland는 XComposite redirected window buffer를 읽었으며 최종 scanout 검증은 아니다.
+- 이 실험의 raster는 **합성용 QImage**다. managed Doroti 위젯/Graphite 제품 연결이나
+  C1~C6 전체 승인을 뜻하지 않는다. 별도 OS child window를 강제하는 view와 투명 WebEngine,
+  물리 입력·IME·Orca·fractional DPR·GPU 장애·성능은 미검증이다.
+- 다음 구현은 선택형 QWidget shell/owner → Vulkan offscreen Graphite session → bounded
+  readback frame packet → GUI batch commit/shield/focus → 실제 제품 C1~C6 순서다.
+  현재 descriptor에 가짜 Vulkan surface를 넣거나, 제한형 B의 보호 검사를 먼저 제거하지 않는다.
+- GPU 중심 Qt Quick scene은 후속 성능 후보다. 이번에는 설계 검토만 했으며 Quick host spike는
+  미실행이다. 기존 QWidget을 그대로 Quick item으로 취급하지 않는다. generic host에 Quick나
+  WebEngine을 필수 링크하지 않는 경계도 유지한다.
+
+재현: `python3 Doroti/validation/linux-qt-interleaving/record.py --webengine`.
+각 subprocess는 외부 1200초 timeout을 사용한다.
+[이번 실행 결과](Doroti/artifacts/platform-views/2026-09-14/linux-qt-interleaving/000058-869703/result.json).
+**PV-9의 제품 상태는 계속 `PARTIAL`이며 기본 Testbed의 고급 겹침은 아직 미지원이다.**
 
 ## Windows 제품 연결 — 2026-09-13
 
@@ -120,7 +187,7 @@ Windows checkout `69a43b10e09af4bddafb35220f854ab36edf677b`에서 최초로 수�
 | PV-6 | `TODO` | Android View/SurfaceView B/C host 및 emulator/실기기 검증 |
 | PV-7 | `TODO` | UIKit iOS/Catalyst B/C host, binding/ABI 및 각 runner·기기 검증 |
 | PV-8 | `PARTIAL` — AppKit B 및 제한된 C 다중 Metal surface·paint order·shield 경로, Graphite/Ganesh 제품 검증 추가 | 전체 C1~C6/PV-5, 한글 IME·VoiceOver·제품 두 창/close-reopen·device-loss·성능·배포 검증 |
-| PV-9 | `PARTIAL` | Qt ABI 4·선택 초기화 hook·generic 제한형 B 제품 연결 및 WebEngine attachment probe 구현. XWayland/Wayland 수명·제품 resize 통과. C/Quick host·전체 입력·물리/배포 승인 미완료 |
+| PV-9 | `PARTIAL` | Qt Quick Controls + 실제 Graphite Vulkan GPU 교차 합성 제품 연결. XWayland/Wayland fixture·sample·Vulkan validation, ABI 회귀. 기존 Widgets B 유지. WebEngine Quick·전체 입력·물리/성능/배포 승인 미완료 |
 | PV-10 | `PARTIAL` — Testbed fixture와 자동 수명 시나리오 추가 | 실제 제품 0/1/4-view 성능, 두 창, route/lifecycle, 최종 runner/template/package 배포 회귀 |
 
 WindowsAppSdk Graphite/Vulkan과 AppKit은 제한된 제품 `InterleavedComposition` 경로를 제공한다. Windows는 2026-09-13 제품/독립 검증을 새로 실행했으며 증거는 위 구현 기록에 연결한다. 어느 backend도 모든 DPI·device-loss·물리 입력·접근성·성능을 포함한 전체 C1~C6/PV-5/PV-10 승인을 광고하지 않는다. 독립 native/DOM harness 성공은 제품 합성 증거와 분리한다. 다음 작업은 **Windows 성능·추가 승인 및 Windows MAUI → Web 제품 C와 PV-5 → PV-6~PV-9 확장**으로 나누며, 미실행 항목을 `skippedByUser`로 표시하지 않는다.
@@ -397,7 +464,7 @@ Mac Catalyst의 상태는 이 작업으로 승격하지 않는다.
 
 선행: 공통 제품 연결은 PV-1/PV-2, 입력 완료는 PV-5. **PV-9A의 최소 native 실험은 WV-7A/B와 함께 조기 진행**하며 공통 입력 전체 완료를 기다리지 않는다. work2는 시스템 Qt WebEngine 직접 adapter를 소유하고, 이 문서는 generic host/합성/입력을 소유한다. QWebView/Qt 6.11 채택 여부는 더 이상 선행 미결정 항목이 아니다.
 
-- **PV-9A — host 구조 결정:** WV-7B의 최소 QWebEngineView와 현재 Graphite Vulkan QWindow를 사용해 QWidget shell/attachment를 실험한다. `raster → live native A → raster → live native B → raster`의 실제 겹침·alpha·hit-test를 X11/Wayland에서 조사한다. Widgets 제약이 확인되면 WebEngine Quick을 사용하는 Qt host 구조의 비용을 함께 비교하되 하나의 제품 경로로 결정한다. 결과를 view 종류·renderer·QPA별 B/C 결정 기록으로 남긴다.
+- **PV-9A — host 구조 결정:** 사용자 선택에 따라 Qt Quick GPU host를 구현하고 실제 Graphite 이미지와 Qt Quick Controls를 같은 scene에 연결했다. 위 최신 제품 기록과 `linux-qt-quick`을 기준으로 한다. QWidget/WebEngine 비교 실험은 `linux-qt-interleaving`에 보존한다. Quick WebEngine adapter 및 전체 물리 입력·성능 승인은 별도다. 기존 QWindow + native child의 B 성공을 C 근거로 사용하지 않는다.
 - **PV-9B — generic attachment·초기화:** 선택한 QWindow/QWidget/Quick 계층에서 parent/geometry/DPR/rect clip/focus/hide/owner 종료를 연결한다. 기존 QApplication/event loop를 공유하고 plugin opt-in 준비를 application 생성 전에 실행할 generic hook을 제공한다. WebEngine scheme 등록/engine-specific 초기화는 WV-7C shim이 수행한다. UI-thread dispatch, 두 owner와 늦은 callback 거부, callback 종료 전 자원·module 해제 방지를 공통 계약에 맞춘다.
 - **PV-9C — 제품 교차 합성:** PV-9A에서 정한 host 계층에 raster segment별 background/intermediate/foreground surface, native attachment, shield를 같은 paint order로 연결한다. frame/epoch별 준비·commit·실패 rollback·GPU retirement, resize/DPR/clip 및 동적 순서 변경을 구현한다. C1~C6와 PV-5는 실제 제품 native 포함 화면/입력으로 검증한다. 별도 popup 창이나 snapshot/hide 대체로 일반 C를 선언하지 않는다.
 - QWidget `createWindowContainer()`의 embedded window는 widget 위의 opaque box로 쌓이고 여러 겹친 container의 순서는 정의되지 않는다. 단순 reparent/raise/lower 또는 비겹침 B 성공을 C 설계 근거로 삼지 않는다. [Qt container 공식 제약](https://doc.qt.io/qt-6/qwidget.html#createWindowContainer). C가 불가능한 조합은 구체적 원인·제한형 B와 미충족 요구를 남긴다.

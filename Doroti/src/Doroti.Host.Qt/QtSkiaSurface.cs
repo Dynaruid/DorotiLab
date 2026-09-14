@@ -8,6 +8,20 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 {
     internal static bool GraphiteEnabled => Environment.GetEnvironmentVariable("DOROTI_LINUX_GRAPHITE") != "0";
     private GraphiteVulkanWindow? _vulkan;
+    internal GraphiteVulkanQuick? QuickGpu { get; private set; }
+    internal QtQuickNative.Part[] QuickParts { get; set; } = [];
+    internal bool QuickEnabled { get; private set; }
+    private nint _quickWindow;
+    internal void ConfigureQuick(nint window, bool enabled) { _quickWindow=window; QuickEnabled=enabled; }
+    internal SKCanvas QuickCaptionCanvas(in QtNativeV2.Surface descriptor)
+    {
+        var index=QuickParts.Count(part=>part.Kind==0);
+        var canvas=QuickGpu!.Canvas(index);
+        var bounds=new QtPlatformViewHost.NativeRect(0,0,descriptor.PixelWidth/descriptor.DevicePixelRatio,descriptor.PixelHeight/descriptor.DevicePixelRatio);
+        QuickParts=[..QuickParts,new QtQuickNative.Part { Size=96,Kind=0,Id=QuickGpu.Identity(index),Image=QuickGpu.Image(index),
+            PixelWidth=(uint)descriptor.PixelWidth,PixelHeight=(uint)descriptor.PixelHeight,Bounds=bounds,Clip=bounds }];
+        return canvas;
+    }
     internal bool SoftwareVulkan { get; private set; }
     internal event Action? GpuResourcesReleasing;
     private readonly GRGlGetProcedureAddressDelegate _getProcedureAddress =
@@ -33,6 +47,32 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         ArgumentNullException.ThrowIfNull(render);
         ObjectDisposedException.ThrowIf(_disposed, this);
         Validate(descriptor);
+        if (QuickEnabled)
+        {
+            if (QuickGpu is null)
+            {
+                var gpu=QtQuickNative.Get(_quickWindow);
+                QuickGpu=new GraphiteVulkanQuick(gpu.Instance,gpu.Physical,gpu.Device,gpu.Queue,gpu.Family,gpu.ApiVersion);
+                QuickGpu.ResourcesReleasing+=()=>GpuResourcesReleasing?.Invoke();
+                SoftwareVulkan=QuickGpu.IsSoftwareDevice;
+                _contextIdentity=descriptor.ContextIdentity;_surfaceGeneration=descriptor.SurfaceGeneration;
+            }
+            var width=descriptor.PixelWidth;var height=descriptor.PixelHeight;
+            var target=QuickGpu.Begin(width,height);
+            var bounds=new QtPlatformViewHost.NativeRect(0,0,width/descriptor.DevicePixelRatio,height/descriptor.DevicePixelRatio);
+            QuickParts=[new QtQuickNative.Part { Size=96,Kind=0,Id=QuickGpu.Identity(0),Image=QuickGpu.Image(0),PixelWidth=(uint)width,PixelHeight=(uint)height,Bounds=bounds,Clip=bounds }];
+            try
+            {
+                render(target,width,height);
+                if(shouldPresent?.Invoke()==false) { QuickGpu.Cancel();return false; }
+                QtQuickNative.Commit(_quickWindow,QuickParts,apply:false);
+                QuickGpu.Complete();
+                QtQuickNative.Commit(_quickWindow,QuickParts,apply:true);
+                QuickGpu.MarkPublished();
+                return true;
+            }
+            catch { QuickGpu.Cancel();throw; }
+        }
         if (GraphiteEnabled)
         {
             if (descriptor.StructSize < 128 || descriptor.VulkanInstance == 0 || descriptor.VulkanSurface == 0)
@@ -129,6 +169,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     private void ReleaseGpuResources()
     {
+        QuickGpu?.Dispose(); QuickGpu=null; QuickParts=[];
         _vulkan?.Dispose(); _vulkan = null;
         ReleaseRenderTarget();
         _context?.Dispose();

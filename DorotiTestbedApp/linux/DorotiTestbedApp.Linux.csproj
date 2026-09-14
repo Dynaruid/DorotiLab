@@ -9,6 +9,7 @@
     <DorotiHostKind>Qt</DorotiHostKind>
     <DorotiNativeEntryKind>Qt-Main</DorotiNativeEntryKind>
     <SelfContained>false</SelfContained>
+    <DorotiQtQuick>true</DorotiQtQuick>
   </PropertyGroup>
   <ItemGroup>
     <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main"

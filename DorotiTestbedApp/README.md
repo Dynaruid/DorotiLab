@@ -84,7 +84,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.cspro
 
 ### Linux sample
 
-Run on a Linux x64 host. Requires Qt 6.5 or later Core/Gui/Widgets/OpenGL, CMake,
+Run on a Linux x64 host. Requires Qt 6.6 or later Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2,
+the `QtQuick` and `QtQuick.Controls` runtime QML modules, CMake,
 a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`,
 the `wayland` or `xcb` QPA plugin, Vulkan development headers, a Vulkan 1.2 device, and fontconfig. The command also builds the native shim. Hardware and software Vulkan devices are accepted based on API capabilities. The command below runs on llvmpipe VMs without environment overrides or launch profiles; published executables use the same policy.
 
@@ -92,6 +93,14 @@ the `wayland` or `xcb` QPA plugin, Vulkan development headers, a Vulkan 1.2 devi
 dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
   -e DOROTI_TESTBED_MODE=sample
 ```
+
+The **Platform views** tab uses Qt Quick GPU composition by default. Live Qt Quick
+buttons/editors interleave with Doroti raster layers, including translucent covers,
+popups and modals, without presentation readback to the CPU. Run the standalone example with
+`DOROTI_TESTBED_MODE=platform-views`.
+See [the implementation, validation and limits](../Doroti/validation/linux-qt-quick/README.md).
+Arbitrary QWidget and WebEngine Quick adapters are separate work. Select the legacy
+Widgets overlay backend with `-p:DorotiQtQuick=false`.
 
 ### Android sample
 
