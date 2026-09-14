@@ -20,6 +20,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
     private const bool _usesPackagedGraphiteAsset = true;
     private static string? _actualGraphiteLibraryPath, _graphiteNativeHash;
     private VulkanObserver? _stockObserver;
+    private long _retiredDepthStencilBarrierStageCorrections;
     private ImageLayout _graphiteCopyRestoreLayout = ImageLayout.ColorAttachmentOptimal;
     private uint RequiredVulkanApiVersion => _usesPackagedGraphiteAsset ? (1u << 22) | (2u << 12) : VulkanApiVersion11;
 

@@ -29,3 +29,19 @@ The gate adapts the repository's earlier PlatformView product validator
 (`2d53dba1`, `Doroti/validation/platform-views/windows/product.py`). It waits
 for committed native geometry when the widget's stage probe changes, rather
 than treating the requested stage as a completed frame.
+
+## Acrylic sample input regression
+
+`verify-sample-input.py` opens the default gallery's Material sample, enables
+Acrylic, and enters Platform views twice. It uses OS `SendInput` with a 150 ms
+button hold across animation frames. It checks stable visible raster HWNDs,
+overlap controls, foreground clicks, native editor focus, wheel scrolling,
+navigation away, and bounded shutdown. Run it under a 1200-second parent timeout:
+
+```powershell
+python -c 'import subprocess; r=subprocess.run(["python","Doroti/validation/windows-acrylic-composition/verify-sample-input.py"],timeout=1200); raise SystemExit(r.returncode)'
+```
+
+The script brings its test window forward and moves the mouse. Captures, logs,
+and results go to `Doroti/artifacts/validation/windows-platform-view-freeze`.
+OS input injection does not qualify human-operated physical input or IME.

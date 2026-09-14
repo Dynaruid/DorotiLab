@@ -7,7 +7,7 @@ namespace Doroti.Host.WindowsAppSdk;
 internal sealed unsafe partial class WindowsManagedVulkanPresenter
 {
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_trace_prepared_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_trace_prepared_v1")]
     private static partial void TracePreparedCopyComplete();
     private readonly PreparedMovingFrameLedger _preparedMoving = new();
     private MovingFrameKey? _movingPrepareRequest;
@@ -21,8 +21,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         lock (_viewportGate) MovingOriginWindowPosCommitMismatch++;
     }
     internal bool LastPrepareSucceeded { get; private set; }
-    // NVIDIA's matching display statistics arrive around 250 ms on the qualified
-    // hardware. The user accepts this latency; a missing receipt still fails.
+    // Retain the existing bounded resize budget. DXGI present-count receipts
+    // need separate qualification from the former Presentation API statistics.
     internal uint? PreparedReceiptTimeoutForValidation { get; set; }
     internal uint PreparedReceiptTimeoutMilliseconds => PreparedReceiptTimeoutForValidation
         ?? (_deviceVendorId == 0x10de ? 1000u : 50u);
@@ -97,7 +97,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
 
     // Platform thread, after actual HWND geometry. Copy and clock alignment are
     // already complete. Submit immediately, then await this present's bounded
-    // CompositionFrame receipt before allowing the next geometry transaction.
+    // DXGI present-count receipt before allowing the next geometry transaction.
     internal int CommitPreparedMovingFrame(MovingFrameKey key)
     {
         lock (_viewportGate)

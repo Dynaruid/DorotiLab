@@ -26,6 +26,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private PlatformCompositionPart[] _visible = [];
     private int _visibleBank;
     private int _visibleRasterCount;
+    private double _visibleScaleX, _visibleScaleY;
     private nint _parent;
     private bool _closed;
     private bool _hasVisibleParts;
@@ -221,21 +222,36 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 return false;
             }
             using var batch = reservation!;
-            var bank = 1 - _visibleBank;
+            // Repainting a spinner or hover must not replace the HWND underneath
+            // the pointer. Keep the visible siblings until their layer topology
+            // changes; alternating hidden banks on every frame flickers Acrylic
+            // and repeatedly invalidates native painting and mouse targeting.
+            var reuseVisible = HasSameWindowTopology(next);
+            var placementChanged = !reuseVisible || frame.Plan.Token.DeviceScaleX != _visibleScaleX ||
+                frame.Plan.Token.DeviceScaleY != _visibleScaleY || !next.OfType<PlatformNativeSegment>()
+                .SequenceEqual(_visible.OfType<PlatformNativeSegment>());
+            var bank = reuseVisible ? _visibleBank : 1 - _visibleBank;
             var pool = _banks[bank];
             try
             {
                 while (pool.Count < frame.Rasters.Length) pool.Add(new(this));
                 for (var index = 0; index < frame.Rasters.Length; index++)
                     pool[index].Prepare(frame.Pixels!, index * frame.Height, frame.Width, frame.Height);
-                _positions = [];
-                Apply(next, pool, frame.Rasters.Length, batch);
-                foreach (var old in _banks[_visibleBank]) Position(new(old.Hwnd, 0, 0, 0, 0, 0x0097));
-                CommitPositions();
+                if (placementChanged)
+                {
+                    _positions = [];
+                    Apply(next, pool, frame.Rasters.Length, batch);
+                    if (!reuseVisible)
+                        foreach (var old in _banks[_visibleBank]) Position(new(old.Hwnd, 0, 0, 0, 0, 0x0097));
+                    CommitPositions();
+                }
                 _visible = next;
                 _visibleBank = bank;
                 _visibleRasterCount = frame.Rasters.Length;
-                foreach (var hwnd in _controls.Values) Native.RedrawWindow(hwnd, 0, 0, 0x0001 | 0x0080 | 0x0100 | 0x0400);
+                _visibleScaleX = frame.Plan.Token.DeviceScaleX;
+                _visibleScaleY = frame.Plan.Token.DeviceScaleY;
+                if (placementChanged)
+                    foreach (var hwnd in _controls.Values) Native.RedrawWindow(hwnd, 0, 0, 0x0001 | 0x0080 | 0x0100 | 0x0400);
                 Volatile.Write(ref _hasVisibleParts, frame.Rasters.Length != 0);
                 Volatile.Write(ref _needsReplay, false);
                 _commits++;
@@ -255,6 +271,19 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             { System.Diagnostics.Trace.TraceWarning($"PlatformView evidence could not be written: {error.Message}"); }
             return true;
         }
+    }
+
+    private bool HasSameWindowTopology(PlatformCompositionPart[] next)
+    {
+        var previousWindows = _visible.Where(p => p is PlatformRasterSegment or PlatformNativeSegment).ToArray();
+        var nextWindows = next.Where(p => p is PlatformRasterSegment or PlatformNativeSegment).ToArray();
+        return nextWindows.Length != 0 && previousWindows.Length == nextWindows.Length &&
+            previousWindows.Zip(nextWindows).All(pair => (pair.First, pair.Second) switch
+            {
+                (PlatformRasterSegment, PlatformRasterSegment) => true,
+                (PlatformNativeSegment before, PlatformNativeSegment after) => before.Placement.Handle == after.Placement.Handle,
+                _ => false,
+            });
     }
 
     private void Apply(PlatformCompositionPart[] parts, List<CompositionRaster> layers, int rasterCount, IPlatformViewPlacementBatch batch)
@@ -410,6 +439,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private sealed class CompositionRaster : IDisposable
     {
         private nint _hwnd, _surface;
+        private int _width, _height;
+        private int[]? _regionData;
         private readonly Native.SubclassProc _callback;
         private readonly WindowsPlatformViewHost _owner;
         internal nint Hwnd => _hwnd;
@@ -452,7 +483,6 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         }
         internal unsafe void Prepare(SkiaGraphiteReadback image, int sourceY, int width, int height)
         {
-            Hide();
             if (sourceY < 0 || width <= 0 || height <= 0 || image.RowBytes < checked(width * 4) ||
                 ((long)sourceY + height - 1) * image.RowBytes + (long)width * 4 > image.Pixels.LongLength)
                 throw new ArgumentOutOfRangeException(nameof(sourceY));
@@ -464,7 +494,11 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 // Native sibling clipping still needs the slice's painted region.
                 ApplyAlphaRegion(pixels, width, height, image.RowBytes);
             }
-            Check(Native.SetWindowPos(_hwnd, 0, 0, 0, width, height, 0x0010 | 0x0004));
+            if (_width != width || _height != height)
+            {
+                Check(Native.SetWindowPos(_hwnd, 0, 0, 0, width, height, 0x0010 | 0x0004));
+                _width = width; _height = height;
+            }
         }
         private unsafe void ApplyAlphaRegion(byte* pixels, int width, int height, int rowBytes)
         {
@@ -504,10 +538,12 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 var rect = rectangles[index]; var offset = 8 + index * 4;
                 data[offset] = rect.Left; data[offset + 1] = rect.Top; data[offset + 2] = rect.Right; data[offset + 3] = rect.Bottom;
             }
+            if (_regionData is not null && data.AsSpan().SequenceEqual(_regionData)) return;
             nint region;
             fixed (int* bytes = data) region = Native.ExtCreateRegion(0, checked((uint)(data.Length * 4)), (nint)bytes);
             if (region == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
-            if (Native.SetWindowRgn(_hwnd, region, true) == 0) { Native.DeleteObject(region); throw new Win32Exception(); }
+            if (Native.SetWindowRgn(_hwnd, region, false) == 0) { Native.DeleteObject(region); throw new Win32Exception(); }
+            _regionData = data;
             RegionRectangles = rectangles.Count;
         }
         internal void Hide() { if (Native.IsWindow(_hwnd)) Native.ShowWindow(_hwnd, 0); }

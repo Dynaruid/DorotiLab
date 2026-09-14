@@ -52,6 +52,8 @@ for name, result, args, body in rows:
     if name in aliases: lines.append(f'            case "vk{name}KHR":')
     lines += ["            {", f"                var forward = Marshal.GetDelegateForFunctionPointer<{name}Delegate>(address);",
               f"                return new {name}Delegate(({names}) =>", "                {"]
+    if name == "CmdPipelineBarrier":
+        lines.append("                    dst = CompleteDepthStencilWriteStages(dst, imageCount, images);")
     lines.append(f"                    {'var result = ' if result != 'void' else ''}forward({names});")
     lines.append(f"                    Observe(() => {{ {body} }});")
     if result != "void": lines.append("                    return result;")

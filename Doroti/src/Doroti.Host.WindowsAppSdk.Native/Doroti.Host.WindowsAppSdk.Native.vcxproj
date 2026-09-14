@@ -42,7 +42,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(FoundationLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;oleaut32.lib;uiautomationcore.lib;imm32.lib;advapi32.lib;dwmapi.lib;d3d11.lib;dxgi.lib;dcomp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;oleaut32.lib;uiautomationcore.lib;imm32.lib;advapi32.lib;dwmapi.lib;d3d11.lib;d3d12.lib;dxgi.lib;dcomp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -50,13 +50,15 @@
     <ClInclude Include="include\doroti_windows_host_v1.h" />
     <ClInclude Include="include\doroti_windows_gpu_selection_v1.h" />
     <ClInclude Include="include\doroti_windows_acrylic_composition_v1.h" />
-    <ClInclude Include="include\doroti_windows_vulkan_composition_v1.h" />
+    <ClInclude Include="include\doroti_windows_composition_raster_v1.h" />
     <ClInclude Include="src\accessibility_bridge.h" />
     <ClInclude Include="src\resize_order_trace.h" />
     <ClCompile Include="src\exports.cpp" />
     <ClCompile Include="src\gpu_selection.cpp" />
     <ClCompile Include="src\acrylic_composition.cpp" />
-    <ClCompile Include="src\vulkan_composition.cpp" />
+    <ClCompile Include="src\composition_raster.cpp" />
+    <ClCompile Include="src\d3d12_output.cpp" />
+    <ClInclude Include="include\doroti_windows_d3d12_output_v1.h" />
     <ClCompile Include="src\accessibility_bridge.cpp" />
   </ItemGroup>
   <Import Project="Doroti.CppWinRT.targets" />

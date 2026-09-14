@@ -90,7 +90,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private readonly PresentationSlot[] _presentationSlots =
         [new(), new(), new()];
     private nint _presentationContext;
-    private nint _compositionSurfaceHandle;
     private int _selectedSlot = -1;
     private long _selectedViewportRevision;
     private ulong _presentTag;
@@ -125,7 +124,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private bool _compositionSurfaceConnected;
     private bool _hostBackdropBrushEnabled;
     private bool _dwmSystemBackdropEnabled;
-    private VulkanCompositionProbe _compositionProbe;
     private bool _presentationPoisoned;
     private bool _presentationRetiring;
     private bool _presentationDrainCommitted;
@@ -217,7 +215,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         RecordEvent($"loader-open path={_loaderPath}");
     }
 
-    internal override string BackendName => _useGraphite ? "Graphite/Vulkan/Composition-Swapchain" : "Vulkan/Composition-Swapchain";
+    internal override string BackendName => _useGraphite ? "Graphite/Vulkan/D3D12/DXGI" : "Vulkan/D3D12/DXGI";
     internal override string RuntimeEffectsBackend => _useGraphite
         ? DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend : DorotiSkiaRuntimeEffects.WindowsVulkanBackend;
     internal override ulong NativeRequiredFeatures =>
@@ -233,8 +231,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal override string VisibleOwner => PlatformRasterWindow != 0
         ? "background Vulkan child HWND with live native and GPU-raster sibling HWNDs"
         : _acrylicOptions is null
-        ? "top-level HWND DirectComposition Vulkan Presentation target"
-        : "top-level HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target";
+        ? "top-level HWND DirectComposition D3D12 DXGI target"
+        : "top-level HWND DirectComposition D3D12 DXGI target over a top-level Desktop Acrylic window target";
     internal override string TopologySlug => PlatformRasterWindow != 0
         ? "hwnd-interleaved-graphite-readback"
         : _acrylicOptions is null
@@ -245,10 +243,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ? "Graphite/Vulkan shared-recorder raster atlas, readback after GPU completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; " +
           "reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified"
         :
-        "Vulkan 1.2 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
-        "external queue-family ownership transfers, CPU copy-fence completion before native Present, three-slot availability retirement, " +
-        "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM wait, a native topmost DirectComposition target on the top-level HWND, " +
-        "identity full-capacity Presentation coverage clipped by the single top-level client geometry, " +
+        "Vulkan 1.2 retained offscreen backing, exact-LUID D3D12 output resources, dedicated D3D12_RESOURCE imports and DXGI swapchain, " +
+        "external queue-family ownership transfers, shared Vulkan timeline signal and D3D12 queue wait, CPU Vulkan frame completion, three shared source slots retired by the D3D12 copy fence, " +
+        "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM boundary wait; moving-origin display waits use DXGI present-count statistics, a native topmost DirectComposition target on the top-level HWND, " +
+        "identity full-capacity DXGI coverage clipped by the single top-level client geometry, " +
         (_acrylicOptions is null
             ? "opaque alpha, "
             : "premultiplied content over a host-backdrop-enabled DesktopAcrylicController window target with a DWM transient-backdrop resize underlay, ") +
@@ -305,7 +303,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         FirstPresentQpc: _firstPresentQpc,
         LastTargetQpc: _lastTargetQpc,
         LastPresentQpc: _lastPresentQpc,
-        RetirementMode: "presentation-buffer-availability",
+        RetirementMode: "d3d12-copy-fence-source-reuse-dxgi-owned-display-buffers",
         QueueIdleRetirementWaits: 0,
         CompositionFrameWaits: _compositionFrameWaitCount,
         CompositionFrameObserved: _compositionFrameObservedCount,
@@ -336,7 +334,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ValidationErrors: _validationErrors, ValidationWarnings: _validationWarnings,
         ValidationCallbackFault: _validationCallbackFault, ValidationMessages: ValidationMessages(),
         UsesPackagedGraphiteAsset: _usesPackagedGraphiteAsset, GraphiteNativePath: _actualGraphiteLibraryPath,
-        GraphiteNativeSha256: _graphiteNativeHash);
+        GraphiteNativeSha256: _graphiteNativeHash, D3D12Output: D3D12Snapshot(),
+        DepthStencilBarrierStageCorrections: _retiredDepthStencilBarrierStageCorrections +
+            (_stockObserver?.DepthStencilBarrierStageCorrections ?? 0));
 
     bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
 
@@ -371,8 +371,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             : null;
         return new AcrylicPresenterSnapshot(
             options.mode.ToString(), options.mode.ToString(), null,
-            _compositionProbe.PresentationSupported != 0,
-            _compositionProbe.IndependentFlipSupported != 0,
+            _presentationContext != 0,
+            false,
             $"{_adapterLuidHigh}:{_adapterLuidLow}",
             _deviceVendorId, _deviceId,
             options.acrylicKind.ToString(), state.EffectiveTheme,
@@ -742,6 +742,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             RecordEvent($"composition present failed hresult=0x{unchecked((uint)present):x8}");
             Marshal.ThrowExceptionForHR(present);
         }
+        GpuSubmitCount++;
+        GpuCopyCount++;
+        D3D12Snapshot();
         var compositionFrameWasObserved = false;
         var compositionFrameReady = !waitForCompositionFrame;
         if (waitForCompositionFrame)
@@ -877,19 +880,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         if (slot.Poisoned)
             throw new InvalidOperationException("A failed Presentation slot cannot be replaced in-place.");
         ReleasePresentationSlotVulkan(slot);
-        var snapshot = new VulkanCompositionBuffer
-        {
-            AbiVersion = 1,
-            StructSize = checked((uint)sizeof(VulkanCompositionBuffer)),
-        };
         var result = ReplaceCompositionBuffer(
-            _presentationContext, checked((uint)index),
-            checked((uint)width), checked((uint)height),
-            out var sharedHandle, out var availableEvent, ref snapshot);
+            _presentationContext, checked((uint)index), checked((uint)width), checked((uint)height),
+            out var sharedHandle, out var availableEvent);
         if (result < 0) Marshal.ThrowExceptionForHR(result);
-        if (sharedHandle == 0 || availableEvent == 0 || snapshot.InitiallyAvailable == 0)
-            throw new InvalidOperationException(
-                "The native Vulkan Composition buffer is incomplete or unavailable.");
+        if (sharedHandle == 0 || availableEvent == 0)
+            throw new InvalidOperationException("The D3D12 output resource is incomplete.");
         slot.Registered = true;
         slot.AvailableEvent = availableEvent;
         slot.CapacityWidth = width;
@@ -913,7 +909,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         var external = new ExternalMemoryImageCreateInfo
         {
             SType = StructureType.ExternalMemoryImageCreateInfo,
-            HandleTypes = ExternalMemoryHandleTypeFlags.D3D11TextureBit,
+            HandleTypes = ExternalMemoryHandleTypeFlags.D3D12ResourceBit,
         };
         var imageInfo = new ImageCreateInfo
         {
@@ -932,7 +928,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             InitialLayout = ImageLayout.Undefined,
         };
         Check(_vk.CreateImage(_device, &imageInfo, null, out slot.Image),
-            "vkCreateImage(D3D11 import)");
+            "vkCreateImage(D3D12 import)");
         try
         {
             _vk.GetImageMemoryRequirements(_device, slot.Image, out var requirements);
@@ -941,13 +937,13 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 SType = StructureType.MemoryWin32HandlePropertiesKhr,
             };
             Check(_externalMemoryApi!.GetMemoryWin32HandleProperties(
-                _device, ExternalMemoryHandleTypeFlags.D3D11TextureBit,
+                _device, ExternalMemoryHandleTypeFlags.D3D12ResourceBit,
                 unchecked((nint)sharedHandle), &handleProperties),
-                "vkGetMemoryWin32HandlePropertiesKHR(D3D11_TEXTURE)");
+                "vkGetMemoryWin32HandlePropertiesKHR(D3D12_RESOURCE)");
             var memoryTypeBits = requirements.MemoryTypeBits & handleProperties.MemoryTypeBits;
             if (memoryTypeBits == 0)
                 throw new PlatformNotSupportedException(
-                    "The D3D11 texture exposes no Vulkan-compatible memory type.");
+                    "The D3D12 resource exposes no Vulkan-compatible memory type.");
             var dedicated = new MemoryDedicatedAllocateInfo
             {
                 SType = StructureType.MemoryDedicatedAllocateInfo,
@@ -957,7 +953,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             {
                 SType = StructureType.ImportMemoryWin32HandleInfoKhr,
                 PNext = &dedicated,
-                HandleType = ExternalMemoryHandleTypeFlags.D3D11TextureBit,
+                HandleType = ExternalMemoryHandleTypeFlags.D3D12ResourceBit,
                 Handle = unchecked((nint)sharedHandle),
             };
             var allocation = new MemoryAllocateInfo
@@ -968,9 +964,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 MemoryTypeIndex = FindCompatibleMemoryType(memoryTypeBits),
             };
             Check(_vk.AllocateMemory(_device, &allocation, null, out slot.Memory),
-                "vkAllocateMemory(D3D11 import)");
+                "vkAllocateMemory(D3D12 import)");
             Check(_vk.BindImageMemory(_device, slot.Image, slot.Memory, 0),
-                "vkBindImageMemory(D3D11 import)");
+                "vkBindImageMemory(D3D12 import)");
             slot.Layout = ImageLayout.Undefined;
         }
         catch
@@ -994,7 +990,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         for (uint index = 0; index < properties.MemoryTypeCount; index++)
             if ((typeFilter & (1u << checked((int)index))) != 0) return index;
         throw new PlatformNotSupportedException(
-            "No Vulkan memory type is compatible with the imported D3D11 texture.");
+            "No Vulkan memory type is compatible with the imported D3D12 resource.");
     }
 
     private void CopyBackingToPresentation(PresentationSlot slot)
@@ -1084,7 +1080,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             0, 0, null, 0, null, 2, releaseBarriers);
 
         var started = Stopwatch.GetTimestamp();
-        SubmitCommands("Vulkan Composition copy", waitForCompletion: true);
+        var producerValue = checked(++_d3d12ProducerValue);
+        SubmitCommands("Vulkan D3D12 output copy", signalSemaphore: _d3d12ProducerSemaphore,
+            waitForCompletion: true, signalValue: producerValue);
+        Marshal.ThrowExceptionForHR(SetD3D12OutputReady(
+            _presentationContext, checked((uint)Array.IndexOf(_presentationSlots, slot)), producerValue));
         _lastCopyFenceWaitMicroseconds = checked((long)
             Stopwatch.GetElapsedTime(started).TotalMicroseconds);
         _maximumCopyFenceWaitMicroseconds = Math.Max(
@@ -1328,24 +1328,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         RequireExternalImageImportSupport();
         CreateLogicalDevice();
         CreateSkiaContext();
-        _compositionProbe = new VulkanCompositionProbe
-        {
-            AbiVersion = 1,
-            StructSize = checked((uint)sizeof(VulkanCompositionProbe)),
-        };
-        var create = CreateComposition(
-            _adapterLuidLow, _adapterLuidHigh, out _presentationContext,
-            out var compositionSurfaceHandle, ref _compositionProbe);
-        if (create < 0) Marshal.ThrowExceptionForHR(create);
-        _compositionSurfaceHandle = unchecked((nint)compositionSurfaceHandle);
-        if (create != 0 || _presentationContext == 0 || _compositionSurfaceHandle == 0 ||
-            _compositionProbe.AdapterLuidMatched == 0 ||
-            _compositionProbe.PresentationSupported == 0)
-            throw new PlatformNotSupportedException(
-                "The exact-LUID D3D11 device does not support Composition Swapchain presentation.");
-        if (_compositionProbe.ActualAdapterLuidLow != unchecked((int)_adapterLuidLow) ||
-            _compositionProbe.ActualAdapterLuidHigh != _adapterLuidHigh)
-            throw new InvalidOperationException("The D3D11 and Vulkan adapter LUIDs differ.");
+        Marshal.ThrowExceptionForHR(CreateComposition(
+            _adapterLuidLow, _adapterLuidHigh, out _presentationContext, out var sharedFence));
+        if (_presentationContext == 0 || sharedFence == 0)
+            throw new InvalidOperationException("D3D12 output did not return its owner and shared fence.");
+        try { ImportD3D12ProducerFence(sharedFence); }
+        finally { CloseHandle(unchecked((nint)sharedFence)); }
         if (_acrylicOptions is not null)
         {
             var alpha = SetCompositionPremultipliedAlpha(_presentationContext, 1);
@@ -1353,12 +1341,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         ConnectCompositionSurface();
         RecordEvent(_acrylicOptions is null
-            ? "Vulkan Presentation surface connected to synchronous top-level DirectComposition"
+            ? "Vulkan/D3D12 DXGI output connected to top-level DirectComposition"
             : "premultiplied synchronous top-level Vulkan surface connected over Desktop Acrylic window target");
         _format = Format.B8G8R8A8Unorm;
         _colorSpace = "RGB_FULL_G22_NONE_P709";
         _compositeAlpha = _acrylicOptions is null ? "Ignore" : "Premultiplied";
-        _presentMode = "CompositionSwapchain";
+        _presentMode = "D3D12-DXGI-FlipSequential";
         lock (_viewportGate)
         {
             _presentationRetiring = false;
@@ -1377,8 +1365,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void ConnectCompositionSurface()
     {
-        if (_compositionSurfaceHandle == 0)
-            throw new InvalidOperationException("The Vulkan Presentation surface handle is unavailable.");
+        if (_presentationContext == 0)
+            throw new InvalidOperationException("The D3D12 output is unavailable.");
         if (_topLevelWindow == 0)
             throw new InvalidOperationException("The Vulkan top-level HWND is unavailable.");
         var attach = AttachCompositionWindow(_presentationContext,
@@ -1494,6 +1482,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 {
                     "VK_KHR_external_memory",
                     KhrExternalMemoryWin32.ExtensionName,
+                    KhrExternalSemaphoreWin32.ExtensionName,
                     "VK_KHR_get_memory_requirements2",
                     "VK_KHR_dedicated_allocation",
                 };
@@ -1591,6 +1580,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         {
             "VK_KHR_external_memory",
             KhrExternalMemoryWin32.ExtensionName,
+            KhrExternalSemaphoreWin32.ExtensionName,
             "VK_KHR_get_memory_requirements2",
             "VK_KHR_dedicated_allocation",
         };
@@ -1612,14 +1602,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 PpEnabledExtensionNames = extensions,
             };
             var timeline = new PhysicalDeviceTimelineSemaphoreFeatures { SType = StructureType.PhysicalDeviceTimelineSemaphoreFeatures };
-            if (_diagnosticDelayMilliseconds != 0)
-            {
-                if (!_usesPackagedGraphiteAsset) throw new InvalidOperationException("Qualification timeline requires official Vulkan 1.2.");
-                var features = new PhysicalDeviceFeatures2 { SType = StructureType.PhysicalDeviceFeatures2, PNext = &timeline };
-                _vk.GetPhysicalDeviceFeatures2(_physicalDevice, &features);
-                if (!timeline.TimelineSemaphore) throw new PlatformNotSupportedException("Host timeline fixture unsupported.");
-                createInfo.PNext = &timeline;
-            }
+            var features = new PhysicalDeviceFeatures2 { SType = StructureType.PhysicalDeviceFeatures2, PNext = &timeline };
+            _vk.GetPhysicalDeviceFeatures2(_physicalDevice, &features);
+            if (!timeline.TimelineSemaphore) throw new PlatformNotSupportedException("D3D12 output requires Vulkan timeline semaphores.");
+            createInfo.PNext = &timeline;
             Check(_vk.CreateDevice(_physicalDevice, &createInfo, null, out _device), "vkCreateDevice");
         }
         finally
@@ -1654,7 +1640,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         var externalInfo = new PhysicalDeviceExternalImageFormatInfo
         {
             SType = StructureType.PhysicalDeviceExternalImageFormatInfo,
-            HandleType = ExternalMemoryHandleTypeFlags.D3D11TextureBit,
+            HandleType = ExternalMemoryHandleTypeFlags.D3D12ResourceBit,
         };
         var imageInfo = new PhysicalDeviceImageFormatInfo2
         {
@@ -1676,13 +1662,13 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         };
         Check(_vk.GetPhysicalDeviceImageFormatProperties2(
             _physicalDevice, &imageInfo, &properties),
-            "vkGetPhysicalDeviceImageFormatProperties2(D3D11_TEXTURE)");
+            "vkGetPhysicalDeviceImageFormatProperties2(D3D12_RESOURCE)");
         var memory = externalProperties.ExternalMemoryProperties;
         if ((memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.ImportableBit) == 0 ||
             (memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.DedicatedOnlyBit) == 0 ||
-            (memory.CompatibleHandleTypes & ExternalMemoryHandleTypeFlags.D3D11TextureBit) == 0)
+            (memory.CompatibleHandleTypes & ExternalMemoryHandleTypeFlags.D3D12ResourceBit) == 0)
             throw new PlatformNotSupportedException(
-                "BGRA8 D3D11_TEXTURE import is not dedicated-only, importable, and compatible.");
+                "BGRA8 D3D12_RESOURCE import is not dedicated-only, importable, and compatible.");
     }
 
     private void CreateSkiaContext()
@@ -1692,6 +1678,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         [
             "VK_KHR_external_memory",
             KhrExternalMemoryWin32.ExtensionName,
+            KhrExternalSemaphoreWin32.ExtensionName,
             "VK_KHR_get_memory_requirements2",
             "VK_KHR_dedicated_allocation",
         ];
@@ -2241,7 +2228,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         string identity,
         VkSemaphore waitSemaphore = default,
         VkSemaphore signalSemaphore = default,
-        bool waitForCompletion = true)
+        bool waitForCompletion = true, ulong signalValue = 0)
     {
         if (_copySubmissionPending)
             throw new InvalidOperationException(
@@ -2269,6 +2256,13 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             submitInfo.SignalSemaphoreCount = 1;
             submitInfo.PSignalSemaphores = &signalSemaphore;
         }
+        var timeline = new TimelineSemaphoreSubmitInfo
+        {
+            SType = StructureType.TimelineSemaphoreSubmitInfo,
+            SignalSemaphoreValueCount = signalValue == 0 ? 0u : 1u,
+            PSignalSemaphoreValues = &signalValue,
+        };
+        if (signalValue != 0) submitInfo.PNext = &timeline;
         _lastSubmitResult = _stockObserver == null ? _vk.QueueSubmit(_queue, 1, &submitInfo, _fence) :
             _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(_queue, 1, &submitInfo, _fence);
         Check(_lastSubmitResult, "vkQueueSubmit");
@@ -2448,7 +2442,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             lock (_viewportGate) _presentationDrainCommitted = false;
             throw;
         }
-        RecordEvent($"composition retirement-buffer present id={presentId}");
+        RecordEvent($"D3D12 output drained copy fence={presentId}");
     }
 
     private void ReleaseDevice(bool deviceLost, bool waitForIdle = true)
@@ -2505,11 +2499,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         ReleaseBackingStorage();
         foreach (var slot in _presentationSlots) ReleasePresentationSlotVulkan(slot);
         ClearCompositionSurfaceBinding();
-        if (_presentationContext != 0) DestroyComposition(_presentationContext);
+        if (_presentationContext != 0)
+        {
+            D3D12Snapshot();
+            Marshal.ThrowExceptionForHR(DestroyComposition(_presentationContext));
+            if (_lastD3D12Snapshot is { } snapshot) _lastD3D12Snapshot = snapshot with { ActiveSwapchains = 0 };
+        }
         lock (_viewportGate)
         {
             _presentationContext = 0;
-            _compositionSurfaceHandle = 0;
             _presentationDrainCommitted = false;
         }
         foreach (var slot in _presentationSlots) slot.ResetNativeState();
@@ -2528,10 +2526,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         {
             _stockObserver.Journal.FreePool(_commandPool.Handle);
             _stockObserver.Check();
+            _retiredDepthStencilBarrierStageCorrections += _stockObserver.DepthStencilBarrierStageCorrections;
             _stockObserver.Dispose(); _stockObserver = null;
         }
         _commandPool = default;
         _commandBuffer = default;
+        ReleaseD3D12ProducerFence();
         _externalMemoryApi?.Dispose();
         _externalMemoryApi = null;
         _swapchainApi?.Dispose();
@@ -2823,91 +2823,43 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         internal int Bottom;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    private struct VulkanCompositionProbe
-    {
-        internal uint AbiVersion;
-        internal uint StructSize;
-        internal int DxgiFactoryHresult;
-        internal int AdapterEnumerationHresult;
-        internal int D3D11DeviceHresult;
-        internal int PresentationFactoryHresult;
-        internal int PresentationManagerHresult;
-        internal int SurfaceHandleHresult;
-        internal int PresentationSurfaceHresult;
-        internal int RetiringFenceHresult;
-        internal int RequestedAdapterLuidLow;
-        internal int RequestedAdapterLuidHigh;
-        internal int ActualAdapterLuidLow;
-        internal int ActualAdapterLuidHigh;
-        internal uint AdapterVendorId;
-        internal uint AdapterDeviceId;
-        internal uint AdapterFlags;
-        internal uint DeviceCreationFlags;
-        internal uint DeviceFeatureLevel;
-        internal uint AdapterLuidMatched;
-        internal uint PresentationSupported;
-        internal uint IndependentFlipSupported;
-        internal ulong RetiringFenceCompletedValue;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    private struct VulkanCompositionBuffer
-    {
-        internal uint AbiVersion;
-        internal uint StructSize;
-        internal int TextureHresult;
-        internal int DxgiResourceHresult;
-        internal int SharedHandleHresult;
-        internal int AddBufferHresult;
-        internal int AvailableEventHresult;
-        internal uint Width;
-        internal uint Height;
-        internal uint Format;
-        internal uint BindFlags;
-        internal uint MiscFlags;
-        internal uint InitiallyAvailable;
-    }
-
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_composition_raster_create_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_raster_create_v1")]
     private static partial int CreateCompositionRaster(nint context, ulong window, out nint raster);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_create_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_create_v1")]
     private static partial int CreateComposition(
         uint adapterLuidLow, int adapterLuidHigh,
-        out nint context, out ulong compositionSurfaceHandle,
-        ref VulkanCompositionProbe snapshot);
+        out nint context, out ulong sharedFence);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_set_premultiplied_alpha_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_alpha_v1")]
     private static partial int SetCompositionPremultipliedAlpha(
         nint context, uint enabled);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_attach_window_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_attach_v1")]
     private static partial int AttachCompositionWindow(
         nint context, ulong targetWindow);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_destroy_v1")]
-    private static partial void DestroyComposition(nint context);
+        EntryPoint = "doroti_windows_d3d12_output_destroy_v1")]
+    private static partial int DestroyComposition(nint context);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_replace_buffer_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_replace_v1")]
     private static partial int ReplaceCompositionBuffer(
         nint context, uint slotIndex, uint width, uint height,
-        out ulong sharedTextureHandle, out ulong availableEvent,
-        ref VulkanCompositionBuffer snapshot);
+        out ulong sharedTextureHandle, out ulong availableEvent);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_is_available_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_available_v1")]
     private static partial int IsCompositionBufferAvailable(
         nint context, uint slotIndex, out uint available);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_present_cropped_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_present_v1")]
     private static partial int PresentCropped(
         nint context, uint slotIndex,
         uint sourceX, uint sourceY, uint width, uint height, ulong tag,
@@ -2916,7 +2868,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         out ulong presentId, out ulong retiringFenceValue);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
-        EntryPoint = "doroti_windows_vulkan_composition_retire_buffers_v1")]
+        EntryPoint = "doroti_windows_d3d12_output_drain_v1")]
     private static partial int UnbindCompositionBuffer(
         nint context, ulong tag, out ulong presentId);
 
@@ -3218,4 +3170,6 @@ internal sealed record VulkanPresenterSnapshot(
     string[]? ValidationMessages = null,
     bool UsesPackagedGraphiteAsset = false,
     string? GraphiteNativePath = null,
-    string? GraphiteNativeSha256 = null);
+    string? GraphiteNativeSha256 = null,
+    D3D12OutputSnapshot? D3D12Output = null,
+    long DepthStencilBarrierStageCorrections = 0);

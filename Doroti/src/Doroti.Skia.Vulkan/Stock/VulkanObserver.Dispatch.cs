@@ -237,6 +237,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdPipelineBarrierDelegate>(address);
                 return new CmdPipelineBarrierDelegate((cb, src, dst, flags, memoryCount, memory, bufferCount, buffers, imageCount, images) =>
                 {
+                    dst = CompleteDepthStencilWriteStages(dst, imageCount, images);
                     forward(cb, src, dst, flags, memoryCount, memory, bufferCount, buffers, imageCount, images);
                     Observe(() => { Barrier(cb.Handle, imageCount, images); });
                 });
