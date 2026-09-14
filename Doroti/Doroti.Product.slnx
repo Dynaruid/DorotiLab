@@ -54,19 +54,6 @@
     <Project Path="../DorotiTestbedApp/ios/binding/DorotiTestbedApp.iOS.Native.csproj" />
     <Project Path="../DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj" />
   </Folder>
-  <Folder Name="/validation/app-runner/">
-    <Project Path="validation/app-runner/synthetic-app/SyntheticApp.csproj" />
-    <Project Path="validation/app-runner/synthetic-runner/SyntheticRunner.csproj" />
-  </Folder>
-  <Folder Name="/validation/linux-qt/">
-    <Project Path="validation/linux-qt-contract/Doroti.Validation.LinuxQtContract.csproj" />
-  </Folder>
-  <Folder Name="/validation/protocol/">
-    <Project Path="validation/display-list-contract/Doroti.Validation.DisplayListContract.csproj" />
-  </Folder>
-  <Folder Name="/validation/windows-app-sdk/">
-    <Project Path="validation/windowsappsdk-24-preflight/Doroti.Validation.WindowsAppSdk24Preflight.csproj" />
-  </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
   </Folder>

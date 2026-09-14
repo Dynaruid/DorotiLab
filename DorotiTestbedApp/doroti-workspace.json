@@ -1,5 +1,4 @@
 {
-  "$schema": "../Doroti/validation/contracts/doroti-workspace.schema.json",
   "schemaVersion": "doroti.workspace/v1",
   "applicationProject": "DorotiTestbedApp.csproj",
   "platforms": {
