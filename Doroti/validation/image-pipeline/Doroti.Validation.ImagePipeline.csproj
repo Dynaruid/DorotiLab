@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="../../src/Doroti.Framework.Material/Doroti.Framework.Material.csproj" />
-  </ItemGroup>
-</Project>
