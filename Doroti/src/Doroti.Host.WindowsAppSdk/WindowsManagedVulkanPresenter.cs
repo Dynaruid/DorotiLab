@@ -109,6 +109,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private double _viewportScale = 1;
     private nint _topLevelWindow;
     internal nint PlatformRasterWindow { get; set; }
+    internal nint CreatePlatformRasterSurface(nint window)
+    {
+        if (_presentationContext == 0) throw new InvalidOperationException("Composition device is not ready.");
+        Marshal.ThrowExceptionForHR(CreateCompositionRaster(_presentationContext, unchecked((ulong)window), out var raster));
+        return raster;
+    }
 
     internal Task<Doroti.Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
         (_graphiteFrame ?? throw new NotSupportedException("Windows HWND interleaving currently requires Graphite/Vulkan."))
@@ -236,7 +242,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         : "top-level-dcomp-vulkan-presentation-synchronous-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
     internal override string DiagnosticCoverage => PlatformRasterWindow != 0
-        ? "Graphite/Vulkan shared-recorder raster atlas, readback after GPU completion, bounded premultiplied layered HWND slices and live native HWNDs; " +
+        ? "Graphite/Vulkan shared-recorder raster atlas, readback after GPU completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; " +
           "reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified"
         :
         "Vulkan 1.2 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
@@ -2862,6 +2868,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         internal uint MiscFlags;
         internal uint InitiallyAvailable;
     }
+
+    [LibraryImport(WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_composition_raster_create_v1")]
+    private static partial int CreateCompositionRaster(nint context, ulong window, out nint raster);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
         EntryPoint = "doroti_windows_vulkan_composition_create_v1")]

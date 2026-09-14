@@ -1130,8 +1130,9 @@ class ProductHost final {
     // top/left resize. Remove that third plane; opaque Composition supplies its
     // own background visual and Acrylic supplies the non-topmost backdrop
     // target beneath the native topmost Vulkan target.
-    return composition_active_ &&
-               (configuration_.required_features & DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1) == 0
+    // PlatformView raster siblings also own DirectComposition surfaces, so
+    // registering native views must not restore an opaque parent bitmap.
+    return composition_active_
                ? static_cast<DWORD>(WS_EX_NOREDIRECTIONBITMAP)
                : 0u;
   }

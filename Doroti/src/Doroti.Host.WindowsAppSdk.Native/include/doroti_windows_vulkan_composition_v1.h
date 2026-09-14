@@ -143,6 +143,22 @@ DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
 doroti_windows_vulkan_composition_retire_buffers_v1(
     void* context, uint64_t tag, uint64_t* present_id);
 
+// UI-thread-owned premultiplied raster siblings. They retain the D3D11 device
+// independently of context and must be destroyed before their target HWNDs.
+DOROTI_WINDOWS_VULKAN_COMPOSITION_API int32_t
+DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_composition_raster_create_v1(void* context, uint64_t hwnd, void** raster);
+
+// Uploads BGRA premultiplied rows and commits the hidden sibling before reveal.
+DOROTI_WINDOWS_VULKAN_COMPOSITION_API int32_t
+DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_composition_raster_update_v1(
+    void* raster, const void* pixels, uint32_t width, uint32_t height, uint32_t row_bytes);
+
+DOROTI_WINDOWS_VULKAN_COMPOSITION_API void
+DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_composition_raster_destroy_v1(void* raster);
+
 #ifdef __cplusplus
 }
 #endif

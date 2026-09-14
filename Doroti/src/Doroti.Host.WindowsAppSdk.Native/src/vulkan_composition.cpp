@@ -91,6 +91,22 @@ struct VulkanCompositionContext {
   }
 };
 
+// Each sibling has its own DComp transaction; the D3D11 device is retained
+// independently so platform disposal never dereferences a retired presenter.
+struct CompositionRaster {
+  ComPtr<ID3D11Device> device;
+  ComPtr<ID3D11DeviceContext> immediate;
+  ComPtr<IDCompositionDevice> composition;
+  ComPtr<IDCompositionTarget> target;
+  ComPtr<IDCompositionVisual> visual;
+  ComPtr<IDCompositionSurface> surface;
+  uint32_t width{}, height{};
+  ~CompositionRaster() {
+    if (target) target->SetRoot(nullptr);
+    if (composition) composition->Commit();
+  }
+};
+
 int32_t Result(HRESULT result) noexcept {
   return static_cast<int32_t>(result);
 }
@@ -429,6 +445,90 @@ doroti_windows_vulkan_composition_create_v1(
 extern "C" void DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
 doroti_windows_vulkan_composition_destroy_v1(void* context) {
   delete static_cast<VulkanCompositionContext*>(context);
+}
+
+extern "C" int32_t DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_composition_raster_create_v1(void* context, uint64_t hwnd, void** raster) {
+  if (context == nullptr || raster == nullptr || !IsWindow(reinterpret_cast<HWND>(hwnd)))
+    return Result(E_INVALIDARG);
+  *raster = nullptr;
+  auto& owner = *static_cast<VulkanCompositionContext*>(context);
+  std::lock_guard lock(owner.gate);
+  auto value = std::unique_ptr<CompositionRaster>(new (std::nothrow) CompositionRaster());
+  if (!value) return Result(E_OUTOFMEMORY);
+  value->device = owner.device;
+  if (!value->device) return Result(E_HANDLE);
+  value->device->GetImmediateContext(&value->immediate);
+  // Raster preparation is on the HWND thread; presentation/retirement can use
+  // the same immediate context on the render thread.
+  ComPtr<ID3D11Multithread> multithread;
+  auto hr = value->immediate.As(&multithread);
+  if (FAILED(hr)) return Result(hr);
+  multithread->SetMultithreadProtected(TRUE);
+  ComPtr<IDXGIDevice> dxgi;
+  hr = value->device.As(&dxgi);
+  if (FAILED(hr)) return Result(hr);
+  hr = DCompositionCreateDevice(dxgi.Get(), IID_PPV_ARGS(&value->composition));
+  if (FAILED(hr)) return Result(hr);
+  hr = value->composition->CreateTargetForHwnd(reinterpret_cast<HWND>(hwnd), TRUE, &value->target);
+  if (FAILED(hr)) return Result(hr);
+  hr = value->composition->CreateVisual(&value->visual);
+  if (FAILED(hr)) return Result(hr);
+  hr = value->target->SetRoot(value->visual.Get());
+  if (FAILED(hr)) return Result(hr);
+  *raster = value.release();
+  return Result(S_OK);
+}
+
+extern "C" int32_t DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_composition_raster_update_v1(
+    void* raster, const void* pixels, uint32_t width, uint32_t height, uint32_t row_bytes) {
+  if (raster == nullptr || pixels == nullptr || width == 0 || height == 0 ||
+      width > 16384 || height > 16384 || row_bytes < width * 4u)
+    return Result(E_INVALIDARG);
+  auto& value = *static_cast<CompositionRaster*>(raster);
+  if (value.width != width || value.height != height) {
+    ComPtr<IDCompositionSurface> next;
+    auto hr = value.composition->CreateSurface(width, height, DXGI_FORMAT_B8G8R8A8_UNORM,
+        DXGI_ALPHA_MODE_PREMULTIPLIED, &next);
+    if (FAILED(hr)) return Result(hr);
+    hr = value.visual->SetContent(next.Get());
+    if (FAILED(hr)) return Result(hr);
+    value.surface = next;
+    value.width = width;
+    value.height = height;
+  }
+  ComPtr<IDXGISurface> drawing;
+  POINT offset{};
+  auto hr = value.surface->BeginDraw(nullptr, IID_PPV_ARGS(&drawing), &offset);
+  if (FAILED(hr)) return Result(hr);
+  ComPtr<IDXGISurface2> drawing2;
+  ComPtr<ID3D11Texture2D> texture;
+  UINT subresource{};
+  hr = drawing.As(&drawing2);
+  if (SUCCEEDED(hr)) hr = drawing2->GetResource(IID_PPV_ARGS(&texture), &subresource);
+  if (SUCCEEDED(hr)) {
+    // BeginDraw may return an atlas offset, even for a full-surface update.
+    const D3D11_BOX box{static_cast<UINT>(offset.x), static_cast<UINT>(offset.y), 0,
+        static_cast<UINT>(offset.x) + width, static_cast<UINT>(offset.y) + height, 1};
+    value.immediate->UpdateSubresource(texture.Get(), subresource, &box, pixels, row_bytes, 0);
+    value.immediate->Flush();
+    hr = value.device->GetDeviceRemovedReason();
+  }
+  texture.Reset();
+  drawing2.Reset();
+  drawing.Reset();
+  const auto end = value.surface->EndDraw();
+  if (FAILED(hr)) return Result(hr);
+  if (FAILED(end)) return Result(end);
+  hr = value.composition->Commit();
+  if (FAILED(hr)) return Result(hr);
+  return Result(value.composition->WaitForCommitCompletion());
+}
+
+extern "C" void DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_composition_raster_destroy_v1(void* raster) {
+  delete static_cast<CompositionRaster*>(raster);
 }
 
 extern "C" int32_t DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL

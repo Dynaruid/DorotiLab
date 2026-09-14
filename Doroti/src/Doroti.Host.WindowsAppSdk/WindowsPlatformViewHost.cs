@@ -9,14 +9,14 @@ using SkiaSharp;
 namespace Doroti.Host.WindowsAppSdk;
 
 /// <summary>Live HWND interleaving. Raster slices use the active Graphite recorder,
-/// then bounded GPU readback and premultiplied layered child windows. Native content
+/// then bounded GPU readback and premultiplied DirectComposition child surfaces. Native content
 /// is never captured or replaced. Physical atomic display is not advertised.</summary>
 internal sealed class WindowsPlatformViewHost : IDisposable
 {
     private readonly Dictionary<PlatformViewHandle, nint> _controls = [];
     private readonly Dictionary<long, Frame> _ready = [];
     private readonly object _gate = new();
-    private readonly List<LayeredRaster>[] _banks = [[], []];
+    private readonly List<CompositionRaster>[] _banks = [[], []];
     private readonly Dictionary<string, WindowsHwndPlatformViewFactory> _factories = [];
     private WindowsPlatformViewDispatcher? _dispatcher;
     private WindowsManagedProductHost? _host;
@@ -225,7 +225,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             var pool = _banks[bank];
             try
             {
-                while (pool.Count < frame.Rasters.Length) pool.Add(new(_parent));
+                while (pool.Count < frame.Rasters.Length) pool.Add(new(this));
                 for (var index = 0; index < frame.Rasters.Length; index++)
                     pool[index].Prepare(frame.Pixels!, index * frame.Height, frame.Width, frame.Height);
                 _positions = [];
@@ -257,7 +257,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         }
     }
 
-    private void Apply(PlatformCompositionPart[] parts, List<LayeredRaster> layers, int rasterCount, IPlatformViewPlacementBatch batch)
+    private void Apply(PlatformCompositionPart[] parts, List<CompositionRaster> layers, int rasterCount, IPlatformViewPlacementBatch batch)
     {
         var handles = parts.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle).ToHashSet();
         foreach (var old in _visible.OfType<PlatformNativeSegment>())
@@ -328,10 +328,25 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         return shield.Clip is { } clip ? bounds.intersect(clip) : bounds;
     }
 
+    private bool IsOverNative(nint packedScreenPoint)
+    {
+        var point = new Native.Point { X = (short)(packedScreenPoint.ToInt64() & 0xffff), Y = (short)((packedScreenPoint.ToInt64() >> 16) & 0xffff) };
+        if (!Native.ScreenToClient(_parent, ref point)) return false;
+        var scale = Native.GetDpiForWindow(_parent) / 96d;
+        var logical = new Offset(point.X / scale, point.Y / scale);
+        return _visible.OfType<PlatformNativeSegment>().Any(native =>
+        {
+            var placement = native.Placement;
+            var origin = placement.Transform.Map(placement.Bounds.topLeft);
+            var bounds = Rect.fromLTWH(origin.dx, origin.dy, placement.Bounds.width, placement.Bounds.height);
+            if (placement.Clip is { } clip) bounds = bounds.intersect(clip);
+            return placement.Visible && bounds.contains(logical) && !Intercepts(native.PaintOrder, packedScreenPoint);
+        });
+    }
+
     internal void BeginClose()
     {
         _closed = true;
-        _coordinator?.Dispose();
     }
     public void Dispose()
     {
@@ -339,6 +354,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         _dispatcher.VerifyThread();
         BeginClose();
         // Render worker has joined. Its pending frame has no GPU leases remaining.
+        // In-flight scene planning must retain live instances until that join;
+        // disposing them at WM_CLOSE races Resolve/Retain on the raster thread.
+        _coordinator?.Dispose();
         _recording?.Dispose(); _recording = null;
         lock (_gate) { foreach (var frame in _ready.Values) frame.Dispose(); _ready.Clear(); }
         foreach (var bank in _banks) foreach (var layer in bank) layer.Dispose();
@@ -354,7 +372,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         lock (_gate) rasterTimings = _rasterMilliseconds.ToArray();
         var payload = new
         {
-            backend = "Graphite/Vulkan GPU atlas -> premultiplied layered HWND", commits = _commits,
+            backend = "Graphite/Vulkan GPU atlas -> premultiplied DirectComposition HWND", commits = _commits,
             readbackBytes = Interlocked.Read(ref _readbackBytes), dpi = Native.GetDpiForWindow(_parent),
             frame = frame.Plan.Token, native = _visible.OfType<PlatformNativeSegment>().Select(p => new {
                 handle = p.Placement.Handle, hwnd = _controls.GetValueOrDefault(p.Placement.Handle).ToInt64(),
@@ -389,47 +407,66 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     }
     private static void Check(bool success) { if (!success) throw new Win32Exception(Marshal.GetLastWin32Error()); }
 
-    private sealed class LayeredRaster : IDisposable
+    private sealed class CompositionRaster : IDisposable
     {
-        private nint _hwnd, _dc, _bitmap, _oldBitmap, _pixels;
-        private int _width, _height;
+        private nint _hwnd, _surface;
+        private readonly Native.SubclassProc _callback;
+        private readonly WindowsPlatformViewHost _owner;
         internal nint Hwnd => _hwnd;
         internal int RegionRectangles { get; private set; }
-        internal LayeredRaster(nint parent)
+        internal CompositionRaster(WindowsPlatformViewHost owner)
         {
-            _hwnd = Native.CreateWindowExW(0x00080000 | 0x00000020 | 0x08000000, "STATIC", "Doroti GPU raster slice",
-                0x40000000, 0, 0, 0, 0, parent, 0, 0, 0);
+            _owner = owner;
+            _callback = WindowProc;
+            _hwnd = Native.CreateWindowExW(0x00200000 | 0x00000020, "STATIC", "Doroti GPU raster slice",
+                0x40000000, 0, 0, 0, 0, owner._parent, 0, 0, 0);
             if (_hwnd == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
-            _dc = Native.CreateCompatibleDC(0);
-            if (_dc == 0) { Native.DestroyWindow(_hwnd); throw new Win32Exception(); }
+            try
+            {
+                Check(Native.SetWindowSubclass(_hwnd, _callback, 1, 0));
+                _surface = owner._presenter!.CreatePlatformRasterSurface(_hwnd);
+            }
+            catch { Native.DestroyWindow(_hwnd); _hwnd = 0; throw; }
+        }
+        private nint WindowProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data)
+        {
+            if (message == 0x0084) return _owner.IsOverNative(lparam) ? -1 : 1;
+            if (message == 0x0021) return Native.SendMessageW(_owner._parent, message, (nuint)_owner._parent, lparam);
+            // HTTRANSPARENT falls through sibling windows, not reliably back
+            // into the parent's clipped client. Forward framework areas to the
+            // input owner; let unshielded native regions hit their own HWND.
+            if (message is >= 0x200 and <= 0x20e)
+            {
+                var point = new Native.Point { X = (short)(lparam.ToInt64() & 0xffff), Y = (short)((lparam.ToInt64() >> 16) & 0xffff) };
+                if (message is not (0x20a or 0x20e))
+                {
+                    Native.ClientToScreen(hwnd, ref point);
+                    Native.ScreenToClient(_owner._parent, ref point);
+                }
+                var packed = (nint)((uint)(ushort)point.X | ((uint)(ushort)point.Y << 16));
+                var forwarded = message switch { 0x203 => 0x201u, 0x206 => 0x204u, 0x209 => 0x207u, _ => message };
+                return Native.SendMessageW(_owner._parent, forwarded, wparam, packed);
+            }
+            if (message == 0x20) return Native.SendMessageW(_owner._parent, message, (nuint)_owner._parent, lparam);
+            return Native.DefSubclassProc(hwnd, message, wparam, lparam);
         }
         internal unsafe void Prepare(SkiaGraphiteReadback image, int sourceY, int width, int height)
         {
             Hide();
-            if (_width != width || _height != height)
-            {
-                ReleaseBitmap();
-                var info = new Native.BitmapInfo { Size = 40, Width = width, Height = -height, Planes = 1, BitCount = 32 };
-                _bitmap = Native.CreateDIBSection(_dc, ref info, 0, out _pixels, 0, 0);
-                if (_bitmap == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
-                _oldBitmap = Native.SelectObject(_dc, _bitmap);
-                _width = width; _height = height;
-            }
+            if (sourceY < 0 || width <= 0 || height <= 0 || image.RowBytes < checked(width * 4) ||
+                ((long)sourceY + height - 1) * image.RowBytes + (long)width * 4 > image.Pixels.LongLength)
+                throw new ArgumentOutOfRangeException(nameof(sourceY));
             fixed (byte* bytes = image.Pixels)
-                for (var row = 0; row < height; row++)
-                    Buffer.MemoryCopy(bytes + (sourceY + row) * image.RowBytes, (byte*)_pixels + row * width * 4, width * 4, width * 4);
-            var size = new Native.Point { X = width, Y = height };
-            var origin = new Native.Point();
-            var blend = new Native.Blend { SourceConstantAlpha = 255, AlphaFormat = 1 };
-            Native.SetWindowRgn(_hwnd, 0, false);
-            Check(Native.UpdateLayeredWindow(_hwnd, 0, 0, ref size, _dc, ref origin, 0, ref blend, 2));
-            // USER32's GDI sibling clipping does not use a layered bitmap's alpha.
-            // Give each slice its actual painted region, so transparent areas do
-            // not prevent the live EDIT/BUTTON beneath from repainting.
-            ApplyAlphaRegion((byte*)_pixels, width, height);
+            {
+                var pixels = bytes + checked(sourceY * image.RowBytes);
+                Marshal.ThrowExceptionForHR(Native.UpdateCompositionRaster(_surface, (nint)pixels,
+                    checked((uint)width), checked((uint)height), checked((uint)image.RowBytes)));
+                // Native sibling clipping still needs the slice's painted region.
+                ApplyAlphaRegion(pixels, width, height, image.RowBytes);
+            }
             Check(Native.SetWindowPos(_hwnd, 0, 0, 0, width, height, 0x0010 | 0x0004));
         }
-        private unsafe void ApplyAlphaRegion(byte* pixels, int width, int height)
+        private unsafe void ApplyAlphaRegion(byte* pixels, int width, int height, int rowBytes)
         {
             var rectangles = new List<(int Left, int Top, int Right, int Bottom)>();
             var previous = new Dictionary<(int Left, int Right), int>();
@@ -438,9 +475,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 var current = new Dictionary<(int Left, int Right), int>();
                 for (var x = 0; x < width;)
                 {
-                    while (x < width && pixels[(y * width + x) * 4 + 3] == 0) x++;
+                    while (x < width && pixels[y * rowBytes + x * 4 + 3] == 0) x++;
                     var left = x;
-                    while (x < width && pixels[(y * width + x) * 4 + 3] != 0) x++;
+                    while (x < width && pixels[y * rowBytes + x * 4 + 3] != 0) x++;
                     if (left == x) continue;
                     if (previous.TryGetValue((left, x), out var index))
                     {
@@ -474,29 +511,37 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             RegionRectangles = rectangles.Count;
         }
         internal void Hide() { if (Native.IsWindow(_hwnd)) Native.ShowWindow(_hwnd, 0); }
-        private void ReleaseBitmap()
-        {
-            if (_bitmap == 0) return;
-            Native.SelectObject(_dc, _oldBitmap); Native.DeleteObject(_bitmap); _bitmap = 0;
-        }
         public void Dispose()
         {
-            ReleaseBitmap();
-            if (_dc != 0) Native.DeleteDC(_dc);
-            if (Native.IsWindow(_hwnd)) Native.DestroyWindow(_hwnd);
-            _hwnd = _dc = 0;
+            if (_surface != 0) Native.DestroyCompositionRaster(_surface);
+            _surface = 0;
+            if (Native.IsWindow(_hwnd))
+            {
+                Native.RemoveWindowSubclass(_hwnd, _callback, 1);
+                Native.DestroyWindow(_hwnd);
+            }
+            _hwnd = 0;
+            GC.KeepAlive(_callback);
         }
     }
     private static class Native
     {
+        internal delegate nint SubclassProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data);
+        [DllImport("comctl32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool SetWindowSubclass(nint hwnd, SubclassProc callback, nuint id, nuint data);
+        [DllImport("comctl32.dll")] internal static extern bool RemoveWindowSubclass(nint hwnd, SubclassProc callback, nuint id);
+        [DllImport("comctl32.dll")] internal static extern nint DefSubclassProc(nint hwnd, uint message, nuint wparam, nint lparam);
         [StructLayout(LayoutKind.Sequential)] internal struct Point { public int X, Y; }
-        [StructLayout(LayoutKind.Sequential)] internal struct Blend { public byte Operation, Flags, SourceConstantAlpha, AlphaFormat; }
-        [StructLayout(LayoutKind.Sequential)] internal struct BitmapInfo { public uint Size; public int Width, Height; public ushort Planes, BitCount; public uint Compression, SizeImage; public int XPels, YPels; public uint Used, Important, Color; }
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_raster_update_v1")]
+        internal static extern int UpdateCompositionRaster(nint surface, nint pixels, uint width, uint height, uint rowBytes);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_raster_destroy_v1")]
+        internal static extern void DestroyCompositionRaster(nint surface);
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)] internal static extern nint CreateWindowExW(uint ex, string cls, string text, uint style, int x, int y, int w, int h, nint parent, nint menu, nint instance, nint parameter);
         [DllImport("user32.dll")] internal static extern nint GetWindowLongPtrW(nint hwnd, int index);
         [DllImport("user32.dll")] internal static extern nint SetWindowLongPtrW(nint hwnd, int index, nint value);
         [DllImport("user32.dll")] internal static extern uint GetDpiForWindow(nint hwnd);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool ScreenToClient(nint hwnd, ref Point point);
+        [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool ClientToScreen(nint hwnd, ref Point point);
+        [DllImport("user32.dll")] internal static extern nint SendMessageW(nint hwnd, uint message, nuint wparam, nint lparam);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindow(nint hwnd);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool ShowWindow(nint hwnd, int command);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool DestroyWindow(nint hwnd);
@@ -506,12 +551,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         [DllImport("user32.dll", SetLastError = true)] internal static extern nint DeferWindowPos(nint batch, nint hwnd, nint after, int x, int y, int width, int height, uint flags);
         [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool EndDeferWindowPos(nint batch);
         [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool SetWindowPos(nint hwnd, nint after, int x, int y, int w, int h, uint flags);
-        [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool UpdateLayeredWindow(nint hwnd, nint screen, nint position, ref Point size, nint source, ref Point origin, uint color, ref Blend blend, uint flags);
-        [DllImport("gdi32.dll")] internal static extern nint CreateCompatibleDC(nint dc);
-        [DllImport("gdi32.dll")] internal static extern nint CreateDIBSection(nint dc, ref BitmapInfo info, uint usage, out nint bits, nint section, uint offset);
-        [DllImport("gdi32.dll")] internal static extern nint SelectObject(nint dc, nint value);
         [DllImport("gdi32.dll")] internal static extern bool DeleteObject(nint value);
-        [DllImport("gdi32.dll")] internal static extern bool DeleteDC(nint dc);
         [DllImport("gdi32.dll", SetLastError = true)] internal static extern nint ExtCreateRegion(nint transform, uint bytes, nint data);
     }
 }
