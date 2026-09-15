@@ -110,6 +110,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     {
         base.initState();
         widget.Mounted(this);
+        if (Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_EVIDENCE") is { Length: > 0 } &&
+            Environment.GetEnvironmentVariable("DOROTI_TESTBED_NATIVE_PAGE_PROBE") == "1") _showSample = true;
     }
 
     public override void dispose()

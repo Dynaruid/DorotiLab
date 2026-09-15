@@ -8,15 +8,18 @@ using SkiaSharp;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-/// <summary>Live HWND interleaving in one DirectComposition output tree. Raster slices
-/// use the active Graphite recorder and bounded GPU readback. Layered native HWND
-/// surfaces stay live; physical atomic display is not advertised.</summary>
+/// <summary>Live WinUI islands interleaved with DirectComposition raster windows.
+/// Raster slices use the active Graphite recorder and bounded GPU readback.
+/// WebView2 has its own visual composition path; physical atomic display is not advertised.</summary>
 internal sealed class WindowsPlatformViewHost : IDisposable
 {
     private readonly Dictionary<PlatformViewHandle, nint> _controls = [];
     private readonly Dictionary<long, Frame> _ready = [];
     private readonly object _gate = new();
     private WindowsWebViewComposition? _webViews;
+    private readonly WindowsWinUiControls _winUiControls = new();
+    private WindowsWinUiBackdrop? _winUiBackdrop;
+    private Task<int>? _captureProbe;
     private readonly List<CompositionRaster>[] _banks = [[], []];
     private CompositionRaster? _sceneOutput;
     private readonly Dictionary<string, IPlatformViewFactory> _factories = [];
@@ -34,6 +37,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private nint _parent;
     private bool _closed;
     private bool _hasVisibleParts;
+    private bool _winUiSceneVisible;
+    private int _winUiWidth, _winUiHeight;
+    private long _winUiPlacementBatches;
     private bool _needsReplay;
     internal bool NeedsReplay => Volatile.Read(ref _needsReplay);
     private long _commits;
@@ -68,6 +74,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         if (_parent != 0) throw new InvalidOperationException("PlatformView owner already bound.");
         _parent = host.TopLevelHwnd;
         _host = host;
+        _winUiBackdrop = new(_winUiControls, _parent);
         _presenter = presenter;
         _dispatcher = new();
         _webViews = new(_parent, () =>
@@ -91,15 +98,13 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         {
             var factory = new WindowsHwndPlatformViewFactory(_parent, editor, false)
             {
+                WinUiControls = _winUiControls,
                 Interleaved = presenter is not null,
                 SiblingRasterTopology = presenter is not null,
-                KeepCompositionSourceAlive = presenter is not null,
+                KeepCompositionSourceAlive = false,
                 Created = (handle, hwnd) =>
                 {
-                    // Keep the real control alive for native input and painting;
-                    // its live DComp wrapper is displayed in the scene transaction.
-                    int cloak = 1;
-                    Marshal.ThrowExceptionForHR(Native.DwmSetWindowAttribute(hwnd, 13, ref cloak, sizeof(int)));
+                    // WinUI owns a live composition island, not a layered GDI bitmap.
                     _controls.Add(handle, hwnd);
                     Volatile.Write(ref _liveHwndSources, _controls.Count);
                 },
@@ -295,13 +300,23 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             using var batch = reservation!;
             if (next.OfType<PlatformNativeSegment>().Any(p => _webViews!.Contains(p.Placement.Handle)))
             {
+                _winUiBackdrop?.Clear();
+                foreach (var old in _visible.OfType<PlatformNativeSegment>())
+                    if (_controls.ContainsKey(old.Placement.Handle) && batch.Contains(old.Placement.Handle))
+                        RunNow(_ => batch.DetachAsync(old.Placement.Handle));
                 _webViews!.Commit(frame.Plan, frame.Pixels, frame.Slices, batch);
                 _sceneOutput?.Hide();
                 foreach (var layer in _banks[_visibleBank]) layer.Hide();
+                _winUiSceneVisible = false;
                 _visible = next;
                 Volatile.Write(ref _hasVisibleParts, next.Length != 0);
                 Volatile.Write(ref _needsReplay, false);
                 _commits++;
+                return true;
+            }
+            if (_winUiSceneVisible || next.OfType<PlatformNativeSegment>().Any(p => _controls.ContainsKey(p.Placement.Handle)))
+            {
+                CommitWinUiFrame(frame, next, batch, started);
                 return true;
             }
             if (_webViews!.HasVisibleContent) _webViews.Clear(batch);
@@ -409,6 +424,110 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 throw;
             }
             return true;
+    }
+
+    private void CommitWinUiFrame(Frame frame, PlatformCompositionPart[] next, IPlatformViewPlacementBatch batch, long started)
+    {
+        if (_webViews!.HasVisibleContent) _webViews.Clear(batch);
+        if (frame.Pixels is null)
+        {
+            _winUiBackdrop?.Clear();
+            foreach (var old in _visible.OfType<PlatformNativeSegment>())
+                if (batch.Contains(old.Placement.Handle)) RunNow(_ => batch.DetachAsync(old.Placement.Handle));
+            _presenter!.WaitForPrimaryCopyCompletion();
+            foreach (var layers in _banks) foreach (var layer in layers) layer.Hide();
+            _sceneOutput?.Hide();
+            Check(Native.SetWindowPos(_host!.ChildHwnd, 0, 0, 0, 0, 0, 0x0053));
+            _visible = [];
+            _winUiSceneVisible = false;
+            Volatile.Write(ref _hasVisibleParts, false);
+            Volatile.Write(ref _needsReplay, false);
+            _commits++;
+            return;
+        }
+        var sameTopology = _winUiSceneVisible && HasSameWindowTopology(next);
+        var viewportChanged = _winUiWidth != frame.Width || _winUiHeight != frame.Height;
+        var placementChanged = !sameTopology || viewportChanged ||
+            _visibleScaleX != frame.Plan.Token.DeviceScaleX || _visibleScaleY != frame.Plan.Token.DeviceScaleY ||
+            !next.OfType<PlatformNativeSegment>().SequenceEqual(_visible.OfType<PlatformNativeSegment>());
+        var bank = sameTopology ? _visibleBank : 1 - _visibleBank;
+        var pool = _banks[bank];
+        while (pool.Count < frame.Slices.Length) pool.Add(new(this));
+        for (var i = 0; i < frame.Slices.Length; i++)
+            pool[i].Prepare(frame.Pixels!, frame.Slices[i], frame.Width, frame.Height);
+        _winUiBackdrop!.Prepare(frame.Plan, frame.Pixels, frame.Slices, frame.Width, frame.Height, handle => _controls[handle]);
+        foreach (var native in next.OfType<PlatformNativeSegment>())
+        {
+            var placement = native.Placement;
+            var origin = placement.Transform.Map(placement.Bounds.topLeft);
+            var bounds = Rect.fromLTWH(origin.dx, origin.dy, placement.Bounds.width, placement.Bounds.height);
+            if (placement.Clip is { } clip) bounds = bounds.intersect(clip);
+            _winUiControls.SetInputShields(_controls[placement.Handle], next.OfType<PlatformShieldSegment>()
+                .Where(shield => shield.PaintOrder > native.PaintOrder)
+                .Select(shield => ShieldBounds(shield.Shield).intersect(bounds)).Where(rect => !rect.isEmpty)
+                .Select(rect => new Rect(rect.left - origin.dx, rect.top - origin.dy, rect.right - origin.dx, rect.bottom - origin.dy)).ToArray());
+        }
+        if (frame.Slices.Length != 0) Marshal.ThrowExceptionForHR(Native.CommitComposition(pool[0].Surface));
+        // Re-raising every HWND publishes transient sibling orders through DWM,
+        // even when batched with DeferWindowPos. Animation-only frames must not
+        // change window visibility, size or z-order.
+        if (!placementChanged)
+        {
+            _visible = next;
+            Volatile.Write(ref _needsReplay, false);
+            _commits++;
+            AddTiming(_uiMilliseconds, System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds);
+            return;
+        }
+        _positions = [];
+        try
+        {
+            var handles = next.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle).ToHashSet();
+            foreach (var old in _visible.OfType<PlatformNativeSegment>())
+                if (!handles.Contains(old.Placement.Handle) && batch.Contains(old.Placement.Handle))
+                    RunNow(_ => batch.DetachAsync(old.Placement.Handle));
+            // Back-to-front HWND order preserves the live XAML render/input tree.
+            // CreateSurfaceFromHwnd only accepts layered GDI windows, not WinUI.
+            var raster = 0;
+            foreach (var part in next)
+            {
+                if (part is PlatformRasterSegment)
+                {
+                    var layer = pool[raster++];
+                    if (!sameTopology || viewportChanged)
+                        Position(new(layer.Hwnd, 0, 0, frame.Width, frame.Height, sameTopology ? 0x0054u : 0x0050u));
+                }
+                else if (part is PlatformNativeSegment native)
+                {
+                    RunNow(_ => batch.AttachAsync(native.Placement));
+                    if (!sameTopology) Position(new(_controls[native.Placement.Handle], 0, 0, 0, 0, 0x0013));
+                }
+                else if (part is PlatformBackdropSegment effect && (!sameTopology || viewportChanged))
+                    Position(new(_winUiBackdrop.WindowFor(effect.PaintOrder), 0, 0, frame.Width, frame.Height, sameTopology ? 0x0054u : 0x0050u));
+            }
+            for (var i = raster; i < pool.Count; i++) Position(new(pool[i].Hwnd, 0, 0, 0, 0, 0x0097));
+            if (bank != _visibleBank)
+                foreach (var old in _banks[_visibleBank]) Position(new(old.Hwnd, 0, 0, 0, 0, 0x0097));
+            if (!_winUiSceneVisible)
+            {
+                if (_sceneOutput is not null) Position(new(_sceneOutput.Hwnd, 0, 0, 0, 0, 0x0097));
+                Position(new(_host!.ChildHwnd, 0, 0, 0, 0, 0x0097));
+            }
+            CommitPositions();
+            _winUiPlacementBatches++;
+            _nativeSourcesToPaint.Clear();
+            _visible = next;
+            _visibleBank = bank;
+            _visibleRasterCount = raster;
+            _winUiSceneVisible = true;
+            _winUiWidth = frame.Width; _winUiHeight = frame.Height;
+            _visibleScaleX = frame.Plan.Token.DeviceScaleX; _visibleScaleY = frame.Plan.Token.DeviceScaleY;
+            Volatile.Write(ref _hasVisibleParts, next.Length != 0);
+            Volatile.Write(ref _needsReplay, false);
+            _commits++;
+            AddTiming(_uiMilliseconds, System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds);
+        }
+        finally { _positions = null; }
     }
 
     private bool HasSameWindowTopology(PlatformCompositionPart[] next)
@@ -520,6 +639,12 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     {
         _closed = true;
     }
+    internal void ReleaseWinUiIslands()
+    {
+        _dispatcher?.VerifyThread();
+        try { _winUiBackdrop?.Dispose(); }
+        finally { _winUiControls.CloseIslands(); }
+    }
     public void Dispose()
     {
         if (_dispatcher is null) return;
@@ -541,6 +666,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         _sceneOutput?.Dispose(); _sceneOutput = null;
         _visible = [];
         if (_coordinator is { } coordinator) _dispatcher.DrainShutdown(coordinator.DisposalCompletion);
+        _winUiBackdrop?.Dispose();
+        _winUiControls.Dispose();
         _webViews?.Dispose();
         _dispatcher.Dispose(); _dispatcher = null;
     }
@@ -548,15 +675,28 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     {
         var path = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_EVIDENCE");
         if (string.IsNullOrWhiteSpace(path)) return;
+        if (_captureProbe is null && _winUiSceneVisible && _commits >= 20 &&
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PLATFORM_CAPTURE") == "1")
+        {
+            var parent = _parent;
+            var count = int.TryParse(Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PLATFORM_CAPTURE_FRAMES"), out var requested)
+                ? Math.Clamp(requested, 1, 60) : 1;
+            _captureProbe = Task.Run(() => Native.CaptureProbe(parent, path + ".bmp", (uint)count));
+        }
         double[] rasterTimings;
         lock (_gate) rasterTimings = _rasterMilliseconds.ToArray();
         var payload = new
         {
-            backend = _webViews?.HasVisibleContent == true ? "Graphite/Vulkan atlas -> Windows.UI.Composition/WebView2/backdrop" :
+            backend = _winUiSceneVisible ? "Graphite/Vulkan raster slices + live WinUI 3 XAML Islands" :
+                _webViews?.HasVisibleContent == true ? "Graphite/Vulkan atlas -> Windows.UI.Composition/WebView2/backdrop" :
                 "Graphite/Vulkan GPU atlas -> single DirectComposition scene with live HWND surfaces", commits = _commits,
             readbackBytes = Interlocked.Read(ref _readbackBytes), dpi = Native.GetDpiForWindow(_parent),
             uploadedBytes = _uploadedBytes, reusedRasters = _reusedRasters,
             liveHwndSources = Volatile.Read(ref _liveHwndSources),
+            winUi = _winUiControls.Snapshot(),
+            winUiBackdrop = _winUiBackdrop?.Evidence,
+            winUiPlacementBatches = _winUiPlacementBatches,
+            captureProbeStatus = _captureProbe?.IsCompletedSuccessfully == true ? _captureProbe.Result : (int?)null,
             frame = frame.Plan.Token, native = _visible.OfType<PlatformNativeSegment>().Select(p => new {
                 handle = p.Placement.Handle, hwnd = _controls.GetValueOrDefault(p.Placement.Handle).ToInt64(),
                 bounds = Coordinates(p.Placement.Bounds), transform = p.Placement.Transform, order = p.PaintOrder }),
@@ -625,7 +765,16 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         }
         private nint WindowProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data)
         {
-            if (message == 0x0084) return 1;
+            if (message == 0x0084)
+            {
+                if (_owner._winUiSceneVisible)
+                {
+                    var point = new Native.Point { X = (short)(lparam.ToInt64() & 0xffff), Y = (short)((lparam.ToInt64() >> 16) & 0xffff) };
+                    Native.ScreenToClient(_owner._parent, ref point);
+                    if (_owner.NativeAt(point) != 0) return -1; // HTTRANSPARENT: native WinUI input.
+                }
+                return 1;
+            }
             if (message == 0x0021) return Native.SendMessageW(_owner._parent, message, (nuint)_owner._parent, lparam);
             // Native HWNDs are visually cloaked. Route unshielded native input
             // through their real window procedures; framework input keeps its owner.
@@ -708,6 +857,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     }
     private static class Native
     {
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_capture_probe_v1", CharSet = CharSet.Unicode)]
+        internal static extern int CaptureProbe(nint hwnd, string path, uint frameCount);
         [DllImport("dwmapi.dll")]
         internal static extern int DwmSetWindowAttribute(nint hwnd, uint attribute, ref int value, int size);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_scene_update_v1")]

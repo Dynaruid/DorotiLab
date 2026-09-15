@@ -58,6 +58,8 @@
     <ClCompile Include="src\acrylic_composition.cpp" />
     <ClCompile Include="src\composition_raster.cpp" />
     <ClCompile Include="src\platform_composition.cpp" />
+    <ClCompile Include="src\winui_composition.cpp" />
+    <ClCompile Include="src\platform_capture_probe.cpp" />
     <ClCompile Include="src\d3d12_output.cpp" />
     <ClInclude Include="include\doroti_windows_d3d12_output_v1.h" />
     <ClCompile Include="src\accessibility_bridge.cpp" />

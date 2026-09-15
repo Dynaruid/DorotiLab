@@ -12,6 +12,7 @@
     <DorotiNativeEntryKind>Win32-WinMain</DorotiNativeEntryKind>
     <DorotiWindowsAdapterDefault>HwndExactCpp</DorotiWindowsAdapterDefault>
     <UseMaui>false</UseMaui>
+    <UseWinUI>true</UseWinUI>
     <DefineConstants>$(DefineConstants);WINDOWS;DOROTI_WINDOWS_APPSDK</DefineConstants>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>

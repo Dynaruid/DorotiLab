@@ -261,7 +261,18 @@ class ProductHost final {
     QueueRender();
 
     MSG message{};
+    using PreTranslate = BOOL(WINAPI*)(const MSG*);
+    PreTranslate content_pre_translate = nullptr;
     while (GetMessageW(&message, nullptr, 0, 0) > 0) {
+      // XAML Islands can be created lazily after entering the host message loop.
+      // Let the Windows App SDK process island keyboard/focus messages first.
+      if (content_pre_translate == nullptr) {
+        if (auto module = GetModuleHandleW(L"Microsoft.UI.Windowing.Core.dll"))
+          content_pre_translate = reinterpret_cast<PreTranslate>(
+              GetProcAddress(module, "ContentPreTranslateMessage"));
+      }
+      if (content_pre_translate != nullptr && content_pre_translate(&message))
+        continue;
       TranslateMessage(&message);
       DispatchMessageW(&message);
     }
@@ -541,6 +552,9 @@ class ProductHost final {
         // This is a visibility/admission boundary, not a GPU completion receipt.
         ShowWindow(top_, SW_HIDE);
         StopRenderWorker();
+        // XAML Islands own child HWNDs. Close them while their parent still
+        // exists, after the raster worker has stopped retaining native views.
+        ReleasePlatformResources();
         DestroyWindow(top_);
         return 0;
       case WM_DESTROY:

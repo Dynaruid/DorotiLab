@@ -535,6 +535,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             // delayed qualification or metrics callback can enqueue work to
             // that HWND during shutdown.
             Host?.MarkNativeStopped();
+            _platformViews?.ReleaseWinUiIslands();
             if (Presenter.UsesCompositionTopology)
             {
                 if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic)

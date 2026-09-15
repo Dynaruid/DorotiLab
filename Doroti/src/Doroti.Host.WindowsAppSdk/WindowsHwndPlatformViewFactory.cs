@@ -16,6 +16,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
     internal bool Interleaved { get; init; }
     internal bool SiblingRasterTopology { get; init; }
     internal bool KeepCompositionSourceAlive { get; init; }
+    internal WindowsWinUiControls? WinUiControls { get; init; }
     private bool SupportsNativePlacement => _lowerCompositionTarget || SiblingRasterTopology;
     internal Action<PlatformViewHandle, nint>? Created { get; init; }
     internal Action<PlatformViewHandle>? Destroyed { get; init; }
@@ -41,11 +42,14 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             (request.Composition == PlatformViewComposition.NativeOverlay || Interleaved && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0;
         var backdrop = supported && SiblingRasterTopology && request.Composition == PlatformViewComposition.InterleavedComposition;
-        return new("Windows-HWND", Environment.OSVersion.VersionString, ViewType, supported,
+        return new(WinUiControls is null ? "Windows-HWND" : "Windows-WinUI3", Environment.OSVersion.VersionString, ViewType, supported,
             supported ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
             NativeBackdropBlur: backdrop,
-            Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.BoundedReadback,
-                PlatformViewInputPolicy.DirectNative, backdrop ? WindowsWebViewComposition.Effects : PlatformEffectSupport.Unsupported),
+            Capabilities: new(PlatformViewRepresentation.NativeHierarchy,
+                WinUiControls is null ? PlatformViewTransport.BoundedReadback : PlatformViewTransport.Native,
+                PlatformViewInputPolicy.DirectNative, backdrop
+                    ? WinUiControls is null ? WindowsWebViewComposition.Effects : WindowsWinUiBackdrop.Support
+                    : PlatformEffectSupport.Unsupported),
             Reason: supported ? null : SiblingRasterTopology
                 ? "The Windows sibling HWND path supports matching view types, B/C composition, translation and rectangular clipping only."
                 : "Generic HWND requires an explicit lower DComp target with WS_CLIPCHILDREN; standalone interleaving is not enabled.");
@@ -60,20 +64,21 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             (Native.GetWindowLongPtrW(_parent, -16).ToInt64() & 0x02000000) == 0)
             throw new InvalidOperationException("Native HWND parent must use WS_CLIPCHILDREN with a lower composition target.");
         var text = parameters.IsEmpty ? (_editor ? "Native editor" : "Native button") : System.Text.Encoding.UTF8.GetString(parameters.Span);
-        var hwnd = Native.CreateWindowExW((_editor ? 0x200u : 0u) | (SiblingRasterTopology ? 0x00080000u : 0u), _editor ? "EDIT" : "BUTTON", text,
+        var island = WinUiControls?.Create(_parent, _editor, text);
+        var hwnd = island?.Hwnd ?? Native.CreateWindowExW((_editor ? 0x200u : 0u) | (SiblingRasterTopology ? 0x00080000u : 0u), _editor ? "EDIT" : "BUTTON", text,
             0x40000000u | 0x00010000u | (_editor ? 0x00800080u : 0u), 0, 0, 0, 0, _parent, 0, 0, 0);
-        if (hwnd == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (hwnd == 0) { island?.Dispose(); throw new Win32Exception(Marshal.GetLastWin32Error()); }
         try
         {
             // Give live GDI controls their own redirected surface as well. Without
             // this, USER32 paints them into the parent bitmap below all layered slices.
-            if (SiblingRasterTopology && !Native.SetLayeredWindowAttributes(hwnd, 0, 255, 2))
+            if (island is null && SiblingRasterTopology && !Native.SetLayeredWindowAttributes(hwnd, 0, 255, 2))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
-            var instance = new Instance(this, hwnd, handle, onFocused);
+            var instance = new Instance(this, hwnd, handle, onFocused, island);
             Created?.Invoke(handle, hwnd);
             return ValueTask.FromResult<IPlatformViewInstance>(instance);
         }
-        catch { Native.DestroyWindow(hwnd); throw; }
+        catch { if (island is not null) island.Dispose(); else Native.DestroyWindow(hwnd); throw; }
     }
     private void VerifyThread()
     {
@@ -86,6 +91,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         private readonly PlatformViewHandle _handle;
         private readonly Action<PlatformViewHandle> _onFocused;
         private readonly Native.SubclassProc _callback;
+        private readonly WindowsWinUiControls.Island? _island;
         private nint _hwnd;
         private bool _inputEnabled = true;
         private bool _visible;
@@ -93,21 +99,34 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         private (int Left, int Top, int Right, int Bottom)? _clipRegion;
         private bool _sourceShown;
         private int _sourceWidth, _sourceHeight;
-        public Instance(WindowsHwndPlatformViewFactory owner, nint hwnd, PlatformViewHandle handle, Action<PlatformViewHandle> onFocused)
+        public Instance(WindowsHwndPlatformViewFactory owner, nint hwnd, PlatformViewHandle handle, Action<PlatformViewHandle> onFocused,
+            WindowsWinUiControls.Island? island)
         {
             _owner = owner; _hwnd = hwnd; _handle = handle; _onFocused = onFocused; _callback = WindowProc;
+            _island = island;
             if (!Native.SetWindowSubclass(hwnd, _callback, 1, 0)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (island is not null)
+            {
+                island.Focused = () => { if (_inputEnabled && _visible) { _owner.YieldFrameworkTextInput?.Invoke(); _onFocused(_handle); } };
+                island.ModifierKey = (message, key, flags) => Native.SendMessageW(_owner._parent, message, key, flags);
+                island.TakeFocus = () =>
+                {
+                    YieldFocus();
+                    Native.SendMessageW(_owner._parent, 0x100, 9, 0x000f0001);
+                    Native.SendMessageW(_owner._parent, 0x101, 9, unchecked((nint)0xc00f0001));
+                };
+            }
         }
         private nint WindowProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint subclassId, nuint data)
         {
             // Never let managed exceptions unwind through the unmanaged window procedure.
-            if (message is 0x100 or 0x101 or 0x104 or 0x105 &&
+            if (_island is null && message is 0x100 or 0x101 or 0x104 or 0x105 &&
                 (wparam is 9 or 16 or 17 or 18 or 160 or 161 or 162 or 163 or 164 or 165) && _owner.SiblingRasterTopology)
             {
                 Native.SendMessageW(_owner._parent, message, wparam, lparam);
                 if (wparam == 9) return 0;
             }
-            if (message == 0x102 && wparam == 9 && _owner.SiblingRasterTopology) return 0;
+            if (_island is null && message == 0x102 && wparam == 9 && _owner.SiblingRasterTopology) return 0;
             // Keep the OS target stable and route shielded input explicitly once.
             // HTTRANSPARENT alone is insufficient during activation/capture changes.
             if (message is >= 0x200 and <= 0x20e && _owner.InterceptsPoint is { } intercepts)
@@ -142,7 +161,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
                 try { if (_owner.InterceptsPoint?.Invoke(_paintOrder, lparam) == true) return 1; }
                 catch (Exception error) { System.Diagnostics.Trace.TraceError(error.ToString()); return 1; }
             }
-            if (message == 7 && _inputEnabled && _visible)
+            if (_island is null && message == 7 && _inputEnabled && _visible)
             {
                 try { _owner.YieldFrameworkTextInput?.Invoke(); _onFocused(_handle); }
                 catch (Exception exception) { System.Diagnostics.Trace.TraceError(exception.ToString()); }
@@ -216,8 +235,9 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         }
         private void YieldFocus()
         {
-            if (_hwnd != 0 && Native.GetFocus() == _hwnd) Native.SetFocus(_owner._parent);
-            if (_hwnd != 0 && Native.GetCapture() == _hwnd) Native.ReleaseCapture();
+            if (_hwnd != 0 && (Native.GetFocus() == _hwnd || Native.IsChild(_hwnd, Native.GetFocus()) || _island?.HasFocus == true))
+                Native.SetFocus(_owner._parent);
+            if (_hwnd != 0 && (Native.GetCapture() == _hwnd || Native.IsChild(_hwnd, Native.GetCapture()))) Native.ReleaseCapture();
         }
         public ValueTask DetachAsync()
         {
@@ -236,8 +256,15 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             {
                 if (!_inputEnabled || !_visible || !Native.IsWindowVisible(_hwnd))
                     throw new InvalidOperationException("A hidden, detached, or retiring platform HWND cannot receive focus.");
-                Native.SetFocus(_hwnd);
-                if (Native.GetFocus() != _hwnd) throw new InvalidOperationException("Native HWND focus request failed.");
+                if (_island is not null)
+                {
+                    if (!_island.Focus()) throw new InvalidOperationException("WinUI island focus request failed.");
+                }
+                else
+                {
+                    Native.SetFocus(_hwnd);
+                    if (Native.GetFocus() != _hwnd) throw new InvalidOperationException("Native HWND focus request failed.");
+                }
             }
             else YieldFocus();
             return ValueTask.CompletedTask;
@@ -245,6 +272,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         public ValueTask DisableInputAsync()
         {
             _owner.VerifyThread(); _inputEnabled = false;
+            _island?.DisableInput();
             if (_hwnd != 0) { YieldFocus(); Native.EnableWindow(_hwnd, false); }
             return ValueTask.CompletedTask;
         }
@@ -254,9 +282,12 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             if (_hwnd != 0)
             {
                 YieldFocus();
-                if (!Native.DestroyWindow(_hwnd)) throw new Win32Exception(Marshal.GetLastWin32Error());
-                _hwnd = 0;
+                if (_island is null && !Native.DestroyWindow(_hwnd)) throw new Win32Exception(Marshal.GetLastWin32Error());
             }
+            // The parent can destroy the child HWND before coordinator retirement.
+            // The DesktopWindowXamlSource still owns managed/native XAML resources.
+            _island?.Dispose();
+            _hwnd = 0;
             GC.KeepAlive(_callback);
             return ValueTask.CompletedTask;
         }
@@ -269,6 +300,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindow(nint hwnd);
         [DllImport("user32.dll")] internal static extern uint GetWindowThreadProcessId(nint hwnd, out uint processId);
         [DllImport("user32.dll")] internal static extern nint GetParent(nint hwnd);
+        [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool IsChild(nint parent, nint hwnd);
         [DllImport("user32.dll")] internal static extern nint GetMessageExtraInfo();
         [DllImport("user32.dll")] internal static extern bool ClientToScreen(nint hwnd, ref Point point);
         [DllImport("user32.dll")] internal static extern bool ScreenToClient(nint hwnd, ref Point point);
