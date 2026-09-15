@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Doroti.Skia.Rendering;
 using Doroti.Skia.Vulkan;
 using Silk.NET.Vulkan;

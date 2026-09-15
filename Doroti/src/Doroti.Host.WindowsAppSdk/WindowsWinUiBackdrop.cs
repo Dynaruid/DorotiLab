@@ -6,7 +6,6 @@ using Doroti.Ui;
 using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Content;
-using SkiaSharp;
 
 namespace Doroti.Host.WindowsAppSdk;
 

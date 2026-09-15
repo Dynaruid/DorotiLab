@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using Doroti.Tooling;
 
 namespace Doroti.DartToCSharp;
 

@@ -1,15 +1,8 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/typography.dart
 #pragma warning disable CS8600, CS8603
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
-using static Doroti.Runtime.FoundationRuntimePorts;
-using Match = Doroti.Runtime.DartMatch;
-using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 

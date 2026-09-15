@@ -1,15 +1,8 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/radio.dart
 #pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
-using static Doroti.Runtime.FoundationRuntimePorts;
-using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Material;
 

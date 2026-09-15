@@ -1,10 +1,8 @@
 // Copyright 2021 The Flutter team. All rights reserved.
 // Adapted from component_screen.dart; BSD license in LICENSE.flutter.
-using Doroti.Framework.Gestures;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
 using Doroti.Framework.Widgets;
-using Doroti.Ui;
 using M = Doroti.Framework.Material;
 
 namespace MaterialSample;

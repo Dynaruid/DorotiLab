@@ -1,8 +1,6 @@
-using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Doroti.Hosting;
-using Doroti.Skia.RuntimeEffects;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
 using Microsoft.Web.WebView2.Core;

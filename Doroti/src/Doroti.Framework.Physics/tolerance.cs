@@ -1,8 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/physics/tolerance.dart
-using System;
-using Doroti.Runtime;
-
 namespace Doroti.Framework.Physics;
 
 public class Tolerance

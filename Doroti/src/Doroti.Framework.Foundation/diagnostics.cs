@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/diagnostics.dart
-using System.Collections;
 using System.Globalization;
 using System.Text;
 using Doroti.Runtime;

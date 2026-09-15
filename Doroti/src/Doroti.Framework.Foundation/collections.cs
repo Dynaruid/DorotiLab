@@ -1,10 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Doroti.Runtime;
-using static Doroti.Runtime.FoundationRuntimePorts;
 
 namespace Doroti.Framework.Foundation;
 

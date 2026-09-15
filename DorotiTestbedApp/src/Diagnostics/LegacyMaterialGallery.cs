@@ -1,15 +1,10 @@
-using Doroti.Hosting;
-using Doroti.Runtime;
 using Doroti.Ui;
-using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Material = Doroti.Framework.Material;
 using ListView = Doroti.Framework.Widgets.ListView;
-using Locale = Doroti.Ui.Locale;
 using Rect = Doroti.Ui.Rect;
 using Semantics = Doroti.Framework.Widgets.Semantics;
-using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
 internal static class DemoTheme

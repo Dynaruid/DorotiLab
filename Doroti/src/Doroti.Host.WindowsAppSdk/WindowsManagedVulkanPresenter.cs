@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Doroti.Skia.RuntimeEffects;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Silk.NET.Core;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Core.Native;
 using Silk.NET.Vulkan;

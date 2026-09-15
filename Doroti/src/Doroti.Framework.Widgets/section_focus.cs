@@ -1,5 +1,3 @@
-using Doroti.Framework.Services;
-
 namespace Doroti.Framework.Widgets;
 
 /// <summary>Connects section-boundary Tab traversal to indexed materialization.

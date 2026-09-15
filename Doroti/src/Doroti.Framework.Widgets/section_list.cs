@@ -1,5 +1,3 @@
-using Doroti.Framework.Rendering;
-
 namespace Doroti.Framework.Widgets;
 
 /// <summary>Variable-height indexed sections with explicit metric revisions and
