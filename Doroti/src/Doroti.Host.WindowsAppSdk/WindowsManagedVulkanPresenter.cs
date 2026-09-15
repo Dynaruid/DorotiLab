@@ -108,6 +108,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private double _viewportScale = 1;
     private nint _topLevelWindow;
     internal nint PlatformRasterWindow { get; set; }
+    internal bool PreservePrimaryRaster { get; set; }
+    internal void WaitForPrimaryCopyCompletion() =>
+        Marshal.ThrowExceptionForHR(UnbindCompositionBuffer(_presentationContext, 0, out _));
     internal nint CreatePlatformRasterSurface(nint window)
     {
         if (_presentationContext == 0) throw new InvalidOperationException("Composition device is not ready.");
@@ -613,6 +616,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             throw new InvalidOperationException("No Vulkan Composition buffer is admitted.");
 
         LastPresentSucceeded = false;
+        PreservePrimaryRaster = false;
         MovingFrameKey? prepareRequest;
         lock (_viewportGate) prepareRequest = _movingPrepareRequest;
         try
@@ -1013,12 +1017,13 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             _backingImage, graphiteState is { } tracked ? (ImageLayout)tracked.Layout : ImageLayout.ColorAttachmentOptimal,
             ImageLayout.TransferSrcOptimal,
             _useGraphite ? AccessFlags.MemoryWriteBit : AccessFlags.ColorAttachmentWriteBit, AccessFlags.TransferReadBit);
+        var preservePrimary = PreservePrimaryRaster && _retainedFrameInitialized;
         acquireBarriers[1] = ImageBarrier(
-            _retainedFrameImage, _retainedFrameLayout, ImageLayout.TransferDstOptimal,
+            _retainedFrameImage, _retainedFrameLayout, preservePrimary ? ImageLayout.TransferSrcOptimal : ImageLayout.TransferDstOptimal,
             _retainedFrameLayout == ImageLayout.Undefined
                 ? 0
                 : AccessFlags.TransferReadBit,
-            AccessFlags.TransferWriteBit);
+            preservePrimary ? AccessFlags.TransferReadBit : AccessFlags.TransferWriteBit);
         acquireBarriers[2] = ExternalImageBarrier(
             slot.Image, slot.Layout, ImageLayout.TransferDstOptimal,
             Vk.QueueFamilyExternal, _queueFamily,
@@ -1030,10 +1035,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             PipelineStageFlags.TransferBit, 0,
             0, null, 0, null, 3, acquireBarriers);
 
-        // Refresh the complete retained capacity. The renderer has cleared it
-        // to the app background and painted this frame's exact viewport at the
-        // top-level origin, so an old layout cannot remain in any overscan
-        // pixels exposed by an asynchronously moving HWND.
+        // Ordinary frames refresh the full retained capacity. Platform raster
+        // frames preserve the previous primary image until the UI can switch
+        // outputs, instead of exposing the cleared offscreen-transport backing.
         var retainedCopyFromBacking = new ImageCopy
         {
             SrcSubresource = ColorSubresourceLayers(),
@@ -1042,17 +1046,20 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 checked((uint)_backingCapacityWidth),
                 checked((uint)_backingCapacityHeight), 1),
         };
-        _vk.CmdCopyImage(
-            _commandBuffer, _backingImage, ImageLayout.TransferSrcOptimal,
-            _retainedFrameImage, ImageLayout.TransferDstOptimal, 1,
-            &retainedCopyFromBacking);
+        if (!preservePrimary)
+        {
+            _vk.CmdCopyImage(
+                _commandBuffer, _backingImage, ImageLayout.TransferSrcOptimal,
+                _retainedFrameImage, ImageLayout.TransferDstOptimal, 1,
+                &retainedCopyFromBacking);
 
-        var retainedReady = ImageBarrier(
-            _retainedFrameImage, ImageLayout.TransferDstOptimal, ImageLayout.TransferSrcOptimal,
-            AccessFlags.TransferWriteBit, AccessFlags.TransferReadBit);
-        ObservedPipelineBarrier(
-            _commandBuffer, PipelineStageFlags.TransferBit, PipelineStageFlags.TransferBit,
-            0, 0, null, 0, null, 1, &retainedReady);
+            var retainedReady = ImageBarrier(
+                _retainedFrameImage, ImageLayout.TransferDstOptimal, ImageLayout.TransferSrcOptimal,
+                AccessFlags.TransferWriteBit, AccessFlags.TransferReadBit);
+            ObservedPipelineBarrier(
+                _commandBuffer, PipelineStageFlags.TransferBit, PipelineStageFlags.TransferBit,
+                0, 0, null, 0, null, 1, &retainedReady);
+        }
 
         var retainedCopy = new ImageCopy
         {

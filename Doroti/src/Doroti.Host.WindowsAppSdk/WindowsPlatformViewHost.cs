@@ -8,9 +8,9 @@ using SkiaSharp;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-/// <summary>Live HWND interleaving. Raster slices use the active Graphite recorder,
-/// then bounded GPU readback and premultiplied DirectComposition child surfaces. Native content
-/// is never captured or replaced. Physical atomic display is not advertised.</summary>
+/// <summary>Live HWND interleaving in one DirectComposition output tree. Raster slices
+/// use the active Graphite recorder and bounded GPU readback. Layered native HWND
+/// surfaces stay live; physical atomic display is not advertised.</summary>
 internal sealed class WindowsPlatformViewHost : IDisposable
 {
     private readonly Dictionary<PlatformViewHandle, nint> _controls = [];
@@ -18,6 +18,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private readonly object _gate = new();
     private WindowsWebViewComposition? _webViews;
     private readonly List<CompositionRaster>[] _banks = [[], []];
+    private CompositionRaster? _sceneOutput;
     private readonly Dictionary<string, IPlatformViewFactory> _factories = [];
     private WindowsPlatformViewDispatcher? _dispatcher;
     private WindowsManagedProductHost? _host;
@@ -37,6 +38,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     internal bool NeedsReplay => Volatile.Read(ref _needsReplay);
     private long _commits;
     private long _readbackBytes;
+    private long _uploadedBytes, _reusedRasters;
+    private int _liveHwndSources;
+    private readonly HashSet<nint> _nativeSourcesToPaint = [];
     private int _nativePointerDowns;
     private int _scriptPointerDowns;
     private readonly Queue<double> _rasterMilliseconds = new();
@@ -89,8 +93,21 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             {
                 Interleaved = presenter is not null,
                 SiblingRasterTopology = presenter is not null,
-                Created = (handle, hwnd) => _controls.Add(handle, hwnd),
-                Destroyed = handle => _controls.Remove(handle),
+                KeepCompositionSourceAlive = presenter is not null,
+                Created = (handle, hwnd) =>
+                {
+                    // Keep the real control alive for native input and painting;
+                    // its live DComp wrapper is displayed in the scene transaction.
+                    int cloak = 1;
+                    Marshal.ThrowExceptionForHR(Native.DwmSetWindowAttribute(hwnd, 13, ref cloak, sizeof(int)));
+                    _controls.Add(handle, hwnd);
+                    Volatile.Write(ref _liveHwndSources, _controls.Count);
+                },
+                Destroyed = handle =>
+                {
+                    if (_controls.Remove(handle, out var hwnd)) _nativeSourcesToPaint.Remove(hwnd);
+                    Volatile.Write(ref _liveHwndSources, _controls.Count);
+                },
                 InterceptsPoint = Intercepts,
                 YieldFrameworkTextInput = host.ClearClient,
                 PointerDown = (handle, screenPoint, extra) =>
@@ -104,7 +121,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                             screenX = (short)(screenPoint.ToInt64() & 0xffff), screenY = (short)((screenPoint.ToInt64() >> 16) & 0xffff),
                             extra = extra.ToInt64(), handle }));
                 },
-                StagePlacement = (hwnd, x, y, width, height, visible) => Position(new(hwnd, x, y, width, height, 0x0010u | (visible ? 0x0040u : 0x0080u))),
+                StagePlacement = (hwnd, x, y, width, height, visible) => Position(new(hwnd, x, y, width, height, 0x0014u | (visible ? 0x0040u : 0x0080u))),
+                SourceSurfaceChanged = hwnd => _nativeSourcesToPaint.Add(hwnd),
             };
             _factories.Add(factory.ViewType, factory);
         }
@@ -132,33 +150,42 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             ? PlatformViewComposition.NativeOverlay : PlatformViewComposition.InterleavedComposition;
         var plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!, composition,
             effects: WindowsWebViewComposition.Effects);
-        if (plan.Parts.OfType<PlatformBackdropSegment>().Any() &&
-            plan.Parts.OfType<PlatformNativeSegment>().Any(p => !_webViews!.Contains(p.Placement.Handle)))
-        { plan.Dispose(); throw new NotSupportedException("Windows native backdrop requires CompositionVisual attachments, not legacy HWNDs."); }
+        var nativeParts = plan.Parts.OfType<PlatformNativeSegment>().ToArray();
+        if (nativeParts.Any(p => _webViews!.Contains(p.Placement.Handle)) &&
+            nativeParts.Any(p => !_webViews!.Contains(p.Placement.Handle)))
+        { plan.Dispose(); throw new NotSupportedException("Windows cannot mix WebView composition visuals and sibling HWNDs in one frame."); }
+        if (plan.Parts.OfType<PlatformBackdropSegment>().Any(p =>
+                Math.Abs(p.SigmaX - p.SigmaY) > .001 || Math.Abs(token.DeviceScaleX - token.DeviceScaleY) > .001))
+        { plan.Dispose(); throw new NotSupportedException("Windows Composition requires isotropic backdrop sigma and device scale."); }
+        if (plan.Parts.OfType<PlatformBackdropSegment>().Any(p => p.SigmaX * token.DeviceScaleX > 128))
+        { plan.Dispose(); throw new NotSupportedException("Windows Composition backdrop physical sigma must not exceed 128."); }
         SKSurface? atlas = null;
         try
         {
             var rasters = plan.Parts.OfType<PlatformRasterSegment>().ToArray();
             if (plan.Parts.OfType<PlatformShieldSegment>().Any(p => !p.Shield.Transform.IsAxisAligned))
                 throw new NotSupportedException("Windows native input shields require axis-aligned rectangles.");
-            if (!plan.HasNativeContent)
+            if (!plan.HasNativeContent && !(Volatile.Read(ref _hasVisibleParts) && Volatile.Read(ref _liveHwndSources) != 0))
             {
                 foreach (var raster in rasters) renderer.DrawPlatformRasterSegment(canvas, raster.Commands, width, height);
                 _recording = new(plan, null, null, width, height, []) { Started = started };
                 return;
             }
-            var visualComposition = plan.Parts.OfType<PlatformNativeSegment>().All(p => _webViews!.Contains(p.Placement.Handle));
+            var visualComposition = nativeParts.Length != 0 && nativeParts.All(p => _webViews!.Contains(p.Placement.Handle));
+            // Keep the previous primary image until the UI owner admits the first
+            // complete HWND scene. Never publish the cleared transport backing.
+            _presenter!.PreservePrimaryRaster = !visualComposition;
             var slices = new List<WindowsCompositionSlice>();
             var atlasHeight = 0;
             foreach (var raster in rasters)
             {
                 if (visualComposition && raster.PaintOrder != 0 && !SkiaPlatformRasterContent.HasDrawing(raster.Commands)) continue;
                 var bounds = new SKRectI(0, 0, width, height);
-                if (visualComposition && raster.PaintOrder != 0)
+                if (raster.PaintOrder != 0)
                 {
                     var coverage = SkiaPlatformRasterContent.Split(raster.Commands, width, height);
-                    if (coverage.Count == 0) continue;
-                    bounds = new(coverage.Min(s => s.Bounds.Left), coverage.Min(s => s.Bounds.Top),
+                    if (coverage.Count == 0 && visualComposition) continue;
+                    bounds = coverage.Count == 0 ? new(0, 0, 1, 1) : new(coverage.Min(s => s.Bounds.Left), coverage.Min(s => s.Bounds.Top),
                         coverage.Max(s => s.Bounds.Right), coverage.Max(s => s.Bounds.Bottom));
                 }
                 slices.Add(new(raster, bounds, atlasHeight)); atlasHeight = checked(atlasHeight + bounds.Height);
@@ -269,6 +296,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             if (next.OfType<PlatformNativeSegment>().Any(p => _webViews!.Contains(p.Placement.Handle)))
             {
                 _webViews!.Commit(frame.Plan, frame.Pixels, frame.Slices, batch);
+                _sceneOutput?.Hide();
                 foreach (var layer in _banks[_visibleBank]) layer.Hide();
                 _visible = next;
                 Volatile.Write(ref _hasVisibleParts, next.Length != 0);
@@ -277,36 +305,95 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 return true;
             }
             if (_webViews!.HasVisibleContent) _webViews.Clear(batch);
-            // Repainting a spinner or hover must not replace the HWND underneath
-            // the pointer. Keep the visible siblings until their layer topology
-            // changes; alternating hidden banks on every frame flickers Acrylic
-            // and repeatedly invalidates native painting and mouse targeting.
+            // Keep source banks while their topology is stable. The one visible
+            // scene output stays mounted across bank changes, preserving input
+            // targeting while native and raster geometry commit in the same tree.
             var reuseVisible = HasSameWindowTopology(next);
             var placementChanged = !reuseVisible || frame.Plan.Token.DeviceScaleX != _visibleScaleX ||
                 frame.Plan.Token.DeviceScaleY != _visibleScaleY || !next.OfType<PlatformNativeSegment>()
                 .SequenceEqual(_visible.OfType<PlatformNativeSegment>());
             var bank = reuseVisible ? _visibleBank : 1 - _visibleBank;
             var pool = _banks[bank];
+            var layerCount = frame.Rasters.Length + next.OfType<PlatformBackdropSegment>().Count();
             try
             {
-                while (pool.Count < frame.Rasters.Length) pool.Add(new(this));
-                for (var index = 0; index < frame.Rasters.Length; index++)
-                    pool[index].Prepare(frame.Pixels!, index * frame.Height, frame.Width, frame.Height);
+                while (pool.Count < layerCount) pool.Add(new(this));
+                var sources = new List<Native.CompositionSource>();
+                int layerIndex = 0, rasterIndex = 0;
+                foreach (var part in next)
+                {
+                    if (part is PlatformRasterSegment && frame.Pixels is not null)
+                    {
+                        var layer = pool[layerIndex++];
+                        layer.Prepare(frame.Pixels!, frame.Slices[rasterIndex++], frame.Width, frame.Height);
+                        sources.Add(new() { Raster = layer.Surface });
+                    }
+                    else if (part is PlatformBackdropSegment effect)
+                    {
+                        var layer = pool[layerIndex++];
+                        layer.PrepareBackdrop(sources.ToArray(), effect, frame);
+                        sources.Add(new() { Raster = layer.Surface });
+                    }
+                    else if (part is PlatformNativeSegment native && native.Placement.Visible)
+                    {
+                        var placement = native.Placement;
+                        var origin = placement.Transform.Map(placement.Bounds.topLeft);
+                        var bounds = Rect.fromLTWH(origin.dx, origin.dy, placement.Bounds.width, placement.Bounds.height);
+                        var clip = placement.Clip is { } clipping ? bounds.intersect(clipping) : bounds;
+                        if (clip.isEmpty) continue;
+                        var scale = frame.Plan.Token.DeviceScaleX;
+                        sources.Add(new() { Hwnd = (ulong)_controls[placement.Handle], Generation = (ulong)placement.Handle.InstanceGeneration,
+                            X = Pixel(origin.dx), Y = Pixel(origin.dy),
+                            Left = Pixel(clip.left) - Pixel(origin.dx), Top = Pixel(clip.top) - Pixel(origin.dy),
+                            Right = Pixel(clip.right) - Pixel(origin.dx), Bottom = Pixel(clip.bottom) - Pixel(origin.dy) });
+                        float Pixel(double value) => (float)Math.Round(value * scale);
+                    }
+                }
+                if (layerCount != 0)
+                {
+                    _sceneOutput ??= new(this);
+                    _sceneOutput.PrepareScene(sources.ToArray(), frame.Width, frame.Height);
+                }
                 if (placementChanged)
                 {
                     _positions = [];
-                    Apply(next, pool, frame.Rasters.Length, batch);
+                    Apply(next, pool, layerCount, batch);
                     if (!reuseVisible)
                         foreach (var old in _banks[_visibleBank]) Position(new(old.Hwnd, 0, 0, 0, 0, 0x0097));
                     CommitPositions();
                 }
+                // Populate newly shown/resized native backing before the first
+                // visible scene commit. Pure movement never invalidates it.
+                foreach (var hwnd in _nativeSourcesToPaint)
+                    Check(Native.RedrawWindow(hwnd, 0, 0, 0x0585));
+                _nativeSourcesToPaint.Clear();
+                if (layerCount != 0)
+                {
+                    Marshal.ThrowExceptionForHR(Native.CommitComposition(_sceneOutput!.Surface));
+                    if (!Native.IsWindowVisible(_sceneOutput.Hwnd))
+                    {
+                        // Only a presenter handoff waits. Steady scrolling never
+                        // waits for DWM and retains the same visible output HWND.
+                        Marshal.ThrowExceptionForHR(Native.WaitForCompositionCommit(_sceneOutput.Surface));
+                        _positions = [];
+                        Position(new(_sceneOutput.Hwnd, 0, 0, 0, 0, 0x0053));
+                        Position(new(_host!.ChildHwnd, 0, 0, 0, 0, 0x0097));
+                        CommitPositions();
+                    }
+                }
+                else if (_sceneOutput is not null && !Native.IsWindowVisible(_host!.ChildHwnd))
+                {
+                    _presenter!.WaitForPrimaryCopyCompletion();
+                    _positions = [];
+                    Position(new(_host!.ChildHwnd, 0, 0, 0, 0, 0x0057));
+                    Position(new(_sceneOutput.Hwnd, 0, 0, 0, 0, 0x0097));
+                    CommitPositions();
+                }
                 _visible = next;
                 _visibleBank = bank;
-                _visibleRasterCount = frame.Rasters.Length;
+                _visibleRasterCount = layerCount;
                 _visibleScaleX = frame.Plan.Token.DeviceScaleX;
                 _visibleScaleY = frame.Plan.Token.DeviceScaleY;
-                if (placementChanged)
-                    foreach (var hwnd in _controls.Values) Native.RedrawWindow(hwnd, 0, 0, 0x0001 | 0x0080 | 0x0100 | 0x0400);
                 Volatile.Write(ref _hasVisibleParts, frame.Rasters.Length != 0);
                 Volatile.Write(ref _needsReplay, false);
                 _commits++;
@@ -326,12 +413,13 @@ internal sealed class WindowsPlatformViewHost : IDisposable
 
     private bool HasSameWindowTopology(PlatformCompositionPart[] next)
     {
-        var previousWindows = _visible.Where(p => p is PlatformRasterSegment or PlatformNativeSegment).ToArray();
-        var nextWindows = next.Where(p => p is PlatformRasterSegment or PlatformNativeSegment).ToArray();
+        var previousWindows = _visible.Where(p => p is PlatformRasterSegment or PlatformNativeSegment or PlatformBackdropSegment).ToArray();
+        var nextWindows = next.Where(p => p is PlatformRasterSegment or PlatformNativeSegment or PlatformBackdropSegment).ToArray();
         return nextWindows.Length != 0 && previousWindows.Length == nextWindows.Length &&
             previousWindows.Zip(nextWindows).All(pair => (pair.First, pair.Second) switch
             {
                 (PlatformRasterSegment, PlatformRasterSegment) => true,
+                (PlatformBackdropSegment, PlatformBackdropSegment) => true,
                 (PlatformNativeSegment before, PlatformNativeSegment after) => before.Placement.Handle == after.Placement.Handle,
                 _ => false,
             });
@@ -349,8 +437,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         var raster = 0;
         foreach (var part in parts)
         {
-            if (part is PlatformRasterSegment && raster < rasterCount)
-                Position(new(layers[raster++].Hwnd, 0, 0, 0, 0, 0x0053));
+            if (part is PlatformRasterSegment or PlatformBackdropSegment && raster < rasterCount)
+                Position(new(layers[raster++].Hwnd, 0, 0, 0, 0, 0x0097));
             else if (part is PlatformNativeSegment native)
             {
                 RunNow(_ => batch.AttachAsync(native.Placement));
@@ -408,20 +496,24 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         return shield.Clip is { } clip ? bounds.intersect(clip) : bounds;
     }
 
-    private bool IsOverNative(nint packedScreenPoint)
+    private nint NativeAt(Native.Point point)
     {
-        var point = new Native.Point { X = (short)(packedScreenPoint.ToInt64() & 0xffff), Y = (short)((packedScreenPoint.ToInt64() >> 16) & 0xffff) };
-        if (!Native.ScreenToClient(_parent, ref point)) return false;
         var scale = Native.GetDpiForWindow(_parent) / 96d;
         var logical = new Offset(point.X / scale, point.Y / scale);
-        return _visible.OfType<PlatformNativeSegment>().Any(native =>
+        foreach (var native in _visible.OfType<PlatformNativeSegment>().Reverse())
         {
             var placement = native.Placement;
             var origin = placement.Transform.Map(placement.Bounds.topLeft);
             var bounds = Rect.fromLTWH(origin.dx, origin.dy, placement.Bounds.width, placement.Bounds.height);
             if (placement.Clip is { } clip) bounds = bounds.intersect(clip);
-            return placement.Visible && bounds.contains(logical) && !Intercepts(native.PaintOrder, packedScreenPoint);
-        });
+            if (placement.Visible && bounds.contains(logical) &&
+                !_visible.OfType<PlatformShieldSegment>().Any(shield => shield.PaintOrder > native.PaintOrder && ShieldBounds(shield.Shield).contains(logical)))
+            {
+                var hwnd = _controls.GetValueOrDefault(placement.Handle);
+                return hwnd != 0 && Native.IsWindowEnabled(hwnd) ? hwnd : 0;
+            }
+        }
+        return 0;
     }
 
     internal void BeginClose()
@@ -446,6 +538,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         _recording?.Dispose(); _recording = null;
         lock (_gate) { foreach (var frame in _ready.Values) frame.Dispose(); _ready.Clear(); }
         foreach (var bank in _banks) foreach (var layer in bank) layer.Dispose();
+        _sceneOutput?.Dispose(); _sceneOutput = null;
         _visible = [];
         if (_coordinator is { } coordinator) _dispatcher.DrainShutdown(coordinator.DisposalCompletion);
         _webViews?.Dispose();
@@ -460,17 +553,22 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         var payload = new
         {
             backend = _webViews?.HasVisibleContent == true ? "Graphite/Vulkan atlas -> Windows.UI.Composition/WebView2/backdrop" :
-                "Graphite/Vulkan GPU atlas -> premultiplied DirectComposition HWND", commits = _commits,
+                "Graphite/Vulkan GPU atlas -> single DirectComposition scene with live HWND surfaces", commits = _commits,
             readbackBytes = Interlocked.Read(ref _readbackBytes), dpi = Native.GetDpiForWindow(_parent),
+            uploadedBytes = _uploadedBytes, reusedRasters = _reusedRasters,
+            liveHwndSources = Volatile.Read(ref _liveHwndSources),
             frame = frame.Plan.Token, native = _visible.OfType<PlatformNativeSegment>().Select(p => new {
                 handle = p.Placement.Handle, hwnd = _controls.GetValueOrDefault(p.Placement.Handle).ToInt64(),
                 bounds = Coordinates(p.Placement.Bounds), transform = p.Placement.Transform, order = p.PaintOrder }),
             shields = _visible.OfType<PlatformShieldSegment>().Select(p => new { bounds = Coordinates(ShieldBounds(p.Shield)), order = p.PaintOrder }),
             sessionCommit = _session?.LastCommit, sessionPendingRetirements = _session?.PendingRetirements,
             rasterCount = frame.Rasters.Length, physicalAtomicDisplay = "notVerified",
+            hwndBackdrops = _visible.OfType<PlatformBackdropSegment>().Select(effect => new {
+                bounds = Coordinates(effect.Bounds), effect.SigmaX, effect.SigmaY,
+                source = "DirectComposition live layered HWND and preceding raster surfaces", nativeContentCaptured = false }),
             rasterSlices = frame.Slices.Select(slice => new { order = slice.Segment.PaintOrder,
                 bounds = new[] { slice.Bounds.Left, slice.Bounds.Top, slice.Bounds.Right, slice.Bounds.Bottom }, slice.AtlasY }),
-            alphaRegionRectangles = _banks[_visibleBank].Take(frame.Rasters.Length).Select(layer => layer.RegionRectangles),
+            compositionOutputCount = _sceneOutput is null || frame.Rasters.Length == 0 ? 0 : 1,
             probe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_PROBE_STATE"),
             effectProbe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_EFFECT_PROBE_STATE"), webView = _webViews?.Evidence,
             timings = new { sampleLimit = 128, rasterAndReadbackP50Ms = Percentile(rasterTimings, .5),
@@ -504,11 +602,11 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     {
         private nint _hwnd, _surface;
         private int _width, _height;
-        private int[]? _regionData;
+        private WindowsCompositionSlice? _rasterContent;
         private readonly Native.SubclassProc _callback;
         private readonly WindowsPlatformViewHost _owner;
         internal nint Hwnd => _hwnd;
-        internal int RegionRectangles { get; private set; }
+        internal nint Surface => _surface;
         internal CompositionRaster(WindowsPlatformViewHost owner)
         {
             _owner = owner;
@@ -519,17 +617,18 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             try
             {
                 Check(Native.SetWindowSubclass(_hwnd, _callback, 1, 0));
-                _surface = owner._presenter!.CreatePlatformRasterSurface(_hwnd);
+                var shared = owner._banks.SelectMany(bank => bank).FirstOrDefault();
+                if (shared is null) _surface = owner._presenter!.CreatePlatformRasterSurface(_hwnd);
+                else Marshal.ThrowExceptionForHR(Native.CreateSharedCompositionRaster(shared.Surface, (ulong)_hwnd, out _surface));
             }
             catch { Native.DestroyWindow(_hwnd); _hwnd = 0; throw; }
         }
         private nint WindowProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data)
         {
-            if (message == 0x0084) return _owner.IsOverNative(lparam) ? -1 : 1;
+            if (message == 0x0084) return 1;
             if (message == 0x0021) return Native.SendMessageW(_owner._parent, message, (nuint)_owner._parent, lparam);
-            // HTTRANSPARENT falls through sibling windows, not reliably back
-            // into the parent's clipped client. Forward framework areas to the
-            // input owner; let unshielded native regions hit their own HWND.
+            // Native HWNDs are visually cloaked. Route unshielded native input
+            // through their real window procedures; framework input keeps its owner.
             if (message is >= 0x200 and <= 0x20e)
             {
                 var point = new Native.Point { X = (short)(lparam.ToInt64() & 0xffff), Y = (short)((lparam.ToInt64() >> 16) & 0xffff) };
@@ -540,75 +639,58 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 }
                 var packed = (nint)((uint)(ushort)point.X | ((uint)(ushort)point.Y << 16));
                 var forwarded = message switch { 0x203 => 0x201u, 0x206 => 0x204u, 0x209 => 0x207u, _ => message };
+                if (message <= 0x209 && _owner.NativeAt(point) is var native && native != 0)
+                {
+                    Native.ClientToScreen(_owner._parent, ref point);
+                    Native.ScreenToClient(native, ref point);
+                    var nativePoint = (nint)((uint)(ushort)point.X | ((uint)(ushort)point.Y << 16));
+                    return Native.SendMessageW(native, message, wparam, nativePoint);
+                }
                 return Native.SendMessageW(_owner._parent, forwarded, wparam, packed);
             }
             if (message == 0x20) return Native.SendMessageW(_owner._parent, message, (nuint)_owner._parent, lparam);
             return Native.DefSubclassProc(hwnd, message, wparam, lparam);
         }
-        internal unsafe void Prepare(SkiaGraphiteReadback image, int sourceY, int width, int height)
+        internal unsafe void Prepare(SkiaGraphiteReadback image, WindowsCompositionSlice slice, int frameWidth, int frameHeight)
         {
+            if (_width == frameWidth && _height == frameHeight && _rasterContent is { } previous &&
+                previous.Bounds == slice.Bounds && SkiaPlatformRasterContent.Equivalent(previous.Segment.Commands, slice.Segment.Commands))
+            {
+                _owner._reusedRasters++;
+                return;
+            }
+            var sourceY = slice.AtlasY;
+            var width = slice.Bounds.Width; var height = slice.Bounds.Height;
             if (sourceY < 0 || width <= 0 || height <= 0 || image.RowBytes < checked(width * 4) ||
                 ((long)sourceY + height - 1) * image.RowBytes + (long)width * 4 > image.Pixels.LongLength)
                 throw new ArgumentOutOfRangeException(nameof(sourceY));
             fixed (byte* bytes = image.Pixels)
             {
                 var pixels = bytes + checked(sourceY * image.RowBytes);
-                Marshal.ThrowExceptionForHR(Native.UpdateCompositionRaster(_surface, (nint)pixels,
-                    checked((uint)width), checked((uint)height), checked((uint)image.RowBytes)));
-                // Native sibling clipping still needs the slice's painted region.
-                ApplyAlphaRegion(pixels, width, height, image.RowBytes);
+                Marshal.ThrowExceptionForHR(Native.UpdateCompositionRasterRegion(_surface, (nint)pixels,
+                    checked((uint)width), checked((uint)height), checked((uint)image.RowBytes), slice.Bounds.Left, slice.Bounds.Top));
+                _owner._uploadedBytes += (long)width * height * 4;
             }
-            if (_width != width || _height != height)
-            {
-                Check(Native.SetWindowPos(_hwnd, 0, 0, 0, width, height, 0x0010 | 0x0004));
-                _width = width; _height = height;
-            }
+            // Raster source windows stay hidden; only the shared scene output is sized.
+            _width = frameWidth; _height = frameHeight;
+            _rasterContent = slice;
         }
-        private unsafe void ApplyAlphaRegion(byte* pixels, int width, int height, int rowBytes)
+        internal void PrepareScene(Native.CompositionSource[] sources, int width, int height)
         {
-            var rectangles = new List<(int Left, int Top, int Right, int Bottom)>();
-            var previous = new Dictionary<(int Left, int Right), int>();
-            for (var y = 0; y < height; y++)
-            {
-                var current = new Dictionary<(int Left, int Right), int>();
-                for (var x = 0; x < width;)
-                {
-                    while (x < width && pixels[y * rowBytes + x * 4 + 3] == 0) x++;
-                    var left = x;
-                    while (x < width && pixels[y * rowBytes + x * 4 + 3] != 0) x++;
-                    if (left == x) continue;
-                    if (previous.TryGetValue((left, x), out var index))
-                    {
-                        var old = rectangles[index]; rectangles[index] = (old.Left, old.Top, old.Right, y + 1);
-                    }
-                    else
-                    {
-                        index = rectangles.Count;
-                        if (index == 16384) throw new InvalidOperationException("PlatformView raster alpha region exceeds 16384 rectangles.");
-                        rectangles.Add((left, y, x, y + 1));
-                    }
-                    current.Add((left, x), index);
-                }
-                previous = current;
-            }
-            // ExtCreateRegion requires rectangles sorted top-to-bottom, left-to-right.
-            // Vertical merging may change bottom edges; preserving top/left order is sufficient.
-            rectangles.Sort((a, b) => a.Top != b.Top ? a.Top.CompareTo(b.Top) : a.Left.CompareTo(b.Left));
-            var data = new int[8 + rectangles.Count * 4];
-            data[0] = 32; data[1] = 1; data[2] = rectangles.Count; data[3] = rectangles.Count * 16;
-            data[6] = width; data[7] = height;
-            for (var index = 0; index < rectangles.Count; index++)
-            {
-                var rect = rectangles[index]; var offset = 8 + index * 4;
-                data[offset] = rect.Left; data[offset + 1] = rect.Top; data[offset + 2] = rect.Right; data[offset + 3] = rect.Bottom;
-            }
-            if (_regionData is not null && data.AsSpan().SequenceEqual(_regionData)) return;
-            nint region;
-            fixed (int* bytes = data) region = Native.ExtCreateRegion(0, checked((uint)(data.Length * 4)), (nint)bytes);
-            if (region == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
-            if (Native.SetWindowRgn(_hwnd, region, false) == 0) { Native.DeleteObject(region); throw new Win32Exception(); }
-            _regionData = data;
-            RegionRectangles = rectangles.Count;
+            Marshal.ThrowExceptionForHR(Native.UpdateCompositionScene(_surface, sources, (uint)sources.Length, width, height));
+            if (_width == width && _height == height) return;
+            Check(Native.SetWindowPos(_hwnd, 0, 0, 0, width, height, 0x0010 | 0x0004));
+            _width = width; _height = height;
+        }
+        internal void PrepareBackdrop(Native.CompositionSource[] sources, PlatformBackdropSegment effect, Frame frame)
+        {
+            _rasterContent = null;
+            var scale = frame.Plan.Token.DeviceScaleX;
+            var bounds = effect.Bounds.intersect(Rect.fromLTWH(0, 0, frame.Width / scale, frame.Height / scale));
+            if (bounds.isEmpty) bounds = Rect.fromLTWH(0, 0, 0, 0);
+            Marshal.ThrowExceptionForHR(Native.UpdateCompositionBackdrop(_surface, sources, (uint)sources.Length,
+                (float)(bounds.left * scale), (float)(bounds.top * scale),
+                (float)(bounds.right * scale), (float)(bounds.bottom * scale), (float)(effect.SigmaX * scale)));
         }
         internal void Hide() { if (Native.IsWindow(_hwnd)) Native.ShowWindow(_hwnd, 0); }
         public void Dispose()
@@ -626,13 +708,36 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     }
     private static class Native
     {
+        [DllImport("dwmapi.dll")]
+        internal static extern int DwmSetWindowAttribute(nint hwnd, uint attribute, ref int value, int size);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_scene_update_v1")]
+        internal static extern int UpdateCompositionScene(nint surface, [In] CompositionSource[] sources, uint count, float width, float height);
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct CompositionSource
+        {
+            internal nint Raster;
+            internal ulong Hwnd;
+            internal ulong Generation;
+            internal float X, Y, Left, Top, Right, Bottom;
+        }
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_raster_create_shared_v1")]
+        internal static extern int CreateSharedCompositionRaster(nint shared, ulong hwnd, out nint raster);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_backdrop_update_v1")]
+        internal static extern int UpdateCompositionBackdrop(nint raster, [In] CompositionSource[] sources, uint count,
+            float left, float top, float right, float bottom, float sigma);
+        [DllImport("gdi32.dll", SetLastError = true)]
+        internal static extern nint CreateRectRgn(int left, int top, int right, int bottom);
         internal delegate nint SubclassProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data);
         [DllImport("comctl32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool SetWindowSubclass(nint hwnd, SubclassProc callback, nuint id, nuint data);
         [DllImport("comctl32.dll")] internal static extern bool RemoveWindowSubclass(nint hwnd, SubclassProc callback, nuint id);
         [DllImport("comctl32.dll")] internal static extern nint DefSubclassProc(nint hwnd, uint message, nuint wparam, nint lparam);
         [StructLayout(LayoutKind.Sequential)] internal struct Point { public int X, Y; }
-        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_raster_update_v1")]
-        internal static extern int UpdateCompositionRaster(nint surface, nint pixels, uint width, uint height, uint rowBytes);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_raster_update_region_v1")]
+        internal static extern int UpdateCompositionRasterRegion(nint surface, nint pixels, uint width, uint height, uint rowBytes, int x, int y);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_commit_v1")]
+        internal static extern int CommitComposition(nint surface);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_wait_commit_v1")]
+        internal static extern int WaitForCompositionCommit(nint surface);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_composition_raster_destroy_v1")]
         internal static extern void DestroyCompositionRaster(nint surface);
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)] internal static extern nint CreateWindowExW(uint ex, string cls, string text, uint style, int x, int y, int w, int h, nint parent, nint menu, nint instance, nint parameter);
@@ -643,15 +748,14 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool ClientToScreen(nint hwnd, ref Point point);
         [DllImport("user32.dll")] internal static extern nint SendMessageW(nint hwnd, uint message, nuint wparam, nint lparam);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindow(nint hwnd);
+        [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool RedrawWindow(nint hwnd, nint rect, nint region, uint flags);
+        [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindowVisible(nint hwnd);
+        [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindowEnabled(nint hwnd);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool ShowWindow(nint hwnd, int command);
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool DestroyWindow(nint hwnd);
-        [DllImport("user32.dll")] internal static extern bool RedrawWindow(nint hwnd, nint rect, nint region, uint flags);
-        [DllImport("user32.dll", SetLastError = true)] internal static extern int SetWindowRgn(nint hwnd, nint region, [MarshalAs(UnmanagedType.Bool)] bool redraw);
         [DllImport("user32.dll", SetLastError = true)] internal static extern nint BeginDeferWindowPos(int count);
         [DllImport("user32.dll", SetLastError = true)] internal static extern nint DeferWindowPos(nint batch, nint hwnd, nint after, int x, int y, int width, int height, uint flags);
         [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool EndDeferWindowPos(nint batch);
         [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool SetWindowPos(nint hwnd, nint after, int x, int y, int w, int h, uint flags);
-        [DllImport("gdi32.dll")] internal static extern bool DeleteObject(nint value);
-        [DllImport("gdi32.dll", SetLastError = true)] internal static extern nint ExtCreateRegion(nint transform, uint bytes, nint data);
     }
 }

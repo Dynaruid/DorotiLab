@@ -15,6 +15,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
     private readonly uint _uiThread;
     internal bool Interleaved { get; init; }
     internal bool SiblingRasterTopology { get; init; }
+    internal bool KeepCompositionSourceAlive { get; init; }
     private bool SupportsNativePlacement => _lowerCompositionTarget || SiblingRasterTopology;
     internal Action<PlatformViewHandle, nint>? Created { get; init; }
     internal Action<PlatformViewHandle>? Destroyed { get; init; }
@@ -22,6 +23,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
     internal Action? YieldFrameworkTextInput { get; init; }
     internal Action<PlatformViewHandle, nint, nint>? PointerDown { get; init; }
     internal Action<nint, int, int, int, int, bool>? StagePlacement { get; init; }
+    internal Action<nint>? SourceSurfaceChanged { get; init; }
     public WindowsHwndPlatformViewFactory(nint parent, bool editor, bool lowerCompositionTarget)
     {
         _parent = parent;
@@ -38,10 +40,12 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         var supported = request.ViewType == ViewType && SupportsNativePlacement &&
             (request.Composition == PlatformViewComposition.NativeOverlay || Interleaved && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0;
+        var backdrop = supported && SiblingRasterTopology && request.Composition == PlatformViewComposition.InterleavedComposition;
         return new("Windows-HWND", Environment.OSVersion.VersionString, ViewType, supported,
             supported ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
+            NativeBackdropBlur: backdrop,
             Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.BoundedReadback,
-                PlatformViewInputPolicy.DirectNative, PlatformEffectSupport.Unsupported),
+                PlatformViewInputPolicy.DirectNative, backdrop ? WindowsWebViewComposition.Effects : PlatformEffectSupport.Unsupported),
             Reason: supported ? null : SiblingRasterTopology
                 ? "The Windows sibling HWND path supports matching view types, B/C composition, translation and rectangular clipping only."
                 : "Generic HWND requires an explicit lower DComp target with WS_CLIPCHILDREN; standalone interleaving is not enabled.");
@@ -86,6 +90,9 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         private bool _inputEnabled = true;
         private bool _visible;
         private int _paintOrder;
+        private (int Left, int Top, int Right, int Bottom)? _clipRegion;
+        private bool _sourceShown;
+        private int _sourceWidth, _sourceHeight;
         public Instance(WindowsHwndPlatformViewFactory owner, nint hwnd, PlatformViewHandle handle, Action<PlatformViewHandle> onFocused)
         {
             _owner = owner; _hwnd = hwnd; _handle = handle; _onFocused = onFocused; _callback = WindowProc;
@@ -170,13 +177,38 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             var clipTop = clip.isEmpty ? 0 : Math.Max(0, Pixel(clip.top) - y);
             var clipRight = clip.isEmpty ? 0 : Math.Max(0, Pixel(clip.right) - x);
             var clipBottom = clip.isEmpty ? 0 : Math.Max(0, Pixel(clip.bottom) - y);
-            var region = Native.CreateRectRgn(clipLeft, clipTop, clipRight, clipBottom);
-            if (region == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
-            if (Native.SetWindowRgn(_hwnd, region, true) == 0) { Native.DeleteObject(region); throw new Win32Exception(Marshal.GetLastWin32Error()); }
             _visible = placement.Visible && !clip.isEmpty && !bounds.isEmpty && right > x && bottom > y &&
                 clipRight > clipLeft && clipBottom > clipTop;
+            var sourceWidth = Math.Max(1, right - x);
+            var sourceHeight = Math.Max(1, bottom - y);
+            // The visible composition visual owns clipping. Emptying the HWND
+            // region discards pixels needed when that visual reenters the viewport.
+            if (_owner.KeepCompositionSourceAlive)
+            {
+                clipLeft = clipTop = 0;
+                clipRight = sourceWidth; clipBottom = sourceHeight;
+            }
+            var nextClip = (clipLeft, clipTop, clipRight, clipBottom);
+            if (_clipRegion != nextClip)
+            {
+                var region = Native.CreateRectRgn(clipLeft, clipTop, clipRight, clipBottom);
+                if (region == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
+                if (Native.SetWindowRgn(_hwnd, region, false) == 0) { Native.DeleteObject(region); throw new Win32Exception(Marshal.GetLastWin32Error()); }
+                _clipRegion = nextClip;
+            }
             if (!_visible) YieldFocus();
-            if (_owner.StagePlacement is { } stage) stage(_hwnd, x, y, right - x, bottom - y, _visible);
+            if (_owner.StagePlacement is { } stage && _owner.KeepCompositionSourceAlive)
+            {
+                // Keep a cloaked, nonzero native source on-screen when culled.
+                // Logical visibility still gates focus and committed hit testing.
+                if (_visible || !_sourceShown || _sourceWidth != sourceWidth || _sourceHeight != sourceHeight)
+                    stage(_hwnd, _visible ? x : 0, _visible ? y : 0, sourceWidth, sourceHeight, true);
+                if (!_sourceShown || _sourceWidth != sourceWidth || _sourceHeight != sourceHeight)
+                    _owner.SourceSurfaceChanged?.Invoke(_hwnd);
+                _sourceShown = true;
+                _sourceWidth = sourceWidth; _sourceHeight = sourceHeight;
+            }
+            else if (_owner.StagePlacement is { } placementStage) placementStage(_hwnd, x, y, right - x, bottom - y, _visible);
             else Native.ShowWindow(_hwnd, _visible ? 4 : 0);
             _paintOrder = placement.PaintOrder;
             return ValueTask.CompletedTask;
@@ -185,11 +217,16 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         private void YieldFocus()
         {
             if (_hwnd != 0 && Native.GetFocus() == _hwnd) Native.SetFocus(_owner._parent);
+            if (_hwnd != 0 && Native.GetCapture() == _hwnd) Native.ReleaseCapture();
         }
         public ValueTask DetachAsync()
         {
             _owner.VerifyThread(); _visible = false;
-            if (_hwnd != 0) { YieldFocus(); Native.ShowWindow(_hwnd, 0); }
+            if (_hwnd != 0)
+            {
+                YieldFocus();
+                if (!_owner.KeepCompositionSourceAlive) Native.ShowWindow(_hwnd, 0);
+            }
             return ValueTask.CompletedTask;
         }
         public ValueTask SetFocusAsync(bool focused)
@@ -246,6 +283,8 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool SetWindowPos(nint hwnd, nint after, int x, int y, int width, int height, uint flags);
         [DllImport("user32.dll")] internal static extern nint SetFocus(nint hwnd);
         [DllImport("user32.dll")] internal static extern nint GetFocus();
+        [DllImport("user32.dll")] internal static extern nint GetCapture();
+        [DllImport("user32.dll")] internal static extern bool ReleaseCapture();
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] internal static extern bool EnableWindow(nint hwnd, [MarshalAs(UnmanagedType.Bool)] bool enabled);
         [DllImport("user32.dll", SetLastError = true)] internal static extern int SetWindowRgn(nint hwnd, nint region, [MarshalAs(UnmanagedType.Bool)] bool redraw);
         [DllImport("gdi32.dll", SetLastError = true)] internal static extern nint CreateRectRgn(int left, int top, int right, int bottom);

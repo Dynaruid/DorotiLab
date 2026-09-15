@@ -1,10 +1,10 @@
 # PlatformView support matrix
 
-2026-09-14. Overall work1 status: **PARTIAL**.
+2026-09-15. Overall work1 status: **PARTIAL**.
 
 | Runner / attachment | Source/build in this execution | Runtime evidence | Remaining |
 |---|---|---|---|
-| WindowsAppSdk Vulkan BUTTON/EDIT HWND | migrated planner/session; build passed | existing mounted gallery regression passed with OS SendInput, overlap/foreground click, focus and wheel, two navigation cycles, clean exit | native backdrop unsupported; full IME/UIA/device-loss/AOT/performance |
+| WindowsAppSdk Vulkan BUTTON/EDIT HWND | planner/session, one visible DirectComposition tree with live cloaked HWND sources and backdrop; Release build passed | mounted blur on/off, native repaint, clip/resize restoration, 10 overlap cases, disposal/recreation; gallery OS SendInput clicks/focus/wheel; three scroll cycles captured through DXGI: 553 unique frames, zero missing-content or edge-separation frames | full IME/UIA/device-loss/AOT/performance; multiple overlapping backdrop qualification |
 | WindowsAppSdk WebView2 CompositionController | new actual visual attachment, common effect, mouse/capture/shield, clipped raster upload; build passed | mounted blur on/off, live source, sharp child, input pass/block, two WebViews, effect movement, disposal/recreation; see execution report for final resize run | pen/touch, full Tab/IME/UIA, protected/media source coverage, GPU-sharing comparison, full performance/AOT |
 | Android Button/EditText/WebView | shared session/effect policy, native WebView factory; arm64 host build passed | no new device execution | WebView live sampling, native-origin gesture arena, visual similarity, device lifecycle/performance |
 | AppKit NSView/Metal | shared session with existing GPU frame retirement; macOS host source build passed | not run | native WKWebView/effect adapter, current product qualification |
