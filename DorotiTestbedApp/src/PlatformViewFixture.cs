@@ -395,9 +395,9 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 new Positioned(
                     key: new ValueKey<string>("foreground-slot"),
                     left: _stage == 2 ? 0 : 230,
-                    top: _stage == 2 ? 0 : 150,
+                    top: _stage == 2 ? 0 : 100,
                     width: _stage == 2 ? 440 : 100,
-                    height: _stage == 2 ? 220 : 80,
+                    height: _stage == 2 ? 220 : 120,
                     child: new PointerInterceptor(
                         new GestureDetector(
                             onTap: () =>
