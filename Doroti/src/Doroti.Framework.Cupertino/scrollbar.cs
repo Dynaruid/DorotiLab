@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/scrollbar.dart
+#pragma warning disable CS8600, CS8601
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -86,7 +85,6 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
         get
         {
             return (DartRuntimePrimitives.RequireValue(this.widget.thickness) + (((global::Doroti.Framework.Animation.AnimationController)this._thicknessAnimationController).value * ((((CupertinoScrollbar)this.widget).thicknessWhileDragging - DartRuntimePrimitives.RequireValue(this.widget.thickness)))));
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Radius _radius
@@ -94,7 +92,6 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
         get
         {
             return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(this.widget.radius, ((CupertinoScrollbar)this.widget).radiusWhileDragging, ((global::Doroti.Framework.Animation.AnimationController)this._thicknessAnimationController).value));
-            return default!;
         }
     }
     public override void initState()

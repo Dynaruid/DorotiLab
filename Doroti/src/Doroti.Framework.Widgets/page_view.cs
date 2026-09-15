@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/page_view.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,7 +35,6 @@ public class PageController : ScrollController
             DartRuntimePrimitives.Assert(() => (this.positions.Count() == 1L), () => (object?)"The page property cannot be read when multiple PageViews are attached to " + "the same PageController.");
             var positionLocal = ((_PagePosition__page_view?)(object?)this.position)!;
             return ((_PagePosition__page_view)positionLocal).page;
-            return default!;
         }
     }
     internal virtual bool _debugCheckPageControllerAttached()
@@ -131,7 +129,6 @@ public class PageMetrics : FixedScrollMetrics
         get
         {
             return (Math.Max(0.0, Dart_uiLibrary.clampDouble(this.pixels, this.minScrollExtent, this.maxScrollExtent)) / Math.Max(1.0, (this.viewportDimension * this.viewportFraction)));
-            return default!;
         }
     }
 }
@@ -206,7 +203,6 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             }
             DartRuntimePrimitives.Assert(() => (this.hasContentDimensions || !this.haveDimensions), () => (object?)"Page value is only available after content dimensions are established.");
             return ((this.hasContentDimensions || this.haveDimensions) ? ((this._cachedPage ?? (double)getPageFromPixels(Dart_uiLibrary.clampDouble(this.pixels, this.minScrollExtent, this.maxScrollExtent), DartRuntimePrimitives.RequireValue(this.viewportDimension)))) : null);
-            return default!;
         }
     }
     public override void saveScrollOffset()

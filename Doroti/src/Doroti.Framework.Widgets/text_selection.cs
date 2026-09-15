@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/text_selection.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -629,7 +628,6 @@ public class SelectionOverlay
         get
         {
             return ((this.selectionControls is TextSelectionHandleControls) ? (((ContextMenuController)this._contextMenuController).isShown || ((ContextMenuController)this._spellCheckToolbarController).isShown) : ((this._toolbar is not null) || ((ContextMenuController)this._spellCheckToolbarController).isShown));
-            return default!;
         }
     }
     public virtual bool magnifierIsVisible => ((MagnifierController)this._magnifierController).shown;
@@ -1472,7 +1470,6 @@ public class TextSelectionGestureDetectorBuilder
             }
             global::Doroti.Ui.TextPosition textPosition = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).lastSecondaryTapDownPosition))));
             return ((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.start <= textPosition.offset) && (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.end >= textPosition.offset));
-            return default!;
         }
     }
     internal virtual bool _positionWasOnSelectionExclusive(TextPosition textPosition)
@@ -1527,7 +1524,6 @@ public class TextSelectionGestureDetectorBuilder
         {
             ScrollableState? scrollableState = ((((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).editableTextKey.currentContext is null) ? null : Scrollable.maybeOf(((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).editableTextKey.currentContext!));
             return ((scrollableState is null) ? 0.0 : ((ScrollableState)scrollableState).position.pixels);
-            return default!;
         }
     }
     internal virtual global::Doroti.Framework.Painting.AxisDirection? _scrollDirection
@@ -1536,7 +1532,6 @@ public class TextSelectionGestureDetectorBuilder
         {
             ScrollableState? scrollableState = ((((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).editableTextKey.currentContext is null) ? null : Scrollable.maybeOf(((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).editableTextKey.currentContext!));
             return scrollableState?.axisDirection;
-            return default!;
         }
     }
     public virtual void onTapTrackStart()

@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/viewport.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -628,7 +626,6 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             bool isHit = result.addWithOutOfBandPosition(paintTransform: transform, hitTest: ((Func<BoxHitTestResult, bool>)((result) =>
             {
                 return child.hitTest(sliverResult, mainAxisPosition: computeChildMainAxisPosition(child, mainAxisPositionLocal), crossAxisPosition: crossAxisPositionLocal);
-                return default;
             })));
             if (isHit)
             {
@@ -803,7 +800,6 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         get
         {
             return (this.paintOrder switch { SliverPaintOrder.firstIsTop => this._childrenLastToFirst, SliverPaintOrder.lastIsTop => this._childrenFirstToLast, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     public virtual IEnumerable<RenderSliver> childrenInHitTestOrder
@@ -811,7 +807,6 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         get
         {
             return (this.paintOrder switch { SliverPaintOrder.firstIsTop => this._childrenFirstToLast, SliverPaintOrder.lastIsTop => this._childrenLastToFirst, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     internal virtual IEnumerable<RenderSliver> _childrenLastToFirst
@@ -826,7 +821,6 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 child = childBefore(child);
             }
             return children;
-            return default!;
         }
     }
     internal virtual IEnumerable<RenderSliver> _childrenFirstToLast
@@ -841,7 +835,6 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 child = childAfter(child);
             }
             return children;
-            return default!;
         }
     }
     public override void showOnScreen(RenderObject? descendant = null, Rect? rect = null, Duration duration = default, Curve curve = default!)
@@ -1377,7 +1370,6 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 child = childBefore(child!);
             }
             return count;
-            return default!;
         }
     }
     public override string labelForChild(long index)

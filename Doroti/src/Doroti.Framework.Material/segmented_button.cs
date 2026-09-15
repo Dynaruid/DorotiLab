@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/segmented_button.dart
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605, CS8620, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1273,7 +1272,6 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                 return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outline));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }), shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()), minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(40.0)));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.Widget? selectedIcon => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Icon(Icons.check));

@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/editable.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -107,7 +106,6 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
                 _isValid = false;
             }
             return this._isValid;
-            return default!;
         }
     }
     internal virtual MapEntry<global::Doroti.Ui.Offset, global::Doroti.Ui.TextPosition> _getTextPositionForLine(long lineNumber)
@@ -135,7 +133,6 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
         {
             DartRuntimePrimitives.Assert(() => this.isValid);
             return this._currentTextPosition;
-            return default!;
         }
     }
     public virtual bool moveNext()
@@ -657,7 +654,6 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     __cascade.textHeightBehavior = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
     return __cascade;
 }))();
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.TextAlign textAlign
@@ -1036,7 +1032,6 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         get
         {
             return (this.enableInteractiveSelection ?? !this.obscureText);
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Color? promptRectColor
@@ -1508,7 +1503,6 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             DartRuntimePrimitives.Assert(() => hasSize);
             return (this._viewportAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => size.width, global::Doroti.Framework.Painting.Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     internal virtual double _getMaxScrollExtent(Size contentSize)

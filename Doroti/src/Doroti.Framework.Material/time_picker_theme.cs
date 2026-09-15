@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/time_picker_theme.dart
+#pragma warning disable CS8600, CS8603
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +86,6 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
                 return Colors.transparent;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
-            return default!;
         }
     }
     public virtual InputDecorationThemeData? inputDecorationTheme
@@ -99,7 +97,6 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
                 return null;
             }
             return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);
-            return default!;
         }
     }
     public virtual TimePickerThemeData copyWith(Color? backgroundColor = null, ButtonStyle? cancelButtonStyle = null, ButtonStyle? confirmButtonStyle = null, ButtonStyle? dayPeriodButtonStyle = null, global::Doroti.Framework.Painting.BorderSide? dayPeriodBorderSide = null, Color? dayPeriodColor = null, global::Doroti.Framework.Painting.OutlinedBorder? dayPeriodShape = null, Color? dayPeriodTextColor = null, global::Doroti.Framework.Painting.TextStyle? dayPeriodTextStyle = null, Color? dialBackgroundColor = null, Color? dialHandColor = null, Color? dialTextColor = null, global::Doroti.Framework.Painting.TextStyle? dialTextStyle = null, double? elevation = null, Color? entryModeIconColor = null, global::Doroti.Framework.Painting.TextStyle? helpTextStyle = null, Color? hourMinuteColor = null, global::Doroti.Framework.Painting.ShapeBorder? hourMinuteShape = null, Color? hourMinuteTextColor = null, global::Doroti.Framework.Painting.TextStyle? hourMinuteTextStyle = null, InputDecorationTheme? inputDecorationTheme = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? timeSelectorSeparatorColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? timeSelectorSeparatorTextStyle = null)

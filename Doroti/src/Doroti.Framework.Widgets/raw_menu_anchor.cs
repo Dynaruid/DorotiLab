@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -57,7 +56,6 @@ public class RawMenuOverlayInfo
     public override int GetHashCode()
     {
         return FoundationRuntimePorts.ObjectHash(this.anchorRect, this.overlaySize, this.position, this.tapRegionGroupId);
-        return default!;
     }
 }
 
@@ -151,9 +149,9 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
     public MenuController menuController { get; }
     public bool isOpen { get; }
     public _RawMenuAnchorBaseMixin__raw_menu_anchor root { get; }
-    public void initState();
-    public void didChangeDependencies();
-    public void dispose();
+    public new void initState();
+    public new void didChangeDependencies();
+    public new void dispose();
     public void _addChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child);
     public void _removeChild(_RawMenuAnchorBaseMixin__raw_menu_anchor child);
     public void _handleScroll();
@@ -166,7 +164,7 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
     public void requestChildrenClose();
     public void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent);
     public Widget buildAnchor(BuildContext context);
-    public Widget build(BuildContext context);
+    public new Widget build(BuildContext context);
     public string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!);
 }
 
@@ -191,7 +189,6 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             }
             DartRuntimePrimitives.Assert(() => this._isRootOverlayAnchor);
             return ((RawMenuAnchor)(object)this.widget).useRootOverlay;
-            return default!;
         }
     }
     public virtual bool isOpen => ((OverlayPortalController)this._overlayController).isShowing;
@@ -332,7 +329,6 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
                 anchor = anchor._parent!;
             }
             return anchor;
-            return default!;
         }
     }
     public override void initState()
@@ -572,7 +568,6 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
                 anchor = anchor._parent!;
             }
             return anchor;
-            return default!;
         }
     }
     public override void initState()

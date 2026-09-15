@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/menu_anchor.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8620
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -445,7 +444,6 @@ internal class _MenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.
                 anchor = ((_MenuAnchorState__menu_anchor)anchor)._parent!;
             }
             return anchor;
-            return default!;
         }
     }
     internal virtual void _focusButton()
@@ -1427,7 +1425,6 @@ internal class _LocalizedShortcutLabeler__menu_anchor
         get
         {
             return _instance ??= new _LocalizedShortcutLabeler__menu_anchor();
-            return default!;
         }
     }
     public virtual string getShortcutLabel(global::Doroti.Framework.Widgets.MenuSerializableShortcut shortcut, MaterialLocalizations localizations)
@@ -2457,7 +2454,6 @@ internal class _MenuBarDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(this._colors.surfaceContainer));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? shadowColor
@@ -2465,7 +2461,6 @@ internal class _MenuBarDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(this._colors.shadow));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? surfaceTintColor
@@ -2473,7 +2468,6 @@ internal class _MenuBarDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>? padding
@@ -2481,7 +2475,6 @@ internal class _MenuBarDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateSymmetric(horizontal: Menu_anchorLibrary._kTopLevelMenuHorizontalMinPadding)));
-            return default!;
         }
     }
     public override VisualDensity? visualDensity => Theme.of(this.context).visualDensity;
@@ -2529,7 +2522,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)ButtonStyleButton.allOrNull<global::Doroti.Ui.Color>(Colors.transparent));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation
@@ -2537,7 +2529,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ButtonStyleButton.allOrNull<double?>(0.0);
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor
@@ -2565,7 +2556,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
                 return (this._colors.onSurface);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? iconColor
@@ -2593,7 +2583,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
                 return (this._colors.onSurfaceVariant);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? iconSize
@@ -2601,7 +2590,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<double?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(24.0));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize
@@ -2609,7 +2597,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ButtonStyleButton.allOrNull<global::Doroti.Ui.Size>(Size.infinite);
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize
@@ -2617,7 +2604,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ButtonStyleButton.allOrNull<global::Doroti.Ui.Size>(new global::Doroti.Ui.Size(64.0, 48.0));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable);
@@ -2642,7 +2628,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
                 return (Colors.transparent);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding
@@ -2650,7 +2635,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ButtonStyleButton.allOrNull<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(_scaledPadding(this.context));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape
@@ -2658,7 +2642,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ButtonStyleButton.allOrNull<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder());
-            return default!;
         }
     }
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(this.context).splashFactory;
@@ -2668,7 +2651,6 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle>(this._textTheme.labelLarge));
-            return default!;
         }
     }
     public override VisualDensity? visualDensity => Theme.of(this.context).visualDensity;
@@ -2716,7 +2698,6 @@ internal class _MenuDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(this._colors.surfaceContainer));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? surfaceTintColor
@@ -2724,7 +2705,6 @@ internal class _MenuDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? shadowColor
@@ -2732,7 +2712,6 @@ internal class _MenuDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(this._colors.shadow));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>? padding
@@ -2740,7 +2719,6 @@ internal class _MenuDefaultsM3__menu_anchor : MenuStyle
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateSymmetric(vertical: Menu_anchorLibrary._kMenuVerticalMinPadding)));
-            return default!;
         }
     }
     public override VisualDensity? visualDensity => Theme.of(this.context).visualDensity;

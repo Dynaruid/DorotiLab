@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/single_child_scroll_view.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -225,10 +224,6 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
 
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
-        if (false)
-        {
-            (child).parentData = new global::Doroti.Framework.Rendering.ParentData();
-        }
     }
 
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
@@ -252,7 +247,6 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         {
             DartRuntimePrimitives.Assert(() => this.hasSize);
             return (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => this.size.width, global::Doroti.Framework.Painting.Axis.vertical => this.size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     internal virtual double _minScrollExtent
@@ -261,7 +255,6 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         {
             DartRuntimePrimitives.Assert(() => this.hasSize);
             return 0.0;
-            return default!;
         }
     }
     internal virtual double _maxScrollExtent
@@ -274,7 +267,6 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
                 return 0.0;
             }
             return Math.Max(0.0, (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => (this.child!.size.width - this.size.width), global::Doroti.Framework.Painting.Axis.vertical => (this.child!.size.height - this.size.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-            return default!;
         }
     }
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _getInnerConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)

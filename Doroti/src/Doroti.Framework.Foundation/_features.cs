@@ -1,5 +1,4 @@
 // <doroti-reviewed-framework-source />
-#nullable enable
 
 namespace Doroti.Framework.Foundation;
 

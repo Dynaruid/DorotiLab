@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/dropdown.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -919,7 +918,6 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Framework.Widg
             double lineHeight = ((this._textStyle!.height ?? Theme.of(this.context).textTheme.titleMedium!.height) ?? 1.0);
             double scaledFontSize = MediaQuery.textScalerOf(this.context).scale((fontSizeLocal * lineHeight));
             return Math.Max(scaledFontSize, Math.Max(((DropdownButton<T>)(object)this.widget).iconSize, DropdownLibrary._kDenseButtonHeight));
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Color _iconColor
@@ -935,7 +933,6 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Framework.Widg
             {
                 return (((DropdownButton<T>)(object)this.widget).iconDisabledColor ?? (brightness switch { Brightness.light => Colors.grey.shade400, Brightness.dark => Colors.white10, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             }
-            return default!;
         }
     }
     internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>((((((DropdownButton<T>)(object)this.widget).items is not null) && System.Linq.Enumerable.Any(((DropdownButton<T>)(object)this.widget).items!)) && (((DropdownButton<T>)(object)this.widget).onChanged is not null)));

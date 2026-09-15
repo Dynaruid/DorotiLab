@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/input_decorator.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8620, CS8629
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -781,7 +780,6 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         {
             global::Doroti.Framework.Rendering.RenderBox? helperErrorLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_DecorationSlot__input_decorator.helperError));
             return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)(object?)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection23257 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement23276 = this.icon; if (__collectionElement23276 is { } __nonNullCollectionElement23276) { __collection23257.Add(__nonNullCollectionElement23276); } var __collectionElement23289 = this.input; if (__collectionElement23289 is { } __nonNullCollectionElement23289) { __collection23257.Add(__nonNullCollectionElement23289); } var __collectionElement23303 = this.prefixIcon; if (__collectionElement23303 is { } __nonNullCollectionElement23303) { __collection23257.Add(__nonNullCollectionElement23303); } var __collectionElement23322 = this.suffixIcon; if (__collectionElement23322 is { } __nonNullCollectionElement23322) { __collection23257.Add(__nonNullCollectionElement23322); } var __collectionElement23341 = this.prefix; if (__collectionElement23341 is { } __nonNullCollectionElement23341) { __collection23257.Add(__nonNullCollectionElement23341); } var __collectionElement23356 = this.suffix; if (__collectionElement23356 is { } __nonNullCollectionElement23356) { __collection23257.Add(__nonNullCollectionElement23356); } var __collectionElement23371 = this.label; if (__collectionElement23371 is { } __nonNullCollectionElement23371) { __collection23257.Add(__nonNullCollectionElement23371); } var __collectionElement23385 = this.hint; if (__collectionElement23385 is { } __nonNullCollectionElement23385) { __collection23257.Add(__nonNullCollectionElement23385); } var __collectionElement23398 = helperErrorLocal; if (__collectionElement23398 is { } __nonNullCollectionElement23398) { __collection23257.Add(__nonNullCollectionElement23398); } var __collectionElement23418 = this.counter; if (__collectionElement23418 is { } __nonNullCollectionElement23418) { __collection23257.Add(__nonNullCollectionElement23418); } var __collectionElement23434 = this.container; if (__collectionElement23434 is { } __nonNullCollectionElement23434) { __collection23257.Add(__nonNullCollectionElement23434); } return __collection23257; }))());
-            return default!;
         }
     }
     public virtual _Decoration__input_decorator decoration
@@ -879,7 +877,6 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         get
         {
             return (!((_Decoration__input_decorator)this.decoration).isCollapsed && ((_Decoration__input_decorator)this.decoration).border.isOutline);
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Offset _densityOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((_Decoration__input_decorator)this.decoration).visualDensity.baseSizeAdjustment);
@@ -1279,7 +1276,6 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
                         endLocal += baselineLayout(this.suffix!, endLocal);
                     }
                     break;
-                    break;
                 }
             case TextDirection.ltr:
                 {
@@ -1330,7 +1326,6 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
                     {
                         endLocal -= baselineLayout(this.suffix!, (endLocal - this.suffix!.size.width));
                     }
-                    break;
                     break;
                 }
         }
@@ -1839,7 +1834,6 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
         get
         {
             return (!object.Equals(((InputDecoration)this.decoration).floatingLabelBehavior, FloatingLabelBehavior.never));
-            return default!;
         }
     }
     public virtual bool labelShouldWithdraw => DartRuntimePrimitives.ConvertValue<bool>((((InputDecorator)this.widget)._labelShouldWithdraw || (object.Equals(((InputDecoration)this.decoration).floatingLabelBehavior, FloatingLabelBehavior.always))));
@@ -1923,7 +1917,6 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
         get
         {
             return (!this.labelShouldWithdraw && (((((InputDecoration)this.decoration).labelText is not null) || (((InputDecoration)this.decoration).label is not null))));
-            return default!;
         }
     }
     internal virtual bool _shouldShowLabel => DartRuntimePrimitives.ConvertValue<bool>((this._hasInlineLabel || this._floatingLabelEnabled));
@@ -2436,7 +2429,6 @@ public class InputDecoration
     {
         var values = new List<object?> { this.icon, this.iconColor, this.label, this.labelText, this.floatingLabelStyle, this.labelStyle, this.helper, this.helperText, this.helperStyle, this.helperMaxLines, this.hintText, this.hint, this.hintStyle, this.hintTextDirection, this.hintMaxLines, this.hintFadeDuration, this.maintainHintHeight, this.maintainHintSize, this.maintainLabelSize, this.error, this.errorText, this.errorStyle, this.errorMaxLines, this.floatingLabelBehavior, this.floatingLabelAlignment, this.isDense, this.contentPadding, this.isCollapsed, this.filled, this.fillColor, this.focusColor, this.hoverColor, this.prefixIcon, this.prefixIconColor, this.prefix, this.prefixText, this.prefixStyle, this.prefixIconConstraints, this.suffixIcon, this.suffixIconColor, this.suffix, this.suffixText, this.suffixStyle, this.suffixIconConstraints, this.counter, this.counterText, this.counterStyle, this.errorBorder, this.focusedBorder, this.focusedErrorBorder, this.disabledBorder, this.enabledBorder, this.border, this.enabled, this.semanticCounterText, this.alignLabelWithHint, this.constraints, this.visualDensity };
         return FoundationRuntimePorts.ObjectHashAll(values);
-        return default!;
     }
     public override string ToString()
     {

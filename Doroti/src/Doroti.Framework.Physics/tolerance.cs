@@ -1,5 +1,4 @@
 // <doroti-reviewed-framework-source />
-#nullable enable
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/physics/tolerance.dart
 using System;
 using Doroti.Runtime;

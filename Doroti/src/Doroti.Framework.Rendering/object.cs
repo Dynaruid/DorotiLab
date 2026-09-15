@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/object.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8602, CS8619
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -210,7 +209,6 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                     return true;
                 });
             return hasCanvas;
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.PictureRecorder recorder
@@ -223,7 +221,6 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             }
             DartRuntimePrimitives.Assert(() => (this._currentLayer is not null));
             return this._recorder!;
-            return default!;
         }
     }
     public override Canvas canvas
@@ -236,7 +233,6 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             }
             DartRuntimePrimitives.Assert(() => (this._currentLayer is not null));
             return this._canvas!;
-            return default!;
         }
     }
     internal virtual void _startRecording()
@@ -1252,7 +1248,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     return true;
                 });
             return disposed;
-            return default!;
         }
     }
     public virtual void dispose()
@@ -1375,7 +1370,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         get
         {
             return (this switch { RenderObject { _doingThisLayoutWithCallback: true } __object91304 => (this, true), RenderObject { owner: PipelineOwner { _debugAllowMutationsToDirtySubtrees: true } __object91571, _needsLayout: true } __object91542 => (this, true), RenderObject { _debugMutationsLocked: true } __object91746 => (this, false), RenderObject __object91812 => this.debugLayoutParent?._debugClosestMutationRoot, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     internal virtual bool _debugCanPerformMutations
@@ -1418,7 +1412,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     throw new FlutterError(new List<DiagnosticsNode> { summary, new ErrorDescription(description), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The {(isMutatedByAncestor ? "ancestor " : "")}RenderObject that was mutating the said {this.GetType()} was", debugActiveLayoutLocal, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Mutating the layout of another RenderObject may cause some RenderObjects in its subtree to be laid out more than once. " + "Consider using the LayoutBuilder widget to dynamically mutate a subtree during layout.") });
                 });
             return isMutationAllowed;
-            return default!;
         }
     }
     public virtual RenderObject? debugLayoutParent
@@ -1432,7 +1425,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     return true;
                 });
             return layoutParent;
-            return default!;
         }
     }
     public virtual PipelineOwner? owner => this._owner;
@@ -1479,7 +1471,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return false;
             }
             return this._needsLayout;
-            return default!;
         }
     }
     public virtual bool debugDoingThisLayoutWithCallback => this._doingThisLayoutWithCallback;
@@ -1492,7 +1483,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 throw new InvalidOperationException("A RenderObject does not have any constraints before it has been laid out.");
             }
             return this._constraints!;
-            return default!;
         }
     }
     public abstract void debugAssertDoesMeetConstraints();
@@ -1687,7 +1677,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return new List<DiagnosticsNode> { new ErrorDescription($"These invalid constraints were provided to {this.GetType()}'s layout() " + "function by the following function, which probably computed the " + "invalid constraints in question:\n" + $"  {problemFunction}") };
             }
             return new List<DiagnosticsNode>();
-            return default;
         }))));
         DartRuntimePrimitives.Assert(() => !this._debugDoingThisResize);
         DartRuntimePrimitives.Assert(() => !this._debugDoingThisLayout);
@@ -1870,7 +1859,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             DartRuntimePrimitives.Assert(() => ((!this.isRepaintBoundary || (((LayerHandle<ContainerLayer>)this._layerHandle).layer is null)) || (((LayerHandle<ContainerLayer>)this._layerHandle).layer is OffsetLayer)));
             return ((LayerHandle<ContainerLayer>)this._layerHandle).layer;
-            return default!;
         }
         set
         {
@@ -1890,7 +1878,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     return true;
                 });
             return result;
-            return default!;
         }
     }
     public virtual void markNeedsCompositingBitsUpdate()
@@ -1923,7 +1910,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             DartRuntimePrimitives.Assert(() => !this._needsCompositingBitsUpdate);
             return this._needsCompositing;
-            return default!;
         }
     }
     internal virtual void _updateCompositingBits()
@@ -1977,7 +1963,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return false;
             }
             return this._needsPaint;
-            return default!;
         }
     }
     public virtual bool debugNeedsCompositedLayerUpdate
@@ -1989,7 +1974,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return false;
             }
             return this._needsCompositedLayerUpdate;
-            return default!;
         }
     }
     public virtual void markNeedsPaint()
@@ -2338,7 +2322,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return false;
             }
             return ((_RenderObjectSemantics__object)this._semantics).parentDataDirty;
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Semantics.SemanticsNode? debugSemantics
@@ -2350,7 +2333,6 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return ((_RenderObjectSemantics__object)this._semantics).cachedSemanticsNode;
             }
             return null;
-            return default!;
         }
     }
     public virtual void clearSemantics()
@@ -2484,8 +2466,8 @@ public interface RenderObjectWithChildMixin<ChildType> : IRenderObjectWithChild 
 {
     ChildType? _child { get; set; }
 
-    public bool debugValidateChild(RenderObject child);
-    public ChildType? child { get; set; }
+    public new bool debugValidateChild(RenderObject child);
+    public new ChildType? child { get; set; }
     public void attach(PipelineOwner owner);
     public void detach();
     public void redepthChildren();
@@ -2551,7 +2533,7 @@ public interface ContainerRenderObjectMixin<ChildType, ParentDataType> : IContai
     public bool _debugUltimatePreviousSiblingOf(ChildType child, ChildType? equals = null);
     public bool _debugUltimateNextSiblingOf(ChildType child, ChildType? equals = null);
     public long childCount { get; }
-    public bool debugValidateChild(RenderObject child);
+    public new bool debugValidateChild(RenderObject child);
     public void _insertIntoChildList(ChildType child, ChildType? after = null);
     public void insert(ChildType child, ChildType? after = null);
     public void add(ChildType child);
@@ -2671,7 +2653,6 @@ public class _SemanticsParentData__object
     public override int GetHashCode()
     {
         return FoundationRuntimePorts.ObjectHash(this.mergeIntoParent, this.blocksUserActions, this.explicitChildNodes, this.localeForChildren, this.accessibilityFocusBlockType, Dart_coreLibrary.hashAllUnordered((this.tagsForChildren ?? new HashSet<global::Doroti.Framework.Semantics.SemanticsTag>())));
-        return default!;
     }
 }
 
@@ -2693,7 +2674,6 @@ public class _SemanticsConfigurationProvider__object
         get
         {
             return (this._effectiveConfiguration ?? this.original);
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Semantics.SemanticsConfiguration original
@@ -2707,7 +2687,6 @@ public class _SemanticsConfigurationProvider__object
                 DartRuntimePrimitives.Assert(() => (!this._originalConfiguration!.explicitChildNodes || (this._originalConfiguration!.childConfigurationsDelegate is null)));
             }
             return this._originalConfiguration!;
-            return default!;
         }
     }
     public virtual void updateConfig(Action<global::Doroti.Framework.Semantics.SemanticsConfiguration> callback)
@@ -2811,7 +2790,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 return false;
             }
             return (this.parentData is null);
-            return default!;
         }
     }
     public virtual bool geometryDirty
@@ -2823,7 +2801,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 return false;
             }
             return (this.geometry is null);
-            return default!;
         }
     }
     public virtual void computeAncestorInfo(object treeShapeToken)
@@ -2878,7 +2855,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         get
         {
             return (((((_SemanticsConfigurationProvider__object)this.configProvider).effective.hasBeenAnnotated || this._containsIncompleteFragment) || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isSemanticBoundary) || this.isRoot);
-            return default!;
         }
     }
     public virtual bool isRoot => (this.parent is null);
@@ -2887,7 +2863,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         get
         {
             return (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isMergingSemanticsOfDescendants && (checked((long)(this._producedSiblingNodesAndOwners.Count)) != 0));
-            return default!;
         }
     }
     public virtual bool shouldFormSemanticsNode
@@ -2908,7 +2883,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             }
             DartRuntimePrimitives.Assert(() => (this.parentData is not null));
             return (this.parentData!.explicitChildNodes || this._hasSiblingConflict);
-            return default!;
         }
     }
     public static void debugCheckForParentData(RenderObject root)
@@ -2953,7 +2927,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 }
             })));
             return DartRuntimePrimitives.RequireValue(this._blocksPreviousSibling);
-            return default!;
         }
     }
     public static bool shouldDrop(global::Doroti.Framework.Semantics.SemanticsNode node) => ((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible;
@@ -3184,7 +3157,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 }
                 _containsIncompleteFragment = true;
                 return new _IncompleteSemanticsFragment__object(config, this);
-                return default;
             })));
             foreach (IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> @group in ((global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult)result).siblingMergeGroups)
             {
@@ -3197,7 +3169,6 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                     }
                     _containsIncompleteFragment = true;
                     return new _IncompleteSemanticsFragment__object(config, this);
-                    return default;
                 })).ToList());
             }
         }

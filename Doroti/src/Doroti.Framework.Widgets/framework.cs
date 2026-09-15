@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS0659, CS8600, CS8601, CS8602, CS8603, CS8604, CS8609, CS8619, CS8620
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -87,7 +86,7 @@ public abstract class GlobalKeyBase : global::Doroti.Framework.Foundation.Key
 
 public class GlobalKey<T> : GlobalKeyBase where T : IState
 {
-    public static GlobalKey<T> Create(string? debugLabel = null) => new LabeledGlobalKey<T>(debugLabel);
+    public new static GlobalKey<T> Create(string? debugLabel = null) => new LabeledGlobalKey<T>(debugLabel);
 
     public GlobalKey()
     {
@@ -262,7 +261,6 @@ public abstract class State<T> : IState, global::Doroti.Framework.Foundation.Dia
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             return ((BuildContext)(object?)this._element!);
-            return default!;
         }
     }
     public virtual bool mounted => DartRuntimePrimitives.ConvertValue<bool>((this._element is not null));
@@ -1354,7 +1352,6 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             return this._depth;
-            return default!;
         }
     }
     internal static long _sort(Element a, Element b)
@@ -1393,7 +1390,6 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             return isDefunct;
-            return default!;
         }
     }
     public virtual bool debugIsActive
@@ -1408,7 +1404,6 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             return isActive;
-            return default!;
         }
     }
     public virtual BuildOwner? owner => this._owner;
@@ -1458,7 +1453,6 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                 }
             }
             return ((global::Doroti.Framework.Rendering.RenderObject)(object)null);
-            return default!;
         }
     }
     public virtual Element? renderObjectAttachingChild
@@ -1472,7 +1466,6 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                 next = child;
             })));
             return next;
-            return default!;
         }
     }
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> describeMissingAncestor(Type expectedAncestorType)
@@ -2239,7 +2232,6 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                 return ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderObject__212317__as216465)).size;
             }
             return ((Size)(object)null);
-            return default!;
         }
     }
     internal virtual bool _debugCheckStateIsActiveForAncestorLookup()
@@ -2664,7 +2656,7 @@ public class ErrorWidget : LeafRenderObjectWidget
         {
             return exception is null ? "Error" : exception.ToString()!;
         }
-        catch (Exception error)
+        catch (Exception)
         {
         }
         return "Error";
@@ -3009,7 +3001,6 @@ public class ParentDataElement<T> : ProxyElement, IParentDataElement
                 return @type!;
             }
             throw new NotSupportedException("debugParentDataType is only supported in debug builds");
-            return default!;
         }
     }
     internal virtual void _applyParentData(ParentDataWidget<T> widget)
@@ -3147,7 +3138,6 @@ public abstract class RenderObjectElement : Element
         {
             DartRuntimePrimitives.Assert(() => (this._renderObject is not null), () => (object?)$"{this.GetType()} unmounted");
             return this._renderObject!;
-            return default!;
         }
     }
     public override Element? renderObjectAttachingChild => DartRuntimePrimitives.ConvertValue<Element>(null);
@@ -3553,7 +3543,6 @@ public class MultiChildRenderObjectElement : RenderObjectElement
         get
         {
             return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(base.renderObject);
-            return default!;
         }
     }
     public virtual IEnumerable<Element> children => this._children.where(((child) => !this._forgottenChildren.Contains(child)));

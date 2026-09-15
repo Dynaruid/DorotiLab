@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/gestures/scale.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,7 +64,6 @@ internal class _PointerPanZoomData__scale
                 return this._position;
             }
             return (this._position + this._pan);
-            return default!;
         }
     }
     public virtual double scale
@@ -78,7 +75,6 @@ internal class _PointerPanZoomData__scale
                 return (this._scale * global::Doroti.Runtime.Dart_mathLibrary.exp((((this._pan.dx * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dx)) + ((this._pan.dy * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dy)))));
             }
             return this._scale;
-            return default!;
         }
     }
     public virtual double rotation => this._rotation;
@@ -259,7 +255,6 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         get
         {
             return (((2L * checked((long)(this._pointerPanZooms.Count)))) + checked((long)(this._pointerQueue.Count)));
-            return default!;
         }
     }
     internal virtual double _pointerScaleFactor => ((this._initialSpan > 0.0) ? (this._currentSpan / this._initialSpan) : 1.0);
@@ -275,7 +270,6 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
             }
             return scaleLocal;
-            return default!;
         }
     }
     internal virtual double _horizontalScaleFactor
@@ -288,7 +282,6 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
             }
             return scaleLocal;
-            return default!;
         }
     }
     internal virtual double _verticalScaleFactor
@@ -301,7 +294,6 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
             }
             return scaleLocal;
-            return default!;
         }
     }
     internal virtual double _computeRotationFactor()

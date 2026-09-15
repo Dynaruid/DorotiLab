@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/interactive_viewer.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -207,7 +206,6 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             DartRuntimePrimitives.Assert(() => !boundaryRect.isEmpty, () => (object?)"InteractiveViewer's child must have nonzero dimensions.");
             DartRuntimePrimitives.Assert(() => (boundaryRect.isFinite || ((((double.IsInfinity(boundaryRect.left) && double.IsInfinity(boundaryRect.top)) && double.IsInfinity(boundaryRect.right)) && double.IsInfinity(boundaryRect.bottom)))), () => (object?)"boundaryRect must either be infinite in all directions or finite in all directions.");
             return boundaryRect;
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Rect _viewport
@@ -217,7 +215,6 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             DartRuntimePrimitives.Assert(() => (((GlobalKey<IState>)this._parentKey).currentContext is not null));
             var parentRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((GlobalKey<IState>)this._parentKey).currentContext!.findRenderObject()!)!;
             return (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)parentRenderBox).size);
-            return default!;
         }
     }
     internal virtual Matrix4 _matrixTranslate(Matrix4 matrix, Offset translation)

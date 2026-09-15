@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -296,7 +295,6 @@ public class CupertinoNavigationBar : global::Doroti.Framework.Widgets.StatefulW
             double bottomHeight = (this.bottom?.preferredSize.height ?? 0.0);
             double effectiveLargeHeight = ((this.largeTitle is not null) ? Nav_barLibrary._kNavBarLargeTitleHeightExtension : 0.0);
             return new global::Doroti.Ui.Size(((Nav_barLibrary._kNavBarPersistentHeight + bottomHeight) + effectiveLargeHeight));
-            return default!;
         }
     }
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoNavigationBarState__nav_bar());
@@ -602,7 +600,6 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
                 }
             }
             return 0.0;
-            return default!;
         }
     }
     internal virtual void _updateEffectiveMiddle()
@@ -1483,7 +1480,6 @@ public class _TransitionableNavigationBar__nav_bar : global::Doroti.Framework.Wi
             var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((_NavigationBarStaticComponentsKeys__nav_bar)this.componentsKeys).navBarBoxKey.currentContext!.findRenderObject()!)!;
             DartRuntimePrimitives.Assert(() => box.attached, () => (object?)"_TransitionableNavigationBar.renderBox should be called when building " + "hero flight shuttles when the from and the to nav bar boxes are already " + "laid out and painted.");
             return box;
-            return default!;
         }
     }
     public virtual bool userGestureInProgress
@@ -1491,7 +1487,6 @@ public class _TransitionableNavigationBar__nav_bar : global::Doroti.Framework.Wi
         get
         {
             return Navigator.of(((_NavigationBarStaticComponentsKeys__nav_bar)this.componentsKeys).navBarBoxKey.currentContext!).userGestureInProgress;
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -1649,7 +1644,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
         {
             DartRuntimePrimitives.Assert(() => (this.animation is global::Doroti.Framework.Animation.CurvedAnimation));
             return (((global::Doroti.Framework.Animation.CurvedAnimation?)(object?)this.animation)!).parent;
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomNavBarBackground
@@ -1665,7 +1659,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             global::Doroti.Framework.Rendering.RelativeRect fromLocal = ((global::Doroti.Framework.Rendering.RelativeRect)(object?)positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).navBarBoxKey, from: this.bottomNavBarBox));
             var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(end: fromLocal.shift(new global::Doroti.Ui.Offset((this.forwardDirection * -((global::Doroti.Framework.Rendering.RenderBox)this.bottomNavBarBox).size.width), 0.0)), begin: fromLocal);
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: pageTransitionAnimation.drive(positionTween), child: Nav_barLibrary._wrapWithBackground(updateSystemUiOverlay: false, backgroundColor: this.bottomBackgroundColor!, border: this.topBorder, child: new global::Doroti.Framework.Widgets.SizedBox(height: ((global::Doroti.Framework.Rendering.RenderBox)this.bottomNavBarBox).size.height, width: double.PositiveInfinity))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomLeading
@@ -1678,7 +1671,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return null;
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).leadingKey, from: this.bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.4), child: ((global::Doroti.Framework.Widgets.KeyedSubtree)bottomLeading).child)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomBackChevron
@@ -1691,7 +1683,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return null;
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).backChevronKey, from: this.bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.6), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.bottomBackButtonTextStyle, child: ((global::Doroti.Framework.Widgets.KeyedSubtree)bottomBackChevron).child))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomBackLabel
@@ -1706,7 +1697,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             global::Doroti.Framework.Rendering.RelativeRect fromLocal = ((global::Doroti.Framework.Rendering.RelativeRect)(object?)positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).backLabelKey, from: this.bottomNavBarBox));
             var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new global::Doroti.Ui.Offset((this.forwardDirection * ((-((global::Doroti.Framework.Rendering.RenderBox)this.bottomNavBarBox).size.width / 2.0))), 0.0)));
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: this.animation.drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.2), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.bottomBackButtonTextStyle, child: ((global::Doroti.Framework.Widgets.KeyedSubtree)bottomBackLabel).child))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomMiddle
@@ -1729,7 +1719,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return ((global::Doroti.Framework.Widgets.Widget?)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).middleKey, from: this.bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy((this.bottomHasUserMiddle ? 0.4 : 0.7)), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.bottomTitleTextStyle, child: ((global::Doroti.Framework.Widgets.KeyedSubtree)bottomMiddle).child))));
             }
             return null;
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomLargeTitle
@@ -1749,7 +1738,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             global::Doroti.Framework.Rendering.RelativeRect fromLocal = ((global::Doroti.Framework.Rendering.RelativeRect)(object?)positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).largeTitleKey, from: this.bottomNavBarBox));
             var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new global::Doroti.Ui.Offset(((this.forwardDirection * ((global::Doroti.Framework.Rendering.RenderBox)this.bottomNavBarBox).size.width) / 4.0), 0.0)));
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: this.animation.drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.4), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.bottomLargeTitleTextStyle!, child: ((global::Doroti.Framework.Widgets.KeyedSubtree)bottomLargeTitle).child))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomTrailing
@@ -1762,7 +1750,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return null;
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).trailingKey, from: this.bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.6), child: ((global::Doroti.Framework.Widgets.KeyedSubtree)bottomTrailing).child)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? bottomNavBarBottom
@@ -1783,7 +1770,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.8, curve: animationCurve), child: childLocal));
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: (this.userGestureInProgress ? this.routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.linear)).drive(positionTween) : this.animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: animationCurve)).drive(positionTween)), child: new global::Doroti.Framework.Widgets.ClipRect(child: childLocal)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topNavBarBackground
@@ -1799,7 +1785,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             global::Doroti.Framework.Rendering.RelativeRect to = ((global::Doroti.Framework.Rendering.RelativeRect)(object?)positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.topComponents).navBarBoxKey, from: this.topNavBarBox));
             var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: to.shift(new global::Doroti.Ui.Offset((this.forwardDirection * ((global::Doroti.Framework.Rendering.RenderBox)this.topNavBarBox).size.width), 0.0)), end: to);
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: pageTransitionAnimation.drive(positionTween), child: Nav_barLibrary._wrapWithBackground(updateSystemUiOverlay: false, backgroundColor: this.topBackgroundColor!, border: this.topBorder, child: new global::Doroti.Framework.Widgets.SizedBox(height: ((global::Doroti.Framework.Rendering.RenderBox)this.topNavBarBox).size.height, width: double.PositiveInfinity))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topLeading
@@ -1812,7 +1797,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return null;
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.topComponents).leadingKey, from: this.topNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.6), child: ((global::Doroti.Framework.Widgets.KeyedSubtree)topLeading).child)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topBackChevron
@@ -1852,7 +1836,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             }
             var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: to);
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: this.routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: effectivePositionCurve)).drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval((((bottomBackChevron is null) && (!object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.animation).status, global::Doroti.Framework.Animation.AnimationStatus.forward))) ? 0.9 : 0.4), 1.0))), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.topBackButtonTextStyle, child: childLocal))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topBackLabel
@@ -1881,7 +1864,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return ((global::Doroti.Framework.Widgets.Widget?)(object?)slideFromLeadingEdge(fromKey: ((_NavigationBarStaticComponentsKeys__nav_bar)this.bottomComponents).middleKey, fromNavBarBox: this.bottomNavBarBox, toKey: ((_NavigationBarStaticComponentsKeys__nav_bar)this.topComponents).backLabelKey, toNavBarBox: this.topNavBarBox, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: ((midClickOpacity ?? (global::Doroti.Framework.Animation.Animation<double>)fadeInFrom(0.3))), child: new global::Doroti.Framework.Widgets.DefaultTextStyleTransition(style: this.animation.drive(new global::Doroti.Framework.Widgets.TextStyleTween(begin: this.bottomTitleTextStyle, end: this.topBackButtonTextStyle)), child: ((global::Doroti.Framework.Widgets.KeyedSubtree)topBackLabel).child))));
             }
             return null;
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topMiddle
@@ -1903,7 +1885,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             var toAnchorInTransitionBox = new global::Doroti.Ui.Offset((isLTRLocal ? ((global::Doroti.Framework.Rendering.RelativeRect)to).left : ((global::Doroti.Framework.Rendering.RelativeRect)to).right), ((global::Doroti.Framework.Rendering.RelativeRect)to).top);
             var anchorMovementInTransitionBox = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderBox)this.topNavBarBox).size.width - (((global::Doroti.Framework.Rendering.RenderBox)toBox).size.width / 2L)), ((global::Doroti.Framework.Rendering.RelativeRect)to).top), end: toAnchorInTransitionBox);
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new _FixedSizeSlidingTransition__nav_bar(isLTR: isLTRLocal, offsetAnimation: this.animation.drive(anchorMovementInTransitionBox), width: ((global::Doroti.Framework.Rendering.RenderBox)toBox).size.width, height: ((global::Doroti.Framework.Rendering.RenderBox)toBox).size.height, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.25), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.topTitleTextStyle, child: ((global::Doroti.Framework.Widgets.KeyedSubtree)topMiddle).child))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topTrailing
@@ -1916,7 +1897,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 return null;
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(((_NavigationBarStaticComponentsKeys__nav_bar)this.topComponents).trailingKey, from: this.topNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.4), child: ((global::Doroti.Framework.Widgets.KeyedSubtree)topTrailing).child)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topLargeTitle
@@ -1932,7 +1912,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
             var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: to.shift(new global::Doroti.Ui.Offset((this.forwardDirection * ((global::Doroti.Framework.Rendering.RenderBox)this.topNavBarBox).size.width), 0.0)), end: to);
             global::Doroti.Framework.Animation.Curve animationCurve = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.animation).status, global::Doroti.Framework.Animation.AnimationStatus.forward)) ? Nav_barLibrary._kTopNavBarHeaderTransitionCurve : ((global::Doroti.Framework.Animation.Curve)Nav_barLibrary._kTopNavBarHeaderTransitionCurve).flipped);
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: (this.userGestureInProgress ? this.routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.linear)).drive(positionTween) : this.animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: animationCurve)).drive(positionTween)), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.0, curve: animationCurve), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.topLargeTitleTextStyle!, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: ((global::Doroti.Framework.Widgets.KeyedSubtree)topLargeTitle).child))));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Widgets.Widget? topNavBarBottom
@@ -1953,7 +1932,6 @@ internal class _NavigationBarComponentsTransition__nav_bar
                 childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.0, curve: animationCurve), child: childLocal));
             }
             return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: (this.userGestureInProgress ? this.routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.linear)).drive(positionTween) : this.animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: animationCurve)).drive(positionTween)), child: new global::Doroti.Framework.Widgets.ClipRect(child: childLocal)));
-            return default!;
         }
     }
 }

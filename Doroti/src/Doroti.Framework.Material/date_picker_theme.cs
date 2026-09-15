@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/date_picker_theme.dart
+#pragma warning disable CS8600, CS8603, CS8619, CS8620
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +112,6 @@ public class DatePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
                 return null;
             }
             return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);
-            return default!;
         }
     }
     public virtual DatePickerThemeData copyWith(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, Color? headerBackgroundColor = null, Color? headerForegroundColor = null, global::Doroti.Framework.Painting.TextStyle? headerHeadlineStyle = null, global::Doroti.Framework.Painting.TextStyle? headerHelpStyle = null, global::Doroti.Framework.Painting.TextStyle? weekdayStyle = null, global::Doroti.Framework.Painting.TextStyle? dayStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayForegroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayBackgroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayOverlayColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>? dayShape = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayForegroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayBackgroundColor = null, global::Doroti.Framework.Painting.BorderSide? todayBorder = null, global::Doroti.Framework.Painting.TextStyle? yearStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearForegroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearBackgroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearOverlayColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>? yearShape = null, Color? rangePickerBackgroundColor = null, double? rangePickerElevation = null, Color? rangePickerShadowColor = null, Color? rangePickerSurfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? rangePickerShape = null, Color? rangePickerHeaderBackgroundColor = null, Color? rangePickerHeaderForegroundColor = null, global::Doroti.Framework.Painting.TextStyle? rangePickerHeaderHeadlineStyle = null, global::Doroti.Framework.Painting.TextStyle? rangePickerHeaderHelpStyle = null, Color? rangeSelectionBackgroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? rangeSelectionOverlayColor = null, Color? dividerColor = null, InputDecorationTheme? inputDecorationTheme = null, ButtonStyle? cancelButtonStyle = null, ButtonStyle? confirmButtonStyle = null, Locale? locale = null, global::Doroti.Framework.Painting.TextStyle? toggleButtonTextStyle = null, Color? subHeaderForegroundColor = null)
@@ -320,7 +318,6 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
         get
         {
             return TextButton.styleFrom();
-            return default!;
         }
     }
     public override ButtonStyle? confirmButtonStyle
@@ -328,7 +325,6 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
         get
         {
             return TextButton.styleFrom();
-            return default!;
         }
     }
     public override Color? shadowColor => Colors.transparent;

@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/colors.dart
+#pragma warning disable CS8600, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -140,7 +139,6 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
         get
         {
             return ((((!object.Equals(this.color, this.darkColor)) || (!object.Equals(this.elevatedColor, this.darkElevatedColor))) || (!object.Equals(this.highContrastColor, this.darkHighContrastColor))) || (!object.Equals(this.highContrastElevatedColor, this.darkHighContrastElevatedColor)));
-            return default!;
         }
     }
     internal virtual bool _isHighContrastDependent
@@ -148,7 +146,6 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
         get
         {
             return ((((!object.Equals(this.color, this.highContrastColor)) || (!object.Equals(this.darkColor, this.darkHighContrastColor))) || (!object.Equals(this.elevatedColor, this.highContrastElevatedColor))) || (!object.Equals(this.darkElevatedColor, this.darkHighContrastElevatedColor)));
-            return default!;
         }
     }
     internal virtual bool _isInterfaceElevationDependent
@@ -156,7 +153,6 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
         get
         {
             return ((((!object.Equals(this.color, this.elevatedColor)) || (!object.Equals(this.darkColor, this.darkElevatedColor))) || (!object.Equals(this.highContrastColor, this.highContrastElevatedColor))) || (!object.Equals(this.darkHighContrastColor, this.darkHighContrastElevatedColor)));
-            return default!;
         }
     }
     public override Color resolveFrom<TContext>(TContext context) => resolveFrom((BuildContext)(object)context!);
@@ -250,25 +246,25 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
         }
     }
 
-    public virtual long value => this._effectiveColor.value;
-    public virtual long toARGB32() => this._effectiveColor.toARGB32();
-    public virtual long alpha => this._effectiveColor.alpha;
-    public virtual long blue => this._effectiveColor.blue;
-    public virtual double computeLuminance() => this._effectiveColor.computeLuminance();
-    public virtual long green => this._effectiveColor.green;
-    public virtual double opacity => this._effectiveColor.opacity;
-    public virtual long red => this._effectiveColor.red;
-    public virtual global::Doroti.Ui.Color withAlpha(long a) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withAlpha(a));
-    public virtual global::Doroti.Ui.Color withBlue(long b) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withBlue(b));
-    public virtual global::Doroti.Ui.Color withGreen(long g) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withGreen(g));
-    public virtual global::Doroti.Ui.Color withOpacity(double opacity) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withOpacity(opacity));
-    public virtual global::Doroti.Ui.Color withRed(long r) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withRed(r));
-    public virtual double a => this._effectiveColor.a;
-    public virtual double r => this._effectiveColor.r;
-    public virtual double g => this._effectiveColor.g;
-    public virtual double b => this._effectiveColor.b;
-    public virtual global::Doroti.Ui.ColorSpace colorSpace => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.ColorSpace>(this._effectiveColor.colorSpace);
-    public virtual global::Doroti.Ui.Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withValues(alpha: alpha, red: red, green: green, blue: blue, colorSpace: colorSpace));
+    public new virtual long value => this._effectiveColor.value;
+    public new virtual long toARGB32() => this._effectiveColor.toARGB32();
+    public new virtual long alpha => this._effectiveColor.alpha;
+    public new virtual long blue => this._effectiveColor.blue;
+    public new virtual double computeLuminance() => this._effectiveColor.computeLuminance();
+    public new virtual long green => this._effectiveColor.green;
+    public new virtual double opacity => this._effectiveColor.opacity;
+    public new virtual long red => this._effectiveColor.red;
+    public new virtual global::Doroti.Ui.Color withAlpha(long a) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withAlpha(a));
+    public new virtual global::Doroti.Ui.Color withBlue(long b) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withBlue(b));
+    public new virtual global::Doroti.Ui.Color withGreen(long g) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withGreen(g));
+    public new virtual global::Doroti.Ui.Color withOpacity(double opacity) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withOpacity(opacity));
+    public new virtual global::Doroti.Ui.Color withRed(long r) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withRed(r));
+    public new virtual double a => this._effectiveColor.a;
+    public new virtual double r => this._effectiveColor.r;
+    public new virtual double g => this._effectiveColor.g;
+    public new virtual double b => this._effectiveColor.b;
+    public new virtual global::Doroti.Ui.ColorSpace colorSpace => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.ColorSpace>(this._effectiveColor.colorSpace);
+    public new virtual global::Doroti.Ui.Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withValues(alpha: alpha, red: red, green: green, blue: blue, colorSpace: colorSpace));
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {

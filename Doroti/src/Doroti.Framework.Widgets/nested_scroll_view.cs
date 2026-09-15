@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -207,7 +206,6 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         get
         {
             return (((this._outerPosition?.outOfRange ?? false)) || this._innerPositions.any(((position) => position.outOfRange)));
-            return default!;
         }
     }
     internal virtual _NestedScrollPosition__nested_scroll_view? _outerPosition
@@ -219,7 +217,6 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 return ((_NestedScrollPosition__nested_scroll_view)(object)null);
             }
             return ((_NestedScrollController__nested_scroll_view)this._outerController).nestedPositions.Single();
-            return default!;
         }
     }
     internal virtual IEnumerable<_NestedScrollPosition__nested_scroll_view> _innerPositions
@@ -227,7 +224,6 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         get
         {
             return ((_NestedScrollController__nested_scroll_view)this._innerController).nestedPositions;
-            return default!;
         }
     }
     public virtual bool canScrollBody
@@ -240,7 +236,6 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 return true;
             }
             return (outer.haveDimensions && (outer.extentAfter == 0.0));
-            return default!;
         }
     }
     public virtual bool hasScrolledBody
@@ -262,7 +257,6 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                 }
             }
             return false;
-            return default!;
         }
     }
     public virtual void updateShadow()
@@ -756,7 +750,6 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
         get
         {
             return this.positions.cast<_NestedScrollPosition__nested_scroll_view>();
-            return default!;
         }
     }
 }

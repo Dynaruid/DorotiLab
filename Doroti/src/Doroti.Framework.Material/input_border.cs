@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/input_border.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +98,6 @@ public class UnderlineInputBorder : InputBorder
         get
         {
             return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width));
-            return default!;
         }
     }
     public override UnderlineInputBorder scale(double t)
@@ -225,7 +223,6 @@ public class OutlineInputBorder : InputBorder
         get
         {
             return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeInset));
-            return default!;
         }
     }
     public override OutlineInputBorder scale(double t)
@@ -409,7 +406,6 @@ public class ShapedInputBorder : InputBorder
         get
         {
             return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width));
-            return default!;
         }
     }
     public override ShapedInputBorder scale(double t)

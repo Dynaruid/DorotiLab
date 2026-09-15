@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/dismissible.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS4014, CS8600, CS8601, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -247,7 +246,6 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         get
         {
             return (((object.Equals(((Dismissible)this.widget).direction, DismissDirection.horizontal)) || (object.Equals(((Dismissible)this.widget).direction, DismissDirection.endToStart))) || (object.Equals(((Dismissible)this.widget).direction, DismissDirection.startToEnd)));
-            return default!;
         }
     }
     internal virtual DismissDirection _extentToDirection(double extent)
@@ -272,7 +270,6 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)DartRuntimePrimitives.RequireValue(((BuildContext)this.context).size));
             return (this._directionIsXAxis ? sizeLocal.width : sizeLocal.height);
-            return default!;
         }
     }
     internal virtual void _handleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)

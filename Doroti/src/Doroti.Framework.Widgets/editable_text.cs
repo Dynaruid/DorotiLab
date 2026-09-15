@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8620, CS8629
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -478,7 +477,6 @@ public class EditableText : StatefulWidget
                 return global::Doroti.Framework.Painting.StrutStyle.CreateFromTextStyle(this.style, forceStrutHeight: true);
             }
             return ((global::Doroti.Framework.Painting.StrutStyle)(object?)this._strutStyle.inheritFromTextStyle(this.style));
-            return default!;
         }
     }
     public virtual bool selectionEnabled => this.enableInteractiveSelection;
@@ -491,7 +489,6 @@ public class EditableText : StatefulWidget
                 return BoxHeightStyle.max;
             }
             return BoxHeightStyle.includeLineSpacingMiddle;
-            return default!;
         }
     }
     public static global::Doroti.Ui.BoxWidthStyle defaultSelectionWidthStyle
@@ -507,7 +504,6 @@ public class EditableText : StatefulWidget
                 return BoxWidthStyle.tight;
             }
             return BoxWidthStyle.max;
-            return default!;
         }
     }
     internal virtual bool _userSelectionEnabled => DartRuntimePrimitives.ConvertValue<bool>((this.enableInteractiveSelection && ((!this.readOnly || !this.obscureText))));
@@ -520,7 +516,6 @@ public class EditableText : StatefulWidget
                 return true;
             }
             return (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => false, global::Doroti.Framework.Foundation.TargetPlatform.iOS => false, global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => false, global::Doroti.Framework.Foundation.TargetPlatform.linux => true, global::Doroti.Framework.Foundation.TargetPlatform.macOS => true, global::Doroti.Framework.Foundation.TargetPlatform.windows => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     public static List<ContextMenuButtonItem> getEditableButtonItems(ClipboardStatus? clipboardStatus, global::System.Action? onCopy, global::System.Action? onCut, global::System.Action? onPaste, global::System.Action? onSelectAll, global::System.Action? onLookUp, global::System.Action? onSearchWeb, global::System.Action? onShare, global::System.Action? onLiveTextInput)
@@ -843,7 +838,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     __cascade.addListener(this._onCursorColorTick);
     return __cascade;
 }))();
-            return default!;
         }
     }
     internal virtual bool _hasInputConnection => DartRuntimePrimitives.ConvertValue<bool>((this._textInputConnection?.attached ?? false));
@@ -864,7 +858,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return ((EditableText)(object)this.widget).scribbleEnabled;
             }
             return ((EditableText)(object)this.widget).stylusHandwritingEnabled;
-            return default!;
         }
     }
     public virtual bool wantKeepAlive => ((EditableText)(object)this.widget).focusNode.hasFocus;
@@ -874,7 +867,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             double effectiveOpacity = Math.Min((((EditableText)(object)this.widget).cursorColor.alpha / 255.0), ((global::Doroti.Framework.Animation.AnimationController)this._cursorBlinkOpacityController).value);
             return ((EditableText)(object)this.widget).cursorColor.withOpacity(effectiveOpacity);
-            return default!;
         }
     }
     public virtual bool cutEnabled
@@ -886,7 +878,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return ((((EditableText)(object)this.widget).toolbarOptions.cut && !((EditableText)(object)this.widget).readOnly) && !((EditableText)(object)this.widget).obscureText);
             }
             return ((!((EditableText)(object)this.widget).readOnly && !((EditableText)(object)this.widget).obscureText) && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
-            return default!;
         }
     }
     public virtual bool copyEnabled
@@ -898,7 +889,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return (((EditableText)(object)this.widget).toolbarOptions.copy && !((EditableText)(object)this.widget).obscureText);
             }
             return (!((EditableText)(object)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
-            return default!;
         }
     }
     public virtual bool pasteEnabled
@@ -910,7 +900,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return (((EditableText)(object)this.widget).toolbarOptions.paste && !((EditableText)(object)this.widget).readOnly);
             }
             return (!((EditableText)(object)this.widget).readOnly && ((object.Equals(this.clipboardStatus.value, ClipboardStatus.pasteable))));
-            return default!;
         }
     }
     public virtual bool selectAllEnabled
@@ -945,7 +934,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
-            return default!;
         }
     }
     public virtual bool lookUpEnabled
@@ -957,7 +945,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return false;
             }
             return ((!((EditableText)(object)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed) && (((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text).Trim() != ""));
-            return default!;
         }
     }
     public virtual bool searchWebEnabled
@@ -969,7 +956,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return false;
             }
             return ((!((EditableText)(object)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed) && (((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text).Trim() != ""));
-            return default!;
         }
     }
     public virtual bool shareEnabled
@@ -993,7 +979,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
-            return default!;
         }
     }
     public virtual bool liveTextInputEnabled
@@ -1001,7 +986,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         get
         {
             return ((((object.Equals(this._liveTextInputStatus?.value, LiveTextInputStatus.enabled)) && !((EditableText)(object)this.widget).obscureText) && !((EditableText)(object)this.widget).readOnly) && ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
-            return default!;
         }
     }
     internal virtual void _onChangedClipboardStatus()
@@ -1029,7 +1013,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 throw new InvalidOperationException("_Editable must be mounted.");
             }
             return ((_Editable__editable_text)((_Editable__editable_text)editableWidget)).value;
-            return default!;
         }
     }
     public virtual void copySelection(global::Doroti.Framework.Services.SelectionChangedCause cause)
@@ -1107,7 +1090,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         get
         {
             return (!((EditableText)(object)this.widget).readOnly && ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isValid);
-            return default!;
         }
     }
     public async virtual Future pasteText(global::Doroti.Framework.Services.SelectionChangedCause cause)
@@ -1386,7 +1368,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
             List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(object?)((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(this.renderEditable).getEndpointsForSelection(selectionLocal)));
             return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: this.renderEditable, startGlyphHeight: startGlyphHeightLocal, endGlyphHeight: endGlyphHeightLocal, selectionEndpoints: points);
-            return default!;
         }
     }
     public virtual List<ContextMenuButtonItem> contextMenuButtonItems
@@ -1412,7 +1393,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     }
     return __cascade;
 }))();
-            return default!;
         }
     }
     internal virtual List<ContextMenuButtonItem> _textProcessingActionButtonItems
@@ -1445,7 +1425,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 }))));
             }
             return buttonItems;
-            return default!;
         }
     }
     public override void initState()
@@ -3155,7 +3134,6 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             global::Doroti.Framework.Services.AutofillConfiguration autofillConfigurationLocal = ((autofillHintsLocal is not null) ? new global::Doroti.Framework.Services.AutofillConfiguration(uniqueIdentifier: this.autofillId, autofillHints: autofillHintsLocal, currentEditingValue: this.currentTextEditingValue) : global::Doroti.Framework.Services.AutofillConfiguration.disabled);
             _viewId = checked((long)View.of(this.context).viewId);
             return new global::Doroti.Framework.Services.TextInputConfiguration(viewId: this._viewId, inputType: ((EditableText)(object)this.widget).keyboardType, readOnly: ((EditableText)(object)this.widget).readOnly, obscureText: ((EditableText)(object)this.widget).obscureText, autocorrect: ((EditableText)(object)this.widget).autocorrect, smartDashesType: ((EditableText)(object)this.widget).smartDashesType, smartQuotesType: ((EditableText)(object)this.widget).smartQuotesType, enableSuggestions: ((EditableText)(object)this.widget).enableSuggestions, enableInteractiveSelection: ((EditableText)(object)this.widget)._userSelectionEnabled, inputAction: (((EditableText)(object)this.widget).textInputAction ?? (((object.Equals(((EditableText)(object)this.widget).keyboardType, global::Doroti.Framework.Services.TextInputType.multiline)) ? global::Doroti.Framework.Services.TextInputAction.newline : global::Doroti.Framework.Services.TextInputAction.done))), textCapitalization: ((EditableText)(object)this.widget).textCapitalization, keyboardAppearance: ((EditableText)(object)this.widget).keyboardAppearance, autofillConfiguration: autofillConfigurationLocal, enableIMEPersonalizedLearning: ((EditableText)(object)this.widget).enableIMEPersonalizedLearning, allowedMimeTypes: ((((EditableText)(object)this.widget).contentInsertionConfiguration is null) ? new List<string>() : ((EditableText)(object)this.widget).contentInsertionConfiguration!.allowedMimeTypes), hintLocales: ((EditableText)(object)this.widget).hintLocales, enableInlinePrediction: ((EditableText)(object)this.widget).enableInlinePrediction);
-            return default!;
         }
     }
     public virtual void autofill(global::Doroti.Framework.Services.TextEditingValue newEditingValue) => updateEditingValue(newEditingValue);
@@ -3921,7 +3899,6 @@ public class _ScribbleFocusableState__editable_text : State<_ScribbleFocusable__
             }
             Matrix4 transform = ((Matrix4)(object?)box.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
             return MatrixUtils.transformRect(transform, global::Doroti.Ui.Rect.fromLTWH(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)box).size.width, ((global::Doroti.Framework.Rendering.RenderBox)box).size.height));
-            return default!;
         }
     }
     public override Widget build(BuildContext context)
@@ -4150,7 +4127,6 @@ internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T> w
                 return false;
             }
             return ((EditableTextState)this.state)._value.selection.isValid;
-            return default!;
         }
     }
 }
@@ -4220,7 +4196,6 @@ internal class _UpdateTextSelectionVerticallyAction__editable_text<T> : ContextA
                 return false;
             }
             return ((EditableTextState)this.state)._value.selection.isValid;
-            return default!;
         }
     }
 }
@@ -4243,7 +4218,6 @@ internal class _WebComposingDisablingCallbackAction__editable_text<T> : Callback
                 return false;
             }
             return base.isActionEnabled;
-            return default!;
         }
     }
 }

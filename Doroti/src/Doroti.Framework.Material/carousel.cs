@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/carousel.dart
+#pragma warning disable CS8600, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -682,7 +681,6 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
                 index = actual.floor();
             }
             return (this.consumeMaxWeight ? (index - smallerWeightCount) : index);
-            return default!;
         }
     }
     internal virtual double _firstVisibleItemOffscreenExtent
@@ -705,7 +703,6 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
                 index = actual.floor();
             }
             return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset - (index * this.firstChildExtent));
-            return default!;
         }
     }
     internal virtual double _distanceToLeadingEdge => DartRuntimePrimitives.ConvertValue<double>((this.firstChildExtent - this._firstVisibleItemOffscreenExtent));
@@ -1139,7 +1136,6 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
                 leadingItem = (leadingItem % DartRuntimePrimitives.RequireValue(this.itemCount));
             }
             return leadingItem;
-            return default!;
         }
     }
     public virtual double updateLeadingItem(List<long>? newFlexWeights, bool newConsumeMaxWeight)
@@ -1338,7 +1334,6 @@ public class CarouselController : global::Doroti.Framework.Widgets.ScrollControl
             DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this.positions), () => (object?)"CarouselController.leadingItem cannot be accessed before a CarouselView is built with it.");
             DartRuntimePrimitives.Assert(() => (this.positions.Count() == 1L), () => (object?)"CarouselController.leadingItem cannot be read when multiple CarouselViews " + "are attached to the same controller.");
             return (((_CarouselPosition__carousel?)(object?)this.position)!).leadingItem;
-            return default!;
         }
     }
     internal virtual void _attach(_CarouselViewState__carousel anchor)

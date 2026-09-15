@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/slider.dart
+#pragma warning disable CS8600, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -465,7 +464,6 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
                 dragValue = (((dragValue * DartRuntimePrimitives.RequireValue(this.divisions))).round() / DartRuntimePrimitives.RequireValue(this.divisions));
             }
             return dragValue;
-            return default!;
         }
     }
     internal virtual double _trackLeft => SliderLibrary._kPadding;
@@ -476,7 +474,6 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
         {
             double visualPosition = (this.textDirection switch { TextDirection.rtl => (1.0 - this._value), TextDirection.ltr => this._value, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble((this._trackLeft + CupertinoThumbPainter.radius), (this._trackRight - CupertinoThumbPainter.radius), visualPosition));
-            return default!;
         }
     }
     public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>((this.onChanged is not null));

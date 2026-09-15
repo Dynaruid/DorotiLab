@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/paragraph.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -146,7 +145,6 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     __cascade.textHeightBehavior = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
     return __cascade;
 }))();
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Painting.InlineSpan text
@@ -209,7 +207,6 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 }
             }
             return results;
-            return default!;
         }
     }
     public virtual SelectionRegistrar? registrar
@@ -857,7 +854,6 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
             return ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size;
-            return default!;
         }
     }
     public virtual bool didExceedMaxLines
@@ -866,7 +862,6 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
             return ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines;
-            return default!;
         }
     }
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
@@ -3219,7 +3214,6 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
             }
             return this._cachedBoundingBoxes!;
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Rect _rect
@@ -3245,7 +3239,6 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
             }
             return DartRuntimePrimitives.RequireValue(this._cachedRect);
-            return default!;
         }
     }
     public virtual void didChangeParagraphLayout()
@@ -3260,7 +3253,6 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         get
         {
             return this._rect.size;
-            return default!;
         }
     }
     public virtual void paintSelection(PaintingContext context, Offset offset)

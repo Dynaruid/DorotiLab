@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -207,7 +206,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                 }
             }
             return false;
-            return default!;
         }
         set
         {
@@ -281,7 +279,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                 return System.Linq.Enumerable.Empty<FocusNode>();
             }
             return this.children.where(((node) => (!((FocusNode)node).skipTraversal && ((FocusNode)node).canRequestFocus)));
-            return default!;
         }
     }
     public virtual string? debugLabel
@@ -313,7 +310,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                 _descendants = result;
             }
             return ((IEnumerable<FocusNode>)(object?)this._descendants!);
-            return default!;
         }
     }
     public virtual IEnumerable<FocusNode> traversalDescendants
@@ -325,7 +321,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                 return System.Linq.Enumerable.Empty<FocusNode>();
             }
             return this.descendants.where(((node) => (!((FocusNode)node).skipTraversal && ((FocusNode)node).canRequestFocus)));
-            return default!;
         }
     }
     public virtual IEnumerable<FocusNode> ancestors
@@ -344,7 +339,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                 _ancestors = result;
             }
             return ((IEnumerable<FocusNode>)(object?)this._ancestors!);
-            return default!;
         }
     }
     public virtual bool hasFocus => DartRuntimePrimitives.ConvertValue<bool>((this.hasPrimaryFocus || ((this._manager?.primaryFocus?.ancestors.contains(this) ?? false))));
@@ -378,7 +372,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             FocusScopeNode? enclosingScope = _enclosingScope ??= this.parent?.nearestScope;
             DartRuntimePrimitives.Assert(() => (object.Equals(enclosingScope, this.parent?.nearestScope)), () => (object?)$"{this} has invalid scope cache: {this._enclosingScope} != {this.parent?.nearestScope}");
             return enclosingScope;
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Size size => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(this.rect.size);
@@ -389,7 +382,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             DartRuntimePrimitives.Assert(() => (this.context is not null), () => (object?)"Tried to get the offset of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
             global::Doroti.Framework.Rendering.RenderObject @object = this.context!.findRenderObject()!;
             return MatrixUtils.transformPoint(((Matrix4)(@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.topLeft);
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Rect rect
@@ -401,7 +393,6 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             global::Doroti.Ui.Offset topLeftLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)(@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.topLeft));
             global::Doroti.Ui.Offset bottomRightLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)(@object).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.bottomRight));
             return global::Doroti.Ui.Rect.fromLTRB(topLeftLocal.dx, topLeftLocal.dy, bottomRightLocal.dx, bottomRightLocal.dy);
-            return default!;
         }
     }
     public virtual void unfocus(UnfocusDisposition disposition = UnfocusDisposition.scope)
@@ -689,7 +680,6 @@ public class FocusScopeNode : FocusNode
         {
             DartRuntimePrimitives.Assert(() => (!System.Linq.Enumerable.Any(this._focusedChildren) || (object.Equals(this._focusedChildren.Last().enclosingScope, this))), () => (object?)$"{this.debugLabel}: Focused child does not have the same idea of its enclosing scope " + $"({this._focusedChildren.LastOrDefault()?.enclosingScope}) as the scope does.");
             return this._focusedChildren.LastOrDefault();
-            return default!;
         }
     }
     public override IEnumerable<FocusNode> traversalChildren
@@ -701,7 +691,6 @@ public class FocusScopeNode : FocusNode
                 return System.Linq.Enumerable.Empty<FocusNode>();
             }
             return base.traversalChildren;
-            return default!;
         }
     }
     public override IEnumerable<FocusNode> traversalDescendants
@@ -713,7 +702,6 @@ public class FocusScopeNode : FocusNode
                 return System.Linq.Enumerable.Empty<FocusNode>();
             }
             return base.traversalDescendants;
-            return default!;
         }
     }
     public virtual void setFirstFocus(FocusScopeNode scope)
@@ -1389,7 +1377,6 @@ internal class _HighlightModeManager__focus_manager
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
-            return default!;
         }
     }
 }

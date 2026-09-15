@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/view.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -123,7 +121,6 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
                 throw new InvalidOperationException("Constraints are not available because RenderView has not been given a configuration yet.");
             }
             return ((ViewConfiguration)this.configuration).logicalConstraints;
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.DorotiView flutterView => this._view;
@@ -296,7 +293,6 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         {
             DartRuntimePrimitives.Assert(() => (this._rootTransform is not null));
             return MatrixUtils.transformRect(this._rootTransform!, (Offset.zero & this.size));
-            return default!;
         }
     }
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

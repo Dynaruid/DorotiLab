@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8619, CS8620, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -178,7 +177,6 @@ public abstract class Route<T> : RouteBase
                 }
             }
             return (this.isFirst ? RoutePopDisposition.bubble : RoutePopDisposition.pop);
-            return default!;
         }
     }
     public override void onPopInvoked(bool didPop)
@@ -272,7 +270,6 @@ public abstract class Route<T> : RouteBase
                 return false;
             }
             return (object.Equals(((_RouteEntry__navigator)currentRouteEntry).route, this));
-            return default!;
         }
     }
     public override bool isFirst
@@ -289,7 +286,6 @@ public abstract class Route<T> : RouteBase
                 return false;
             }
             return (object.Equals(((_RouteEntry__navigator)currentRouteEntry).route, this));
-            return default!;
         }
     }
     public override bool hasActiveRouteBelow
@@ -312,7 +308,6 @@ public abstract class Route<T> : RouteBase
                 }
             }
             return false;
-            return default!;
         }
     }
     public override bool isActive
@@ -320,7 +315,6 @@ public abstract class Route<T> : RouteBase
         get
         {
             return (this._navigator?._firstRouteEntryWhereOrNull(_RouteEntry__navigator.isRoutePredicate(this))?.isPresent ?? false);
-            return default!;
         }
     }
     internal override bool _debugCheckCanConsumeResult(object? result, string methodName)
@@ -976,7 +970,6 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                 return $"r+{this.restorationInformation!.restorationScopeId}";
             }
             return ((string)(object)null);
-            return default!;
         }
     }
     public virtual bool canUpdateFrom(Page<object> page)
@@ -1247,7 +1240,6 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         get
         {
             return ((FoundationRuntimePorts.EnumIndex(this.currentState) <= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.idle)) && (FoundationRuntimePorts.EnumIndex(this.currentState) >= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.add)));
-            return default!;
         }
     }
     public virtual bool isPresent
@@ -1255,7 +1247,6 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         get
         {
             return ((FoundationRuntimePorts.EnumIndex(this.currentState) <= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.remove)) && (FoundationRuntimePorts.EnumIndex(this.currentState) >= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.add)));
-            return default!;
         }
     }
     public virtual bool isPresentForRestoration => DartRuntimePrimitives.ConvertValue<bool>((FoundationRuntimePorts.EnumIndex(this.currentState) <= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.idle)));
@@ -1264,7 +1255,6 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         get
         {
             return ((FoundationRuntimePorts.EnumIndex(this.currentState) <= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.removing)) && (FoundationRuntimePorts.EnumIndex(this.currentState) >= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.push)));
-            return default!;
         }
     }
     public virtual bool suitableForTransitionAnimation
@@ -1272,7 +1262,6 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         get
         {
             return ((FoundationRuntimePorts.EnumIndex(this.currentState) <= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.remove)) && (FoundationRuntimePorts.EnumIndex(this.currentState) >= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.push)));
-            return default!;
         }
     }
     public virtual bool shouldAnnounceChangeToNext(object? nextRoute)
@@ -1478,14 +1467,12 @@ public class _History__navigator : ChangeNotifier, IEnumerable<_RouteEntry__navi
         get
         {
             return this._value[(int)(index)];
-            return default!;
         }
     }
 
     public virtual IEnumerator<_RouteEntry__navigator> GetEnumerator()
     {
         return this._value.GetEnumerator();
-        return default!;
     }
     public override string ToString()
     {
@@ -3247,7 +3234,6 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             }
             global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
             return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
-            return default!;
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
@@ -3732,7 +3718,6 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
         {
             NavigatorState navigator = this.navigatorFinder(this.state.context);
             return navigator;
-            return default!;
         }
     }
     internal virtual void _hookOntoRouteFuture(string id)

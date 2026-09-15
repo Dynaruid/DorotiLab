@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/wrap.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -357,7 +355,6 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                 }
             }
             return true;
-            return default!;
         }
     }
     public override void setupParentData(RenderObject child)
@@ -492,7 +489,6 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             bool flipHorizontal = ((this.textDirection ?? TextDirection.ltr) switch { TextDirection.ltr => false, TextDirection.rtl => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             bool flipVertical = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => false, global::Doroti.Framework.Painting.VerticalDirection.up => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (((bool, bool))((flipHorizontal, flipVertical))), global::Doroti.Framework.Painting.Axis.vertical => (((bool, bool))((flipVertical, flipHorizontal))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -994,7 +990,6 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             {
                 DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
                 return child!.hitTest(result, position: transformed);
-                return default;
             })));
             if (isHit)
             {

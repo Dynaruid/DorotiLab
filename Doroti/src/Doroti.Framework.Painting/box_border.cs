@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/box_border.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -220,7 +218,7 @@ public class Border : BoxBorder
         this.left = __left;
     }
 
-    public static Border CreateFromBorderSide(BorderSide side)
+    public new static Border CreateFromBorderSide(BorderSide side)
     {
         var __instance = new Border(default!, default!, default!, default!);
         __instance.__field_top = side;
@@ -230,7 +228,7 @@ public class Border : BoxBorder
         return __instance;
     }
 
-    public static Border CreateSymmetric(BorderSide vertical = default!, BorderSide horizontal = default!)
+    public new static Border CreateSymmetric(BorderSide vertical = default!, BorderSide horizontal = default!)
     {
         var __instance = new Border(default!, default!, default!, default!);
         __instance.left = vertical;
@@ -263,7 +261,6 @@ public class Border : BoxBorder
         get
         {
             return new EdgeInsets(((BorderSide)this.left).strokeInset, ((BorderSide)this.top).strokeInset, ((BorderSide)this.right).strokeInset, ((BorderSide)this.bottom).strokeInset);
-            return default!;
         }
     }
     public override bool isUniform => (((this._colorIsUniform && this._widthIsUniform) && this._styleIsUniform) && this._strokeAlignIsUniform);
@@ -273,7 +270,6 @@ public class Border : BoxBorder
         {
             global::Doroti.Ui.Color topColor = ((BorderSide)this.top).color;
             return (((object.Equals(((BorderSide)this.left).color, topColor)) && (object.Equals(((BorderSide)this.bottom).color, topColor))) && (object.Equals(((BorderSide)this.right).color, topColor)));
-            return default!;
         }
     }
     internal virtual bool _widthIsUniform
@@ -282,7 +278,6 @@ public class Border : BoxBorder
         {
             double topWidth = ((BorderSide)this.top).width;
             return (((((BorderSide)this.left).width == topWidth) && (((BorderSide)this.bottom).width == topWidth)) && (((BorderSide)this.right).width == topWidth));
-            return default!;
         }
     }
     internal virtual bool _styleIsUniform
@@ -291,7 +286,6 @@ public class Border : BoxBorder
         {
             BorderStyle topStyle = ((BorderSide)this.top).style;
             return (((object.Equals(((BorderSide)this.left).style, topStyle)) && (object.Equals(((BorderSide)this.bottom).style, topStyle))) && (object.Equals(((BorderSide)this.right).style, topStyle)));
-            return default!;
         }
     }
     internal virtual bool _strokeAlignIsUniform
@@ -300,7 +294,6 @@ public class Border : BoxBorder
         {
             double topStrokeAlign = ((BorderSide)this.top).strokeAlign;
             return (((((BorderSide)this.left).strokeAlign == topStrokeAlign) && (((BorderSide)this.bottom).strokeAlign == topStrokeAlign)) && (((BorderSide)this.right).strokeAlign == topStrokeAlign));
-            return default!;
         }
     }
     internal virtual HashSet<global::Doroti.Ui.Color> _distinctVisibleColors()
@@ -509,7 +502,6 @@ public class BorderDirectional : BoxBorder
         get
         {
             return new EdgeInsetsDirectional(((BorderSide)this.start).strokeInset, ((BorderSide)this.top).strokeInset, ((BorderSide)this.end).strokeInset, ((BorderSide)this.bottom).strokeInset);
-            return default!;
         }
     }
     public override bool isUniform => (((this._colorIsUniform && this._widthIsUniform) && this._styleIsUniform) && this._strokeAlignIsUniform);
@@ -519,7 +511,6 @@ public class BorderDirectional : BoxBorder
         {
             global::Doroti.Ui.Color topColor = ((BorderSide)this.top).color;
             return (((object.Equals(((BorderSide)this.start).color, topColor)) && (object.Equals(((BorderSide)this.bottom).color, topColor))) && (object.Equals(((BorderSide)this.end).color, topColor)));
-            return default!;
         }
     }
     internal virtual bool _widthIsUniform
@@ -528,7 +519,6 @@ public class BorderDirectional : BoxBorder
         {
             double topWidth = ((BorderSide)this.top).width;
             return (((((BorderSide)this.start).width == topWidth) && (((BorderSide)this.bottom).width == topWidth)) && (((BorderSide)this.end).width == topWidth));
-            return default!;
         }
     }
     internal virtual bool _styleIsUniform
@@ -537,7 +527,6 @@ public class BorderDirectional : BoxBorder
         {
             BorderStyle topStyle = ((BorderSide)this.top).style;
             return (((object.Equals(((BorderSide)this.start).style, topStyle)) && (object.Equals(((BorderSide)this.bottom).style, topStyle))) && (object.Equals(((BorderSide)this.end).style, topStyle)));
-            return default!;
         }
     }
     internal virtual bool _strokeAlignIsUniform
@@ -546,7 +535,6 @@ public class BorderDirectional : BoxBorder
         {
             double topStrokeAlign = ((BorderSide)this.top).strokeAlign;
             return (((((BorderSide)this.start).strokeAlign == topStrokeAlign) && (((BorderSide)this.bottom).strokeAlign == topStrokeAlign)) && (((BorderSide)this.end).strokeAlign == topStrokeAlign));
-            return default!;
         }
     }
     internal virtual HashSet<global::Doroti.Ui.Color> _distinctVisibleColors()

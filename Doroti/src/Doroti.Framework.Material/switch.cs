@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/switch.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8625, CS8629
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -381,7 +380,6 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                 return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
-            return default!;
         }
     }
     internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> _widgetTrackColor
@@ -397,7 +395,6 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                 return ((_MaterialSwitch__switch)this.widget).inactiveTrackColor;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
-            return default!;
         }
     }
     internal virtual double _trackInnerLength
@@ -433,7 +430,6 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                             default:
                                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                         }
-                        break;
                     }
                 case _SwitchType__switch.material:
                     {
@@ -1742,7 +1738,6 @@ internal class _SwitchDefaultsCupertino__switch : SwitchThemeData
                 return ((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> thumbColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.white));
@@ -1759,7 +1754,6 @@ internal class _SwitchDefaultsCupertino__switch : SwitchThemeData
                 return (CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, this.context));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> trackOutlineColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent));
@@ -1776,7 +1770,6 @@ internal class _SwitchDefaultsCupertino__switch : SwitchThemeData
                 return (Colors.transparent);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override double? splashRadius => 0.0;
@@ -1811,7 +1804,6 @@ internal class _SwitchConfigCupertino__switch : _SwitchConfig__switch
                 return (this._colors.onPrimaryContainer);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public virtual double activeThumbRadius => 14.0;
@@ -1898,7 +1890,6 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
                 return (this._colors.outline);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> trackColor
@@ -1946,7 +1937,6 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
                 return (this._colors.surfaceContainerHighest);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> trackOutlineColor
@@ -1966,7 +1956,6 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
                 return (this._colors.outline);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColor
@@ -2006,7 +1995,6 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
                 return null;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor
@@ -2014,7 +2002,6 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
         get
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith((states) => global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states)));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?> trackOutlineWidth => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(2.0));
@@ -2080,7 +2067,6 @@ internal class _SwitchConfigM3__switch : _SwitchConfig__switch
                 return (this._colors.surfaceContainerHighest);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public virtual double inactiveThumbRadius => DartRuntimePrimitives.ConvertValue<double>((16.0 / 2L));

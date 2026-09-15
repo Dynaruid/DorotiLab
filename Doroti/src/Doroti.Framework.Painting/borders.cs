@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/borders.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8619
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -315,9 +314,7 @@ internal class _CompoundBorder__borders : ShapeBorder
             return System.Linq.Enumerable.Aggregate(this.borders, (EdgeInsetsGeometry)EdgeInsets.zero, ((previousValue, border) =>
             {
                 return previousValue.add(((ShapeBorder)border).dimensions);
-                return default;
             }));
-            return default!;
         }
     }
     public override ShapeBorder? add(ShapeBorder other, bool reversed = false)
@@ -356,7 +353,7 @@ internal class _CompoundBorder__borders : ShapeBorder
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static _CompoundBorder__borders lerp(ShapeBorder? a, ShapeBorder? b, double t)
+    public new static _CompoundBorder__borders lerp(ShapeBorder? a, ShapeBorder? b, double t)
     {
         DartRuntimePrimitives.Assert(() => ((a is _CompoundBorder__borders) || (b is _CompoundBorder__borders)));
         List<ShapeBorder?> aList = ((a is _CompoundBorder__borders) ? ((_CompoundBorder__borders)((_CompoundBorder__borders)a)).borders : new List<ShapeBorder?> { a });

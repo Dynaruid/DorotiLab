@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/alignment.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -115,15 +113,15 @@ public class Alignment : AlignmentGeometry
 {
     public virtual double x { get; private set; } = default!;
     public virtual double y { get; private set; } = default!;
-    public static Alignment topLeft = new Alignment(-1.0, -1.0);
-    public static Alignment topCenter = new Alignment(0.0, -1.0);
-    public static Alignment topRight = new Alignment(1.0, -1.0);
-    public static Alignment centerLeft = new Alignment(-1.0, 0.0);
-    public static Alignment center = new Alignment(0.0, 0.0);
-    public static Alignment centerRight = new Alignment(1.0, 0.0);
-    public static Alignment bottomLeft = new Alignment(-1.0, 1.0);
-    public static Alignment bottomCenter = new Alignment(0.0, 1.0);
-    public static Alignment bottomRight = new Alignment(1.0, 1.0);
+    public new static Alignment topLeft = new Alignment(-1.0, -1.0);
+    public new static Alignment topCenter = new Alignment(0.0, -1.0);
+    public new static Alignment topRight = new Alignment(1.0, -1.0);
+    public new static Alignment centerLeft = new Alignment(-1.0, 0.0);
+    public new static Alignment center = new Alignment(0.0, 0.0);
+    public new static Alignment centerRight = new Alignment(1.0, 0.0);
+    public new static Alignment bottomLeft = new Alignment(-1.0, 1.0);
+    public new static Alignment bottomCenter = new Alignment(0.0, 1.0);
+    public new static Alignment bottomRight = new Alignment(1.0, 1.0);
 
     public Alignment(double x, double y)
     {
@@ -251,15 +249,15 @@ public class AlignmentDirectional : AlignmentGeometry
 {
     public virtual double start { get; private set; } = default!;
     public virtual double y { get; private set; } = default!;
-    public static AlignmentDirectional topStart = new AlignmentDirectional(-1.0, -1.0);
-    public static AlignmentDirectional topCenter = new AlignmentDirectional(0.0, -1.0);
-    public static AlignmentDirectional topEnd = new AlignmentDirectional(1.0, -1.0);
-    public static AlignmentDirectional centerStart = new AlignmentDirectional(-1.0, 0.0);
-    public static AlignmentDirectional center = new AlignmentDirectional(0.0, 0.0);
-    public static AlignmentDirectional centerEnd = new AlignmentDirectional(1.0, 0.0);
-    public static AlignmentDirectional bottomStart = new AlignmentDirectional(-1.0, 1.0);
-    public static AlignmentDirectional bottomCenter = new AlignmentDirectional(0.0, 1.0);
-    public static AlignmentDirectional bottomEnd = new AlignmentDirectional(1.0, 1.0);
+    public new static AlignmentDirectional topStart = new AlignmentDirectional(-1.0, -1.0);
+    public new static AlignmentDirectional topCenter = new AlignmentDirectional(0.0, -1.0);
+    public new static AlignmentDirectional topEnd = new AlignmentDirectional(1.0, -1.0);
+    public new static AlignmentDirectional centerStart = new AlignmentDirectional(-1.0, 0.0);
+    public new static AlignmentDirectional center = new AlignmentDirectional(0.0, 0.0);
+    public new static AlignmentDirectional centerEnd = new AlignmentDirectional(1.0, 0.0);
+    public new static AlignmentDirectional bottomStart = new AlignmentDirectional(-1.0, 1.0);
+    public new static AlignmentDirectional bottomCenter = new AlignmentDirectional(0.0, 1.0);
+    public new static AlignmentDirectional bottomEnd = new AlignmentDirectional(1.0, 1.0);
 
     public AlignmentDirectional(double start, double y)
     {

@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/list_wheel_viewport.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -303,7 +301,6 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         {
             DartRuntimePrimitives.Assert(() => hasSize);
             return size.height;
-            return default!;
         }
     }
     internal virtual double _minEstimatedScrollExtent
@@ -316,7 +313,6 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
                 return double.NegativeInfinity;
             }
             return 0.0;
-            return default!;
         }
     }
     internal virtual double _maxEstimatedScrollExtent
@@ -329,7 +325,6 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
                 return double.PositiveInfinity;
             }
             return Math.Max(0.0, (((DartRuntimePrimitives.RequireValue(((ListWheelChildManager)this.childManager).childCount) - 1L)) * this._itemExtent));
-            return default!;
         }
     }
     internal virtual double _topScrollMarginExtent
@@ -338,7 +333,6 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         {
             DartRuntimePrimitives.Assert(() => hasSize);
             return ((-size.height / 2.0) + (this._itemExtent / 2.0));
-            return default!;
         }
     }
     internal virtual double _getUntransformedPaintingCoordinateY(double layoutCoordinateY)
@@ -356,7 +350,6 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
                 return (Dart_mathLibrary.pi / 2.0);
             }
             return global::Doroti.Runtime.Dart_mathLibrary.asin((1.0 / this._diameterRatio));
-            return default!;
         }
     }
     internal virtual double _getIntrinsicCrossAxis(Func<RenderBox, double> childSize)
@@ -735,7 +728,6 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
                             return _debugAssertValidHitTestOffsets("MatrixUtils.transformPoint", transformed, MatrixUtils.transformPoint(inverted, position));
                         });
                     return child!.hitTest(result, position: transformed);
-                    return default;
                 })));
                 if (isHit)
                 {

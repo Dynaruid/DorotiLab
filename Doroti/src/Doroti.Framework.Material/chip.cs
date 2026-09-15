@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/chip.dart
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -341,7 +340,6 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         get
         {
             return ((((RawChip)this.widget).isEnabled && ((RawChip)this.widget).tapEnabled) && (((((RawChip)this.widget).onPressed is not null) || (((RawChip)this.widget).onSelected is not null))));
-            return default!;
         }
     }
     public virtual bool isTapping => DartRuntimePrimitives.ConvertValue<bool>((this.canTap && this._isTapping));
@@ -1005,7 +1003,6 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             global::Doroti.Framework.Rendering.RenderBox? labelLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.label));
             global::Doroti.Framework.Rendering.RenderBox? deleteIconLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.deleteIcon));
             return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)(object?)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection64442 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement64454 = avatarLocal; if (__collectionElement64454 is { } __nonNullCollectionElement64454) { __collection64442.Add(__nonNullCollectionElement64454); } var __collectionElement64463 = labelLocal; if (__collectionElement64463 is { } __nonNullCollectionElement64463) { __collection64442.Add(__nonNullCollectionElement64463); } var __collectionElement64471 = deleteIconLocal; if (__collectionElement64471 is { } __nonNullCollectionElement64471) { __collection64442.Add(__nonNullCollectionElement64471); } return __collection64442; }))());
-            return default!;
         }
     }
     public virtual bool isDrawingCheckmark => DartRuntimePrimitives.ConvertValue<bool>((((_ChipRenderTheme__chip)this.theme).showCheckmark && !((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).isDismissed));
@@ -1230,7 +1227,6 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             }
             global::Doroti.Ui.Color color = ((global::Doroti.Ui.Color)(object?)(((_ChipRenderTheme__chip)this.theme).brightness switch { Brightness.light => Colors.white, Brightness.dark => Colors.black, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             return new global::Doroti.Framework.Animation.ColorTween(begin: color.withAlpha(ChipLibrary._kDisabledAlpha), end: color).evaluate(this.enableAnimation)!;
-            return default!;
         }
     }
     internal virtual void _paintCheck(Canvas canvas, Offset origin, double size)
@@ -1636,7 +1632,6 @@ public class _RenderEnsureMinSemanticsSize__chip : global::Doroti.Framework.Rend
         get
         {
             return global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(this.paintBounds).center), width: Math.Max(this._semanticSize.width, this.size.width), height: Math.Max(this._semanticSize.height, this.size.height));
-            return default!;
         }
     }
 }
@@ -1696,7 +1691,6 @@ internal class _ChipDefaultsM3__chip : ChipThemeData
             double fontSizeLocal = (this.labelStyle?.fontSize ?? 14.0);
             double fontSizeRatio = (MediaQuery.textScalerOf(this.context).scale(fontSizeLocal) / 14.0);
             return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio - 1.0), 0.0, 1.0))!);
-            return default!;
         }
     }
 }

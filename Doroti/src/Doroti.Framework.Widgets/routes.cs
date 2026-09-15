@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/routes.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS0693, CS8600, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -480,8 +479,8 @@ public interface LocalHistoryRoute<T> : ILocalHistoryRoute
     List<LocalHistoryEntry>? _localHistory { get; set; }
     long _entriesImpliesAppBarDismissal { get; set; }
 
-    public void addLocalHistoryEntry(LocalHistoryEntry entry);
-    public void removeLocalHistoryEntry(LocalHistoryEntry entry);
+    public new void addLocalHistoryEntry(LocalHistoryEntry entry);
+    public new void removeLocalHistoryEntry(LocalHistoryEntry entry);
     public Future<RoutePopDisposition> willPop();
     public RoutePopDisposition popDisposition { get; }
     public bool didPop(T? result);
@@ -653,7 +652,6 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
         get
         {
             return ((object.Equals(((_ModalScope__routes<T>)(object)this.widget).route.animation?.status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) || ((((_ModalScope__routes<T>)(object)this.widget).route.navigator?.userGestureInProgress ?? false)));
-            return default!;
         }
     }
     internal virtual bool _shouldRequestFocus
@@ -661,7 +659,6 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
         get
         {
             return ((_ModalScope__routes<T>)(object)this.widget).route.requestFocus;
-            return default!;
         }
     }
     internal virtual void _routeSetState(global::System.Action fn)
@@ -710,7 +707,7 @@ public interface IModalRoute : ITransitionRoute, PredictiveBackRoute, ILocalHist
     RouteBase routeBase { get; }
     NavigatorState? navigator { get; }
     RouteSettings settings { get; }
-    bool isCurrent { get; }
+    new bool isCurrent { get; }
     bool isFirst { get; }
     bool isActive { get; }
     bool canPop { get; }
@@ -879,7 +876,6 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
                 return false;
             }
             return true;
-            return default!;
         }
     }
     public virtual bool offstage
@@ -931,7 +927,6 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
                 }
             }
             return base.popDisposition;
-            return default!;
         }
     }
     public override void onPopInvokedWithResult(bool didPop, T? result)
@@ -1014,7 +1009,6 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
         get
         {
             return System.Linq.Enumerable.Any(this._willPopCallbacks);
-            return default!;
         }
     }
     public override void didChangePrevious(dynamic previousRoute)
@@ -1206,7 +1200,6 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
         get
         {
             return ((this._localHistory is not null) && System.Linq.Enumerable.Any(this._localHistory!));
-            return default!;
         }
     }
 }

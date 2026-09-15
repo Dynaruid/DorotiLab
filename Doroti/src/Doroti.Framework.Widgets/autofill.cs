@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/autofill.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -68,7 +67,6 @@ public class AutofillGroupState : State<AutofillGroup>, global::Doroti.Framework
         get
         {
             return this._clients.Values.where(((client) => ((global::Doroti.Framework.Services.AutofillClient)client).textInputConfiguration.autofillConfiguration.enabled));
-            return default!;
         }
     }
     public virtual void register(global::Doroti.Framework.Services.AutofillClient client)

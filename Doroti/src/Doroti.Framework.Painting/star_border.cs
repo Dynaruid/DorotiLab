@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/star_border.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -70,7 +68,6 @@ public class StarBorder : OutlinedBorder
         get
         {
             return (this._innerRadiusRatio ?? global::Doroti.Runtime.Dart_mathLibrary.cos((Dart_mathLibrary.pi / this.points)));
-            return default!;
         }
     }
     public virtual double rotation => (this._rotationRadians * Star_borderLibrary._kRadToDeg);
@@ -136,11 +133,9 @@ public class StarBorder : OutlinedBorder
             return _twoPhaseLerp(t, (1L / 3L), ((Func<double, ShapeBorder?>)((t) =>
             {
                 return new StadiumBorder(side: lerpedSideLocal).lerpFrom(((RoundedRectangleBorder)a__as9704), t);
-                return default;
             })), ((Func<double, ShapeBorder?>)((t) =>
             {
                 return _twoPhaseLerp(t, 0.5, ((Func<double, ShapeBorder?>)((t) => new StadiumBorder(side: lerpedSideLocal).lerpTo(new CircleBorder(side: lerpedSideLocal), t))), ((Func<double, ShapeBorder?>)((t) => lerpFrom(new CircleBorder(side: lerpedSideLocal), t))));
-                return default;
             })));
         }
         return base.lerpFrom(a, t);
@@ -189,11 +184,9 @@ public class StarBorder : OutlinedBorder
             return _twoPhaseLerp(t, (2L / 3L), ((Func<double, ShapeBorder?>)((t) =>
             {
                 return _twoPhaseLerp(t, 0.5, ((Func<double, ShapeBorder?>)((t) => lerpTo(new CircleBorder(side: lerpedSideLocal), t))), ((Func<double, ShapeBorder?>)((t) => new StadiumBorder(side: lerpedSideLocal).lerpFrom(new CircleBorder(side: lerpedSideLocal), t))));
-                return default;
             })), ((Func<double, ShapeBorder?>)((t) =>
             {
                 return new StadiumBorder(side: lerpedSideLocal).lerpTo(((RoundedRectangleBorder)b__as12677), t);
-                return default;
             })));
         }
         return base.lerpTo(b, t);

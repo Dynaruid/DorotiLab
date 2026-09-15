@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8613, CS8619, CS8625, CS8981
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,25 +54,25 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         this._screenshot = screenshot;
     }
 
-    public virtual void clipPath(Path path, bool doAntiAlias = true)
+    public new virtual void clipPath(Path path, bool doAntiAlias = true)
     {
         this._main.clipPath(path, doAntiAlias: doAntiAlias);
         this._screenshot.clipPath(path, doAntiAlias: doAntiAlias);
     }
 
-    public virtual void clipRRect(RRect rrect, bool doAntiAlias = true)
+    public new virtual void clipRRect(RRect rrect, bool doAntiAlias = true)
     {
         this._main.clipRRect(rrect, doAntiAlias: doAntiAlias);
         this._screenshot.clipRRect(rrect, doAntiAlias: doAntiAlias);
     }
 
-    public virtual void clipRect(Rect rect, global::Doroti.Ui.ClipOp clipOp = default!, bool doAntiAlias = true)
+    public new virtual void clipRect(Rect rect, global::Doroti.Ui.ClipOp clipOp = default!, bool doAntiAlias = true)
     {
         this._main.clipRect(rect, clipOp: clipOp, doAntiAlias: doAntiAlias);
         this._screenshot.clipRect(rect, clipOp: clipOp, doAntiAlias: doAntiAlias);
     }
 
-    public virtual void drawArc(Rect rect, double startAngle, double sweepAngle, bool useCenter, Paint paint)
+    public new virtual void drawArc(Rect rect, double startAngle, double sweepAngle, bool useCenter, Paint paint)
     {
         this._main.drawArc(rect, startAngle, sweepAngle, useCenter, paint);
         this._screenshot.drawArc(rect, startAngle, sweepAngle, useCenter, paint);
@@ -85,73 +84,73 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         this._screenshot.drawAtlas(atlas, transforms, rects, colors, blendMode, cullRect, paint);
     }
 
-    public virtual void drawCircle(Offset c, double radius, Paint paint)
+    public new virtual void drawCircle(Offset c, double radius, Paint paint)
     {
         this._main.drawCircle(c, radius, paint);
         this._screenshot.drawCircle(c, radius, paint);
     }
 
-    public virtual void drawColor(Color color, BlendMode blendMode)
+    public new virtual void drawColor(Color color, BlendMode blendMode)
     {
         this._main.drawColor(color, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)));
         this._screenshot.drawColor(color, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)));
     }
 
-    public virtual void drawDRRect(RRect outer, RRect inner, Paint paint)
+    public new virtual void drawDRRect(RRect outer, RRect inner, Paint paint)
     {
         this._main.drawDRRect(outer, inner, paint);
         this._screenshot.drawDRRect(outer, inner, paint);
     }
 
-    public virtual void drawImage(global::Doroti.Ui.Image image, Offset p, Paint paint)
+    public new virtual void drawImage(global::Doroti.Ui.Image image, Offset p, Paint paint)
     {
         this._main.drawImage(image, p, paint);
         this._screenshot.drawImage(image, p, paint);
     }
 
-    public virtual void drawImageNine(global::Doroti.Ui.Image image, Rect center, Rect dst, Paint paint)
+    public new virtual void drawImageNine(global::Doroti.Ui.Image image, Rect center, Rect dst, Paint paint)
     {
         this._main.drawImageNine(image, center, dst, paint);
         this._screenshot.drawImageNine(image, center, dst, paint);
     }
 
-    public virtual void drawImageRect(global::Doroti.Ui.Image image, Rect src, Rect dst, Paint paint)
+    public new virtual void drawImageRect(global::Doroti.Ui.Image image, Rect src, Rect dst, Paint paint)
     {
         this._main.drawImageRect(image, src, dst, paint);
         this._screenshot.drawImageRect(image, src, dst, paint);
     }
 
-    public virtual void drawLine(Offset p1, Offset p2, Paint paint)
+    public new virtual void drawLine(Offset p1, Offset p2, Paint paint)
     {
         this._main.drawLine(p1, p2, paint);
         this._screenshot.drawLine(p1, p2, paint);
     }
 
-    public virtual void drawOval(Rect rect, Paint paint)
+    public new virtual void drawOval(Rect rect, Paint paint)
     {
         this._main.drawOval(rect, paint);
         this._screenshot.drawOval(rect, paint);
     }
 
-    public virtual void drawPaint(Paint paint)
+    public new virtual void drawPaint(Paint paint)
     {
         this._main.drawPaint(paint);
         this._screenshot.drawPaint(paint);
     }
 
-    public virtual void drawParagraph(Paragraph paragraph, Offset offset)
+    public new virtual void drawParagraph(Paragraph paragraph, Offset offset)
     {
         this._main.drawParagraph(paragraph, offset);
         this._screenshot.drawParagraph(paragraph, offset);
     }
 
-    public virtual void drawPath(Path path, Paint paint)
+    public new virtual void drawPath(Path path, Paint paint)
     {
         this._main.drawPath(path, paint);
         this._screenshot.drawPath(path, paint);
     }
 
-    public virtual void drawPicture(Picture picture)
+    public new virtual void drawPicture(Picture picture)
     {
         this._main.drawPicture(picture);
         this._screenshot.drawPicture(picture);
@@ -163,79 +162,79 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         this._screenshot.drawPoints(pointMode, points, paint);
     }
 
-    public virtual void drawRRect(RRect rrect, Paint paint)
+    public new virtual void drawRRect(RRect rrect, Paint paint)
     {
         this._main.drawRRect(rrect, paint);
         this._screenshot.drawRRect(rrect, paint);
     }
 
-    public virtual void drawRawAtlas(global::Doroti.Ui.Image atlas, Float32List rstTransforms, Float32List rects, Int32List? colors, BlendMode? blendMode, Rect? cullRect, Paint paint)
+    public new virtual void drawRawAtlas(global::Doroti.Ui.Image atlas, Float32List rstTransforms, Float32List rects, Int32List? colors, BlendMode? blendMode, Rect? cullRect, Paint paint)
     {
         this._main.drawRawAtlas(atlas, rstTransforms, rects, colors, blendMode, cullRect, paint);
         this._screenshot.drawRawAtlas(atlas, rstTransforms, rects, colors, blendMode, cullRect, paint);
     }
 
-    public virtual void drawRawPoints(global::Doroti.Ui.PointMode pointMode, Float32List points, Paint paint)
+    public new virtual void drawRawPoints(global::Doroti.Ui.PointMode pointMode, Float32List points, Paint paint)
     {
         this._main.drawRawPoints(pointMode, points, paint);
         this._screenshot.drawRawPoints(pointMode, points, paint);
     }
 
-    public virtual void drawRect(Rect rect, Paint paint)
+    public new virtual void drawRect(Rect rect, Paint paint)
     {
         this._main.drawRect(rect, paint);
         this._screenshot.drawRect(rect, paint);
     }
 
-    public virtual void drawShadow(Path path, Color color, double elevation, bool transparentOccluder)
+    public new virtual void drawShadow(Path path, Color color, double elevation, bool transparentOccluder)
     {
         this._main.drawShadow(path, color, elevation, transparentOccluder);
         this._screenshot.drawShadow(path, color, elevation, transparentOccluder);
     }
 
-    public virtual void drawVertices(global::Doroti.Ui.Vertices vertices, BlendMode blendMode, Paint paint)
+    public new virtual void drawVertices(global::Doroti.Ui.Vertices vertices, BlendMode blendMode, Paint paint)
     {
         this._main.drawVertices(vertices, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)), paint);
         this._screenshot.drawVertices(vertices, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)), paint);
     }
 
-    public virtual long getSaveCount()
+    public new virtual long getSaveCount()
     {
         return this._main.getSaveCount();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void restore()
+    public new virtual void restore()
     {
         this._main.restore();
         this._screenshot.restore();
     }
 
-    public virtual void rotate(double radians)
+    public new virtual void rotate(double radians)
     {
         this._main.rotate(radians);
         this._screenshot.rotate(radians);
     }
 
-    public virtual void save()
+    public new virtual void save()
     {
         this._main.save();
         this._screenshot.save();
     }
 
-    public virtual void saveLayer(Rect? bounds, Paint paint)
+    public new virtual void saveLayer(Rect? bounds, Paint paint)
     {
         this._main.saveLayer(bounds, paint);
         this._screenshot.saveLayer(bounds, paint);
     }
 
-    public virtual void scale(double sx, double? sy = null)
+    public new virtual void scale(double sx, double? sy = null)
     {
         this._main.scale(sx, sy);
         this._screenshot.scale(sx, sy);
     }
 
-    public virtual void skew(double sx, double sy)
+    public new virtual void skew(double sx, double sy)
     {
         this._main.skew(sx, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy)));
         this._screenshot.skew(sx, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy)));
@@ -247,7 +246,7 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         this._screenshot.transform(matrix4);
     }
 
-    public virtual void translate(double dx, double dy)
+    public new virtual void translate(double dx, double dy)
     {
         this._main.translate(dx, dy);
         this._screenshot.translate(dx, dy);
@@ -326,7 +325,6 @@ public class _ScreenshotData__widget_inspector
         {
             DartRuntimePrimitives.Assert(() => this.foundTarget);
             return ((global::Doroti.Framework.Rendering.OffsetLayer)this.containerLayer).offset;
-            return default!;
         }
         set
         {
@@ -373,7 +371,6 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Fra
                 DartRuntimePrimitives.Assert(() => ((_ScreenshotData__widget_inspector)this._data).includeInRegularContext);
                 return base.canvas;
             }
-            return default!;
         }
     }
     internal virtual bool _isScreenshotRecording
@@ -399,7 +396,6 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Fra
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             return hasScreenshotCanvas;
-            return default!;
         }
     }
     internal virtual void _startRecordingScreenshot()
@@ -1115,7 +1111,6 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
-        return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1632,7 +1627,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     additionalJson["constraints"] = constraintsProperty;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
             try
@@ -1668,7 +1663,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     }
                 }
             }
-            catch (Exception eLocal)
+            catch (Exception)
             {
             }
             return additionalJson;
@@ -2461,7 +2456,6 @@ public abstract class InspectorButton : StatelessWidget
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
-            return default!;
         }
     }
     public abstract global::Doroti.Ui.Color foregroundColor(BuildContext context);
@@ -2537,7 +2531,6 @@ public class InspectorSelection : ChangeNotifier
         get
         {
             return ((this._currentElement?.debugIsDefunct ?? true) ? null : this._currentElement);
-            return default!;
         }
         set
         {
@@ -3068,7 +3061,6 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
             {
                 _changeTooltipMessage(buttonLabel);
             })), onTooltipHidden: () => this._onTooltipHidden()));
-            return default!;
         }
     }
     internal virtual Widget _exitWidgetSelectionButton
@@ -3080,7 +3072,6 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
             {
                 _changeTooltipMessage(buttonLabel);
             })), onTooltipHidden: () => this._onTooltipHidden()));
-            return default!;
         }
     }
     internal virtual Widget? _tapBehaviorButton
@@ -3093,7 +3084,6 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
                 return ((Widget)(object)null);
             }
             return ((Widget?)(object?)new _WidgetInspectorButton__widget_inspector(button: buttonBuilder(this.context, onPressed: () => this._changeSelectionOnTapMode(default), semanticsLabel: "Change widget selection mode for taps", selectionOnTapEnabled: ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value), onTooltipVisible: () => this._changeSelectionOnTapTooltip(), onTooltipHidden: () => this._onTooltipHidden()));
-            return default!;
         }
     }
     internal virtual bool _tooltipVisible => DartRuntimePrimitives.ConvertValue<bool>((this._tooltipMessage is not null));
@@ -3547,8 +3537,8 @@ public class InspectorSerializationDelegate : global::Doroti.Framework.Foundatio
     public virtual string? groupName { get; private set; }
     public virtual bool summaryTree { get; private set; } = default!;
     public virtual long maxDescendantsTruncatableNode { get; private set; } = default!;
-    public virtual bool includeProperties { get; private set; } = default!;
-    public virtual long subtreeDepth { get; private set; } = default!;
+    public new virtual bool includeProperties { get; private set; } = default!;
+    public new virtual long subtreeDepth { get; private set; } = default!;
     public virtual bool expandPropertyValues { get; private set; } = default!;
     public virtual bool inDisableWidgetInspectorScope { get; private set; } = default!;
     public virtual global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback { get; private set; }
@@ -3671,7 +3661,6 @@ public class WeakMap<K, V> where K : notnull
             {
                 return ((V?)(object?)this._objects[key!])!;
             }
-            return default!;
         }
         set
         {

@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/localizations.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -395,7 +394,6 @@ internal class _LocalizationsState__localizations : State<Localizations>
         {
             var resources = ((WidgetsLocalizations?)(object?)this._typeToResources.GetValueOrDefault(typeof(WidgetsLocalizations)))!;
             return ((WidgetsLocalizations)resources).textDirection;
-            return default!;
         }
     }
     public override Widget build(BuildContext context)
@@ -456,7 +454,6 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
             global::Doroti.Ui.Locale appLocale = ((this._locale is not null) ? _resolveLocales(new List<global::Doroti.Ui.Locale> { DartRuntimePrimitives.RequireValue(this._locale) }, this.supportedLocales.Cast<Locale>()) : DartRuntimePrimitives.RequireValue(this._resolvedLocale));
             DartRuntimePrimitives.Assert(() => _debugCheckLocalizations(appLocale));
             return appLocale;
-            return default!;
         }
     }
     public virtual IEnumerable<object> localizationsDelegates
@@ -470,7 +467,6 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
             }
             delegates.Add(DefaultWidgetsLocalizations.@delegate);
             return delegates;
-            return default!;
         }
     }
     public virtual global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback => this._localeListResolutionCallback;

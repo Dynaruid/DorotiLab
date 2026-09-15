@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/arc.dart
+#pragma warning disable CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -94,64 +93,44 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
     {
         get
         {
-            if (false)
-            {
-                return null;
-            }
             if (this._dirty)
             {
                 _initialize();
             }
             return this._center;
-            return default!;
         }
     }
     public virtual double? radius
     {
         get
         {
-            if (false)
-            {
-                return null;
-            }
             if (this._dirty)
             {
                 _initialize();
             }
             return this._radius;
-            return default!;
         }
     }
     public virtual double? beginAngle
     {
         get
         {
-            if (false)
-            {
-                return null;
-            }
             if (this._dirty)
             {
                 _initialize();
             }
             return this._beginAngle;
-            return default!;
         }
     }
     public virtual double? endAngle
     {
         get
         {
-            if (false)
-            {
-                return null;
-            }
             if (this._dirty)
             {
                 _initialize();
             }
             return this._beginAngle;
-            return default!;
         }
     }
     public override Offset begin
@@ -307,7 +286,6 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
                 _initialize();
             }
             return this._beginArc;
-            return default!;
         }
     }
     public virtual MaterialPointArcTween? endArc
@@ -323,7 +301,6 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
                 _initialize();
             }
             return this._endArc;
-            return default!;
         }
     }
     public override Rect? begin
@@ -397,16 +374,11 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
     {
         get
         {
-            if (false)
-            {
-                return null;
-            }
             if (this._dirty)
             {
                 _initialize();
             }
             return this._centerArc;
-            return default!;
         }
     }
     public override Rect? begin

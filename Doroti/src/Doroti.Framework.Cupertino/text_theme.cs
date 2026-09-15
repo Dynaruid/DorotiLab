@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/text_theme.dart
+#pragma warning disable CS8600, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -103,7 +102,6 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
         get
         {
             return ((this._actionTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)this._defaults.actionTextStyle(primaryColor: this._primaryColor)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Painting.TextStyle actionSmallTextStyle
@@ -111,7 +109,6 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
         get
         {
             return ((this._actionSmallTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)this._defaults.actionSmallTextStyle(primaryColor: this._primaryColor)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Painting.TextStyle tabLabelTextStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(((this._tabLabelTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TextThemeDefaultsBuilder__text_theme)this._defaults).tabLabelTextStyle)));
@@ -122,7 +119,6 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
         get
         {
             return ((this._navActionTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)this._defaults.navActionTextStyle(primaryColor: this._primaryColor)));
-            return default!;
         }
     }
     public virtual global::Doroti.Framework.Painting.TextStyle pickerTextStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(((this._pickerTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TextThemeDefaultsBuilder__text_theme)this._defaults).pickerTextStyle)));

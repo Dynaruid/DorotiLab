@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/edge_insets.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,7 +53,6 @@ public abstract class EdgeInsetsGeometry
         get
         {
             return ((((((this._left >= 0.0) && (this._right >= 0.0)) && (this._start >= 0.0)) && (this._end >= 0.0)) && (this._top >= 0.0)) && (this._bottom >= 0.0));
-            return default!;
         }
     }
     public virtual double horizontal => (((this._left + this._right) + this._start) + this._end);
@@ -168,7 +165,7 @@ public abstract class EdgeInsetsGeometry
 
 public class EdgeInsets : EdgeInsetsGeometry
 {
-    public static EdgeInsets zero = EdgeInsets.CreateOnly();
+    public new static EdgeInsets zero = EdgeInsets.CreateOnly();
     public virtual double left { get; private set; } = default!;
     public virtual double top { get; private set; } = default!;
     public virtual double right { get; private set; } = default!;
@@ -182,7 +179,7 @@ public class EdgeInsets : EdgeInsetsGeometry
         this.bottom = bottom;
     }
 
-    public static EdgeInsets CreateAll(double value)
+    public new static EdgeInsets CreateAll(double value)
     {
         var __instance = new EdgeInsets(default!, default!, default!, default!);
         __instance.left = value;
@@ -192,7 +189,7 @@ public class EdgeInsets : EdgeInsetsGeometry
         return __instance;
     }
 
-    public static EdgeInsets CreateOnly(double left = 0.0, double top = 0.0, double right = 0.0, double bottom = 0.0)
+    public new static EdgeInsets CreateOnly(double left = 0.0, double top = 0.0, double right = 0.0, double bottom = 0.0)
     {
         var __instance = new EdgeInsets(left, top, right, bottom);
         __instance.left = left;
@@ -202,7 +199,7 @@ public class EdgeInsets : EdgeInsetsGeometry
         return __instance;
     }
 
-    public static EdgeInsets CreateSymmetric(double vertical = 0.0, double horizontal = 0.0)
+    public new static EdgeInsets CreateSymmetric(double vertical = 0.0, double horizontal = 0.0)
     {
         var __instance = new EdgeInsets(default!, default!, default!, default!);
         __instance.left = horizontal;
@@ -212,7 +209,7 @@ public class EdgeInsets : EdgeInsetsGeometry
         return __instance;
     }
 
-    public static EdgeInsets CreateFromViewPadding(ViewPadding padding, double devicePixelRatio)
+    public new static EdgeInsets CreateFromViewPadding(ViewPadding padding, double devicePixelRatio)
     {
         var __instance = new EdgeInsets(default!, default!, default!, default!);
         __instance.left = (padding.left / devicePixelRatio);
@@ -359,7 +356,7 @@ public class EdgeInsets : EdgeInsetsGeometry
 
 public class EdgeInsetsDirectional : EdgeInsetsGeometry
 {
-    public static EdgeInsetsDirectional zero = EdgeInsetsDirectional.CreateOnly();
+    public new static EdgeInsetsDirectional zero = EdgeInsetsDirectional.CreateOnly();
     public virtual double start { get; private set; } = default!;
     public virtual double top { get; private set; } = default!;
     public virtual double end { get; private set; } = default!;
@@ -373,7 +370,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         this.bottom = bottom;
     }
 
-    public static EdgeInsetsDirectional CreateOnly(double start = 0.0, double top = 0.0, double end = 0.0, double bottom = 0.0)
+    public new static EdgeInsetsDirectional CreateOnly(double start = 0.0, double top = 0.0, double end = 0.0, double bottom = 0.0)
     {
         var __instance = new EdgeInsetsDirectional(start, top, end, bottom);
         __instance.start = start;
@@ -383,7 +380,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         return __instance;
     }
 
-    public static EdgeInsetsDirectional CreateSymmetric(double horizontal = 0.0, double vertical = 0.0)
+    public new static EdgeInsetsDirectional CreateSymmetric(double horizontal = 0.0, double vertical = 0.0)
     {
         var __instance = new EdgeInsetsDirectional(default!, default!, default!, default!);
         __instance.start = horizontal;
@@ -393,7 +390,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         return __instance;
     }
 
-    public static EdgeInsetsDirectional CreateAll(double value)
+    public new static EdgeInsetsDirectional CreateAll(double value)
     {
         var __instance = new EdgeInsetsDirectional(default!, default!, default!, default!);
         __instance.start = value;
@@ -538,7 +535,6 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
         get
         {
             return ((((((this._left >= 0.0) && (this._right >= 0.0)) && (this._start >= 0.0)) && (this._end >= 0.0)) && (this._top >= 0.0)) && (this._bottom >= 0.0));
-            return default!;
         }
     }
     public override _MixedEdgeInsets__edge_insets op_Subtract()

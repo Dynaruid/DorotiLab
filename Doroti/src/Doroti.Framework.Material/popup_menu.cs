@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/popup_menu.dart
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605, CS8620, CS8765
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -829,7 +828,7 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
                     _cachedOverlayRenderBox = ((global::Doroti.Framework.Rendering.RenderBox)overlayRenderObject__57508__as57589);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _cachedButtonRenderBox = null;
                 _cachedOverlayRenderBox = null;
@@ -919,7 +918,6 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
         {
             global::Doroti.Framework.Widgets.NavigationMode mode = (MediaQuery.maybeNavigationModeOf(this.context) ?? global::Doroti.Framework.Widgets.NavigationMode.traditional);
             return (mode switch { global::Doroti.Framework.Widgets.NavigationMode.traditional => ((PopupMenuButton<T>)(object)this.widget).enabled, global::Doroti.Framework.Widgets.NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -1030,7 +1028,6 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
                 return (style.apply(color: this._colors.onSurface));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainer);

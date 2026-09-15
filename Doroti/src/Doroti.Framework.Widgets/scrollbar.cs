@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -346,7 +345,6 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         get
         {
             return ((this._lastMetrics!.maxScrollExtent - this._lastMetrics!.minScrollExtent) + this._lastMetrics!.viewportDimension);
-            return default!;
         }
     }
     internal virtual ScrollbarOrientation _resolvedOrientation
@@ -362,7 +360,6 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
                 return ScrollbarOrientation.bottom;
             }
             return DartRuntimePrimitives.RequireValue(this.scrollbarOrientation);
-            return default!;
         }
     }
     internal virtual void _debugAssertIsValidOrientation(ScrollbarOrientation orientation)
@@ -411,7 +408,6 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
     __cascade.color = this.color.withOpacity((this.color.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
     return __cascade;
 }))();
-            return default!;
         }
     }
     internal virtual bool _needPaint(ScrollMetrics? metrics)
@@ -880,7 +876,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 {
                     DartRuntimePrimitives.Ignore(scrollController!.position);
                 }
-                catch (Exception error)
+                catch (Exception)
                 {
                     if (((scrollController is null) || (((ScrollController)scrollController).positions.Count() <= 1L)))
                     {
@@ -1356,7 +1352,6 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 instance.onTapDown = this.handleTrackTapDown;
             })));
             return gestures;
-            return default!;
         }
     }
     public virtual bool isPointerOverTrack(Offset position, PointerDeviceKind kind)

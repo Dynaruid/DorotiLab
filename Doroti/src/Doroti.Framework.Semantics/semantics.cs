@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/semantics/semantics.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8321, CS8600, CS8602, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -144,7 +143,6 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                 error = new FlutterError("Children of TabBar must have the tab role");
             }
             return (error is null);
-            return default;
         })));
         return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -160,7 +158,6 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                 error = new FlutterError("Children of Table must have the row role");
             }
             return (error is null);
-            return default;
         })));
         return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -180,7 +177,6 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                 error = new FlutterError("Children of Row must have the cell or columnHeader role");
             }
             return (error is null);
-            return default;
         })));
         return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -623,7 +619,6 @@ public class AttributedString
                 DartRuntimePrimitives.Assert(() => ((@string.Length >= attribute.range.start) && (@string.Length >= attribute.range.end)));
             }
             return true;
-            return default;
         }))());
     }
 
@@ -678,7 +673,7 @@ public class AttributedStringProperty : DiagnosticsProperty<AttributedString>
         this.showWhenEmpty = showWhenEmpty;
     }
 
-    public virtual bool isInteresting => (base.isInteresting && ((this.showWhenEmpty || (((value is not null) && (value!.@string.Length != 0))))));
+    public new virtual bool isInteresting => (base.isInteresting && ((this.showWhenEmpty || (((value is not null) && (value!.@string.Length != 0))))));
     public virtual string valueToString(TextTreeConfiguration? parentConfiguration = null)
     {
         if ((value is null))
@@ -1316,7 +1311,6 @@ public class SemanticsNode : DiagnosticableTreeMixin
         get
         {
             return (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? this.transform : ((this._traversalChildTransform ?? this.transform)));
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Rect rect
@@ -1676,7 +1670,6 @@ public class SemanticsNode : DiagnosticableTreeMixin
                     return true;
                 });
             return isDirty;
-            return default!;
         }
     }
     internal virtual bool _isDifferentFromCurrentSemanticAnnotation(SemanticsConfiguration config)
@@ -1960,7 +1953,6 @@ public class SemanticsNode : DiagnosticableTreeMixin
                     }
                 }
                 return true;
-                return default;
             })));
         }
         return new SemanticsData(flagsCollection: flags, actions: (this._areUserActionsBlocked ? (actionsLocal & SemanticsLibrary._kUnblockedUserActions) : actionsLocal), identifier: identifierLocal, traversalParentIdentifier: traversalParentIdentifierLocal, traversalChildIdentifier: traversalChildIdentifierLocal, attributedLabel: attributedLabelLocal, attributedValue: attributedValueLocal, attributedIncreasedValue: attributedIncreasedValueLocal, attributedDecreasedValue: attributedDecreasedValueLocal, attributedHint: attributedHintLocal, tooltip: tooltipLocal, textDirection: textDirectionLocal, rect: this.rect, transform: this.transform, tags: mergedTags, textSelection: textSelectionLocal, scrollChildCount: scrollChildCountLocal, scrollIndex: scrollIndexLocal, scrollPosition: scrollPositionLocal, scrollExtentMax: scrollExtentMaxLocal, scrollExtentMin: scrollExtentMinLocal, platformViewId: platformViewIdLocal, maxValueLength: maxValueLengthLocal, currentValueLength: currentValueLengthLocal, customSemanticsActionIds: ((Func<List<long>>)(() =>
@@ -2523,7 +2515,6 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
             return -verticalDiff;
         }
         return -aTopLeft.dx.CompareTo(bTopLeft.dx);
-        return default;
     }));
     return __cascade;
 }))();
@@ -2802,7 +2793,6 @@ public class SemanticsOwner : ChangeNotifier
                     return false;
                 }
                 return true;
-                return default;
             })));
             result = found;
         }
@@ -2858,7 +2848,6 @@ public class SemanticsOwner : ChangeNotifier
                     return false;
                 }
                 return true;
-                return default;
             })));
             return result?._actions.GetValueOrDefault(action);
         }
@@ -4051,7 +4040,6 @@ public class SemanticsConfiguration
                 return true;
             }
             return false;
-            return default!;
         }
     }
     public virtual bool isCompatibleWith(SemanticsConfiguration? other)

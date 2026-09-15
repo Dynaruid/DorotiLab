@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/tabs.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8620
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -127,7 +126,6 @@ public class Tab : global::Doroti.Framework.Widgets.StatelessWidget, global::Dor
                     return new global::Doroti.Ui.Size(TabsLibrary._kTabHeight);
                 }
             }
-            return default!;
         }
     }
 }
@@ -623,7 +621,6 @@ internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animati
             double controllerMaxValue = ((((TabController)this.controller).length - 1L)).toDouble();
             double controllerValue = Dart_uiLibrary.clampDouble(((TabController)this.controller).animation!.value, 0.0, controllerMaxValue);
             return Dart_uiLibrary.clampDouble(((controllerValue - this.index.toDouble())).abs(), 0.0, 1.0);
-            return default!;
         }
     }
     public override void addListener(global::System.Action listener) => this.parent.addListener(listener);
@@ -821,7 +818,6 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
                 }
             }
             return new global::Doroti.Ui.Size((maxHeight + this.indicatorWeight));
-            return default!;
         }
     }
     public virtual bool tabHasTextAndIcon
@@ -840,7 +836,6 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
                 }
             }
             return false;
-            return default!;
         }
     }
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabBarState__tabs());
@@ -884,7 +879,6 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
                 return ((TabBar)(object)this.widget).scrollController!;
             }
             return _internalScrollController ??= new TabBarScrollController();
-            return default!;
         }
     }
     internal virtual global::Doroti.Framework.Painting.Decoration _getIndicator(TabBarIndicatorSize indicatorSize)
@@ -1660,7 +1654,6 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
                     return true;
                 });
             return tabController!;
-            return default!;
         }
     }
     public override void didUpdateWidget(TabPageSelector oldWidget)
@@ -1858,7 +1851,6 @@ internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
                 return null;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(this.context).splashFactory;
@@ -1955,7 +1947,6 @@ internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
                 return null;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return default!;
         }
     }
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(this.context).splashFactory;

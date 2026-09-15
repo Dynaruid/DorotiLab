@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart
+#pragma warning disable CS0693, CS8600, CS8601, CS8602, CS8603, CS8604, CS8620
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -386,7 +385,6 @@ public class CupertinoSheetRoute<T> : global::Doroti.Framework.Widgets.PageRoute
         get
         {
             return ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>)((this.scrollableBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>)((context, controller) => this.builder!(context)))));
-            return default!;
         }
     }
     public virtual double topGap => DartRuntimePrimitives.ConvertValue<double>((this._topGap ?? SheetLibrary._kTopGapRatio));
@@ -440,7 +438,6 @@ public class CupertinoSheetRoute<T> : global::Doroti.Framework.Widgets.PageRoute
                 return null;
             }
             return ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>)CupertinoSheetTransition.delegateTransition);
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)

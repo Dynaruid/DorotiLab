@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart
+#pragma warning disable CS0693, CS8600, CS8601, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -71,8 +70,8 @@ public interface CupertinoRouteTransitionMixin<T> : ICupertinoRouteTitle
     public static Duration kTransitionDuration = Duration.Create(milliseconds: 500L);
 
     public global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context);
-    public string? title { get; }
-    public global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle { get; }
+    public new string? title { get; }
+    public new global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle { get; }
     public void dispose();
     public void didChangePrevious(dynamic previousRoute);
     public Duration transitionDuration { get; }
@@ -126,7 +125,6 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
         {
             DartRuntimePrimitives.Assert(() => (this._previousTitle is not null), () => (object?)"Cannot read the previousTitle for a route that has not yet been installed");
             return ((global::Doroti.Framework.Foundation.ValueListenable<string?>)(object?)this._previousTitle!);
-            return default!;
         }
     }
     public override void dispose()
@@ -203,7 +201,6 @@ internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework
         {
             DartRuntimePrimitives.Assert(() => (this._previousTitle is not null), () => (object?)"Cannot read the previousTitle for a route that has not yet been installed");
             return ((global::Doroti.Framework.Foundation.ValueListenable<string?>)(object?)this._previousTitle!);
-            return default!;
         }
     }
     public override void dispose()

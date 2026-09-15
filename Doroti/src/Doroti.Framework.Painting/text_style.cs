@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/text_style.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -108,7 +106,6 @@ public class TextStyle : Diagnosticable
                 return this.fontFamily?.substring(fontFamilyPrefix.Length);
             }
             return this.fontFamily;
-            return default!;
         }
     }
     public virtual TextStyle copyWith(bool? inherit = null, Color? color = null, Color? backgroundColor = null, double? fontSize = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, double? letterSpacing = null, double? wordSpacing = null, TextBaseline? textBaseline = null, double? height = null, TextLeadingDistribution? leadingDistribution = null, Locale? locale = null, Paint? foreground = null, Paint? background = null, List<Shadow>? shadows = null, List<FontFeature>? fontFeatures = null, List<FontVariation>? fontVariations = null, TextDecoration? decoration = null, Color? decorationColor = null, TextDecorationStyle? decorationStyle = null, double? decorationThickness = null, string? debugLabel = null, string? fontFamily = null, List<string>? fontFamilyFallback = null, string? package = null, TextOverflow? overflow = null)
@@ -306,7 +303,6 @@ public class TextStyle : Diagnosticable
         List<global::Doroti.Ui.FontFeature>? fontFeaturesLocal = this.fontFeatures;
         List<global::Doroti.Ui.FontVariation>? fontVariationsLocal = this.fontVariations;
         return FoundationRuntimePorts.ObjectHash(this.inherit, this.color, this.backgroundColor, this.fontSize, this.fontWeight, this.fontStyle, this.letterSpacing, this.wordSpacing, this.textBaseline, this.height, this.leadingDistribution, this.locale, this.foreground, this.background, ((shadowsLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(shadowsLocal)), ((fontFeaturesLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(fontFeaturesLocal)), ((fontVariationsLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(fontVariationsLocal)), this.decoration, this.decorationColor, fontHash);
-        return default!;
     }
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextStyle");
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties, string prefix = "")

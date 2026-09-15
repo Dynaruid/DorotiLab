@@ -1,6 +1,4 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/icons.dart
 using System;
 using System.Collections.Generic;
@@ -42,26 +40,26 @@ public class PlatformAdaptiveIcons : Icons
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_back => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back : Icons.arrow_back_ios);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_back_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back_outlined : Icons.arrow_back_ios_outlined);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_back_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back_rounded : Icons.arrow_back_ios_rounded);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_back_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back_sharp : Icons.arrow_back_ios_sharp);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_forward => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward : Icons.arrow_forward_ios);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_forward_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward_outlined : Icons.arrow_forward_ios_outlined);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_forward_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward_rounded : Icons.arrow_forward_ios_rounded);
-    public virtual global::Doroti.Framework.Widgets.IconData arrow_forward_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward_sharp : Icons.arrow_forward_ios_sharp);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_back => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back : Icons.arrow_back_ios);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_back_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back_outlined : Icons.arrow_back_ios_outlined);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_back_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back_rounded : Icons.arrow_back_ios_rounded);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_back_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_back_sharp : Icons.arrow_back_ios_sharp);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_forward => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward : Icons.arrow_forward_ios);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_forward_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward_outlined : Icons.arrow_forward_ios_outlined);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_forward_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward_rounded : Icons.arrow_forward_ios_rounded);
+    public new virtual global::Doroti.Framework.Widgets.IconData arrow_forward_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.arrow_forward_sharp : Icons.arrow_forward_ios_sharp);
     public virtual global::Doroti.Framework.Widgets.IconData flip_camera => (!PlatformAdaptiveIcons._isCupertino() ? Icons.flip_camera_android : Icons.flip_camera_ios);
     public virtual global::Doroti.Framework.Widgets.IconData flip_camera_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.flip_camera_android_outlined : Icons.flip_camera_ios_outlined);
     public virtual global::Doroti.Framework.Widgets.IconData flip_camera_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.flip_camera_android_rounded : Icons.flip_camera_ios_rounded);
     public virtual global::Doroti.Framework.Widgets.IconData flip_camera_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.flip_camera_android_sharp : Icons.flip_camera_ios_sharp);
-    public virtual global::Doroti.Framework.Widgets.IconData more => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert : Icons.more_horiz);
-    public virtual global::Doroti.Framework.Widgets.IconData more_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert_outlined : Icons.more_horiz_outlined);
-    public virtual global::Doroti.Framework.Widgets.IconData more_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert_rounded : Icons.more_horiz_rounded);
-    public virtual global::Doroti.Framework.Widgets.IconData more_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert_sharp : Icons.more_horiz_sharp);
-    public virtual global::Doroti.Framework.Widgets.IconData share => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share : Icons.ios_share);
-    public virtual global::Doroti.Framework.Widgets.IconData share_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share_outlined : Icons.ios_share_outlined);
-    public virtual global::Doroti.Framework.Widgets.IconData share_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share_rounded : Icons.ios_share_rounded);
-    public virtual global::Doroti.Framework.Widgets.IconData share_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share_sharp : Icons.ios_share_sharp);
+    public new virtual global::Doroti.Framework.Widgets.IconData more => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert : Icons.more_horiz);
+    public new virtual global::Doroti.Framework.Widgets.IconData more_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert_outlined : Icons.more_horiz_outlined);
+    public new virtual global::Doroti.Framework.Widgets.IconData more_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert_rounded : Icons.more_horiz_rounded);
+    public new virtual global::Doroti.Framework.Widgets.IconData more_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.more_vert_sharp : Icons.more_horiz_sharp);
+    public new virtual global::Doroti.Framework.Widgets.IconData share => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share : Icons.ios_share);
+    public new virtual global::Doroti.Framework.Widgets.IconData share_outlined => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share_outlined : Icons.ios_share_outlined);
+    public new virtual global::Doroti.Framework.Widgets.IconData share_rounded => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share_rounded : Icons.ios_share_rounded);
+    public new virtual global::Doroti.Framework.Widgets.IconData share_sharp => (!PlatformAdaptiveIcons._isCupertino() ? Icons.share_sharp : Icons.ios_share_sharp);
 }
 
 public abstract class Icons

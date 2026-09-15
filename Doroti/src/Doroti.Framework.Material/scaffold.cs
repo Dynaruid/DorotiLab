@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/scaffold.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -664,7 +663,6 @@ public class _ScaffoldGeometryNotifier__scaffold : global::Doroti.Framework.Foun
                     return true;
                 });
             return ((ScaffoldGeometry)(object?)this.geometry._scaleFloatingActionButton(DartRuntimePrimitives.RequireValue(this.floatingActionButtonScale)));
-            return default!;
         }
     }
     internal virtual void _updateWith(double? bottomNavigationBarTop = null, Rect? floatingActionButtonArea = null, double? floatingActionButtonScale = null)
@@ -1704,7 +1702,6 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         get
         {
             return (((Scaffold)(object)this.widget).resizeToAvoidBottomInset ?? true);
-            return default!;
         }
     }
     public override void initState()
@@ -2096,7 +2093,6 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             }
             global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
             return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
-            return default!;
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));

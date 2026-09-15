@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/ticker_provider.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -157,7 +156,7 @@ public interface SingleTickerProviderStateMixin<T> : global::Doroti.Framework.Sc
     global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; }
     global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
 
-    public global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
+    public new global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
     public void dispose();
     public void activate();
     public void _updateTicker();
@@ -175,8 +174,8 @@ public interface TickerProviderStateMixin<T> : global::Doroti.Framework.Schedule
     HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; }
     global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
 
-    public global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
-    public void _removeTicker(_WidgetTicker__ticker_provider ticker);
+    public new global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
+    public new void _removeTicker(_WidgetTicker__ticker_provider ticker);
     public void activate();
     public void _updateTickers();
     public void _updateTickerModeNotifier();

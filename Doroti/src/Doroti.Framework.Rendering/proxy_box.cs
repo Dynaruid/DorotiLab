@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/proxy_box.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1189,7 +1188,6 @@ public class RenderBackdropFilter : RenderProxyBox
         {
             DartRuntimePrimitives.Assert(() => (((ImageFilterConfig)this.filterConfig).filter is not null));
             return ((ImageFilterConfig)this.filterConfig).filter!;
-            return default!;
         }
         set
         {
@@ -1996,7 +1994,6 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
             DartRuntimePrimitives.Assert(() => hasSize);
             global::Doroti.Ui.Rect rect = (Offset.zero & size);
             return (this._shape switch { global::Doroti.Framework.Painting.BoxShape.rectangle => ((this.borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero)).toRRect(rect), global::Doroti.Framework.Painting.BoxShape.circle => global::Doroti.Ui.RRect.fromRectXY(rect, (rect.width / 2L), (rect.height / 2L)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     public override bool hitTest(BoxHitTestResult result, Offset position)
@@ -2494,7 +2491,6 @@ public class RenderTransform : RenderProxyBox
                 result.translateByDouble(-DartRuntimePrimitives.RequireValue(this._origin).dx, -DartRuntimePrimitives.RequireValue(this._origin).dy, 0, 1);
             }
             return result;
-            return default!;
         }
     }
     public override bool hitTest(BoxHitTestResult result, Offset position)
@@ -2509,7 +2505,6 @@ public class RenderTransform : RenderProxyBox
         return result.addWithPaintTransform(transform: (this.transformHitTests ? this._effectiveTransform : null), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-            return default;
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2850,7 +2845,6 @@ public class RenderFittedBox : RenderProxyBox
         return result.addWithPaintTransform(transform: this._transform, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-            return default;
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2925,7 +2919,6 @@ public class RenderFractionalTranslation : RenderProxyBox
         return result.addWithPaintOffset(offset: (this.transformHitTests ? new global::Doroti.Ui.Offset((this.translation.dx * size.width), (this.translation.dy * size.height)) : null), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-            return default;
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -4682,7 +4675,6 @@ public class RenderFollowerLayer : RenderProxyBox
         return result.addWithPaintTransform(transform: getCurrentTransform(), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-            return default;
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

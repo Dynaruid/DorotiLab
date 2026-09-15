@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/navigation_rail.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -670,7 +669,6 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
         get
         {
             return ((global::Doroti.Framework.Painting.TextStyle?)(object?)this._textTheme.labelMedium!.copyWith(color: this._colors.onSurface));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle
@@ -678,7 +676,6 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
         get
         {
             return ((global::Doroti.Framework.Painting.TextStyle?)(object?)this._textTheme.labelMedium!.copyWith(color: this._colors.onSurface));
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme
@@ -686,7 +683,6 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
         get
         {
             return new global::Doroti.Framework.Widgets.IconThemeData(size: 24.0, color: this._colors.onSurfaceVariant);
-            return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme
@@ -694,7 +690,6 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
         get
         {
             return new global::Doroti.Framework.Widgets.IconThemeData(size: 24.0, color: this._colors.onSecondaryContainer);
-            return default!;
         }
     }
     public override global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);

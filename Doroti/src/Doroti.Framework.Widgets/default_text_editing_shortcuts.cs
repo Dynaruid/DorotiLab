@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/default_text_editing_shortcuts.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8603
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -71,7 +70,6 @@ public class DefaultTextEditingShortcuts : StatelessWidget
         get
         {
             return (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => _androidShortcuts, global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => _fuchsiaShortcuts, global::Doroti.Framework.Foundation.TargetPlatform.iOS => _iOSShortcuts, global::Doroti.Framework.Foundation.TargetPlatform.linux => _linuxShortcuts, global::Doroti.Framework.Foundation.TargetPlatform.macOS => _macShortcuts, global::Doroti.Framework.Foundation.TargetPlatform.windows => _windowsShortcuts, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return default!;
         }
     }
     internal virtual DartMap<ShortcutActivator, Intent>? _getDisablingShortcut()

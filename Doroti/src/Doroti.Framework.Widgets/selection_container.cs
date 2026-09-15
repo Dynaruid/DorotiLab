@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/selection_container.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -163,7 +162,6 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
                 return _SelectionContainerState__selection_container._disabledGeometry;
             }
             return ((global::Doroti.Framework.Rendering.SelectionGeometry)(((SelectionContainer)this.widget).@delegate!).value);
-            return default!;
         }
     }
     public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
@@ -315,7 +313,6 @@ public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rend
             DartRuntimePrimitives.Assert(() => (this._selectionContainerContext?.findRenderObject() is not null), () => (object?)"The _selectionContainerContext must have a renderObject, such as after the first build has completed.");
             var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
             return ((global::Doroti.Framework.Rendering.RenderBox)box).hasSize;
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Size containerSize
@@ -325,7 +322,6 @@ public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rend
             DartRuntimePrimitives.Assert(() => this.hasSize, () => (object?)"containerSize cannot be called before SelectionContainer is laid out.");
             var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
             return ((global::Doroti.Framework.Rendering.RenderBox)box).size;
-            return default!;
         }
     }
     private readonly HashSet<global::System.Action> __listeners = new();

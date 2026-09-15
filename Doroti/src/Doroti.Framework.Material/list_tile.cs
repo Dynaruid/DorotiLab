@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/list_tile.dart
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -451,7 +450,6 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         {
             global::Doroti.Framework.Rendering.RenderBox? titleLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ListTileSlot__list_tile.title));
             return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)(object?)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection50404 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement50416 = this.leading; if (__collectionElement50416 is { } __nonNullCollectionElement50416) { __collection50404.Add(__nonNullCollectionElement50416); } var __collectionElement50426 = titleLocal; if (__collectionElement50426 is { } __nonNullCollectionElement50426) { __collection50404.Add(__nonNullCollectionElement50426); } var __collectionElement50434 = this.subtitle; if (__collectionElement50434 is { } __nonNullCollectionElement50434) { __collection50404.Add(__nonNullCollectionElement50434); } var __collectionElement50445 = this.trailing; if (__collectionElement50445 is { } __nonNullCollectionElement50445) { __collection50404.Add(__nonNullCollectionElement50445); } return __collection50404; }))());
-            return default!;
         }
     }
     public virtual bool isDense
@@ -642,7 +640,6 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         {
             global::Doroti.Ui.Offset baseDensity = ((global::Doroti.Ui.Offset)(object?)this.visualDensity.baseSizeAdjustment);
             return (baseDensity.dy + ((this.isThreeLine, (this.subtitle is not null)) switch { (true, _) => (this.isDense ? 76.0 : 88.0), (false, true) => (this.isDense ? 64.0 : 72.0), (false, false) => (this.isDense ? 48.0 : 56.0) }));
-            return default!;
         }
     }
     internal virtual double _targetTileHeight => DartRuntimePrimitives.ConvertValue<double>(((this._minTileHeight ?? (double)this._defaultTileHeight)));

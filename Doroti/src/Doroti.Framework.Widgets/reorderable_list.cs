@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/reorderable_list.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8602, CS8603, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -124,7 +123,6 @@ public class ReorderableListState : State<ReorderableList>
                 return global::Doroti.Framework.Rendering.ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(((ReorderableList)this.widget).cacheExtent));
             }
             return ((global::Doroti.Framework.Rendering.ScrollCacheExtent)(object)null);
-            return default!;
         }
     }
     public virtual void startItemDragReorder(long index, global::Doroti.Framework.Gestures.PointerDownEvent @event, global::Doroti.Framework.Gestures.MultiDragGestureRecognizer recognizer)
@@ -609,7 +607,6 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         {
             global::Doroti.Ui.Offset origin = ((global::Doroti.Ui.Offset)(object?)(this._dragInfo!.dragPosition - this._dragInfo!.dragOffset));
             return global::Doroti.Ui.Rect.fromLTWH(origin.dx, origin.dy, this._dragInfo!.itemSize.width, this._dragInfo!.itemSize.height);
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Offset _itemOffsetAt(long index)
@@ -870,7 +867,6 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                 return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._startOffset, this._targetOffset, animValue));
             }
             return this._targetOffset;
-            return default!;
         }
     }
     public virtual void updateForGap(long dragIndex, long gapIndex, double gapExtent, bool animate, bool reverse)

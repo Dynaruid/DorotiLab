@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/text_painter.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8601
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -276,7 +275,6 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             double dx = (this.textAlignment * ((this.contentWidth - this.paragraph.width)));
             DartRuntimePrimitives.Assert(() => !double.IsNaN(dx));
             return new global::Doroti.Ui.Offset(dx, 0);
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Paragraph paragraph => ((_TextLayout__text_painter)this.layout)._paragraph;
@@ -422,7 +420,6 @@ public class TextPainter
                 throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Text layout not available") });
             }
             return true;
-            return default!;
         }
     }
     public virtual void markNeedsLayout()
@@ -477,7 +474,6 @@ public class TextPainter
         {
             _cachedPlainText ??= this._text?.toPlainText(includeSemanticsLabels: false);
             return (this._cachedPlainText ?? "");
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.TextAlign textAlign
@@ -644,7 +640,6 @@ public class TextPainter
                 return rawBoxes;
             }
             return rawBoxes.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset))).ToList();
-            return default!;
         }
     }
     public virtual void setPlaceholderDimensions(List<PlaceholderDimensions>? value)
@@ -663,7 +658,6 @@ public class TextPainter
                         placeholderCount += 1L;
                     }
                     return (checked((long)(value.Count)) >= placeholderCount);
-                    return default;
                 })));
                 return (placeholderCount == checked((long)(value.Count)));
             });
@@ -705,7 +699,6 @@ public class TextPainter
         {
             DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
             return this._layoutCache!.layout.minIntrinsicLineExtent;
-            return default!;
         }
     }
     public virtual double maxIntrinsicWidth
@@ -714,7 +707,6 @@ public class TextPainter
         {
             DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
             return this._layoutCache!.layout.maxIntrinsicLineExtent;
-            return default!;
         }
     }
     public virtual double width
@@ -724,7 +716,6 @@ public class TextPainter
             DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
             DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
             return this._layoutCache!.contentWidth;
-            return default!;
         }
     }
     public virtual double height
@@ -733,7 +724,6 @@ public class TextPainter
         {
             DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
             return this._layoutCache!.layout.height;
-            return default!;
         }
     }
     public virtual global::Doroti.Ui.Size size
@@ -743,7 +733,6 @@ public class TextPainter
             DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
             DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
             return new global::Doroti.Ui.Size(this.width, this.height);
-            return default!;
         }
     }
     public virtual double computeDistanceToActualBaseline(TextBaseline baseline)
@@ -759,7 +748,6 @@ public class TextPainter
         {
             DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
             return this._layoutCache!.paragraph.didExceedMaxLines;
-            return default!;
         }
     }
     internal virtual global::Doroti.Ui.Paragraph _createParagraph(InlineSpan text)
@@ -1108,7 +1096,6 @@ public class TextPainter
                     return true;
                 });
             return (disposed ?? throw new InvalidOperationException("debugDisposed only available when asserts are on."));
-            return default!;
         }
     }
     public virtual void dispose()

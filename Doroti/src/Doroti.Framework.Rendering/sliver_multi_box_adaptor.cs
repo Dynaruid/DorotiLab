@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/sliver_multi_box_adaptor.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
+#pragma warning disable CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -346,7 +345,6 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                 return firstChild!.paintBounds;
             }
             return base.semanticBounds;
-            return default!;
         }
     }
     public virtual bool addInitialChild(long index = 0, double layoutOffset = 0.0)
@@ -445,13 +443,11 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
             {
                 var childParentData = ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!;
                 return !childParentData.keepAlive;
-                return default;
             })).ToList().forEach(((RenderSliverBoxChildManager)this._childManager).removeChild);
             DartRuntimePrimitives.Assert(() => (this._keepAliveBucket.Values.where(((child) =>
             {
                 var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!;
                 return !childParentDataLocal.keepAlive;
-                return default;
             })).Count() == 0));
         })));
     }
@@ -834,7 +830,6 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         return result.addWithOutOfBandPosition(paintOffset: paintOffsetLocal, hitTest: ((Func<BoxHitTestResult, bool>)((result) =>
         {
             return child.hitTest(result, position: transformedPosition);
-            return default;
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

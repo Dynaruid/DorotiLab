@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1089,7 +1088,6 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             }
             var renderBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
             return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: renderBoxLocal, startGlyphHeight: this.startGlyphHeight, endGlyphHeight: this.endGlyphHeight, selectionEndpoints: this.selectionEndpoints);
-            return default!;
         }
     }
     internal virtual bool _determineIsAdjustingSelectionEnd(bool forward)
@@ -1231,7 +1229,6 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     __cascade.AddRange(this._textProcessingActionButtonItems.Cast<ContextMenuButtonItem>());
     return __cascade;
 }))();
-            return default!;
         }
     }
     internal virtual List<ContextMenuButtonItem> _textProcessingActionButtonItems
@@ -1257,7 +1254,6 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 }))));
             }
             return buttonItems;
-            return default!;
         }
     }
     public virtual double startGlyphHeight
@@ -1265,7 +1261,6 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         get
         {
             return this._selectionDelegate.value.startSelectionPoint!.lineHeight;
-            return default!;
         }
     }
     public virtual double endGlyphHeight
@@ -1273,7 +1268,6 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         get
         {
             return this._selectionDelegate.value.endSelectionPoint!.lineHeight;
-            return default!;
         }
     }
     public virtual List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints
@@ -1294,7 +1288,6 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 points = new List<global::Doroti.Framework.Rendering.TextSelectionPoint> { new global::Doroti.Framework.Rendering.TextSelectionPoint(startLocalPosition, TextDirection.ltr), new global::Doroti.Framework.Rendering.TextSelectionPoint(endLocalPosition, TextDirection.ltr) };
             }
             return points;
-            return default!;
         }
     }
     public virtual bool cutEnabled => false;

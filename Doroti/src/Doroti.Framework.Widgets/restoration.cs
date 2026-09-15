@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/restoration.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -153,7 +152,6 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
             }
             global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
             return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
-            return default!;
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
@@ -342,7 +340,6 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
         get
         {
             return (((((RootRestorationScope)(object)this.widget).restorationId is not null) && this._needsRootBucketInserted) && !this._rootBucketValid);
-            return default!;
         }
     }
     internal virtual void _loadRootBucketIfNecessary()
@@ -464,7 +461,6 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
             DartRuntimePrimitives.Assert(() => this.isRegistered);
             DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
             return ((IState)(object)this._owner!);
-            return default!;
         }
     }
     public virtual bool isRegistered
@@ -473,7 +469,6 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
         {
             DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
             return (this._restorationId is not null);
-            return default!;
         }
     }
 }
@@ -504,6 +499,6 @@ public interface RestorationMixin<S> : RestorationPropertyOwner where S : Statef
     public bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending);
     public bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending);
     public void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property);
-    public void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property);
+    public new void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property);
     public void dispose();
 }

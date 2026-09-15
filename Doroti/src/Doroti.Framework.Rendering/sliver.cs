@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/sliver.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -126,7 +124,6 @@ public class SliverConstraints : Constraints
                 return (this.growthDirection switch { GrowthDirection.forward => GrowthDirection.reverse, GrowthDirection.reverse => GrowthDirection.forward, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             }
             return this.growthDirection;
-            return default!;
         }
     }
     public override bool isTight => false;
@@ -135,7 +132,6 @@ public class SliverConstraints : Constraints
         get
         {
             return (((((this.scrollOffset >= 0.0) && (this.crossAxisExtent >= 0.0)) && (!object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(this.axisDirection)), global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(this.crossAxisDirection))))) && (this.viewportMainAxisExtent >= 0.0)) && (this.remainingPaintExtent >= 0.0));
-            return default!;
         }
     }
     public virtual BoxConstraints asBoxConstraints(double minExtent = 0.0, double maxExtent = double.PositiveInfinity, double? crossAxisExtent = null)
@@ -373,7 +369,7 @@ public class SliverHitTestResult : HitTestResult
     {
     }
 
-    public static SliverHitTestResult CreateWrap(HitTestResult result)
+    public new static SliverHitTestResult CreateWrap(HitTestResult result)
     {
         return new SliverHitTestResult(result);
     }
@@ -950,7 +946,6 @@ public abstract class RenderSliverSingleBoxAdapter : RenderSliver, RenderObjectW
         return result.addWithOutOfBandPosition(paintOffset: paintOffsetLocal, hitTest: ((Func<BoxHitTestResult, bool>)((result) =>
         {
             return child.hitTest(result, position: transformedPosition);
-            return default;
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

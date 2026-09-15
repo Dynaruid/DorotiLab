@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/linear_border.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -141,7 +139,6 @@ public class LinearBorder : OutlinedBorder
         {
             double widthLocal = ((BorderSide)side).width;
             return new EdgeInsetsDirectional(((this.start is null) ? 0.0 : widthLocal), ((this.top is null) ? 0.0 : widthLocal), ((this.end is null) ? 0.0 : widthLocal), ((this.bottom is null) ? 0.0 : widthLocal));
-            return default!;
         }
     }
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)

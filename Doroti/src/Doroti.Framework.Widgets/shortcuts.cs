@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS0659, CS0693, CS8600, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -168,7 +167,7 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
     {
     }
 
-    public static LogicalKeySet CreateFromSet(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> keys)
+    public new static LogicalKeySet CreateFromSet(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> keys)
     {
         return new LogicalKeySet(keys);
     }
@@ -260,7 +259,7 @@ public class ShortcutMapProperty : global::Doroti.Framework.Foundation.Diagnosti
     {
     }
 
-    public virtual DartMap<ShortcutActivator, Intent>? value => DartRuntimePrimitives.ConvertValue<DartMap<ShortcutActivator, Intent>>(base.value!);
+    public new virtual DartMap<ShortcutActivator, Intent>? value => DartRuntimePrimitives.ConvertValue<DartMap<ShortcutActivator, Intent>>(base.value!);
     public virtual string valueToString(global::Doroti.Framework.Foundation.TextTreeConfiguration? parentConfiguration = null)
     {
         return $"{{{string.Join(", ", this.value.Keys.map<ShortcutActivator, string>(((keySet) => $"{{{keySet.debugDescribeKeys()}}}: {this.value.GetValueOrDefault(keySet)}")))}}}";
@@ -528,7 +527,6 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
         get
         {
             return _indexedShortcutsCache ??= ShortcutManager._indexShortcuts(this.shortcuts);
-            return default!;
         }
     }
     internal virtual IEnumerable<_ActivatorIntentPair__shortcuts> _getCandidates(global::Doroti.Framework.Services.LogicalKeyboardKey key)
@@ -636,7 +634,6 @@ public class Shortcuts : StatefulWidget
         get
         {
             return ((this.manager is null) ? this._shortcuts : this.manager!.shortcuts);
-            return default!;
         }
     }
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ShortcutsState__shortcuts());
@@ -788,7 +785,6 @@ public class ShortcutRegistry : ChangeNotifier
         {
             DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
             return new DartMap<ShortcutActivator, Intent>();
-            return default!;
         }
     }
     public virtual ShortcutRegistryEntry addAll(DartMap<ShortcutActivator, Intent> value)

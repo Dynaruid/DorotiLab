@@ -1,4 +1,3 @@
-#nullable enable
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 

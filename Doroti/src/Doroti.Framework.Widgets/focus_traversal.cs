@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -977,7 +976,6 @@ public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.F
             }
             _directionalAncestors ??= getDirectionalityAncestors(((FocusNode)this.node).context!);
             return ((IEnumerable<Directionality>)(object?)this._directionalAncestors!);
-            return default!;
         }
     }
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -1036,7 +1034,6 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doro
                 }
             }
             return DartRuntimePrimitives.RequireValue(this._rect);
-            return default!;
         }
     }
     public virtual List<Directionality> memberAncestors
@@ -1052,7 +1049,6 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doro
                 }
             }
             return this._memberAncestors!;
-            return default!;
         }
     }
     public static void sortWithDirectionality(List<_ReadingOrderDirectionalGroupData__focus_traversal> list, TextDirection directionality)

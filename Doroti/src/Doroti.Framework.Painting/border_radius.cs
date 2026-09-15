@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/border_radius.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -223,23 +221,23 @@ public abstract class BorderRadiusGeometry
 
 public class BorderRadius : BorderRadiusGeometry
 {
-    public static BorderRadius zero = BorderRadius.CreateAll(Radius.zero);
+    public new static BorderRadius zero = BorderRadius.CreateAll(Radius.zero);
     public virtual Radius topLeft { get; private set; } = default!;
     public virtual Radius topRight { get; private set; } = default!;
     public virtual Radius bottomLeft { get; private set; } = default!;
     public virtual Radius bottomRight { get; private set; } = default!;
 
-    public static BorderRadius CreateAll(Radius radius)
+    public new static BorderRadius CreateAll(Radius radius)
     {
         return new BorderRadius(topLeft: radius, topRight: radius, bottomLeft: radius, bottomRight: radius);
     }
 
-    public static BorderRadius CreateCircular(double radius)
+    public new static BorderRadius CreateCircular(double radius)
     {
         return BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(radius));
     }
 
-    public static BorderRadius CreateVertical(Radius top = default, Radius bottom = default)
+    public new static BorderRadius CreateVertical(Radius top = default, Radius bottom = default)
     {
         return new BorderRadius(topLeft: top, topRight: top, bottomLeft: bottom, bottomRight: bottom);
     }
@@ -370,23 +368,23 @@ public class BorderRadius : BorderRadiusGeometry
 
 public class BorderRadiusDirectional : BorderRadiusGeometry
 {
-    public static BorderRadiusDirectional zero = BorderRadiusDirectional.CreateAll(Radius.zero);
+    public new static BorderRadiusDirectional zero = BorderRadiusDirectional.CreateAll(Radius.zero);
     public virtual Radius topStart { get; private set; } = default!;
     public virtual Radius topEnd { get; private set; } = default!;
     public virtual Radius bottomStart { get; private set; } = default!;
     public virtual Radius bottomEnd { get; private set; } = default!;
 
-    public static BorderRadiusDirectional CreateAll(Radius radius)
+    public new static BorderRadiusDirectional CreateAll(Radius radius)
     {
         return new BorderRadiusDirectional(topStart: radius, topEnd: radius, bottomStart: radius, bottomEnd: radius);
     }
 
-    public static BorderRadiusDirectional CreateCircular(double radius)
+    public new static BorderRadiusDirectional CreateCircular(double radius)
     {
         return BorderRadiusDirectional.CreateAll(global::Doroti.Ui.Radius.circular(radius));
     }
 
-    public static BorderRadiusDirectional CreateVertical(Radius top = default, Radius bottom = default)
+    public new static BorderRadiusDirectional CreateVertical(Radius top = default, Radius bottom = default)
     {
         return new BorderRadiusDirectional(topStart: top, topEnd: top, bottomStart: bottom, bottomEnd: bottom);
     }

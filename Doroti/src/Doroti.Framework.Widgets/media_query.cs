@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/media_query.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8625
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -195,7 +194,6 @@ public class MediaQueryData
                 return this._textScaler;
             }
             return ((this._textScaleFactor == 1.0) ? global::Doroti.Framework.Painting.TextScaler.noScaling : global::Doroti.Framework.Painting.TextScaler.CreateLinear(this._textScaleFactor));
-            return default!;
         }
     }
     public virtual Orientation orientation
@@ -203,7 +201,6 @@ public class MediaQueryData
         get
         {
             return ((this.size.width > this.size.height) ? Orientation.landscape : Orientation.portrait);
-            return default!;
         }
     }
     public virtual MediaQueryData copyWith(Size? size = null, double? devicePixelRatio = null, double? textScaleFactor = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, Brightness? platformBrightness = null, global::Doroti.Framework.Painting.EdgeInsets? padding = null, global::Doroti.Framework.Painting.EdgeInsets? viewPadding = null, global::Doroti.Framework.Painting.EdgeInsets? viewInsets = null, global::Doroti.Framework.Painting.EdgeInsets? systemGestureInsets = null, bool? alwaysUse24HourFormat = null, bool? highContrast = null, bool? onOffSwitchLabels = null, bool? disableAnimations = null, bool? reduceMotion = null, bool? invertColors = null, bool? accessibleNavigation = null, bool? boldText = null, bool? supportsAnnounce = null, NavigationMode? navigationMode = null, global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettings = null, List<global::Doroti.Ui.DisplayFeature>? displayFeatures = null, bool? supportsShowingSystemContextMenu = null)

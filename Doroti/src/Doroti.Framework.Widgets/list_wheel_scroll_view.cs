@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8603
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -140,7 +139,6 @@ public class FixedExtentScrollController : ScrollController
             DartRuntimePrimitives.Assert(() => (this.positions.Count() == 1L), () => (object?)"The selectedItem property cannot be read when multiple scroll views are " + "attached to the same FixedExtentScrollController.");
             var positionLocal = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)(object?)this.position)!;
             return ((_FixedExtentScrollPosition__list_wheel_scroll_view)positionLocal).itemIndex;
-            return default!;
         }
     }
     public async virtual Future animateToItem(long itemIndex, Duration duration, global::Doroti.Framework.Animation.Curve curve)
@@ -225,7 +223,6 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
         get
         {
             return List_wheel_scroll_viewLibrary._getItemFromOffset(offset: DartRuntimePrimitives.RequireValue(this.pixels), itemExtent: this.itemExtent, minScrollExtent: DartRuntimePrimitives.RequireValue(this.minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(this.maxScrollExtent));
-            return default!;
         }
     }
     public override FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
@@ -256,7 +253,6 @@ internal class _FixedExtentScrollableState__list_wheel_scroll_view : ScrollableS
         {
             var actualWidget = ((_FixedExtentScrollable__list_wheel_scroll_view?)(object?)this.widget)!;
             return ((_FixedExtentScrollable__list_wheel_scroll_view)actualWidget).itemExtent;
-            return default!;
         }
     }
 }

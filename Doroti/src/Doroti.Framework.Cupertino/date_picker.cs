@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -387,7 +386,6 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.F
             }
             DartRuntimePrimitives.Assert(() => false, () => (object?)$"{this.GetType()} is only meant for dateAndTime mode or time mode");
             return 0L;
-            return default!;
         }
     }
     public virtual long selectedHour => _selectedHour(this.selectedAmPm, this._selectedHourIndex);
@@ -403,7 +401,6 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.F
         get
         {
             return (this.minuteController.hasClients ? ((((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.minuteController).selectedItem * ((CupertinoDatePicker)this.widget).minuteInterval) % 60L) : this.initialDateTime.Minute);
-            return default!;
         }
     }
     public virtual bool isHourRegionFlipped => _isHourRegionFlipped(this.selectedAmPm);
@@ -413,7 +410,6 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.F
         get
         {
             return (((this.isDatePickerScrolling || this.isHourPickerScrolling) || this.isMinutePickerScrolling) || this.isMeridiemPickerScrolling);
-            return default!;
         }
     }
     public override void initState()
@@ -480,7 +476,6 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.F
         get
         {
             return DartRuntimePrimitives.CreateDateTime(this.initialDateTime.Year, this.initialDateTime.Month, (this.initialDateTime.Day + this.selectedDayFromInitial), this.selectedHour, this.selectedMinute);
-            return default!;
         }
     }
     internal virtual void _onSelectedItemChange(long index)
@@ -1048,7 +1043,6 @@ internal class _CupertinoDatePickerDateState__date_picker : global::Doroti.Frame
             bool minCheck = (((CupertinoDatePicker)this.widget).minimumDate?.isBefore(maxSelectedDate) ?? true);
             bool maxCheck = (((CupertinoDatePicker)this.widget).maximumDate?.isBefore(minSelectedDate) ?? false);
             return ((minCheck && !maxCheck) && (minSelectedDate.Day == this.selectedDay));
-            return default!;
         }
     }
     internal virtual void _pickerDidStopScrolling()
@@ -1324,7 +1318,6 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : global::Doroti.
             bool minCheck = (((CupertinoDatePicker)this.widget).minimumDate?.isBefore(maxSelectedDate) ?? true);
             bool maxCheck = (((CupertinoDatePicker)this.widget).maximumDate?.isBefore(minSelectedDate) ?? false);
             return (minCheck && !maxCheck);
-            return default!;
         }
     }
     internal virtual void _pickerDidStopScrolling()

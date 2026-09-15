@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/gestures/binding.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,7 +83,6 @@ internal class _Resampler__binding
         this._resamplers.removeWhere(((key, resampler) =>
         {
             return (!((PointerEventResampler)resampler).hasPendingEvents && !((PointerEventResampler)resampler).isDown);
-            return default;
         }));
         _lastSampleTime = sampleTime;
         if ((checked((long)(this._resamplers.Count)) == 0))
@@ -188,7 +185,7 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
 }))();
     }
 
-    public static GestureBinding instance => BindingBase.checkInstance(_instance);
+    public new static GestureBinding instance => BindingBase.checkInstance(_instance);
     protected override void unlocked()
     {
         base.unlocked();
@@ -409,7 +406,6 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
                     return true;
                 });
             return value;
-            return default!;
         }
     }
 }

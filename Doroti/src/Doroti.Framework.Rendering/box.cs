@@ -1,7 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/box.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8619, CS8620, CS8622, CS8625, CS8714
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -143,7 +141,6 @@ public class BoxConstraints : Constraints
         get
         {
             return new BoxConstraints(minWidth: this.minHeight, maxWidth: this.maxHeight, minHeight: this.minWidth, maxHeight: this.maxWidth);
-            return default!;
         }
     }
     public virtual BoxConstraints widthConstraints() => new BoxConstraints(minWidth: this.minWidth, maxWidth: this.maxWidth);
@@ -313,7 +310,6 @@ public class BoxConstraints : Constraints
         get
         {
             return ((((this.minWidth >= 0.0) && (this.minWidth <= this.maxWidth)) && (this.minHeight >= 0.0)) && (this.minHeight <= this.maxHeight));
-            return default!;
         }
     }
     public override bool debugAssertIsValid(bool isAppliedConstraint = false, InformationCollector? informationCollector = null)
@@ -414,7 +410,6 @@ public class BoxConstraints : Constraints
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         return FoundationRuntimePorts.ObjectHash(this.minWidth, this.maxWidth, this.minHeight, this.maxHeight);
-        return default!;
     }
     public override string ToString()
     {
@@ -458,7 +453,7 @@ public class BoxHitTestResult : HitTestResult
     {
     }
 
-    public static BoxHitTestResult CreateWrap(HitTestResult result)
+    public new static BoxHitTestResult CreateWrap(HitTestResult result)
     {
         return new BoxHitTestResult(result);
     }
@@ -992,7 +987,6 @@ public abstract class RenderBox : RenderObject
                     return true;
                 });
             return (this._size ?? throw new InvalidOperationException($"RenderBox was not laid out: {this.GetType()}#{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}"));
-            return default!;
         }
         set
         {

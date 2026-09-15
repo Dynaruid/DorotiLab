@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/binding.dart
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8620, CS8765, CS8767
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -533,7 +532,6 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._semanticsEnabled).value == ((this._outstandingHandles > 0L))));
             return ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._semanticsEnabled).value;
-            return default!;
         }
     }
     public virtual void addSemanticsEnabledListener(global::System.Action listener)
@@ -648,7 +646,6 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             return value;
-            return default!;
         }
     }
     protected override void initServiceExtensions()
@@ -1132,7 +1129,6 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         get
         {
             return ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this.debugShowWidgetInspectorOverrideNotifier).value;
-            return default!;
         }
         set
         {
@@ -1550,7 +1546,6 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 throw new NotSupportedException("Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n");
             }
             return this._windowingOwner;
-            return default!;
         }
         set
         {

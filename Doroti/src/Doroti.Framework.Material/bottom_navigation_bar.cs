@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/bottom_navigation_bar.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -337,7 +336,6 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
         get
         {
             return ((((BottomNavigationBar)this.widget).type ?? BottomNavigationBarTheme.of(this.context).type) ?? (((checked((long)(((BottomNavigationBar)this.widget).items.Count)) <= 3L) ? BottomNavigationBarType.@fixed : BottomNavigationBarType.shifting)));
-            return default!;
         }
     }
     internal virtual bool _defaultShowUnselected => (this._effectiveType switch { BottomNavigationBarType.shifting => false, BottomNavigationBarType.@fixed => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -666,7 +664,6 @@ public class _Circle__bottom_navigation_bar
             double allWeights = weightSum(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations.Cast<global::Doroti.Framework.Animation.Animation<double>>());
             double leadingWeights = weightSum(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations.GetRange(0L, this.index).Cast<global::Doroti.Framework.Animation.Animation<double>>());
             return (((leadingWeights + (this.state._evaluateFlex(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations[(int)(this.index)]) / 2.0))) / allWeights);
-            return default!;
         }
     }
     public virtual void dispose()

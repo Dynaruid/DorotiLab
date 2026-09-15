@@ -1,7 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
-#nullable enable
-#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/dropdown_menu.dart
+#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8620
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -164,7 +163,6 @@ public class DropdownMenu<T> : global::Doroti.Framework.Widgets.StatefulWidget
                 return default;
             }
             return this._inputDecorationTheme is InputDecorationTheme theme ? theme.data : (InputDecorationThemeData)this._inputDecorationTheme;
-            return default!;
         }
     }
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuState__dropdown_menu<T>());
@@ -1290,7 +1288,6 @@ internal class _DropdownMenuDefaultsM3__dropdown_menu : DropdownMenuThemeData
         get
         {
             return new MenuStyle(minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(Dropdown_menuLibrary._kMinimumWidth, 0.0)), maximumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(Size.infinite), visualDensity: VisualDensity.standard);
-            return default!;
         }
     }
     public override InputDecorationThemeData inputDecorationTheme
@@ -1298,7 +1295,6 @@ internal class _DropdownMenuDefaultsM3__dropdown_menu : DropdownMenuThemeData
         get
         {
             return new InputDecorationThemeData(border: new OutlineInputBorder());
-            return default!;
         }
     }
 }
