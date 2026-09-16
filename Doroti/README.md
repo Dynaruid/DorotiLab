@@ -1,46 +1,27 @@
-# Doroti runtime and framework
+# Doroti framework
 
-**English** | [한국어](README.ko.md)
+**English** | [한국어](README.ko.md) · [Project overview](../README.md)
 
-Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for Windows App SDK, optional Windows MAUI, native AppKit macOS, Mac Catalyst, Android, iOS, WebAssembly, and Linux/Qt.
+### Build cross-platform UIs in C#, without XAML
 
-iOS device (`ios-arm64`) Release builds default to NativeAOT. Debug, simulators and other platforms keep their existing defaults; `-CompilationMode Mono` explicitly selects the recovery profile. See [iOS build instructions](validation/native-aot/README.md).
+Doroti provides a shared widget, layout, painting, semantics, and rendering pipeline for desktop, mobile, and the web. The project began by translating Flutter framework source into C#; today, `Doroti.Framework.*` is developed and maintained directly in C#.
 
-Official Graphite is the default. Windows uses the standard app-directory DLL from pinned SkiaSharp NativeAssets; no manifest override is required. Android verifies the official APK asset, and Qt negotiates Vulkan 1.2 with the official desktop asset. Custom Skia builds and the private ABI binding have been retired. macOS/Mac Catalyst checks were resumed; see the [Apple review](../history/2026-09-13/apple-work0/README.md) for scoped results and remaining gates. iOS execution remains unverified. Linux build/package/Qt ABI checks were resumed; llvmpipe Graphite runs by default; renderer admission uses API capabilities rather than device classification. Headless checks pass; Material product depth synchronization and hardware qualification remain unresolved. See the [Linux follow-up](docs/validation/linux-official-graphite-2026-09-12.md). Performance acceptance remains incomplete. See [cutover and support matrix](docs/validation/official-graphite-cutover-2026-09-12.md) and [work0 status](../work0.md).
+This guide covers the framework, development environment, application startup, and build tools. For runnable examples and platform launch commands, start with the [sample app guide](../DorotiTestbedApp/README.md).
 
-## Development model
+> [!WARNING]
+> Doroti is experimental. APIs and project structure may change, and platform implementations have different levels of validation.
 
-`src/Doroti.Framework.*` is maintained product source. Its public namespaces are `Doroti.Framework.*`, matching the project, assembly, and package names. Add features and fix correctness directly in the owning framework/runtime/host project, then update every consumer of the shared contract.
+[Requirements](#requirements) · [Build and run](#build-and-run) · [Application development](#application-development) · [Platform configuration](#platform-configuration) · [Framework structure](#framework-structure)
 
-The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-reference tools. They do not overwrite product source and are not required for ordinary builds. Compiler output stays in isolated workspaces until explicitly reviewed and adopted.
+## What the framework provides
 
-See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source ownership, [ADR-022](docs/adr/ADR-022-default-native-platform-bridge.md) for the default native bridge graph, and [ADR-025](docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md) for the current Windows host.
+- Material and Cupertino widgets, layout, state, painting, and semantics in C#.
+- A platform-neutral application library with separate native and Web runners.
+- Skia Graphite rendering: Vulkan on Windows, Android, and Linux; Metal on Apple platforms; Dawn/WebGPU on Web.
+- Native hosts for Windows App SDK, optional Windows MAUI, Android, UIKit, AppKit, Mac Catalyst, WebAssembly, and Qt.
+- Shared startup, assets, native bindings, templates, and build tooling.
 
-## Current product boundary
-
-Widget applications use `new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())`.
-The entrypoint attaches the root and requests the initial frame automatically; application code does not need `scheduleFrameCallback` or `scheduleForcedFrame` to start.
-An optional second `Func<Task>` argument prepares resources (for example, fonts) before root creation. Completion returns to the owning view's event loop, and detaching or shutting down prevents a pending initialization from attaching a root.
-
-Material themes use Material 3 exclusively. `ThemeData` factories, its constructor, and `copyWith` no longer accept `useMaterial3`, and the version property is removed; omit this argument in application code. Use `Typography.Create` or `CreateMaterial2021` for typography; the 2014/2018 presets are removed.
-
-- `Doroti.Framework.*`: product-owned Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, and Material libraries
-- `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime semantics plus the target-neutral startup/builder/descriptor contract
-- `Doroti.App.Sdk`: platform-neutral `net10.0` application assembly and shared asset contract
-- `Doroti.Runner.Sdk`: fixed-target runner validation plus runner-local native/Web bootstrap and plugin registration
-- `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
-- `Doroti.Skia.Rendering`: host-neutral scene, paragraph, image, runtime-effect, semantics, cache, and terminal-ACK renderer shared by native GPU hosts
-- `Doroti.Host.WindowsAppSdk` + `Doroti.Host.WindowsAppSdk.Native`: default Windows App SDK 2.4 host; native C++ owns the top-level/child/task HWNDs and ingress, while managed code owns the Doroti framework and Vulkan/Skia presentation (ANGLE remains selectable)
-- `Doroti.Target.Windows.WindowsAppSdk.win-x64`: self-contained unpackaged Windows target with `HwndExactCpp`, native host/bootstrap, and app-directory ANGLE runtime
-- `Doroti.Host.Maui`: MAUI lifecycle and SKGLView/AppKit-owned MTKView/Metal adapters for Android, iOS, Mac Catalyst, AppKit, and the explicit alternative Windows MAUI backend
-- `Doroti.Host.Web`: Worker bootstrap, WebGL2 canvas, input, accessibility, and resource bridge
-- `Doroti.Host.Qt`: managed-owned Linux process with a Qt 6 `QWindow`, versioned C ABI v2, GPU surface, input, IME, desktop services, and an accessibility adapter
-
-Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into runner-local `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. The default `worker-direct-webgpu` backend uses SkiaSharp Graphite/Dawn on a render Worker sharing the main-owned .NET runtime. `worker-direct-webgl` explicitly selects Ganesh/WebGL2. Both transfer the visible canvas once; `auto` and unknown values select WebGPU. No automatic backend fallback is performed. CanvasKit and bitmap presentation paths have been removed. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
-
-Material applications follow system dark mode with `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`. Build both palettes with `ColorScheme.CreateFromSeed`, `Brightness.light`/`Brightness.dark`, and optional role overrides such as `surface`, `primary`, or `outline`; widgets read the active roles from `Theme.of(context).colorScheme`. See the [DorotiTestbedApp dark-mode guide](../DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes) for the MAUI/Web change flow and a complete example.
-
-Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a default app-owned native binding. Android uses `AndroidGradleProject`; each Apple product has an explicit `XcodeProject` binding contract. The .NET runner still owns the final app. Build results do not prove native launch, device behavior, accessibility, signing, or archive; those gates remain `notVerified` until run.
+See the [platform implementation table](../README.md#platforms) for the host and renderer used by each target.
 
 ## Requirements
 
@@ -53,7 +34,7 @@ Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a def
 
 `dotnet` searches upward from the **current working directory** for `global.json`. Pointing `--project` at an iOS project does not change SDK selection. Run direct iOS commands from `DorotiTestbedApp/ios`, and other platform commands from the repository root. The workspace CLI's `build/run/publish -App ./DorotiTestbedApp -Platform ios` uses the iOS directory automatically.
 
-SDK selection is separate from the target framework. iOS device Release uses `net11.0-ios`, MAUI `11.0.0-rc.1.26451.6`, and NativeAOT. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS build instructions](validation/native-aot/README.md).
+SDK selection is separate from the target framework. iOS device Release defaults to NativeAOT; use `-CompilationMode Mono` for the explicit recovery profile. NativeAOT uses `net11.0-ios` and MAUI `11.0.0-rc.1.26451.6`. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS sample instructions](../DorotiTestbedApp/README.md#ios-sample).
 
 ### Platform prerequisites
 
@@ -61,11 +42,11 @@ Prepare the tools for the selected platform. Workload names identify .NET instal
 
 | Platform / RID | Build host | .NET SDK / workload | Additional tools and runtime requirements |
 | --- | --- | --- | --- |
-| Windows App SDK (default) / `win-x64` | Windows x64 | 10 / no separate MAUI workload | Visual Studio MSBuild, MSVC **v145** C++ toolset, Windows SDK **10.0.26100.0**. The default Vulkan presenter requires a Vulkan 1.2 driver, D3D11 external-memory sharing, and Windows Presentation support. Acrylic requires Windows 11 24H2 or later. |
+| Windows App SDK (default) / `win-x64` | Windows x64 | 10 / no separate MAUI workload | Visual Studio MSBuild, MSVC **v145** C++ toolset, Windows SDK **10.0.26100.0**. The default Vulkan presenter requires a Vulkan 1.2 driver, D3D12 external-memory sharing, and DXGI/DirectComposition support. Acrylic requires Windows 11 24H2 or later. |
 | Windows MAUI (optional) / `win-x64` | Windows x64 | 10 / `maui-windows` | Windows SDK and MAUI Windows build tools. Select with `-WindowsBackend Maui` in the workspace CLI. |
 | macOS AppKit / `osx-arm64` | Apple Silicon Mac | 10 / `macos` | **macOS 14 or later**, a full Xcode installation compatible with the workload, and Metal support. Xcode also builds the app-owned Swift/Objective-C binding. |
 | Mac Catalyst / `maccatalyst-arm64` | Apple Silicon Mac | 10 / `maui-maccatalyst` | A full Xcode installation compatible with the workload, the Mac Catalyst SDK, and Metal support. This is a separate runner from AppKit. |
-| Android / `android-arm64`, `android-x64` | Windows or macOS | 10 / `maui-android` | Android SDK Platforms, Build Tools, Platform Tools (`adb`), and **OpenJDK 17–21**. Install the SDK required by the .NET workload plus **API 34** for the native bridge. Use an Android 7.0/API 24 or later device or an emulator with the matching ABI. |
+| Android / `android-arm64`, `android-x64` | Windows or macOS | 10 / `maui-android` | Android SDK Platforms, Build Tools, Platform Tools (`adb`), and **OpenJDK 17–21**. Install the SDK required by the .NET workload plus **API 34** for the native bridge. Use an Android 7.0/API 24 or later device or an emulator with the matching ABI and Vulkan 1.2 support. |
 | iOS / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | macOS + Xcode | 11 / `maui-ios` | A full Xcode installation compatible with the workload and the iOS SDK. Simulators need the matching Simulator runtime; devices need **iOS 15 or later**, a signing certificate, and a provisioning profile. Release NativeAOT targets `ios-arm64`. |
 | Linux Qt / `linux-x64` | Linux x64 | 10 / no separate MAUI workload | **Qt 6.5 or later** Core/Gui/Widgets/OpenGL/OpenGLWidgets development files, **CMake 3.24 or later**, a C/C++20 compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, Vulkan development headers, and fontconfig. Runtime requires the `wayland` or `xcb` QPA plugin and a Vulkan 1.2 driver. |
 | Web / `browser-wasm` | Windows, macOS, or Linux | 10 / `wasm-tools` | The default WebGPU path requires a browser with WebGPU and WASM threads, a hardware WebGPU adapter, and COOP/COEP isolation. Explicit `worker-direct-webgl` uses WebGL2. |
@@ -97,31 +78,40 @@ Pop-Location
 
 See [Testbed run instructions](../DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
-## Commands
+## Build and run
 
-Web uses SkiaSharp WASM with a single runtime initialized on main or in the render Worker. The supported renderers are `worker-direct-webgpu` (default) and `worker-direct-webgl`; WebGPU requires `runtimeLocation: "main"`, WASM threads, COOP/COEP isolation and a hardware WebGPU adapter. Explicit WebGL also supports an independent Worker runtime. Testbed and template preload the same-origin fallback font and initialize the runtime through the import-mapped `dotnet.js`. Loader `started` is runtime/GPU readiness, not first visible content.
+Run the following from the **repository root, `DorotiLab`**, after preparing the tools for your platform:
 
-The Runner SDK owns the Qt CMake target with configuration-specific output. CMake retains native dependency checking. TypeScript and platform binding builds retain their existing correctness checks.
+```powershell
+pwsh -File ./Doroti/eng/doroti.ps1 doctor
 
-For validated build reuse, run from the repository root:
+$env:DOROTI_TESTBED_MODE = 'sample'
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+```
+
+`run` builds before launching. Windows uses Windows App SDK/`HwndExactCpp` by default; add `-WindowsBackend Maui` for the independent MAUI runner. Select `android`, `ios`, `macos`, `maccatalyst`, `linux`, or `web` with `-Platform` for other targets. Their prerequisites and device options are covered in the [sample app guide](../DorotiTestbedApp/README.md#run-by-platform).
+
+### Build once and reuse
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform web -Configuration Release
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
 ```
 
-`build` records a successful artifact; ordinary `run` records its build before launching. `-LastSuccessful`/`-NoBuild` requires launch-state v3 and matching source/resource/native inputs, inherited settings, evaluated project items, SDK/workload and tool identities, restored dependency contents, and hashed outputs (including evaluated static Web assets). The dependency identity includes transitive managed/native package assets, runtime packs, native file references, and `project.assets.json`. Restore runs before identity collection; the subsequent build uses that restored graph. Changed or previously untracked dependencies/toolchains force a rebuild; unchanged dependencies retain incremental builds. CLI compilations use fresh compiler processes so a previously warmed compiler server cannot reintroduce old package metadata on later source edits. Dependency changes during a build prevent recording or launching its output. Missing/changed artifacts and old v1/v2 records are rejected for reuse; run without reuse flags to create a v3 record. Generated/dependency directories are pruned from source traversal, but explicitly resolved dependency files are hashed separately. Printed fingerprint/toolchain time is separate from runtime TTID. Custom native build targets declare additional external files through `DorotiLaunchDependency`.
+`-LastSuccessful` and `-NoBuild` reuse an existing successful build only when its inputs, dependencies, toolchain, and output hashes still match. A missing or stale record requires another run without these flags. `-NoRestore` skips restore while still building and checking dependencies. These flags apply to `run` only.
 
-Qt copies the selected native library even when source and destination sizes/timestamps match. Windows C++/WinRT generation hashes the generator, pinned SDK/package metadata, and the complete generated header inventory; changed inputs or missing/modified headers regenerate the projection. These checks do not establish Android/Apple device deployment or physical runtime acceptance.
+<details>
+<summary>How build reuse is validated</summary>
 
-Run from the repository root:
+The CLI records `doroti.launch-state/v4`, including the runner, configuration, RID, compilation mode, source/resource/native inputs, inherited settings, evaluated project items, restored dependency contents, SDK/workload/tool identities, and output hashes. Static Web assets are included. iOS compilation modes use separate output and cache locations.
 
-```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 doctor
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
-```
+Normal builds restore before collecting dependency identities. Changed or previously untracked dependencies and toolchains force a rebuild; older records are rejected for reuse. The compiler runs in a fresh process, and dependency changes during a build prevent recording a successful artifact. Custom native targets declare external dependencies through `DorotiLaunchDependency`.
 
-The active command surface is intentionally small:
+Qt retains CMake dependency checks and copies the selected native library even if size and timestamps match. Windows C++/WinRT generation checks generator, SDK/package, and header identities. These checks establish build consistency; they do not establish device deployment or runtime acceptance.
+
+</details>
+
+### Command reference
 
 | Command | Purpose |
 | --- | --- |
@@ -134,43 +124,111 @@ The active command surface is intentionally small:
 | `release` | Run Release validation/audit and pack product artifacts |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
-For Windows, `-Platform windows` selects Windows App SDK/`HwndExactCpp`; add `-WindowsBackend Maui` to select the independent MAUI runner. Target-specific scripts under `eng/` are maintainer diagnostics, not interchangeable product commands. Their contracts and evidence boundaries are described under [validation](validation/README.md), while previous run results remain under `history/` at the repository root.
+`build` without an app targets the product solution, which includes projects requiring different host operating systems. Use `-App` and `-Platform` for a single target. The `release` command validates and packs local artifacts; it does not publish a GitHub Release.
 
-Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to use ANGLE explicitly. GPU selection defaults to `NoPreference` (system default). Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` for a Windows/DXGI preference; this applies to Vulkan and ANGLE. `DOROTI_WINDOWS_VULKAN_DEVICE` optionally overrides the Vulkan choice with an exact or unique device-name fragment. On Windows 11 24H2+, an app can request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag; omitted backdrop options and `system` remain opaque. The demo already requests Acrylic. Vulkan uses System32 Vulkan 1.2 with D3D12 shared-resource imports, a shared timeline fence, and a same-adapter D3D12/DXGI DirectComposition output. The default renderer selection remains `Vulkan`; no automatic presenter fallback is used. Native PlatformView raster slices retain their separate D3D11 drawing API. Web defaults to `worker-direct-webgpu`, including `auto`; other renderers remain explicitly selectable. These defaults do not change the recorded validation results or complete the remaining GPU/DPI/refresh/IME/accessibility qualification.
+## Application development
 
-Vulkan/D3D12 moving-origin resize submits a prepared frame immediately after the HWND geometry change and waits for a matching DXGI present-count statistic. Ordinary startup/fixed-origin admission retains its DWM boundary wait. Current output contracts and scoped results are in [D3D12 output validation](docs/validation/windows-d3d12-output-2026-09-14.md). Implementation details, earlier failures, observed resize improvement, and validation limits are preserved in the [September 5 history](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md). `experimentalAcrylic` remains a compatibility mode using the same Acrylic implementation.
+### Startup
 
-The Material demo requests ordinary `acrylic` on Windows and draws its translucent Material surface once over a transparent renderer background. `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1` is needed only to reproduce the legacy mode. Runtime kind/theme/tint/luminosity updates and state queries retain the existing `doroti/windows/experimental-acrylic` platform channel for compatibility. App content must be transparent or translucent for Acrylic to be visible.
+Create the widget entrypoint with your root widget:
 
-Select the material and titlebar independently with `DorotiViewConfiguration.appearance`. The default is `unified`; `solid` selects a separate titlebar. Use Acrylic on Windows App SDK and Qt, with an optional macOS override for Acrylic or Liquid Glass. See the [window appearance API and platform behavior](docs/window-appearance.md).
+```csharp
+new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())
+```
+
+`MyApp` is your application's root widget. The entrypoint attaches it and requests the first frame automatically; no manual `scheduleFrameCallback` or `scheduleForcedFrame` call is needed. An optional second `Func<Task>` argument prepares resources, such as fonts, before root creation. Completion returns to the owning view's event loop; detaching or shutting down prevents a pending initialization from attaching the root.
+
+### Themes
+
+Material uses Material 3. Omit the removed `useMaterial3` argument from `ThemeData` constructors, factories, and `copyWith`. Use `Typography.Create` or `CreateMaterial2021` for typography.
+
+To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` with `themeMode: ThemeMode.system`. Build palettes with `ColorScheme.CreateFromSeed` and `Brightness.light`/`Brightness.dark`; widgets read them through `Theme.of(context).colorScheme`. See the [complete theme example](../DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes).
+
+### Native bindings
+
+Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned native binding. Android uses `AndroidGradleProject`; Apple uses `XcodeProject`. The .NET runner owns the final application. The `native` commands inspect, build, locate, or extend these workspaces.
+
+## Platform configuration
+
+### Windows
+
+| Setting | Behavior |
+| --- | --- |
+| `DOROTI_WINDOWS_PRESENTER` | `Vulkan` by default; `AngleD3D11` explicitly selects ANGLE |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` by default; `LowPowerPreference` or `HighPerformancePreference` applies to Vulkan and ANGLE |
+| `DOROTI_WINDOWS_VULKAN_DEVICE` | Select a Vulkan device by its exact name or a unique name fragment |
+
+The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API. Synchronization and resize details are documented in the [D3D12 output report](docs/validation/windows-d3d12-output-2026-09-14.md).
+
+### Web
+
+| Renderer | Requirements |
+| --- | --- |
+| `worker-direct-webgpu` (default) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP isolation, hardware WebGPU adapter |
+| `worker-direct-webgl` (explicit) | Ganesh/WebGL2; also supports an independent Worker runtime |
+
+`auto` and unknown renderer values select WebGPU. GPU initialization failures do not trigger an automatic fallback. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
+
+Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
+
+### Window appearance
+
+`DorotiViewConfiguration.appearance` controls the backdrop and titlebar independently. `unified` is the default titlebar style; `solid` selects a separate titlebar. Use Acrylic on Windows App SDK and Qt, with an optional macOS override for Acrylic or Liquid Glass. See the [window appearance API](docs/window-appearance.md).
+
+On Windows 11 24H2 or later, request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag. The Material sample already requests Acrylic. App content must be transparent or translucent for the effect to be visible; omitted backdrop options and `system` remain opaque.
+
+<details>
+<summary>Compatibility with earlier Acrylic settings</summary>
+
+`experimentalAcrylic` uses the same Acrylic implementation. `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1` reproduces the legacy sample mode. Runtime kind/theme/tint/luminosity updates and state queries retain the `doroti/windows/experimental-acrylic` platform channel for compatibility.
+
+</details>
+
+## Framework structure
+
+| Module | Responsibility |
+| --- | --- |
+| `Doroti.Framework.*` | Foundation, scheduling, services, animation, gestures, layout, painting, semantics, widgets, Material, and Cupertino |
+| `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting` | Runtime support and shared startup, builder, and view contracts |
+| `Doroti.App.Sdk` | Platform-neutral `net10.0` application assembly and shared assets |
+| `Doroti.Runner.Sdk` | Target runner validation, native/Web bootstrap, and plugin registration |
+| `Doroti.Skia.Rendering`, `Doroti.Skia.RuntimeEffects` | Shared GPU rendering, scenes, text, images, effects, and SkSL compilation |
+| `Doroti.Host.WindowsAppSdk` + `.Native` | Managed framework integration and native C++ window/input handling |
+| `Doroti.Host.Maui` | Android, UIKit, AppKit, Mac Catalyst, and optional Windows MAUI adapters |
+| `Doroti.Host.Web` | Worker/canvas startup, input, accessibility, and resources |
+| `Doroti.Host.Qt` | Qt 6 `QWindow`, C ABI bridge, input, IME, desktop services, and accessibility |
+| `Doroti.Target.*` | Platform-specific package composition and deployment |
+
+Features and fixes belong directly in the owning framework, runtime, renderer, or host project. Update consumers when shared contracts change. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-comparison tools; they do not overwrite maintained framework source and are not required for ordinary builds.
 
 ## Platform evidence boundaries
 
-The Windows App SDK target, package, default CLI route, hardware-D3D11 ANGLE runtime, first-frame ordering, and tested physical resize/mixed-DPI boundary behavior have current evidence. C10 is a user-acceptance PASS for the observed opaque conditions; strict synthetic resize qualification and pixel/cadence failures remain failures. Experimental Acrylic automation and its physical acceptance are separate evidence classes: any unexecuted DPI, refresh, edge/speed, monitor, scan-out, IME, accessibility, window-management, or device-loss combination remains `notVerified`. The last full `Doroti.Product.slnx` Release run on Windows failed only after the Windows target passed, when a macOS project invoked unavailable `sips`; the Windows PASS and global FAIL remain separate.
+Build, native execution, browser execution, physical-device behavior, accessibility, and cross-platform parity are separate checks. A successful build does not establish signing, store readiness, device behavior, or performance. Unrun combinations remain `notVerified`.
 
-The historical OpenGL path’s shared renderer, real Material gallery, swap-based terminal ACK, basic input callbacks, semantics tree, and framework-dependent/self-contained publish paths were exercised for Linux Qt under Wayland and XWayland on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, long soaks, and performance remain `notVerified`. See the archived [Linux Qt backend summary](../history/26-08-20/linux-qt-backend-summary.md).
+| Area | Scope and further reading |
+| --- | --- |
+| Windows | Some physical resize and mixed-DPI scenarios received user acceptance; synthetic pixel/cadence failures remain separate. See the [D3D12 output report](docs/validation/windows-d3d12-output-2026-09-14.md) for scoped results. |
+| Linux | Historical OpenGL runs under VMware Wayland/XWayland do not qualify the current Vulkan path or physical hardware. See the [Linux Qt record](../history/26-08-20/linux-qt-backend-summary.md). IME, Orca, context recovery, and long-running performance need separate coverage. |
+| AppKit | Native execution and remaining conditions are recorded in the [AppKit summary](../history/26-08-20/macos-appkit-dual-backend-summary.md). |
+| iOS | NativeAOT build, deployment, and device observations are recorded in the [NativeAOT summary](../history/26-09-10/nativeaot-work2-summary.md); they apply to the documented configurations. |
+| Native controls and WebView | Consult the [PlatformView support matrix](docs/platform-views/support-matrix.md) for implementation and validation boundaries. |
 
-AppKit live coverage and its remaining gates are recorded separately in the archived [AppKit dual-backend summary](../history/26-08-20/macos-appkit-dual-backend-summary.md). Build, native-live, browser-live, physical/device, and accessibility evidence do not substitute for one another.
+The [development history](../history/) contains results from specific runs, not guarantees for every current device or configuration.
 
-## Source and artifact policy
-
-- Product framework changes belong in `src/Doroti.Framework.*`; no compiler-owned `.g.cs` file is compiled there.
-- Fix shared behavior at the lowest owning framework/runtime/rendering/host contract.
-- Keep reference comparison, build, native live, browser live, physical, and cross-target claims distinct.
-- `validation/contracts/` stores small machine-readable contracts consumed by active validators.
-- `validation/` contains source and fixtures only. Generated output goes under `artifacts/validation/`; retained milestone evidence lives under `../history/`.
-- `.doroti/` and `artifacts/` store transient tool and validation output.
-- All repository JSON uses `System.Text.Json`.
-
-## Directory guide
+## Development and repository layout
 
 | Path | Contents |
 | --- | --- |
-| [`src/`](src/) | Product framework, runtime, renderer, hosts, targets, SDK, and analyzers |
-| [`templates/`](templates/) | The seven-runner plus four-binding `doroti-app` platform workspace template |
-| [`eng/`](eng/) | Compact build, validation, release, storage, and optional reference workflows |
-| [`tools/`](tools/) | Optional Dart/Flutter compiler and shared tooling |
-| [`validation/`](validation/) | Active validation contracts and fixtures; generated evidence goes to `.doroti/` or `artifacts/` unless explicitly promoted |
-| [`docs/`](docs/) | Current ADRs, including the Windows host decision, plus historical architecture records |
+| [`src/`](src/) | Framework, runtime, rendering, hosts, targets, and SDK |
+| [`templates/`](templates/) | `doroti-app` application workspace template |
+| [`eng/`](eng/) | Build, run, validation, packaging, and diagnostic scripts |
+| [`tools/`](tools/) | Framework tooling |
+| [`validation/`](validation/) | Validation source and fixtures |
+| [`docs/`](docs/) | API documentation and scoped validation reports |
+| [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import compiler |
 
-Doroti is distributed under the repository BSD 3-Clause license. See [third-party notices](THIRD-PARTY-NOTICES.md) for upstream source and package attribution.
+Keep generated tool and validation output under `.doroti/` or `artifacts/`, with validation output under `artifacts/validation/`. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
+
+## License
+
+Doroti uses the [BSD 3-Clause License](../LICENSE). See [third-party notices](THIRD-PARTY-NOTICES.md) for source and package attribution.

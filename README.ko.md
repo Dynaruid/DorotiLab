@@ -2,86 +2,110 @@
 
 [English](README.md) | **한국어**
 
-### C#과 .NET으로 만드는 cross-platform UI framework
+### XAML 없이 C#으로 만드는 크로스 플랫폼 UI
+
+Doroti는 C#과 .NET으로 개발하는 실험적인 UI 프레임워크입니다. 위젯, 레이아웃, UI 동작을 C# 코드로 직접 작성하고, 데스크톱·모바일·웹에서 애플리케이션 코드를 공유할 수 있습니다.
+
+Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 현재는 C# 코드를 직접 개발하고 유지보수합니다. 익숙한 Material·Cupertino API에 공통 렌더링 파이프라인과 플랫폼별 네이티브 연동을 제공합니다.
+
+[시작하기](#시작하기) · [플랫폼별 구현](#플랫폼별-구현) · [문서](#문서)
 
 > [!WARNING]
-> Doroti는 현재 실험 단계입니다. API, architecture, 동작 및 project 구조는 하위 호환성 보장 없이 언제든 크게 변경될 수 있습니다.
+> Doroti는 활발히 개발 중인 실험적 프로젝트입니다. API, 동작, 프로젝트 구조는 하위 호환성 보장 없이 변경될 수 있으며, 플랫폼별 완성도에는 차이가 있습니다.
 
-Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Web, Linux/Qt에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
+## 주요 특징
 
-Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI를 구성하지 않습니다. Platform host는 native window/view, GPU surface, input, text, clipboard, accessibility capability를 제공하고 Doroti가 widget/render tree를 소유합니다.
+- **C#으로 작성하는 UI** — XAML 없이 위젯, 레이아웃, 상태와 상호작용을 정의합니다.
+- **애플리케이션 코드 공유** — 플랫폼 중립 라이브러리에 UI를 작성하고, 각 플랫폼의 실행 프로젝트에서 사용합니다.
+- **Material·Cupertino 위젯** — Flutter에서 익숙한 API를 C#으로 구현하고 유지보수합니다.
+- **GPU 렌더링** — 플랫폼에 따라 Skia Graphite와 Vulkan, Metal, WebGPU를 사용합니다.
+- **네이티브 연동** — 플랫폼 호스트가 창, 입력, 텍스트 입력, 클립보드, 접근성 서비스를 연결합니다.
+- **샘플 앱과 템플릿** — `DorotiTestbedApp`과 `doroti-app` 프로젝트 템플릿으로 구성을 살펴볼 수 있습니다.
 
-## 현재 개발 방식
+## 플랫폼별 구현
 
-프로젝트 초반에는 semantic compiler로 Flutter source의 큰 범위를 일괄 변환해 기반을 만들었습니다. 이 bootstrap은 현재 framework를 만드는 데 유효했지만 이제 일반 기능 개발 방식은 아닙니다.
+위젯, 레이아웃, 페인팅, 시맨틱스 계층은 플랫폼 간에 공유합니다. 각 호스트는 네이티브 연동과 GPU 렌더링 표면을 제공합니다.
 
-현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다. `DorotiTestbedApp`과 생성된 `doroti-app` project는 C# 전용이며 활성 validation은 그 내부에 Dart package를 만들지 않습니다.
+| 플랫폼 | 네이티브 호스트 | Doroti 구현체 | 기본 렌더링 백엔드 |
+| --- | --- | --- | --- |
+| Windows (기본) | Windows App SDK, C++ 자식 HWND (`HwndExactCpp`) | `Doroti.Host.WindowsAppSdk` + 네이티브 C++ 호스트 | Skia Graphite / Vulkan |
+| Windows (선택) | .NET MAUI / WinUI | `Doroti.Host.Maui` | Skia Graphite / Vulkan |
+| Android | .NET MAUI / Android 네이티브 뷰 | `Doroti.Host.Maui` | Skia Graphite / Vulkan |
+| iOS | .NET MAUI / UIKit | `Doroti.Host.Maui` | Skia Graphite / Metal |
+| macOS | 네이티브 AppKit / MetalKit (`MTKView`) | `Doroti.Host.Maui`의 AppKit 어댑터 | Skia Graphite / Metal |
+| Mac Catalyst | .NET MAUI / UIKit (Mac Catalyst) | `Doroti.Host.Maui` | Skia Graphite / Metal |
+| Web | .NET WebAssembly, 렌더링 Worker / canvas | `Doroti.Host.Web` | Skia Graphite / Dawn / WebGPU |
+| Linux | Qt 6 `QWindow`, 네이티브 C ABI 브리지 | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-자세한 source 소유권은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 기본 native bridge graph는 [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md), 현재 Windows host 결정은 [ADR-025](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md)를 참고하세요.
+Windows App SDK에서는 ANGLE/D3D11, Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현체별 검증 범위에는 차이가 있으므로 [프로젝트 상태](#프로젝트-상태)를 함께 참고하세요.
 
-## 현재 동작 범위
+## 시작하기
 
-- 공용 Material/Cupertino widget, element, layout, paint, semantics, state 기반
-- 플랫폼 중립 C# 앱 library와 `macos`(AppKit), `maccatalyst`(UIKit)를 분리한 고정 target runner project
-- 하나의 public target-neutral `Program` startup, host 소유 native 초기화, runner-local generated bootstrap code
-- Windows 기본값인 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host와 managed Graphite/Vulkan·Windows Presentation 경로. Windows MAUI는 명시적 독립 backend로 유지
-- Web 기본값인 Graphite/Dawn WebGPU와 명시적으로 선택하는 WebGL2 경로
-- native AppKit macOS/osx-arm64와 별도로 유지되는 Mac Catalyst를 포함한 고정 runner 빌드
-- Linux x64의 Qt 6 `QWindow`, Vulkan surface를 협상하는 C ABI v2, Graphite/Vulkan swapchain 출력
-- 두 Apple desktop runner/binding을 포함하는 package-only template(총 12개 project)
+샘플 앱으로 Doroti를 살펴볼 수 있습니다. Windows에서는 .NET SDK 10.0.400, PowerShell 7, [플랫폼별 준비 사항](Doroti/README.ko.md)에 안내된 Windows C++ 빌드 도구를 설치하세요. 다른 플랫폼은 각각 필요한 SDK와 워크로드가 다릅니다.
 
-현재 evidence에는 AppKit native launch/Metal presentation, Kubuntu VMware의 Wayland/XWayland Qt live 실행, Windows App SDK 기본 전환이 포함됩니다. 확인한 Windows 실제 resize와 mixed-DPI monitor 경계 이동은 사용자 acceptance를 받았지만 strict synthetic capture/pixel/cadence FAIL은 그대로 유지합니다. Windows 실제 한글 IME/Narrator와 더 넓은 DPI/device/window-management matrix, 물리 Linux와 실제 X11 session, Linux 한글 IME/Orca, context 재생성, 장기 성능, 미실행 target의 native/browser/physical/accessibility/signing/store 및 cross-target parity는 각각 독립적인 `notVerified` gate입니다.
-
-## 구조
-
-```text
-제품 소유 Doroti.Framework.* source
-                 │
-                 ▼
-        runtime + widget/render pipeline
-                 │
-                 ▼
-         target host + GPU surface
-  Windows App SDK/Vulkan · Windows MAUI · AppKit · Mac Catalyst
-             WebGPU / WebGL2 · Linux Qt/Graphite Vulkan
-```
-
-Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용합니다. Compiler output은 격리된 candidate이며 제품 source of truth가 아닙니다.
-
-## 실행
-
-.NET SDK 10.0.400, 일치하는 10.0.11 runtime/workload와 PowerShell 7이 필요합니다.
+저장소를 복제한 뒤 루트 디렉터리에서 샘플을 실행합니다.
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
+git clone https://github.com/Dynaruid/DorotiLab.git
+cd DorotiLab
+
+$env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -LastSuccessful
 ```
 
-Windows 명령은 기본적으로 Windows App SDK/`HwndExactCpp`를 선택합니다. 독립 Windows MAUI runner가 필요할 때만 `-WindowsBackend Maui`를 명시합니다.
+이 명령은 기본 Windows App SDK 실행 프로젝트를 빌드하고 실행합니다. Android, iOS, macOS, Mac Catalyst, Linux, Web 실행 방법은 [샘플 앱 가이드](DorotiTestbedApp/README.ko.md), 빌드·배포 옵션은 [프레임워크 가이드](Doroti/README.ko.md)를 참고하세요.
 
-Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.2, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 SkiaSharp WASM의 `worker-direct-webgpu`(Graphite/Dawn)가 기본값이며 `worker-direct-webgl`은 명시적으로 선택합니다. 사용자 결정에 따라 네이티브 Graphite를 기본값으로 구성했습니다. Windows App SDK·Windows MAUI·Android·Linux Qt는 Vulkan, AppKit·iOS·Mac Catalyst는 Metal을 사용합니다. Android는 API 24 이상과 Vulkan 1.2 장치가 필요합니다. native Vulkan asset은 공식 SkiaSharp NativeAssets 4.154.0-preview.1.26454.9를 사용하며, managed/native 해시를 검사합니다. 커스텀 Skia 빌드·staging·private ABI와 자동 fallback은 없습니다. NVIDIA 준비 프레임 receipt 지연은 사용자 허용에 따라 1,000ms 한도, 다른 GPU는 50ms를 유지하며 응답 누락은 실패입니다. 호스트별 실행 결과와 명시적 비교 옵션은 [기본 구성·검증 보고서](Doroti/docs/validation/official-graphite-cutover-2026-09-12.md)에 기록합니다. macOS/Mac Catalyst의 Release 빌드·제품 표시·공식 자산·수명 검증을 재개했습니다. [Apple 재검토](history/2026-09-13/apple-work0/README.md)에 통과 범위와 남은 조건을 기록했습니다. iOS 실행은 미검증입니다. Linux는 후속 요청에 따라 빌드·패키지·Qt ABI 검증을 진행했으며, llvmpipe Graphite는 별도 환경변수 없이 실행됩니다. 프로젝트는 하드웨어 GPU 여부 대신 필요한 API 기능으로 실행 가능 여부를 판단합니다. headless 검사는 통과했지만 Material 제품의 depth 동기화 오류와 hardware qualification은 남아 있습니다. [Linux 후속 검토](Doroti/docs/validation/linux-official-graphite-2026-09-12.md)를 참고하세요. VMware SVGA3D의 기존 OpenGL GPU 가속은 재확인했으며, 현재 CPU Vulkan ICD의 진단 결과와 구분합니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
-`-LastSuccessful`(또는 `-NoBuild`)은 runner, configuration, RID와 source/native input fingerprint가 일치하는 이전 성공 artifact만 재사용하며, 기록이 없거나 stale이면 fail-closed합니다. `-NoRestore`는 build는 수행하고 restore만 생략합니다.
+## 동작 구조
 
-## Repository 구성
+Doroti가 위젯 트리와 렌더 트리를 관리합니다. 플랫폼 호스트는 네이티브 서비스와 GPU 렌더링 표면을 제공하고, 공통 프레임워크는 레이아웃, 페인팅, UI 상태를 처리합니다.
 
-| 경로 | 설명 |
+```text
+C# 애플리케이션
+      ↓
+Doroti 위젯, 레이아웃, 상태
+      ↓
+공통 렌더링 파이프라인
+      ↓
+플랫폼 호스트 + GPU 렌더링 표면
+```
+
+Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현은 `Doroti.Framework.*`의 C# 코드로 유지보수하며, Flutter 런타임을 WebView에 넣어 실행하는 방식은 아닙니다.
+
+프로젝트 초반에는 Dart-to-C# 컴파일러로 프레임워크의 기반을 만들었습니다. 현재는 C# 코드를 직접 개발하며, 컴파일러는 필요한 소스를 가져오거나 동작을 비교하는 선택적 도구로 남아 있습니다.
+
+## 문서
+
+| 가이드 | 내용 |
 | --- | --- |
-| [`Doroti/src/`](Doroti/src/) | 제품 framework, runtime, rendering, host, target package와 SDK |
-| [`DorotiTestbedApp/`](DorotiTestbedApp/) | 플랫폼 중립 앱, 7 runner, 4 native binding을 dogfood하는 앱 |
-| [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
-| [`Doroti/eng/`](Doroti/eng/) | build, SDK 준비, 로컬 상태와 선택적 진단 도구 |
-| [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart/Flutter import·migration compiler |
-| [`history/`](history/) | Archive한 milestone 계획, 명령과 evidence 요약 |
+| [프레임워크 가이드](Doroti/README.ko.md) | SDK, 워크로드, 빌드 명령, 패키징, 호스트 설정 |
+| [샘플 앱 가이드](DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
+| [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
+| [개발 이력](history/) | 지난 작업 계획과 검증 기록 |
 
-명령과 evidence 경계는 [runtime README](Doroti/README.ko.md)를 참고하세요.
+## 프로젝트 상태
 
-## Roadmap
+Doroti는 개인이 개발하는 실험적 프로젝트입니다. 플랫폼 표는 구현된 호스트와 기본 렌더링 구성을 나타내며, 모든 플랫폼이 동일한 수준으로 제품 사용을 준비했다는 의미는 아닙니다.
 
-현재 우선순위는 native desktop capability closure, Web live parity 자동화, target별 대표 release/physical acceptance flow입니다. Build, native live, browser live, physical, cross-target 결과는 서로 대신하지 않습니다.
+빌드 검사, 네이티브·브라우저 실행, 실제 기기 테스트는 구분하여 기록합니다. GPU 호환성, 입력기, 접근성, 성능, 서명과 스토어 배포는 플랫폼별 검증이 더 필요합니다. 사용할 플랫폼을 선택하기 전에 [프레임워크 가이드](Doroti/README.ko.md)와 검증 기록을 확인하세요.
 
-Doroti는 개인 프로젝트입니다. 아이디어, 피드백, fork와 독립적인 실험을 환영합니다.
+현재는 네이티브 데스크톱 연동, 웹 동작 검증 자동화, 각 플랫폼의 대표적인 릴리스·실제 기기 테스트를 우선 진행하고 있습니다.
 
-## License
+## 저장소 구성
 
-[LICENSE](LICENSE)와 [third-party notices](Doroti/THIRD-PARTY-NOTICES.md)를 참고하세요.
+| 경로 | 내용 |
+| --- | --- |
+| [`Doroti/src/`](Doroti/src/) | 프레임워크, 런타임, 렌더링, 호스트, SDK |
+| [`DorotiTestbedApp/`](DorotiTestbedApp/) | 공통 샘플 앱과 플랫폼별 실행 프로젝트 |
+| [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` 템플릿 |
+| [`Doroti/eng/`](Doroti/eng/) | 빌드, 실행, 패키징, 진단 도구 |
+| [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart-to-C# 컴파일러 |
+
+## 피드백과 기여
+
+Doroti는 개인적으로 즐기며 만들고 있는 취미 프로젝트입니다. 그래서 Pull Request를 적극적으로 검토하거나 병합하기는 어려울 수 있습니다.
+
+아이디어와 버그 제보를 환영하며, Doroti를 바탕으로 직접 실험하거나 새로운 방향으로 발전시키는 포크도 환영합니다. 문제를 제보할 때는 플랫폼, .NET SDK 버전, 렌더링 백엔드와 재현 방법을 함께 알려주세요.
+
+## 라이선스
+
+Doroti는 [BSD 3-Clause 라이선스](LICENSE)를 따릅니다. 외부 소스와 패키지의 저작권 표기는 [서드파티 고지](Doroti/THIRD-PARTY-NOTICES.md)를 참고하세요.

@@ -2,86 +2,110 @@
 
 **English** | [한국어](README.ko.md)
 
-### A cross-platform UI framework built with C# and .NET
+### Cross-platform UIs in C#, without XAML
+
+Doroti is an experimental UI framework built with C# and .NET. Write widgets, layouts, and UI behavior directly in C#, and share application code across desktop, mobile, and the web.
+
+The project began by translating Flutter framework source code into C# and is now developed and maintained directly in C#. It brings familiar Material and Cupertino APIs together with a shared rendering pipeline and native platform integration.
+
+[Get started](#get-started) · [Platforms](#platforms) · [Documentation](#documentation)
 
 > [!WARNING]
-> Doroti is currently experimental. Its APIs, architecture, behavior, and project structure may change significantly at any time without backward-compatibility guarantees.
+> Doroti is under active development. APIs, behavior, and project structure may change without backward-compatibility guarantees. Platform maturity varies.
 
-Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Web, and an early Linux/Qt host boundary. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
+## Highlights
 
-Doroti does not embed Flutter in a WebView and does not compose its UI from a platform control tree. Platform hosts provide the native window/view, GPU surface, input, text, clipboard, and accessibility capabilities; Doroti owns the widget and render trees.
+- **C# throughout your UI** — define widgets, layout, state, and interactions without XAML.
+- **Shared application code** — keep your UI in a platform-neutral library with separate runners for each target.
+- **Material and Cupertino widgets** — build on Flutter-inspired APIs implemented and maintained in C#.
+- **GPU rendering** — use Skia Graphite with Vulkan, Metal, or WebGPU through the platform's rendering backend.
+- **Native integration** — platform hosts connect the UI to windows, input, text entry, clipboard, and accessibility services.
+- **A sample app and templates** — explore `DorotiTestbedApp` and the `doroti-app` project template.
 
-## Current development model
+## Platforms
 
-The project began by translating large Flutter source slices through a semantic compiler. That bootstrap made the current framework possible, but it is no longer the normal feature workflow.
+Doroti shares its widget, layout, painting, and semantics layers across platforms. Each host supplies the native integration and GPU surface.
 
-Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source. `DorotiTestbedApp` and generated `doroti-app` projects are C#-only, and active validation never creates a Dart package inside them.
+| Platform | Native host | Doroti implementation | Default rendering backend |
+| --- | --- | --- | --- |
+| Windows (default) | Windows App SDK, C++ child HWND (`HwndExactCpp`) | `Doroti.Host.WindowsAppSdk` + native C++ host | Skia Graphite / Vulkan |
+| Windows (optional) | .NET MAUI / WinUI | `Doroti.Host.Maui` | Skia Graphite / Vulkan |
+| Android | .NET MAUI / Android native views | `Doroti.Host.Maui` | Skia Graphite / Vulkan |
+| iOS | .NET MAUI / UIKit | `Doroti.Host.Maui` | Skia Graphite / Metal |
+| macOS | Native AppKit / MetalKit (`MTKView`) | AppKit adapter in `Doroti.Host.Maui` | Skia Graphite / Metal |
+| Mac Catalyst | .NET MAUI / UIKit (Mac Catalyst) | `Doroti.Host.Maui` | Skia Graphite / Metal |
+| Web | .NET WebAssembly, render Worker / canvas | `Doroti.Host.Web` | Skia Graphite / Dawn / WebGPU |
+| Linux | Qt 6 `QWindow`, native C ABI bridge | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md), and the current [Windows host decision](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md).
+Windows App SDK also offers an explicitly selected ANGLE/D3D11 path; Web offers Ganesh/WebGL2. These implementations have different levels of validation; see [project status](#project-status).
 
-## What works today
+## Get started
 
-- Shared Material/Cupertino widget, element, layout, paint, semantics, and state infrastructure
-- A platform-neutral C# application library plus fixed-target runners; `macos` selects native AppKit and `maccatalyst` selects UIKit Mac Catalyst
-- One public target-neutral `Program` startup, host-owned native initialization, and runner-local generated bootstrap code
-- Windows defaults to a self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host with managed Graphite/Vulkan and Windows Presentation; Windows MAUI remains an explicit independent backend
-- Web defaults to Graphite/Dawn WebGPU, with explicit WebGL2 support
-- Automated fixed-runner builds include native AppKit macOS/osx-arm64 and the independently retained Mac Catalyst product
-- Linux x64 uses a Qt 6 `QWindow`, C ABI v2 with Vulkan surface negotiation, and Graphite/Vulkan swapchain output
-- Package-only template creation includes both Apple desktop runners and their native bindings (twelve projects total)
+The sample application is the starting point for exploring Doroti. For Windows, install .NET SDK 10.0.400, PowerShell 7, and the Windows C++ build tools listed in the [platform prerequisites](Doroti/README.md#platform-prerequisites). Other targets have their own SDK and workload requirements.
 
-Current evidence includes AppKit native launch/Metal presentation, Qt live runs under Wayland and XWayland on a Kubuntu VMware guest, and the Windows App SDK default cutover. The tested Windows physical resize and mixed-DPI monitor-boundary behavior received user acceptance, while strict synthetic capture/pixel/cadence failures remain failures. Physical Windows Korean IME/Narrator coverage, the broader Windows DPI/device/window-management matrix, physical Linux and a real X11 session, Linux Korean IME/Orca, context recreation, long-running performance, unrun target-specific native/browser/physical/accessibility/signing/store acceptance, and cross-target parity remain independent `notVerified` gates.
-
-## Architecture
-
-```text
-product-owned Doroti.Framework.* source
-                 │
-                 ▼
-       runtime + widget/render pipeline
-                 │
-                 ▼
-        target host + GPU surface
-  Windows App SDK/Vulkan · Windows MAUI · AppKit · Mac Catalyst
-             WebGPU / WebGL2 · Linux Qt/Graphite Vulkan
-```
-
-Flutter source is consulted when fidelity work needs a behavioral reference. Compiler output is an isolated candidate, not the product source of truth.
-
-## Try it
-
-Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 7.
+Clone the repository and run the sample from its root:
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
+git clone https://github.com/Dynaruid/DorotiLab.git
+cd DorotiLab
+
+$env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -LastSuccessful
 ```
 
-The Windows command selects Windows App SDK/`HwndExactCpp` by default. Use `-WindowsBackend Maui` only when the independent Windows MAUI runner is intended.
+The command builds and launches the default Windows App SDK runner. Follow the [sample app guide](DorotiTestbedApp/README.md) for Android, iOS, macOS, Mac Catalyst, Linux, and Web commands, or the [framework guide](Doroti/README.md) for build and publish options.
 
-Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to use ANGLE explicitly. GPU selection defaults to `NoPreference` (system default). Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` for a Windows/DXGI preference; this applies to Vulkan and ANGLE. `DOROTI_WINDOWS_VULKAN_DEVICE` optionally overrides the Vulkan choice with an exact or unique device-name fragment. On Windows 11 24H2+, an app can request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag; omitted backdrop options and `system` remain opaque. The demo already requests Acrylic. Vulkan uses System32 Vulkan 1.2, dedicated D3D11-texture external memory, and Windows Presentation, with no automatic presenter fallback. Web defaults to `worker-direct-webgpu` (Graphite/Dawn), including `auto`; `worker-direct-webgl` remains explicitly selectable. Graphite is now the user-selected native default: Vulkan on Windows App SDK, Windows MAUI, Android and Linux Qt; Metal on AppKit, iOS and Mac Catalyst. Android requires API 24 and a Vulkan 1.2 device. Native Vulkan assets come from official SkiaSharp NativeAssets 4.154.0-preview.1.26454.9 packages. No Skia source build, custom staging, or private Graphite ABI is used. The deployed native and managed package hashes are checked before use; there is no automatic fallback. NVIDIA's delayed prepared-frame receipt has a user-accepted 1,000 ms budget; other GPUs keep 50 ms and missing receipts still fail. See [default configuration and validation](Doroti/docs/validation/official-graphite-cutover-2026-09-12.md) for per-host results and explicit comparison switches. macOS/Mac Catalyst checks were resumed; see the [Apple review](history/2026-09-13/apple-work0/README.md) for Release builds, product rendering, official assets, lifecycle results and remaining gates. iOS execution remains unverified. Linux build, packaging and Qt ABI checks were resumed; llvmpipe Graphite runs without environment overrides. Renderer admission checks API capabilities, not hardware/software device classification. Headless correctness passes, while Material product scenes report depth synchronization errors; hardware qualification remains unverified. See the [Linux follow-up](Doroti/docs/validation/linux-official-graphite-2026-09-12.md). VMware SVGA3D GPU-backed OpenGL is reconfirmed; the available CPU Vulkan ICD is separate diagnostic evidence. These defaults do not change the recorded validation results or complete the remaining GPU/DPI/refresh/IME/accessibility qualification.
-`-LastSuccessful` (or `-NoBuild`) requires a v3 success record matching the runner, configuration, RID, source/native inputs, restored dependency contents, toolchain, and output hashes. Ordinary build/run restores before collecting dependency identities and rebuilds when dependencies/toolchains changed or were not previously tracked. Old records require a normal build/run first. `-NoRestore` skips restore without skipping dependency verification or the build.
+## How it works
+
+Doroti owns the widget and render trees. Platform hosts provide native services and a GPU surface, while the shared framework handles layout, painting, and UI state.
+
+```text
+C# application
+      ↓
+Doroti widgets, layout, and state
+      ↓
+Shared rendering pipeline
+      ↓
+Platform host + GPU surface
+```
+
+Flutter is the behavior reference for the Material and Cupertino APIs. Doroti maintains its own C# implementation in `Doroti.Framework.*`; it does not embed the Flutter runtime in a WebView.
+
+The project began with a Dart-to-C# compiler to bootstrap framework code. Today, feature work happens directly in C#. The compiler remains an optional import and comparison tool.
+
+## Documentation
+
+| Guide | Contents |
+| --- | --- |
+| [Framework guide](Doroti/README.md) | SDKs, workloads, build commands, packaging, and host configuration |
+| [Sample app guide](DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
+| [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
+| [Development history](history/) | Archived plans and validation records |
+
+## Project status
+
+Doroti is a personal, experimental project. The platform table describes implemented hosts and rendering defaults, not uniform production readiness.
+
+Build checks, native or browser execution, and physical-device testing are tracked separately. GPU compatibility, input methods, accessibility, performance, signing, and store distribution still require platform-specific validation. Consult the [framework guide](Doroti/README.md#platform-evidence-boundaries) and recorded results before choosing a target.
+
+Current priorities include native desktop integration, automated Web behavior checks, and representative release and physical-device testing for each target.
 
 ## Repository layout
 
-| Path | Description |
+| Path | Contents |
 | --- | --- |
-| [`Doroti/src/`](Doroti/src/) | Product framework, runtime, rendering, hosts, target packages, and SDK |
-| [`DorotiTestbedApp/`](DorotiTestbedApp/) | Platform-workspace Material dogfood application |
+| [`Doroti/src/`](Doroti/src/) | Framework, runtime, rendering, hosts, and SDK |
+| [`DorotiTestbedApp/`](DorotiTestbedApp/) | Shared sample application and platform runners |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
-| [`Doroti/eng/`](Doroti/eng/) | Build, SDK preparation, local-state, and optional diagnostic tools |
-| [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import and migration compiler |
-| [`history/`](history/) | Archived milestone plans, commands, and evidence summaries |
+| [`Doroti/eng/`](Doroti/eng/) | Build, run, packaging, and diagnostic tools |
+| [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Optional Dart-to-C# compiler |
 
-For detailed commands and evidence boundaries, see the [runtime README](Doroti/README.md).
+## Feedback and contributions
 
-## Roadmap
+Doroti is a personal hobby project that I build for fun. As a result, I may not be able to actively review or merge pull requests.
 
-Current priorities are native desktop capability closure, automated Web live parity, and one representative release/physical acceptance flow per target. Build, native live, browser live, physical, and cross-target results are never substituted for one another.
-
-Doroti is a personal project. Ideas, feedback, forks, and independent experiments are welcome.
+Ideas and bug reports are welcome, as are forks that use Doroti to experiment or explore new directions. When reporting a problem, include the platform, .NET SDK version, rendering backend, and steps to reproduce it.
 
 ## License
 
-See [LICENSE](LICENSE) and [third-party notices](Doroti/THIRD-PARTY-NOTICES.md).
+Doroti is licensed under the [BSD 3-Clause License](LICENSE). See [third-party notices](Doroti/THIRD-PARTY-NOTICES.md) for upstream attribution.
