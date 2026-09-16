@@ -48,7 +48,7 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     public override void didUpdateWidget(CupertinoTabView oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((!Equals(((CupertinoTabView)this.widget).navigatorKey, ((CupertinoTabView)oldWidget).navigatorKey)) || (!Equals(((CupertinoTabView)this.widget).navigatorObservers, ((CupertinoTabView)oldWidget).navigatorObservers))))
+        if ((!Equals(widget.navigatorKey, oldWidget.navigatorKey)) || (!Equals(widget.navigatorObservers, oldWidget.navigatorObservers)))
         {
             _updateObservers();
         }
@@ -56,7 +56,7 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
 
     public override void dispose()
     {
-        this._heroController.dispose();
+        _heroController.dispose();
         base.dispose();
     }
 
@@ -64,8 +64,8 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     {
         _navigatorObservers = ((Func<List<global::Doroti.Framework.Widgets.NavigatorObserver>>)(() =>
 {
-    var __cascade = new List<global::Doroti.Framework.Widgets.NavigatorObserver>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.NavigatorObserver>(((CupertinoTabView)this.widget).navigatorObservers));
-    __cascade.Add(this._heroController);
+    var __cascade = new List<global::Doroti.Framework.Widgets.NavigatorObserver>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.NavigatorObserver>(widget.navigatorObservers));
+    __cascade.Add(_heroController);
     return __cascade;
 }))();
     }
@@ -74,48 +74,48 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     {
         get
         {
-            if ((((CupertinoTabView)this.widget).navigatorKey is not null))
+            if (widget.navigatorKey is not null)
             {
-                return ((CupertinoTabView)this.widget).navigatorKey!;
+                return widget.navigatorKey!;
             }
             _ownedNavigatorKey ??= GlobalKey<NavigatorState>.Create();
-            return this._ownedNavigatorKey!;
+            return _ownedNavigatorKey!;
         }
     }
-    internal virtual bool _isActive => TickerMode.of(this.context);
+    internal virtual bool _isActive => TickerMode.of(context);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, onGenerateRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic?>)this._onGenerateRoute, onUnknownRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic?>)this._onUnknownRoute, observers: this._navigatorObservers, restorationScopeId: ((CupertinoTabView)this.widget).restorationScopeId));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(enabled: this._isActive, onPop: ((global::System.Action)(() =>
+        global::Doroti.Framework.Widgets.Widget childLocal = new global::Doroti.Framework.Widgets.Navigator(key: _navigatorKey, onGenerateRoute: _onGenerateRoute, onUnknownRoute: _onUnknownRoute, observers: _navigatorObservers, restorationScopeId: widget.restorationScopeId);
+        return new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(enabled: _isActive, onPop: () =>
         {
-            if (!this._isActive)
+            if (!_isActive)
             {
                 return;
             }
-            DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
-        })), child: childLocal));
+            DartRuntimePrimitives.Ignore(_navigatorKey.currentState!.maybePop<object>());
+        }, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual dynamic? _onGenerateRoute(global::Doroti.Framework.Widgets.RouteSettings settings)
     {
-        string? nameLocal = ((global::Doroti.Framework.Widgets.RouteSettings)settings).name;
+        string? nameLocal = settings.name;
         global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? routeBuilder = default!;
         string? titleLocal = default!;
-        if (((nameLocal == Navigator.defaultRouteName) && (((CupertinoTabView)this.widget).builder is not null)))
+        if ((nameLocal == Navigator.defaultRouteName) && (widget.builder is not null))
         {
-            routeBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((CupertinoTabView)this.widget).builder;
-            titleLocal = ((CupertinoTabView)this.widget).defaultTitle;
+            routeBuilder = widget.builder;
+            titleLocal = widget.defaultTitle;
         }
         else
         {
-            routeBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((CupertinoTabView)this.widget).routes?.GetValueOrDefault(nameLocal);
+            routeBuilder = (widget.routes?.GetValueOrDefault(nameLocal));
         }
-        if ((routeBuilder is not null))
+        if (routeBuilder is not null)
         {
-            return new CupertinoPageRoute<object>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)routeBuilder, title: titleLocal, settings: settings);
+            return new CupertinoPageRoute<object>(builder: routeBuilder, title: titleLocal, settings: settings);
         }
-        return ((CupertinoTabView)this.widget).onGenerateRoute?.Invoke(settings);
+        return widget.onGenerateRoute?.Invoke(settings);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -123,18 +123,18 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((CupertinoTabView)this.widget).onUnknownRoute is null))
+                if (widget.onUnknownRoute is null)
                 {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Could not find a generator for route {settings} in the {this.GetType()}.\n" + "Generators for routes are searched for in the following order:\n" + " 1. For the \"/\" route, the \"builder\" property, if non-null, is used.\n" + " 2. Otherwise, the \"routes\" table is used, if it has an entry for " + "the route.\n" + " 3. Otherwise, onGenerateRoute is called. It should return a " + "non-null value for any valid route not handled by \"builder\" and \"routes\".\n" + " 4. Finally if all else fails onUnknownRoute is called.\n" + "Unfortunately, onUnknownRoute was not set."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Could not find a generator for route {settings} in the {GetType()}.\n" + "Generators for routes are searched for in the following order:\n" + " 1. For the \"/\" route, the \"builder\" property, if non-null, is used.\n" + " 2. Otherwise, the \"routes\" table is used, if it has an entry for " + "the route.\n" + " 3. Otherwise, onGenerateRoute is called. It should return a " + "non-null value for any valid route not handled by \"builder\" and \"routes\".\n" + " 4. Finally if all else fails onUnknownRoute is called.\n" + "Unfortunately, onUnknownRoute was not set."));
                 }
                 return true;
             });
-        dynamic result = ((CupertinoTabView)this.widget).onUnknownRoute!(settings) ?? throw new InvalidOperationException("The onUnknownRoute callback must return a route.");
+        dynamic result = widget.onUnknownRoute!(settings) ?? throw new InvalidOperationException("The onUnknownRoute callback must return a route.");
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((result is null))
+                if (result is null)
                 {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {this.GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
                 }
                 return true;
             });

@@ -77,7 +77,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         using var bytes = new MemoryStream(); stream.CopyTo(bytes);
         await Dart_uiLibrary.loadFontFromList(new Uint8List(bytes.ToArray()), fontFamily: "MaterialIcons");
         // Flutter Web registers its regular Roboto fallback; native hosts also use weight faces.
-        foreach (var weight in (Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? new[] { "regular" } : new[] { "medium", "bold", "regular" }))
+        foreach (var weight in Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? new[] { "regular" } : new[] { "medium", "bold", "regular" })
         {
             using var fontStream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream($"MaterialSample.Roboto-{weight}.ttf")
                 ?? throw new InvalidOperationException($"Roboto {weight} resource is missing.");

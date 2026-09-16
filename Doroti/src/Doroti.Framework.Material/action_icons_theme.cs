@@ -22,23 +22,23 @@ public class ActionIconThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
     public virtual ActionIconThemeData copyWith(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? backButtonIconBuilder = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? closeButtonIconBuilder = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? drawerButtonIconBuilder = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? endDrawerButtonIconBuilder = null)
     {
-        return new ActionIconThemeData(backButtonIconBuilder: ((backButtonIconBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.backButtonIconBuilder)), closeButtonIconBuilder: ((closeButtonIconBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.closeButtonIconBuilder)), drawerButtonIconBuilder: ((drawerButtonIconBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.drawerButtonIconBuilder)), endDrawerButtonIconBuilder: ((endDrawerButtonIconBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.endDrawerButtonIconBuilder)));
+        return new ActionIconThemeData(backButtonIconBuilder: backButtonIconBuilder ?? this.backButtonIconBuilder, closeButtonIconBuilder: closeButtonIconBuilder ?? this.closeButtonIconBuilder, drawerButtonIconBuilder: drawerButtonIconBuilder ?? this.drawerButtonIconBuilder, endDrawerButtonIconBuilder: endDrawerButtonIconBuilder ?? this.endDrawerButtonIconBuilder);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ActionIconThemeData? lerp(ActionIconThemeData? a, ActionIconThemeData? b, double t)
     {
-        if (((a is null) && (b is null)))
+        if ((a is null) && (b is null))
         {
             return null;
         }
-        return new ActionIconThemeData(backButtonIconBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((t < 0.5) ? a?.backButtonIconBuilder : b?.backButtonIconBuilder)), closeButtonIconBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((t < 0.5) ? a?.closeButtonIconBuilder : b?.closeButtonIconBuilder)), drawerButtonIconBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((t < 0.5) ? a?.drawerButtonIconBuilder : b?.drawerButtonIconBuilder)), endDrawerButtonIconBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((t < 0.5) ? a?.endDrawerButtonIconBuilder : b?.endDrawerButtonIconBuilder)));
+        return new ActionIconThemeData(backButtonIconBuilder: (t < 0.5) ? a?.backButtonIconBuilder : b?.backButtonIconBuilder, closeButtonIconBuilder: (t < 0.5) ? a?.closeButtonIconBuilder : b?.closeButtonIconBuilder, drawerButtonIconBuilder: (t < 0.5) ? a?.drawerButtonIconBuilder : b?.drawerButtonIconBuilder, endDrawerButtonIconBuilder: (t < 0.5) ? a?.endDrawerButtonIconBuilder : b?.endDrawerButtonIconBuilder);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override int GetHashCode()
     {
-        var values = new List<object?> { this.backButtonIconBuilder, this.closeButtonIconBuilder, this.drawerButtonIconBuilder, this.endDrawerButtonIconBuilder };
+        var values = new List<object?> { backButtonIconBuilder, closeButtonIconBuilder, drawerButtonIconBuilder, endDrawerButtonIconBuilder };
         return FoundationRuntimePorts.ObjectHashAll(values);
     }
     public override bool Equals(object? other)
@@ -49,19 +49,19 @@ public class ActionIconThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((__other is ActionIconThemeData) && (Equals((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((ActionIconThemeData)((ActionIconThemeData)__other)).backButtonIconBuilder, (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.backButtonIconBuilder))) && (Equals((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((ActionIconThemeData)((ActionIconThemeData)__other)).closeButtonIconBuilder, (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.closeButtonIconBuilder))) && (Equals((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((ActionIconThemeData)((ActionIconThemeData)__other)).drawerButtonIconBuilder, (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.drawerButtonIconBuilder))) && (Equals((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)((ActionIconThemeData)((ActionIconThemeData)__other)).endDrawerButtonIconBuilder, (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)this.endDrawerButtonIconBuilder)));
+        return (__other is ActionIconThemeData) && Equals(__other.backButtonIconBuilder, backButtonIconBuilder) && Equals(__other.closeButtonIconBuilder, closeButtonIconBuilder) && Equals(__other.drawerButtonIconBuilder, drawerButtonIconBuilder) && Equals(__other.endDrawerButtonIconBuilder, endDrawerButtonIconBuilder);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("backButtonIconBuilder", this.backButtonIconBuilder, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("closeButtonIconBuilder", this.closeButtonIconBuilder, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("drawerButtonIconBuilder", this.drawerButtonIconBuilder, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("endDrawerButtonIconBuilder", this.endDrawerButtonIconBuilder, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("backButtonIconBuilder", backButtonIconBuilder, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("closeButtonIconBuilder", closeButtonIconBuilder, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("drawerButtonIconBuilder", drawerButtonIconBuilder, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>("endDrawerButtonIconBuilder", endDrawerButtonIconBuilder, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -75,13 +75,13 @@ public class ActionIconThemeData : global::Doroti.Framework.Foundation.Diagnosti
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -98,16 +98,16 @@ public class ActionIconTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static ActionIconThemeData? of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ActionIconTheme? actionIconThemeLocal = ((ActionIconTheme?)context.dependOnInheritedWidgetOfExactType<ActionIconTheme>());
-        return (actionIconThemeLocal?.data ?? Theme.of(context).actionIconTheme);
+        ActionIconTheme? actionIconThemeLocal = context.dependOnInheritedWidgetOfExactType<ActionIconTheme>();
+        return actionIconThemeLocal?.data ?? Theme.of(context).actionIconTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new ActionIconTheme(data: this.data, child: child));
+        return new ActionIconTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ActionIconTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ActionIconTheme)oldWidget).data));
 }

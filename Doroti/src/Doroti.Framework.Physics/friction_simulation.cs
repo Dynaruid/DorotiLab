@@ -10,9 +10,9 @@ public static partial class Friction_simulationLibrary
     internal static double _newtonsMethod(double initialGuess, double target, Func<double, double> f, Func<double, double> df, long iterations)
     {
         var guess = initialGuess;
-        for (var i = 0L; (i < iterations); i++)
+        for (var i = 0L; i < iterations; i++)
         {
-            guess = (guess - (((f(guess) - target)) / df(guess)));
+            guess = guess - ((f(guess) - target) / df(guess));
         }
         return guess;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -30,44 +30,44 @@ public class FrictionSimulation : Simulation
 
     public FrictionSimulation(double drag, double position, double velocity, Tolerance tolerance = default!, double constantDeceleration = 0) : base(tolerance: tolerance ?? Tolerance.defaultTolerance)
     {
-        this._drag = drag;
-        this._dragLog = Dart_mathLibrary.log(drag);
-        this._x = position;
-        this._v = velocity;
-        this._constantDeceleration = (constantDeceleration * Math.Sign(velocity));
+        _drag = drag;
+        _dragLog = Dart_mathLibrary.log(drag);
+        _x = position;
+        _v = velocity;
+        _constantDeceleration = constantDeceleration * Math.Sign(velocity);
     }
 
     public static FrictionSimulation CreateThrough(double startPosition, double endPosition, double startVelocity, double endVelocity)
     {
-        DartRuntimePrimitives.Assert(() => (((startVelocity == 0.0) || (endVelocity == 0.0)) || (Math.Sign(startVelocity) == Math.Sign(endVelocity))));
-        DartRuntimePrimitives.Assert(() => (startVelocity.abs() >= endVelocity.abs()));
-        DartRuntimePrimitives.Assert(() => (Math.Sign(((endPosition - startPosition))) == Math.Sign(startVelocity)));
+        DartRuntimePrimitives.Assert(() => (startVelocity == 0.0) || (endVelocity == 0.0) || (Math.Sign(startVelocity) == Math.Sign(endVelocity)));
+        DartRuntimePrimitives.Assert(() => startVelocity.abs() >= endVelocity.abs());
+        DartRuntimePrimitives.Assert(() => Math.Sign(endPosition - startPosition) == Math.Sign(startVelocity));
         return new FrictionSimulation(_dragFor(startPosition, endPosition, startVelocity, endVelocity), startPosition, startVelocity, tolerance: new Tolerance(velocity: endVelocity.abs()));
     }
 
     internal static double _dragFor(double startPosition, double endPosition, double startVelocity, double endVelocity)
     {
-        return ((double)Dart_mathLibrary.pow(Dart_mathLibrary.e, (((startVelocity - endVelocity)) / ((startPosition - endPosition)))));
+        return (double)Dart_mathLibrary.pow(Dart_mathLibrary.e, (startVelocity - endVelocity) / (startPosition - endPosition));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double x(double time)
     {
-        if ((time > this._finalTime))
+        if (time > _finalTime)
         {
-            return this.finalX;
+            return finalX;
         }
-        return (((this._x + ((this._v * Dart_mathLibrary.pow(this._drag, time)) / this._dragLog)) - (this._v / this._dragLog)) - (((((this._constantDeceleration / 2L)) * time) * time)));
+        return _x + (_v * Dart_mathLibrary.pow(_drag, time) / _dragLog) - (_v / _dragLog) - _constantDeceleration / 2L * time * time;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double dx(double time)
     {
-        if ((time > this._finalTime))
+        if (time > _finalTime)
         {
             return 0;
         }
-        return ((this._v * Dart_mathLibrary.pow(this._drag, time)) - (this._constantDeceleration * time));
+        return (_v * Dart_mathLibrary.pow(_drag, time)) - (_constantDeceleration * time);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -75,34 +75,34 @@ public class FrictionSimulation : Simulation
     {
         get
         {
-            if ((this._constantDeceleration == 0L))
+            if (_constantDeceleration == 0L)
             {
-                return (this._x - (this._v / this._dragLog));
+                return _x - (_v / _dragLog);
             }
-            return x(this._finalTime);
+            return x(_finalTime);
         }
     }
     public virtual double timeAtX(double x)
     {
-        if ((x == this._x))
+        if (x == _x)
         {
             return 0.0;
         }
-        if (((this._v == 0.0) || (((this._v > 0L) ? (((x < this._x) || (x > this.finalX))) : (((x > this._x) || (x < this.finalX)))))))
+        if ((_v == 0.0) || ((_v > 0L) ? ((x < _x) || (x > finalX)) : ((x > _x) || (x < finalX))))
         {
             return double.PositiveInfinity;
         }
-        return Friction_simulationLibrary._newtonsMethod(target: x, initialGuess: 0, f: this.x, df: this.dx, iterations: 10L);
+        return Friction_simulationLibrary._newtonsMethod(target: x, initialGuess: 0, f: this.x, df: dx, iterations: 10L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool isDone(double time)
     {
-        return (dx(time).abs() < ((Tolerance)tolerance).velocity);
+        return dx(time).abs() < tolerance.velocity;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FrictionSimulation"))}(cₓ: {this._drag.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)})";
+    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FrictionSimulation")}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)})";
 }
 
 public class BoundedFrictionSimulation : FrictionSimulation
@@ -114,21 +114,21 @@ public class BoundedFrictionSimulation : FrictionSimulation
     {
         this._minX = _minX;
         this._maxX = _maxX;
-        System.Diagnostics.Debug.Assert((Dart_uiLibrary.clampDouble(position, _minX, _maxX) == position));
+        System.Diagnostics.Debug.Assert(Dart_uiLibrary.clampDouble(position, _minX, _maxX) == position);
     }
 
     public override double x(double time)
     {
-        return Dart_uiLibrary.clampDouble(base.x(time), this._minX, this._maxX);
+        return Dart_uiLibrary.clampDouble(base.x(time), _minX, _maxX);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool isDone(double time)
     {
-        return ((base.isDone(time) || (((x(time) - this._minX)).abs() < ((Tolerance)tolerance).distance)) || (((x(time) - this._maxX)).abs() < ((Tolerance)tolerance).distance));
+        return base.isDone(time) || ((x(time) - _minX).abs() < tolerance.distance) || ((x(time) - _maxX).abs() < tolerance.distance);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BoundedFrictionSimulation"))}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, x: {this._minX.toStringAsFixed(1L)}..{this._maxX.toStringAsFixed(1L)})";
+    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BoundedFrictionSimulation")}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, x: {_minX.toStringAsFixed(1L)}..{_maxX.toStringAsFixed(1L)})";
 }
 

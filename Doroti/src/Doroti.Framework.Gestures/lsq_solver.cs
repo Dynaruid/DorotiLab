@@ -12,9 +12,9 @@ public class _Vector__lsq_solver
 
     internal _Vector__lsq_solver(long size)
     {
-        this._offset = 0L;
-        this._length = size;
-        this._elements = new Float64List(size).ToList();
+        _offset = 0L;
+        _length = size;
+        _elements = new Float64List(size).ToList();
     }
 
     internal static _Vector__lsq_solver CreateFromVOL(List<double> values, long offset, long length)
@@ -30,26 +30,26 @@ public class _Vector__lsq_solver
     {
         get
         {
-            return this._elements[(int)((i + this._offset))];
+            return _elements[(int)(i + _offset)];
         }
         set
         {
-            this._elements[(int)((i + this._offset))] = value;
+            _elements[(int)(i + _offset)] = value;
         }
     }
 
     public virtual double op_Multiply(_Vector__lsq_solver a)
     {
         var result = 0.0;
-        for (var i = 0L; (i < this._length); i += 1L)
+        for (var i = 0L; i < _length; i += 1L)
         {
-            result += (this[i] * a[i]);
+            result += this[i] * a[i];
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double norm() => Dart_mathLibrary.sqrt((this.op_Multiply(this)));
+    public virtual double norm() => Dart_mathLibrary.sqrt(op_Multiply(this));
 }
 
 internal class _Matrix__lsq_solver
@@ -59,17 +59,17 @@ internal class _Matrix__lsq_solver
 
     internal _Matrix__lsq_solver(long rows, long cols)
     {
-        this._columns = cols;
-        this._elements = new Float64List((rows * cols)).ToList();
+        _columns = cols;
+        _elements = new Float64List(rows * cols).ToList();
     }
 
-    public virtual double get(long row, long col) => this._elements[(int)(((row * this._columns) + col))];
+    public virtual double get(long row, long col) => _elements[(int)((row * _columns) + col)];
     public virtual void set(long row, long col, double value)
     {
-        this._elements[(int)(((row * this._columns) + col))] = value;
+        _elements[(int)((row * _columns) + col)] = value;
     }
 
-    public virtual _Vector__lsq_solver getRow(long row) => _Vector__lsq_solver.CreateFromVOL(this._elements, (row * this._columns), this._columns);
+    public virtual _Vector__lsq_solver getRow(long row) => _Vector__lsq_solver.CreateFromVOL(_elements, row * _columns, _columns);
 }
 
 public class PolynomialFit
@@ -79,13 +79,13 @@ public class PolynomialFit
 
     public PolynomialFit(long degree)
     {
-        this.coefficients = new Float64List((degree + 1L)).ToList();
+        coefficients = new Float64List(degree + 1L).ToList();
     }
 
     public override string ToString()
     {
-        var coefficientString = this.coefficients.map<double, string>(((c) => c.toStringAsPrecision(3L))).ToList().ToString();
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString}, confidence: {this.confidence.toStringAsFixed(3L)})";
+        var coefficientString = coefficients.map<double, string>((c) => c.toStringAsPrecision(3L)).ToList().ToString();
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit")}({coefficientString}, confidence: {confidence.toStringAsFixed(3L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,95 +102,95 @@ public class LeastSquaresSolver
         this.x = x;
         this.y = y;
         this.w = w;
-        System.Diagnostics.Debug.Assert((checked((long)(x.Count)) == checked((long)(y.Count))));
-        System.Diagnostics.Debug.Assert((checked((long)(y.Count)) == checked((long)(w.Count))));
+        System.Diagnostics.Debug.Assert(checked(x.Count) == checked((long)y.Count));
+        System.Diagnostics.Debug.Assert(checked(y.Count) == checked((long)w.Count));
     }
 
     public virtual PolynomialFit? solve(long degree)
     {
-        if ((degree > checked((long)(this.x.Count))))
+        if (degree > checked(x.Count))
         {
             return null;
         }
         var result = new PolynomialFit(degree);
-        long m = checked((long)(this.x.Count));
-        long n = (degree + 1L);
+        long m = checked(x.Count);
+        long n = degree + 1L;
         var a = new _Matrix__lsq_solver(n, m);
-        for (var h = 0L; (h < m); h += 1L)
+        for (var h = 0L; h < m; h += 1L)
         {
-            a.set(0L, h, this.w[(int)(h)]);
-            for (var i = 1L; (i < n); i += 1L)
+            a.set(0L, h, w[(int)h]);
+            for (var i = 1L; i < n; i += 1L)
             {
-                a.set(i, h, (a.get((i - 1L), h) * this.x[(int)(h)]));
+                a.set(i, h, a.get(i - 1L, h) * x[(int)h]);
             }
         }
         var q = new _Matrix__lsq_solver(n, m);
         var r = new _Matrix__lsq_solver(n, n);
-        for (var j = 0L; (j < n); j += 1L)
+        for (var j = 0L; j < n; j += 1L)
         {
-            for (var hLocal = 0L; (hLocal < m); hLocal += 1L)
+            for (var hLocal = 0L; hLocal < m; hLocal += 1L)
             {
                 q.set(j, hLocal, a.get(j, hLocal));
             }
-            for (var iLocal = 0L; (iLocal < j); iLocal += 1L)
+            for (var iLocal = 0L; iLocal < j; iLocal += 1L)
             {
-                double dot = (q.getRow(j).op_Multiply(q.getRow(iLocal)));
-                for (var hAlternate = 0L; (hAlternate < m); hAlternate += 1L)
+                double dot = q.getRow(j).op_Multiply(q.getRow(iLocal));
+                for (var hAlternate = 0L; hAlternate < m; hAlternate += 1L)
                 {
-                    q.set(j, hAlternate, (q.get(j, hAlternate) - (dot * q.get(iLocal, hAlternate))));
+                    q.set(j, hAlternate, q.get(j, hAlternate) - (dot * q.get(iLocal, hAlternate)));
                 }
             }
             double normLocal = q.getRow(j).norm();
-            if ((normLocal < Foundation.ConstantsLibrary.precisionErrorTolerance))
+            if (normLocal < Foundation.ConstantsLibrary.precisionErrorTolerance)
             {
                 return null;
             }
-            double inverseNorm = (1.0 / normLocal);
-            for (var hNested = 0L; (hNested < m); hNested += 1L)
+            double inverseNorm = 1.0 / normLocal;
+            for (var hNested = 0L; hNested < m; hNested += 1L)
             {
-                q.set(j, hNested, (q.get(j, hNested) * inverseNorm));
+                q.set(j, hNested, q.get(j, hNested) * inverseNorm);
             }
-            for (var iAlternate = 0L; (iAlternate < n); iAlternate += 1L)
+            for (var iAlternate = 0L; iAlternate < n; iAlternate += 1L)
             {
-                r.set(j, iAlternate, ((iAlternate < j) ? 0.0 : (q.getRow(j).op_Multiply(a.getRow(iAlternate)))));
+                r.set(j, iAlternate, (iAlternate < j) ? 0.0 : q.getRow(j).op_Multiply(a.getRow(iAlternate)));
             }
         }
         var wy = new _Vector__lsq_solver(m);
-        for (var hCurrent = 0L; (hCurrent < m); hCurrent += 1L)
+        for (var hCurrent = 0L; hCurrent < m; hCurrent += 1L)
         {
-            wy[hCurrent] = (this.y[(int)(hCurrent)] * this.w[(int)(hCurrent)]);
+            wy[hCurrent] = y[(int)hCurrent] * w[(int)hCurrent];
         }
-        for (long iNested = (n - 1L); (iNested >= 0L); iNested -= 1L)
+        for (long iNested = n - 1L; iNested >= 0L; iNested -= 1L)
         {
-            ((PolynomialFit)result).coefficients[(int)(iNested)] = (q.getRow(iNested).op_Multiply(wy));
-            for (long jLocal = (n - 1L); (jLocal > iNested); jLocal -= 1L)
+            result.coefficients[(int)iNested] = q.getRow(iNested).op_Multiply(wy);
+            for (long jLocal = n - 1L; jLocal > iNested; jLocal -= 1L)
             {
-                ((PolynomialFit)result).coefficients[(int)(iNested)] -= (r.get(iNested, jLocal) * ((PolynomialFit)result).coefficients[(int)(jLocal)]);
+                result.coefficients[(int)iNested] -= r.get(iNested, jLocal) * result.coefficients[(int)jLocal];
             }
-            ((PolynomialFit)result).coefficients[(int)(iNested)] /= r.get(iNested, iNested);
+            result.coefficients[(int)iNested] /= r.get(iNested, iNested);
         }
         var yMean = 0.0;
-        for (var hNext = 0L; (hNext < m); hNext += 1L)
+        for (var hNext = 0L; hNext < m; hNext += 1L)
         {
-            yMean += this.y[(int)(hNext)];
+            yMean += y[(int)hNext];
         }
         yMean /= m;
         var sumSquaredError = 0.0;
         var sumSquaredTotal = 0.0;
-        for (var hCandidate = 0L; (hCandidate < m); hCandidate += 1L)
+        for (var hCandidate = 0L; hCandidate < m; hCandidate += 1L)
         {
             var term = 1.0;
-            double err = (this.y[(int)(hCandidate)] - ((PolynomialFit)result).coefficients[(int)(0L)]);
-            for (var iCurrent = 1L; (iCurrent < n); iCurrent += 1L)
+            double err = y[(int)hCandidate] - result.coefficients[(int)0L];
+            for (var iCurrent = 1L; iCurrent < n; iCurrent += 1L)
             {
-                term *= this.x[(int)(hCandidate)];
-                err -= (term * ((PolynomialFit)result).coefficients[(int)(iCurrent)]);
+                term *= x[(int)hCandidate];
+                err -= term * result.coefficients[(int)iCurrent];
             }
-            sumSquaredError += (((this.w[(int)(hCandidate)] * this.w[(int)(hCandidate)]) * err) * err);
-            double v = (this.y[(int)(hCandidate)] - yMean);
-            sumSquaredTotal += (((this.w[(int)(hCandidate)] * this.w[(int)(hCandidate)]) * v) * v);
+            sumSquaredError += w[(int)hCandidate] * w[(int)hCandidate] * err * err;
+            double v = y[(int)hCandidate] - yMean;
+            sumSquaredTotal += w[(int)hCandidate] * w[(int)hCandidate] * v * v;
         }
-        result.confidence = ((sumSquaredTotal <= Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError / sumSquaredTotal))));
+        result.confidence = (sumSquaredTotal <= Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - sumSquaredError / sumSquaredTotal);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

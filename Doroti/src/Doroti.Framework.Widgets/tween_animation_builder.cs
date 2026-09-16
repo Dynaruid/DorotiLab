@@ -31,29 +31,29 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T> : Animate
 
     public override void initState()
     {
-        _currentTween = ((TweenAnimationBuilder<T>)this.widget).tween;
-        this._currentTween!.begin ??= this._currentTween!.end;
+        _currentTween = widget.tween;
+        _currentTween!.begin ??= _currentTween!.end;
         base.initState();
-        if (!EqualityComparer<T>.Default.Equals(this._currentTween!.begin, this._currentTween!.end))
+        if (!EqualityComparer<T>.Default.Equals(_currentTween!.begin, _currentTween!.end))
         {
-            this.controller.forward();
+            controller.forward();
         }
     }
 
     public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object?, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        DartRuntimePrimitives.Assert(() => (((TweenAnimationBuilder<T>)this.widget).tween.end is not null), () => (object?)"Tween provided to TweenAnimationBuilder must have non-null Tween.end value.");
-        _currentTween = ((global::Doroti.Framework.Animation.Tween<T>?)visitor(this._currentTween, ((TweenAnimationBuilder<T>)this.widget).tween.end, ((value) =>
+        DartRuntimePrimitives.Assert(() => widget.tween.end is not null, () => (object?)"Tween provided to TweenAnimationBuilder must have non-null Tween.end value.");
+        _currentTween = ((global::Doroti.Framework.Animation.Tween<T>?)visitor(_currentTween, widget.tween.end, (value) =>
         {
             DartRuntimePrimitives.Assert(() => false);
             throw new InvalidOperationException("Constructor will never be called because null is never provided as current tween.");
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })))!;
+        }))!;
     }
 
     public override Widget build(BuildContext context)
     {
-        return this.widget.builder(context, this._currentTween!.evaluate(this.animation), ((TweenAnimationBuilder<T>)this.widget).child);
+        return widget.builder(context, _currentTween!.evaluate(animation), widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

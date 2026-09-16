@@ -13,8 +13,8 @@ public static partial class BindingLibrary
         get => _timeDilation;
         set
         {
-            DartRuntimePrimitives.Assert(() => (value > 0.0));
-            if ((_timeDilation == value))
+            DartRuntimePrimitives.Assert(() => value > 0.0);
+            if (_timeDilation == value)
             {
                 return;
             }
@@ -56,10 +56,10 @@ internal class _TaskEntry<T>
     {
         if (!ConstantsLibrary.kReleaseMode)
         {
-            Timeline.timeSync((debugLabel ?? "Scheduled Task"), (() =>
+            Timeline.timeSync(debugLabel ?? "Scheduled Task", () =>
             {
                 completer.complete(task());
-            }), flow: ((flow is not null) ? Flow.step(flow!.id) : null));
+            }, flow: (flow is not null) ? Flow.step(flow!.id) : null);
         }
         else
         {
@@ -104,7 +104,7 @@ public class PerformanceModeRequestHandle
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => (_cleanup is not null));
+        DartRuntimePrimitives.Assert(() => _cleanup is not null);
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _cleanup!();
         _cleanup = null;
@@ -137,7 +137,7 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual long _debugFrameNumber { get; set; } = 0L;
     internal virtual string? _debugBanner { get; set; } = default;
     internal virtual bool _rescheduleAfterWarmUpFrame { get; set; } = false;
-    internal virtual TimelineTask? _frameTimelineTask { get; private set; } = (ConstantsLibrary.kReleaseMode ? null : new TimelineTask());
+    internal virtual TimelineTask? _frameTimelineTask { get; private set; } = ConstantsLibrary.kReleaseMode ? null : new TimelineTask();
     internal virtual DartPerformanceMode? _performanceMode { get; set; } = default;
     internal virtual long _numPerformanceModeRequests { get; set; } = 0L;
     protected SchedulerBinding(PlatformDispatcher? platformDispatcher = null)
@@ -151,10 +151,10 @@ public abstract class SchedulerBinding : BindingBase
         _instance = this;
         if (!ConstantsLibrary.kReleaseMode)
         {
-            addTimingsCallback(((timings) =>
+            addTimingsCallback((timings) =>
             {
                 timings.forEach(_profileFramePostEvent);
-            }));
+            });
         }
     }
 
@@ -162,19 +162,19 @@ public abstract class SchedulerBinding : BindingBase
     public virtual void addTimingsCallback(Action<List<FrameTiming>> callback)
     {
         _timingsCallbacks.Add(callback);
-        if ((_timingsCallbacks.Count == 1L))
+        if (_timingsCallbacks.Count == 1L)
         {
-            DartRuntimePrimitives.Assert(() => (platformDispatcher.onReportTimings is null));
+            DartRuntimePrimitives.Assert(() => platformDispatcher.onReportTimings is null);
             platformDispatcher.onReportTimings = _executeTimingsCallbacks;
         }
-        DartRuntimePrimitives.Assert(() => (Equals((Action<List<FrameTiming>>?)platformDispatcher.onReportTimings, (Action<List<FrameTiming>>)_executeTimingsCallbacks)));
+        DartRuntimePrimitives.Assert(() => Equals(platformDispatcher.onReportTimings, (Action<List<FrameTiming>>)_executeTimingsCallbacks));
     }
 
     public virtual void removeTimingsCallback(Action<List<FrameTiming>> callback)
     {
         DartRuntimePrimitives.Assert(() => _timingsCallbacks.Contains(callback));
         _timingsCallbacks.Remove(callback);
-        if ((_timingsCallbacks.Count == 0))
+        if (_timingsCallbacks.Count == 0)
         {
             platformDispatcher.onReportTimings = null;
         }
@@ -198,7 +198,7 @@ public abstract class SchedulerBinding : BindingBase
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<Action<List<FrameTiming>>>("The TimingsCallback that gets executed was", callback, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<Action<List<FrameTiming>>>("The TimingsCallback that gets executed was", callback, style: DiagnosticsTreeStyle.errorProperty) };
                         return true;
                     });
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, context: new ErrorDescription("while executing callbacks for FrameTiming"), informationCollector: collector));
@@ -211,10 +211,10 @@ public abstract class SchedulerBinding : BindingBase
         base.initServiceExtensions();
         if (!ConstantsLibrary.kReleaseMode)
         {
-            registerNumericServiceExtension(name: SchedulerServiceExtensions.timeDilation.ToString(), getter: (() => BindingLibrary.timeDilation), setter: ((value) =>
+            registerNumericServiceExtension(name: SchedulerServiceExtensions.timeDilation.ToString(), getter: () => BindingLibrary.timeDilation, setter: (value) =>
             {
                 BindingLibrary.timeDilation = value;
-            }));
+            });
         }
     }
 
@@ -227,7 +227,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void handleAppLifecycleStateChanged(AppLifecycleState state)
     {
-        if ((Equals(lifecycleState, state)))
+        if (Equals(lifecycleState, state))
         {
             return;
         }
@@ -258,10 +258,10 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual Future<T> scheduleTask<T>(Func<object> task, Priority priority, string? debugLabel = null, Flow? flow = null)
     {
-        bool isFirstTask = (_taskQueue.Count == 0);
+        bool isFirstTask = _taskQueue.Count == 0;
         var entry = new _TaskEntry<T>(task, priority.value, debugLabel, flow);
         _taskQueue.Add(entry);
-        if ((isFirstTask && !locked))
+        if (isFirstTask && !locked)
         {
             _ensureEventLoopCallback();
         }
@@ -275,7 +275,7 @@ public abstract class SchedulerBinding : BindingBase
     protected override void unlocked()
     {
         base.unlocked();
-        if ((_taskQueue.Count != 0))
+        if (_taskQueue.Count != 0)
         {
             _ensureEventLoopCallback();
         }
@@ -284,7 +284,7 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual void _ensureEventLoopCallback()
     {
         DartRuntimePrimitives.Assert(() => !locked);
-        DartRuntimePrimitives.Assert(() => (_taskQueue.Count != 0));
+        DartRuntimePrimitives.Assert(() => _taskQueue.Count != 0);
         if (_hasRequestedAnEventLoopCallback)
         {
             return;
@@ -304,7 +304,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual bool handleEventLoopCallback()
     {
-        if (((_taskQueue.Count == 0) || locked))
+        if ((_taskQueue.Count == 0) || locked)
         {
             return false;
         }
@@ -325,12 +325,12 @@ public abstract class SchedulerBinding : BindingBase
                         callbackStack = entry.debugStack;
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: exceptionStack, library: "scheduler library", context: new ErrorDescription("during a task callback"), informationCollector: (((callbackStack is null)) ? null : (() =>
+                FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: exceptionStack, library: "scheduler library", context: new ErrorDescription("during a task callback"), informationCollector: (callbackStack is null) ? null : (() =>
                 {
                     return new List<DiagnosticsNode> { new DiagnosticsStackTrace("\nThis exception was thrown in the context of a scheduler callback. " + "When the scheduler callback was _registered_ (as opposed to when the " + "exception was thrown), this was the stack", callbackStack) };
-                }))));
+                })));
             }
-            return (_taskQueue.Count != 0);
+            return _taskQueue.Count != 0;
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -351,7 +351,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void cancelFrameCallbackWithId(long id)
     {
-        DartRuntimePrimitives.Assert(() => (id > 0L));
+        DartRuntimePrimitives.Assert(() => id > 0L);
         _transientCallbacks.remove(id);
         _removedIds.Add(id);
     }
@@ -360,11 +360,11 @@ public abstract class SchedulerBinding : BindingBase
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((transientCallbackCount > 0L))
+                if (transientCallbackCount > 0L)
                 {
                     long count = transientCallbackCount;
                     var callbacks = new DartMap<long, _FrameCallbackEntry>(_transientCallbacks);
-                    FlutterError.reportError(new FlutterErrorDetails(exception: reason, library: "scheduler library", informationCollector: (() => new List<DiagnosticsNode>())));
+                    FlutterError.reportError(new FlutterErrorDetails(exception: reason, library: "scheduler library", informationCollector: () => new List<DiagnosticsNode>()));
                 }
                 return true;
             });
@@ -376,7 +376,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((_performanceMode is not null))
+                if (_performanceMode is not null)
                 {
                     throw new FlutterError(reason);
                 }
@@ -390,7 +390,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((BindingLibrary.timeDilation != 1.0))
+                if (BindingLibrary.timeDilation != 1.0)
                 {
                     throw new FlutterError(reason);
                 }
@@ -404,7 +404,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((_FrameCallbackEntry.debugCurrentCallbackStack is not null))
+                if (_FrameCallbackEntry.debugCurrentCallbackStack is not null)
                 {
                     PrintLibrary.debugPrint("When the current transient callback was registered, this was the stack:");
                     PrintLibrary.debugPrint(string.Join("\n", FlutterError.defaultStackFilter(FlutterError.demangleStackTrace(_FrameCallbackEntry.debugCurrentCallbackStack!).ToString().trimRight().split("\n"))));
@@ -429,7 +429,7 @@ public abstract class SchedulerBinding : BindingBase
                 if (DebugLibrary.debugTracePostFrameCallbacks)
                 {
                     var originalCallback = callback;
-                    callback = ((timeStamp) =>
+                    callback = (timeStamp) =>
                     {
                         Timeline.startSync(debugLabel);
                         try
@@ -440,7 +440,7 @@ public abstract class SchedulerBinding : BindingBase
                         {
                             Timeline.finishSync();
                         }
-                    });
+                    };
                 }
                 return true;
             });
@@ -451,18 +451,18 @@ public abstract class SchedulerBinding : BindingBase
     {
         get
         {
-            if ((_nextFrameCompleter is null))
+            if (_nextFrameCompleter is null)
             {
-                if ((Equals(schedulerPhase, SchedulerPhase.idle)))
+                if (Equals(schedulerPhase, SchedulerPhase.idle))
                 {
                     scheduleFrame();
                 }
                 _nextFrameCompleter = new Completer<object?>();
-                addPostFrameCallback(((timeStamp) =>
+                addPostFrameCallback((timeStamp) =>
                 {
                     _nextFrameCompleter!.complete();
                     _nextFrameCompleter = null;
-                }), debugLabel: "SchedulerBinding.completeFrame");
+                }, debugLabel: "SchedulerBinding.completeFrame");
             }
             return _nextFrameCompleter!.future;
         }
@@ -474,7 +474,7 @@ public abstract class SchedulerBinding : BindingBase
     public DorotiFrameTrace frameTrace => platformDispatcher.frameTrace;
     internal virtual void _setFramesEnabledState(bool enabled)
     {
-        if ((_framesEnabled == enabled))
+        if (_framesEnabled == enabled)
         {
             return;
         }
@@ -512,7 +512,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void scheduleFrame()
     {
-        if ((_hasScheduledFrame || !framesEnabled))
+        if (_hasScheduledFrame || !framesEnabled)
         {
             return;
         }
@@ -562,7 +562,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void scheduleWarmUpFrame()
     {
-        if ((_warmUpFrame || (!Equals(schedulerPhase, SchedulerPhase.idle))))
+        if (_warmUpFrame || (!Equals(schedulerPhase, SchedulerPhase.idle)))
         {
             return;
         }
@@ -578,11 +578,11 @@ public abstract class SchedulerBinding : BindingBase
 }))();
         }
         bool hadScheduledFrame = _hasScheduledFrame;
-        PlatformDispatcher.instance.scheduleWarmUpFrame(beginFrame: (() =>
+        PlatformDispatcher.instance.scheduleWarmUpFrame(beginFrame: () =>
         {
             DartRuntimePrimitives.Assert(() => _warmUpFrame);
             handleBeginFrame(null);
-        }), drawFrame: (() =>
+        }, drawFrame: () =>
         {
             DartRuntimePrimitives.Assert(() => _warmUpFrame);
             handleDrawFrame();
@@ -592,15 +592,15 @@ public abstract class SchedulerBinding : BindingBase
             {
                 scheduleFrame();
             }
-        }));
-        _ = lockEvents((async () =>
+        });
+        _ = lockEvents(async () =>
         {
             await endOfFrame;
             if (!ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask!.finish();
             }
-        }));
+        });
     }
 
     public virtual void resetEpoch()
@@ -611,8 +611,8 @@ public abstract class SchedulerBinding : BindingBase
 
     internal virtual Duration _adjustForEpoch(Duration rawTimeStamp)
     {
-        Duration rawDurationSinceEpoch = ((_firstRawTimeStampInEpoch is null) ? Duration.zero : (rawTimeStamp - DartRuntimePrimitives.RequireValue(_firstRawTimeStampInEpoch)));
-        return new Duration(microseconds: (((rawDurationSinceEpoch.inMicroseconds / BindingLibrary.timeDilation)).round() + _epochStart.inMicroseconds));
+        Duration rawDurationSinceEpoch = (_firstRawTimeStampInEpoch is null) ? Duration.zero : (rawTimeStamp - DartRuntimePrimitives.RequireValue(_firstRawTimeStampInEpoch));
+        return new Duration(microseconds: (rawDurationSinceEpoch.inMicroseconds / BindingLibrary.timeDilation).round() + _epochStart.inMicroseconds);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -620,7 +620,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => (_currentFrameTimeStamp is not null));
+            DartRuntimePrimitives.Assert(() => _currentFrameTimeStamp is not null);
             return DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp);
         }
     }
@@ -647,11 +647,11 @@ public abstract class SchedulerBinding : BindingBase
         if (_rescheduleAfterWarmUpFrame)
         {
             _rescheduleAfterWarmUpFrame = false;
-            addPostFrameCallback(((timeStamp) =>
+            addPostFrameCallback((timeStamp) =>
             {
                 _hasScheduledFrame = false;
                 scheduleFrame();
-            }), debugLabel: "SchedulerBinding.scheduleFrame");
+            }, debugLabel: "SchedulerBinding.scheduleFrame");
             return;
         }
         handleDrawFrame();
@@ -667,7 +667,7 @@ public abstract class SchedulerBinding : BindingBase
             rawTimeStamp = _lastRawTimeStamp;
         }
         _firstRawTimeStampInEpoch ??= rawTimeStamp;
-        _currentFrameTimeStamp = _adjustForEpoch((rawTimeStamp ?? _lastRawTimeStamp));
+        _currentFrameTimeStamp = _adjustForEpoch(rawTimeStamp ?? _lastRawTimeStamp);
         if (rawTimeStamp is Duration rawTimeStamp__value47349)
         {
             _lastRawTimeStamp = DartRuntimePrimitives.RequireValue(rawTimeStamp__value47349);
@@ -675,7 +675,7 @@ public abstract class SchedulerBinding : BindingBase
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugFrameNumber += 1L;
-                if ((DebugLibrary.debugPrintBeginFrameBanner || DebugLibrary.debugPrintEndFrameBanner))
+                if (DebugLibrary.debugPrintBeginFrameBanner || DebugLibrary.debugPrintEndFrameBanner)
                 {
                     var frameTimeStampDescription = new StringBuffer();
                     if (rawTimeStamp is Duration rawTimeStamp__value47605)
@@ -694,7 +694,7 @@ public abstract class SchedulerBinding : BindingBase
                 }
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => (Equals(schedulerPhase, SchedulerPhase.idle)));
+        DartRuntimePrimitives.Assert(() => Equals(schedulerPhase, SchedulerPhase.idle));
         _hasScheduledFrame = false;
         try
         {
@@ -704,13 +704,13 @@ public abstract class SchedulerBinding : BindingBase
             frameTrace.Record(DorotiFramePhase.transientCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
             DartMap<long, _FrameCallbackEntry> callbacks = _transientCallbacks;
             _transientCallbacks = new DartMap<long, _FrameCallbackEntry>();
-            callbacks.forEach(((id, callbackEntry) =>
+            callbacks.forEach((id, callbackEntry) =>
             {
                 if (!_removedIds.Contains(id))
                 {
                     _invokeFrameCallback(callbackEntry.callback, DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp), callbackEntry.debugStack);
                 }
-            }));
+            });
             _removedIds.Clear();
         }
         finally
@@ -724,20 +724,20 @@ public abstract class SchedulerBinding : BindingBase
     {
         // Managed hosts without a Dart VM decline this optional hint explicitly.
         if (!PlatformDispatcher.instance.supportsDartPerformanceMode) return null;
-        if (((_performanceMode is not null) && (!Equals(_performanceMode, mode))))
+        if ((_performanceMode is not null) && (!Equals(_performanceMode, mode)))
         {
             return null;
         }
-        if ((Equals(_performanceMode, mode)))
+        if (Equals(_performanceMode, mode))
         {
-            DartRuntimePrimitives.Assert(() => (_numPerformanceModeRequests > 0L));
+            DartRuntimePrimitives.Assert(() => _numPerformanceModeRequests > 0L);
             _numPerformanceModeRequests++;
         }
         else
         {
-            if ((_performanceMode is null))
+            if (_performanceMode is null)
             {
-                DartRuntimePrimitives.Assert(() => (_numPerformanceModeRequests == 0L));
+                DartRuntimePrimitives.Assert(() => _numPerformanceModeRequests == 0L);
                 _performanceMode = mode;
                 _numPerformanceModeRequests = 1L;
             }
@@ -749,7 +749,7 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual void _disposePerformanceModeRequest()
     {
         _numPerformanceModeRequests--;
-        if ((_numPerformanceModeRequests == 0L))
+        if (_numPerformanceModeRequests == 0L)
         {
             _performanceMode = null;
             PlatformDispatcher.instance.requestDartPerformanceMode(DartPerformanceMode.balanced);
@@ -758,7 +758,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual DartPerformanceMode? debugGetRequestedPerformanceMode()
     {
-        if (!((ConstantsLibrary.kDebugMode || ConstantsLibrary.kProfileMode)))
+        if (!(ConstantsLibrary.kDebugMode || ConstantsLibrary.kProfileMode))
         {
             return null;
         }
@@ -771,7 +771,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void handleDrawFrame()
     {
-        DartRuntimePrimitives.Assert(() => (Equals(_schedulerPhase, SchedulerPhase.midFrameMicrotasks)));
+        DartRuntimePrimitives.Assert(() => Equals(_schedulerPhase, SchedulerPhase.midFrameMicrotasks));
         _frameTimelineTask?.finish();
         try
         {
@@ -832,25 +832,25 @@ public abstract class SchedulerBinding : BindingBase
 
     internal static void _debugDescribeTimeStamp(Duration timeStamp, StringBuffer buffer)
     {
-        if ((timeStamp.inDays > 0L))
+        if (timeStamp.inDays > 0L)
         {
             buffer.write($"{timeStamp.inDays}d ");
         }
-        if ((timeStamp.inHours > 0L))
+        if (timeStamp.inHours > 0L)
         {
-            buffer.write($"{(timeStamp.inHours - (timeStamp.inDays * Duration.hoursPerDay))}h ");
+            buffer.write($"{timeStamp.inHours - (timeStamp.inDays * Duration.hoursPerDay)}h ");
         }
-        if ((timeStamp.inMinutes > 0L))
+        if (timeStamp.inMinutes > 0L)
         {
-            buffer.write($"{(timeStamp.inMinutes - (timeStamp.inHours * Duration.minutesPerHour))}m ");
+            buffer.write($"{timeStamp.inMinutes - (timeStamp.inHours * Duration.minutesPerHour)}m ");
         }
-        if ((timeStamp.inSeconds > 0L))
+        if (timeStamp.inSeconds > 0L)
         {
-            buffer.write($"{(timeStamp.inSeconds - (timeStamp.inMinutes * Duration.secondsPerMinute))}s ");
+            buffer.write($"{timeStamp.inSeconds - (timeStamp.inMinutes * Duration.secondsPerMinute)}s ");
         }
-        buffer.write($"{(timeStamp.inMilliseconds - (timeStamp.inSeconds * Duration.millisecondsPerSecond))}");
-        long microseconds = (timeStamp.inMicroseconds - (timeStamp.inMilliseconds * Duration.microsecondsPerMillisecond));
-        if ((microseconds > 0L))
+        buffer.write($"{timeStamp.inMilliseconds - (timeStamp.inSeconds * Duration.millisecondsPerSecond)}");
+        long microseconds = timeStamp.inMicroseconds - (timeStamp.inMilliseconds * Duration.microsecondsPerMillisecond);
+        if (microseconds > 0L)
         {
             buffer.write($".{microseconds.ToString().padLeft(3L, "0")}");
         }
@@ -859,7 +859,7 @@ public abstract class SchedulerBinding : BindingBase
 
     internal virtual void _invokeFrameCallback(Action<Duration> callback, Duration timeStamp, StackTrace? callbackStack = null)
     {
-        DartRuntimePrimitives.Assert(() => (_FrameCallbackEntry.debugCurrentCallbackStack is null));
+        DartRuntimePrimitives.Assert(() => _FrameCallbackEntry.debugCurrentCallbackStack is null);
         DartRuntimePrimitives.Assert(() =>
             {
                 _FrameCallbackEntry.debugCurrentCallbackStack = callbackStack;
@@ -872,10 +872,10 @@ public abstract class SchedulerBinding : BindingBase
         catch (Exception exception)
         {
             var exceptionStack = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: exceptionStack, library: "scheduler library", context: new ErrorDescription("during a scheduler callback"), informationCollector: (((callbackStack is null)) ? null : (() =>
+            FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: exceptionStack, library: "scheduler library", context: new ErrorDescription("during a scheduler callback"), informationCollector: (callbackStack is null) ? null : (() =>
             {
                 return new List<DiagnosticsNode> { new DiagnosticsStackTrace("\nThis exception was thrown in the context of a scheduler callback. " + "When the scheduler callback was _registered_ (as opposed to when the " + "exception was thrown), this was the stack", callbackStack) };
-            }))));
+            })));
         }
         DartRuntimePrimitives.Assert(() =>
             {
@@ -890,9 +890,9 @@ public static partial class BindingLibrary
 {
     public static bool defaultSchedulingStrategy(long priority, SchedulerBinding scheduler)
     {
-        if ((scheduler.transientCallbackCount > 0L))
+        if (scheduler.transientCallbackCount > 0L)
         {
-            return (priority >= Priority.animation.value);
+            return priority >= Priority.animation.value;
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");

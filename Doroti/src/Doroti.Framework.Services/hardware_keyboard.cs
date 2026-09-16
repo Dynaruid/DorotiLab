@@ -18,8 +18,8 @@ public static partial class Hardware_keyboardLibrary
             return true;
         }
         PrintLibrary.debugPrint($"KEYBOARD: {messageFunc()}");
-        IEnumerable<object> details = (detailsFunc?.Invoke() ?? new List<object>());
-        if ((details.Count() != 0))
+        IEnumerable<object> details = detailsFunc?.Invoke() ?? new List<object>();
+        if (details.Count() != 0)
         {
             foreach (var detail in details)
             {
@@ -114,28 +114,28 @@ public class HardwareKeyboard
     {
         get
         {
-            return (isLogicalKeyPressed(LogicalKeyboardKey.controlLeft) || isLogicalKeyPressed(LogicalKeyboardKey.controlRight));
+            return isLogicalKeyPressed(LogicalKeyboardKey.controlLeft) || isLogicalKeyPressed(LogicalKeyboardKey.controlRight);
         }
     }
     public virtual bool isShiftPressed
     {
         get
         {
-            return (isLogicalKeyPressed(LogicalKeyboardKey.shiftLeft) || isLogicalKeyPressed(LogicalKeyboardKey.shiftRight));
+            return isLogicalKeyPressed(LogicalKeyboardKey.shiftLeft) || isLogicalKeyPressed(LogicalKeyboardKey.shiftRight);
         }
     }
     public virtual bool isAltPressed
     {
         get
         {
-            return (isLogicalKeyPressed(LogicalKeyboardKey.altLeft) || isLogicalKeyPressed(LogicalKeyboardKey.altRight));
+            return isLogicalKeyPressed(LogicalKeyboardKey.altLeft) || isLogicalKeyPressed(LogicalKeyboardKey.altRight);
         }
     }
     public virtual bool isMetaPressed
     {
         get
         {
-            return (isLogicalKeyPressed(LogicalKeyboardKey.metaLeft) || isLogicalKeyPressed(LogicalKeyboardKey.metaRight));
+            return isLogicalKeyPressed(LogicalKeyboardKey.metaLeft) || isLogicalKeyPressed(LogicalKeyboardKey.metaRight);
         }
     }
     internal virtual void _logEventIfIrregular(KeyEvent @event)
@@ -147,22 +147,22 @@ public class HardwareKeyboard
                 {
                     if (_pressedKeys.ContainsKey(@event__as22052.physicalKey))
                     {
-                        Hardware_keyboardLibrary._keyboardDebug((() => $"ERROR: Received unexpected {@event__as22052.GetType()} for key that is already pressed.\n" + $"{common}\n" + $"    Event: {@event__as22052}\n" + $"    Pressed logical key: {_pressedKeys.GetValueOrDefault(@event__as22052.physicalKey)}"));
+                        Hardware_keyboardLibrary._keyboardDebug(() => $"ERROR: Received unexpected {@event__as22052.GetType()} for key that is already pressed.\n" + $"{common}\n" + $"    Event: {@event__as22052}\n" + $"    Pressed logical key: {_pressedKeys.GetValueOrDefault(@event__as22052.physicalKey)}");
                     }
                 }
                 else
                 {
-                    if (((@event is KeyRepeatEvent) || (@event is KeyUpEvent)))
+                    if ((@event is KeyRepeatEvent) || (@event is KeyUpEvent))
                     {
                         if (!_pressedKeys.ContainsKey(@event.physicalKey))
                         {
-                            Hardware_keyboardLibrary._keyboardDebug((() => $"ERROR: Received unexpected {@event.GetType()} for key that is not pressed:\n" + $"{common}\n" + $"    Event: {@event}"));
+                            Hardware_keyboardLibrary._keyboardDebug(() => $"ERROR: Received unexpected {@event.GetType()} for key that is not pressed:\n" + $"{common}\n" + $"    Event: {@event}");
                         }
                         else
                         {
-                            if ((!Equals(_pressedKeys.GetValueOrDefault(@event.physicalKey), @event.logicalKey)))
+                            if (!Equals(_pressedKeys.GetValueOrDefault(@event.physicalKey), @event.logicalKey))
                             {
-                                Hardware_keyboardLibrary._keyboardDebug((() => $"ERROR: Received unexpected {@event.GetType()} for key with mismatched logical key:\n" + $"{common}\n" + $"    Event: {@event}\n" + $"    Pressed logical key: {_pressedKeys.GetValueOrDefault(@event.physicalKey)}"));
+                                Hardware_keyboardLibrary._keyboardDebug(() => $"ERROR: Received unexpected {@event.GetType()} for key with mismatched logical key:\n" + $"{common}\n" + $"    Event: {@event}\n" + $"    Pressed logical key: {_pressedKeys.GetValueOrDefault(@event.physicalKey)}");
                             }
                         }
                     }
@@ -204,7 +204,7 @@ public class HardwareKeyboard
     public async virtual Future syncKeyboardState()
     {
         DartMap<long, long>? keyboardState = await SystemChannels.keyboard.invokeMapMethod<long, long>("getKeyboardState");
-        if ((keyboardState is not null))
+        if (keyboardState is not null)
         {
             foreach (long key in keyboardState.Keys)
             {
@@ -225,7 +225,7 @@ public class HardwareKeyboard
             try
             {
                 bool thisResult = handler(@event);
-                handled = (handled || thisResult);
+                handled = handled || thisResult;
             }
             catch (Exception exception)
             {
@@ -233,14 +233,14 @@ public class HardwareKeyboard
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<KeyEvent>("Event", @event) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<KeyEvent>("Event", @event) };
                         return true;
                     });
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("while processing a key handler"), informationCollector: collector));
             }
         }
         _duringDispatch = false;
-        if ((_modifiedHandlers is not null))
+        if (_modifiedHandlers is not null)
         {
             _handlers = _modifiedHandlers!;
             _modifiedHandlers = null;
@@ -257,16 +257,16 @@ public class HardwareKeyboard
 
     public virtual bool handleKeyEvent(KeyEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => Hardware_keyboardLibrary._keyboardDebug((() => $"Key event received: {@event}")));
-        DartRuntimePrimitives.Assert(() => Hardware_keyboardLibrary._keyboardDebug((() => "Pressed state before processing the event:"), _debugPressedKeysDetails));
+        DartRuntimePrimitives.Assert(() => Hardware_keyboardLibrary._keyboardDebug(() => $"Key event received: {@event}"));
+        DartRuntimePrimitives.Assert(() => Hardware_keyboardLibrary._keyboardDebug(() => "Pressed state before processing the event:", _debugPressedKeysDetails));
         _logEventIfIrregular(@event);
         PhysicalKeyboardKey physicalKey = @event.physicalKey;
         LogicalKeyboardKey logicalKey = @event.logicalKey;
         if (@event is KeyDownEvent @event__as27907)
         {
             _pressedKeys[physicalKey] = logicalKey;
-            KeyboardLockMode? lockMode = (@event__as27907.logicalKey.keyId switch { var id when id == LogicalKeyboardKey.numLock.keyId => KeyboardLockMode.numLock, var id when id == LogicalKeyboardKey.scrollLock.keyId => KeyboardLockMode.scrollLock, var id when id == LogicalKeyboardKey.capsLock.keyId => KeyboardLockMode.capsLock, _ => (KeyboardLockMode?)null });
-            if ((lockMode is not null))
+            KeyboardLockMode? lockMode = @event__as27907.logicalKey.keyId switch { var id when id == LogicalKeyboardKey.numLock.keyId => KeyboardLockMode.numLock, var id when id == LogicalKeyboardKey.scrollLock.keyId => KeyboardLockMode.scrollLock, var id when id == LogicalKeyboardKey.capsLock.keyId => KeyboardLockMode.capsLock, _ => null };
+            if (lockMode is not null)
             {
                 if (_lockModes.Contains(DartRuntimePrimitives.RequireValue(lockMode)))
                 {
@@ -292,7 +292,7 @@ public class HardwareKeyboard
                 }
             }
         }
-        DartRuntimePrimitives.Assert(() => Hardware_keyboardLibrary._keyboardDebug((() => "Pressed state after processing the event:"), _debugPressedKeysDetails));
+        DartRuntimePrimitives.Assert(() => Hardware_keyboardLibrary._keyboardDebug(() => "Pressed state after processing the event:", _debugPressedKeysDetails));
         return _dispatchKeyEvent(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -302,7 +302,7 @@ public class HardwareKeyboard
         _pressedKeys.Clear();
         _lockModes.Clear();
         _handlers.Clear();
-        DartRuntimePrimitives.Assert(() => (_modifiedHandlers is null));
+        DartRuntimePrimitives.Assert(() => _modifiedHandlers is null);
     }
 
 }
@@ -361,11 +361,11 @@ public class KeyEventManager
                 }
             case var __case46755 when Equals(__case46755, KeyDataTransitMode.keyDataThenRawKeyData):
                 {
-                    if (((data.physical == 0L) && (data.logical == 0L)))
+                    if ((data.physical == 0L) && (data.logical == 0L))
                     {
                         return false;
                     }
-                    DartRuntimePrimitives.Assert(() => ((data.physical != 0L) && (data.logical != 0L)));
+                    DartRuntimePrimitives.Assert(() => (data.physical != 0L) && (data.logical != 0L));
                     KeyEvent @event = _eventFromData(data);
                     // Doroti hosts expose a KeyData-only input contract; unlike
                     // FlutterEngine they do not follow each KeyData callback
@@ -373,7 +373,7 @@ public class KeyEventManager
                     // immediately so hardware handlers and text shortcuts see
                     // every native key instead of leaving it queued forever.
                     var handled = _hardwareKeyboard.handleKeyEvent(@event);
-                    return (_dispatchKeyMessage(new List<KeyEvent> { @event }, null) || handled);
+                    return _dispatchKeyMessage(new List<KeyEvent> { @event }, null) || handled;
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -381,7 +381,7 @@ public class KeyEventManager
 
     internal virtual bool _dispatchKeyMessage(List<KeyEvent> keyEvents, RawKeyEvent? rawEvent)
     {
-        if ((keyMessageHandler is not null))
+        if (keyMessageHandler is not null)
         {
             var message = new KeyMessage(keyEvents, rawEvent);
             try
@@ -394,7 +394,7 @@ public class KeyEventManager
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<KeyMessage>("KeyMessage", message) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<KeyMessage>("KeyMessage", message) };
                         return true;
                     });
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("while processing the key message__48244 handler"), informationCollector: collector));
@@ -406,7 +406,7 @@ public class KeyEventManager
 
     public async virtual Future<DartMap<string, object>> handleRawKeyMessage(object? message)
     {
-        if ((_transitMode is null))
+        if (_transitMode is null)
         {
             _transitMode = KeyDataTransitMode.rawKeyData;
             _rawKeyboard.addListener(_convertRawEventAndStore);
@@ -444,13 +444,13 @@ public class KeyEventManager
             handled = _rawKeyboard.handleRawKeyEvent(rawEvent);
             foreach (KeyEvent @event in _keyEventsSinceLastMessage)
             {
-                handled = (_hardwareKeyboard.handleKeyEvent(@event) || handled);
+                handled = _hardwareKeyboard.handleKeyEvent(@event) || handled;
             }
-            if ((Equals(_transitMode, KeyDataTransitMode.rawKeyData)))
+            if (Equals(_transitMode, KeyDataTransitMode.rawKeyData))
             {
                 DartRuntimePrimitives.Assert(() => CollectionsLibrary.setEquals(_rawKeyboard.physicalKeysPressed, _hardwareKeyboard.physicalKeysPressed));
             }
-            handled = (_dispatchKeyMessage(_keyEventsSinceLastMessage, rawEvent) || handled);
+            handled = _dispatchKeyMessage(_keyEventsSinceLastMessage, rawEvent) || handled;
             _keyEventsSinceLastMessage.Clear();
         }
         return new DartMap<string, object> { ["handled"] = handled };
@@ -460,7 +460,7 @@ public class KeyEventManager
     internal virtual KeyEventDeviceType _convertDeviceType(RawKeyEvent rawEvent)
     {
         RawKeyEventData data = rawEvent.data;
-        if ((data is not RawKeyEventDataAndroid))
+        if (data is not RawKeyEventDataAndroid)
         {
             return Dart_uiLibrary.KeyEventDeviceType.keyboard;
         }
@@ -500,11 +500,11 @@ public class KeyEventManager
         KeyEvent? mainEvent = default!;
         LogicalKeyboardKey? recordedLogicalMain = _hardwareKeyboard.lookUpLayout(physicalKey);
         Duration timeStamp = ServicesBinding.instance.currentSystemFrameTimeStamp;
-        string? character = ((rawEvent.character == "") ? null : rawEvent.character);
+        string? character = (rawEvent.character == "") ? null : rawEvent.character;
         global::Doroti.Ui.KeyEventDeviceType deviceType = _convertDeviceType(rawEvent);
         if (rawEvent is RawKeyDownEvent rawEvent__as53392)
         {
-            if ((recordedLogicalMain is null))
+            if (recordedLogicalMain is null)
             {
                 mainEvent = new KeyDownEvent(physicalKey: physicalKey, logicalKey: logicalKey, character: character, timeStamp: timeStamp, deviceType: deviceType);
                 physicalKeysPressed.Add(physicalKey);
@@ -517,8 +517,8 @@ public class KeyEventManager
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (rawEvent is RawKeyUpEvent));
-            if ((recordedLogicalMain is null))
+            DartRuntimePrimitives.Assert(() => rawEvent is RawKeyUpEvent);
+            if (recordedLogicalMain is null)
             {
                 mainEvent = null;
             }
@@ -530,7 +530,7 @@ public class KeyEventManager
         }
         foreach (PhysicalKeyboardKey key in physicalKeysPressed.difference(_rawKeyboard.physicalKeysPressed))
         {
-            if ((Equals(key, physicalKey)))
+            if (Equals(key, physicalKey))
             {
                 eventAfterwards.Add(new KeyUpEvent(physicalKey: key, logicalKey: logicalKey, timeStamp: timeStamp, synthesized: true, deviceType: deviceType));
             }
@@ -543,7 +543,7 @@ public class KeyEventManager
         {
             _keyEventsSinceLastMessage.Add(new KeyDownEvent(physicalKey: key, logicalKey: _rawKeyboard.lookUpLayout(key)!, timeStamp: timeStamp, synthesized: true, deviceType: deviceType));
         }
-        if ((mainEvent is not null))
+        if (mainEvent is not null)
         {
             _keyEventsSinceLastMessage.Add(mainEvent);
         }
@@ -563,8 +563,8 @@ public class KeyEventManager
 
     internal static KeyEvent _eventFromData(KeyData keyData)
     {
-        PhysicalKeyboardKey physicalKey = (PhysicalKeyboardKey.findKeyByCode(keyData.physical) ?? new PhysicalKeyboardKey(keyData.physical));
-        LogicalKeyboardKey logicalKey = (LogicalKeyboardKey.findKeyByKeyId(keyData.logical) ?? new LogicalKeyboardKey(keyData.logical));
+        PhysicalKeyboardKey physicalKey = PhysicalKeyboardKey.findKeyByCode(keyData.physical) ?? new PhysicalKeyboardKey(keyData.physical);
+        LogicalKeyboardKey logicalKey = LogicalKeyboardKey.findKeyByKeyId(keyData.logical) ?? new LogicalKeyboardKey(keyData.logical);
         Duration timeStamp = keyData.timeStamp;
         switch (keyData.type)
         {
@@ -574,7 +574,7 @@ public class KeyEventManager
                 }
             case var __case57061 when Equals(__case57061, Dart_uiLibrary.KeyEventType.up):
                 {
-                    DartRuntimePrimitives.Assert(() => (keyData.character is null));
+                    DartRuntimePrimitives.Assert(() => keyData.character is null);
                     return new KeyUpEvent(physicalKey: physicalKey, logicalKey: logicalKey, timeStamp: timeStamp, synthesized: keyData.synthesized, deviceType: keyData.deviceType);
                 }
             case var __case57361 when Equals(__case57361, Dart_uiLibrary.KeyEventType.repeat):

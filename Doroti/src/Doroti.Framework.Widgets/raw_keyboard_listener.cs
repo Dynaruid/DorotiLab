@@ -25,7 +25,7 @@ public class RawKeyboardListener : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", this.focusNode));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", focusNode));
     }
 
 }
@@ -37,29 +37,29 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
     public override void initState()
     {
         base.initState();
-        ((RawKeyboardListener)this.widget).focusNode.addListener(this._handleFocusChanged);
+        widget.focusNode.addListener(_handleFocusChanged);
     }
 
     public override void didUpdateWidget(RawKeyboardListener oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((RawKeyboardListener)this.widget).focusNode, ((RawKeyboardListener)oldWidget).focusNode)))
+        if (!Equals(widget.focusNode, oldWidget.focusNode))
         {
-            ((RawKeyboardListener)oldWidget).focusNode.removeListener(this._handleFocusChanged);
-            ((RawKeyboardListener)this.widget).focusNode.addListener(this._handleFocusChanged);
+            oldWidget.focusNode.removeListener(_handleFocusChanged);
+            widget.focusNode.addListener(_handleFocusChanged);
         }
     }
 
     public override void dispose()
     {
-        ((RawKeyboardListener)this.widget).focusNode.removeListener(this._handleFocusChanged);
+        widget.focusNode.removeListener(_handleFocusChanged);
         _detachKeyboardIfAttached();
         base.dispose();
     }
 
     internal virtual void _handleFocusChanged()
     {
-        if (((RawKeyboardListener)this.widget).focusNode.hasFocus)
+        if (widget.focusNode.hasFocus)
         {
             _attachKeyboardIfDetached();
         }
@@ -71,32 +71,32 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
 
     internal virtual void _attachKeyboardIfDetached()
     {
-        if (this._listening)
+        if (_listening)
         {
             return;
         }
-        RawKeyboard.instance.addListener((global::System.Action<global::Doroti.Framework.Services.RawKeyEvent>)this._handleRawKeyEvent);
+        RawKeyboard.instance.addListener(_handleRawKeyEvent);
         _listening = true;
     }
 
     internal virtual void _detachKeyboardIfAttached()
     {
-        if (!this._listening)
+        if (!_listening)
         {
             return;
         }
-        RawKeyboard.instance.removeListener((global::System.Action<global::Doroti.Framework.Services.RawKeyEvent>)this._handleRawKeyEvent);
+        RawKeyboard.instance.removeListener(_handleRawKeyEvent);
         _listening = false;
     }
 
     internal virtual void _handleRawKeyEvent(global::Doroti.Framework.Services.RawKeyEvent @event)
     {
-        ((RawKeyboardListener)this.widget).onKey?.Invoke(@event);
+        widget.onKey?.Invoke(@event);
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new Focus(focusNode: ((RawKeyboardListener)this.widget).focusNode, autofocus: ((RawKeyboardListener)this.widget).autofocus, includeSemantics: ((RawKeyboardListener)this.widget).includeSemantics, child: ((RawKeyboardListener)this.widget).child));
+        return new Focus(focusNode: widget.focusNode, autofocus: widget.autofocus, includeSemantics: widget.includeSemantics, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

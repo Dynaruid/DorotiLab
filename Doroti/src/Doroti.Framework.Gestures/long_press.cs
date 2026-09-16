@@ -29,17 +29,17 @@ public class LongPressDownDetails : PositionedGestureDetails, Diagnosticable
 
     public LongPressDownDetails(Offset globalPosition = default, Offset? localPosition = null, PointerDeviceKind? kind = null)
     {
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.kind = kind;
-        this.__field_localPosition = (localPosition ?? globalPosition);
+        __field_localPosition = localPosition ?? globalPosition;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
     }
 
 }
@@ -53,15 +53,15 @@ public class LongPressStartDetails : PositionedGestureDetails, Diagnosticable
 
     public LongPressStartDetails(Offset globalPosition = default, Offset? localPosition = null)
     {
-        this.__field_globalPosition = globalPosition;
-        this.__field_localPosition = (localPosition ?? globalPosition);
+        __field_globalPosition = globalPosition;
+        __field_localPosition = localPosition ?? globalPosition;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
     }
 
 }
@@ -77,19 +77,19 @@ public class LongPressMoveUpdateDetails : PositionedGestureDetails, Diagnosticab
 
     public LongPressMoveUpdateDetails(Offset globalPosition = default, Offset? localPosition = null, Offset offsetFromOrigin = default, Offset? localOffsetFromOrigin = null)
     {
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.offsetFromOrigin = offsetFromOrigin;
-        this.__field_localPosition = (localPosition ?? globalPosition);
-        this.localOffsetFromOrigin = (localOffsetFromOrigin ?? offsetFromOrigin);
+        __field_localPosition = localPosition ?? globalPosition;
+        this.localOffsetFromOrigin = localOffsetFromOrigin ?? offsetFromOrigin;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offsetFromOrigin", this.offsetFromOrigin));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localOffsetFromOrigin", this.localOffsetFromOrigin));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offsetFromOrigin", offsetFromOrigin));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localOffsetFromOrigin", localOffsetFromOrigin));
     }
 
 }
@@ -105,17 +105,17 @@ public class LongPressEndDetails : PositionedGestureDetails, Diagnosticable
     public LongPressEndDetails(Offset globalPosition = default, Offset? localPosition = null, Velocity velocity = default!)
     {
         Velocity __velocity = velocity ?? Velocity.zero;
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.velocity = __velocity;
-        this.__field_localPosition = (localPosition ?? globalPosition);
+        __field_localPosition = localPosition ?? globalPosition;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Velocity>("velocity", this.velocity));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Velocity>("velocity", velocity));
     }
 
 }
@@ -148,18 +148,18 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
     public virtual Action<LongPressEndDetails>? onTertiaryLongPressEnd { get; set; } = default;
     internal virtual VelocityTracker? _velocityTracker { get; set; } = default;
 
-    public LongPressGestureRecognizer(Duration? duration = null, double? postAcceptSlopTolerance = null, HashSet<PointerDeviceKind>? supportedDevices = null, object? debugOwner = null, Func<long, bool>? allowedButtonsFilter = null) : base(postAcceptSlopTolerance: postAcceptSlopTolerance, supportedDevices: supportedDevices, debugOwner: debugOwner, deadline: (duration ?? ConstantsLibrary.kLongPressTimeout), allowedButtonsFilter: (allowedButtonsFilter ?? _defaultButtonAcceptBehavior))
+    public LongPressGestureRecognizer(Duration? duration = null, double? postAcceptSlopTolerance = null, HashSet<PointerDeviceKind>? supportedDevices = null, object? debugOwner = null, Func<long, bool>? allowedButtonsFilter = null) : base(postAcceptSlopTolerance: postAcceptSlopTolerance, supportedDevices: supportedDevices, debugOwner: debugOwner, deadline: duration ?? ConstantsLibrary.kLongPressTimeout, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
     }
 
-    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (((buttons == EventsLibrary.kPrimaryButton) || (buttons == EventsLibrary.kSecondaryButton)) || (buttons == EventsLibrary.kTertiaryButton));
+    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == EventsLibrary.kPrimaryButton) || (buttons == EventsLibrary.kSecondaryButton) || (buttons == EventsLibrary.kTertiaryButton);
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
         switch (@event.buttons)
         {
             case var __constant25085 when Equals(__constant25085, EventsLibrary.kPrimaryButton):
                 {
-                    if ((((((((this.onLongPressDown is null) && (this.onLongPressCancel is null)) && (this.onLongPressStart is null)) && (this.onLongPress is null)) && (this.onLongPressMoveUpdate is null)) && (this.onLongPressEnd is null)) && (this.onLongPressUp is null)))
+                    if ((onLongPressDown is null) && (onLongPressCancel is null) && (onLongPressStart is null) && (onLongPress is null) && (onLongPressMoveUpdate is null) && (onLongPressEnd is null) && (onLongPressUp is null))
                     {
                         return false;
                     }
@@ -167,7 +167,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                 }
             case var __constant25421 when Equals(__constant25421, EventsLibrary.kSecondaryButton):
                 {
-                    if ((((((((this.onSecondaryLongPressDown is null) && (this.onSecondaryLongPressCancel is null)) && (this.onSecondaryLongPressStart is null)) && (this.onSecondaryLongPress is null)) && (this.onSecondaryLongPressMoveUpdate is null)) && (this.onSecondaryLongPressEnd is null)) && (this.onSecondaryLongPressUp is null)))
+                    if ((onSecondaryLongPressDown is null) && (onSecondaryLongPressCancel is null) && (onSecondaryLongPressStart is null) && (onSecondaryLongPress is null) && (onSecondaryLongPressMoveUpdate is null) && (onSecondaryLongPressEnd is null) && (onSecondaryLongPressUp is null))
                     {
                         return false;
                     }
@@ -175,7 +175,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                 }
             case var __constant25822 when Equals(__constant25822, EventsLibrary.kTertiaryButton):
                 {
-                    if ((((((((this.onTertiaryLongPressDown is null) && (this.onTertiaryLongPressCancel is null)) && (this.onTertiaryLongPressStart is null)) && (this.onTertiaryLongPress is null)) && (this.onTertiaryLongPressMoveUpdate is null)) && (this.onTertiaryLongPressEnd is null)) && (this.onTertiaryLongPressUp is null)))
+                    if ((onTertiaryLongPressDown is null) && (onTertiaryLongPressCancel is null) && (onTertiaryLongPressStart is null) && (onTertiaryLongPress is null) && (onTertiaryLongPressMoveUpdate is null) && (onTertiaryLongPressEnd is null) && (onTertiaryLongPressUp is null))
                     {
                         return false;
                     }
@@ -200,27 +200,27 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     public override void handlePrimaryPointer(PointerEvent @event)
     {
-        if (!((PointerEvent)@event).synthesized)
+        if (!@event.synthesized)
         {
-            if ((@event is PointerDownEvent))
+            if (@event is PointerDownEvent)
             {
                 PointerDownEvent @event__as26655 = (PointerDownEvent)@event;
-                _velocityTracker = new VelocityTracker(((PointerDownEvent)@event__as26655).kind);
-                this._velocityTracker!.addPosition(((PointerDownEvent)@event__as26655).timeStamp, ((PointerDownEvent)@event__as26655).localPosition);
+                _velocityTracker = new VelocityTracker(@event__as26655.kind);
+                _velocityTracker!.addPosition(@event__as26655.timeStamp, @event__as26655.localPosition);
             }
-            if ((@event is PointerMoveEvent))
+            if (@event is PointerMoveEvent)
             {
                 PointerMoveEvent @event__as26844 = (PointerMoveEvent)@event;
-                DartRuntimePrimitives.Assert(() => (this._velocityTracker is not null));
-                this._velocityTracker!.addPosition(((PointerMoveEvent)@event__as26844).timeStamp, ((PointerMoveEvent)@event__as26844).localPosition);
+                DartRuntimePrimitives.Assert(() => _velocityTracker is not null);
+                _velocityTracker!.addPosition(@event__as26844.timeStamp, @event__as26844.localPosition);
             }
         }
-        if ((@event is PointerUpEvent))
+        if (@event is PointerUpEvent)
         {
             PointerUpEvent @event__as27015 = (PointerUpEvent)@event;
-            if (this._longPressAccepted)
+            if (_longPressAccepted)
             {
-                _checkLongPressEnd(((PointerUpEvent)@event__as27015));
+                _checkLongPressEnd(@event__as27015);
             }
             else
             {
@@ -230,7 +230,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
         }
         else
         {
-            if ((@event is PointerCancelEvent))
+            if (@event is PointerCancelEvent)
             {
                 PointerCancelEvent @event__as27254 = (PointerCancelEvent)@event;
                 _checkLongPressCancel();
@@ -238,28 +238,28 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
             }
             else
             {
-                if ((@event is PointerDownEvent))
+                if (@event is PointerDownEvent)
                 {
                     PointerDownEvent @event__as27347 = (PointerDownEvent)@event;
-                    _longPressOrigin = OffsetPair.CreateFromEventPosition(((PointerDownEvent)@event__as27347));
-                    _initialButtons = ((PointerDownEvent)@event__as27347).buttons;
-                    _checkLongPressDown(((PointerDownEvent)@event__as27347));
+                    _longPressOrigin = OffsetPair.CreateFromEventPosition(@event__as27347);
+                    _initialButtons = @event__as27347.buttons;
+                    _checkLongPressDown(@event__as27347);
                 }
                 else
                 {
-                    if ((@event is PointerMoveEvent))
+                    if (@event is PointerMoveEvent)
                     {
                         PointerMoveEvent @event__as27552 = (PointerMoveEvent)@event;
-                        if (((((PointerMoveEvent)@event__as27552).buttons != this._initialButtons) && !this._longPressAccepted))
+                        if ((@event__as27552.buttons != _initialButtons) && !_longPressAccepted)
                         {
                             resolve(GestureDisposition.rejected);
                             stopTrackingPointer(DartRuntimePrimitives.RequireValue(primaryPointer));
                         }
                         else
                         {
-                            if (this._longPressAccepted)
+                            if (_longPressAccepted)
                             {
-                                _checkLongPressMoveUpdate(((PointerMoveEvent)@event__as27552));
+                                _checkLongPressMoveUpdate(@event__as27552);
                             }
                         }
                     }
@@ -270,31 +270,31 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     internal virtual void _checkLongPressDown(PointerDownEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (this._longPressOrigin is not null));
-        var details = new LongPressDownDetails(globalPosition: this._longPressOrigin!.global, localPosition: this._longPressOrigin!.local, kind: getKindForPointer(@event.pointer));
-        switch (this._initialButtons)
+        DartRuntimePrimitives.Assert(() => _longPressOrigin is not null);
+        var details = new LongPressDownDetails(globalPosition: _longPressOrigin!.global, localPosition: _longPressOrigin!.local, kind: getKindForPointer(@event.pointer));
+        switch (_initialButtons)
         {
             case var __constant28164 when Equals(__constant28164, EventsLibrary.kPrimaryButton):
                 {
-                    if ((this.onLongPressDown is not null))
+                    if (onLongPressDown is not null)
                     {
-                        invokeCallback<object?>("onLongPressDown", () => { ((Action)((() => this.onLongPressDown!(details))))(); return null; });
+                        invokeCallback<object?>("onLongPressDown", () => { ((Action)(() => onLongPressDown!(details)))(); return null; });
                     }
                     break;
                 }
             case var __constant28324 when Equals(__constant28324, EventsLibrary.kSecondaryButton):
                 {
-                    if ((this.onSecondaryLongPressDown is not null))
+                    if (onSecondaryLongPressDown is not null)
                     {
-                        invokeCallback<object?>("onSecondaryLongPressDown", () => { ((Action)((() => this.onSecondaryLongPressDown!(details))))(); return null; });
+                        invokeCallback<object?>("onSecondaryLongPressDown", () => { ((Action)(() => onSecondaryLongPressDown!(details)))(); return null; });
                     }
                     break;
                 }
             case var __constant28550 when Equals(__constant28550, EventsLibrary.kTertiaryButton):
                 {
-                    if ((this.onTertiaryLongPressDown is not null))
+                    if (onTertiaryLongPressDown is not null)
                     {
-                        invokeCallback<object?>("onTertiaryLongPressDown", () => { ((Action)((() => this.onTertiaryLongPressDown!(details))))(); return null; });
+                        invokeCallback<object?>("onTertiaryLongPressDown", () => { ((Action)(() => onTertiaryLongPressDown!(details)))(); return null; });
                     }
                     break;
                 }
@@ -308,31 +308,31 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     internal virtual void _checkLongPressCancel()
     {
-        if ((Equals(state, GestureRecognizerState.possible)))
+        if (Equals(state, GestureRecognizerState.possible))
         {
-            switch (this._initialButtons)
+            switch (_initialButtons)
             {
                 case var __constant28941 when Equals(__constant28941, EventsLibrary.kPrimaryButton):
                     {
-                        if ((this.onLongPressCancel is not null))
+                        if (onLongPressCancel is not null)
                         {
-                            invokeCallback<object?>("onLongPressCancel", () => { ((Action)(this.onLongPressCancel!))(); return null; });
+                            invokeCallback<object?>("onLongPressCancel", () => { onLongPressCancel!(); return null; });
                         }
                         break;
                     }
                 case var __constant29100 when Equals(__constant29100, EventsLibrary.kSecondaryButton):
                     {
-                        if ((this.onSecondaryLongPressCancel is not null))
+                        if (onSecondaryLongPressCancel is not null)
                         {
-                            invokeCallback<object?>("onSecondaryLongPressCancel", () => { ((Action)(this.onSecondaryLongPressCancel!))(); return null; });
+                            invokeCallback<object?>("onSecondaryLongPressCancel", () => { onSecondaryLongPressCancel!(); return null; });
                         }
                         break;
                     }
                 case var __constant29288 when Equals(__constant29288, EventsLibrary.kTertiaryButton):
                     {
-                        if ((this.onTertiaryLongPressCancel is not null))
+                        if (onTertiaryLongPressCancel is not null)
                         {
-                            invokeCallback<object?>("onTertiaryLongPressCancel", () => { ((Action)(this.onTertiaryLongPressCancel!))(); return null; });
+                            invokeCallback<object?>("onTertiaryLongPressCancel", () => { onTertiaryLongPressCancel!(); return null; });
                         }
                         break;
                     }
@@ -347,44 +347,44 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     internal virtual void _checkLongPressStart()
     {
-        switch (this._initialButtons)
+        switch (_initialButtons)
         {
             case var __constant29631 when Equals(__constant29631, EventsLibrary.kPrimaryButton):
                 {
-                    if ((this.onLongPressStart is not null))
+                    if (onLongPressStart is not null)
                     {
-                        var details = new LongPressStartDetails(globalPosition: this._longPressOrigin!.global, localPosition: this._longPressOrigin!.local);
-                        invokeCallback<object?>("onLongPressStart", () => { ((Action)((() => this.onLongPressStart!(details))))(); return null; });
+                        var details = new LongPressStartDetails(globalPosition: _longPressOrigin!.global, localPosition: _longPressOrigin!.local);
+                        invokeCallback<object?>("onLongPressStart", () => { ((Action)(() => onLongPressStart!(details)))(); return null; });
                     }
-                    if ((this.onLongPress is not null))
+                    if (onLongPress is not null)
                     {
-                        invokeCallback<object?>("onLongPress", () => { ((Action)(this.onLongPress!))(); return null; });
+                        invokeCallback<object?>("onLongPress", () => { onLongPress!(); return null; });
                     }
                     break;
                 }
             case var __constant30068 when Equals(__constant30068, EventsLibrary.kSecondaryButton):
                 {
-                    if ((this.onSecondaryLongPressStart is not null))
+                    if (onSecondaryLongPressStart is not null)
                     {
-                        var detailsLocal = new LongPressStartDetails(globalPosition: this._longPressOrigin!.global, localPosition: this._longPressOrigin!.local);
-                        invokeCallback<object?>("onSecondaryLongPressStart", () => { ((Action)((() => this.onSecondaryLongPressStart!(detailsLocal))))(); return null; });
+                        var detailsLocal = new LongPressStartDetails(globalPosition: _longPressOrigin!.global, localPosition: _longPressOrigin!.local);
+                        invokeCallback<object?>("onSecondaryLongPressStart", () => { ((Action)(() => onSecondaryLongPressStart!(detailsLocal)))(); return null; });
                     }
-                    if ((this.onSecondaryLongPress is not null))
+                    if (onSecondaryLongPress is not null)
                     {
-                        invokeCallback<object?>("onSecondaryLongPress", () => { ((Action)(this.onSecondaryLongPress!))(); return null; });
+                        invokeCallback<object?>("onSecondaryLongPress", () => { onSecondaryLongPress!(); return null; });
                     }
                     break;
                 }
             case var __constant30598 when Equals(__constant30598, EventsLibrary.kTertiaryButton):
                 {
-                    if ((this.onTertiaryLongPressStart is not null))
+                    if (onTertiaryLongPressStart is not null)
                     {
-                        var detailsAlternate = new LongPressStartDetails(globalPosition: this._longPressOrigin!.global, localPosition: this._longPressOrigin!.local);
-                        invokeCallback<object?>("onTertiaryLongPressStart", () => { ((Action)((() => this.onTertiaryLongPressStart!(detailsAlternate))))(); return null; });
+                        var detailsAlternate = new LongPressStartDetails(globalPosition: _longPressOrigin!.global, localPosition: _longPressOrigin!.local);
+                        invokeCallback<object?>("onTertiaryLongPressStart", () => { ((Action)(() => onTertiaryLongPressStart!(detailsAlternate)))(); return null; });
                     }
-                    if ((this.onTertiaryLongPress is not null))
+                    if (onTertiaryLongPress is not null)
                     {
-                        invokeCallback<object?>("onTertiaryLongPress", () => { ((Action)(this.onTertiaryLongPress!))(); return null; });
+                        invokeCallback<object?>("onTertiaryLongPress", () => { onTertiaryLongPress!(); return null; });
                     }
                     break;
                 }
@@ -398,30 +398,30 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     internal virtual void _checkLongPressMoveUpdate(PointerEvent @event)
     {
-        var details = new LongPressMoveUpdateDetails(globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition, offsetFromOrigin: (((PointerEvent)@event).position - this._longPressOrigin!.global), localOffsetFromOrigin: (((PointerEvent)@event).localPosition - this._longPressOrigin!.local));
-        switch (this._initialButtons)
+        var details = new LongPressMoveUpdateDetails(globalPosition: @event.position, localPosition: @event.localPosition, offsetFromOrigin: @event.position - _longPressOrigin!.global, localOffsetFromOrigin: @event.localPosition - _longPressOrigin!.local);
+        switch (_initialButtons)
         {
             case var __constant31571 when Equals(__constant31571, EventsLibrary.kPrimaryButton):
                 {
-                    if ((this.onLongPressMoveUpdate is not null))
+                    if (onLongPressMoveUpdate is not null)
                     {
-                        invokeCallback<object?>("onLongPressMoveUpdate", () => { ((Action)((() => this.onLongPressMoveUpdate!(details))))(); return null; });
+                        invokeCallback<object?>("onLongPressMoveUpdate", () => { ((Action)(() => onLongPressMoveUpdate!(details)))(); return null; });
                     }
                     break;
                 }
             case var __constant31749 when Equals(__constant31749, EventsLibrary.kSecondaryButton):
                 {
-                    if ((this.onSecondaryLongPressMoveUpdate is not null))
+                    if (onSecondaryLongPressMoveUpdate is not null)
                     {
-                        invokeCallback<object?>("onSecondaryLongPressMoveUpdate", () => { ((Action)((() => this.onSecondaryLongPressMoveUpdate!(details))))(); return null; });
+                        invokeCallback<object?>("onSecondaryLongPressMoveUpdate", () => { ((Action)(() => onSecondaryLongPressMoveUpdate!(details)))(); return null; });
                     }
                     break;
                 }
             case var __constant31993 when Equals(__constant31993, EventsLibrary.kTertiaryButton):
                 {
-                    if ((this.onTertiaryLongPressMoveUpdate is not null))
+                    if (onTertiaryLongPressMoveUpdate is not null)
                     {
-                        invokeCallback<object?>("onTertiaryLongPressMoveUpdate", () => { ((Action)((() => this.onTertiaryLongPressMoveUpdate!(details))))(); return null; });
+                        invokeCallback<object?>("onTertiaryLongPressMoveUpdate", () => { ((Action)(() => onTertiaryLongPressMoveUpdate!(details)))(); return null; });
                     }
                     break;
                 }
@@ -435,45 +435,45 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     internal virtual void _checkLongPressEnd(PointerEvent @event)
     {
-        VelocityEstimate? estimate = this._velocityTracker!.getVelocityEstimate();
-        Velocity velocityLocal = ((estimate is null) ? Velocity.zero : new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond));
-        var details = new LongPressEndDetails(globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition, velocity: velocityLocal);
+        VelocityEstimate? estimate = _velocityTracker!.getVelocityEstimate();
+        Velocity velocityLocal = (estimate is null) ? Velocity.zero : new Velocity(pixelsPerSecond: estimate.pixelsPerSecond);
+        var details = new LongPressEndDetails(globalPosition: @event.position, localPosition: @event.localPosition, velocity: velocityLocal);
         _velocityTracker = null;
-        switch (this._initialButtons)
+        switch (_initialButtons)
         {
             case var __constant32796 when Equals(__constant32796, EventsLibrary.kPrimaryButton):
                 {
-                    if ((this.onLongPressEnd is not null))
+                    if (onLongPressEnd is not null)
                     {
-                        invokeCallback<object?>("onLongPressEnd", () => { ((Action)((() => this.onLongPressEnd!(details))))(); return null; });
+                        invokeCallback<object?>("onLongPressEnd", () => { ((Action)(() => onLongPressEnd!(details)))(); return null; });
                     }
-                    if ((this.onLongPressUp is not null))
+                    if (onLongPressUp is not null)
                     {
-                        invokeCallback<object?>("onLongPressUp", () => { ((Action)(this.onLongPressUp!))(); return null; });
+                        invokeCallback<object?>("onLongPressUp", () => { onLongPressUp!(); return null; });
                     }
                     break;
                 }
             case var __constant33065 when Equals(__constant33065, EventsLibrary.kSecondaryButton):
                 {
-                    if ((this.onSecondaryLongPressEnd is not null))
+                    if (onSecondaryLongPressEnd is not null)
                     {
-                        invokeCallback<object?>("onSecondaryLongPressEnd", () => { ((Action)((() => this.onSecondaryLongPressEnd!(details))))(); return null; });
+                        invokeCallback<object?>("onSecondaryLongPressEnd", () => { ((Action)(() => onSecondaryLongPressEnd!(details)))(); return null; });
                     }
-                    if ((this.onSecondaryLongPressUp is not null))
+                    if (onSecondaryLongPressUp is not null)
                     {
-                        invokeCallback<object?>("onSecondaryLongPressUp", () => { ((Action)(this.onSecondaryLongPressUp!))(); return null; });
+                        invokeCallback<object?>("onSecondaryLongPressUp", () => { onSecondaryLongPressUp!(); return null; });
                     }
                     break;
                 }
             case var __constant33390 when Equals(__constant33390, EventsLibrary.kTertiaryButton):
                 {
-                    if ((this.onTertiaryLongPressEnd is not null))
+                    if (onTertiaryLongPressEnd is not null)
                     {
-                        invokeCallback<object?>("onTertiaryLongPressEnd", () => { ((Action)((() => this.onTertiaryLongPressEnd!(details))))(); return null; });
+                        invokeCallback<object?>("onTertiaryLongPressEnd", () => { ((Action)(() => onTertiaryLongPressEnd!(details)))(); return null; });
                     }
-                    if ((this.onTertiaryLongPressUp is not null))
+                    if (onTertiaryLongPressUp is not null)
                     {
-                        invokeCallback<object?>("onTertiaryLongPressUp", () => { ((Action)(this.onTertiaryLongPressUp!))(); return null; });
+                        invokeCallback<object?>("onTertiaryLongPressUp", () => { onTertiaryLongPressUp!(); return null; });
                     }
                     break;
                 }
@@ -495,9 +495,9 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     public override void resolve(GestureDisposition disposition)
     {
-        if ((Equals(disposition, GestureDisposition.rejected)))
+        if (Equals(disposition, GestureDisposition.rejected))
         {
-            if (this._longPressAccepted)
+            if (_longPressAccepted)
             {
                 _reset();
             }

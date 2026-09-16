@@ -11,7 +11,7 @@ public abstract class Scribe
     public static async Future<bool> isFeatureAvailable()
     {
         bool? result = await _channel.invokeMethod<bool?>("Scribe.isFeatureAvailable");
-        if ((result is null))
+        if (result is null)
         {
             throw new FlutterError("MethodChannel.invokeMethod unexpectedly returned null.");
         }
@@ -22,7 +22,7 @@ public abstract class Scribe
     public static async Future<bool> isStylusHandwritingAvailable()
     {
         bool? result = await _channel.invokeMethod<bool?>("Scribe.isStylusHandwritingAvailable");
-        if ((result is null))
+        if (result is null)
         {
             throw new FlutterError("MethodChannel.invokeMethod unexpectedly returned null.");
         }

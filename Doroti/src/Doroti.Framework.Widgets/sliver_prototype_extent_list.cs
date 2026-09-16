@@ -36,7 +36,7 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         var element = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element));
+        return new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -55,20 +55,20 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     public override _RenderSliverPrototypeExtentList__sliver_prototype_extent_list renderObject => (_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)base.renderObject;
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        if ((Equals(slot, _prototypeSlot)))
+        if (Equals(slot, _prototypeSlot))
         {
-            DartRuntimePrimitives.Assert(() => (child is global::Doroti.Framework.Rendering.RenderBox));
-            this.renderObject.child = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
+            DartRuntimePrimitives.Assert(() => child is global::Doroti.Framework.Rendering.RenderBox);
+            renderObject.child = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
         }
         else
         {
-            base.insertRenderObjectChild(child, (slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot))));
+            base.insertRenderObjectChild(child, slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot)));
         }
     }
 
     public override void didAdoptChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        if ((!Equals(child, ((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child)))
+        if (!Equals(child, renderObject.child))
         {
             base.didAdoptChild(child);
         }
@@ -77,50 +77,50 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        if ((Equals(newSlot, _prototypeSlot)))
+        if (Equals(newSlot, _prototypeSlot))
         {
             DartRuntimePrimitives.Assert(() => false);
         }
         else
         {
-            base.moveRenderObjectChild(__child, (oldSlot is long indexoldSlot ? indexoldSlot : throw new ArgumentException("A sliver child requires an index.", nameof(oldSlot))), (newSlot is long indexnewSlot ? indexnewSlot : throw new ArgumentException("A sliver child requires an index.", nameof(newSlot))));
+            base.moveRenderObjectChild(__child, oldSlot is long indexoldSlot ? indexoldSlot : throw new ArgumentException("A sliver child requires an index.", nameof(oldSlot)), newSlot is long indexnewSlot ? indexnewSlot : throw new ArgumentException("A sliver child requires an index.", nameof(newSlot)));
         }
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        if ((Equals(((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child, __child)))
+        if (Equals(renderObject.child, __child))
         {
-            this.renderObject.child = null;
+            renderObject.child = null;
         }
         else
         {
-            base.removeRenderObjectChild(__child, (slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot))));
+            base.removeRenderObjectChild(__child, slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot)));
         }
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        if ((this._prototype is not null))
+        if (_prototype is not null)
         {
-            visitor(this._prototype!);
+            visitor(_prototype!);
         }
-        base.visitChildren((global::System.Action<Element>)visitor);
+        base.visitChildren(visitor);
     }
 
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        _prototype = updateChild(this._prototype, (((SliverPrototypeExtentList?)this.widget)!).prototypeItem, _prototypeSlot);
+        _prototype = updateChild(_prototype, ((SliverPrototypeExtentList?)widget)!.prototypeItem, _prototypeSlot);
     }
 
     public override void update(Widget newWidget)
     {
         var __newWidget = (SliverPrototypeExtentList)newWidget;
         base.update(__newWidget);
-        DartRuntimePrimitives.Assert(() => (Equals(this.widget, __newWidget)));
-        _prototype = updateChild(this._prototype, (((SliverPrototypeExtentList?)this.widget)!).prototypeItem, _prototypeSlot);
+        DartRuntimePrimitives.Assert(() => Equals(widget, __newWidget));
+        _prototype = updateChild(_prototype, ((SliverPrototypeExtentList?)widget)!.prototypeItem, _prototypeSlot);
     }
 
 }
@@ -135,64 +135,64 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : gl
 
     public virtual global::Doroti.Framework.Rendering.RenderBox? child
     {
-        get => this._child;
+        get => _child;
         set
         {
             var __value = value;
-            if ((this._child is not null))
+            if (_child is not null)
             {
-                dropChild(this._child!);
+                dropChild(_child!);
             }
             _child = __value;
-            if ((this._child is not null))
+            if (_child is not null)
             {
-                adoptChild(this._child!);
+                adoptChild(_child!);
             }
             markNeedsLayout();
         }
     }
     public override void performLayout()
     {
-        this.child!.layout(this.constraints.asBoxConstraints(), parentUsesSize: true);
+        child!.layout(constraints.asBoxConstraints(), parentUsesSize: true);
         base.performLayout();
     }
 
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        this._child?.attach(owner);
+        _child?.attach(owner);
     }
 
     public override void detach()
     {
         base.detach();
-        this._child?.detach();
+        _child?.detach();
     }
 
     public override void redepthChildren()
     {
-        if ((this._child is not null))
+        if (_child is not null)
         {
-            redepthChild(this._child!);
+            redepthChild(_child!);
         }
         base.redepthChildren();
     }
 
     public override void visitChildren(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        if ((this._child is not null))
+        if (_child is not null)
         {
-            visitor(this._child!);
+            visitor(_child!);
         }
-        base.visitChildren((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
+        base.visitChildren(visitor);
     }
 
     public override double? itemExtent
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => ((this.child is not null) && this.child!.hasSize));
-            return ((Equals(((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis, Axis.vertical)) ? this.child!.size.height : this.child!.size.width);
+            DartRuntimePrimitives.Assert(() => (child is not null) && child!.hasSize);
+            return Equals(constraints.axis, Axis.vertical) ? child!.size.height : child!.size.width;
         }
     }
 }

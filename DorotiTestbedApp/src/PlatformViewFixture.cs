@@ -210,7 +210,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 );
             List<Widget> content =
             [
-                .. (
+                ..
                     widget.Embedded
                         ? new Widget[]
                         {
@@ -228,7 +228,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                             ),
                         }
                         : []
-                ),
+                ,
                 new Wrap(
                     children:
                     [
@@ -263,7 +263,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         ),
                     ]
                 ),
-                .. (
+                ..
                     !widget.Embedded
                         ? new Widget[]
                         {
@@ -272,7 +272,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                             ),
                         }
                         : []
-                ),
+                ,
                 widget.Embedded
                     ? new SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -300,7 +300,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         )
                     )
                 ),
-                .. (
+                ..
                     host.QuerySupport(
                         new PlatformViewRequest(
                             0,
@@ -328,8 +328,8 @@ internal sealed class PlatformViewFixture : StatefulWidget
                             ),
                         }
                         : []
-                ),
-                .. (
+                ,
+                ..
                     widget.Embedded
                         ? new Widget[]
                         {
@@ -346,7 +346,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                             ),
                         }
                         : []
-                ),
+                ,
             ];
             // Android's stretch overscroll wraps the entire list in an image filter;
             // live native children cannot participate in that group effect.
@@ -510,7 +510,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         )
                     )
                 ),
-                .. (
+                ..
                     _mounted
                         ? new Widget[]
                         {
@@ -519,7 +519,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                             Native(2, "doroti/native-editor"),
                         }
                         : []
-                ),
+                ,
             ];
             // Scrollbar/glow painters are foreground layers; the basic native host
             // cannot composite them above controls. Wheel/touch scrolling still works.

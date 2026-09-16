@@ -57,8 +57,8 @@ public class Tooltip : global::Doroti.Framework.Widgets.StatefulWidget
         this.ignorePointer = ignorePointer;
         this.positionDelegate = positionDelegate;
         this.child = child;
-        System.Diagnostics.Debug.Assert((((message is null)) != ((richMessage is null))));
-        System.Diagnostics.Debug.Assert(((height is null) || (constraints is null)));
+        System.Diagnostics.Debug.Assert(message is null != richMessage is null);
+        System.Diagnostics.Debug.Assert((height is null) || (constraints is null));
     }
 
     public static bool dismissAllToolTips()
@@ -71,22 +71,22 @@ public class Tooltip : global::Doroti.Framework.Widgets.StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("message", this.message, showName: (this.message is null), defaultValue: ((this.message is null) ? null : DiagnosticsLibrary.kNoDefaultValue.ToString())));
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("richMessage", this.richMessage?.toPlainText(), showName: (this.richMessage is null), defaultValue: ((this.richMessage is null) ? null : DiagnosticsLibrary.kNoDefaultValue.ToString())));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("vertical offset", this.verticalOffset, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("position", value: this.preferBelow, ifTrue: "below", ifFalse: "above", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("semantics", value: this.excludeFromSemantics, ifTrue: "excluded", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("wait duration", this.waitDuration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("show duration", this.showDuration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("exit duration", this.exitDuration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.TooltipTriggerMode>("triggerMode", this.triggerMode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enableFeedback", value: this.enableFeedback, ifTrue: "true", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.TooltipPositionContext, Offset>>("positionDelegate", this.positionDelegate, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("message", message, showName: message is null, defaultValue: (message is null) ? null : DiagnosticsLibrary.kNoDefaultValue.ToString()));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("richMessage", richMessage?.toPlainText(), showName: richMessage is null, defaultValue: (richMessage is null) ? null : DiagnosticsLibrary.kNoDefaultValue.ToString()));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", constraints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", margin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("vertical offset", verticalOffset, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("position", value: preferBelow, ifTrue: "below", ifFalse: "above", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("semantics", value: excludeFromSemantics, ifTrue: "excluded", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("wait duration", waitDuration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("show duration", showDuration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("exit duration", exitDuration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.TooltipTriggerMode>("triggerMode", triggerMode, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enableFeedback", value: enableFeedback, ifTrue: "true", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::System.Func<global::Doroti.Framework.Widgets.TooltipPositionContext, Offset>>("positionDelegate", positionDelegate, defaultValue: null));
     }
 
 }
@@ -95,7 +95,7 @@ public class TooltipState : global::Doroti.Framework.Widgets.State<Tooltip>, glo
 {
     internal const double _defaultVerticalOffset = 24.0;
     internal const bool _defaultPreferBelow = true;
-    internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _defaultMargin = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.zero);
+    internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _defaultMargin = EdgeInsets.zero;
     internal static Duration _defaultShowDuration = Duration.Create(milliseconds: 1500L);
     internal static Duration _defaultExitDuration = Duration.Create(milliseconds: 100L);
     internal static Duration _defaultWaitDuration = Duration.zero;
@@ -109,61 +109,61 @@ public class TooltipState : global::Doroti.Framework.Widgets.State<Tooltip>, glo
     public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual string _tooltipMessage => DartRuntimePrimitives.ConvertValue<string>(((((Tooltip)this.widget).message ?? (string)((Tooltip)this.widget).richMessage!.toPlainText())));
+    internal virtual string _tooltipMessage => DartRuntimePrimitives.ConvertValue<string>(widget.message ?? widget.richMessage!.toPlainText());
     public virtual bool ensureTooltipVisible()
     {
-        return (((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.RawTooltipState>)this._tooltipKey).currentState?.ensureTooltipVisible() ?? false);
+        return _tooltipKey.currentState?.ensureTooltipVisible() ?? false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _visible = TooltipVisibility.of(this.context);
-        _tooltipTheme = TooltipTheme.of(this.context);
+        _visible = TooltipVisibility.of(context);
+        _tooltipTheme = TooltipTheme.of(context);
     }
 
     internal virtual double _getDefaultTooltipHeight()
     {
-        return (Theme.of(this.context).platform switch { TargetPlatform.macOS or TargetPlatform.linux => 24.0, TargetPlatform.windows => 24.0, TargetPlatform.android or TargetPlatform.fuchsia => 32.0, TargetPlatform.iOS => 32.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return Theme.of(context).platform switch { TargetPlatform.macOS or TargetPlatform.linux => 24.0, TargetPlatform.windows => 24.0, TargetPlatform.android or TargetPlatform.fuchsia => 32.0, TargetPlatform.iOS => 32.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Painting.EdgeInsets _getDefaultPadding()
     {
-        return (Theme.of(this.context).platform switch { TargetPlatform.macOS or TargetPlatform.linux => EdgeInsets.CreateSymmetric(horizontal: 8.0, vertical: 4.0), TargetPlatform.windows => EdgeInsets.CreateSymmetric(horizontal: 8.0, vertical: 4.0), TargetPlatform.android or TargetPlatform.fuchsia => EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 4.0), TargetPlatform.iOS => EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 4.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return Theme.of(context).platform switch { TargetPlatform.macOS or TargetPlatform.linux => EdgeInsets.CreateSymmetric(horizontal: 8.0, vertical: 4.0), TargetPlatform.windows => EdgeInsets.CreateSymmetric(horizontal: 8.0, vertical: 4.0), TargetPlatform.android or TargetPlatform.fuchsia => EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 4.0), TargetPlatform.iOS => EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 4.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static double _getDefaultFontSize(global::Doroti.Framework.Foundation.TargetPlatform platform)
     {
-        return (platform switch { TargetPlatform.macOS or TargetPlatform.linux => 12.0, TargetPlatform.windows => 12.0, TargetPlatform.android or TargetPlatform.fuchsia => 14.0, TargetPlatform.iOS => 14.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return platform switch { TargetPlatform.macOS or TargetPlatform.linux => 12.0, TargetPlatform.windows => 12.0, TargetPlatform.android or TargetPlatform.fuchsia => 14.0, TargetPlatform.iOS => 14.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Offset _getDefaultPositionDelegate(global::Doroti.Framework.Widgets.TooltipPositionContext context)
     {
-        double effectiveVerticalOffset = ((((Tooltip)this.widget).verticalOffset ?? this._tooltipTheme.verticalOffset) ?? _defaultVerticalOffset);
-        bool effectivePreferBelow = ((((Tooltip)this.widget).preferBelow ?? this._tooltipTheme.preferBelow) ?? _defaultPreferBelow);
-        var resolvedContext = new global::Doroti.Framework.Widgets.TooltipPositionContext(target: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).target, targetSize: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).targetSize, tooltipSize: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).tooltipSize, overlaySize: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).overlaySize, verticalOffset: effectiveVerticalOffset, preferBelow: effectivePreferBelow);
-        return ((((Tooltip)this.widget).positionDelegate is null ? GeometryLibrary.positionDependentBox(size: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).overlaySize, childSize: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).tooltipSize, target: ((global::Doroti.Framework.Widgets.TooltipPositionContext)context).target, verticalOffset: effectiveVerticalOffset, preferBelow: effectivePreferBelow) : ((Tooltip)this.widget).positionDelegate.Invoke(resolvedContext)));
+        double effectiveVerticalOffset = (widget.verticalOffset ?? _tooltipTheme.verticalOffset) ?? _defaultVerticalOffset;
+        bool effectivePreferBelow = (widget.preferBelow ?? _tooltipTheme.preferBelow) ?? _defaultPreferBelow;
+        var resolvedContext = new global::Doroti.Framework.Widgets.TooltipPositionContext(target: context.target, targetSize: context.targetSize, tooltipSize: context.tooltipSize, overlaySize: context.overlaySize, verticalOffset: effectiveVerticalOffset, preferBelow: effectivePreferBelow);
+        return widget.positionDelegate is null ? GeometryLibrary.positionDependentBox(size: context.overlaySize, childSize: context.tooltipSize, target: context.target, verticalOffset: effectiveVerticalOffset, preferBelow: effectivePreferBelow) : widget.positionDelegate.Invoke(resolvedContext);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if ((this._tooltipMessage.Length == 0))
+        if (_tooltipMessage.Length == 0)
         {
-            return (((Tooltip)this.widget).child ?? SizedBox.CreateShrink());
+            return widget.child ?? SizedBox.CreateShrink();
         }
-        var (defaultTextStyle, defaultDecoration) = (Theme.of(context) switch { ThemeData { brightness: Brightness.dark, textTheme: TextTheme textThemeLocal, platform: global::Doroti.Framework.Foundation.TargetPlatform platformLocal } __object18397 => (((global::Doroti.Framework.Painting.TextStyle, global::Doroti.Framework.Painting.BoxDecoration))((textThemeLocal.bodyMedium!.copyWith(color: Colors.black, fontSize: _getDefaultFontSize(platformLocal)), new global::Doroti.Framework.Painting.BoxDecoration(color: Colors.white.withOpacity(0.9), borderRadius: BorderRadius.CreateAll(Radius.circular(4)))))), ThemeData { brightness: Brightness.light, textTheme: TextTheme textThemeAlternate, platform: global::Doroti.Framework.Foundation.TargetPlatform platformAlternate } __object18858 => (((global::Doroti.Framework.Painting.TextStyle, global::Doroti.Framework.Painting.BoxDecoration))((textThemeAlternate.bodyMedium!.copyWith(color: Colors.white, fontSize: _getDefaultFontSize(platformAlternate)), new global::Doroti.Framework.Painting.BoxDecoration(color: Colors.grey[700L]!.withOpacity(0.9), borderRadius: BorderRadius.CreateAll(Radius.circular(4)))))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        var defaultConstraints = new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: (((((Tooltip)this.widget).height ?? this._tooltipTheme.height) ?? (double)_getDefaultTooltipHeight())));
-        global::Doroti.Framework.Widgets.Widget tooltipBox = ((global::Doroti.Framework.Widgets.Widget)new _TooltipBox__tooltip(constraints: ((((Tooltip)this.widget).constraints ?? this._tooltipTheme.constraints) ?? defaultConstraints), textStyle: ((((Tooltip)this.widget).textStyle ?? this._tooltipTheme.textStyle) ?? defaultTextStyle), textAlign: ((((Tooltip)this.widget).textAlign ?? this._tooltipTheme.textAlign) ?? _defaultTextAlign), decoration: ((((Tooltip)this.widget).decoration ?? this._tooltipTheme.decoration) ?? defaultDecoration), padding: (((((Tooltip)this.widget).padding ?? this._tooltipTheme.padding) ?? (global::Doroti.Framework.Painting.EdgeInsetsGeometry)_getDefaultPadding())), margin: ((((Tooltip)this.widget).margin ?? this._tooltipTheme.margin) ?? _defaultMargin), richMessage: (((Tooltip)this.widget).richMessage ?? new global::Doroti.Framework.Painting.TextSpan(text: ((Tooltip)this.widget).message))));
-        global::Doroti.Framework.Widgets.Widget effectiveChild = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MouseRegion(cursor: (((Tooltip)this.widget).mouseCursor ?? MouseCursor.defer), child: (((Tooltip)this.widget).child ?? SizedBox.CreateShrink())));
-        bool excludeFromSemanticsLocal = ((((Tooltip)this.widget).excludeFromSemantics ?? this._tooltipTheme.excludeFromSemantics) ?? _defaultExcludeFromSemantics);
-        if (this._visible)
+        var (defaultTextStyle, defaultDecoration) = Theme.of(context) switch { ThemeData { brightness: Brightness.dark, textTheme: TextTheme textThemeLocal, platform: global::Doroti.Framework.Foundation.TargetPlatform platformLocal } __object18397 => ((global::Doroti.Framework.Painting.TextStyle, global::Doroti.Framework.Painting.BoxDecoration))(textThemeLocal.bodyMedium!.copyWith(color: Colors.black, fontSize: _getDefaultFontSize(platformLocal)), new global::Doroti.Framework.Painting.BoxDecoration(color: Colors.white.withOpacity(0.9), borderRadius: BorderRadius.CreateAll(Radius.circular(4)))), ThemeData { brightness: Brightness.light, textTheme: TextTheme textThemeAlternate, platform: global::Doroti.Framework.Foundation.TargetPlatform platformAlternate } __object18858 => ((global::Doroti.Framework.Painting.TextStyle, global::Doroti.Framework.Painting.BoxDecoration))(textThemeAlternate.bodyMedium!.copyWith(color: Colors.white, fontSize: _getDefaultFontSize(platformAlternate)), new global::Doroti.Framework.Painting.BoxDecoration(color: Colors.grey[700L]!.withOpacity(0.9), borderRadius: BorderRadius.CreateAll(Radius.circular(4)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var defaultConstraints = new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: (widget.height ?? _tooltipTheme.height) ?? (double)_getDefaultTooltipHeight());
+        global::Doroti.Framework.Widgets.Widget tooltipBox = new _TooltipBox__tooltip(constraints: (widget.constraints ?? _tooltipTheme.constraints) ?? defaultConstraints, textStyle: (widget.textStyle ?? _tooltipTheme.textStyle) ?? defaultTextStyle, textAlign: (widget.textAlign ?? _tooltipTheme.textAlign) ?? _defaultTextAlign, decoration: (widget.decoration ?? _tooltipTheme.decoration) ?? defaultDecoration, padding: (widget.padding ?? _tooltipTheme.padding) ?? _getDefaultPadding(), margin: (widget.margin ?? _tooltipTheme.margin) ?? _defaultMargin, richMessage: widget.richMessage ?? new global::Doroti.Framework.Painting.TextSpan(text: widget.message));
+        global::Doroti.Framework.Widgets.Widget effectiveChild = new global::Doroti.Framework.Widgets.MouseRegion(cursor: widget.mouseCursor ?? MouseCursor.defer, child: widget.child ?? SizedBox.CreateShrink());
+        bool excludeFromSemanticsLocal = (widget.excludeFromSemantics ?? _tooltipTheme.excludeFromSemantics) ?? _defaultExcludeFromSemantics;
+        if (_visible)
         {
-            effectiveChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.RawTooltip(key: this._tooltipKey, semanticsTooltip: (excludeFromSemanticsLocal ? null : this._tooltipMessage), tooltipBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation) => new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: tooltipBox))), touchDelay: ((((Tooltip)this.widget).showDuration ?? this._tooltipTheme.showDuration) ?? _defaultShowDuration), triggerMode: ((((Tooltip)this.widget).triggerMode ?? this._tooltipTheme.triggerMode) ?? _defaultTriggerMode), enableFeedback: ((((Tooltip)this.widget).enableFeedback ?? this._tooltipTheme.enableFeedback) ?? _defaultEnableFeedback), hoverDelay: ((((Tooltip)this.widget).waitDuration ?? this._tooltipTheme.waitDuration) ?? _defaultWaitDuration), enableTapToDismiss: ((Tooltip)this.widget).enableTapToDismiss, onTriggered: ((Tooltip)this.widget).onTriggered, dismissDelay: ((((Tooltip)this.widget).exitDuration ?? this._tooltipTheme.exitDuration) ?? _defaultExitDuration), positionDelegate: (global::System.Func<global::Doroti.Framework.Widgets.TooltipPositionContext, Offset>)this._getDefaultPositionDelegate, ignorePointer: (((Tooltip)this.widget).ignorePointer ?? (((Tooltip)this.widget).message is not null)), child: effectiveChild));
+            effectiveChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.RawTooltip(key: _tooltipKey, semanticsTooltip: excludeFromSemanticsLocal ? null : _tooltipMessage, tooltipBuilder: (context, animation) => new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: tooltipBox), touchDelay: (widget.showDuration ?? _tooltipTheme.showDuration) ?? _defaultShowDuration, triggerMode: (widget.triggerMode ?? _tooltipTheme.triggerMode) ?? _defaultTriggerMode, enableFeedback: (widget.enableFeedback ?? _tooltipTheme.enableFeedback) ?? _defaultEnableFeedback, hoverDelay: (widget.waitDuration ?? _tooltipTheme.waitDuration) ?? _defaultWaitDuration, enableTapToDismiss: widget.enableTapToDismiss, onTriggered: widget.onTriggered, dismissDelay: (widget.exitDuration ?? _tooltipTheme.exitDuration) ?? _defaultExitDuration, positionDelegate: _getDefaultPositionDelegate, ignorePointer: widget.ignorePointer ?? (widget.message is not null), child: effectiveChild));
         }
         return effectiveChild;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -173,16 +173,16 @@ public class TooltipState : global::Doroti.Framework.Widgets.State<Tooltip>, glo
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._ticker is null))
+                if (_ticker is null)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
+        _ticker = new global::Doroti.Framework.Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
         _updateTickerModeNotifier();
         _updateTicker();
-        return this._ticker!;
+        return _ticker!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -190,14 +190,14 @@ public class TooltipState : global::Doroti.Framework.Widgets.State<Tooltip>, glo
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._ticker is null) || !this._ticker!.isActive))
+                if ((_ticker is null) || !_ticker!.isActive)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        this._tickerModeNotifier = null;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        _tickerModeNotifier = null;
         base.dispose();
     }
 
@@ -210,31 +210,31 @@ public class TooltipState : global::Doroti.Framework.Widgets.State<Tooltip>, glo
 
     public virtual void _updateTicker()
     {
-        TickerModeData values = this._tickerModeNotifier!.value;
-        if ((this._ticker is not null))
+        TickerModeData values = _tickerModeNotifier!.value;
+        if (_ticker is not null)
         {
-            this._ticker!.muted = !((TickerModeData)values).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
+            _ticker!.muted = !values.enabled;
+            _ticker!.forceFrames = values.forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        newNotifier.addListener(this._updateTicker);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        newNotifier.addListener(_updateTicker);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -262,7 +262,7 @@ internal class _TooltipBox__tooltip : global::Doroti.Framework.Widgets.Stateless
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: this.constraints, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this.textStyle, textAlign: this.textAlign, child: new global::Doroti.Framework.Widgets.Container(decoration: this.decoration, padding: this.padding, margin: this.margin, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, heightFactor: 1.0, child: Text.CreateRich(this.richMessage, style: this.textStyle, textAlign: this.textAlign))))));
+        return new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle, textAlign: textAlign, child: new global::Doroti.Framework.Widgets.Container(decoration: decoration, padding: padding, margin: margin, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, heightFactor: 1.0, child: Text.CreateRich(richMessage, style: textStyle, textAlign: textAlign)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -32,8 +32,8 @@ public class CupertinoFormSection : global::Doroti.Framework.Widgets.StatelessWi
         this.backgroundColor = __backgroundColor;
         this.decoration = decoration;
         this.clipBehavior = clipBehavior;
-        this._type = CupertinoListSectionType.@base;
-        System.Diagnostics.Debug.Assert((checked((long)(children.Count)) > 0L));
+        _type = CupertinoListSectionType.@base;
+        System.Diagnostics.Debug.Assert(checked(children.Count) > 0L);
     }
 
     public static CupertinoFormSection CreateInsetGrouped(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> children = default!, global::Doroti.Framework.Widgets.Widget? header = null, global::Doroti.Framework.Widgets.Widget? footer = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry margin = default!, Color backgroundColor = default!, global::Doroti.Framework.Painting.BoxDecoration? decoration = null, Clip clipBehavior = Clip.none)
@@ -54,17 +54,17 @@ public class CupertinoFormSection : global::Doroti.Framework.Widgets.StatelessWi
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget? headerWidget = ((global::Doroti.Framework.Widgets.Widget?)((this.header is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.header!)));
-        global::Doroti.Framework.Widgets.Widget? footerWidget = ((global::Doroti.Framework.Widgets.Widget?)((this.footer is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.footer!)));
-        switch (this._type)
+        global::Doroti.Framework.Widgets.Widget? headerWidget = (header is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: header!);
+        global::Doroti.Framework.Widgets.Widget? footerWidget = (footer is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: footer!);
+        switch (_type)
         {
-            case var __constant9391 when (Equals(__constant9391, CupertinoListSectionType.@base)):
+            case var __constant9391 when Equals(__constant9391, CupertinoListSectionType.@base):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)new CupertinoListSection(header: headerWidget, footer: footerWidget, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
+                    return new CupertinoListSection(header: headerWidget, footer: footerWidget, margin: margin, backgroundColor: backgroundColor, decoration: decoration, clipBehavior: clipBehavior, hasLeading: false, children: children);
                 }
-            case var __constant9746 when (Equals(__constant9746, CupertinoListSectionType.insetGrouped)):
+            case var __constant9746 when Equals(__constant9746, CupertinoListSectionType.insetGrouped):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)new CupertinoListSection(header: headerWidget, footer: footerWidget, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
+                    return new CupertinoListSection(header: headerWidget, footer: footerWidget, margin: margin, backgroundColor: backgroundColor, decoration: decoration, clipBehavior: clipBehavior, hasLeading: false, children: children);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

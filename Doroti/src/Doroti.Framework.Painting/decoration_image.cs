@@ -63,28 +63,28 @@ public class DecorationImage
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((((((((__other is DecorationImage) && (Equals(((DecorationImage)((DecorationImage)__other)).image, this.image))) && (Equals(((DecorationImage)((DecorationImage)__other)).colorFilter, this.colorFilter))) && (Equals(((DecorationImage)((DecorationImage)__other)).fit, this.fit))) && (Equals(((DecorationImage)((DecorationImage)__other)).alignment, this.alignment))) && (Equals(((DecorationImage)((DecorationImage)__other)).centerSlice, this.centerSlice))) && (Equals(((DecorationImage)((DecorationImage)__other)).repeat, this.repeat))) && (((DecorationImage)((DecorationImage)__other)).matchTextDirection == this.matchTextDirection)) && (((DecorationImage)((DecorationImage)__other)).scale == this.scale)) && (((DecorationImage)((DecorationImage)__other)).opacity == this.opacity)) && (Equals(((DecorationImage)((DecorationImage)__other)).filterQuality, this.filterQuality))) && (((DecorationImage)((DecorationImage)__other)).invertColors == this.invertColors)) && (((DecorationImage)((DecorationImage)__other)).isAntiAlias == this.isAntiAlias));
+        return (__other is DecorationImage) && Equals(__other.image, image) && Equals(__other.colorFilter, colorFilter) && Equals(__other.fit, fit) && Equals(__other.alignment, alignment) && Equals(__other.centerSlice, centerSlice) && Equals(__other.repeat, repeat) && (__other.matchTextDirection == matchTextDirection) && (__other.scale == scale) && (__other.opacity == opacity) && Equals(__other.filterQuality, filterQuality) && (__other.invertColors == invertColors) && (__other.isAntiAlias == isAntiAlias);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.image, this.colorFilter, this.fit, this.alignment, this.centerSlice, this.repeat, this.matchTextDirection, this.scale, this.opacity, this.filterQuality, this.invertColors, this.isAntiAlias);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(image, colorFilter, fit, alignment, centerSlice, repeat, matchTextDirection, scale, opacity, filterQuality, invertColors, isAntiAlias);
     public override string ToString()
     {
-        var properties = new List<string> { $"{this.image}", $"{this.alignment}", $"scale {this.scale.toStringAsFixed(1L)}", $"opacity {this.opacity.toStringAsFixed(1L)}", $"{this.filterQuality}" };
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage"))}({string.Join(", ", properties)})";
+        var properties = new List<string> { $"{image}", $"{alignment}", $"scale {scale.toStringAsFixed(1L)}", $"opacity {opacity.toStringAsFixed(1L)}", $"{filterQuality}" };
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage")}({string.Join(", ", properties)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static DecorationImage? lerp(DecorationImage? a, DecorationImage? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) || (t == 0.0)))
+        if (DartRuntimePrimitives.Identical(a, b) || (t == 0.0))
         {
             return a;
         }
-        if ((t == 1.0))
+        if (t == 1.0)
         {
             return b;
         }
@@ -116,40 +116,40 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
     public virtual void paint(Canvas canvas, Rect rect, Path? clipPath, ImageConfiguration configuration, double blend = 1.0, BlendMode blendMode = BlendMode.srcOver)
     {
         var flipHorizontallyLocal = false;
-        if (((DecorationImage)this._details).matchTextDirection)
+        if (_details.matchTextDirection)
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((((ImageConfiguration)configuration).textDirection is null))
+                    if (configuration.textDirection is null)
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("DecorationImage.matchTextDirection can only be used when a TextDirection is available."), new ErrorDescription("When DecorationImagePainter.paint() was called, there was no text direction provided " + "in the ImageConfiguration object to match."), new DiagnosticsProperty<DecorationImage>("The DecorationImage was", this._details, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<ImageConfiguration>("The ImageConfiguration was", configuration, style: DiagnosticsTreeStyle.errorProperty) });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("DecorationImage.matchTextDirection can only be used when a TextDirection is available."), new ErrorDescription("When DecorationImagePainter.paint() was called, there was no text direction provided " + "in the ImageConfiguration object to match."), new DiagnosticsProperty<DecorationImage>("The DecorationImage was", _details, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<ImageConfiguration>("The ImageConfiguration was", configuration, style: DiagnosticsTreeStyle.errorProperty) });
                     }
                     return true;
                 });
-            if ((Equals(((ImageConfiguration)configuration).textDirection, TextDirection.rtl)))
+            if (Equals(configuration.textDirection, TextDirection.rtl))
             {
                 flipHorizontallyLocal = true;
             }
         }
-        ImageStream newImageStream = ((DecorationImage)this._details).image.resolve(configuration);
-        if ((!Equals(((ImageStream)newImageStream).key, this._imageStream?.key)))
+        ImageStream newImageStream = _details.image.resolve(configuration);
+        if (!Equals(newImageStream.key, _imageStream?.key))
         {
-            var listener = new ImageStreamListener(this._handleImage, onError: ((DecorationImage)this._details).onError);
-            this._imageStream?.removeListener(listener);
+            var listener = new ImageStreamListener(_handleImage, onError: _details.onError);
+            _imageStream?.removeListener(listener);
             _imageStream = newImageStream;
-            this._imageStream!.addListener(listener);
+            _imageStream!.addListener(listener);
         }
-        if ((this._image is null))
+        if (_image is null)
         {
             return;
         }
-        if ((clipPath is not null))
+        if (clipPath is not null)
         {
             canvas.save();
             canvas.clipPath(clipPath);
         }
-        Decoration_imageLibrary.paintImage(canvas: canvas, rect: rect, image: this._image!.image, debugImageLabel: this._image!.debugLabel, scale: (((DecorationImage)this._details).scale * this._image!.scale), colorFilter: ((DecorationImage)this._details).colorFilter, fit: ((DecorationImage)this._details).fit, alignment: ((DecorationImage)this._details).alignment.resolve(((ImageConfiguration)configuration).textDirection), centerSlice: ((DecorationImage)this._details).centerSlice, repeat: ((DecorationImage)this._details).repeat, flipHorizontally: flipHorizontallyLocal, opacity: (((DecorationImage)this._details).opacity * blend), filterQuality: ((DecorationImage)this._details).filterQuality, invertColors: ((DecorationImage)this._details).invertColors, isAntiAlias: ((DecorationImage)this._details).isAntiAlias, blendMode: blendMode);
-        if ((clipPath is not null))
+        Decoration_imageLibrary.paintImage(canvas: canvas, rect: rect, image: _image!.image, debugImageLabel: _image!.debugLabel, scale: _details.scale * _image!.scale, colorFilter: _details.colorFilter, fit: _details.fit, alignment: _details.alignment.resolve(configuration.textDirection), centerSlice: _details.centerSlice, repeat: _details.repeat, flipHorizontally: flipHorizontallyLocal, opacity: _details.opacity * blend, filterQuality: _details.filterQuality, invertColors: _details.invertColors, isAntiAlias: _details.isAntiAlias, blendMode: blendMode);
+        if (clipPath is not null)
         {
             canvas.restore();
         }
@@ -157,34 +157,34 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
 
     internal virtual void _handleImage(ImageInfo value, bool synchronousCall)
     {
-        if ((Equals(this._image, value)))
+        if (Equals(_image, value))
         {
             return;
         }
-        if (((this._image is not null) && this._image!.isCloneOf(value)))
+        if ((_image is not null) && _image!.isCloneOf(value))
         {
             value.dispose();
             return;
         }
-        this._image?.dispose();
+        _image?.dispose();
         _image = value;
         if (!synchronousCall)
         {
-            this._onChanged();
+            _onChanged();
         }
     }
 
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this._imageStream?.removeListener(new ImageStreamListener(this._handleImage, onError: ((DecorationImage)this._details).onError));
-        this._image?.dispose();
+        _imageStream?.removeListener(new ImageStreamListener(_handleImage, onError: _details.onError));
+        _image?.dispose();
         _image = null;
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImagePainter"))}(stream: {this._imageStream}, image: {this._image}) for {this._details}";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImagePainter")}(stream: {_imageStream}, image: {_image}) for {_details}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -225,26 +225,26 @@ public static partial class Decoration_imageLibrary
         global::Doroti.Ui.Size outputSize = rect.size;
         var inputSize = new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble());
         global::Doroti.Ui.Offset? sliceBorder = default!;
-        if ((centerSlice is not null))
+        if (centerSlice is not null)
         {
             Rect centerSlice__value20139 = DartRuntimePrimitives.RequireValue(centerSlice);
-            sliceBorder = ((inputSize / scale) - DartRuntimePrimitives.RequireValue(centerSlice__value20139).size);
-            outputSize = (outputSize - DartRuntimePrimitives.RequireValue(sliceBorder));
-            inputSize = (inputSize - (DartRuntimePrimitives.RequireValue(sliceBorder) * scale));
+            sliceBorder = (inputSize / scale) - DartRuntimePrimitives.RequireValue(centerSlice__value20139).size;
+            outputSize = outputSize - DartRuntimePrimitives.RequireValue(sliceBorder);
+            inputSize = inputSize - (DartRuntimePrimitives.RequireValue(sliceBorder) * scale);
         }
         fit ??= ((centerSlice is null) ? BoxFit.scaleDown : BoxFit.fill);
-        DartRuntimePrimitives.Assert(() => ((centerSlice is null) || (((!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.none)) && (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.cover))))));
-        FittedSizes fittedSizes = Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), (inputSize / scale), outputSize);
-        global::Doroti.Ui.Size sourceSize = (((FittedSizes)fittedSizes).source * scale);
-        global::Doroti.Ui.Size destinationSize = ((FittedSizes)fittedSizes).destination;
-        if ((centerSlice is not null))
+        DartRuntimePrimitives.Assert(() => (centerSlice is null) || (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.none)) && (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.cover)));
+        FittedSizes fittedSizes = Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), inputSize / scale, outputSize);
+        global::Doroti.Ui.Size sourceSize = fittedSizes.source * scale;
+        global::Doroti.Ui.Size destinationSize = fittedSizes.destination;
+        if (centerSlice is not null)
         {
             Rect centerSlice__value20675 = DartRuntimePrimitives.RequireValue(centerSlice);
             outputSize += DartRuntimePrimitives.RequireValue(sliceBorder);
             destinationSize += DartRuntimePrimitives.RequireValue(sliceBorder);
-            DartRuntimePrimitives.Assert(() => (Equals(sourceSize, inputSize)));
+            DartRuntimePrimitives.Assert(() => Equals(sourceSize, inputSize));
         }
-        if (((!Equals(repeat, ImageRepeat.noRepeat)) && (Equals(destinationSize, outputSize))))
+        if ((!Equals(repeat, ImageRepeat.noRepeat)) && Equals(destinationSize, outputSize))
         {
             repeat = ImageRepeat.noRepeat;
         }
@@ -254,7 +254,7 @@ public static partial class Decoration_imageLibrary
     __cascade.isAntiAlias = isAntiAlias;
     return __cascade;
 }))();
-        if ((colorFilter is not null))
+        if (colorFilter is not null)
         {
             paint.colorFilter = colorFilter;
         }
@@ -262,24 +262,24 @@ public static partial class Decoration_imageLibrary
         paint.filterQuality = filterQuality;
         paint.invertColors = invertColors;
         paint.blendMode = blendMode;
-        double halfWidthDelta = (((outputSize.width - destinationSize.width)) / 2.0);
-        double halfHeightDelta = (((outputSize.height - destinationSize.height)) / 2.0);
-        double dx = (halfWidthDelta + (((flipHorizontally ? -((Alignment)alignment).x : ((Alignment)alignment).x)) * halfWidthDelta));
-        double dy = (halfHeightDelta + (((Alignment)alignment).y * halfHeightDelta));
+        double halfWidthDelta = (outputSize.width - destinationSize.width) / 2.0;
+        double halfHeightDelta = (outputSize.height - destinationSize.height) / 2.0;
+        double dx = halfWidthDelta + ((flipHorizontally ? -alignment.x : alignment.x) * halfWidthDelta);
+        double dy = halfHeightDelta + (alignment.y * halfHeightDelta);
         global::Doroti.Ui.Offset destinationPosition = rect.topLeft.translate(dx, dy);
-        global::Doroti.Ui.Rect destinationRect = (destinationPosition & destinationSize);
+        global::Doroti.Ui.Rect destinationRect = destinationPosition & destinationSize;
         var invertedCanvas = false;
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            double maxDevicePixelRatio = Enumerable.Aggregate(PaintingBinding.instance.platformDispatcher.views, (double)0.0, ((previousValue, view) => Math.Max(previousValue, view.devicePixelRatio)));
-            var sizeInfo = new ImageSizeInfo(source: (debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>"), imageSize: new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble()), displaySize: (outputSize * maxDevicePixelRatio));
+            double maxDevicePixelRatio = Enumerable.Aggregate(PaintingBinding.instance.platformDispatcher.views, (double)0.0, (previousValue, view) => Math.Max(previousValue, view.devicePixelRatio));
+            var sizeInfo = new ImageSizeInfo(source: debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>", imageSize: new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble()), displaySize: outputSize * maxDevicePixelRatio);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((DebugLibrary.debugInvertOversizedImages && (((ImageSizeInfo)sizeInfo).decodedSizeInBytes > (((ImageSizeInfo)sizeInfo).displaySizeInBytes + DebugLibrary.debugImageOverheadAllowance))))
+                    if (DebugLibrary.debugInvertOversizedImages && (sizeInfo.decodedSizeInBytes > (sizeInfo.displaySizeInBytes + DebugLibrary.debugImageOverheadAllowance)))
                     {
-                        long overheadInKilobytes = (checked((long)(((((ImageSizeInfo)sizeInfo).decodedSizeInBytes - ((ImageSizeInfo)sizeInfo).displaySizeInBytes)) / 1024L)));
-                        long outputWidth = ((ImageSizeInfo)sizeInfo).displaySize.width.toInt();
-                        long outputHeight = ((ImageSizeInfo)sizeInfo).displaySize.height.toInt();
+                        long overheadInKilobytes = checked((sizeInfo.decodedSizeInBytes - sizeInfo.displaySizeInBytes) / 1024L);
+                        long outputWidth = sizeInfo.displaySize.width.toInt();
+                        long outputHeight = sizeInfo.displaySize.height.toInt();
                         FlutterError.reportError(new FlutterErrorDetails(exception: $"Image {debugImageLabel} has a display size of " + $"{outputWidth}×{outputHeight} but a decode size of " + $"{image.width}×{image.height}, which uses an additional " + $"{overheadInKilobytes}KB (assuming a device pixel ratio of " + $"{maxDevicePixelRatio}).\n\n" + "Consider resizing the asset ahead of time, supplying a cacheWidth " + $"parameter of {outputWidth}, a cacheHeight parameter of " + $"{outputHeight}, or using a ResizeImage.", library: "painting library", context: new ErrorDescription("while painting an image")));
                         canvas.saveLayer(destinationRect, ((Func<Paint>)(() =>
 {
@@ -287,7 +287,7 @@ public static partial class Decoration_imageLibrary
     __cascade.colorFilter = ColorFilter.matrix(new List<double> { -1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0 });
     return __cascade;
 }))());
-                        double dyLocal = -((rect.top + (rect.height / 2.0)));
+                        double dyLocal = -(rect.top + (rect.height / 2.0));
                         canvas.translate(0.0, -dyLocal);
                         canvas.scale(1.0, -1.0);
                         canvas.translate(0.0, dyLocal);
@@ -297,44 +297,44 @@ public static partial class Decoration_imageLibrary
                 });
             if (!_lastFrameImageSizeInfo.Contains(sizeInfo))
             {
-                ImageSizeInfo? existingSizeInfo = _pendingImageSizeInfo.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((ImageSizeInfo)sizeInfo).source));
-                if (((existingSizeInfo is null) || (((ImageSizeInfo)existingSizeInfo).displaySizeInBytes < ((ImageSizeInfo)sizeInfo).displaySizeInBytes)))
+                ImageSizeInfo? existingSizeInfo = _pendingImageSizeInfo.GetValueOrDefault(DartRuntimePrimitives.RequireReference(sizeInfo.source));
+                if ((existingSizeInfo is null) || (existingSizeInfo.displaySizeInBytes < sizeInfo.displaySizeInBytes))
                 {
-                    _pendingImageSizeInfo[((ImageSizeInfo)sizeInfo).source!] = sizeInfo;
+                    _pendingImageSizeInfo[sizeInfo.source!] = sizeInfo;
                 }
                 DebugLibrary.debugOnPaintImage?.Invoke(sizeInfo);
-                SchedulerBinding.instance.addPostFrameCallback(((timeStamp) =>
+                SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
                 {
                     _lastFrameImageSizeInfo = _pendingImageSizeInfo.Values.toSet();
-                    if ((checked((long)(_pendingImageSizeInfo.Count)) == 0))
+                    if (checked((long)_pendingImageSizeInfo.Count) == 0)
                     {
                         return;
                     }
                     Dart_developerLibrary.postEvent("Flutter.ImageSizesForFrame", new DartMap<string, object>());
                     _pendingImageSizeInfo = new DartMap<string, ImageSizeInfo>();
-                }), debugLabel: "paintImage.recordImageSizes");
+                }, debugLabel: "paintImage.recordImageSizes");
             }
         }
-        bool needSave = (((centerSlice is not null) || (!Equals(repeat, ImageRepeat.noRepeat))) || flipHorizontally);
+        bool needSave = (centerSlice is not null) || (!Equals(repeat, ImageRepeat.noRepeat)) || flipHorizontally;
         if (needSave)
         {
             canvas.save();
         }
-        if ((!Equals(repeat, ImageRepeat.noRepeat)))
+        if (!Equals(repeat, ImageRepeat.noRepeat))
         {
             canvas.clipRect(rect);
         }
         if (flipHorizontally)
         {
-            double dxLocal = -((rect.left + (rect.width / 2.0)));
+            double dxLocal = -(rect.left + (rect.width / 2.0));
             canvas.translate(-dxLocal, 0.0);
             canvas.scale(-1.0, 1.0);
             canvas.translate(dxLocal, 0.0);
         }
-        if ((centerSlice is null))
+        if (centerSlice is null)
         {
-            global::Doroti.Ui.Rect sourceRect = alignment.inscribe(sourceSize, (Offset.zero & inputSize));
-            if ((Equals(repeat, ImageRepeat.noRepeat)))
+            global::Doroti.Ui.Rect sourceRect = alignment.inscribe(sourceSize, Offset.zero & inputSize);
+            if (Equals(repeat, ImageRepeat.noRepeat))
             {
                 canvas.drawImageRect(image, sourceRect, destinationRect, paint);
             }
@@ -348,8 +348,8 @@ public static partial class Decoration_imageLibrary
         }
         else
         {
-            canvas.scale((1L / scale));
-            if ((Equals(repeat, ImageRepeat.noRepeat)))
+            canvas.scale(1L / scale);
+            if (Equals(repeat, ImageRepeat.noRepeat))
             {
                 canvas.drawImageNine(image, _scaleRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(centerSlice)), scale), _scaleRect(destinationRect, scale), paint);
             }
@@ -382,15 +382,15 @@ public static partial class Decoration_imageLibrary
         var stopY = 0L;
         double strideX = fundamentalRect.width;
         double strideY = fundamentalRect.height;
-        if (((Equals(repeat, ImageRepeat.repeat)) || (Equals(repeat, ImageRepeat.repeatX))))
+        if (Equals(repeat, ImageRepeat.repeat) || Equals(repeat, ImageRepeat.repeatX))
         {
-            startX = ((((outputRect.left - fundamentalRect.left)) / strideX)).floor();
-            stopX = ((((outputRect.right - fundamentalRect.right)) / strideX)).ceil();
+            startX = ((outputRect.left - fundamentalRect.left) / strideX).floor();
+            stopX = ((outputRect.right - fundamentalRect.right) / strideX).ceil();
         }
-        if (((Equals(repeat, ImageRepeat.repeat)) || (Equals(repeat, ImageRepeat.repeatY))))
+        if (Equals(repeat, ImageRepeat.repeat) || Equals(repeat, ImageRepeat.repeatY))
         {
-            startY = ((((outputRect.top - fundamentalRect.top)) / strideY)).floor();
-            stopY = ((((outputRect.bottom - fundamentalRect.bottom)) / strideY)).ceil();
+            startY = ((outputRect.top - fundamentalRect.top) / strideY).floor();
+            stopY = ((outputRect.bottom - fundamentalRect.bottom) / strideY).ceil();
         }
         return new List<global::Doroti.Ui.Rect>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -399,7 +399,7 @@ public static partial class Decoration_imageLibrary
 
 public static partial class Decoration_imageLibrary
 {
-    internal static Rect _scaleRect(Rect rect, double scale) => Rect.fromLTRB((rect.left * scale), (rect.top * scale), (rect.right * scale), (rect.bottom * scale));
+    internal static Rect _scaleRect(Rect rect, double scale) => Rect.fromLTRB(rect.left * scale, rect.top * scale, rect.right * scale, rect.bottom * scale);
 }
 
 internal class _BlendedDecorationImage__decoration_image : DecorationImage
@@ -413,25 +413,25 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
         this.a = a;
         this.b = b;
         this.t = t;
-        System.Diagnostics.Debug.Assert(((a is not null) || (b is not null)));
+        System.Diagnostics.Debug.Assert((a is not null) || (b is not null));
     }
 
-    public override global::Doroti.Framework.Painting.IImageProvider image => (this.b?.image ?? this.a!.image);
-    public override Action<object, global::System.Diagnostics.StackTrace?>? onError => (this.b?.onError ?? this.a!.onError);
-    public override ColorFilter? colorFilter => (this.b?.colorFilter ?? this.a!.colorFilter);
-    public override BoxFit? fit => (this.b?.fit ?? this.a!.fit);
-    public override AlignmentGeometry alignment => (this.b?.alignment ?? this.a!.alignment);
-    public override Rect? centerSlice => (this.b?.centerSlice ?? this.a!.centerSlice);
-    public override ImageRepeat repeat => (this.b?.repeat ?? this.a!.repeat);
-    public override bool matchTextDirection => (this.b?.matchTextDirection ?? this.a!.matchTextDirection);
-    public override double scale => (this.b?.scale ?? this.a!.scale);
-    public override double opacity => (this.b?.opacity ?? this.a!.opacity);
-    public override FilterQuality filterQuality => (this.b?.filterQuality ?? this.a!.filterQuality);
-    public override bool invertColors => (this.b?.invertColors ?? this.a!.invertColors);
-    public override bool isAntiAlias => (this.b?.isAntiAlias ?? this.a!.isAntiAlias);
+    public override global::Doroti.Framework.Painting.IImageProvider image => b?.image ?? a!.image;
+    public override Action<object, global::System.Diagnostics.StackTrace?>? onError => b?.onError ?? a!.onError;
+    public override ColorFilter? colorFilter => b?.colorFilter ?? a!.colorFilter;
+    public override BoxFit? fit => b?.fit ?? a!.fit;
+    public override AlignmentGeometry alignment => b?.alignment ?? a!.alignment;
+    public override Rect? centerSlice => b?.centerSlice ?? a!.centerSlice;
+    public override ImageRepeat repeat => b?.repeat ?? a!.repeat;
+    public override bool matchTextDirection => b?.matchTextDirection ?? a!.matchTextDirection;
+    public override double scale => b?.scale ?? a!.scale;
+    public override double opacity => b?.opacity ?? a!.opacity;
+    public override FilterQuality filterQuality => b?.filterQuality ?? a!.filterQuality;
+    public override bool invertColors => b?.invertColors ?? a!.invertColors;
+    public override bool isAntiAlias => b?.isAntiAlias ?? a!.isAntiAlias;
     public override DecorationImagePainter createPainter(Action onChanged)
     {
-        return new _BlendedDecorationImagePainter__decoration_image(this.a?.createPainter(onChanged), this.b?.createPainter(onChanged), this.t);
+        return new _BlendedDecorationImagePainter__decoration_image(a?.createPainter(onChanged), b?.createPainter(onChanged), t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -443,17 +443,17 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is _BlendedDecorationImage__decoration_image) && (Equals(((_BlendedDecorationImage__decoration_image)((_BlendedDecorationImage__decoration_image)__other)).a, this.a))) && (Equals(((_BlendedDecorationImage__decoration_image)((_BlendedDecorationImage__decoration_image)__other)).b, this.b))) && (((_BlendedDecorationImage__decoration_image)((_BlendedDecorationImage__decoration_image)__other)).t == this.t));
+        return (__other is _BlendedDecorationImage__decoration_image) && Equals(__other.a, a) && Equals(__other.b, b) && (__other.t == t);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.a, this.b, this.t);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(a, b, t);
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImage"))}({this.a}, {this.b}, {this.t})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImage")}({a}, {b}, {t})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -475,21 +475,21 @@ internal class _BlendedDecorationImagePainter__decoration_image : DecorationImag
     public virtual void paint(Canvas canvas, Rect rect, Path? clipPath, ImageConfiguration configuration, double blend = 1.0, BlendMode blendMode = BlendMode.srcOver)
     {
         canvas.saveLayer(null, new global::Doroti.Ui.Paint());
-        this.a?.paint(canvas, rect, clipPath, configuration, blend: (blend * ((1.0 - this.t))), blendMode: blendMode);
-        this.b?.paint(canvas, rect, clipPath, configuration, blend: (blend * this.t), blendMode: ((this.a is not null) ? BlendMode.plus : blendMode));
+        a?.paint(canvas, rect, clipPath, configuration, blend: blend * (1.0 - t), blendMode: blendMode);
+        b?.paint(canvas, rect, clipPath, configuration, blend: blend * t, blendMode: (a is not null) ? BlendMode.plus : blendMode);
         canvas.restore();
     }
 
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this.a?.dispose();
-        this.b?.dispose();
+        a?.dispose();
+        b?.dispose();
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImagePainter"))}({this.a}, {this.b}, {this.t})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImagePainter")}({a}, {b}, {t})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

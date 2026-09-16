@@ -40,13 +40,13 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                     new M.TextButton(onPressed: () => setState(() => _block = !_block), child: new Text(_block ? "Block input" : "Pass through input")),
                     new Text($"Foreground taps: {_taps}")]),
                 new SizedBox(width: 620, height: 400, child: new Stack(children: [
-                    .. (_mounted ? new Widget[] { new Positioned(left: 0, top: 0, width: 620, height: 400,
-                        child: new PlatformView(owner, descriptor, key: new Doroti.Framework.Foundation.ValueKey<int>(_generation))) } : []),
-                    .. (_mounted && _second ? new Widget[] {
+                    .. _mounted ? new Widget[] { new Positioned(left: 0, top: 0, width: 620, height: 400,
+                        child: new PlatformView(owner, descriptor, key: new Doroti.Framework.Foundation.ValueKey<int>(_generation))) } : [],
+                    .. _mounted && _second ? new Widget[] {
                         new Positioned(left: 70, top: 45, width: 180, height: 160, child: new Container(color: new Color(0xff00aa55))),
                         new Positioned(left: 210, top: 100, width: 310, height: 210,
                             child: new PlatformView(owner, descriptor with { CreationParameters = SecondHtml },
-                                key: new Doroti.Framework.Foundation.ValueKey<int>(-_generation - 1))) } : []),
+                                key: new Doroti.Framework.Foundation.ValueKey<int>(-_generation - 1))) } : [],
                     new Positioned(left: _moved ? 180 : 130, top: _moved ? 100 : 65, width: 320, height: 210,
                         child: new PointerInterceptor(new PlatformEffect(
                             style: new(Strength: _blur ? .75 : 0, Tint: 0x33ffffff),

@@ -14,34 +14,34 @@ public class RenderDecoratedSliver : RenderProxySliver
     public RenderDecoratedSliver(global::Doroti.Framework.Painting.Decoration decoration, DecorationPosition position = DecorationPosition.background, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!)
     {
         global::Doroti.Framework.Painting.ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
-        this._decoration = decoration;
-        this._position = position;
-        this._configuration = __configuration;
+        _decoration = decoration;
+        _position = position;
+        _configuration = __configuration;
     }
 
     public virtual global::Doroti.Framework.Painting.Decoration decoration
     {
-        get => this._decoration;
+        get => _decoration;
         set
         {
             var __value = value;
-            if ((Equals(__value, this.decoration)))
+            if (Equals(__value, decoration))
             {
                 return;
             }
             _decoration = __value;
-            this._painter?.dispose();
-            _painter = this.decoration.createBoxPainter((Action)markNeedsPaint);
+            _painter?.dispose();
+            _painter = decoration.createBoxPainter(markNeedsPaint);
             markNeedsPaint();
         }
     }
     public virtual DecorationPosition position
     {
-        get => this._position;
+        get => _position;
         set
         {
             var __value = value;
-            if ((Equals(__value, this.position)))
+            if (Equals(__value, position))
             {
                 return;
             }
@@ -51,11 +51,11 @@ public class RenderDecoratedSliver : RenderProxySliver
     }
     public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
     {
-        get => this._configuration;
+        get => _configuration;
         set
         {
             var __value = value;
-            if ((Equals(__value, this.configuration)))
+            if (Equals(__value, configuration))
             {
                 return;
             }
@@ -65,36 +65,36 @@ public class RenderDecoratedSliver : RenderProxySliver
     }
     public override void attach(PipelineOwner owner)
     {
-        _painter = this.decoration.createBoxPainter((Action)markNeedsPaint);
+        _painter = decoration.createBoxPainter(markNeedsPaint);
         base.attach(owner);
     }
 
     public override void detach()
     {
-        this._painter?.dispose();
+        _painter?.dispose();
         _painter = null;
         base.detach();
     }
 
     public override void dispose()
     {
-        this._painter?.dispose();
+        _painter?.dispose();
         _painter = null;
         base.dispose();
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if (((child is null) || !child!.geometry!.visible))
+        if ((child is null) || !child!.geometry!.visible)
         {
             return;
         }
         global::Doroti.Ui.Rect paintRect = getMaxPaintRect();
         void paintDecoration()
         {
-            this._painter!.paint(((PaintingContext)context).canvas, (offset + paintRect.topLeft), this.configuration.copyWith(size: paintRect.size));
+            _painter!.paint(context.canvas, offset + paintRect.topLeft, configuration.copyWith(size: paintRect.size));
         }
-        switch (this.position)
+        switch (position)
         {
             case DecorationPosition.background:
                 {
@@ -114,8 +114,8 @@ public class RenderDecoratedSliver : RenderProxySliver
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(((Diagnosticable)this._decoration).toDiagnosticsNode(name: "decoration"));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.ImageConfiguration>("configuration", this.configuration));
+        properties.add(((Diagnosticable)_decoration).toDiagnosticsNode(name: "decoration"));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.ImageConfiguration>("configuration", configuration));
     }
 
 }

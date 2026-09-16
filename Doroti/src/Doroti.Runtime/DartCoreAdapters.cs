@@ -180,7 +180,7 @@ public static class DartCoreExtensions
         if (value == 0) return "0";
         const string digits = "0123456789abcdefghijklmnopqrstuvwxyz";
         var negative = value < 0;
-        ulong remaining = negative ? unchecked((ulong)(-(value + 1))) + 1UL : (ulong)value;
+        ulong remaining = negative ? unchecked((ulong)-(value + 1)) + 1UL : (ulong)value;
         var buffer = new Stack<char>();
         while (remaining != 0) { buffer.Push(digits[(int)(remaining % (ulong)radix)]); remaining /= (ulong)radix; }
         return (negative ? "-" : string.Empty) + new string(buffer.ToArray());

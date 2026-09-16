@@ -25,15 +25,15 @@ public class GlowingOverscrollIndicator : StatefulWidget
         this.child = child;
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _GlowingOverscrollIndicatorState__overscroll_indicator());
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", this.axisDirection));
-        string showDescription = ((this.showLeading, this.showTrailing) switch { (true, true) => "both sides", (true, false) => "leading side only", (false, true) => "trailing side only", (false, false) => "neither side (!)" });
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
+        string showDescription = (showLeading, showTrailing) switch { (true, true) => "both sides", (true, false) => "leading side only", (false, true) => "trailing side only", (false, false) => "neither side (!)" };
         properties.add(new global::Doroti.Framework.Foundation.MessageProperty("show", showDescription));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, showName: false));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, showName: false));
     }
 
 }
@@ -51,92 +51,92 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
     public override void initState()
     {
         base.initState();
-        _leadingController = new _GlowController__overscroll_indicator(vsync: this, color: ((GlowingOverscrollIndicator)this.widget).color, axis: ((GlowingOverscrollIndicator)this.widget).axis);
-        _trailingController = new _GlowController__overscroll_indicator(vsync: this, color: ((GlowingOverscrollIndicator)this.widget).color, axis: ((GlowingOverscrollIndicator)this.widget).axis);
-        _leadingAndTrailingListener = Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { this._leadingController!, this._trailingController! }.Cast<global::Doroti.Framework.Foundation.Listenable?>());
+        _leadingController = new _GlowController__overscroll_indicator(vsync: this, color: widget.color, axis: widget.axis);
+        _trailingController = new _GlowController__overscroll_indicator(vsync: this, color: widget.color, axis: widget.axis);
+        _leadingAndTrailingListener = Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { _leadingController!, _trailingController! }.Cast<global::Doroti.Framework.Foundation.Listenable?>());
     }
 
     public override void didUpdateWidget(GlowingOverscrollIndicator oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((!Equals(((GlowingOverscrollIndicator)oldWidget).color, ((GlowingOverscrollIndicator)this.widget).color)) || (!Equals(((GlowingOverscrollIndicator)oldWidget).axis, ((GlowingOverscrollIndicator)this.widget).axis))))
+        if ((!Equals(oldWidget.color, widget.color)) || (!Equals(oldWidget.axis, widget.axis)))
         {
-            this._leadingController!.color = ((GlowingOverscrollIndicator)this.widget).color;
-            this._leadingController!.axis = ((GlowingOverscrollIndicator)this.widget).axis;
-            this._trailingController!.color = ((GlowingOverscrollIndicator)this.widget).color;
-            this._trailingController!.axis = ((GlowingOverscrollIndicator)this.widget).axis;
+            _leadingController!.color = widget.color;
+            _leadingController!.axis = widget.axis;
+            _trailingController!.color = widget.color;
+            _trailingController!.axis = widget.axis;
         }
     }
 
     internal virtual bool _handleScrollNotification(ScrollNotification notification)
     {
-        if (!this.widget.notificationPredicate(notification))
+        if (!widget.notificationPredicate(notification))
         {
             return false;
         }
-        if ((!Equals(((ScrollNotification)notification).metrics.axis, ((GlowingOverscrollIndicator)this.widget).axis)))
+        if (!Equals(notification.metrics.axis, widget.axis))
         {
             return false;
         }
-        this._leadingController!._paintOffsetScrollPixels = -Math.Min((((ScrollNotification)notification).metrics.pixels - ((ScrollNotification)notification).metrics.minScrollExtent), this._leadingController!._paintOffset);
-        this._trailingController!._paintOffsetScrollPixels = -Math.Min((((ScrollNotification)notification).metrics.maxScrollExtent - ((ScrollNotification)notification).metrics.pixels), this._trailingController!._paintOffset);
-        if ((notification is OverscrollNotification))
+        _leadingController!._paintOffsetScrollPixels = -Math.Min(notification.metrics.pixels - notification.metrics.minScrollExtent, _leadingController!._paintOffset);
+        _trailingController!._paintOffsetScrollPixels = -Math.Min(notification.metrics.maxScrollExtent - notification.metrics.pixels, _trailingController!._paintOffset);
+        if (notification is OverscrollNotification)
         {
             OverscrollNotification notification__as9386 = (OverscrollNotification)notification;
             _GlowController__overscroll_indicator? controller = default!;
-            if ((((OverscrollNotification)((OverscrollNotification)notification__as9386)).overscroll < 0.0))
+            if (notification__as9386.overscroll < 0.0)
             {
-                controller = this._leadingController;
+                controller = _leadingController;
             }
             else
             {
-                if ((((OverscrollNotification)((OverscrollNotification)notification__as9386)).overscroll > 0.0))
+                if (notification__as9386.overscroll > 0.0)
                 {
-                    controller = this._trailingController;
+                    controller = _trailingController;
                 }
                 else
                 {
                     DartRuntimePrimitives.Assert(() => false);
                 }
             }
-            var isLeading = (Equals(controller, this._leadingController));
-            if (!Equals(this._lastNotificationType, typeof(OverscrollNotification)))
+            var isLeading = Equals(controller, _leadingController);
+            if (!Equals(_lastNotificationType, typeof(OverscrollNotification)))
             {
                 var confirmationNotification = new OverscrollIndicatorNotification(leading: isLeading);
-                confirmationNotification.dispatch(this.context);
-                this._accepted[isLeading] = ((OverscrollIndicatorNotification)confirmationNotification).accepted;
-                if (DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<bool>(this._accepted, isLeading)))
+                confirmationNotification.dispatch(context);
+                _accepted[isLeading] = confirmationNotification.accepted;
+                if (DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)))
                 {
-                    controller!._paintOffset = ((OverscrollIndicatorNotification)confirmationNotification).paintOffset;
+                    controller!._paintOffset = confirmationNotification.paintOffset;
                 }
             }
-            DartRuntimePrimitives.Assert(() => (controller is not null));
-            if (DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<bool>(this._accepted, isLeading)))
+            DartRuntimePrimitives.Assert(() => controller is not null);
+            if (DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)))
             {
-                if ((((OverscrollNotification)((OverscrollNotification)notification__as9386)).velocity != 0.0))
+                if (notification__as9386.velocity != 0.0)
                 {
-                    DartRuntimePrimitives.Assert(() => (((OverscrollNotification)((OverscrollNotification)notification__as9386)).dragDetails is null));
-                    controller!.absorbImpact(((OverscrollNotification)((OverscrollNotification)notification__as9386)).velocity.abs());
+                    DartRuntimePrimitives.Assert(() => notification__as9386.dragDetails is null);
+                    controller!.absorbImpact(notification__as9386.velocity.abs());
                 }
                 else
                 {
-                    DartRuntimePrimitives.Assert(() => (((OverscrollNotification)((OverscrollNotification)notification__as9386)).overscroll != 0.0));
-                    if ((((OverscrollNotification)((OverscrollNotification)notification__as9386)).dragDetails is not null))
+                    DartRuntimePrimitives.Assert(() => notification__as9386.overscroll != 0.0);
+                    if (notification__as9386.dragDetails is not null)
                     {
-                        var renderer = ((global::Doroti.Framework.Rendering.RenderBox?)((OverscrollNotification)notification__as9386).context!.findRenderObject()!)!;
-                        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)renderer).hasSize);
-                        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)((global::Doroti.Framework.Rendering.RenderBox)renderer).size);
-                        global::Doroti.Ui.Offset position = ((global::Doroti.Ui.Offset)((Offset)(renderer).globalToLocal(((OverscrollNotification)((OverscrollNotification)notification__as9386)).dragDetails!.globalPosition)));
-                        switch (((OverscrollNotification)notification__as9386).metrics.axis)
+                        var renderer = ((global::Doroti.Framework.Rendering.RenderBox?)notification__as9386.context!.findRenderObject()!)!;
+                        DartRuntimePrimitives.Assert(() => renderer.hasSize);
+                        global::Doroti.Ui.Size sizeLocal = renderer.size;
+                        global::Doroti.Ui.Offset position = renderer.globalToLocal(notification__as9386.dragDetails!.globalPosition);
+                        switch (notification__as9386.metrics.axis)
                         {
                             case Axis.horizontal:
                                 {
-                                    controller!.pull(((OverscrollNotification)((OverscrollNotification)notification__as9386)).overscroll.abs(), sizeLocal.width, Dart_uiLibrary.clampDouble(position.dy, 0.0, sizeLocal.height), sizeLocal.height);
+                                    controller!.pull(notification__as9386.overscroll.abs(), sizeLocal.width, Dart_uiLibrary.clampDouble(position.dy, 0.0, sizeLocal.height), sizeLocal.height);
                                     break;
                                 }
                             case Axis.vertical:
                                 {
-                                    controller!.pull(((OverscrollNotification)((OverscrollNotification)notification__as9386)).overscroll.abs(), sizeLocal.height, Dart_uiLibrary.clampDouble(position.dx, 0.0, sizeLocal.width), sizeLocal.width);
+                                    controller!.pull(notification__as9386.overscroll.abs(), sizeLocal.height, Dart_uiLibrary.clampDouble(position.dx, 0.0, sizeLocal.width), sizeLocal.width);
                                     break;
                                 }
                         }
@@ -146,10 +146,10 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
         }
         else
         {
-            if (((((notification is ScrollEndNotification) && (((ScrollEndNotification)((ScrollEndNotification)notification)).dragDetails is not null))) || (((notification is ScrollUpdateNotification) && (((ScrollUpdateNotification)((ScrollUpdateNotification)notification)).dragDetails is not null)))))
+            if ((notification is ScrollEndNotification) && (((ScrollEndNotification)notification).dragDetails is not null) || (notification is ScrollUpdateNotification) && (((ScrollUpdateNotification)notification).dragDetails is not null))
             {
-                this._leadingController!.scrollEnd();
-                this._trailingController!.scrollEnd();
+                _leadingController!.scrollEnd();
+                _trailingController!.scrollEnd();
             }
         }
         _lastNotificationType = DartRuntimePrimitives.RuntimeType(notification);
@@ -159,60 +159,60 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
 
     public override void dispose()
     {
-        this._leadingController!.dispose();
-        this._trailingController!.dispose();
+        _leadingController!.dispose();
+        _trailingController!.dispose();
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._tickers is not null))
+                if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
+                        if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new RepaintBoundary(child: new CustomPaint(foregroundPainter: new _GlowingOverscrollIndicatorPainter__overscroll_indicator(leadingController: (((GlowingOverscrollIndicator)this.widget).showLeading ? this._leadingController : null), trailingController: (((GlowingOverscrollIndicator)this.widget).showTrailing ? this._trailingController : null), axisDirection: ((GlowingOverscrollIndicator)this.widget).axisDirection, repaint: this._leadingAndTrailingListener), child: new RepaintBoundary(child: ((GlowingOverscrollIndicator)this.widget).child)))));
+        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new RepaintBoundary(child: new CustomPaint(foregroundPainter: new _GlowingOverscrollIndicatorPainter__overscroll_indicator(leadingController: widget.showLeading ? _leadingController : null, trailingController: widget.showTrailing ? _trailingController : null, axisDirection: widget.axisDirection, repaint: _leadingAndTrailingListener), child: new RepaintBoundary(child: widget.child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -224,34 +224,34 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -287,28 +287,28 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
     internal static Duration _pullTime = Duration.Create(milliseconds: 167L);
     internal static Duration _pullHoldTime = Duration.Create(milliseconds: 167L);
     internal static Duration _pullDecayTime = Duration.Create(milliseconds: 2000L);
-    internal static Duration _crossAxisHalfTime = Duration.Create(microseconds: ((Duration.microsecondsPerSecond / 60.0)).round());
+    internal static Duration _crossAxisHalfTime = Duration.Create(microseconds: (Duration.microsecondsPerSecond / 60.0).round());
     internal const double _maxOpacity = 0.5;
     internal const double _pullOpacityGlowFactor = 0.8;
     internal const double _velocityGlowFactor = 0.00006;
     internal const double _sqrt3 = 1.73205080757;
-    internal static double _widthToHeightFactor = (((3.0 / 4.0)) * ((2.0 - _sqrt3)));
+    internal static double _widthToHeightFactor = 3.0 / 4.0 * (2.0 - _sqrt3);
     internal const double _minVelocity = 100.0;
     internal const double _maxVelocity = 10000.0;
 
     internal _GlowController__overscroll_indicator(global::Doroti.Framework.Scheduler.TickerProvider vsync, Color color, global::Doroti.Framework.Painting.Axis axis)
     {
-        this._color = color;
-        this._axis = axis;
+        _color = color;
+        _axis = axis;
     }
 
     public virtual global::Doroti.Ui.Color color
     {
-        get => this._color;
+        get => _color;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(this.color, __value)))
+            var __value = value;
+            if (Equals(color, __value))
             {
                 return;
             }
@@ -318,11 +318,11 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
     }
     public virtual global::Doroti.Framework.Painting.Axis axis
     {
-        get => this._axis;
+        get => _axis;
         set
         {
             var __value = value;
-            if ((Equals(this.axis, __value)))
+            if (Equals(axis, __value))
             {
                 return;
             }
@@ -332,72 +332,72 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
     }
     public override void dispose()
     {
-        this._glowController.dispose();
-        this._decelerator.dispose();
-        this._displacementTicker.dispose();
-        this._pullRecedeTimer?.cancel();
+        _glowController.dispose();
+        _decelerator.dispose();
+        _displacementTicker.dispose();
+        _pullRecedeTimer?.cancel();
         base.dispose();
     }
 
     public virtual void absorbImpact(double velocity)
     {
-        DartRuntimePrimitives.Assert(() => (velocity >= 0.0));
-        this._pullRecedeTimer?.cancel();
+        DartRuntimePrimitives.Assert(() => velocity >= 0.0);
+        _pullRecedeTimer?.cancel();
         _pullRecedeTimer = null;
         velocity = Dart_uiLibrary.clampDouble(velocity, _minVelocity, _maxVelocity);
-        this._glowOpacityTween.begin = ((Equals(this._state, _GlowState__overscroll_indicator.idle)) ? 0.3 : ((global::Doroti.Framework.Animation.Animation<double>)this._glowOpacity).value);
-        this._glowOpacityTween.end = Dart_uiLibrary.clampDouble((velocity * _velocityGlowFactor), DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Tween<double>)this._glowOpacityTween).begin), _maxOpacity);
-        this._glowSizeTween.begin = ((global::Doroti.Framework.Animation.Animation<double>)this._glowSize).value;
-        this._glowSizeTween.end = Math.Min((0.025 + ((7.5e-7 * velocity) * velocity)), 1.0);
-        this._glowController.duration = Duration.Create(milliseconds: ((0.15 + (velocity * 0.02))).round());
-        this._glowController.forward(from: 0.0);
+        _glowOpacityTween.begin = Equals(_state, _GlowState__overscroll_indicator.idle) ? 0.3 : _glowOpacity.value;
+        _glowOpacityTween.end = Dart_uiLibrary.clampDouble(velocity * _velocityGlowFactor, DartRuntimePrimitives.RequireValue(_glowOpacityTween.begin), _maxOpacity);
+        _glowSizeTween.begin = _glowSize.value;
+        _glowSizeTween.end = Math.Min(0.025 + (7.5e-7 * velocity * velocity), 1.0);
+        _glowController.duration = Duration.Create(milliseconds: (0.15 + (velocity * 0.02)).round());
+        _glowController.forward(from: 0.0);
         _displacement = 0.5;
         _state = _GlowState__overscroll_indicator.absorb;
     }
 
     public virtual void pull(double overscroll, double extent, double crossAxisOffset, double crossExtent)
     {
-        this._pullRecedeTimer?.cancel();
-        _pullDistance += (overscroll / 200.0);
-        this._glowOpacityTween.begin = ((global::Doroti.Framework.Animation.Animation<double>)this._glowOpacity).value;
-        this._glowOpacityTween.end = Math.Min((((global::Doroti.Framework.Animation.Animation<double>)this._glowOpacity).value + ((overscroll / extent) * _pullOpacityGlowFactor)), _maxOpacity);
-        double height = Math.Min(extent, (crossExtent * _widthToHeightFactor));
-        this._glowSizeTween.begin = ((global::Doroti.Framework.Animation.Animation<double>)this._glowSize).value;
-        this._glowSizeTween.end = Math.Max((1.0 - (1.0 / ((0.7 * Dart_mathLibrary.sqrt((this._pullDistance * height)))))), ((global::Doroti.Framework.Animation.Animation<double>)this._glowSize).value);
-        _displacementTarget = (crossAxisOffset / crossExtent);
-        if ((this._displacementTarget != this._displacement))
+        _pullRecedeTimer?.cancel();
+        _pullDistance += overscroll / 200.0;
+        _glowOpacityTween.begin = _glowOpacity.value;
+        _glowOpacityTween.end = Math.Min(_glowOpacity.value + (overscroll / extent * _pullOpacityGlowFactor), _maxOpacity);
+        double height = Math.Min(extent, crossExtent * _widthToHeightFactor);
+        _glowSizeTween.begin = _glowSize.value;
+        _glowSizeTween.end = Math.Max(1.0 - (1.0 / (0.7 * Dart_mathLibrary.sqrt(_pullDistance * height))), _glowSize.value);
+        _displacementTarget = crossAxisOffset / crossExtent;
+        if (_displacementTarget != _displacement)
         {
-            if (!((global::Doroti.Framework.Scheduler.Ticker)this._displacementTicker).isTicking)
+            if (!_displacementTicker.isTicking)
             {
-                DartRuntimePrimitives.Assert(() => (this._displacementTickerLastElapsed is null));
-                this._displacementTicker.start();
+                DartRuntimePrimitives.Assert(() => _displacementTickerLastElapsed is null);
+                _displacementTicker.start();
             }
         }
         else
         {
-            this._displacementTicker.stop();
+            _displacementTicker.stop();
             _displacementTickerLastElapsed = null;
         }
-        this._glowController.duration = _pullTime;
-        if ((!Equals(this._state, _GlowState__overscroll_indicator.pull)))
+        _glowController.duration = _pullTime;
+        if (!Equals(_state, _GlowState__overscroll_indicator.pull))
         {
-            this._glowController.forward(from: 0.0);
+            _glowController.forward(from: 0.0);
             _state = _GlowState__overscroll_indicator.pull;
         }
         else
         {
-            if (!((global::Doroti.Framework.Animation.AnimationController)this._glowController).isAnimating)
+            if (!_glowController.isAnimating)
             {
-                DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Animation.AnimationController)this._glowController).value == 1.0));
+                DartRuntimePrimitives.Assert(() => _glowController.value == 1.0);
                 notifyListeners();
             }
         }
-        _pullRecedeTimer = new Timer(_pullHoldTime, (() => { _recede(_pullDecayTime); }));
+        _pullRecedeTimer = new Timer(_pullHoldTime, () => { _recede(_pullDecayTime); });
     }
 
     public virtual void scrollEnd()
     {
-        if ((Equals(this._state, _GlowState__overscroll_indicator.pull)))
+        if (Equals(_state, _GlowState__overscroll_indicator.pull))
         {
             _recede(_recedeTime);
         }
@@ -409,7 +409,7 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
         {
             return;
         }
-        switch (this._state)
+        switch (_state)
         {
             case _GlowState__overscroll_indicator.absorb:
                 {
@@ -432,32 +432,32 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
 
     internal virtual void _recede(Duration duration)
     {
-        if (((Equals(this._state, _GlowState__overscroll_indicator.recede)) || (Equals(this._state, _GlowState__overscroll_indicator.idle))))
+        if (Equals(_state, _GlowState__overscroll_indicator.recede) || Equals(_state, _GlowState__overscroll_indicator.idle))
         {
             return;
         }
-        this._pullRecedeTimer?.cancel();
+        _pullRecedeTimer?.cancel();
         _pullRecedeTimer = null;
-        this._glowOpacityTween.begin = ((global::Doroti.Framework.Animation.Animation<double>)this._glowOpacity).value;
-        this._glowOpacityTween.end = 0.0;
-        this._glowSizeTween.begin = ((global::Doroti.Framework.Animation.Animation<double>)this._glowSize).value;
-        this._glowSizeTween.end = 0.0;
-        this._glowController.duration = duration;
-        this._glowController.forward(from: 0.0);
+        _glowOpacityTween.begin = _glowOpacity.value;
+        _glowOpacityTween.end = 0.0;
+        _glowSizeTween.begin = _glowSize.value;
+        _glowSizeTween.end = 0.0;
+        _glowController.duration = duration;
+        _glowController.forward(from: 0.0);
         _state = _GlowState__overscroll_indicator.recede;
     }
 
     internal virtual void _tickDisplacement(Duration elapsed)
     {
-        if ((this._displacementTickerLastElapsed is not null))
+        if (_displacementTickerLastElapsed is not null)
         {
-            double t = ((elapsed.inMicroseconds - DartRuntimePrimitives.RequireValue(this._displacementTickerLastElapsed).inMicroseconds)).toDouble();
-            _displacement = (this._displacementTarget - (((this._displacementTarget - this._displacement)) * Dart_mathLibrary.pow(2.0, (-t / _crossAxisHalfTime.inMicroseconds))));
+            double t = (elapsed.inMicroseconds - DartRuntimePrimitives.RequireValue(_displacementTickerLastElapsed).inMicroseconds).toDouble();
+            _displacement = _displacementTarget - ((_displacementTarget - _displacement) * Dart_mathLibrary.pow(2.0, -t / _crossAxisHalfTime.inMicroseconds));
             notifyListeners();
         }
-        if (Physics.UtilsLibrary.nearEqual(this._displacementTarget, this._displacement, Physics.Tolerance.defaultTolerance.distance))
+        if (Physics.UtilsLibrary.nearEqual(_displacementTarget, _displacement, Physics.Tolerance.defaultTolerance.distance))
         {
-            this._displacementTicker.stop();
+            _displacementTicker.stop();
             _displacementTickerLastElapsed = null;
         }
         else
@@ -468,24 +468,24 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
 
     public virtual void paint(Canvas canvas, Size size)
     {
-        if ((((global::Doroti.Framework.Animation.Animation<double>)this._glowOpacity).value == 0.0))
+        if (_glowOpacity.value == 0.0)
         {
             return;
         }
-        double baseGlowScale = ((size.width > size.height) ? (size.height / size.width) : 1.0);
-        double radius = ((size.width * 3.0) / 2.0);
-        double heightLocal = Math.Min(size.height, (size.width * _widthToHeightFactor));
-        double scaleY = (((global::Doroti.Framework.Animation.Animation<double>)this._glowSize).value * baseGlowScale);
+        double baseGlowScale = (size.width > size.height) ? (size.height / size.width) : 1.0;
+        double radius = size.width * 3.0 / 2.0;
+        double heightLocal = Math.Min(size.height, size.width * _widthToHeightFactor);
+        double scaleY = _glowSize.value * baseGlowScale;
         var rect = Rect.fromLTWH(0.0, 0.0, size.width, heightLocal);
-        var center = new global::Doroti.Ui.Offset((((size.width / 2.0)) * ((0.5 + this._displacement))), (heightLocal - radius));
+        var center = new global::Doroti.Ui.Offset(size.width / 2.0 * (0.5 + _displacement), heightLocal - radius);
         var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color.withOpacity(((global::Doroti.Framework.Animation.Animation<double>)this._glowOpacity).value);
+    __cascade.color = color.withOpacity(_glowOpacity.value);
     return __cascade;
 }))();
         canvas.save();
-        canvas.translate(0.0, (this._paintOffset + this._paintOffsetScrollPixels));
+        canvas.translate(0.0, _paintOffset + _paintOffsetScrollPixels);
         canvas.scale(1.0, scaleY);
         canvas.clipRect(rect);
         canvas.drawCircle(center, radius, paintLocal);
@@ -494,7 +494,7 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
 
     public override string ToString()
     {
-        return $"_GlowController(color: {this.color}, axis: {this.axis.ToString()})";
+        return $"_GlowController(color: {color}, axis: {axis.ToString()})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -505,7 +505,7 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : global
     public virtual _GlowController__overscroll_indicator? leadingController { get; private set; }
     public virtual _GlowController__overscroll_indicator? trailingController { get; private set; }
     public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection { get; private set; } = default!;
-    public static double piOver2 = (Dart_mathLibrary.pi / 2.0);
+    public static double piOver2 = Dart_mathLibrary.pi / 2.0;
 
     internal _GlowingOverscrollIndicatorPainter__overscroll_indicator(_GlowController__overscroll_indicator? leadingController = null, _GlowController__overscroll_indicator? trailingController = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = default!, global::Doroti.Framework.Foundation.Listenable? repaint = null) : base(repaint: repaint)
     {
@@ -516,7 +516,7 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : global
 
     internal virtual void _paintSide(Canvas canvas, Size size, _GlowController__overscroll_indicator? controller, global::Doroti.Framework.Painting.AxisDirection axisDirection, global::Doroti.Framework.Rendering.GrowthDirection growthDirection)
     {
-        if ((controller is null))
+        if (controller is null)
         {
             return;
         }
@@ -559,20 +559,20 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : global
 
     public override void paint(Canvas canvas, Size size)
     {
-        _paintSide(canvas, size, this.leadingController, this.axisDirection, GrowthDirection.reverse);
-        _paintSide(canvas, size, this.trailingController, this.axisDirection, GrowthDirection.forward);
+        _paintSide(canvas, size, leadingController, axisDirection, GrowthDirection.reverse);
+        _paintSide(canvas, size, trailingController, axisDirection, GrowthDirection.forward);
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (_GlowingOverscrollIndicatorPainter__overscroll_indicator)oldDelegate;
-        return ((!Equals(((_GlowingOverscrollIndicatorPainter__overscroll_indicator)__oldDelegate).leadingController, this.leadingController)) || (!Equals(((_GlowingOverscrollIndicatorPainter__overscroll_indicator)__oldDelegate).trailingController, this.trailingController)));
+        return (!Equals(__oldDelegate.leadingController, leadingController)) || (!Equals(__oldDelegate.trailingController, trailingController));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"_GlowingOverscrollIndicatorPainter({this.leadingController}, {this.trailingController})";
+        return $"_GlowingOverscrollIndicatorPainter({leadingController}, {trailingController})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -594,12 +594,12 @@ public class StretchingOverscrollIndicator : StatefulWidget
         this.child = child;
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _StretchingOverscrollIndicatorState__overscroll_indicator());
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", this.axisDirection));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
     }
 
 }
@@ -629,15 +629,15 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
 
     internal virtual bool _handleScrollNotification(ScrollNotification notification)
     {
-        if (!this.widget.notificationPredicate(notification))
+        if (!widget.notificationPredicate(notification))
         {
             return false;
         }
-        if ((!Equals(((ScrollNotification)notification).metrics.axis, ((StretchingOverscrollIndicator)this.widget).axis)))
+        if (!Equals(notification.metrics.axis, widget.axis))
         {
             return false;
         }
-        if ((notification is ScrollStartNotification))
+        if (notification is ScrollStartNotification)
         {
             ScrollStartNotification notification__as27070 = (ScrollStartNotification)notification;
             _accepted = true;
@@ -645,60 +645,60 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
         }
         else
         {
-            if ((notification is OverscrollNotification))
+            if (notification is OverscrollNotification)
             {
                 OverscrollNotification notification__as27182 = (OverscrollNotification)notification;
-                _lastOverscrollNotification = ((OverscrollNotification)notification__as27182);
-                if (!Equals(DartRuntimePrimitives.RuntimeType(this._lastNotification), typeof(OverscrollNotification)))
+                _lastOverscrollNotification = notification__as27182;
+                if (!Equals(DartRuntimePrimitives.RuntimeType(_lastNotification), typeof(OverscrollNotification)))
                 {
-                    var confirmationNotification = new OverscrollIndicatorNotification(leading: (((OverscrollNotification)((OverscrollNotification)notification__as27182)).overscroll < 0.0));
-                    confirmationNotification.dispatch(this.context);
-                    _accepted = ((OverscrollIndicatorNotification)confirmationNotification).accepted;
+                    var confirmationNotification = new OverscrollIndicatorNotification(leading: notification__as27182.overscroll < 0.0);
+                    confirmationNotification.dispatch(context);
+                    _accepted = confirmationNotification.accepted;
                 }
-                if (this._accepted)
+                if (_accepted)
                 {
-                    _totalOverscroll += ((OverscrollNotification)((OverscrollNotification)notification__as27182)).overscroll;
-                    if ((((OverscrollNotification)((OverscrollNotification)notification__as27182)).velocity != 0.0))
+                    _totalOverscroll += notification__as27182.overscroll;
+                    if (notification__as27182.velocity != 0.0)
                     {
-                        DartRuntimePrimitives.Assert(() => (((OverscrollNotification)((OverscrollNotification)notification__as27182)).dragDetails is null));
-                        this._stretchController.absorbImpact(((OverscrollNotification)((OverscrollNotification)notification__as27182)).velocity);
+                        DartRuntimePrimitives.Assert(() => notification__as27182.dragDetails is null);
+                        _stretchController.absorbImpact(notification__as27182.velocity);
                     }
                     else
                     {
-                        DartRuntimePrimitives.Assert(() => (((OverscrollNotification)((OverscrollNotification)notification__as27182)).overscroll != 0.0));
-                        if ((((OverscrollNotification)((OverscrollNotification)notification__as27182)).dragDetails is not null))
+                        DartRuntimePrimitives.Assert(() => notification__as27182.overscroll != 0.0);
+                        if (notification__as27182.dragDetails is not null)
                         {
-                            double viewportDimensionLocal = ((OverscrollNotification)notification__as27182).metrics.viewportDimension;
-                            double distanceForPull = (this._totalOverscroll / viewportDimensionLocal);
+                            double viewportDimensionLocal = notification__as27182.metrics.viewportDimension;
+                            double distanceForPull = _totalOverscroll / viewportDimensionLocal;
                             double clampedOverscroll = Dart_uiLibrary.clampDouble(distanceForPull, -1.0, 1.0);
-                            this._stretchController.pull(clampedOverscroll);
+                            _stretchController.pull(clampedOverscroll);
                         }
                     }
                 }
             }
             else
             {
-                if ((notification is ScrollEndNotification))
+                if (notification is ScrollEndNotification)
                 {
                     ScrollEndNotification notification__as28637 = (ScrollEndNotification)notification;
-                    double velocityLocal = (((StretchingOverscrollIndicator)this.widget).axis switch { Axis.vertical => (((ScrollEndNotification)((ScrollEndNotification)notification__as28637)).dragDetails?.velocity.pixelsPerSecond.dy ?? 0.0), Axis.horizontal => (((ScrollEndNotification)((ScrollEndNotification)notification__as28637)).dragDetails?.velocity.pixelsPerSecond.dx ?? 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                    if (((Equals(((ScrollEndNotification)notification__as28637).metrics.axisDirection, AxisDirection.left)) || (Equals(((ScrollEndNotification)notification__as28637).metrics.axisDirection, AxisDirection.up))))
+                    double velocityLocal = widget.axis switch { Axis.vertical => notification__as28637.dragDetails?.velocity.pixelsPerSecond.dy ?? 0.0, Axis.horizontal => notification__as28637.dragDetails?.velocity.pixelsPerSecond.dx ?? 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                    if (Equals(notification__as28637.metrics.axisDirection, AxisDirection.left) || Equals(notification__as28637.metrics.axisDirection, AxisDirection.up))
                     {
                         velocityLocal = -velocityLocal;
                     }
                     _totalOverscroll = 0.0;
-                    if (this._accepted)
+                    if (_accepted)
                     {
-                        this._stretchController.scrollEnd(velocityLocal);
+                        _stretchController.scrollEnd(velocityLocal);
                     }
                 }
                 else
                 {
-                    if ((notification is ScrollUpdateNotification))
+                    if (notification is ScrollUpdateNotification)
                     {
                         ScrollUpdateNotification notification__as29426 = (ScrollUpdateNotification)notification;
                         _totalOverscroll = 0.0;
-                        this._stretchController.scrollEnd(0.0);
+                        _stretchController.scrollEnd(0.0);
                     }
                 }
             }
@@ -710,34 +710,34 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
 
     public override void dispose()
     {
-        this._stretchController.dispose();
+        _stretchController.dispose();
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._tickers is not null))
+                if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
+                        if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new AnimatedBuilder(animation: this._stretchController, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new AnimatedBuilder(animation: _stretchController, builder: (context, child) =>
         {
-            double stretch = ((_StretchController__overscroll_indicator)this._stretchController).overscroll;
+            double stretch = _stretchController.overscroll;
             double mainAxisSize = default!;
-            switch (((StretchingOverscrollIndicator)this.widget).axis)
+            switch (widget.axis)
             {
                 case Axis.horizontal:
                     {
@@ -750,45 +750,45 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
                         break;
                     }
             }
-            double viewportDimensionLocal = (this._lastOverscrollNotification?.metrics.viewportDimension ?? mainAxisSize);
+            double viewportDimensionLocal = _lastOverscrollNotification?.metrics.viewportDimension ?? mainAxisSize;
             double overscrollLocal = -stretch;
-            if (((Equals(((StretchingOverscrollIndicator)this.widget).axisDirection, AxisDirection.up)) || (Equals(((StretchingOverscrollIndicator)this.widget).axisDirection, AxisDirection.left))))
+            if (Equals(widget.axisDirection, AxisDirection.up) || Equals(widget.axisDirection, AxisDirection.left))
             {
                 overscrollLocal = -overscrollLocal;
             }
-            Widget transform = ((Widget)new StretchEffect(stretchStrength: overscrollLocal, axis: ((StretchingOverscrollIndicator)this.widget).axis, child: (((StretchingOverscrollIndicator)this.widget).child ?? SizedBox.CreateShrink())));
-            return ((Widget)new ClipRect(clipBehavior: (((stretch != 0.0) && (viewportDimensionLocal != mainAxisSize)) ? ((StretchingOverscrollIndicator)this.widget).clipBehavior : Clip.none), child: transform));
+            Widget transform = new StretchEffect(stretchStrength: overscrollLocal, axis: widget.axis, child: widget.child ?? SizedBox.CreateShrink());
+            return new ClipRect(clipBehavior: ((stretch != 0.0) && (viewportDimensionLocal != mainAxisSize)) ? widget.clipBehavior : Clip.none, child: transform);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })))));
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -800,34 +800,34 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -838,19 +838,19 @@ internal class _StretchController__overscroll_indicator : global::Doroti.Framewo
     internal virtual global::Doroti.Framework.Animation.AnimationController? _controller { get; set; } = default;
     internal virtual global::Doroti.Framework.Foundation.ValueNotifier<double> _overscrollNotifier { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<double>(0.0);
     internal virtual double _interruptedOverscroll { get; set; } = 0.0;
-    internal static double _exponentialScalar = (Dart_mathLibrary.e / 0.33);
+    internal static double _exponentialScalar = Dart_mathLibrary.e / 0.33;
     internal const double _stretchIntensity = 0.016;
     public static double minOverscroll = -1.0;
     public const double maxOverscroll = 1.0;
-    internal static double _flingVelocityFriction = (1L / 6000L);
-    internal static double _absorbImpactVelocityFriction = (1L / 3000L);
+    internal static double _flingVelocityFriction = 1L / 6000L;
+    internal static double _absorbImpactVelocityFriction = 1L / 3000L;
     internal const double _maxFlingVelocity = 0.5;
     internal const double _maxAbsorbImpactVelocity = 1.25;
     public const double kNaturalFrequency = 24.657;
     public const double kDampingRatio = 0.98;
     public const double kTimeCorrectionFactor = 0.8;
-    public static double kStiffness = (kNaturalFrequency * kNaturalFrequency);
-    internal static global::Doroti.Framework.Physics.SpringDescription _kStretchSpringDescription = Physics.SpringDescription.CreateWithDampingRatio(mass: 1, stiffness: ((kStiffness * kTimeCorrectionFactor) * kTimeCorrectionFactor), ratio: kDampingRatio);
+    public static double kStiffness = kNaturalFrequency * kNaturalFrequency;
+    internal static global::Doroti.Framework.Physics.SpringDescription _kStretchSpringDescription = Physics.SpringDescription.CreateWithDampingRatio(mass: 1, stiffness: kStiffness * kTimeCorrectionFactor * kTimeCorrectionFactor, ratio: kDampingRatio);
 
     internal _StretchController__overscroll_indicator(global::Doroti.Framework.Scheduler.TickerProvider vsync)
     {
@@ -859,47 +859,47 @@ internal class _StretchController__overscroll_indicator : global::Doroti.Framewo
 
     public virtual double overscroll
     {
-        get => ((global::Doroti.Framework.Foundation.ValueNotifier<double>)this._overscrollNotifier).value;
+        get => _overscrollNotifier.value;
         set
         {
             var newValue = value;
-            this._overscrollNotifier.value = Dart_uiLibrary.clampDouble(newValue, minOverscroll, maxOverscroll);
+            _overscrollNotifier.value = Dart_uiLibrary.clampDouble(newValue, minOverscroll, maxOverscroll);
         }
     }
     public virtual void addListener(global::System.Action listener)
     {
-        this._overscrollNotifier.addListener(listener);
+        _overscrollNotifier.addListener(listener);
     }
 
     public virtual void removeListener(global::System.Action listener)
     {
-        this._overscrollNotifier.removeListener(listener);
+        _overscrollNotifier.removeListener(listener);
     }
 
     internal virtual global::Doroti.Framework.Physics.SpringSimulation _createStretchSimulation(double velocity)
     {
-        return new global::Doroti.Framework.Physics.SpringSimulation(_kStretchSpringDescription, this.overscroll, 0.0, (velocity * kTimeCorrectionFactor));
+        return new global::Doroti.Framework.Physics.SpringSimulation(_kStretchSpringDescription, overscroll, 0.0, velocity * kTimeCorrectionFactor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void absorbImpact(double velocity)
     {
-        if ((velocity == 0.0))
+        if (velocity == 0.0)
         {
             return;
         }
-        double scaledVelocity = Dart_uiLibrary.clampDouble((velocity * _absorbImpactVelocityFriction), -_maxAbsorbImpactVelocity, _maxAbsorbImpactVelocity);
+        double scaledVelocity = Dart_uiLibrary.clampDouble(velocity * _absorbImpactVelocityFriction, -_maxAbsorbImpactVelocity, _maxAbsorbImpactVelocity);
         animate(_createStretchSimulation(scaledVelocity));
     }
 
     public virtual void scrollEnd(double velocity)
     {
-        if (((velocity == 0.0) && (this.overscroll == 0.0)))
+        if ((velocity == 0.0) && (overscroll == 0.0))
         {
             return;
         }
-        double scaledVelocity = Dart_uiLibrary.clampDouble(-((velocity * _flingVelocityFriction)), -_maxFlingVelocity, _maxFlingVelocity);
-        if ((this._controller is null))
+        double scaledVelocity = Dart_uiLibrary.clampDouble(-(velocity * _flingVelocityFriction), -_maxFlingVelocity, _maxFlingVelocity);
+        if (_controller is null)
         {
             animate(_createStretchSimulation(scaledVelocity));
         }
@@ -909,17 +909,17 @@ internal class _StretchController__overscroll_indicator : global::Doroti.Framewo
     {
         var controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
-    var __cascade = AnimationController.CreateUnbounded(vsync: this.vsync);
-    __cascade.addListener(((global::System.Action)(() =>
+    var __cascade = AnimationController.CreateUnbounded(vsync: vsync);
+    __cascade.addListener(() =>
     {
-        double newOverscroll = (this._controller?.value ?? 0.0);
+        double newOverscroll = _controller?.value ?? 0.0;
         overscroll = newOverscroll;
-    })));
+    });
     return __cascade;
 }))();
-        DartRuntimePrimitives.Ignore(controller.animateWith(simulation).whenComplete((() =>
+        DartRuntimePrimitives.Ignore(controller.animateWith(simulation).whenComplete(() =>
         {
-            if ((Equals(this._controller, controller)))
+            if (Equals(_controller, controller))
             {
                 overscroll = 0.0;
                 _interruptedOverscroll = 0.0;
@@ -927,33 +927,33 @@ internal class _StretchController__overscroll_indicator : global::Doroti.Framewo
                 _controller = null;
             }
             return default!;
-        })));
-        this._controller?.dispose();
+        }));
+        _controller?.dispose();
         _controller = controller;
     }
 
     public virtual void pull(double normalizedOverscroll)
     {
-        if ((this._controller is not null))
+        if (_controller is not null)
         {
-            _interruptedOverscroll = this._controller!.value;
-            this._controller!.dispose();
+            _interruptedOverscroll = _controller!.value;
+            _controller!.dispose();
             _controller = null;
         }
         var pullDistance = normalizedOverscroll;
         double absDistance = pullDistance.abs();
-        double linearIntensity = (_stretchIntensity * absDistance);
-        double exponentialIntensity = (_stretchIntensity * ((1L - Dart_mathLibrary.exp((-absDistance * _exponentialScalar)))));
+        double linearIntensity = _stretchIntensity * absDistance;
+        double exponentialIntensity = _stretchIntensity * (1L - Dart_mathLibrary.exp(-absDistance * _exponentialScalar));
         double directionSign = Math.Sign(pullDistance);
-        double newOverscroll = (directionSign * ((linearIntensity + exponentialIntensity)));
-        overscroll = (newOverscroll + this._interruptedOverscroll);
+        double newOverscroll = directionSign * (linearIntensity + exponentialIntensity);
+        overscroll = newOverscroll + _interruptedOverscroll;
     }
 
     public virtual void dispose()
     {
-        this._controller?.dispose();
+        _controller?.dispose();
         _controller = null;
-        this._overscrollNotifier.dispose();
+        _overscrollNotifier.dispose();
     }
 
     public override string ToString() => "_StretchController()";
@@ -979,9 +979,9 @@ public class OverscrollIndicatorNotification : Notification, ViewportNotificatio
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"depth: {this.depth} ({((this.depth == 0L) ? "local" : "remote")})");
-        description.Add($"side: {(this.leading ? "leading edge" : "trailing edge")}");
+        description.Add($"depth: {depth} ({((depth == 0L) ? "local" : "remote")})");
+        description.Add($"side: {(leading ? "leading edge" : "trailing edge")}");
     }
 
-    public virtual long depth => this._depth;
+    public virtual long depth => _depth;
 }

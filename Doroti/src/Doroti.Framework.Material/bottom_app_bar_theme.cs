@@ -17,54 +17,54 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
     internal virtual Color? _shadowColor { get; private set; }
     internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _padding { get; private set; }
 
-    public BottomAppBarTheme(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, double? elevation = null, global::Doroti.Framework.Painting.NotchedShape? shape = null, double? height = null, Color? surfaceTintColor = null, Color? shadowColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, BottomAppBarThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? SizedBox.CreateShrink()))
+    public BottomAppBarTheme(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, double? elevation = null, global::Doroti.Framework.Painting.NotchedShape? shape = null, double? height = null, Color? surfaceTintColor = null, Color? shadowColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, BottomAppBarThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: child ?? SizedBox.CreateShrink())
     {
-        this._color = color;
-        this._elevation = elevation;
-        this._shape = shape;
-        this._height = height;
-        this._surfaceTintColor = surfaceTintColor;
-        this._shadowColor = shadowColor;
-        this._padding = padding;
-        this._data = data;
-        System.Diagnostics.Debug.Assert(((data is null) || (((((object?)(((object?)(((object?)(((object?)(((object?)(((object?)color ?? (object?)elevation)) ?? (object?)shape)) ?? (object?)height)) ?? (object?)surfaceTintColor)) ?? (object?)shadowColor)) ?? (object?)padding))) is null)));
+        _color = color;
+        _elevation = elevation;
+        _shape = shape;
+        _height = height;
+        _surfaceTintColor = surfaceTintColor;
+        _shadowColor = shadowColor;
+        _padding = padding;
+        _data = data;
+        System.Diagnostics.Debug.Assert((data is null) || ((((((((object?)color ?? elevation) ?? shape) ?? height) ?? surfaceTintColor) ?? shadowColor) ?? padding) is null));
     }
 
-    public virtual global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((BottomAppBarThemeData)this._data).color : this._color));
-    public virtual double? elevation => ((this._data is not null) ? ((BottomAppBarThemeData)this._data).elevation : this._elevation);
-    public virtual global::Doroti.Framework.Painting.NotchedShape? shape => ((this._data is not null) ? ((BottomAppBarThemeData)this._data).shape : this._shape);
-    public virtual double? height => ((this._data is not null) ? ((BottomAppBarThemeData)this._data).height : this._height);
-    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((BottomAppBarThemeData)this._data).surfaceTintColor : this._surfaceTintColor));
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((BottomAppBarThemeData)this._data).shadowColor : this._shadowColor));
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding => ((this._data is not null) ? ((BottomAppBarThemeData)this._data).padding : this._padding);
-    public virtual BottomAppBarThemeData data => DartRuntimePrimitives.ConvertValue<BottomAppBarThemeData>((this._data ?? new BottomAppBarThemeData(color: this._color, elevation: this._elevation, shape: this._shape, height: this._height, surfaceTintColor: this._surfaceTintColor, shadowColor: this._shadowColor, padding: this._padding)));
+    public virtual global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.color : _color);
+    public virtual double? elevation => (_data is not null) ? _data.elevation : _elevation;
+    public virtual global::Doroti.Framework.Painting.NotchedShape? shape => (_data is not null) ? _data.shape : _shape;
+    public virtual double? height => (_data is not null) ? _data.height : _height;
+    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.surfaceTintColor : _surfaceTintColor);
+    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.shadowColor : _shadowColor);
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding => (_data is not null) ? _data.padding : _padding;
+    public virtual BottomAppBarThemeData data => DartRuntimePrimitives.ConvertValue<BottomAppBarThemeData>(_data ?? new BottomAppBarThemeData(color: _color, elevation: _elevation, shape: _shape, height: _height, surfaceTintColor: _surfaceTintColor, shadowColor: _shadowColor, padding: _padding));
     public virtual BottomAppBarTheme copyWith(Color? color = null, double? elevation = null, global::Doroti.Framework.Painting.NotchedShape? shape = null, double? height = null, Color? surfaceTintColor = null, Color? shadowColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null)
     {
-        return new BottomAppBarTheme(color: (color ?? this.color), elevation: (elevation ?? this.elevation), shape: (shape ?? this.shape), height: (height ?? this.height), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shadowColor: (shadowColor ?? this.shadowColor), padding: (padding ?? this.padding));
+        return new BottomAppBarTheme(color: color ?? this.color, elevation: elevation ?? this.elevation, shape: shape ?? this.shape, height: height ?? this.height, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, shadowColor: shadowColor ?? this.shadowColor, padding: padding ?? this.padding);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static BottomAppBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BottomAppBarTheme? bottomAppBarThemeLocal = ((BottomAppBarTheme?)context.dependOnInheritedWidgetOfExactType<BottomAppBarTheme>());
-        return (bottomAppBarThemeLocal?.data ?? Theme.of(context).bottomAppBarTheme);
+        BottomAppBarTheme? bottomAppBarThemeLocal = context.dependOnInheritedWidgetOfExactType<BottomAppBarTheme>();
+        return bottomAppBarThemeLocal?.data ?? Theme.of(context).bottomAppBarTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static BottomAppBarTheme lerp(BottomAppBarTheme? a, BottomAppBarTheme? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
-        return new BottomAppBarTheme(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: ((t < 0.5) ? a?.shape : b?.shape), height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t));
+        return new BottomAppBarTheme(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: (t < 0.5) ? a?.shape : b?.shape, height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((BottomAppBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((BottomAppBarTheme)oldWidget).data));
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new BottomAppBarTheme(data: this.data, child: child));
+        return new BottomAppBarTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -77,13 +77,13 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -116,21 +116,21 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
 
     public virtual BottomAppBarThemeData copyWith(Color? color = null, double? elevation = null, global::Doroti.Framework.Painting.NotchedShape? shape = null, double? height = null, Color? surfaceTintColor = null, Color? shadowColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null)
     {
-        return new BottomAppBarThemeData(color: (color ?? this.color), elevation: (elevation ?? this.elevation), shape: (shape ?? this.shape), height: (height ?? this.height), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shadowColor: (shadowColor ?? this.shadowColor), padding: (padding ?? this.padding));
+        return new BottomAppBarThemeData(color: color ?? this.color, elevation: elevation ?? this.elevation, shape: shape ?? this.shape, height: height ?? this.height, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, shadowColor: shadowColor ?? this.shadowColor, padding: padding ?? this.padding);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static BottomAppBarThemeData lerp(BottomAppBarThemeData? a, BottomAppBarThemeData? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
-        return new BottomAppBarThemeData(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: ((t < 0.5) ? a?.shape : b?.shape), height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t));
+        return new BottomAppBarThemeData(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: (t < 0.5) ? a?.shape : b?.shape, height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.color, this.elevation, this.shape, this.height, this.surfaceTintColor, this.shadowColor, this.padding));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(color, elevation, shape, height, surfaceTintColor, shadowColor, padding));
     public override bool Equals(object? other)
     {
         var __other = other as BottomAppBarThemeData;
@@ -139,22 +139,22 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((__other is BottomAppBarThemeData) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).color, this.color))) && (((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).elevation == this.elevation)) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).shape, this.shape))) && (((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).height == this.height)) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).padding, this.padding)));
+        return (__other is BottomAppBarThemeData) && Equals(__other.color, color) && (__other.elevation == elevation) && Equals(__other.shape, shape) && (__other.height == height) && Equals(__other.surfaceTintColor, surfaceTintColor) && Equals(__other.shadowColor, shadowColor) && Equals(__other.padding, padding);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.NotchedShape?>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("padding", this.padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.NotchedShape?>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("padding", padding, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -168,13 +168,13 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -26,7 +26,7 @@ public abstract class MaterialStateOutlineInputBorder : OutlineInputBorder, glob
     }
 
     public static MaterialStateOutlineInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
-        => ((MaterialStateOutlineInputBorder)new _MaterialStateOutlineInputBorder__material_state(callback));
+        => new _MaterialStateOutlineInputBorder__material_state(callback);
 
     public abstract InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
 }
@@ -40,7 +40,7 @@ internal class _MaterialStateOutlineInputBorder__material_state : MaterialStateO
         this._resolve = _resolve;
     }
 
-    public override InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => this._resolve(states);
+    public override InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => _resolve(states);
 }
 
 public abstract class MaterialStateUnderlineInputBorder : UnderlineInputBorder, global::Doroti.Framework.Widgets.WidgetStateProperty<InputBorder>
@@ -50,7 +50,7 @@ public abstract class MaterialStateUnderlineInputBorder : UnderlineInputBorder, 
     }
 
     public static MaterialStateUnderlineInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
-        => ((MaterialStateUnderlineInputBorder)new _MaterialStateUnderlineInputBorder__material_state(callback));
+        => new _MaterialStateUnderlineInputBorder__material_state(callback);
 
     public abstract InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
 }
@@ -64,7 +64,7 @@ internal class _MaterialStateUnderlineInputBorder__material_state : MaterialStat
         this._resolve = _resolve;
     }
 
-    public override InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => this._resolve(states);
+    public override InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => _resolve(states);
 }
 
 public abstract class WidgetStateInputBorder : InputBorder, global::Doroti.Framework.Widgets.WidgetStateProperty<InputBorder>

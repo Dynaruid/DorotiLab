@@ -29,38 +29,38 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
     public override void initState()
     {
         base.initState();
-        this.value = ((ValueListenableBuilder<T>)this.widget).valueListenable.value;
-        ((ValueListenableBuilder<T>)this.widget).valueListenable.addListener(this._valueChanged);
+        value = widget.valueListenable.value;
+        widget.valueListenable.addListener(_valueChanged);
     }
 
     public override void didUpdateWidget(ValueListenableBuilder<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((ValueListenableBuilder<T>)oldWidget).valueListenable, ((ValueListenableBuilder<T>)this.widget).valueListenable)))
+        if (!Equals(oldWidget.valueListenable, widget.valueListenable))
         {
-            ((ValueListenableBuilder<T>)oldWidget).valueListenable.removeListener(this._valueChanged);
-            this.value = ((ValueListenableBuilder<T>)this.widget).valueListenable.value;
-            ((ValueListenableBuilder<T>)this.widget).valueListenable.addListener(this._valueChanged);
+            oldWidget.valueListenable.removeListener(_valueChanged);
+            value = widget.valueListenable.value;
+            widget.valueListenable.addListener(_valueChanged);
         }
     }
 
     public override void dispose()
     {
-        ((ValueListenableBuilder<T>)this.widget).valueListenable.removeListener(this._valueChanged);
+        widget.valueListenable.removeListener(_valueChanged);
         base.dispose();
     }
 
     internal virtual void _valueChanged()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-            this.value = ((ValueListenableBuilder<T>)this.widget).valueListenable.value;
-        })));
+            value = widget.valueListenable.value;
+        });
     }
 
     public override Widget build(BuildContext context)
     {
-        return this.widget.builder(context, this.value, ((ValueListenableBuilder<T>)this.widget).child);
+        return widget.builder(context, value, widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

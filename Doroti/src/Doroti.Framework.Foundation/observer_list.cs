@@ -34,7 +34,7 @@ public class ObserverList<T> : IEnumerable<T> where T : notnull
 
     public bool contains(T element)
     {
-        if ((_list.Count < 3))
+        if (_list.Count < 3)
         {
             return _list.Contains(element);
         }
@@ -49,8 +49,8 @@ public class ObserverList<T> : IEnumerable<T> where T : notnull
     public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
     public int Count => _list.Count;
     public T single => _list.Single();
-    public bool isEmpty => (_list.Count == 0);
-    public bool isNotEmpty => (_list.Count != 0);
+    public bool isEmpty => _list.Count == 0;
+    public bool isNotEmpty => _list.Count != 0;
     public List<T> toList(bool growable = true)
     {
         return _list.ToList();
@@ -65,23 +65,23 @@ public class HashedObserverList<T> : IEnumerable<T> where T : notnull
 
     public void add(T item)
     {
-        _map[item] = (((_map.GetValueOrDefault(item) ?? 0)) + 1);
+        _map[item] = (_map.GetValueOrDefault(item) ?? 0) + 1;
     }
 
     public bool remove(T item)
     {
         int? value = _map.GetValueOrDefault(item);
-        if ((value is null))
+        if (value is null)
         {
             return false;
         }
-        if ((value == 1))
+        if (value == 1)
         {
             _map.Remove(item);
         }
         else
         {
-            _map[item] = (value - 1);
+            _map[item] = value - 1;
         }
         return true;
     }
@@ -89,17 +89,17 @@ public class HashedObserverList<T> : IEnumerable<T> where T : notnull
     public void clear() => _map.Clear();
     public bool contains(T element) => _map.ContainsKey(element);
     public IEnumerator<T> GetEnumerator() => _map.Keys.GetEnumerator();
-    public bool isEmpty => (_map.Count == 0);
-    public bool isNotEmpty => (_map.Count != 0);
+    public bool isEmpty => _map.Count == 0;
+    public bool isNotEmpty => _map.Count != 0;
     public List<T> toList(bool growable = true)
     {
         IEnumerator<T> iterator = _map.Keys.GetEnumerator();
-        return new List<T>(Enumerable.Select(Enumerable.Range(0, _map.Count), (_) => (((Func<IEnumerator<T>>)(() =>
+        return new List<T>(Enumerable.Select(Enumerable.Range(0, _map.Count), (_) => ((Func<IEnumerator<T>>)(() =>
 {
     var __cascade = GetEnumerator();
     __cascade.MoveNext();
     return __cascade;
-}))()).Current));
+}))().Current));
     }
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();

@@ -8,7 +8,7 @@ public static partial class Raw_keyboard_webLibrary
 {
     internal static string? _unicodeChar(string key)
     {
-        if ((key.Length == 1L))
+        if (key.Length == 1L)
         {
             return key.substring(0L, 1L);
         }
@@ -42,12 +42,12 @@ public class RawKeyEventDataWeb : RawKeyEventData
         this.keyCode = keyCode;
     }
 
-    public override string keyLabel => ((key == "Unidentified") ? "" : (Raw_keyboard_webLibrary._unicodeChar(key) ?? ""));
+    public override string keyLabel => (key == "Unidentified") ? "" : (Raw_keyboard_webLibrary._unicodeChar(key) ?? "");
     public override PhysicalKeyboardKey physicalKey
     {
         get
         {
-            return (Keyboard_maps_gLibrary.kWebToPhysicalKey.GetValueOrDefault(code) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + code.GetHashCode())));
+            return Keyboard_maps_gLibrary.kWebToPhysicalKey.GetValueOrDefault(code) ?? new PhysicalKeyboardKey(LogicalKeyboardKey.webPlane + code.GetHashCode());
         }
     }
     public override LogicalKeyboardKey logicalKey
@@ -55,26 +55,26 @@ public class RawKeyEventDataWeb : RawKeyEventData
         get
         {
             LogicalKeyboardKey? maybeLocationKey = Keyboard_maps_gLibrary.kWebLocationMap.GetValueOrDefault(key)?[(int)location];
-            if ((maybeLocationKey is not null))
+            if (maybeLocationKey is not null)
             {
                 return maybeLocationKey;
             }
             LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kWebToLogicalKey.GetValueOrDefault(key);
-            if ((newKey is not null))
+            if (newKey is not null)
             {
                 return newKey;
             }
-            var isPrintable = (key.Length == 1L);
+            var isPrintable = key.Length == 1L;
             if (isPrintable)
             {
                 return new LogicalKeyboardKey(key.toLowerCase().codeUnitAt(0L));
             }
-            return new LogicalKeyboardKey((code.GetHashCode() + LogicalKeyboardKey.webPlane));
+            return new LogicalKeyboardKey(code.GetHashCode() + LogicalKeyboardKey.webPlane);
         }
     }
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
     {
-        return (key switch { var __case4855 when Equals(__case4855, ModifierKey.controlModifier) => ((metaState & modifierControl) != 0L), var __case4926 when Equals(__case4926, ModifierKey.shiftModifier) => ((metaState & modifierShift) != 0L), var __case4993 when Equals(__case4993, ModifierKey.altModifier) => ((metaState & modifierAlt) != 0L), var __case5056 when Equals(__case5056, ModifierKey.metaModifier) => ((metaState & modifierMeta) != 0L), var __case5121 when Equals(__case5121, ModifierKey.numLockModifier) => ((metaState & modifierNumLock) != 0L), var __case5192 when Equals(__case5192, ModifierKey.capsLockModifier) => ((metaState & modifierCapsLock) != 0L), var __case5265 when Equals(__case5265, ModifierKey.scrollLockModifier) => ((metaState & modifierScrollLock) != 0L), var __case5425 when Equals(__case5425, ModifierKey.functionModifier) || Equals(__case5425, ModifierKey.symbolModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return key switch { var __case4855 when Equals(__case4855, ModifierKey.controlModifier) => (metaState & modifierControl) != 0L, var __case4926 when Equals(__case4926, ModifierKey.shiftModifier) => (metaState & modifierShift) != 0L, var __case4993 when Equals(__case4993, ModifierKey.altModifier) => (metaState & modifierAlt) != 0L, var __case5056 when Equals(__case5056, ModifierKey.metaModifier) => (metaState & modifierMeta) != 0L, var __case5121 when Equals(__case5121, ModifierKey.numLockModifier) => (metaState & modifierNumLock) != 0L, var __case5192 when Equals(__case5192, ModifierKey.capsLockModifier) => (metaState & modifierCapsLock) != 0L, var __case5265 when Equals(__case5265, ModifierKey.scrollLockModifier) => (metaState & modifierScrollLock) != 0L, var __case5425 when Equals(__case5425, ModifierKey.functionModifier) || Equals(__case5425, ModifierKey.symbolModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,11 +102,11 @@ public class RawKeyEventDataWeb : RawKeyEventData
         {
             return true;
         }
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return ((((((__other is RawKeyEventDataWeb) && (((RawKeyEventDataWeb)__other).code == code)) && (((RawKeyEventDataWeb)__other).key == key)) && (((RawKeyEventDataWeb)__other).location == location)) && (((RawKeyEventDataWeb)__other).metaState == metaState)) && (((RawKeyEventDataWeb)__other).keyCode == keyCode));
+        return (__other is RawKeyEventDataWeb) && (__other.code == code) && (__other.key == key) && (__other.location == location) && (__other.metaState == metaState) && (__other.keyCode == keyCode);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(code, key, location, metaState, keyCode);

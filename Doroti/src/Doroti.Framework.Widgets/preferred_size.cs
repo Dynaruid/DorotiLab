@@ -20,6 +20,6 @@ public class PreferredSize : StatelessWidget, PreferredSizeWidget
         this.child = child;
     }
 
-    public override Widget build(BuildContext context) => this.child;
+    public override Widget build(BuildContext context) => child;
 }
 

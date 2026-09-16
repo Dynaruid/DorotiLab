@@ -15,7 +15,7 @@ public static partial class Viewport_offsetLibrary
 {
     public static ScrollDirection flipScrollDirection(ScrollDirection direction)
     {
-        return (direction switch { ScrollDirection.idle => ScrollDirection.idle, ScrollDirection.forward => ScrollDirection.reverse, ScrollDirection.reverse => ScrollDirection.forward, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return direction switch { ScrollDirection.idle => ScrollDirection.idle, ScrollDirection.forward => ScrollDirection.reverse, ScrollDirection.reverse => ScrollDirection.forward, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -41,14 +41,14 @@ public abstract class ViewportOffset : ChangeNotifier
     public abstract Future animateTo(double to, Duration duration, Curve curve);
     public virtual Future moveTo(double to, Duration? duration = null, Curve? curve = null, bool? clamp = null)
     {
-        if (((duration is null) || (Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero))))
+        if ((duration is null) || Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero))
         {
             jumpTo(to);
             return Future.value();
         }
         else
         {
-            return animateTo(to, duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)), curve: (curve ?? Curves.ease));
+            return animateTo(to, duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)), curve: curve ?? Curves.ease);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -59,15 +59,15 @@ public abstract class ViewportOffset : ChangeNotifier
     {
         var description = new List<string>();
         debugFillDescription(description);
-        return $"{(DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
+        return $"{DiagnosticsLibrary.describeIdentity(this)}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillDescription(List<string> description)
     {
-        if (this.hasPixels)
+        if (hasPixels)
         {
-            description.Add($"offset: {this.pixels.toStringAsFixed(1L)}");
+            description.Add($"offset: {pixels.toStringAsFixed(1L)}");
         }
     }
 
@@ -89,7 +89,7 @@ internal class _FixedViewportOffset__viewport_offset : ViewportOffset
         return __instance;
     }
 
-    public override double pixels => this._pixels;
+    public override double pixels => _pixels;
     public override bool hasPixels => true;
     public override bool applyViewportDimension(double viewportDimension) => true;
     public override bool applyContentDimensions(double minScrollExtent, double maxScrollExtent) => true;

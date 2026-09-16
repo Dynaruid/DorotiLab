@@ -65,7 +65,7 @@ public class FadeInImage : StatefulWidget
 
     public static FadeInImage CreateMemoryNetwork(global::Doroti.Framework.Foundation.Key? key = null, Uint8List placeholder = default!, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? placeholderErrorBuilder = null, string image = default!, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? imageErrorBuilder = null, double placeholderScale = 1.0, double imageScale = 1.0, bool excludeFromSemantics = false, string? imageSemanticLabel = null, Duration? fadeOutDuration = null, global::Doroti.Framework.Animation.Curve fadeOutCurve = default!, Duration? fadeInDuration = null, global::Doroti.Framework.Animation.Curve fadeInCurve = default!, double? width = null, double? height = null, global::Doroti.Framework.Painting.BoxFit? fit = null, Color? color = null, BlendMode? colorBlendMode = null, Color? placeholderColor = null, BlendMode? placeholderColorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? placeholderFit = null, FilterQuality filterQuality = FilterQuality.medium, FilterQuality? placeholderFilterQuality = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, long? placeholderCacheWidth = null, long? placeholderCacheHeight = null, long? imageCacheWidth = null, long? imageCacheHeight = null)
     {
-        var __instance = new FadeInImage(key, ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, new global::Doroti.Framework.Painting.MemoryImage(((Uint8List)placeholder), scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(placeholderScale)))), placeholderErrorBuilder, ResizeImage.resizeIfNeeded(imageCacheWidth, imageCacheHeight, new global::Doroti.Framework.Painting.NetworkImageIo(((string)image), scale: imageScale)), imageErrorBuilder, excludeFromSemantics, imageSemanticLabel, fadeOutDuration, fadeOutCurve, fadeInDuration, fadeInCurve, color, colorBlendMode, placeholderColor, placeholderColorBlendMode, width, height, fit, placeholderFit, filterQuality, placeholderFilterQuality, alignment, repeat, matchTextDirection);
+        var __instance = new FadeInImage(key, ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, new global::Doroti.Framework.Painting.MemoryImage(placeholder, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(placeholderScale)))), placeholderErrorBuilder, ResizeImage.resizeIfNeeded(imageCacheWidth, imageCacheHeight, new global::Doroti.Framework.Painting.NetworkImageIo(image, scale: imageScale)), imageErrorBuilder, excludeFromSemantics, imageSemanticLabel, fadeOutDuration, fadeOutCurve, fadeInDuration, fadeInCurve, color, colorBlendMode, placeholderColor, placeholderColorBlendMode, width, height, fit, placeholderFit, filterQuality, placeholderFilterQuality, alignment, repeat, matchTextDirection);
         Duration __fadeOutDuration = fadeOutDuration ?? Duration.Create(milliseconds: 300);
         global::Doroti.Framework.Animation.Curve __fadeOutCurve = fadeOutCurve ?? Curves.easeOut;
         Duration __fadeInDuration = fadeInDuration ?? Duration.Create(milliseconds: 700);
@@ -97,7 +97,7 @@ public class FadeInImage : StatefulWidget
 
     public static FadeInImage CreateAssetNetwork(global::Doroti.Framework.Foundation.Key? key = null, string placeholder = default!, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? placeholderErrorBuilder = null, string image = default!, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? imageErrorBuilder = null, global::Doroti.Framework.Services.AssetBundle? bundle = null, double? placeholderScale = null, double imageScale = 1.0, bool excludeFromSemantics = false, string? imageSemanticLabel = null, Duration? fadeOutDuration = null, global::Doroti.Framework.Animation.Curve fadeOutCurve = default!, Duration? fadeInDuration = null, global::Doroti.Framework.Animation.Curve fadeInCurve = default!, double? width = null, double? height = null, global::Doroti.Framework.Painting.BoxFit? fit = null, Color? color = null, BlendMode? colorBlendMode = null, Color? placeholderColor = null, BlendMode? placeholderColorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? placeholderFit = null, FilterQuality filterQuality = FilterQuality.medium, FilterQuality? placeholderFilterQuality = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, long? placeholderCacheWidth = null, long? placeholderCacheHeight = null, long? imageCacheWidth = null, long? imageCacheHeight = null)
     {
-        var __instance = new FadeInImage(key, ((placeholderScale is not null) ? ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, new global::Doroti.Framework.Painting.ExactAssetImage(((string)placeholder), bundle: bundle, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(placeholderScale)))) : ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, new global::Doroti.Framework.Painting.AssetImage(((string)placeholder), bundle: bundle))), placeholderErrorBuilder, ResizeImage.resizeIfNeeded(imageCacheWidth, imageCacheHeight, new global::Doroti.Framework.Painting.NetworkImageIo(((string)image), scale: imageScale)), imageErrorBuilder, excludeFromSemantics, imageSemanticLabel, fadeOutDuration, fadeOutCurve, fadeInDuration, fadeInCurve, color, colorBlendMode, placeholderColor, placeholderColorBlendMode, width, height, fit, placeholderFit, filterQuality, placeholderFilterQuality, alignment, repeat, matchTextDirection);
+        var __instance = new FadeInImage(key, (placeholderScale is not null) ? ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, new global::Doroti.Framework.Painting.ExactAssetImage(placeholder, bundle: bundle, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(placeholderScale)))) : ResizeImage.resizeIfNeeded(placeholderCacheWidth, placeholderCacheHeight, new global::Doroti.Framework.Painting.AssetImage(placeholder, bundle: bundle)), placeholderErrorBuilder, ResizeImage.resizeIfNeeded(imageCacheWidth, imageCacheHeight, new global::Doroti.Framework.Painting.NetworkImageIo(image, scale: imageScale)), imageErrorBuilder, excludeFromSemantics, imageSemanticLabel, fadeOutDuration, fadeOutCurve, fadeInDuration, fadeInCurve, color, colorBlendMode, placeholderColor, placeholderColorBlendMode, width, height, fit, placeholderFit, filterQuality, placeholderFilterQuality, alignment, repeat, matchTextDirection);
         Duration __fadeOutDuration = fadeOutDuration ?? Duration.Create(milliseconds: 300);
         global::Doroti.Framework.Animation.Curve __fadeOutCurve = fadeOutCurve ?? Curves.easeOut;
         Duration __fadeInDuration = fadeInDuration ?? Duration.Create(milliseconds: 700);
@@ -132,31 +132,31 @@ public class FadeInImage : StatefulWidget
 
 internal class _FadeInImageState__fade_in_image : State<FadeInImage>
 {
-    internal static global::Doroti.Framework.Animation.Animation<double> _kOpaqueAnimation = ((global::Doroti.Framework.Animation.Animation<double>)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
+    internal static global::Doroti.Framework.Animation.Animation<double> _kOpaqueAnimation = new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0);
     public virtual bool targetLoaded { get; set; } = false;
     internal virtual global::Doroti.Framework.Animation.ProxyAnimation _imageAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation(_kOpaqueAnimation);
     internal virtual global::Doroti.Framework.Animation.ProxyAnimation _placeholderAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation(_kOpaqueAnimation);
 
     internal virtual Image _image(global::Doroti.Framework.Painting.IImageProvider image, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::Doroti.Framework.Painting.BoxFit? fit = null, Color? color = null, BlendMode? colorBlendMode = null, FilterQuality filterQuality = default!, global::Doroti.Framework.Animation.Animation<double> opacity = default!)
     {
-        return new Image(image: image, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)errorBuilder, frameBuilder: (global::System.Func<BuildContext, Widget, long?, bool, Widget>?)frameBuilder, opacity: opacity, width: ((FadeInImage)this.widget).width, height: ((FadeInImage)this.widget).height, fit: fit, color: color, colorBlendMode: colorBlendMode, filterQuality: filterQuality, alignment: ((FadeInImage)this.widget).alignment, repeat: ((FadeInImage)this.widget).repeat, matchTextDirection: ((FadeInImage)this.widget).matchTextDirection, gaplessPlayback: true, excludeFromSemantics: true);
+        return new Image(image: image, errorBuilder: errorBuilder, frameBuilder: frameBuilder, opacity: opacity, width: widget.width, height: widget.height, fit: fit, color: color, colorBlendMode: colorBlendMode, filterQuality: filterQuality, alignment: widget.alignment, repeat: widget.repeat, matchTextDirection: widget.matchTextDirection, gaplessPlayback: true, excludeFromSemantics: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        Widget result = ((Widget)_image(image: ((FadeInImage)this.widget).image, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).imageErrorBuilder, opacity: this._imageAnimation, fit: ((FadeInImage)this.widget).fit, color: ((FadeInImage)this.widget).color, colorBlendMode: ((FadeInImage)this.widget).colorBlendMode, filterQuality: ((FadeInImage)this.widget).filterQuality, frameBuilder: ((global::System.Func<BuildContext, Widget, long?, bool, Widget>?)((context, child, frame, wasSynchronouslyLoaded) =>
+        Widget result = _image(image: widget.image, errorBuilder: widget.imageErrorBuilder, opacity: _imageAnimation, fit: widget.fit, color: widget.color, colorBlendMode: widget.colorBlendMode, filterQuality: widget.filterQuality, frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
         {
-            if ((wasSynchronouslyLoaded || (frame is not null)))
+            if (wasSynchronouslyLoaded || (frame is not null))
             {
                 targetLoaded = true;
             }
-            return ((Widget)new _AnimatedFadeOutFadeIn__fade_in_image(target: child, targetProxyAnimation: this._imageAnimation, placeholder: _image(image: ((FadeInImage)this.widget).placeholder, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).placeholderErrorBuilder, opacity: this._placeholderAnimation, color: ((FadeInImage)this.widget).placeholderColor, colorBlendMode: ((FadeInImage)this.widget).placeholderColorBlendMode, fit: (((FadeInImage)this.widget).placeholderFit ?? ((FadeInImage)this.widget).fit), filterQuality: (((FadeInImage)this.widget).placeholderFilterQuality ?? ((FadeInImage)this.widget).filterQuality)), placeholderProxyAnimation: this._placeholderAnimation, isTargetLoaded: this.targetLoaded, wasSynchronouslyLoaded: wasSynchronouslyLoaded, fadeInDuration: ((FadeInImage)this.widget).fadeInDuration, fadeOutDuration: ((FadeInImage)this.widget).fadeOutDuration, fadeInCurve: ((FadeInImage)this.widget).fadeInCurve, fadeOutCurve: ((FadeInImage)this.widget).fadeOutCurve));
+            return new _AnimatedFadeOutFadeIn__fade_in_image(target: child, targetProxyAnimation: _imageAnimation, placeholder: _image(image: widget.placeholder, errorBuilder: widget.placeholderErrorBuilder, opacity: _placeholderAnimation, color: widget.placeholderColor, colorBlendMode: widget.placeholderColorBlendMode, fit: widget.placeholderFit ?? widget.fit, filterQuality: widget.placeholderFilterQuality ?? widget.filterQuality), placeholderProxyAnimation: _placeholderAnimation, isTargetLoaded: targetLoaded, wasSynchronouslyLoaded: wasSynchronouslyLoaded, fadeInDuration: widget.fadeInDuration, fadeOutDuration: widget.fadeOutDuration, fadeInCurve: widget.fadeInCurve, fadeOutCurve: widget.fadeOutCurve);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
-        if (!((FadeInImage)this.widget).excludeFromSemantics)
+        });
+        if (!widget.excludeFromSemantics)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((FadeInImage)this.widget).imageSemanticLabel is not null), image: true, label: (((FadeInImage)this.widget).imageSemanticLabel ?? ""), child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: widget.imageSemanticLabel is not null, image: true, label: widget.imageSemanticLabel ?? "", child: result));
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -177,7 +177,7 @@ internal class _AnimatedFadeOutFadeIn__fade_in_image : ImplicitlyAnimatedWidget
     public virtual global::Doroti.Framework.Animation.Curve fadeOutCurve { get; private set; } = default!;
     public virtual bool wasSynchronouslyLoaded { get; private set; } = default!;
 
-    internal _AnimatedFadeOutFadeIn__fade_in_image(Widget target, global::Doroti.Framework.Animation.ProxyAnimation targetProxyAnimation, Widget placeholder, global::Doroti.Framework.Animation.ProxyAnimation placeholderProxyAnimation, bool isTargetLoaded, Duration fadeOutDuration, global::Doroti.Framework.Animation.Curve fadeOutCurve, Duration fadeInDuration, global::Doroti.Framework.Animation.Curve fadeInCurve, bool wasSynchronouslyLoaded) : base(duration: (fadeInDuration + fadeOutDuration))
+    internal _AnimatedFadeOutFadeIn__fade_in_image(Widget target, global::Doroti.Framework.Animation.ProxyAnimation targetProxyAnimation, Widget placeholder, global::Doroti.Framework.Animation.ProxyAnimation placeholderProxyAnimation, bool isTargetLoaded, Duration fadeOutDuration, global::Doroti.Framework.Animation.Curve fadeOutCurve, Duration fadeInDuration, global::Doroti.Framework.Animation.Curve fadeInCurve, bool wasSynchronouslyLoaded) : base(duration: fadeInDuration + fadeOutDuration)
     {
         this.target = target;
         this.targetProxyAnimation = targetProxyAnimation;
@@ -189,7 +189,7 @@ internal class _AnimatedFadeOutFadeIn__fade_in_image : ImplicitlyAnimatedWidget
         this.fadeInDuration = fadeInDuration;
         this.fadeInCurve = fadeInCurve;
         this.wasSynchronouslyLoaded = wasSynchronouslyLoaded;
-        System.Diagnostics.Debug.Assert((!wasSynchronouslyLoaded || isTargetLoaded));
+        System.Diagnostics.Debug.Assert(!wasSynchronouslyLoaded || isTargetLoaded);
     }
 
     public override _AnimatedFadeOutFadeInState__fade_in_image createState() => new _AnimatedFadeOutFadeInState__fade_in_image();
@@ -204,50 +204,50 @@ internal class _AnimatedFadeOutFadeInState__fade_in_image : ImplicitlyAnimatedWi
 
     public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object?, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _targetOpacity = ((global::Doroti.Framework.Animation.Tween<double>?)visitor(this._targetOpacity, (((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).isTargetLoaded ? 1.0 : 0.0), ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _placeholderOpacity = ((global::Doroti.Framework.Animation.Tween<double>?)visitor(this._placeholderOpacity, (((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).isTargetLoaded ? 0.0 : 1.0), ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _targetOpacity = ((global::Doroti.Framework.Animation.Tween<double>?)visitor(_targetOpacity, widget.isTargetLoaded ? 1.0 : 0.0, (value) => new global::Doroti.Framework.Animation.Tween<double>(begin: (double)value)))!;
+        _placeholderOpacity = ((global::Doroti.Framework.Animation.Tween<double>?)visitor(_placeholderOpacity, widget.isTargetLoaded ? 0.0 : 1.0, (value) => new global::Doroti.Framework.Animation.Tween<double>(begin: (double)value)))!;
     }
 
     public override void didUpdateTweens()
     {
-        if (((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).wasSynchronouslyLoaded)
+        if (widget.wasSynchronouslyLoaded)
         {
             return;
         }
         _placeholderOpacityAnimation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
 {
-    var __cascade = this.animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: this._placeholderOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutCurve)), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInDuration.inMilliseconds.toDouble()) }));
-    __cascade.addStatusListener(((AnimationStatusListener)((status) =>
+    var __cascade = animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: _placeholderOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: widget.fadeOutCurve)), weight: widget.fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: widget.fadeInDuration.inMilliseconds.toDouble()) }));
+    __cascade.addStatusListener((status) =>
     {
-        if (this._placeholderOpacityAnimation!.isCompleted)
+        if (_placeholderOpacityAnimation!.isCompleted)
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-            })));
+            });
         }
-    })));
+    });
     return __cascade;
 }))();
-        _targetOpacityAnimation = this.animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: this._targetOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInCurve)), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInDuration.inMilliseconds.toDouble()) }));
-        ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).targetProxyAnimation.parent = this._targetOpacityAnimation;
-        ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).placeholderProxyAnimation.parent = this._placeholderOpacityAnimation;
+        _targetOpacityAnimation = animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: widget.fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: _targetOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: widget.fadeInCurve)), weight: widget.fadeInDuration.inMilliseconds.toDouble()) }));
+        widget.targetProxyAnimation.parent = _targetOpacityAnimation;
+        widget.placeholderProxyAnimation.parent = _placeholderOpacityAnimation;
     }
 
     public override Widget build(BuildContext context)
     {
-        if ((((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).wasSynchronouslyLoaded || ((this._placeholderOpacityAnimation?.isCompleted ?? true))))
+        if (widget.wasSynchronouslyLoaded || (_placeholderOpacityAnimation?.isCompleted ?? true))
         {
-            return ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).target;
+            return widget.target;
         }
-        return ((Widget)new Stack(fit: StackFit.passthrough, alignment: AlignmentDirectional.center, textDirection: TextDirection.ltr, children: new List<Widget> { ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).target, ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).placeholder }));
+        return new Stack(fit: StackFit.passthrough, alignment: AlignmentDirectional.center, textDirection: TextDirection.ltr, children: new List<Widget> { widget.target, widget.placeholder });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("targetOpacity", this._targetOpacityAnimation));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("placeholderOpacity", this._placeholderOpacityAnimation));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("targetOpacity", _targetOpacityAnimation));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("placeholderOpacity", _placeholderOpacityAnimation));
     }
 
 }

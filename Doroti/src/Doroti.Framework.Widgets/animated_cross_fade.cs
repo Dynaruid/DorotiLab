@@ -53,7 +53,7 @@ public class AnimatedCrossFade : StatefulWidget
 
     public static Widget defaultLayoutBuilder(Widget topChild, global::Doroti.Framework.Foundation.Key topChildKey, Widget bottomChild, global::Doroti.Framework.Foundation.Key bottomChildKey)
     {
-        return ((Widget)new Stack(clipBehavior: Clip.none, children: new List<Widget> { new Positioned(key: bottomChildKey, left: 0.0, top: 0.0, right: 0.0, child: bottomChild), new Positioned(key: topChildKey, child: topChild) }));
+        return new Stack(clipBehavior: Clip.none, children: new List<Widget> { new Positioned(key: bottomChildKey, left: 0.0, top: 0.0, right: 0.0, child: bottomChild), new Positioned(key: topChildKey, child: topChild) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -61,10 +61,10 @@ public class AnimatedCrossFade : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<CrossFadeState>("crossFadeState", this.crossFadeState));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: Alignment.topCenter));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<CrossFadeState>("crossFadeState", crossFadeState));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: Alignment.topCenter));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", duration.inMilliseconds, unit: "ms"));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
     }
 
 }
@@ -80,28 +80,28 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
     public override void initState()
     {
         base.initState();
-        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: ((AnimatedCrossFade)this.widget).duration, reverseDuration: ((AnimatedCrossFade)this.widget).reverseDuration, vsync: this);
-        if ((Equals(((AnimatedCrossFade)this.widget).crossFadeState, CrossFadeState.showSecond)))
+        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: widget.duration, reverseDuration: widget.reverseDuration, vsync: this);
+        if (Equals(widget.crossFadeState, CrossFadeState.showSecond))
         {
-            this._controller.value = 1.0;
+            _controller.value = 1.0;
         }
-        _firstAnimation = _initAnimation(((AnimatedCrossFade)this.widget).firstCurve, true);
-        _secondAnimation = _initAnimation(((AnimatedCrossFade)this.widget).secondCurve, false);
-        this._controller.addStatusListener(((AnimationStatusListener)((status) =>
+        _firstAnimation = _initAnimation(widget.firstCurve, true);
+        _secondAnimation = _initAnimation(widget.secondCurve, false);
+        _controller.addStatusListener((status) =>
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-            })));
-            if (((Equals(status, AnimationStatus.completed)) || (Equals(status, AnimationStatus.dismissed))))
+            });
+            if (Equals(status, AnimationStatus.completed) || Equals(status, AnimationStatus.dismissed))
             {
-                ((AnimatedCrossFade)this.widget).onEnd?.Invoke();
+                widget.onEnd?.Invoke();
             }
-        })));
+        });
     }
 
     internal virtual global::Doroti.Framework.Animation.Animation<double> _initAnimation(global::Doroti.Framework.Animation.Curve curve, bool inverted)
     {
-        global::Doroti.Framework.Animation.Animation<double> result = ((global::Doroti.Framework.Animation.Animation<double>)this._controller.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curve)));
+        global::Doroti.Framework.Animation.Animation<double> result = _controller.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curve));
         if (inverted)
         {
             result = result.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
@@ -112,23 +112,23 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
 
     public override void dispose()
     {
-        this._controller.dispose();
+        _controller.dispose();
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._tickers is not null))
+                if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
+                        if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -136,34 +136,34 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
     public override void didUpdateWidget(AnimatedCrossFade oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((AnimatedCrossFade)this.widget).duration, ((AnimatedCrossFade)oldWidget).duration)))
+        if (!Equals(widget.duration, oldWidget.duration))
         {
-            this._controller.duration = ((AnimatedCrossFade)this.widget).duration;
+            _controller.duration = widget.duration;
         }
-        if ((!Equals(((AnimatedCrossFade)this.widget).reverseDuration, ((AnimatedCrossFade)oldWidget).reverseDuration)))
+        if (!Equals(widget.reverseDuration, oldWidget.reverseDuration))
         {
-            this._controller.reverseDuration = ((AnimatedCrossFade)this.widget).reverseDuration;
+            _controller.reverseDuration = widget.reverseDuration;
         }
-        if ((!Equals(((AnimatedCrossFade)this.widget).firstCurve, ((AnimatedCrossFade)oldWidget).firstCurve)))
+        if (!Equals(widget.firstCurve, oldWidget.firstCurve))
         {
-            _firstAnimation = _initAnimation(((AnimatedCrossFade)this.widget).firstCurve, true);
+            _firstAnimation = _initAnimation(widget.firstCurve, true);
         }
-        if ((!Equals(((AnimatedCrossFade)this.widget).secondCurve, ((AnimatedCrossFade)oldWidget).secondCurve)))
+        if (!Equals(widget.secondCurve, oldWidget.secondCurve))
         {
-            _secondAnimation = _initAnimation(((AnimatedCrossFade)this.widget).secondCurve, false);
+            _secondAnimation = _initAnimation(widget.secondCurve, false);
         }
-        if ((!Equals(((AnimatedCrossFade)this.widget).crossFadeState, ((AnimatedCrossFade)oldWidget).crossFadeState)))
+        if (!Equals(widget.crossFadeState, oldWidget.crossFadeState))
         {
-            switch (((AnimatedCrossFade)this.widget).crossFadeState)
+            switch (widget.crossFadeState)
             {
                 case CrossFadeState.showFirst:
                     {
-                        this._controller.reverse();
+                        _controller.reverse();
                         break;
                     }
                 case CrossFadeState.showSecond:
                     {
-                        this._controller.forward();
+                        _controller.forward();
                         break;
                     }
             }
@@ -172,74 +172,74 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Foundation.Key kFirstChildKey = ((global::Doroti.Framework.Foundation.Key)new global::Doroti.Framework.Foundation.ValueKey<CrossFadeState>(CrossFadeState.showFirst));
-        global::Doroti.Framework.Foundation.Key kSecondChildKey = ((global::Doroti.Framework.Foundation.Key)new global::Doroti.Framework.Foundation.ValueKey<CrossFadeState>(CrossFadeState.showSecond));
+        global::Doroti.Framework.Foundation.Key kFirstChildKey = new global::Doroti.Framework.Foundation.ValueKey<CrossFadeState>(CrossFadeState.showFirst);
+        global::Doroti.Framework.Foundation.Key kSecondChildKey = new global::Doroti.Framework.Foundation.ValueKey<CrossFadeState>(CrossFadeState.showSecond);
         global::Doroti.Framework.Foundation.Key topKey = default!;
         Widget topChild = default!;
         global::Doroti.Framework.Animation.Animation<double> topAnimation = default!;
         global::Doroti.Framework.Foundation.Key bottomKey = default!;
         Widget bottomChild = default!;
         global::Doroti.Framework.Animation.Animation<double> bottomAnimation = default!;
-        if (this._controller.isForwardOrCompleted)
+        if (_controller.isForwardOrCompleted)
         {
             topKey = kSecondChildKey;
-            topChild = ((AnimatedCrossFade)this.widget).secondChild;
-            topAnimation = this._secondAnimation;
+            topChild = widget.secondChild;
+            topAnimation = _secondAnimation;
             bottomKey = kFirstChildKey;
-            bottomChild = ((AnimatedCrossFade)this.widget).firstChild;
-            bottomAnimation = this._firstAnimation;
+            bottomChild = widget.firstChild;
+            bottomAnimation = _firstAnimation;
         }
         else
         {
             topKey = kFirstChildKey;
-            topChild = ((AnimatedCrossFade)this.widget).firstChild;
-            topAnimation = this._firstAnimation;
+            topChild = widget.firstChild;
+            topAnimation = _firstAnimation;
             bottomKey = kSecondChildKey;
-            bottomChild = ((AnimatedCrossFade)this.widget).secondChild;
-            bottomAnimation = this._secondAnimation;
+            bottomChild = widget.secondChild;
+            bottomAnimation = _secondAnimation;
         }
-        bottomChild = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(key: bottomKey, enabled: ((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating, child: new IgnorePointer(child: new ExcludeSemantics(child: new ExcludeFocus(excluding: ((AnimatedCrossFade)this.widget).excludeBottomFocus, child: new FadeTransition(opacity: bottomAnimation, child: bottomChild))))));
+        bottomChild = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(key: bottomKey, enabled: _controller.isAnimating, child: new IgnorePointer(child: new ExcludeSemantics(child: new ExcludeFocus(excluding: widget.excludeBottomFocus, child: new FadeTransition(opacity: bottomAnimation, child: bottomChild))))));
         topChild = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(key: topKey, enabled: true, child: new IgnorePointer(ignoring: false, child: new ExcludeSemantics(excluding: false, child: new ExcludeFocus(excluding: false, child: new FadeTransition(opacity: topAnimation, child: topChild))))));
-        return ((Widget)new ClipRect(clipBehavior: ((AnimatedCrossFade)this.widget).clipBehavior, child: new AnimatedSize(alignment: ((AnimatedCrossFade)this.widget).alignment, duration: ((AnimatedCrossFade)this.widget).duration, reverseDuration: ((AnimatedCrossFade)this.widget).reverseDuration, curve: ((AnimatedCrossFade)this.widget).sizeCurve, clipBehavior: ((AnimatedCrossFade)this.widget).clipBehavior, child: this.widget.layoutBuilder(topChild, topKey, bottomChild, bottomKey))));
+        return new ClipRect(clipBehavior: widget.clipBehavior, child: new AnimatedSize(alignment: widget.alignment, duration: widget.duration, reverseDuration: widget.reverseDuration, curve: widget.sizeCurve, clipBehavior: widget.clipBehavior, child: widget.layoutBuilder(topChild, topKey, bottomChild, bottomKey)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
-        description.add(new global::Doroti.Framework.Foundation.EnumProperty<CrossFadeState>("crossFadeState", ((AnimatedCrossFade)this.widget).crossFadeState));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationController>("controller", this._controller, showName: false));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", ((AnimatedCrossFade)this.widget).alignment, defaultValue: Alignment.topCenter));
-        description.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", ((AnimatedCrossFade)this.widget).clipBehavior, defaultValue: Clip.hardEdge));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        description.add(new global::Doroti.Framework.Foundation.EnumProperty<CrossFadeState>("crossFadeState", widget.crossFadeState));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationController>("controller", _controller, showName: false));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", widget.alignment, defaultValue: Alignment.topCenter));
+        description.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", widget.clipBehavior, defaultValue: Clip.hardEdge));
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -251,28 +251,28 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
 }

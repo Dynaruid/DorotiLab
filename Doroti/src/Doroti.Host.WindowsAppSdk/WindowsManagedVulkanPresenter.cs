@@ -9,12 +9,12 @@ using Silk.NET.Core.Native;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.KHR;
 using SkiaSharp;
+using Brightness = Doroti.Ui.Brightness;
+using SystemComposition = Windows.UI.Composition;
+using SystemCompositionDesktop = Windows.UI.Composition.Desktop;
 using VkDevice = Silk.NET.Vulkan.Device;
 using VkImage = Silk.NET.Vulkan.Image;
 using VkSemaphore = Silk.NET.Vulkan.Semaphore;
-using SystemComposition = Windows.UI.Composition;
-using SystemCompositionDesktop = Windows.UI.Composition.Desktop;
-using Brightness = Doroti.Ui.Brightness;
 using WindowBackdropOptions = Doroti.Ui.WindowBackdropOptions;
 
 namespace Doroti.Host.WindowsAppSdk;
@@ -1119,7 +1119,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     };
 
     private static int RoundCapacity(int value) =>
-        checked(((value + CapacityQuantum - 1) / CapacityQuantum) * CapacityQuantum);
+        checked((value + CapacityQuantum - 1) / CapacityQuantum * CapacityQuantum);
 
     private bool TryAcquireNextImage(Func<bool> shouldContinue, out uint imageIndex)
     {
@@ -1559,7 +1559,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             throw new PlatformNotSupportedException(
                 $"Vulkan device '{selected.Name}' does not expose a valid Windows adapter LUID.");
         _adapterLuidLow =
-            (uint)selectedId.DeviceLuid[0] |
+            selectedId.DeviceLuid[0] |
             (uint)selectedId.DeviceLuid[1] << 8 |
             (uint)selectedId.DeviceLuid[2] << 16 |
             (uint)selectedId.DeviceLuid[3] << 24;
@@ -2120,8 +2120,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 $"Vulkan backing dimension {required} exceeds the device limit {_maximumImageDimension2D}.");
         if (current >= required) return current;
         var desired = current == 0
-            ? (long)required
-            : Math.Max((long)required, current + Math.Max(256L, current / 4L));
+            ? required
+            : Math.Max(required, current + Math.Max(256L, current / 4L));
         var aligned = checked((desired + 255L) & ~255L);
         if (_maximumImageDimension2D != 0 && aligned > _maximumImageDimension2D)
             aligned = required;

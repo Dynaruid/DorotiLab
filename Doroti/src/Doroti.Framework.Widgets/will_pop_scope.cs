@@ -25,41 +25,41 @@ internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        if ((((WillPopScope)this.widget).onWillPop is not null))
+        if (widget.onWillPop is not null)
         {
-            this._route?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+            _route?.removeScopedWillPopCallback(widget.onWillPop!);
         }
-        _route = ModalRoute<object>.untypedOf(this.context);
-        if ((((WillPopScope)this.widget).onWillPop is not null))
+        _route = ModalRoute<object>.untypedOf(context);
+        if (widget.onWillPop is not null)
         {
-            this._route?.addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+            _route?.addScopedWillPopCallback(widget.onWillPop!);
         }
     }
 
     public override void didUpdateWidget(WillPopScope oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((!Equals((global::System.Func<Future<bool>>?)((WillPopScope)this.widget).onWillPop, (global::System.Func<Future<bool>>?)((WillPopScope)oldWidget).onWillPop)) && (this._route is not null)))
+        if ((!Equals(widget.onWillPop, oldWidget.onWillPop)) && (_route is not null))
         {
-            if ((((WillPopScope)oldWidget).onWillPop is not null))
+            if (oldWidget.onWillPop is not null)
             {
-                this._route!.removeScopedWillPopCallback(((WillPopScope)oldWidget).onWillPop!);
+                _route!.removeScopedWillPopCallback(oldWidget.onWillPop!);
             }
-            if ((((WillPopScope)this.widget).onWillPop is not null))
+            if (widget.onWillPop is not null)
             {
-                this._route!.addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+                _route!.addScopedWillPopCallback(widget.onWillPop!);
             }
         }
     }
 
     public override void dispose()
     {
-        if ((((WillPopScope)this.widget).onWillPop is not null))
+        if (widget.onWillPop is not null)
         {
-            this._route?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
+            _route?.removeScopedWillPopCallback(widget.onWillPop!);
         }
         base.dispose();
     }
 
-    public override Widget build(BuildContext context) => ((WillPopScope)this.widget).child;
+    public override Widget build(BuildContext context) => widget.child;
 }

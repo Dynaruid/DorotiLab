@@ -20,14 +20,14 @@ public class Priority
     public virtual long value => _value;
     public virtual Priority op_Add(long offset)
     {
-        if ((offset.abs() > kMaxOffset))
+        if (offset.abs() > kMaxOffset)
         {
-            offset = (kMaxOffset * Math.Sign(offset));
+            offset = kMaxOffset * Math.Sign(offset);
         }
-        return new Priority((_value + offset));
+        return new Priority(_value + offset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Priority op_Subtract(long offset) => (this.op_Add((-offset)));
+    public virtual Priority op_Subtract(long offset) => op_Add(-offset);
 }
 

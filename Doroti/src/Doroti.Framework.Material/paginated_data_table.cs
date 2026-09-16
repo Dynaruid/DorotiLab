@@ -66,28 +66,28 @@ public class PaginatedDataTable : global::Doroti.Framework.Widgets.StatefulWidge
         this.headingRowColor = headingRowColor;
         this.dividerThickness = dividerThickness;
         this.showEmptyRows = showEmptyRows;
-        this.dataRowMinHeight = (dataRowHeight ?? dataRowMinHeight);
-        this.dataRowMaxHeight = (dataRowHeight ?? dataRowMaxHeight);
-        System.Diagnostics.Debug.Assert(((actions is null) || ((header is not null))));
+        this.dataRowMinHeight = dataRowHeight ?? dataRowMinHeight;
+        this.dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;
+        System.Diagnostics.Debug.Assert((actions is null) || header is not null);
         System.Diagnostics.Debug.Assert(Enumerable.Any(columns));
-        System.Diagnostics.Debug.Assert(((sortColumnIndex is null) || (((sortColumnIndex >= 0L) && (DartRuntimePrimitives.RequireValue(sortColumnIndex) < checked((long)(columns.Count)))))));
-        System.Diagnostics.Debug.Assert((((dataRowMinHeight is null) || (dataRowMaxHeight is null)) || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight))));
-        System.Diagnostics.Debug.Assert(((dataRowHeight is null) || (((dataRowMinHeight is null) && (dataRowMaxHeight is null)))));
-        System.Diagnostics.Debug.Assert((__rowsPerPage > 0L));
-        System.Diagnostics.Debug.Assert(((dividerThickness is null) || (dividerThickness >= 0L)));
+        System.Diagnostics.Debug.Assert((sortColumnIndex is null) || (sortColumnIndex >= 0L) && (DartRuntimePrimitives.RequireValue(sortColumnIndex) < checked(columns.Count)));
+        System.Diagnostics.Debug.Assert((dataRowMinHeight is null) || (dataRowMaxHeight is null) || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight)));
+        System.Diagnostics.Debug.Assert((dataRowHeight is null) || (dataRowMinHeight is null) && (dataRowMaxHeight is null));
+        System.Diagnostics.Debug.Assert(__rowsPerPage > 0L);
+        System.Diagnostics.Debug.Assert((dividerThickness is null) || (dividerThickness >= 0L));
         System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
         {
-            if ((onRowsPerPageChanged is not null))
+            if (onRowsPerPageChanged is not null)
             {
                 DartRuntimePrimitives.Assert(() => __availableRowsPerPage.Contains(DartRuntimePrimitives.RequireValue(__rowsPerPage)));
             }
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))());
-        System.Diagnostics.Debug.Assert(!(((controller is not null) && ((primary ?? false)))));
+        System.Diagnostics.Debug.Assert(!((controller is not null) && (primary ?? false)));
     }
 
-    public virtual double? dataRowHeight => ((this.dataRowMinHeight == this.dataRowMaxHeight) ? this.dataRowMinHeight : null);
+    public virtual double? dataRowHeight => (dataRowMinHeight == dataRowMaxHeight) ? dataRowMinHeight : null;
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new PaginatedDataTableState());
 }
 
@@ -103,18 +103,18 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
     public override void initState()
     {
         base.initState();
-        _firstRowIndex = ((((long?)PageStorage.maybeOf(this.context)?.readState(this.context)) ?? ((PaginatedDataTable)this.widget).initialFirstRowIndex) ?? 0L);
-        ((PaginatedDataTable)this.widget).source.addListener(this._handleDataSourceChanged);
+        _firstRowIndex = (((long?)PageStorage.maybeOf(context)?.readState(context)) ?? widget.initialFirstRowIndex) ?? 0L;
+        widget.source.addListener(_handleDataSourceChanged);
         _handleDataSourceChanged();
     }
 
     public override void didUpdateWidget(PaginatedDataTable oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((PaginatedDataTable)oldWidget).source, ((PaginatedDataTable)this.widget).source)))
+        if (!Equals(oldWidget.source, widget.source))
         {
-            ((PaginatedDataTable)oldWidget).source.removeListener(this._handleDataSourceChanged);
-            ((PaginatedDataTable)this.widget).source.addListener(this._handleDataSourceChanged);
+            oldWidget.source.removeListener(_handleDataSourceChanged);
+            widget.source.addListener(_handleDataSourceChanged);
             _updateCaches();
         }
     }
@@ -127,47 +127,47 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
 
     public override void dispose()
     {
-        ((PaginatedDataTable)this.widget).source.removeListener(this._handleDataSourceChanged);
+        widget.source.removeListener(_handleDataSourceChanged);
         base.dispose();
     }
 
     internal virtual void _handleDataSourceChanged()
     {
-        setState(() => this._updateCaches());
+        setState(() => _updateCaches());
     }
 
     internal virtual void _updateCaches()
     {
-        _rowCount = ((PaginatedDataTable)this.widget).source.rowCount;
-        _rowCountApproximate = ((PaginatedDataTable)this.widget).source.isRowCountApproximate;
-        _selectedRowCount = ((PaginatedDataTable)this.widget).source.selectedRowCount;
-        this._rows.Clear();
+        _rowCount = widget.source.rowCount;
+        _rowCountApproximate = widget.source.isRowCountApproximate;
+        _selectedRowCount = widget.source.selectedRowCount;
+        _rows.Clear();
     }
 
     public virtual void pageTo(long rowIndex)
     {
-        long oldFirstRowIndex = this._firstRowIndex;
-        setState(((global::System.Action)(() =>
+        long oldFirstRowIndex = _firstRowIndex;
+        setState(() =>
         {
-            long rowsPerPageLocal = ((PaginatedDataTable)this.widget).rowsPerPage;
-            _firstRowIndex = (((checked((long)(rowIndex / rowsPerPageLocal)))) * rowsPerPageLocal);
-        })));
-        if ((((((PaginatedDataTable)this.widget).onPageChanged is not null)) && ((oldFirstRowIndex != this._firstRowIndex))))
+            long rowsPerPageLocal = widget.rowsPerPage;
+            _firstRowIndex = checked(rowIndex / rowsPerPageLocal) * rowsPerPageLocal;
+        });
+        if (widget.onPageChanged is not null && oldFirstRowIndex != _firstRowIndex)
         {
-            ((PaginatedDataTable)this.widget).onPageChanged!(this._firstRowIndex);
+            widget.onPageChanged!(_firstRowIndex);
         }
     }
 
     internal virtual DataRow _getBlankRowFor(long index)
     {
-        return DataRow.CreateByIndex(index: index, cells: ((PaginatedDataTable)this.widget).columns.map<DataColumn, DataCell>(((column) => DataCell.empty)).ToList());
+        return DataRow.CreateByIndex(index: index, cells: widget.columns.map<DataColumn, DataCell>((column) => DataCell.empty).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual DataRow _getProgressIndicatorRowFor(long index)
     {
         var haveProgressIndicator = false;
-        List<DataCell> cellsLocal = ((PaginatedDataTable)this.widget).columns.map<DataColumn, DataCell>(((column) =>
+        List<DataCell> cellsLocal = widget.columns.map<DataColumn, DataCell>((column) =>
         {
             if (!column.numeric)
             {
@@ -176,11 +176,11 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
             }
             return DataCell.empty;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })).ToList().ToList();
+        }).ToList().ToList();
         if (!haveProgressIndicator)
         {
             haveProgressIndicator = true;
-            cellsLocal[(int)(0L)] = new DataCell(new CircularProgressIndicator());
+            cellsLocal[(int)0L] = new DataCell(new CircularProgressIndicator());
         }
         return DataRow.CreateByIndex(index: index, cells: cellsLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -189,25 +189,25 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
     internal virtual List<DataRow> _getRows(long firstRowIndex, long rowsPerPage)
     {
         var result = new List<DataRow>();
-        long nextPageFirstRowIndex = (firstRowIndex + rowsPerPage);
+        long nextPageFirstRowIndex = firstRowIndex + rowsPerPage;
         var haveProgressIndicator = false;
-        for (var index = firstRowIndex; (index < nextPageFirstRowIndex); index += 1L)
+        for (var index = firstRowIndex; index < nextPageFirstRowIndex; index += 1L)
         {
             DataRow? row = default!;
-            if (((index < this._rowCount) || this._rowCountApproximate))
+            if ((index < _rowCount) || _rowCountApproximate)
             {
-                row = this._rows.putIfAbsent(index, (() => ((PaginatedDataTable)this.widget).source.getRow(index)));
-                if (((row is null) && !haveProgressIndicator))
+                row = _rows.putIfAbsent(index, () => widget.source.getRow(index));
+                if ((row is null) && !haveProgressIndicator)
                 {
                     row ??= _getProgressIndicatorRowFor(index);
                     haveProgressIndicator = true;
                 }
             }
-            if (((PaginatedDataTable)this.widget).showEmptyRows)
+            if (widget.showEmptyRows)
             {
                 row ??= _getBlankRowFor(index);
             }
-            if ((row is not null))
+            if (row is not null)
             {
                 result.Add(row);
             }
@@ -223,62 +223,62 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
 
     internal virtual void _handlePrevious()
     {
-        pageTo(Math.Max((this._firstRowIndex - ((PaginatedDataTable)this.widget).rowsPerPage), 0L));
+        pageTo(Math.Max(_firstRowIndex - widget.rowsPerPage, 0L));
     }
 
     internal virtual void _handleNext()
     {
-        pageTo((this._firstRowIndex + ((PaginatedDataTable)this.widget).rowsPerPage));
+        pageTo(_firstRowIndex + widget.rowsPerPage);
     }
 
     internal virtual void _handleLast()
     {
-        pageTo((((((this._rowCount - 1L)) / ((PaginatedDataTable)this.widget).rowsPerPage)).floor() * ((PaginatedDataTable)this.widget).rowsPerPage));
+        pageTo(((_rowCount - 1L) / widget.rowsPerPage).floor() * widget.rowsPerPage);
     }
 
-    internal virtual bool _isNextPageUnavailable() => DartRuntimePrimitives.ConvertValue<bool>((!this._rowCountApproximate && (((this._firstRowIndex + ((PaginatedDataTable)this.widget).rowsPerPage) >= this._rowCount))));
+    internal virtual bool _isNextPageUnavailable() => DartRuntimePrimitives.ConvertValue<bool>(!_rowCountApproximate && (_firstRowIndex + widget.rowsPerPage) >= _rowCount);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         ThemeData themeData = Theme.of(context);
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         var headerWidgets = new List<global::Doroti.Framework.Widgets.Widget>();
-        if (((this._selectedRowCount == 0L) && (((PaginatedDataTable)this.widget).header is not null)))
+        if ((_selectedRowCount == 0L) && (widget.header is not null))
         {
-            headerWidgets.Add(new global::Doroti.Framework.Widgets.Expanded(child: ((PaginatedDataTable)this.widget).header!));
+            headerWidgets.Add(new global::Doroti.Framework.Widgets.Expanded(child: widget.header!));
         }
         else
         {
-            if ((((PaginatedDataTable)this.widget).header is not null))
+            if (widget.header is not null)
             {
-                headerWidgets.Add(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Text(localizations.selectedRowCountTitle(this._selectedRowCount))));
+                headerWidgets.Add(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Text(localizations.selectedRowCountTitle(_selectedRowCount))));
             }
         }
-        if ((((PaginatedDataTable)this.widget).actions is not null))
+        if (widget.actions is not null)
         {
-            headerWidgets.AddRange(((PaginatedDataTable)this.widget).actions!.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((action) =>
+            headerWidgets.AddRange(widget.actions!.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>((action) =>
             {
-                return new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: (24.0 - (8.0 * 2.0))), child: action);
+                return new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 24.0 - (8.0 * 2.0)), child: action);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })).ToList().Cast<global::Doroti.Framework.Widgets.Widget>());
+            }).ToList().Cast<global::Doroti.Framework.Widgets.Widget>());
         }
         global::Doroti.Framework.Painting.TextStyle? footerTextStyle = themeData.textTheme.bodySmall;
         var footerWidgets = new List<global::Doroti.Framework.Widgets.Widget>();
-        if ((((PaginatedDataTable)this.widget).onRowsPerPageChanged is not null))
+        if (widget.onRowsPerPageChanged is not null)
         {
-            List<global::Doroti.Framework.Widgets.Widget> availableRowsPerPageLocal = ((PaginatedDataTable)this.widget).availableRowsPerPage.where(((value) => ((value <= this._rowCount) || (value == ((PaginatedDataTable)this.widget).rowsPerPage)))).map<long, DropdownMenuItem<long>>(((value) =>
+            List<global::Doroti.Framework.Widgets.Widget> availableRowsPerPageLocal = widget.availableRowsPerPage.where((value) => (value <= _rowCount) || (value == widget.rowsPerPage)).map<long, DropdownMenuItem<long>>((value) =>
             {
                 return new DropdownMenuItem<long>(value: value, child: new global::Doroti.Framework.Widgets.Text($"{value}"));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })).ToList().Cast<global::Doroti.Framework.Widgets.Widget>().ToList();
-            footerWidgets.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 14.0)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(localizations.rowsPerPageTitle)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 64.0), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerEnd, child: new DropdownButtonHideUnderline(child: new DropdownButton<long>(items: availableRowsPerPageLocal.cast<DropdownMenuItem<long>>().ToList(), value: ((PaginatedDataTable)this.widget).rowsPerPage, onChanged: (value => ((PaginatedDataTable)this.widget).onRowsPerPageChanged?.Invoke(value)), style: footerTextStyle))))) }.Cast<global::Doroti.Framework.Widgets.Widget>());
+            }).ToList().Cast<global::Doroti.Framework.Widgets.Widget>().ToList();
+            footerWidgets.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 14.0)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(localizations.rowsPerPageTitle)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 64.0), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerEnd, child: new DropdownButtonHideUnderline(child: new DropdownButton<long>(items: availableRowsPerPageLocal.cast<DropdownMenuItem<long>>().ToList(), value: widget.rowsPerPage, onChanged: value => widget.onRowsPerPageChanged?.Invoke(value), style: footerTextStyle))))) }.Cast<global::Doroti.Framework.Widgets.Widget>());
         }
-        footerWidgets.AddRange(((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19346 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 32.0))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(localizations.pageRowsInfoTitle((this._firstRowIndex + 1L), Math.Min((this._firstRowIndex + ((PaginatedDataTable)this.widget).rowsPerPage), this._rowCount), this._rowCount, this._rowCountApproximate)))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 32.0))); if (((PaginatedDataTable)this.widget).showFirstLastButtons) { __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.skip_previous), padding: EdgeInsets.zero, color: ((PaginatedDataTable)this.widget).arrowHeadColor, tooltip: localizations.firstPageTooltip, onPressed: ((global::System.Action?)((this._firstRowIndex <= 0L) ? null : this._handleFirst))))); } __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.chevron_left), padding: EdgeInsets.zero, color: ((PaginatedDataTable)this.widget).arrowHeadColor, tooltip: localizations.previousPageTooltip, onPressed: ((global::System.Action?)((this._firstRowIndex <= 0L) ? null : this._handlePrevious))))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 24.0))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.chevron_right), padding: EdgeInsets.zero, color: ((PaginatedDataTable)this.widget).arrowHeadColor, tooltip: localizations.nextPageTooltip, onPressed: ((global::System.Action?)(_isNextPageUnavailable() ? null : this._handleNext))))); if (((PaginatedDataTable)this.widget).showFirstLastButtons) { __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.skip_next), padding: EdgeInsets.zero, color: ((PaginatedDataTable)this.widget).arrowHeadColor, tooltip: localizations.lastPageTooltip, onPressed: ((global::System.Action?)(_isNextPageUnavailable() ? null : this._handleLast))))); } __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 14.0))); return __collection19346; }))().Cast<global::Doroti.Framework.Widgets.Widget>());
-        return ((global::Doroti.Framework.Widgets.Widget)new Card(semanticContainer: false, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        footerWidgets.AddRange(((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19346 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 32.0))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(localizations.pageRowsInfoTitle(_firstRowIndex + 1L, Math.Min(_firstRowIndex + widget.rowsPerPage, _rowCount), _rowCount, _rowCountApproximate)))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 32.0))); if (widget.showFirstLastButtons) { __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.skip_previous), padding: EdgeInsets.zero, color: widget.arrowHeadColor, tooltip: localizations.firstPageTooltip, onPressed: (_firstRowIndex <= 0L) ? null : _handleFirst))); } __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.chevron_left), padding: EdgeInsets.zero, color: widget.arrowHeadColor, tooltip: localizations.previousPageTooltip, onPressed: (_firstRowIndex <= 0L) ? null : _handlePrevious))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 24.0))); __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.chevron_right), padding: EdgeInsets.zero, color: widget.arrowHeadColor, tooltip: localizations.nextPageTooltip, onPressed: _isNextPageUnavailable() ? null : _handleNext))); if (widget.showFirstLastButtons) { __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.skip_next), padding: EdgeInsets.zero, color: widget.arrowHeadColor, tooltip: localizations.lastPageTooltip, onPressed: _isNextPageUnavailable() ? null : _handleLast))); } __collection19346.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 14.0))); return __collection19346; }))().Cast<global::Doroti.Framework.Widgets.Widget>());
+        return new Card(semanticContainer: false, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: (context, constraints) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection21136 = new List<global::Doroti.Framework.Widgets.Widget>(); if (Enumerable.Any(headerWidgets)) { __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: ((this._selectedRowCount > 0L) ? themeData.textTheme.titleMedium!.copyWith(color: themeData.colorScheme.secondary) : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400)), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(opacity: 0.54), child: new Ink(height: 64.0, color: ((this._selectedRowCount > 0L) ? themeData.secondaryHeaderColor : null), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 24, end: 14.0), child: new global::Doroti.Framework.Widgets.Row(mainAxisAlignment: MainAxisAlignment.end, children: headerWidgets)))))))); } __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SingleChildScrollView(scrollDirection: Axis.horizontal, primary: ((PaginatedDataTable)this.widget).primary, controller: ((PaginatedDataTable)this.widget).controller, dragStartBehavior: ((PaginatedDataTable)this.widget).dragStartBehavior, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth), child: new DataTable(key: this._tableKey, columns: ((PaginatedDataTable)this.widget).columns, sortColumnIndex: ((PaginatedDataTable)this.widget).sortColumnIndex, sortAscending: ((PaginatedDataTable)this.widget).sortAscending, onSelectAll: ((PaginatedDataTable)this.widget).onSelectAll, dividerThickness: ((PaginatedDataTable)this.widget).dividerThickness, decoration: new global::Doroti.Framework.Painting.BoxDecoration(), dataRowMinHeight: ((PaginatedDataTable)this.widget).dataRowMinHeight, dataRowMaxHeight: ((PaginatedDataTable)this.widget).dataRowMaxHeight, headingRowHeight: ((PaginatedDataTable)this.widget).headingRowHeight, horizontalMargin: ((PaginatedDataTable)this.widget).horizontalMargin, checkboxHorizontalMargin: ((PaginatedDataTable)this.widget).checkboxHorizontalMargin, columnSpacing: ((PaginatedDataTable)this.widget).columnSpacing, showCheckboxColumn: ((PaginatedDataTable)this.widget).showCheckboxColumn, showBottomBorder: true, rows: _getRows(this._firstRowIndex, ((PaginatedDataTable)this.widget).rowsPerPage), headingRowColor: ((PaginatedDataTable)this.widget).headingRowColor))))); if (!((PaginatedDataTable)this.widget).showEmptyRows) { __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: (((((PaginatedDataTable)this.widget).dataRowMaxHeight ?? Widgets.ConstantsLibrary.kMinInteractiveDimension)) * (((((PaginatedDataTable)this.widget).rowsPerPage - this._rowCount) + this._firstRowIndex)).clamp(0L, ((PaginatedDataTable)this.widget).rowsPerPage))))); } __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: footerTextStyle!, child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(opacity: 0.54), child: new global::Doroti.Framework.Widgets.SizedBox(height: 56.0, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(dragStartBehavior: ((PaginatedDataTable)this.widget).dragStartBehavior, scrollDirection: Axis.horizontal, reverse: true, child: new global::Doroti.Framework.Widgets.Row(children: footerWidgets))))))); return __collection21136; }))()));
+            return new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection21136 = new List<global::Doroti.Framework.Widgets.Widget>(); if (Enumerable.Any(headerWidgets)) { __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (_selectedRowCount > 0L) ? themeData.textTheme.titleMedium!.copyWith(color: themeData.colorScheme.secondary) : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(opacity: 0.54), child: new Ink(height: 64.0, color: (_selectedRowCount > 0L) ? themeData.secondaryHeaderColor : null, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 24, end: 14.0), child: new global::Doroti.Framework.Widgets.Row(mainAxisAlignment: MainAxisAlignment.end, children: headerWidgets)))))))); } __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SingleChildScrollView(scrollDirection: Axis.horizontal, primary: widget.primary, controller: widget.controller, dragStartBehavior: widget.dragStartBehavior, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: constraints.minWidth), child: new DataTable(key: _tableKey, columns: widget.columns, sortColumnIndex: widget.sortColumnIndex, sortAscending: widget.sortAscending, onSelectAll: widget.onSelectAll, dividerThickness: widget.dividerThickness, decoration: new global::Doroti.Framework.Painting.BoxDecoration(), dataRowMinHeight: widget.dataRowMinHeight, dataRowMaxHeight: widget.dataRowMaxHeight, headingRowHeight: widget.headingRowHeight, horizontalMargin: widget.horizontalMargin, checkboxHorizontalMargin: widget.checkboxHorizontalMargin, columnSpacing: widget.columnSpacing, showCheckboxColumn: widget.showCheckboxColumn, showBottomBorder: true, rows: _getRows(_firstRowIndex, widget.rowsPerPage), headingRowColor: widget.headingRowColor))))); if (!widget.showEmptyRows) { __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: (widget.dataRowMaxHeight ?? Widgets.ConstantsLibrary.kMinInteractiveDimension) * (widget.rowsPerPage - _rowCount + _firstRowIndex).clamp(0L, widget.rowsPerPage)))); } __collection21136.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: footerTextStyle!, child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(opacity: 0.54), child: new global::Doroti.Framework.Widgets.SizedBox(height: 56.0, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(dragStartBehavior: widget.dragStartBehavior, scrollDirection: Axis.horizontal, reverse: true, child: new global::Doroti.Framework.Widgets.Row(children: footerWidgets))))))); return __collection21136; }))());
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })))));
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

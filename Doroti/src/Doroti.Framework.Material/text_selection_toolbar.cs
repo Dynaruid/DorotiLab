@@ -23,7 +23,7 @@ public class TextSelectionToolbar : global::Doroti.Framework.Widgets.StatelessWi
     public virtual List<global::Doroti.Framework.Widgets.Widget> children { get; private set; } = default!;
     public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget> toolbarBuilder { get; private set; } = default!;
     public const double kHandleSize = 22.0;
-    public static double kToolbarContentDistanceBelow = (kHandleSize - 2.0);
+    public static double kToolbarContentDistanceBelow = kHandleSize - 2.0;
 
     public TextSelectionToolbar(global::Doroti.Framework.Foundation.Key? key = null, Offset anchorAbove = default!, Offset anchorBelow = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget> toolbarBuilder = default!, List<global::Doroti.Framework.Widgets.Widget> children = default!) : base(key: key)
     {
@@ -32,25 +32,25 @@ public class TextSelectionToolbar : global::Doroti.Framework.Widgets.StatelessWi
         this.anchorBelow = anchorBelow;
         this.toolbarBuilder = __toolbarBuilder;
         this.children = children;
-        System.Diagnostics.Debug.Assert((checked((long)(children.Count)) > 0L));
+        System.Diagnostics.Debug.Assert(checked(children.Count) > 0L);
     }
 
     internal static global::Doroti.Framework.Widgets.Widget _defaultToolbarBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _TextSelectionToolbarContainer__text_selection_toolbar(child: child));
+        return new _TextSelectionToolbarContainer__text_selection_toolbar(child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Offset anchorAbovePadded = ((global::Doroti.Ui.Offset)(this.anchorAbove - new global::Doroti.Ui.Offset(0.0, Text_selectionLibrary._kToolbarContentDistance)));
-        global::Doroti.Ui.Offset anchorBelowPadded = ((global::Doroti.Ui.Offset)(this.anchorBelow + new global::Doroti.Ui.Offset(0.0, kToolbarContentDistanceBelow)));
+        global::Doroti.Ui.Offset anchorAbovePadded = anchorAbove - new global::Doroti.Ui.Offset(0.0, Text_selectionLibrary._kToolbarContentDistance);
+        global::Doroti.Ui.Offset anchorBelowPadded = anchorBelow + new global::Doroti.Ui.Offset(0.0, kToolbarContentDistanceBelow);
         double screenPadding = CupertinoTextSelectionToolbar.kToolbarScreenPadding;
-        double paddingAbove = (MediaQuery.paddingOf(context).top + screenPadding);
-        double availableHeight = ((anchorAbovePadded.dy - Text_selectionLibrary._kToolbarContentDistance) - paddingAbove);
-        bool fitsAboveLocal = (Text_selection_toolbarLibrary._kToolbarHeight <= availableHeight);
+        double paddingAbove = MediaQuery.paddingOf(context).top + screenPadding;
+        double availableHeight = anchorAbovePadded.dy - Text_selectionLibrary._kToolbarContentDistance - paddingAbove;
+        bool fitsAboveLocal = Text_selection_toolbarLibrary._kToolbarHeight <= availableHeight;
         var localAdjustment = new global::Doroti.Ui.Offset(screenPadding, paddingAbove);
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(screenPadding, paddingAbove, screenPadding, screenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.TextSelectionToolbarLayoutDelegate(anchorAbove: (anchorAbovePadded - localAdjustment), anchorBelow: (anchorBelowPadded - localAdjustment), fitsAbove: fitsAboveLocal), child: new _TextSelectionToolbarOverflowable__text_selection_toolbar(isAbove: fitsAboveLocal, toolbarBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>)this.toolbarBuilder, children: this.children))));
+        return new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(screenPadding, paddingAbove, screenPadding, screenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.TextSelectionToolbarLayoutDelegate(anchorAbove: anchorAbovePadded - localAdjustment, anchorBelow: anchorBelowPadded - localAdjustment, fitsAbove: fitsAboveLocal), child: new _TextSelectionToolbarOverflowable__text_selection_toolbar(isAbove: fitsAboveLocal, toolbarBuilder: toolbarBuilder, children: children)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -67,7 +67,7 @@ public class _TextSelectionToolbarOverflowable__text_selection_toolbar : global:
         this.isAbove = isAbove;
         this.toolbarBuilder = toolbarBuilder;
         this.children = children;
-        System.Diagnostics.Debug.Assert((checked((long)(children.Count)) > 0L));
+        System.Diagnostics.Debug.Assert(checked(children.Count) > 0L);
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TextSelectionToolbarOverflowableState__text_selection_toolbar());
@@ -89,7 +89,7 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar : gl
     public override void didUpdateWidget(_TextSelectionToolbarOverflowable__text_selection_toolbar oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (!CollectionsLibrary.listEquals(((_TextSelectionToolbarOverflowable__text_selection_toolbar)this.widget).children, ((_TextSelectionToolbarOverflowable__text_selection_toolbar)oldWidget).children))
+        if (!CollectionsLibrary.listEquals(widget.children, oldWidget.children))
         {
             _reset();
         }
@@ -100,45 +100,45 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar : gl
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)new _TextSelectionToolbarTrailingEdgeAlign__text_selection_toolbar(key: this._containerKey, overflowOpen: this._overflowOpen, textDirection: textDirectionLocal, child: new global::Doroti.Framework.Widgets.AnimatedSize(duration: Duration.Create(milliseconds: 140L), child: this.widget.toolbarBuilder(context, new _TextSelectionToolbarItemsLayout__text_selection_toolbar(isAbove: ((_TextSelectionToolbarOverflowable__text_selection_toolbar)this.widget).isAbove, overflowOpen: this._overflowOpen, textDirection: textDirectionLocal, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        return new _TextSelectionToolbarTrailingEdgeAlign__text_selection_toolbar(key: _containerKey, overflowOpen: _overflowOpen, textDirection: textDirectionLocal, child: new global::Doroti.Framework.Widgets.AnimatedSize(duration: Duration.Create(milliseconds: 140L), child: widget.toolbarBuilder(context, new _TextSelectionToolbarItemsLayout__text_selection_toolbar(isAbove: widget.isAbove, overflowOpen: _overflowOpen, textDirection: textDirectionLocal, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
-            var __collection7958 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection7958.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TextSelectionToolbarOverflowButton__text_selection_toolbar(key: (this._overflowOpen ? StandardComponentTypeMembers.key(StandardComponentType.backButton) : StandardComponentTypeMembers.key(StandardComponentType.moreButton)), icon: new global::Doroti.Framework.Widgets.Icon((this._overflowOpen ? Icons.arrow_back : Icons.more_vert)), onPressed: ((global::System.Action)(() =>
+            var __collection7958 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection7958.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TextSelectionToolbarOverflowButton__text_selection_toolbar(key: _overflowOpen ? StandardComponentTypeMembers.key(StandardComponentType.backButton) : StandardComponentTypeMembers.key(StandardComponentType.moreButton), icon: new global::Doroti.Framework.Widgets.Icon(_overflowOpen ? Icons.arrow_back : Icons.more_vert), onPressed: () =>
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
-                    _overflowOpen = !this._overflowOpen;
-                })));
-            })), tooltip: (this._overflowOpen ? localizations.backButtonTooltip : localizations.moreButtonTooltip)))); __collection7958.AddRange(((_TextSelectionToolbarOverflowable__text_selection_toolbar)this.widget).children); return __collection7958;
-        }))())))));
+                    _overflowOpen = !_overflowOpen;
+                });
+            }, tooltip: _overflowOpen ? localizations.backButtonTooltip : localizations.moreButtonTooltip))); __collection7958.AddRange(widget.children); return __collection7958;
+        }))()))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -150,55 +150,55 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar : gl
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._tickers is not null))
+                if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
+                        if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        this._tickerModeNotifier = null;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        _tickerModeNotifier = null;
         base.dispose();
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -216,7 +216,7 @@ internal class _TextSelectionToolbarTrailingEdgeAlign__text_selection_toolbar : 
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_toolbar(overflowOpen: this.overflowOpen, textDirection: this.textDirection));
+        return new _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_toolbar(overflowOpen: overflowOpen, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -226,8 +226,8 @@ internal class _TextSelectionToolbarTrailingEdgeAlign__text_selection_toolbar : 
         DartRuntimePrimitives.Ignore(((Func<_TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_toolbar>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.overflowOpen = this.overflowOpen;
-    __cascade.textDirection = this.textDirection;
+    __cascade.overflowOpen = overflowOpen;
+    __cascade.textDirection = textDirection;
     return __cascade;
 }))());
     }
@@ -242,17 +242,17 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
 
     internal _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_toolbar(bool overflowOpen, TextDirection textDirection)
     {
-        this._textDirection = textDirection;
-        this._overflowOpen = overflowOpen;
+        _textDirection = textDirection;
+        _overflowOpen = overflowOpen;
     }
 
     public virtual bool overflowOpen
     {
-        get => this._overflowOpen;
+        get => _overflowOpen;
         set
         {
             var __value = value;
-            if ((__value == this.overflowOpen))
+            if (__value == overflowOpen)
             {
                 return;
             }
@@ -262,11 +262,11 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
     }
     public virtual global::Doroti.Ui.TextDirection textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(__value, this.textDirection)))
+            if (Equals(__value, textDirection))
             {
                 return;
             }
@@ -276,38 +276,38 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
     }
     public override void performLayout()
     {
-        this.child!.layout(this.constraints.loosen(), parentUsesSize: true);
-        if ((!this.overflowOpen && (this._closedWidth is null)))
+        child!.layout(constraints.loosen(), parentUsesSize: true);
+        if (!overflowOpen && (_closedWidth is null))
         {
-            _closedWidth = this.child!.size.width;
+            _closedWidth = child!.size.width;
         }
-        size = this.constraints.constrain(new global::Doroti.Ui.Size((((this._closedWidth is null) || (this.child!.size.width > DartRuntimePrimitives.RequireValue(this._closedWidth))) ? this.child!.size.width : DartRuntimePrimitives.RequireValue(this._closedWidth)), this.child!.size.height));
-        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)this.child!.parentData!)!;
-        childParentData.offset = new global::Doroti.Ui.Offset(((Equals(this.textDirection, TextDirection.rtl)) ? 0.0 : (this.size.width - this.child!.size.width)), 0.0);
+        size = constraints.constrain(new global::Doroti.Ui.Size(((_closedWidth is null) || (child!.size.width > DartRuntimePrimitives.RequireValue(_closedWidth))) ? child!.size.width : DartRuntimePrimitives.RequireValue(_closedWidth), child!.size.height));
+        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child!.parentData!)!;
+        childParentData.offset = new global::Doroti.Ui.Offset(Equals(textDirection, TextDirection.rtl) ? 0.0 : (size.width - child!.size.width), 0.0);
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)this.child!.parentData!)!;
-        context.paintChild(this.child!, (childParentData.offset + offset));
+        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child!.parentData!)!;
+        context.paintChild(child!, childParentData.offset + offset);
     }
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)this.child!.parentData!)!;
-        return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child!.parentData!)!;
+        return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
         {
-            DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
-            return this.child!.hitTest(result, position: transformed);
+            DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
+            return child!.hitTest(result, position: transformed);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        if ((__child.parentData is not ToolbarItemsParentData))
+        if (__child.parentData is not ToolbarItemsParentData)
         {
             __child.parentData = new global::Doroti.Framework.Widgets.ToolbarItemsParentData();
         }
@@ -315,7 +315,7 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)((global::Doroti.Framework.Rendering.RenderObject)child).parentData!)!;
+        var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
         transform.translateByDouble(childParentData.offset.dx, childParentData.offset.dy, 0, 1);
         base.applyPaintTransform(child, transform);
     }
@@ -337,7 +337,7 @@ internal class _TextSelectionToolbarItemsLayout__text_selection_toolbar : global
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar(isAbove: this.isAbove, overflowOpen: this.overflowOpen, textDirection: this.textDirection));
+        return new _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar(isAbove: isAbove, overflowOpen: overflowOpen, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -347,9 +347,9 @@ internal class _TextSelectionToolbarItemsLayout__text_selection_toolbar : global
         DartRuntimePrimitives.Ignore(((Func<_RenderTextSelectionToolbarItemsLayout__text_selection_toolbar>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.isAbove = this.isAbove;
-    __cascade.textDirection = this.textDirection;
-    __cascade.overflowOpen = this.overflowOpen;
+    __cascade.isAbove = isAbove;
+    __cascade.textDirection = textDirection;
+    __cascade.overflowOpen = overflowOpen;
     return __cascade;
 }))());
     }
@@ -365,13 +365,13 @@ public class _TextSelectionToolbarItemsLayoutElement__text_selection_toolbar : g
 
     internal static bool _shouldPaint(global::Doroti.Framework.Widgets.Element child)
     {
-        return (((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)((global::Doroti.Framework.Rendering.ParentData?)(((global::Doroti.Framework.Widgets.Element)child).renderObject!).parentData)!)!).shouldPaint;
+        return ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.renderObject!.parentData!)!.shouldPaint;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugVisitOnstageChildren(global::System.Action<global::Doroti.Framework.Widgets.Element> visitor)
     {
-        this.children.where(_shouldPaint).forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.Element>)visitor)(__arg0));
+        children.where(_shouldPaint).forEach((__arg0) => visitor(__arg0));
     }
 
 }
@@ -388,18 +388,18 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     internal _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar(bool isAbove, bool overflowOpen, TextDirection textDirection)
     {
-        this._isAbove = isAbove;
-        this._overflowOpen = overflowOpen;
-        this._textDirection = textDirection;
+        _isAbove = isAbove;
+        _overflowOpen = overflowOpen;
+        _textDirection = textDirection;
     }
 
     public virtual bool isAbove
     {
-        get => this._isAbove;
+        get => _isAbove;
         set
         {
             var __value = value;
-            if ((__value == this.isAbove))
+            if (__value == isAbove)
             {
                 return;
             }
@@ -409,11 +409,11 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     }
     public virtual bool overflowOpen
     {
-        get => this._overflowOpen;
+        get => _overflowOpen;
         set
         {
             var __value = value;
-            if ((__value == this.overflowOpen))
+            if (__value == overflowOpen)
             {
                 return;
             }
@@ -423,11 +423,11 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     }
     public virtual global::Doroti.Ui.TextDirection textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(__value, this.textDirection)))
+            if (Equals(__value, textDirection))
             {
                 return;
             }
@@ -437,26 +437,26 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     }
     internal virtual void _layoutChildren()
     {
-        global::Doroti.Framework.Rendering.BoxConstraints sizedConstraints = (this._overflowOpen ? this.constraints : BoxConstraints.CreateLoose(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth, Text_selection_toolbarLibrary._kToolbarHeight)));
+        global::Doroti.Framework.Rendering.BoxConstraints sizedConstraints = _overflowOpen ? constraints : BoxConstraints.CreateLoose(new global::Doroti.Ui.Size(constraints.maxWidth, Text_selection_toolbarLibrary._kToolbarHeight));
         var i = -1L;
         var widthLocal = 0.0;
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        visitChildren((renderObjectChild) =>
         {
             i++;
-            if (((this._lastIndexThatFits != -1L) && !this.overflowOpen))
+            if ((_lastIndexThatFits != -1L) && !overflowOpen)
             {
                 return;
             }
             var child = ((global::Doroti.Framework.Rendering.RenderBox?)renderObjectChild)!;
             child.layout(sizedConstraints.loosen(), parentUsesSize: true);
-            widthLocal += ((global::Doroti.Framework.Rendering.RenderBox)child).size.width;
-            if (((widthLocal > ((global::Doroti.Framework.Rendering.BoxConstraints)sizedConstraints).maxWidth) && (this._lastIndexThatFits == -1L)))
+            widthLocal += child.size.width;
+            if ((widthLocal > sizedConstraints.maxWidth) && (_lastIndexThatFits == -1L))
             {
-                _lastIndexThatFits = (i - 1L);
+                _lastIndexThatFits = i - 1L;
             }
-        })));
-        global::Doroti.Framework.Rendering.RenderBox navButton = this.firstChild!;
-        if ((((this._lastIndexThatFits != -1L) && (this._lastIndexThatFits == (this.childCount - 2L))) && ((widthLocal - ((global::Doroti.Framework.Rendering.RenderBox)navButton).size.width) <= ((global::Doroti.Framework.Rendering.BoxConstraints)sizedConstraints).maxWidth)))
+        });
+        global::Doroti.Framework.Rendering.RenderBox navButton = firstChild!;
+        if ((_lastIndexThatFits != -1L) && (_lastIndexThatFits == (childCount - 2L)) && ((widthLocal - navButton.size.width) <= sizedConstraints.maxWidth))
         {
             _lastIndexThatFits = -1L;
         }
@@ -464,27 +464,27 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     internal virtual bool _shouldPaintChild(global::Doroti.Framework.Rendering.RenderObject renderObjectChild, long index)
     {
-        if ((Equals(renderObjectChild, this.firstChild)))
+        if (Equals(renderObjectChild, firstChild))
         {
-            return (this._lastIndexThatFits != -1L);
+            return _lastIndexThatFits != -1L;
         }
-        if ((this._lastIndexThatFits == -1L))
+        if (_lastIndexThatFits == -1L)
         {
             return true;
         }
-        return (((index > this._lastIndexThatFits)) == this.overflowOpen);
+        return index > _lastIndexThatFits == overflowOpen;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _placeChildrenHorizontally()
     {
-        global::Doroti.Framework.Rendering.RenderBox navButton = this.firstChild!;
-        var isRtl = (Equals(this.textDirection, TextDirection.rtl));
+        global::Doroti.Framework.Rendering.RenderBox navButton = firstChild!;
+        var isRtl = Equals(textDirection, TextDirection.rtl);
         var contentItems = new List<global::Doroti.Framework.Rendering.RenderBox>();
         var totalWidth = 0.0;
         var maxHeight = 0.0;
         var i = -1L;
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        visitChildren((renderObjectChild) =>
         {
             var child = ((global::Doroti.Framework.Rendering.RenderBox?)renderObjectChild)!;
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
@@ -496,28 +496,28 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
             else
             {
                 childParentData.shouldPaint = true;
-                totalWidth += ((global::Doroti.Framework.Rendering.RenderBox)child).size.width;
-                maxHeight = Math.Max(maxHeight, ((global::Doroti.Framework.Rendering.RenderBox)child).size.height);
-                if ((!Equals(child, navButton)))
+                totalWidth += child.size.width;
+                maxHeight = Math.Max(maxHeight, child.size.height);
+                if (!Equals(child, navButton))
                 {
                     contentItems.Add(child);
                 }
             }
-        })));
+        });
         var currentX = 0.0;
-        bool showNavButton = (this._lastIndexThatFits >= 0L);
+        bool showNavButton = _lastIndexThatFits >= 0L;
         if (isRtl)
         {
             if (showNavButton)
             {
                 var navParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)navButton.parentData!)!;
                 navParentData.offset = Offset.zero;
-                currentX += ((global::Doroti.Framework.Rendering.RenderBox)navButton).size.width;
+                currentX += navButton.size.width;
             }
             var rightEdge = totalWidth;
             foreach (var item in contentItems)
             {
-                rightEdge -= ((global::Doroti.Framework.Rendering.RenderBox)item).size.width;
+                rightEdge -= item.size.width;
                 var itemParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)item.parentData!)!;
                 itemParentData.offset = new global::Doroti.Ui.Offset(rightEdge, 0.0);
             }
@@ -528,7 +528,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
             {
                 var itemParentDataLocal = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)itemLocal.parentData!)!;
                 itemParentDataLocal.offset = new global::Doroti.Ui.Offset(currentX, 0.0);
-                currentX += ((global::Doroti.Framework.Rendering.RenderBox)itemLocal).size.width;
+                currentX += itemLocal.size.width;
             }
             if (showNavButton)
             {
@@ -542,18 +542,18 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     internal virtual global::Doroti.Ui.Size _placeChildrenVertically()
     {
-        global::Doroti.Framework.Rendering.RenderBox navButton = this.firstChild!;
+        global::Doroti.Framework.Rendering.RenderBox navButton = firstChild!;
         var currentY = 0.0;
         var maxWidth = 0.0;
         var navButtonParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)navButton.parentData!)!;
         if (_shouldPaintChild(navButton, 0L))
         {
             navButtonParentData.shouldPaint = true;
-            if (!this.isAbove)
+            if (!isAbove)
             {
                 navButtonParentData.offset = Offset.zero;
-                currentY += ((global::Doroti.Framework.Rendering.RenderBox)navButton).size.height;
-                maxWidth = Math.Max(maxWidth, ((global::Doroti.Framework.Rendering.RenderBox)navButton).size.width);
+                currentY += navButton.size.height;
+                maxWidth = Math.Max(maxWidth, navButton.size.width);
             }
         }
         else
@@ -561,12 +561,12 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
             navButtonParentData.shouldPaint = false;
         }
         var i = -1L;
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        visitChildren((renderObjectChild) =>
         {
             var child = ((global::Doroti.Framework.Rendering.RenderBox?)renderObjectChild)!;
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
             i++;
-            if ((Equals(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild), navButton)))
+            if (Equals((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild, navButton))
             {
                 return;
             }
@@ -577,14 +577,14 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
             }
             childParentData.shouldPaint = true;
             childParentData.offset = new global::Doroti.Ui.Offset(0.0, currentY);
-            currentY += ((global::Doroti.Framework.Rendering.RenderBox)child).size.height;
-            maxWidth = Math.Max(maxWidth, ((global::Doroti.Framework.Rendering.RenderBox)child).size.width);
-        })));
-        if ((this.isAbove && ((global::Doroti.Framework.Widgets.ToolbarItemsParentData)navButtonParentData).shouldPaint))
+            currentY += child.size.height;
+            maxWidth = Math.Max(maxWidth, child.size.width);
+        });
+        if (isAbove && navButtonParentData.shouldPaint)
         {
             navButtonParentData.offset = new global::Doroti.Ui.Offset(0.0, currentY);
-            currentY += ((global::Doroti.Framework.Rendering.RenderBox)navButton).size.height;
-            maxWidth = Math.Max(maxWidth, ((global::Doroti.Framework.Rendering.RenderBox)navButton).size.width);
+            currentY += navButton.size.height;
+            maxWidth = Math.Max(maxWidth, navButton.size.width);
         }
         return new global::Doroti.Ui.Size(maxWidth, currentY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -592,41 +592,41 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     internal virtual void _placeChildren()
     {
-        size = (this.overflowOpen ? _placeChildrenVertically() : _placeChildrenHorizontally());
+        size = overflowOpen ? _placeChildrenVertically() : _placeChildrenHorizontally();
     }
 
     internal virtual void _resizeChildrenWhenOverflow()
     {
-        if (!this.overflowOpen)
+        if (!overflowOpen)
         {
             return;
         }
-        global::Doroti.Framework.Rendering.RenderBox navButton = this.firstChild!;
+        global::Doroti.Framework.Rendering.RenderBox navButton = firstChild!;
         var i = -1L;
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        visitChildren((renderObjectChild) =>
         {
             var child = ((global::Doroti.Framework.Rendering.RenderBox?)renderObjectChild)!;
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
             i++;
-            if ((Equals(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild), navButton)))
+            if (Equals((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild, navButton))
             {
                 return;
             }
-            if (!_shouldPaintChild(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild), i))
+            if (!_shouldPaintChild((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild, i))
             {
                 childParentData.shouldPaint = false;
                 return;
             }
-            child.layout(BoxConstraints.CreateTightFor(width: this.size.width), parentUsesSize: true);
-        })));
+            child.layout(BoxConstraints.CreateTightFor(width: size.width), parentUsesSize: true);
+        });
     }
 
     public override void performLayout()
     {
         _lastIndexThatFits = -1L;
-        if ((this.firstChild is null))
+        if (firstChild is null)
         {
-            size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).smallest;
+            size = constraints.smallest;
             return;
         }
         _layoutChildren();
@@ -636,22 +636,22 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        visitChildren((renderObjectChild) =>
         {
             var child = ((global::Doroti.Framework.Rendering.RenderBox?)renderObjectChild)!;
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-            if (!((global::Doroti.Framework.Widgets.ToolbarItemsParentData)childParentData).shouldPaint)
+            if (!childParentData.shouldPaint)
             {
                 return;
             }
-            context.paintChild(child, (childParentData.offset + offset));
-        })));
+            context.paintChild(child, childParentData.offset + offset);
+        });
     }
 
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        if ((__child.parentData is not ToolbarItemsParentData))
+        if (__child.parentData is not ToolbarItemsParentData)
         {
             __child.parentData = new global::Doroti.Framework.Widgets.ToolbarItemsParentData();
         }
@@ -659,21 +659,21 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this.lastChild;
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = lastChild;
+        while (child is not null)
         {
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-            if (!((global::Doroti.Framework.Widgets.ToolbarItemsParentData)childParentData).shouldPaint)
+            if (!childParentData.shouldPaint)
             {
                 child = childParentData.previousSibling;
                 continue;
             }
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
                 return child!.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            });
             if (isHit)
             {
                 return true;
@@ -686,51 +686,51 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public override void visitChildrenForSemantics(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        visitChildren((renderObjectChild) =>
         {
             var child = ((global::Doroti.Framework.Rendering.RenderBox?)renderObjectChild)!;
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-            if (((global::Doroti.Framework.Widgets.ToolbarItemsParentData)childParentData).shouldPaint)
+            if (childParentData.shouldPaint)
             {
-                visitor(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild));
+                visitor((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild);
             }
-        })));
+        });
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
             });
@@ -741,34 +741,34 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -778,53 +778,53 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
                 var childNextSiblingParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)), () => (object?)"A RenderObject cannot be inserted into itself.");
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)), () => (object?)"A RenderObject cannot be inserted after itself.");
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this), () => (object?)"A RenderObject cannot be inserted into itself.");
+        DartRuntimePrimitives.Assert(() => !Equals(after, this), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
+        DartRuntimePrimitives.Assert(() => !Equals(child, after), () => (object?)"A RenderObject cannot be inserted after itself.");
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is global::Doroti.Framework.Widgets.ToolbarItemsParentData), () => (object?)$"A child of {this.GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {(typeof(global::Doroti.Framework.Widgets.ToolbarItemsParentData))}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {(typeof(global::Doroti.Framework.Widgets.ToolbarItemsParentData))}.");
+        DartRuntimePrimitives.Assert(() => child.parentData is global::Doroti.Framework.Widgets.ToolbarItemsParentData, () => (object?)$"A child of {GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {(typeof(global::Doroti.Framework.Widgets.ToolbarItemsParentData))}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {(typeof(global::Doroti.Framework.Widgets.ToolbarItemsParentData))}.");
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderBox child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((global::System.Action<RenderBox>)this.add)(__arg0));
+        children?.forEach((__arg0) => ((global::System.Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -833,7 +833,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderBox child)
@@ -844,8 +844,8 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public virtual void removeAll()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
@@ -854,19 +854,19 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -878,10 +878,10 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
-            (child).attach(owner);
+            child.attach(owner);
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -890,10 +890,10 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     public override void detach()
     {
         base.detach();
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
-            (child).detach();
+            child.detach();
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -901,8 +901,8 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public override void redepthChildren()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
@@ -912,8 +912,8 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public override void visitChildren(global::System.Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
@@ -921,11 +921,11 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
         }
     }
 
-    public virtual RenderBox? firstChild => this._firstChild;
-    public virtual RenderBox? lastChild => this._lastChild;
+    public virtual RenderBox? firstChild => _firstChild;
+    public virtual RenderBox? lastChild => _lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -933,7 +933,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -942,14 +942,14 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : gl
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderBox child = this.firstChild!;
+            RenderBox child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }
@@ -977,19 +977,19 @@ internal class _TextSelectionToolbarContainer__text_selection_toolbar : global::
 
     internal static global::Doroti.Ui.Color _getColor(ColorScheme colorScheme)
     {
-        bool isDefaultSurface = (colorScheme.brightness switch { Brightness.light => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.surface, colorScheme.surface), Brightness.dark => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.surface, colorScheme.surface), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool isDefaultSurface = colorScheme.brightness switch { Brightness.light => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.surface, colorScheme.surface), Brightness.dark => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.surface, colorScheme.surface), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         if (!isDefaultSurface)
         {
-            return ((global::Doroti.Ui.Color)colorScheme.surface);
+            return colorScheme.surface;
         }
-        return ((global::Doroti.Ui.Color)(colorScheme.brightness switch { Brightness.light => _defaultColorLight, Brightness.dark => _defaultColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return colorScheme.brightness switch { Brightness.light => _defaultColorLight, Brightness.dark => _defaultColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)new Material(borderRadius: BorderRadius.CreateAll(Radius.circular((Text_selection_toolbarLibrary._kToolbarHeight / 2L))), clipBehavior: Clip.antiAlias, color: _getColor(theme.colorScheme), elevation: 1.0, type: MaterialType.card, child: this.child));
+        return new Material(borderRadius: BorderRadius.CreateAll(Radius.circular(Text_selection_toolbarLibrary._kToolbarHeight / 2L)), clipBehavior: Clip.antiAlias, color: _getColor(theme.colorScheme), elevation: 1.0, type: MaterialType.card, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1010,7 +1010,7 @@ internal class _TextSelectionToolbarOverflowButton__text_selection_toolbar : glo
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new Material(type: MaterialType.card, color: new global::Doroti.Ui.Color(0L), child: new IconButton(icon: this.icon, onPressed: this.onPressed, tooltip: this.tooltip)));
+        return new Material(type: MaterialType.card, color: new global::Doroti.Ui.Color(0L), child: new IconButton(icon: icon, onPressed: onPressed, tooltip: tooltip));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

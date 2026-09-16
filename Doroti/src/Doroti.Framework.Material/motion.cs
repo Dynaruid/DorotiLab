@@ -28,14 +28,14 @@ public abstract class Durations
 
 public abstract class Easing
 {
-    public static global::Doroti.Framework.Animation.Curve emphasizedAccelerate = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.3, 0.0, 0.8, 0.15));
-    public static global::Doroti.Framework.Animation.Curve emphasizedDecelerate = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.05, 0.7, 0.1, 1.0));
-    public static global::Doroti.Framework.Animation.Curve linear = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 1.0, 1.0));
-    public static global::Doroti.Framework.Animation.Curve standard = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.2, 0.0, 0.0, 1.0));
-    public static global::Doroti.Framework.Animation.Curve standardAccelerate = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.3, 0.0, 1.0, 1.0));
-    public static global::Doroti.Framework.Animation.Curve standardDecelerate = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.0, 1.0));
-    public static global::Doroti.Framework.Animation.Curve legacyDecelerate = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0));
-    public static global::Doroti.Framework.Animation.Curve legacyAccelerate = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0));
-    public static global::Doroti.Framework.Animation.Curve legacy = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 0.2, 1.0));
+    public static global::Doroti.Framework.Animation.Curve emphasizedAccelerate = new global::Doroti.Framework.Animation.Cubic(0.3, 0.0, 0.8, 0.15);
+    public static global::Doroti.Framework.Animation.Curve emphasizedDecelerate = new global::Doroti.Framework.Animation.Cubic(0.05, 0.7, 0.1, 1.0);
+    public static global::Doroti.Framework.Animation.Curve linear = new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 1.0, 1.0);
+    public static global::Doroti.Framework.Animation.Curve standard = new global::Doroti.Framework.Animation.Cubic(0.2, 0.0, 0.0, 1.0);
+    public static global::Doroti.Framework.Animation.Curve standardAccelerate = new global::Doroti.Framework.Animation.Cubic(0.3, 0.0, 1.0, 1.0);
+    public static global::Doroti.Framework.Animation.Curve standardDecelerate = new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.0, 1.0);
+    public static global::Doroti.Framework.Animation.Curve legacyDecelerate = new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0);
+    public static global::Doroti.Framework.Animation.Curve legacyAccelerate = new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0);
+    public static global::Doroti.Framework.Animation.Curve legacy = new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 0.2, 1.0);
 
 }

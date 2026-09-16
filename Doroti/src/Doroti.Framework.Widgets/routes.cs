@@ -14,11 +14,11 @@ public abstract class OverlayRoute<T> : Route<T>
     }
 
     public abstract IEnumerable<OverlayEntry> createOverlayEntries();
-    public override List<OverlayEntry> overlayEntries => this._overlayEntries;
+    public override List<OverlayEntry> overlayEntries => _overlayEntries;
     public override void install()
     {
-        DartRuntimePrimitives.Assert(() => !Enumerable.Any(this._overlayEntries));
-        this._overlayEntries.AddRange(createOverlayEntries());
+        DartRuntimePrimitives.Assert(() => !Enumerable.Any(_overlayEntries));
+        _overlayEntries.AddRange(createOverlayEntries());
         base.install();
     }
 
@@ -27,9 +27,9 @@ public abstract class OverlayRoute<T> : Route<T>
     {
         bool returnValue = base.didPop(result);
         DartRuntimePrimitives.Assert(() => returnValue);
-        if (this.finishedWhenPopped)
+        if (finishedWhenPopped)
         {
-            this.navigator!.finalizeRoute(this);
+            navigator!.finalizeRoute(this);
         }
         return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -37,11 +37,11 @@ public abstract class OverlayRoute<T> : Route<T>
 
     public override void dispose()
     {
-        foreach (OverlayEntry entry in this._overlayEntries)
+        foreach (OverlayEntry entry in _overlayEntries)
         {
             entry.dispose();
         }
-        this._overlayEntries.Clear();
+        _overlayEntries.Clear();
         base.dispose();
     }
 
@@ -76,16 +76,16 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
 
     public override bool isCurrent => base.isCurrent;
     public virtual bool popGestureEnabled => throw new NotSupportedException();
-    public virtual Future<T?> completed => this._transitionCompleter.future;
+    public virtual Future<T?> completed => _transitionCompleter.future;
     Future ITransitionRoute.completed => completed;
     public abstract Duration transitionDuration { get; }
-    public virtual Duration reverseTransitionDuration => this.transitionDuration;
+    public virtual Duration reverseTransitionDuration => transitionDuration;
     public abstract bool opaque { get; }
     public virtual bool allowSnapshotting => true;
-    public override bool finishedWhenPopped => DartRuntimePrimitives.ConvertValue<bool>((this._controller!.isDismissed && !this._popFinalized));
-    public virtual global::Doroti.Framework.Animation.Animation<double>? animation => this._animation;
-    public virtual global::Doroti.Framework.Animation.AnimationController? controller => this._controller;
-    public virtual global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => this._secondaryAnimation;
+    public override bool finishedWhenPopped => DartRuntimePrimitives.ConvertValue<bool>(_controller!.isDismissed && !_popFinalized);
+    public virtual global::Doroti.Framework.Animation.Animation<double>? animation => _animation;
+    public virtual global::Doroti.Framework.Animation.AnimationController? controller => _controller;
+    public virtual global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => _secondaryAnimation;
     bool ITransitionRoute.canTransitionTo(RouteBase nextRoute) => canTransitionTo(nextRoute);
     bool ITransitionRoute.canTransitionFrom(RouteBase previousRoute) => canTransitionFrom(previousRoute);
     public virtual bool debugTransitionCompleted()
@@ -93,7 +93,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
         var disposed = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                disposed = this._transitionCompleter.isCompleted;
+                disposed = _transitionCompleter.isCompleted;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -103,32 +103,32 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
 
     public virtual global::Doroti.Framework.Animation.AnimationController createAnimationController()
     {
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
-        Duration durationLocal = this.transitionDuration;
-        Duration reverseDurationLocal = this.reverseTransitionDuration;
-        return new global::Doroti.Framework.Animation.AnimationController(duration: durationLocal, reverseDuration: reverseDurationLocal, debugLabel: this.debugLabel, vsync: this.navigator!);
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
+        Duration durationLocal = transitionDuration;
+        Duration reverseDurationLocal = reverseTransitionDuration;
+        return new global::Doroti.Framework.Animation.AnimationController(duration: durationLocal, reverseDuration: reverseDurationLocal, debugLabel: debugLabel, vsync: navigator!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Animation.Animation<double> createAnimation()
     {
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
-        DartRuntimePrimitives.Assert(() => (this._controller is not null));
-        return this._controller!.view;
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => _controller is not null);
+        return _controller!.view;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Physics.Simulation? createSimulation(bool forward)
     {
-        DartRuntimePrimitives.Assert(() => (this.transitionDuration >= Duration.zero), () => (object?)$"The `duration` must be positive for a non-simulation animation. Received {this.transitionDuration}.");
-        return ((global::Doroti.Framework.Physics.Simulation?)null);
+        DartRuntimePrimitives.Assert(() => transitionDuration >= Duration.zero, () => (object?)$"The `duration` must be positive for a non-simulation animation. Received {transitionDuration}.");
+        return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Physics.Simulation? _createSimulationAndVerify(bool forward)
     {
-        global::Doroti.Framework.Physics.Simulation? simulation = ((global::Doroti.Framework.Physics.Simulation?)createSimulation(forward: forward));
-        DartRuntimePrimitives.Assert(() => (this.transitionDuration >= Duration.zero), () => (object?)"The `duration` must be positive for an animation that doesn't use simulation. " + "Either set `transitionDuration` or set `createSimulation`. " + $"Received {this.transitionDuration}.");
+        global::Doroti.Framework.Physics.Simulation? simulation = createSimulation(forward: forward);
+        DartRuntimePrimitives.Assert(() => transitionDuration >= Duration.zero, () => (object?)"The `duration` must be positive for an animation that doesn't use simulation. " + "Either set `transitionDuration` or set `createSimulation`. " + $"Received {transitionDuration}.");
         return simulation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -139,31 +139,31 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
         {
             case AnimationStatus.completed:
                 {
-                    if (Enumerable.Any(this.overlayEntries))
+                    if (Enumerable.Any(overlayEntries))
                     {
-                        this.overlayEntries.First().opaque = this.opaque;
+                        overlayEntries.First().opaque = opaque;
                     }
-                    this._performanceModeRequestHandle?.dispose();
+                    _performanceModeRequestHandle?.dispose();
                     _performanceModeRequestHandle = null;
                     break;
                 }
             case AnimationStatus.forward:
             case AnimationStatus.reverse:
                 {
-                    if (Enumerable.Any(this.overlayEntries))
+                    if (Enumerable.Any(overlayEntries))
                     {
-                        this.overlayEntries.First().opaque = false;
+                        overlayEntries.First().opaque = false;
                     }
                     _performanceModeRequestHandle ??= Scheduler.SchedulerBinding.instance.requestPerformanceMode(DartPerformanceMode.latency);
                     break;
                 }
             case AnimationStatus.dismissed:
                 {
-                    if (!this.isActive)
+                    if (!isActive)
                     {
-                        this.navigator!.finalizeRoute(this);
+                        navigator!.finalizeRoute(this);
                         _popFinalized = true;
-                        this._performanceModeRequestHandle?.dispose();
+                        _performanceModeRequestHandle?.dispose();
                         _performanceModeRequestHandle = null;
                     }
                     break;
@@ -173,72 +173,72 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
 
     public override void install()
     {
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot install a {this.GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot install a {GetType()} after disposing it.");
         _controller = createAnimationController();
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.createAnimationController() returned null.");
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.createAnimationController() returned null.");
         _animation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
 {
     var __cascade = createAnimation();
-    __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
+    __cascade.addStatusListener(_handleStatusChanged);
     return __cascade;
 }))();
-        DartRuntimePrimitives.Assert(() => (this._animation is not null), () => (object?)$"{this.GetType()}.createAnimation() returned null.");
+        DartRuntimePrimitives.Assert(() => _animation is not null, () => (object?)$"{GetType()}.createAnimation() returned null.");
         base.install();
-        if ((this._animation!.isCompleted && Enumerable.Any(this.overlayEntries)))
+        if (_animation!.isCompleted && Enumerable.Any(overlayEntries))
         {
-            this.overlayEntries.First().opaque = this.opaque;
+            overlayEntries.First().opaque = opaque;
         }
     }
 
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didPush called before calling install() or after calling dispose().");
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.didPush called before calling install() or after calling dispose().");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         base.didPush();
         _simulation = _createSimulationAndVerify(forward: true);
-        if ((this._simulation is null))
+        if (_simulation is null)
         {
-            return ((global::Doroti.Framework.Scheduler.TickerFuture)this._controller!.forward());
+            return _controller!.forward();
         }
         else
         {
-            return ((global::Doroti.Framework.Scheduler.TickerFuture)this._controller!.animateWith(this._simulation!));
+            return _controller!.animateWith(_simulation!);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didAdd()
     {
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didPush called before calling install() or after calling dispose().");
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.didPush called before calling install() or after calling dispose().");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         base.didAdd();
-        this._controller!.value = this._controller!.upperBound;
+        _controller!.value = _controller!.upperBound;
     }
 
     public override void didReplace(dynamic? oldRoute)
     {
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didReplace called before calling install() or after calling dispose().");
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
-        if (((object?)oldRoute is ITransitionRoute oldTransitionRoute))
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.didReplace called before calling install() or after calling dispose().");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
+        if ((object?)oldRoute is ITransitionRoute oldTransitionRoute)
         {
-            this._controller!.value = oldTransitionRoute.controller!.value;
+            _controller!.value = oldTransitionRoute.controller!.value;
         }
         base.didReplace((object?)oldRoute);
     }
 
     public override bool didPop(T? result)
     {
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didPop called before calling install() or after calling dispose().");
-        DartRuntimePrimitives.Assert(() => !this._transitionCompleter.isCompleted, () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.didPop called before calling install() or after calling dispose().");
+        DartRuntimePrimitives.Assert(() => !_transitionCompleter.isCompleted, () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         _result = result;
         _simulation = _createSimulationAndVerify(forward: false);
-        if ((this._simulation is null))
+        if (_simulation is null)
         {
-            this._controller!.reverse();
+            _controller!.reverse();
         }
         else
         {
-            this._controller!.animateBackWith(this._simulation!);
+            _controller!.animateBackWith(_simulation!);
         }
         return base.didPop(result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -246,32 +246,32 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
 
     public override void didPopNext(dynamic nextRoute)
     {
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didPopNext called before calling install() or after calling dispose().");
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.didPopNext called before calling install() or after calling dispose().");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         _updateSecondaryAnimation((object?)nextRoute as RouteBase);
         base.didPopNext((object)nextRoute);
     }
 
     public override void didChangeNext(dynamic? nextRoute)
     {
-        DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didChangeNext called before calling install() or after calling dispose().");
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
+        DartRuntimePrimitives.Assert(() => _controller is not null, () => (object?)$"{GetType()}.didChangeNext called before calling install() or after calling dispose().");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         _updateSecondaryAnimation((object?)nextRoute as RouteBase);
         base.didChangeNext((object?)nextRoute);
     }
 
     internal virtual void _updateSecondaryAnimation(RouteBase? nextRoute)
     {
-        global::System.Action? previousTrainHoppingListenerRemover = this._trainHoppingListenerRemover;
+        global::System.Action? previousTrainHoppingListenerRemover = _trainHoppingListenerRemover;
         _trainHoppingListenerRemover = null;
-        if ((((nextRoute is ITransitionRoute nextTransitionRoute) && canTransitionTo((object)nextRoute)) && nextTransitionRoute.canTransitionFrom(this)))
+        if ((nextRoute is ITransitionRoute nextTransitionRoute) && canTransitionTo((object)nextRoute) && nextTransitionRoute.canTransitionFrom(this))
         {
-            global::Doroti.Framework.Animation.Animation<double>? current = ((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent;
-            if ((current is not null))
+            global::Doroti.Framework.Animation.Animation<double>? current = _secondaryAnimation.parent;
+            if (current is not null)
             {
-                global::Doroti.Framework.Animation.Animation<double> currentTrainLocal = (((current is global::Doroti.Framework.Animation.TrainHoppingAnimation) ? ((global::Doroti.Framework.Animation.TrainHoppingAnimation)((global::Doroti.Framework.Animation.TrainHoppingAnimation)current)).currentTrain : current))!;
+                global::Doroti.Framework.Animation.Animation<double> currentTrainLocal = ((current is global::Doroti.Framework.Animation.TrainHoppingAnimation) ? ((global::Doroti.Framework.Animation.TrainHoppingAnimation)current).currentTrain : current)!;
                 global::Doroti.Framework.Animation.Animation<double> nextTrain = nextTransitionRoute.animation!;
-                if (((((global::Doroti.Framework.Animation.Animation<double>)currentTrainLocal).value == ((global::Doroti.Framework.Animation.Animation<double>)nextTrain).value) || !((global::Doroti.Framework.Animation.Animation<double>)nextTrain).isAnimating))
+                if ((currentTrainLocal.value == nextTrain.value) || !nextTrain.isAnimating)
                 {
                     _setSecondaryAnimation(nextTrain, nextTransitionRoute.completed);
                 }
@@ -283,30 +283,30 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
                         if (!AnimationStatusMembers.isAnimating(status))
                         {
                             _setSecondaryAnimation(nextTrain, nextTransitionRoute.completed);
-                            if ((this._trainHoppingListenerRemover is not null))
+                            if (_trainHoppingListenerRemover is not null)
                             {
-                                this._trainHoppingListenerRemover!();
+                                _trainHoppingListenerRemover!();
                                 _trainHoppingListenerRemover = null;
                             }
                         }
                     }
-                    _trainHoppingListenerRemover = (global::System.Action)(() =>
+                    _trainHoppingListenerRemover = () =>
                     {
-                        nextTrain.removeStatusListener((AnimationStatusListener)jumpOnAnimationEnd);
+                        nextTrain.removeStatusListener(jumpOnAnimationEnd);
                         newAnimation?.dispose();
-                    });
-                    nextTrain.addStatusListener((AnimationStatusListener)jumpOnAnimationEnd);
-                    newAnimation = new global::Doroti.Framework.Animation.TrainHoppingAnimation(currentTrainLocal, nextTrain, onSwitchedTrain: ((global::System.Action)(() =>
+                    };
+                    nextTrain.addStatusListener(jumpOnAnimationEnd);
+                    newAnimation = new global::Doroti.Framework.Animation.TrainHoppingAnimation(currentTrainLocal, nextTrain, onSwitchedTrain: () =>
                     {
-                        DartRuntimePrimitives.Assert(() => (Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, newAnimation)));
-                        DartRuntimePrimitives.Assert(() => (Equals(newAnimation!.currentTrain, nextTransitionRoute.animation)));
+                        DartRuntimePrimitives.Assert(() => Equals(_secondaryAnimation.parent, newAnimation));
+                        DartRuntimePrimitives.Assert(() => Equals(newAnimation!.currentTrain, nextTransitionRoute.animation));
                         _setSecondaryAnimation(newAnimation!.currentTrain, nextTransitionRoute.completed);
-                        if ((this._trainHoppingListenerRemover is not null))
+                        if (_trainHoppingListenerRemover is not null)
                         {
-                            this._trainHoppingListenerRemover!();
+                            _trainHoppingListenerRemover!();
                             _trainHoppingListenerRemover = null;
                         }
-                    })));
+                    });
                     _setSecondaryAnimation(newAnimation, nextTransitionRoute.completed);
                 }
             }
@@ -324,21 +324,21 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
 
     internal virtual void _setSecondaryAnimation(global::Doroti.Framework.Animation.Animation<double>? animation, Future? disposed = null)
     {
-        this._secondaryAnimation.parent = animation;
+        _secondaryAnimation.parent = animation;
         if (disposed is not null)
         {
-            DartRuntimePrimitives.Ignore(disposed.then((global::System.Action<object>)((_) =>
+            DartRuntimePrimitives.Ignore(disposed.then((_) =>
             {
-                if ((Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, animation)))
+                if (Equals(_secondaryAnimation.parent, animation))
                 {
-                    this._secondaryAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
-                    if ((animation is global::Doroti.Framework.Animation.TrainHoppingAnimation))
+                    _secondaryAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
+                    if (animation is global::Doroti.Framework.Animation.TrainHoppingAnimation)
                     {
                         global::Doroti.Framework.Animation.TrainHoppingAnimation animation__as19490 = (global::Doroti.Framework.Animation.TrainHoppingAnimation)animation;
-                        ((global::Doroti.Framework.Animation.TrainHoppingAnimation)animation__as19490).dispose();
+                        animation__as19490.dispose();
                     }
                 }
-            })));
+            }));
         }
     }
 
@@ -346,18 +346,18 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
     public virtual bool canTransitionFrom(dynamic previousRoute) => true;
     public virtual void handleStartBackGesture(double progress = 0.0)
     {
-        DartRuntimePrimitives.Assert(() => this.isCurrent);
-        this._controller?.value = progress;
-        this.navigator?.didStartUserGesture();
+        DartRuntimePrimitives.Assert(() => isCurrent);
+        _controller?.value = progress;
+        navigator?.didStartUserGesture();
     }
 
     public virtual void handleUpdateBackGestureProgress(double progress)
     {
-        if (!this.isCurrent)
+        if (!isCurrent)
         {
             return;
         }
-        this._controller?.value = progress;
+        _controller?.value = progress;
     }
 
     public virtual void handleCancelBackGesture()
@@ -372,57 +372,57 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
 
     internal virtual void _handleDragEnd(bool animateForward)
     {
-        if (this.isCurrent)
+        if (isCurrent)
         {
             if (animateForward)
             {
-                if (!this._controller!.isCompleted)
+                if (!_controller!.isCompleted)
                 {
-                    this._controller!.forward();
+                    _controller!.forward();
                 }
             }
             else
             {
-                this.navigator?.pop<object>();
-                if ((this._controller?.isAnimating ?? false))
+                navigator?.pop<object>();
+                if (_controller?.isAnimating ?? false)
                 {
-                    this._controller!.reverse(from: this._controller!.upperBound);
+                    _controller!.reverse(from: _controller!.upperBound);
                 }
             }
         }
-        if ((this._controller?.isAnimating ?? false))
+        if (_controller?.isAnimating ?? false)
         {
             AnimationStatusListener animationStatusCallback = default!;
-            animationStatusCallback = ((status) =>
+            animationStatusCallback = (status) =>
             {
-                this.navigator?.didStopUserGesture();
-                this._controller!.removeStatusListener((AnimationStatusListener)animationStatusCallback);
-            });
-            this._controller!.addStatusListener((AnimationStatusListener)animationStatusCallback);
+                navigator?.didStopUserGesture();
+                _controller!.removeStatusListener(animationStatusCallback);
+            };
+            _controller!.addStatusListener(animationStatusCallback);
         }
         else
         {
-            this.navigator?.didStopUserGesture();
+            navigator?.didStopUserGesture();
         }
     }
 
     public override void dispose()
     {
-        DartRuntimePrimitives.Assert(() => !this._transitionCompleter.isCompleted, () => (object?)$"Cannot dispose a {this.GetType()} twice.");
-        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot dispose a {this.GetType()} twice.");
-        this._animation?.removeStatusListener((AnimationStatusListener)this._handleStatusChanged);
-        this._performanceModeRequestHandle?.dispose();
+        DartRuntimePrimitives.Assert(() => !_transitionCompleter.isCompleted, () => (object?)$"Cannot dispose a {GetType()} twice.");
+        DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot dispose a {GetType()} twice.");
+        _animation?.removeStatusListener(_handleStatusChanged);
+        _performanceModeRequestHandle?.dispose();
         _performanceModeRequestHandle = null;
-        if (this.willDisposeAnimationController)
+        if (willDisposeAnimationController)
         {
-            this._controller?.dispose();
+            _controller?.dispose();
         }
-        this._transitionCompleter.complete(this._result);
+        _transitionCompleter.complete(_result);
         base.dispose();
     }
 
     public virtual string debugLabel => objectRuntimeTypeFunctions.objectRuntimeType(this, "TransitionRoute");
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TransitionRoute"))}(animation: {this._controller})";
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "TransitionRoute")}(animation: {_controller})";
 }
 
 public interface PredictiveBackRoute
@@ -449,13 +449,13 @@ public class LocalHistoryEntry
 
     public virtual void remove()
     {
-        this._owner?.removeLocalHistoryEntry(this);
-        DartRuntimePrimitives.Assert(() => (this._owner is null));
+        _owner?.removeLocalHistoryEntry(this);
+        DartRuntimePrimitives.Assert(() => _owner is null);
     }
 
     internal virtual void _notifyRemoved()
     {
-        this.onRemove?.Invoke();
+        onRemove?.Invoke();
     }
 
 }
@@ -534,22 +534,22 @@ internal class _ModalScopeStatus__routes : InheritedModel<_ModalRouteAspect__rou
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __old = (_ModalScopeStatus__routes)oldWidget;
-        return (((((this.isCurrent != ((_ModalScopeStatus__routes)__old).isCurrent) || (this.canPop != ((_ModalScopeStatus__routes)__old).canPop)) || (this.impliesAppBarDismissal != ((_ModalScopeStatus__routes)__old).impliesAppBarDismissal)) || (!Equals(this.route, ((_ModalScopeStatus__routes)__old).route))) || (this.opaque != ((_ModalScopeStatus__routes)__old).opaque));
+        return (isCurrent != __old.isCurrent) || (canPop != __old.canPop) || (impliesAppBarDismissal != __old.impliesAppBarDismissal) || (!Equals(route, __old.route)) || (opaque != __old.opaque);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.FlagProperty("isCurrent", value: this.isCurrent, ifTrue: "active", ifFalse: "inactive"));
-        description.add(new global::Doroti.Framework.Foundation.FlagProperty("canPop", value: this.canPop, ifTrue: "can pop"));
-        description.add(new global::Doroti.Framework.Foundation.FlagProperty("impliesAppBarDismissal", value: this.impliesAppBarDismissal, ifTrue: "implies app bar dismissal"));
+        description.add(new global::Doroti.Framework.Foundation.FlagProperty("isCurrent", value: isCurrent, ifTrue: "active", ifFalse: "inactive"));
+        description.add(new global::Doroti.Framework.Foundation.FlagProperty("canPop", value: canPop, ifTrue: "can pop"));
+        description.add(new global::Doroti.Framework.Foundation.FlagProperty("impliesAppBarDismissal", value: impliesAppBarDismissal, ifTrue: "implies app bar dismissal"));
     }
 
     public override bool updateShouldNotifyDependent(InheritedModel<_ModalRouteAspect__routes> oldWidget, HashSet<_ModalRouteAspect__routes> dependencies)
     {
         var __oldWidget = (_ModalScopeStatus__routes)oldWidget;
-        return dependencies.any(((dependency) => (dependency switch { _ModalRouteAspect__routes.isCurrent => (this.isCurrent != ((_ModalScopeStatus__routes)__oldWidget).isCurrent), _ModalRouteAspect__routes.canPop => (this.canPop != ((_ModalScopeStatus__routes)__oldWidget).canPop), _ModalRouteAspect__routes.settings => (!Equals(this.route.settings, ((_ModalScopeStatus__routes)__oldWidget).route.settings)), _ModalRouteAspect__routes.isActive => (this.route.isActive != ((_ModalScopeStatus__routes)__oldWidget).route.isActive), _ModalRouteAspect__routes.isFirst => (this.route.isFirst != ((_ModalScopeStatus__routes)__oldWidget).route.isFirst), _ModalRouteAspect__routes.opaque => (this.opaque != ((_ModalScopeStatus__routes)__oldWidget).opaque), _ModalRouteAspect__routes.popDisposition => (!Equals(this.route.popDisposition, ((_ModalScopeStatus__routes)__oldWidget).route.popDisposition)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+        return dependencies.any((dependency) => dependency switch { _ModalRouteAspect__routes.isCurrent => isCurrent != __oldWidget.isCurrent, _ModalRouteAspect__routes.canPop => canPop != __oldWidget.canPop, _ModalRouteAspect__routes.settings => !Equals(route.settings, __oldWidget.route.settings), _ModalRouteAspect__routes.isActive => route.isActive != __oldWidget.route.isActive, _ModalRouteAspect__routes.isFirst => route.isFirst != __oldWidget.route.isFirst, _ModalRouteAspect__routes.opaque => opaque != __oldWidget.opaque, _ModalRouteAspect__routes.popDisposition => !Equals(route.popDisposition, __oldWidget.route.popDisposition), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -584,7 +584,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
     public override void didUpdateWidget(_ModalScope__routes<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        DartRuntimePrimitives.Assert(() => (Equals(((_ModalScope__routes<T>)this.widget).route, ((_ModalScope__routes<T>)oldWidget).route)));
+        DartRuntimePrimitives.Assert(() => Equals(widget.route, oldWidget.route));
         _updateFocusScopeNode();
     }
 
@@ -599,43 +599,43 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
     {
         TraversalEdgeBehavior traversalEdgeBehaviorLocal = default!;
         TraversalEdgeBehavior directionalTraversalEdgeBehaviorLocal = default!;
-        ModalRoute<T> routeLocal = ((_ModalScope__routes<T>)this.widget).route;
-        if ((((ModalRoute<T>)routeLocal).traversalEdgeBehavior is not null))
+        ModalRoute<T> routeLocal = widget.route;
+        if (routeLocal.traversalEdgeBehavior is not null)
         {
-            traversalEdgeBehaviorLocal = DartRuntimePrimitives.RequireValue(((ModalRoute<T>)routeLocal).traversalEdgeBehavior);
+            traversalEdgeBehaviorLocal = DartRuntimePrimitives.RequireValue(routeLocal.traversalEdgeBehavior);
         }
         else
         {
             traversalEdgeBehaviorLocal = routeLocal.navigator!.widget.routeTraversalEdgeBehavior;
         }
-        if ((((ModalRoute<T>)routeLocal).directionalTraversalEdgeBehavior is not null))
+        if (routeLocal.directionalTraversalEdgeBehavior is not null)
         {
-            directionalTraversalEdgeBehaviorLocal = DartRuntimePrimitives.RequireValue(((ModalRoute<T>)routeLocal).directionalTraversalEdgeBehavior);
+            directionalTraversalEdgeBehaviorLocal = DartRuntimePrimitives.RequireValue(routeLocal.directionalTraversalEdgeBehavior);
         }
         else
         {
             directionalTraversalEdgeBehaviorLocal = routeLocal.navigator!.widget.routeDirectionalTraversalEdgeBehavior;
         }
-        this.focusScopeNode.traversalEdgeBehavior = traversalEdgeBehaviorLocal;
-        this.focusScopeNode.directionalTraversalEdgeBehavior = directionalTraversalEdgeBehaviorLocal;
-        if ((routeLocal.isCurrent && this._shouldRequestFocus))
+        focusScopeNode.traversalEdgeBehavior = traversalEdgeBehaviorLocal;
+        focusScopeNode.directionalTraversalEdgeBehavior = directionalTraversalEdgeBehaviorLocal;
+        if (routeLocal.isCurrent && _shouldRequestFocus)
         {
-            routeLocal.navigator!.focusNode.enclosingScope?.setFirstFocus(this.focusScopeNode);
+            routeLocal.navigator!.focusNode.enclosingScope?.setFirstFocus(focusScopeNode);
         }
     }
 
     internal virtual void _forceRebuildPage()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _page = null;
-        })));
+        });
     }
 
     public override void dispose()
     {
-        this.focusScopeNode.dispose();
-        this.primaryScrollController.dispose();
+        focusScopeNode.dispose();
+        primaryScrollController.dispose();
         base.dispose();
     }
 
@@ -643,52 +643,52 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
     {
         get
         {
-            return ((Equals(((_ModalScope__routes<T>)this.widget).route.animation?.status, AnimationStatus.reverse)) || ((((_ModalScope__routes<T>)this.widget).route.navigator?.userGestureInProgress ?? false)));
+            return Equals(widget.route.animation?.status, AnimationStatus.reverse) || (widget.route.navigator?.userGestureInProgress ?? false);
         }
     }
     internal virtual bool _shouldRequestFocus
     {
         get
         {
-            return ((_ModalScope__routes<T>)this.widget).route.requestFocus;
+            return widget.route.requestFocus;
         }
     }
     internal virtual void _routeSetState(global::System.Action fn)
     {
-        if (((((_ModalScope__routes<T>)this.widget).route.isCurrent && !this._shouldIgnoreFocusRequest) && this._shouldRequestFocus))
+        if (widget.route.isCurrent && !_shouldIgnoreFocusRequest && _shouldRequestFocus)
         {
-            ((_ModalScope__routes<T>)this.widget).route.navigator!.focusNode.enclosingScope?.setFirstFocus(this.focusScopeNode);
+            widget.route.navigator!.focusNode.enclosingScope?.setFirstFocus(focusScopeNode);
         }
         setState(() => fn());
     }
 
     public override Widget build(BuildContext context)
     {
-        this.focusScopeNode.skipTraversal = !((_ModalScope__routes<T>)this.widget).route.isCurrent;
-        return ((Widget)new AnimatedBuilder(animation: ((_ModalScope__routes<T>)this.widget).route.restorationScopeId, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        focusScopeNode.skipTraversal = !widget.route.isCurrent;
+        return new AnimatedBuilder(animation: widget.route.restorationScopeId, builder: (context, child) =>
         {
-            DartRuntimePrimitives.Assert(() => (child is not null));
-            return ((Widget)new RestorationScope(restorationId: ((_ModalScope__routes<T>)this.widget).route.restorationScopeId.value, child: child!));
+            DartRuntimePrimitives.Assert(() => child is not null);
+            return new RestorationScope(restorationId: widget.route.restorationScopeId.value, child: child!);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: new _ModalScopeStatus__routes(route: ((_ModalScope__routes<T>)this.widget).route, isCurrent: ((_ModalScope__routes<T>)this.widget).route.isCurrent, canPop: ((_ModalScope__routes<T>)this.widget).route.canPop, opaque: ((_ModalScope__routes<T>)this.widget).route.opaque, impliesAppBarDismissal: ((_ModalScope__routes<T>)this.widget).route.impliesAppBarDismissal, child: new Offstage(offstage: ((_ModalScope__routes<T>)this.widget).route.offstage, child: new PageStorage(bucket: ((_ModalScope__routes<T>)this.widget).route._storageBucket, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        }, child: new _ModalScopeStatus__routes(route: widget.route, isCurrent: widget.route.isCurrent, canPop: widget.route.canPop, opaque: widget.route.opaque, impliesAppBarDismissal: widget.route.impliesAppBarDismissal, child: new Offstage(offstage: widget.route.offstage, child: new PageStorage(bucket: widget.route._storageBucket, child: new Builder(builder: (context) =>
         {
-            return ((Widget)new Actions(actions: new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new _DismissModalAction__routes(context) }, child: new PrimaryScrollController(controller: this.primaryScrollController, child: FocusScope.CreateWithExternalFocusNode(focusScopeNode: this.focusScopeNode, child: new RepaintBoundary(child: new ListenableBuilder(listenable: this._listenable, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+            return new Actions(actions: new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new _DismissModalAction__routes(context) }, child: new PrimaryScrollController(controller: primaryScrollController, child: FocusScope.CreateWithExternalFocusNode(focusScopeNode: focusScopeNode, child: new RepaintBoundary(child: new ListenableBuilder(listenable: _listenable, builder: (context, child) =>
             {
-                return ((Widget)((_ModalScope__routes<T>)this.widget).route._buildFlexibleTransitions(context, ((_ModalScope__routes<T>)this.widget).route.animation!, ((_ModalScope__routes<T>)this.widget).route.secondaryAnimation!, new ListenableBuilder(listenable: (((_ModalScope__routes<T>)this.widget).route.navigator?.userGestureInProgressNotifier ?? new global::Doroti.Framework.Foundation.ValueNotifier<bool>(false)), builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+                return widget.route._buildFlexibleTransitions(context, widget.route.animation!, widget.route.secondaryAnimation!, new ListenableBuilder(listenable: widget.route.navigator?.userGestureInProgressNotifier ?? new global::Doroti.Framework.Foundation.ValueNotifier<bool>(false), builder: (context, child) =>
                 {
-                    bool ignoreEvents = this._shouldIgnoreFocusRequest;
-                    this.focusScopeNode.canRequestFocus = !ignoreEvents;
-                    return ((Widget)new IgnorePointer(ignoring: ignoreEvents, child: child));
+                    bool ignoreEvents = _shouldIgnoreFocusRequest;
+                    focusScopeNode.canRequestFocus = !ignoreEvents;
+                    return new IgnorePointer(ignoring: ignoreEvents, child: child);
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })), child: child)));
+                }, child: child));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })), child: _page ??= new RepaintBoundary(key: ((_ModalScope__routes<T>)this.widget).route._subtreeKey, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+            }, child: _page ??= new RepaintBoundary(key: widget.route._subtreeKey, child: new Builder(builder: (context) =>
             {
-                return ((Widget)((_ModalScope__routes<T>)this.widget).route.buildPage(context, ((_ModalScope__routes<T>)this.widget).route.animation!, ((_ModalScope__routes<T>)this.widget).route.secondaryAnimation!));
+                return widget.route.buildPage(context, widget.route.animation!, widget.route.secondaryAnimation!);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))))))))));
+            })))))));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))))))));
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -749,7 +749,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public static ModalRoute<TRouteResult>? of<TRouteResult>(BuildContext context)
     {
-        return ((ModalRoute<TRouteResult>?)ModalRoute<TRouteResult>._of<TRouteResult>(context));
+        return ModalRoute<TRouteResult>._of<TRouteResult>(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -774,9 +774,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     public static RoutePopDisposition? popDispositionOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.popDisposition)?.route.popDisposition;
     public virtual void setState(global::System.Action fn)
     {
-        if ((((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null))
+        if (_scopeKey.currentState is not null)
         {
-            ((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState!._routeSetState(() => fn());
+            _scopeKey.currentState!._routeSetState(() => fn());
         }
         else
         {
@@ -786,11 +786,11 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public static global::System.Func<dynamic, bool> withName(string name)
     {
-        return ((global::System.Func<dynamic, bool>)((route) =>
+        return (route) =>
         {
-            return (((object?)route is ModalRoute<T> typedRoute) && !typedRoute.willHandlePopInternally && (typedRoute.settings.ToString() == name));
+            return ((object?)route is ModalRoute<T> typedRoute) && !typedRoute.willHandlePopInternally && (typedRoute.settings.ToString() == name);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -804,13 +804,13 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>? delegatedTransition => DartRuntimePrimitives.ConvertValue<global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>>(null);
     internal virtual Widget _buildFlexibleTransitions(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
     {
-        if (((this.receivedTransition is null) || ((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isDismissed))
+        if ((receivedTransition is null) || secondaryAnimation.isDismissed)
         {
-            return ((Widget)buildTransitions(context, animation, secondaryAnimation, child));
+            return buildTransitions(context, animation, secondaryAnimation, child);
         }
         var proxyAnimation = new global::Doroti.Framework.Animation.ProxyAnimation();
-        Widget proxiedOriginalTransitions = ((Widget)buildTransitions(context, animation, proxyAnimation, child));
-        return (this.receivedTransition!(context, animation, secondaryAnimation, this.allowSnapshotting, proxiedOriginalTransitions) ?? proxiedOriginalTransitions);
+        Widget proxiedOriginalTransitions = buildTransitions(context, animation, proxyAnimation, child);
+        return receivedTransition!(context, animation, secondaryAnimation, allowSnapshotting, proxiedOriginalTransitions) ?? proxiedOriginalTransitions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -823,19 +823,19 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
-        if (((((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null) && this.navigator!.widget.requestFocus))
+        if ((_scopeKey.currentState is not null) && navigator!.widget.requestFocus)
         {
-            this.navigator!.focusNode.enclosingScope?.setFirstFocus(((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState!.focusScopeNode);
+            navigator!.focusNode.enclosingScope?.setFirstFocus(_scopeKey.currentState!.focusScopeNode);
         }
-        return ((global::Doroti.Framework.Scheduler.TickerFuture)base.didPush());
+        return base.didPush();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didAdd()
     {
-        if (((((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null) && this.navigator!.widget.requestFocus))
+        if ((_scopeKey.currentState is not null) && navigator!.widget.requestFocus)
         {
-            this.navigator!.focusNode.enclosingScope?.setFirstFocus(((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState!.focusScopeNode);
+            navigator!.focusNode.enclosingScope?.setFirstFocus(_scopeKey.currentState!.focusScopeNode);
         }
         base.didAdd();
     }
@@ -846,24 +846,24 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     public abstract string? barrierLabel { get; }
     public virtual global::Doroti.Framework.Animation.Curve barrierCurve => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Curve>(Curves.ease);
     public abstract bool maintainState { get; }
-    public virtual bool popGestureInProgress => this.navigator!.userGestureInProgress;
+    public virtual bool popGestureInProgress => navigator!.userGestureInProgress;
     public override bool popGestureEnabled
     {
         get
         {
-            if (this.isFirst)
+            if (isFirst)
             {
                 return false;
             }
-            if (this.willHandlePopInternally)
+            if (willHandlePopInternally)
             {
                 return false;
             }
-            if ((this.hasScopedWillPopCallback || (Equals(this.popDisposition, RoutePopDisposition.doNotPop))))
+            if (hasScopedWillPopCallback || Equals(popDisposition, RoutePopDisposition.doNotPop))
             {
                 return false;
             }
-            if (!this.animation!.isCompleted)
+            if (!animation!.isCompleted)
             {
                 return false;
             }
@@ -872,31 +872,31 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     }
     public virtual bool offstage
     {
-        get => this._offstage;
+        get => _offstage;
         set
         {
             var __value = value;
-            if ((this._offstage == __value))
+            if (_offstage == __value)
             {
                 return;
             }
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
                 _offstage = __value;
-            })));
-            this._animationProxy!.parent = (this._offstage ? AnimationsLibrary.kAlwaysCompleteAnimation : base.animation);
-            this._secondaryAnimationProxy!.parent = (this._offstage ? AnimationsLibrary.kAlwaysDismissedAnimation : base.secondaryAnimation);
+            });
+            _animationProxy!.parent = _offstage ? AnimationsLibrary.kAlwaysCompleteAnimation : base.animation;
+            _secondaryAnimationProxy!.parent = _offstage ? AnimationsLibrary.kAlwaysDismissedAnimation : base.secondaryAnimation;
             changedInternalState();
         }
     }
-    public virtual BuildContext? subtreeContext => ((GlobalKey<IState>)this._subtreeKey).currentContext;
-    public override global::Doroti.Framework.Animation.Animation<double>? animation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._animationProxy);
-    public override global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._secondaryAnimationProxy);
+    public virtual BuildContext? subtreeContext => _subtreeKey.currentContext;
+    public override global::Doroti.Framework.Animation.Animation<double>? animation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(_animationProxy);
+    public override global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(_secondaryAnimationProxy);
     public async override Future<RoutePopDisposition> willPop()
     {
-        _ModalScopeState__routes<T>? scope = ((_ModalScopeState__routes<T>?)((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState);
-        DartRuntimePrimitives.Assert(() => (scope is not null));
-        foreach (var callback in new List<global::System.Func<Future<bool>>>(DartRuntimePrimitives.ConvertEnumerable<global::System.Func<Future<bool>>>(this._willPopCallbacks)))
+        _ModalScopeState__routes<T>? scope = _scopeKey.currentState;
+        DartRuntimePrimitives.Assert(() => scope is not null);
+        foreach (var callback in new List<global::System.Func<Future<bool>>>(DartRuntimePrimitives.ConvertEnumerable<global::System.Func<Future<bool>>>(_willPopCallbacks)))
         {
             if (!await callback())
             {
@@ -911,9 +911,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     {
         get
         {
-            foreach (IPopEntry popEntry in this._popEntries)
+            foreach (IPopEntry popEntry in _popEntries)
             {
-                if (!((global::Doroti.Framework.Foundation.ValueListenable<bool>)popEntry.canPopNotifier).value)
+                if (!popEntry.canPopNotifier.value)
                 {
                     return RoutePopDisposition.doNotPop;
                 }
@@ -923,7 +923,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     }
     public override void onPopInvokedWithResult(bool didPop, T? result)
     {
-        foreach (IPopEntry popEntry in this._popEntries)
+        foreach (IPopEntry popEntry in _popEntries)
         {
             popEntry.onPopInvokedWithResultObject(didPop, result);
         }
@@ -932,9 +932,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public virtual void addScopedWillPopCallback(global::System.Func<Future<bool>> callback)
     {
-        DartRuntimePrimitives.Assert(() => (((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null), () => (object?)"Tried to add a willPop callback to a route that is not currently in the tree.");
-        this._willPopCallbacks.Add(callback);
-        if ((checked((long)(this._willPopCallbacks.Count)) == 1L))
+        DartRuntimePrimitives.Assert(() => _scopeKey.currentState is not null, () => (object?)"Tried to add a willPop callback to a route that is not currently in the tree.");
+        _willPopCallbacks.Add(callback);
+        if (checked(_willPopCallbacks.Count) == 1L)
         {
             _maybeDispatchNavigationNotification();
         }
@@ -942,9 +942,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public virtual void removeScopedWillPopCallback(global::System.Func<Future<bool>> callback)
     {
-        DartRuntimePrimitives.Assert(() => (((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null), () => (object?)"Tried to remove a willPop callback from a route that is not currently in the tree.");
-        this._willPopCallbacks.Remove(callback);
-        if (!Enumerable.Any(this._willPopCallbacks))
+        DartRuntimePrimitives.Assert(() => _scopeKey.currentState is not null, () => (object?)"Tried to remove a willPop callback from a route that is not currently in the tree.");
+        _willPopCallbacks.Remove(callback);
+        if (!Enumerable.Any(_willPopCallbacks))
         {
             _maybeDispatchNavigationNotification();
         }
@@ -952,30 +952,30 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public virtual void registerPopEntry(IPopEntry popEntry)
     {
-        this._popEntries.Add(popEntry);
-        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)popEntry.canPopNotifier).addListener(this._maybeDispatchNavigationNotification);
+        _popEntries.Add(popEntry);
+        popEntry.canPopNotifier.addListener(_maybeDispatchNavigationNotification);
         _maybeDispatchNavigationNotification();
     }
 
     public virtual void unregisterPopEntry(IPopEntry popEntry)
     {
-        this._popEntries.Remove(popEntry);
-        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)popEntry.canPopNotifier).removeListener(this._maybeDispatchNavigationNotification);
+        _popEntries.Remove(popEntry);
+        popEntry.canPopNotifier.removeListener(_maybeDispatchNavigationNotification);
         _maybeDispatchNavigationNotification();
     }
 
     internal virtual void _maybeDispatchNavigationNotification()
     {
-        if (!this.isCurrent)
+        if (!isCurrent)
         {
             return;
         }
-        var notification = new NavigationNotification(canHandlePop: ((Equals(this.popDisposition, RoutePopDisposition.doNotPop)) || Enumerable.Any(this._willPopCallbacks)));
+        var notification = new NavigationNotification(canHandlePop: Equals(popDisposition, RoutePopDisposition.doNotPop) || Enumerable.Any(_willPopCallbacks));
         switch (Scheduler.SchedulerBinding.instance.schedulerPhase)
         {
             case Scheduler.SchedulerPhase.postFrameCallbacks:
                 {
-                    notification.dispatch(this.subtreeContext);
+                    notification.dispatch(subtreeContext);
                     break;
                 }
             case Scheduler.SchedulerPhase.idle:
@@ -983,14 +983,14 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             case Scheduler.SchedulerPhase.persistentCallbacks:
             case Scheduler.SchedulerPhase.transientCallbacks:
                 {
-                    Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+                    Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
                     {
-                        if (!((this.subtreeContext?.mounted ?? false)))
+                        if (!(subtreeContext?.mounted ?? false))
                         {
                             return;
                         }
-                        notification.dispatch(this.subtreeContext);
-                    })), debugLabel: "ModalRoute.dispatchNotification");
+                        notification.dispatch(subtreeContext);
+                    }, debugLabel: "ModalRoute.dispatchNotification");
                     break;
                 }
         }
@@ -1000,7 +1000,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     {
         get
         {
-            return Enumerable.Any(this._willPopCallbacks);
+            return Enumerable.Any(_willPopCallbacks);
         }
     }
     public override void didChangePrevious(dynamic? previousRoute)
@@ -1011,10 +1011,10 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public override void didChangeNext(dynamic? nextRoute)
     {
-        if (((((object?)nextRoute is IModalRoute) && canTransitionTo((object)nextRoute)) && (!Equals((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((IModalRoute)(object)nextRoute).delegatedTransition, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)this.delegatedTransition))))
+        if ((nextRoute is IModalRoute) && canTransitionTo((object)nextRoute) && (!Equals(((IModalRoute)(object)nextRoute).delegatedTransition, delegatedTransition)))
         {
             IModalRoute nextRoute__as84419 = (IModalRoute)(object)nextRoute;
-            receivedTransition = (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((IModalRoute)nextRoute__as84419).delegatedTransition;
+            receivedTransition = nextRoute__as84419.delegatedTransition;
         }
         else
         {
@@ -1026,10 +1026,10 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public override void didPopNext(dynamic nextRoute)
     {
-        if (((((object?)nextRoute is IModalRoute) && canTransitionTo((object)nextRoute)) && (!Equals((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((IModalRoute)(object)nextRoute).delegatedTransition, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)this.delegatedTransition))))
+        if ((nextRoute is IModalRoute) && canTransitionTo((object)nextRoute) && (!Equals(((IModalRoute)(object)nextRoute).delegatedTransition, delegatedTransition)))
         {
             IModalRoute nextRoute__as84796 = (IModalRoute)(object)nextRoute;
-            receivedTransition = (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, Widget?, Widget?>?)((IModalRoute)nextRoute__as84796).delegatedTransition;
+            receivedTransition = nextRoute__as84796.delegatedTransition;
         }
         else
         {
@@ -1043,38 +1043,38 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     public override void changedInternalState()
     {
         base.changedInternalState();
-        if ((!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
+        if (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-            })));
-            this._modalBarrier.markNeedsBuild();
+            });
+            _modalBarrier.markNeedsBuild();
         }
-        this._modalScope.maintainState = this.maintainState;
+        _modalScope.maintainState = maintainState;
     }
 
     public override void changedExternalState()
     {
         base.changedExternalState();
-        this._modalBarrier.markNeedsBuild();
-        if ((((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null))
+        _modalBarrier.markNeedsBuild();
+        if (_scopeKey.currentState is not null)
         {
-            ((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState!._forceRebuildPage();
+            _scopeKey.currentState!._forceRebuildPage();
         }
     }
 
-    public virtual bool canPop => DartRuntimePrimitives.ConvertValue<bool>((this.hasActiveRouteBelow || this.willHandlePopInternally));
-    public virtual bool impliesAppBarDismissal => DartRuntimePrimitives.ConvertValue<bool>((this.hasActiveRouteBelow || (this._entriesImpliesAppBarDismissal > 0L)));
+    public virtual bool canPop => DartRuntimePrimitives.ConvertValue<bool>(hasActiveRouteBelow || willHandlePopInternally);
+    public virtual bool impliesAppBarDismissal => DartRuntimePrimitives.ConvertValue<bool>(hasActiveRouteBelow || (_entriesImpliesAppBarDismissal > 0L));
     public virtual bool fullscreenDialog => false;
     internal virtual Widget _buildModalBarrier(BuildContext context)
     {
-        Widget barrier = ((Widget)buildModalBarrier());
-        if ((this.filter is not null))
+        Widget barrier = buildModalBarrier();
+        if (filter is not null)
         {
-            barrier = DartRuntimePrimitives.ConvertValue<Widget>(new BackdropFilter(filter: this.filter, child: barrier));
+            barrier = DartRuntimePrimitives.ConvertValue<Widget>(new BackdropFilter(filter: filter, child: barrier));
         }
-        barrier = DartRuntimePrimitives.ConvertValue<Widget>(new IgnorePointer(ignoring: !this.animation!.isForwardOrCompleted, child: barrier));
-        if ((this.semanticsDismissible && this.barrierDismissible))
+        barrier = DartRuntimePrimitives.ConvertValue<Widget>(new IgnorePointer(ignoring: !animation!.isForwardOrCompleted, child: barrier));
+        if (semanticsDismissible && barrierDismissible)
         {
             barrier = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(sortKey: new global::Doroti.Framework.Semantics.OrdinalSortKey(1.0), child: barrier));
         }
@@ -1085,15 +1085,15 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     public virtual Widget buildModalBarrier()
     {
         Widget barrier = default!;
-        if ((((this.barrierColor is not null) && (this.barrierColor!.alpha != 0L)) && !this.offstage))
+        if ((barrierColor is not null) && (barrierColor!.alpha != 0L) && !offstage)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(this.barrierColor, this.barrierColor!.withOpacity(0.0))));
-            global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?> colorLocal = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>)this.animation!.drive(new global::Doroti.Framework.Animation.ColorTween(begin: this.barrierColor!.withOpacity(0.0), end: this.barrierColor).chain(new global::Doroti.Framework.Animation.CurveTween(curve: this.barrierCurve))));
-            barrier = DartRuntimePrimitives.ConvertValue<Widget>(new AnimatedModalBarrier(color: colorLocal, dismissible: this.barrierDismissible, semanticsLabel: this.barrierLabel, barrierSemanticsDismissible: this.semanticsDismissible));
+            DartRuntimePrimitives.Assert(() => !Equals(barrierColor, barrierColor!.withOpacity(0.0)));
+            global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?> colorLocal = animation!.drive(new global::Doroti.Framework.Animation.ColorTween(begin: barrierColor!.withOpacity(0.0), end: barrierColor).chain(new global::Doroti.Framework.Animation.CurveTween(curve: barrierCurve)));
+            barrier = DartRuntimePrimitives.ConvertValue<Widget>(new AnimatedModalBarrier(color: colorLocal, dismissible: barrierDismissible, semanticsLabel: barrierLabel, barrierSemanticsDismissible: semanticsDismissible));
         }
         else
         {
-            barrier = DartRuntimePrimitives.ConvertValue<Widget>(new ModalBarrier(dismissible: this.barrierDismissible, semanticsLabel: this.barrierLabel, barrierSemanticsDismissible: this.semanticsDismissible));
+            barrier = DartRuntimePrimitives.ConvertValue<Widget>(new ModalBarrier(dismissible: barrierDismissible, semanticsLabel: barrierLabel, barrierSemanticsDismissible: semanticsDismissible));
         }
         return barrier;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1101,31 +1101,31 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     internal virtual Widget _buildModalScope(BuildContext context)
     {
-        return _modalScopeCache ??= new Semantics(sortKey: new global::Doroti.Framework.Semantics.OrdinalSortKey(0.0), child: new _ModalScope__routes<T>(key: this._scopeKey, route: this));
+        return _modalScopeCache ??= new Semantics(sortKey: new global::Doroti.Framework.Semantics.OrdinalSortKey(0.0), child: new _ModalScope__routes<T>(key: _scopeKey, route: this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override IEnumerable<OverlayEntry> createOverlayEntries()
     {
-        return ((IEnumerable<OverlayEntry>)new List<OverlayEntry> { (_modalBarrier = new OverlayEntry(builder: (global::System.Func<BuildContext, Widget>)this._buildModalBarrier)), (_modalScope = new OverlayEntry(builder: (global::System.Func<BuildContext, Widget>)this._buildModalScope, maintainState: this.maintainState, canSizeOverlay: this.opaque)) });
+        return new List<OverlayEntry> { (_modalBarrier = new OverlayEntry(builder: _buildModalBarrier)), (_modalScope = new OverlayEntry(builder: _buildModalScope, maintainState: maintainState, canSizeOverlay: opaque)) };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ModalRoute"))}({this.settings}, animation: {this._animation})";
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ModalRoute")}({settings}, animation: {_animation})";
     public virtual void addLocalHistoryEntry(LocalHistoryEntry entry)
     {
-        DartRuntimePrimitives.Assert(() => (((LocalHistoryEntry)entry)._owner is null));
+        DartRuntimePrimitives.Assert(() => entry._owner is null);
         entry._owner = this;
-        this._localHistory ??= new List<LocalHistoryEntry>();
-        bool wasEmpty = !Enumerable.Any(this._localHistory!);
-        this._localHistory!.Add(entry);
+        _localHistory ??= new List<LocalHistoryEntry>();
+        bool wasEmpty = !Enumerable.Any(_localHistory!);
+        _localHistory!.Add(entry);
         var internalStateChanged = false;
-        if (((LocalHistoryEntry)entry).impliesAppBarDismissal)
+        if (entry.impliesAppBarDismissal)
         {
-            internalStateChanged = (this._entriesImpliesAppBarDismissal == 0L);
-            this._entriesImpliesAppBarDismissal += 1L;
+            internalStateChanged = _entriesImpliesAppBarDismissal == 0L;
+            _entriesImpliesAppBarDismissal += 1L;
         }
-        if ((wasEmpty || internalStateChanged))
+        if (wasEmpty || internalStateChanged)
         {
             changedInternalState();
         }
@@ -1133,28 +1133,28 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public virtual void removeLocalHistoryEntry(LocalHistoryEntry entry)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((LocalHistoryEntry)entry)._owner, this)));
-        DartRuntimePrimitives.Assert(() => this._localHistory!.Contains(entry));
+        DartRuntimePrimitives.Assert(() => Equals(entry._owner, this));
+        DartRuntimePrimitives.Assert(() => _localHistory!.Contains(entry));
         var internalStateChanged = false;
-        if ((this._localHistory!.Remove(entry) && ((LocalHistoryEntry)entry).impliesAppBarDismissal))
+        if (_localHistory!.Remove(entry) && entry.impliesAppBarDismissal)
         {
-            this._entriesImpliesAppBarDismissal -= 1L;
-            internalStateChanged = (this._entriesImpliesAppBarDismissal == 0L);
+            _entriesImpliesAppBarDismissal -= 1L;
+            internalStateChanged = _entriesImpliesAppBarDismissal == 0L;
         }
         entry._owner = null;
         entry._notifyRemoved();
-        if ((!Enumerable.Any(this._localHistory!) || internalStateChanged))
+        if (!Enumerable.Any(_localHistory!) || internalStateChanged)
         {
-            DartRuntimePrimitives.Assert(() => (this._entriesImpliesAppBarDismissal == 0L));
-            if ((Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
+            DartRuntimePrimitives.Assert(() => _entriesImpliesAppBarDismissal == 0L);
+            if (Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) =>
                 {
-                    if (this.isActive)
+                    if (isActive)
                     {
                         changedInternalState();
                     }
-                })), debugLabel: "LocalHistoryRoute.changedInternalState");
+                }, debugLabel: "LocalHistoryRoute.changedInternalState");
             }
             else
             {
@@ -1165,19 +1165,19 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
 
     public override bool didPop(T? result)
     {
-        if (((this._localHistory is not null) && Enumerable.Any(this._localHistory!)))
+        if ((_localHistory is not null) && Enumerable.Any(_localHistory!))
         {
-            LocalHistoryEntry entry = this._localHistory!.removeLast<LocalHistoryEntry>();
-            DartRuntimePrimitives.Assert(() => (Equals(((LocalHistoryEntry)entry)._owner, this)));
+            LocalHistoryEntry entry = _localHistory!.removeLast<LocalHistoryEntry>();
+            DartRuntimePrimitives.Assert(() => Equals(entry._owner, this));
             entry._owner = null;
             entry._notifyRemoved();
             var internalStateChanged = false;
-            if (((LocalHistoryEntry)entry).impliesAppBarDismissal)
+            if (entry.impliesAppBarDismissal)
             {
-                this._entriesImpliesAppBarDismissal -= 1L;
-                internalStateChanged = (this._entriesImpliesAppBarDismissal == 0L);
+                _entriesImpliesAppBarDismissal -= 1L;
+                internalStateChanged = _entriesImpliesAppBarDismissal == 0L;
             }
-            if ((!Enumerable.Any(this._localHistory!) || internalStateChanged))
+            if (!Enumerable.Any(_localHistory!) || internalStateChanged)
             {
                 changedInternalState();
             }
@@ -1191,7 +1191,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     {
         get
         {
-            return ((this._localHistory is not null) && Enumerable.Any(this._localHistory!));
+            return (_localHistory is not null) && Enumerable.Any(_localHistory!);
         }
     }
 }
@@ -1216,7 +1216,7 @@ public class RouteObserver<R> : NavigatorObserver where R : notnull
         bool contained = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                contained = this._listeners.ContainsKey(route);
+                contained = _listeners.ContainsKey(route);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -1226,7 +1226,7 @@ public class RouteObserver<R> : NavigatorObserver where R : notnull
 
     public virtual void subscribe(RouteAware routeAware, R route)
     {
-        HashSet<RouteAware> subscribers = this._listeners.putIfAbsent(route, (() => new HashSet<RouteAware>()));
+        HashSet<RouteAware> subscribers = _listeners.putIfAbsent(route, () => new HashSet<RouteAware>());
         if (subscribers.Add(routeAware))
         {
             routeAware.didPush();
@@ -1235,16 +1235,16 @@ public class RouteObserver<R> : NavigatorObserver where R : notnull
 
     public virtual void unsubscribe(RouteAware routeAware)
     {
-        List<R> routes = this._listeners.Keys.ToList().ToList();
+        List<R> routes = _listeners.Keys.ToList().ToList();
         foreach (var route in routes)
         {
-            HashSet<RouteAware>? subscribers = this._listeners.GetValueOrDefault(route);
-            if ((subscribers is not null))
+            HashSet<RouteAware>? subscribers = _listeners.GetValueOrDefault(route);
+            if (subscribers is not null)
             {
                 subscribers.Remove(routeAware);
                 if (!Enumerable.Any(subscribers))
                 {
-                    this._listeners.remove(route);
+                    _listeners.remove(route);
                 }
             }
         }
@@ -1252,20 +1252,20 @@ public class RouteObserver<R> : NavigatorObserver where R : notnull
 
     public override void didPop(dynamic route, dynamic? previousRoute)
     {
-        if (((route is R) && (previousRoute is R)))
+        if ((route is R) && (previousRoute is R))
         {
             R route__as94544 = (R)(object)route;
             R previousRoute__as94558 = (R)(object)previousRoute;
-            List<RouteAware>? previousSubscribers = this._listeners.GetValueOrDefault(previousRoute__as94558)?.ToList().ToList();
-            if ((previousSubscribers is not null))
+            List<RouteAware>? previousSubscribers = _listeners.GetValueOrDefault(previousRoute__as94558)?.ToList().ToList();
+            if (previousSubscribers is not null)
             {
                 foreach (RouteAware routeAware in previousSubscribers)
                 {
                     routeAware.didPopNext();
                 }
             }
-            List<RouteAware>? subscribers = this._listeners.GetValueOrDefault(route__as94544)?.ToList().ToList();
-            if ((subscribers is not null))
+            List<RouteAware>? subscribers = _listeners.GetValueOrDefault(route__as94544)?.ToList().ToList();
+            if (subscribers is not null)
             {
                 foreach (RouteAware routeAwareLocal in subscribers)
                 {
@@ -1277,12 +1277,12 @@ public class RouteObserver<R> : NavigatorObserver where R : notnull
 
     public override void didPush(dynamic route, dynamic? previousRoute)
     {
-        if (((route is R) && (previousRoute is R)))
+        if ((route is R) && (previousRoute is R))
         {
             R route__as95148 = (R)(object)route;
             R previousRoute__as95162 = (R)(object)previousRoute;
-            HashSet<RouteAware>? previousSubscribers = this._listeners.GetValueOrDefault(previousRoute__as95162);
-            if ((previousSubscribers is not null))
+            HashSet<RouteAware>? previousSubscribers = _listeners.GetValueOrDefault(previousRoute__as95162);
+            if (previousSubscribers is not null)
             {
                 foreach (RouteAware routeAware in previousSubscribers)
                 {
@@ -1333,41 +1333,41 @@ public class RawDialogRoute<T> : PopupRoute<T>
         Duration __transitionDuration = transitionDuration ?? Duration.Create(milliseconds: 200);
         this.barrierBuilder = barrierBuilder;
         this.anchorPoint = anchorPoint;
-        this.__field_fullscreenDialog = fullscreenDialog;
-        this._pageBuilder = pageBuilder;
-        this._barrierDismissible = barrierDismissible;
-        this._barrierLabel = barrierLabel;
-        this._barrierColor = __barrierColor;
-        this._transitionDuration = __transitionDuration;
-        this._transitionBuilder = transitionBuilder;
+        __field_fullscreenDialog = fullscreenDialog;
+        _pageBuilder = pageBuilder;
+        _barrierDismissible = barrierDismissible;
+        _barrierLabel = barrierLabel;
+        _barrierColor = __barrierColor;
+        _transitionDuration = __transitionDuration;
+        _transitionBuilder = transitionBuilder;
     }
 
-    public override bool barrierDismissible => this._barrierDismissible;
-    public override string? barrierLabel => this._barrierLabel;
-    public override Color? barrierColor => this._barrierColor;
-    public override Duration transitionDuration => this._transitionDuration;
+    public override bool barrierDismissible => _barrierDismissible;
+    public override string? barrierLabel => _barrierLabel;
+    public override Color? barrierColor => _barrierColor;
+    public override Duration transitionDuration => _transitionDuration;
     public override Widget buildPage(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        return ((Widget)new Semantics(scopesRoute: true, explicitChildNodes: true, child: new DisplayFeatureSubScreen(anchorPoint: this.anchorPoint, child: this._pageBuilder(context, animation, secondaryAnimation))));
+        return new Semantics(scopesRoute: true, explicitChildNodes: true, child: new DisplayFeatureSubScreen(anchorPoint: anchorPoint, child: _pageBuilder(context, animation, secondaryAnimation)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget buildTransitions(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
     {
-        if ((this._transitionBuilder is null))
+        if (_transitionBuilder is null)
         {
-            return ((Widget)new FadeTransition(opacity: animation, child: child));
+            return new FadeTransition(opacity: animation, child: child);
         }
-        return this._transitionBuilder(context, animation, secondaryAnimation, child);
+        return _transitionBuilder(context, animation, secondaryAnimation, child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget buildModalBarrier()
     {
-        Widget barrier = ((Widget)base.buildModalBarrier());
-        if ((this.barrierBuilder is not null))
+        Widget barrier = base.buildModalBarrier();
+        if (barrierBuilder is not null)
         {
-            return ((Widget)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.barrierBuilder!(context, new RouteBarrierDetails(animation: this.animation!, barrierColor: this.barrierColor, barrierLabel: this.barrierLabel, barrierDismissible: this.barrierDismissible), barrier)))));
+            return new Builder(builder: (context) => barrierBuilder!(context, new RouteBarrierDetails(animation: animation!, barrierColor: barrierColor, barrierLabel: barrierLabel, barrierDismissible: barrierDismissible), barrier));
         }
         return barrier;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1380,8 +1380,8 @@ public static partial class RoutesLibrary
     public static Future<T?> showGeneralDialog<T>(BuildContext context, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget> pageBuilder, bool barrierDismissible = false, string? barrierLabel = null, Color barrierColor = default!, Duration? transitionDuration = null, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget, Widget>? transitionBuilder = null, global::System.Func<BuildContext, RouteBarrierDetails, Widget, Widget>? barrierBuilder = null, bool useRootNavigator = true, bool fullscreenDialog = false, RouteSettings? routeSettings = null, Offset? anchorPoint = null, bool? requestFocus = null)
     {
         Duration __transitionDuration = transitionDuration ?? Duration.Create(milliseconds: 200);
-        DartRuntimePrimitives.Assert(() => (!barrierDismissible || (barrierLabel is not null)));
-        return ((Future<T?>)Navigator.of(context, rootNavigator: useRootNavigator).push<T>(new RawDialogRoute<T>(pageBuilder: (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget>)pageBuilder, barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, barrierColor: barrierColor, transitionDuration: __transitionDuration, transitionBuilder: (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget, Widget>?)transitionBuilder, barrierBuilder: (global::System.Func<BuildContext, RouteBarrierDetails, Widget, Widget>?)barrierBuilder, settings: routeSettings, anchorPoint: anchorPoint, requestFocus: requestFocus, fullscreenDialog: fullscreenDialog)));
+        DartRuntimePrimitives.Assert(() => !barrierDismissible || (barrierLabel is not null));
+        return Navigator.of(context, rootNavigator: useRootNavigator).push<T>(new RawDialogRoute<T>(pageBuilder: pageBuilder, barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, barrierColor: barrierColor, transitionDuration: __transitionDuration, transitionBuilder: transitionBuilder, barrierBuilder: barrierBuilder, settings: routeSettings, anchorPoint: anchorPoint, requestFocus: requestFocus, fullscreenDialog: fullscreenDialog));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1430,7 +1430,7 @@ public abstract class PopEntry<T> : IPopEntry
     public abstract global::Doroti.Framework.Foundation.ValueListenable<bool> canPopNotifier { get; }
     public override string ToString()
     {
-        return $"PopEntry canPop: {(((global::Doroti.Framework.Foundation.ValueListenable<bool>)this.canPopNotifier).value)}, onPopInvoked: {this.onPopInvokedWithResult}";
+        return $"PopEntry canPop: {canPopNotifier.value}, onPopInvoked: {onPopInvokedWithResult}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

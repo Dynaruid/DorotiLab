@@ -45,46 +45,46 @@ public abstract class EdgeInsetsGeometry
     {
         get
         {
-            return ((((((this._left >= 0.0) && (this._right >= 0.0)) && (this._start >= 0.0)) && (this._end >= 0.0)) && (this._top >= 0.0)) && (this._bottom >= 0.0));
+            return (_left >= 0.0) && (_right >= 0.0) && (_start >= 0.0) && (_end >= 0.0) && (_top >= 0.0) && (_bottom >= 0.0);
         }
     }
-    public virtual double horizontal => (((this._left + this._right) + this._start) + this._end);
-    public virtual double vertical => (this._top + this._bottom);
+    public virtual double horizontal => _left + _right + _start + _end;
+    public virtual double vertical => _top + _bottom;
     public virtual double along(Axis axis)
     {
-        return (axis switch { Axis.horizontal => this.horizontal, Axis.vertical => this.vertical, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return axis switch { Axis.horizontal => horizontal, Axis.vertical => vertical, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size collapsedSize => new global::Doroti.Ui.Size(this.horizontal, this.vertical);
-    public virtual EdgeInsetsGeometry flipped => new _MixedEdgeInsets__edge_insets(this._right, this._left, this._end, this._start, this._bottom, this._top);
+    public virtual global::Doroti.Ui.Size collapsedSize => new global::Doroti.Ui.Size(horizontal, vertical);
+    public virtual EdgeInsetsGeometry flipped => new _MixedEdgeInsets__edge_insets(_right, _left, _end, _start, _bottom, _top);
     public virtual global::Doroti.Ui.Size inflateSize(Size size)
     {
-        return new global::Doroti.Ui.Size((size.width + this.horizontal), (size.height + this.vertical));
+        return new global::Doroti.Ui.Size(size.width + horizontal, size.height + vertical);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Size deflateSize(Size size)
     {
-        return new global::Doroti.Ui.Size((size.width - this.horizontal), (size.height - this.vertical));
+        return new global::Doroti.Ui.Size(size.width - horizontal, size.height - vertical);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsetsGeometry subtract(EdgeInsetsGeometry other)
     {
-        return new _MixedEdgeInsets__edge_insets((this._left - ((EdgeInsetsGeometry)other)._left), (this._right - ((EdgeInsetsGeometry)other)._right), (this._start - ((EdgeInsetsGeometry)other)._start), (this._end - ((EdgeInsetsGeometry)other)._end), (this._top - ((EdgeInsetsGeometry)other)._top), (this._bottom - ((EdgeInsetsGeometry)other)._bottom));
+        return new _MixedEdgeInsets__edge_insets(_left - other._left, _right - other._right, _start - other._start, _end - other._end, _top - other._top, _bottom - other._bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsetsGeometry add(EdgeInsetsGeometry other)
     {
-        return new _MixedEdgeInsets__edge_insets((this._left + ((EdgeInsetsGeometry)other)._left), (this._right + ((EdgeInsetsGeometry)other)._right), (this._start + ((EdgeInsetsGeometry)other)._start), (this._end + ((EdgeInsetsGeometry)other)._end), (this._top + ((EdgeInsetsGeometry)other)._top), (this._bottom + ((EdgeInsetsGeometry)other)._bottom));
+        return new _MixedEdgeInsets__edge_insets(_left + other._left, _right + other._right, _start + other._start, _end + other._end, _top + other._top, _bottom + other._bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsetsGeometry clamp(EdgeInsetsGeometry min, EdgeInsetsGeometry max)
     {
-        return new _MixedEdgeInsets__edge_insets(Dart_uiLibrary.clampDouble(this._left, ((EdgeInsetsGeometry)min)._left, ((EdgeInsetsGeometry)max)._left), Dart_uiLibrary.clampDouble(this._right, ((EdgeInsetsGeometry)min)._right, ((EdgeInsetsGeometry)max)._right), Dart_uiLibrary.clampDouble(this._start, ((EdgeInsetsGeometry)min)._start, ((EdgeInsetsGeometry)max)._start), Dart_uiLibrary.clampDouble(this._end, ((EdgeInsetsGeometry)min)._end, ((EdgeInsetsGeometry)max)._end), Dart_uiLibrary.clampDouble(this._top, ((EdgeInsetsGeometry)min)._top, ((EdgeInsetsGeometry)max)._top), Dart_uiLibrary.clampDouble(this._bottom, ((EdgeInsetsGeometry)min)._bottom, ((EdgeInsetsGeometry)max)._bottom));
+        return new _MixedEdgeInsets__edge_insets(Dart_uiLibrary.clampDouble(_left, min._left, max._left), Dart_uiLibrary.clampDouble(_right, min._right, max._right), Dart_uiLibrary.clampDouble(_start, min._start, max._start), Dart_uiLibrary.clampDouble(_end, min._end, max._end), Dart_uiLibrary.clampDouble(_top, min._top, max._top), Dart_uiLibrary.clampDouble(_bottom, min._bottom, max._bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,50 +99,50 @@ public abstract class EdgeInsetsGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.op_Multiply(t));
+            return b!.op_Multiply(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.op_Multiply(((1.0 - t))));
+            return a.op_Multiply(1.0 - t);
         }
-        if (((a is EdgeInsets) && (b is EdgeInsets)))
+        if ((a is EdgeInsets) && (b is EdgeInsets))
         {
             EdgeInsets a__as10466 = (EdgeInsets)a;
             EdgeInsets b__as10485 = (EdgeInsets)b;
-            return EdgeInsets.lerp(((EdgeInsets)a__as10466), ((EdgeInsets)b__as10485), t);
+            return EdgeInsets.lerp(a__as10466, b__as10485, t);
         }
-        if (((a is EdgeInsetsDirectional) && (b is EdgeInsetsDirectional)))
+        if ((a is EdgeInsetsDirectional) && (b is EdgeInsetsDirectional))
         {
             EdgeInsetsDirectional a__as10557 = (EdgeInsetsDirectional)a;
             EdgeInsetsDirectional b__as10587 = (EdgeInsetsDirectional)b;
-            return EdgeInsetsDirectional.lerp(((EdgeInsetsDirectional)a__as10557), ((EdgeInsetsDirectional)b__as10587), t);
+            return EdgeInsetsDirectional.lerp(a__as10557, b__as10587, t);
         }
-        return new _MixedEdgeInsets__edge_insets(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsGeometry)a)._left, ((EdgeInsetsGeometry)b)._left, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsGeometry)a)._right, ((EdgeInsetsGeometry)b)._right, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsGeometry)a)._start, ((EdgeInsetsGeometry)b)._start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsGeometry)a)._end, ((EdgeInsetsGeometry)b)._end, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsGeometry)a)._top, ((EdgeInsetsGeometry)b)._top, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsGeometry)a)._bottom, ((EdgeInsetsGeometry)b)._bottom, t)));
+        return new _MixedEdgeInsets__edge_insets(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._left, b._left, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._right, b._right, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._start, b._start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._end, b._end, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._top, b._top, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._bottom, b._bottom, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract EdgeInsets resolve(TextDirection? direction);
     public override string ToString()
     {
-        if (((this._start == 0.0) && (this._end == 0.0)))
+        if ((_start == 0.0) && (_end == 0.0))
         {
-            if (((((this._left == 0.0) && (this._right == 0.0)) && (this._top == 0.0)) && (this._bottom == 0.0)))
+            if ((_left == 0.0) && (_right == 0.0) && (_top == 0.0) && (_bottom == 0.0))
             {
                 return "EdgeInsets.zero";
             }
-            if ((((this._left == this._right) && (this._right == this._top)) && (this._top == this._bottom)))
+            if ((_left == _right) && (_right == _top) && (_top == _bottom))
             {
-                return $"EdgeInsets.all({this._left.toStringAsFixed(1L)})";
+                return $"EdgeInsets.all({_left.toStringAsFixed(1L)})";
             }
-            return $"EdgeInsets({this._left.toStringAsFixed(1L)}, " + $"{this._top.toStringAsFixed(1L)}, " + $"{this._right.toStringAsFixed(1L)}, " + $"{this._bottom.toStringAsFixed(1L)})";
+            return $"EdgeInsets({_left.toStringAsFixed(1L)}, " + $"{_top.toStringAsFixed(1L)}, " + $"{_right.toStringAsFixed(1L)}, " + $"{_bottom.toStringAsFixed(1L)})";
         }
-        if (((this._left == 0.0) && (this._right == 0.0)))
+        if ((_left == 0.0) && (_right == 0.0))
         {
-            return $"EdgeInsetsDirectional({this._start.toStringAsFixed(1L)}, " + $"{this._top.toStringAsFixed(1L)}, " + $"{this._end.toStringAsFixed(1L)}, " + $"{this._bottom.toStringAsFixed(1L)})";
+            return $"EdgeInsetsDirectional({_start.toStringAsFixed(1L)}, " + $"{_top.toStringAsFixed(1L)}, " + $"{_end.toStringAsFixed(1L)}, " + $"{_bottom.toStringAsFixed(1L)})";
         }
-        return $"EdgeInsets({this._left.toStringAsFixed(1L)}, " + $"{this._top.toStringAsFixed(1L)}, " + $"{this._right.toStringAsFixed(1L)}, " + $"{this._bottom.toStringAsFixed(1L)})" + " + " + $"EdgeInsetsDirectional({this._start.toStringAsFixed(1L)}, " + "0.0, " + $"{this._end.toStringAsFixed(1L)}, " + "0.0)";
+        return $"EdgeInsets({_left.toStringAsFixed(1L)}, " + $"{_top.toStringAsFixed(1L)}, " + $"{_right.toStringAsFixed(1L)}, " + $"{_bottom.toStringAsFixed(1L)})" + " + " + $"EdgeInsetsDirectional({_start.toStringAsFixed(1L)}, " + "0.0, " + $"{_end.toStringAsFixed(1L)}, " + "0.0)";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -150,10 +150,10 @@ public abstract class EdgeInsetsGeometry
     {
         var __other = other as EdgeInsetsGeometry;
         if (__other is null) return false;
-        return (((((((__other is EdgeInsetsGeometry) && (((EdgeInsetsGeometry)((EdgeInsetsGeometry)__other))._left == this._left)) && (((EdgeInsetsGeometry)((EdgeInsetsGeometry)__other))._right == this._right)) && (((EdgeInsetsGeometry)((EdgeInsetsGeometry)__other))._start == this._start)) && (((EdgeInsetsGeometry)((EdgeInsetsGeometry)__other))._end == this._end)) && (((EdgeInsetsGeometry)((EdgeInsetsGeometry)__other))._top == this._top)) && (((EdgeInsetsGeometry)((EdgeInsetsGeometry)__other))._bottom == this._bottom));
+        return (__other is EdgeInsetsGeometry) && (__other._left == _left) && (__other._right == _right) && (__other._start == _start) && (__other._end == _end) && (__other._top == _top) && (__other._bottom == _bottom);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this._left, this._right, this._start, this._end, this._top, this._bottom);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(_left, _right, _start, _end, _top, _bottom);
 }
 
 public class EdgeInsets : EdgeInsetsGeometry
@@ -205,57 +205,57 @@ public class EdgeInsets : EdgeInsetsGeometry
     public new static EdgeInsets CreateFromViewPadding(ViewPadding padding, double devicePixelRatio)
     {
         var __instance = new EdgeInsets(default!, default!, default!, default!);
-        __instance.left = (padding.left / devicePixelRatio);
-        __instance.top = (padding.top / devicePixelRatio);
-        __instance.right = (padding.right / devicePixelRatio);
-        __instance.bottom = (padding.bottom / devicePixelRatio);
+        __instance.left = padding.left / devicePixelRatio;
+        __instance.top = padding.top / devicePixelRatio;
+        __instance.right = padding.right / devicePixelRatio;
+        __instance.bottom = padding.bottom / devicePixelRatio;
         return __instance;
     }
 
     public static EdgeInsets CreateFromWindowPadding(ViewPadding padding, double devicePixelRatio)
         => CreateFromViewPadding(padding, devicePixelRatio);
 
-    internal override double _left => this.left;
-    internal override double _top => this.top;
-    internal override double _right => this.right;
-    internal override double _bottom => this.bottom;
+    internal override double _left => left;
+    internal override double _top => top;
+    internal override double _right => right;
+    internal override double _bottom => bottom;
     internal override double _start => 0.0;
     internal override double _end => 0.0;
-    public virtual global::Doroti.Ui.Offset topLeft => new global::Doroti.Ui.Offset(this.left, this.top);
-    public virtual global::Doroti.Ui.Offset topRight => new global::Doroti.Ui.Offset(-this.right, this.top);
-    public virtual global::Doroti.Ui.Offset bottomLeft => new global::Doroti.Ui.Offset(this.left, -this.bottom);
-    public virtual global::Doroti.Ui.Offset bottomRight => new global::Doroti.Ui.Offset(-this.right, -this.bottom);
-    public override EdgeInsets flipped => new EdgeInsets(this.right, this.bottom, this.left, this.top);
+    public virtual global::Doroti.Ui.Offset topLeft => new global::Doroti.Ui.Offset(left, top);
+    public virtual global::Doroti.Ui.Offset topRight => new global::Doroti.Ui.Offset(-right, top);
+    public virtual global::Doroti.Ui.Offset bottomLeft => new global::Doroti.Ui.Offset(left, -bottom);
+    public virtual global::Doroti.Ui.Offset bottomRight => new global::Doroti.Ui.Offset(-right, -bottom);
+    public override EdgeInsets flipped => new EdgeInsets(right, bottom, left, top);
     public virtual global::Doroti.Ui.Rect inflateRect(Rect rect)
     {
-        return Rect.fromLTRB((rect.left - this.left), (rect.top - this.top), (rect.right + this.right), (rect.bottom + this.bottom));
+        return Rect.fromLTRB(rect.left - left, rect.top - top, rect.right + right, rect.bottom + bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Rect deflateRect(Rect rect)
     {
-        return Rect.fromLTRB((rect.left + this.left), (rect.top + this.top), (rect.right - this.right), (rect.bottom - this.bottom));
+        return Rect.fromLTRB(rect.left + left, rect.top + top, rect.right - right, rect.bottom - bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.RRect inflateRRect(RRect rect)
     {
-        return RRect.fromLTRBAndCorners((rect.left - this.left), (rect.top - this.top), (rect.right + this.right), (rect.bottom + this.bottom), topLeft: ((rect.tlRadius + Radius.elliptical(this.left, this.top))).clamp(minimum: Radius.zero), topRight: ((rect.trRadius + Radius.elliptical(this.right, this.top))).clamp(minimum: Radius.zero), bottomRight: ((rect.brRadius + Radius.elliptical(this.right, this.bottom))).clamp(minimum: Radius.zero), bottomLeft: ((rect.blRadius + Radius.elliptical(this.left, this.bottom))).clamp(minimum: Radius.zero));
+        return RRect.fromLTRBAndCorners(rect.left - left, rect.top - top, rect.right + right, rect.bottom + bottom, topLeft: (rect.tlRadius + Radius.elliptical(left, top)).clamp(minimum: Radius.zero), topRight: (rect.trRadius + Radius.elliptical(right, top)).clamp(minimum: Radius.zero), bottomRight: (rect.brRadius + Radius.elliptical(right, bottom)).clamp(minimum: Radius.zero), bottomLeft: (rect.blRadius + Radius.elliptical(left, bottom)).clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.RRect deflateRRect(RRect rect)
     {
-        return RRect.fromLTRBAndCorners((rect.left + this.left), (rect.top + this.top), (rect.right - this.right), (rect.bottom - this.bottom), topLeft: ((rect.tlRadius - Radius.elliptical(this.left, this.top))).clamp(minimum: Radius.zero), topRight: ((rect.trRadius - Radius.elliptical(this.right, this.top))).clamp(minimum: Radius.zero), bottomRight: ((rect.brRadius - Radius.elliptical(this.right, this.bottom))).clamp(minimum: Radius.zero), bottomLeft: ((rect.blRadius - Radius.elliptical(this.left, this.bottom))).clamp(minimum: Radius.zero));
+        return RRect.fromLTRBAndCorners(rect.left + left, rect.top + top, rect.right - right, rect.bottom - bottom, topLeft: (rect.tlRadius - Radius.elliptical(left, top)).clamp(minimum: Radius.zero), topRight: (rect.trRadius - Radius.elliptical(right, top)).clamp(minimum: Radius.zero), bottomRight: (rect.brRadius - Radius.elliptical(right, bottom)).clamp(minimum: Radius.zero), bottomLeft: (rect.blRadius - Radius.elliptical(left, bottom)).clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsetsGeometry subtract(EdgeInsetsGeometry other)
     {
-        if ((other is EdgeInsets))
+        if (other is EdgeInsets)
         {
             EdgeInsets other__as22836 = (EdgeInsets)other;
-            return (this.op_Subtract(((EdgeInsets)other__as22836)));
+            return op_Subtract(other__as22836);
         }
         return base.subtract(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -263,10 +263,10 @@ public class EdgeInsets : EdgeInsetsGeometry
 
     public override EdgeInsetsGeometry add(EdgeInsetsGeometry other)
     {
-        if ((other is EdgeInsets))
+        if (other is EdgeInsets)
         {
             EdgeInsets other__as23004 = (EdgeInsets)other;
-            return (this.op_Add(((EdgeInsets)other__as23004)));
+            return op_Add(other__as23004);
         }
         return base.add(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -274,49 +274,49 @@ public class EdgeInsets : EdgeInsetsGeometry
 
     public override EdgeInsetsGeometry clamp(EdgeInsetsGeometry min, EdgeInsetsGeometry max)
     {
-        return new EdgeInsets(Dart_uiLibrary.clampDouble(this._left, ((EdgeInsetsGeometry)min)._left, ((EdgeInsetsGeometry)max)._left), Dart_uiLibrary.clampDouble(this._top, ((EdgeInsetsGeometry)min)._top, ((EdgeInsetsGeometry)max)._top), Dart_uiLibrary.clampDouble(this._right, ((EdgeInsetsGeometry)min)._right, ((EdgeInsetsGeometry)max)._right), Dart_uiLibrary.clampDouble(this._bottom, ((EdgeInsetsGeometry)min)._bottom, ((EdgeInsetsGeometry)max)._bottom));
+        return new EdgeInsets(Dart_uiLibrary.clampDouble(_left, min._left, max._left), Dart_uiLibrary.clampDouble(_top, min._top, max._top), Dart_uiLibrary.clampDouble(_right, min._right, max._right), Dart_uiLibrary.clampDouble(_bottom, min._bottom, max._bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsets op_Subtract(EdgeInsets other)
     {
-        return new EdgeInsets((this.left - ((EdgeInsets)other).left), (this.top - ((EdgeInsets)other).top), (this.right - ((EdgeInsets)other).right), (this.bottom - ((EdgeInsets)other).bottom));
+        return new EdgeInsets(left - other.left, top - other.top, right - other.right, bottom - other.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsets op_Add(EdgeInsets other)
     {
-        return new EdgeInsets((this.left + ((EdgeInsets)other).left), (this.top + ((EdgeInsets)other).top), (this.right + ((EdgeInsets)other).right), (this.bottom + ((EdgeInsets)other).bottom));
+        return new EdgeInsets(left + other.left, top + other.top, right + other.right, bottom + other.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets op_Subtract()
     {
-        return new EdgeInsets(-this.left, -this.top, -this.right, -this.bottom);
+        return new EdgeInsets(-left, -top, -right, -bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets op_Multiply(double other)
     {
-        return new EdgeInsets((this.left * other), (this.top * other), (this.right * other), (this.bottom * other));
+        return new EdgeInsets(left * other, top * other, right * other, bottom * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets op_Divide(double other)
     {
-        return new EdgeInsets((this.left / other), (this.top / other), (this.right / other), (this.bottom / other));
+        return new EdgeInsets(left / other, top / other, right / other, bottom / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets ___(double other)
     {
-        return new EdgeInsets(((checked((long)(this.left / other)))).toDouble(), ((checked((long)(this.top / other)))).toDouble(), ((checked((long)(this.right / other)))).toDouble(), ((checked((long)(this.bottom / other)))).toDouble());
+        return new EdgeInsets(checked((long)(left / other)).toDouble(), checked((long)(top / other)).toDouble(), checked((long)(right / other)).toDouble(), checked((long)(bottom / other)).toDouble());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets __(double other)
     {
-        return new EdgeInsets((this.left % other), (this.top % other), (this.right % other), (this.bottom % other));
+        return new EdgeInsets(left % other, top % other, right % other, bottom % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -326,22 +326,22 @@ public class EdgeInsets : EdgeInsetsGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.op_Multiply(t));
+            return b!.op_Multiply(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.op_Multiply(((1.0 - t))));
+            return a.op_Multiply(1.0 - t);
         }
-        return new EdgeInsets(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsets)a).left, ((EdgeInsets)b).left, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsets)a).top, ((EdgeInsets)b).top, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsets)a).right, ((EdgeInsets)b).right, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsets)a).bottom, ((EdgeInsets)b).bottom, t)));
+        return new EdgeInsets(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.left, b.left, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.top, b.top, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.right, b.right, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets resolve(TextDirection? direction) => this;
     public virtual EdgeInsets copyWith(double? left = null, double? top = null, double? right = null, double? bottom = null)
     {
-        return CreateOnly(left: (left ?? this.left), top: (top ?? this.top), right: (right ?? this.right), bottom: (bottom ?? this.bottom));
+        return CreateOnly(left: left ?? this.left, top: top ?? this.top, right: right ?? this.right, bottom: bottom ?? this.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -393,20 +393,20 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         return __instance;
     }
 
-    internal override double _start => this.start;
-    internal override double _top => this.top;
-    internal override double _end => this.end;
-    internal override double _bottom => this.bottom;
+    internal override double _start => start;
+    internal override double _top => top;
+    internal override double _end => end;
+    internal override double _bottom => bottom;
     internal override double _left => 0.0;
     internal override double _right => 0.0;
-    public override bool isNonNegative => ((((this.start >= 0.0) && (this.top >= 0.0)) && (this.end >= 0.0)) && (this.bottom >= 0.0));
-    public override EdgeInsetsDirectional flipped => new EdgeInsetsDirectional(this.end, this.bottom, this.start, this.top);
+    public override bool isNonNegative => (start >= 0.0) && (top >= 0.0) && (end >= 0.0) && (bottom >= 0.0);
+    public override EdgeInsetsDirectional flipped => new EdgeInsetsDirectional(end, bottom, start, top);
     public override EdgeInsetsGeometry subtract(EdgeInsetsGeometry other)
     {
-        if ((other is EdgeInsetsDirectional))
+        if (other is EdgeInsetsDirectional)
         {
             EdgeInsetsDirectional other__as29924 = (EdgeInsetsDirectional)other;
-            return (this.op_Subtract(((EdgeInsetsDirectional)other__as29924)));
+            return op_Subtract(other__as29924);
         }
         return base.subtract(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -414,10 +414,10 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
 
     public override EdgeInsetsGeometry add(EdgeInsetsGeometry other)
     {
-        if ((other is EdgeInsetsDirectional))
+        if (other is EdgeInsetsDirectional)
         {
             EdgeInsetsDirectional other__as30103 = (EdgeInsetsDirectional)other;
-            return (this.op_Add(((EdgeInsetsDirectional)other__as30103)));
+            return op_Add(other__as30103);
         }
         return base.add(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -425,43 +425,43 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
 
     public virtual EdgeInsetsDirectional op_Subtract(EdgeInsetsDirectional other)
     {
-        return new EdgeInsetsDirectional((this.start - ((EdgeInsetsDirectional)other).start), (this.top - ((EdgeInsetsDirectional)other).top), (this.end - ((EdgeInsetsDirectional)other).end), (this.bottom - ((EdgeInsetsDirectional)other).bottom));
+        return new EdgeInsetsDirectional(start - other.start, top - other.top, end - other.end, bottom - other.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsetsDirectional op_Add(EdgeInsetsDirectional other)
     {
-        return new EdgeInsetsDirectional((this.start + ((EdgeInsetsDirectional)other).start), (this.top + ((EdgeInsetsDirectional)other).top), (this.end + ((EdgeInsetsDirectional)other).end), (this.bottom + ((EdgeInsetsDirectional)other).bottom));
+        return new EdgeInsetsDirectional(start + other.start, top + other.top, end + other.end, bottom + other.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsetsDirectional op_Subtract()
     {
-        return new EdgeInsetsDirectional(-this.start, -this.top, -this.end, -this.bottom);
+        return new EdgeInsetsDirectional(-start, -top, -end, -bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsetsDirectional op_Multiply(double other)
     {
-        return new EdgeInsetsDirectional((this.start * other), (this.top * other), (this.end * other), (this.bottom * other));
+        return new EdgeInsetsDirectional(start * other, top * other, end * other, bottom * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsetsDirectional op_Divide(double other)
     {
-        return new EdgeInsetsDirectional((this.start / other), (this.top / other), (this.end / other), (this.bottom / other));
+        return new EdgeInsetsDirectional(start / other, top / other, end / other, bottom / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsetsDirectional ___(double other)
     {
-        return new EdgeInsetsDirectional(((checked((long)(this.start / other)))).toDouble(), ((checked((long)(this.top / other)))).toDouble(), ((checked((long)(this.end / other)))).toDouble(), ((checked((long)(this.bottom / other)))).toDouble());
+        return new EdgeInsetsDirectional(checked((long)(start / other)).toDouble(), checked((long)(top / other)).toDouble(), checked((long)(end / other)).toDouble(), checked((long)(bottom / other)).toDouble());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsetsDirectional __(double other)
     {
-        return new EdgeInsetsDirectional((this.start % other), (this.top % other), (this.end % other), (this.bottom % other));
+        return new EdgeInsetsDirectional(start % other, top % other, end % other, bottom % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -471,28 +471,28 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.op_Multiply(t));
+            return b!.op_Multiply(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.op_Multiply(((1.0 - t))));
+            return a.op_Multiply(1.0 - t);
         }
-        return new EdgeInsetsDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsDirectional)a).start, ((EdgeInsetsDirectional)b).start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsDirectional)a).top, ((EdgeInsetsDirectional)b).top, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsDirectional)a).end, ((EdgeInsetsDirectional)b).end, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((EdgeInsetsDirectional)a).bottom, ((EdgeInsetsDirectional)b).bottom, t)));
+        return new EdgeInsetsDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.start, b.start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.top, b.top, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.end, b.end, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets resolve(TextDirection? direction)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(EdgeInsetsDirectional)}"));
-        return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets(this.end, this.top, this.start, this.bottom), TextDirection.ltr => new EdgeInsets(this.start, this.top, this.end, this.bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets(end, top, start, bottom), TextDirection.ltr => new EdgeInsets(start, top, end, bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsetsDirectional copyWith(double? start = null, double? top = null, double? end = null, double? bottom = null)
     {
-        return CreateOnly(start: (start ?? this.start), top: (top ?? this.top), end: (end ?? this.end), bottom: (bottom ?? this.bottom));
+        return CreateOnly(start: start ?? this.start, top: top ?? this.top, end: end ?? this.end, bottom: bottom ?? this.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -515,55 +515,55 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
 
     internal _MixedEdgeInsets__edge_insets(double _left, double _right, double _start, double _end, double _top, double _bottom)
     {
-        this.__field__left = _left;
-        this.__field__right = _right;
-        this.__field__start = _start;
-        this.__field__end = _end;
-        this.__field__top = _top;
-        this.__field__bottom = _bottom;
+        __field__left = _left;
+        __field__right = _right;
+        __field__start = _start;
+        __field__end = _end;
+        __field__top = _top;
+        __field__bottom = _bottom;
     }
 
     public override bool isNonNegative
     {
         get
         {
-            return ((((((this._left >= 0.0) && (this._right >= 0.0)) && (this._start >= 0.0)) && (this._end >= 0.0)) && (this._top >= 0.0)) && (this._bottom >= 0.0));
+            return (_left >= 0.0) && (_right >= 0.0) && (_start >= 0.0) && (_end >= 0.0) && (_top >= 0.0) && (_bottom >= 0.0);
         }
     }
     public override _MixedEdgeInsets__edge_insets op_Subtract()
     {
-        return new _MixedEdgeInsets__edge_insets(-this._left, -this._right, -this._start, -this._end, -this._top, -this._bottom);
+        return new _MixedEdgeInsets__edge_insets(-_left, -_right, -_start, -_end, -_top, -_bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets op_Multiply(double other)
     {
-        return new _MixedEdgeInsets__edge_insets((this._left * other), (this._right * other), (this._start * other), (this._end * other), (this._top * other), (this._bottom * other));
+        return new _MixedEdgeInsets__edge_insets(_left * other, _right * other, _start * other, _end * other, _top * other, _bottom * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets op_Divide(double other)
     {
-        return new _MixedEdgeInsets__edge_insets((this._left / other), (this._right / other), (this._start / other), (this._end / other), (this._top / other), (this._bottom / other));
+        return new _MixedEdgeInsets__edge_insets(_left / other, _right / other, _start / other, _end / other, _top / other, _bottom / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets ___(double other)
     {
-        return new _MixedEdgeInsets__edge_insets(((checked((long)(this._left / other)))).toDouble(), ((checked((long)(this._right / other)))).toDouble(), ((checked((long)(this._start / other)))).toDouble(), ((checked((long)(this._end / other)))).toDouble(), ((checked((long)(this._top / other)))).toDouble(), ((checked((long)(this._bottom / other)))).toDouble());
+        return new _MixedEdgeInsets__edge_insets(checked((long)(_left / other)).toDouble(), checked((long)(_right / other)).toDouble(), checked((long)(_start / other)).toDouble(), checked((long)(_end / other)).toDouble(), checked((long)(_top / other)).toDouble(), checked((long)(_bottom / other)).toDouble());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets __(double other)
     {
-        return new _MixedEdgeInsets__edge_insets((this._left % other), (this._right % other), (this._start % other), (this._end % other), (this._top % other), (this._bottom % other));
+        return new _MixedEdgeInsets__edge_insets(_left % other, _right % other, _start % other, _end % other, _top % other, _bottom % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override EdgeInsets resolve(TextDirection? direction)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedEdgeInsets__edge_insets)}"));
-        return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets((this._end + this._left), this._top, (this._start + this._right), this._bottom), TextDirection.ltr => new EdgeInsets((this._start + this._left), this._top, (this._end + this._right), this._bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets(_end + _left, _top, _start + _right, _bottom), TextDirection.ltr => new EdgeInsets(_start + _left, _top, _end + _right, _bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -16,16 +16,16 @@ public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.Inhe
 
     public CupertinoUserInterfaceLevel(global::Doroti.Framework.Foundation.Key? key = null, CupertinoUserInterfaceLevelData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
-        this._data = data;
+        _data = data;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(((CupertinoUserInterfaceLevel)oldWidget)._data, this._data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(((CupertinoUserInterfaceLevel)oldWidget)._data, _data));
     public static CupertinoUserInterfaceLevelData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CupertinoUserInterfaceLevel? query = ((CupertinoUserInterfaceLevel?)context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>());
-        if ((query is not null))
+        CupertinoUserInterfaceLevel? query = context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>();
+        if (query is not null)
         {
-            return ((CupertinoUserInterfaceLevel)query)._data;
+            return query._data;
         }
         throw DartRuntimePrimitives.AsException(FlutterError.Create("CupertinoUserInterfaceLevel.of() called with a context that does not contain a CupertinoUserInterfaceLevel.\n" + "No CupertinoUserInterfaceLevel ancestor could be found starting from the context that was passed " + "to CupertinoUserInterfaceLevel.of(). This can happen because you do not have a WidgetsApp or " + "MaterialApp widget (those widgets introduce a CupertinoUserInterfaceLevel), or it can happen " + "if the context you use comes from a widget above those widgets.\n" + "The context used was:\n" + $"  {context}"));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -33,7 +33,7 @@ public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.Inhe
 
     public static CupertinoUserInterfaceLevelData? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CupertinoUserInterfaceLevel? query = ((CupertinoUserInterfaceLevel?)context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>());
+        CupertinoUserInterfaceLevel? query = context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>();
         return query?._data;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -41,7 +41,7 @@ public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.Inhe
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<CupertinoUserInterfaceLevelData>("user interface level", this._data));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<CupertinoUserInterfaceLevelData>("user interface level", _data));
     }
 
 }

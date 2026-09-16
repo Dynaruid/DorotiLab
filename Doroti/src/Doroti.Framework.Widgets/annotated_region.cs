@@ -17,7 +17,7 @@ public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>(value: this.value, sized: this.sized));
+        return new global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>(value: value, sized: sized);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -27,8 +27,8 @@ public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.value = this.value;
-    __cascade.sized = this.sized;
+    __cascade.value = value;
+    __cascade.sized = sized;
     return __cascade;
 }))());
     }

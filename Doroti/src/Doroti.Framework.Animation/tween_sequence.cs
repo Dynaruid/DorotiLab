@@ -11,7 +11,7 @@ public class TweenSequence<T> : Animatable<T>
 
     public TweenSequence(List<TweenSequenceItem<T>> items)
     {
-        System.Diagnostics.Debug.Assert((checked((long)(items.Count)) != 0));
+        System.Diagnostics.Debug.Assert(checked((long)items.Count) != 0);
         _items.AddRange(items);
         var totalWeight = _items.Sum(item => item.weight);
         System.Diagnostics.Debug.Assert(totalWeight > 0.0);
@@ -26,22 +26,22 @@ public class TweenSequence<T> : Animatable<T>
 
     internal virtual T _evaluateAt(double t, long index)
     {
-        TweenSequenceItem<T> element = this._items[(int)(index)];
-        double tInterval = this._intervals[(int)(index)].value(t);
-        return ((TweenSequenceItem<T>)element).tween.transform(tInterval);
+        TweenSequenceItem<T> element = _items[(int)index];
+        double tInterval = _intervals[(int)index].value(t);
+        return element.tween.transform(tInterval);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override T transform(double t)
     {
-        DartRuntimePrimitives.Assert(() => ((t >= 0.0) && (t <= 1.0)));
-        if ((t == 1.0))
+        DartRuntimePrimitives.Assert(() => (t >= 0.0) && (t <= 1.0));
+        if (t == 1.0)
         {
-            return _evaluateAt(t, (checked((long)(this._items.Count)) - 1L));
+            return _evaluateAt(t, checked(_items.Count) - 1L);
         }
-        for (var index = 0L; (index < checked((long)(this._items.Count))); index++)
+        for (var index = 0L; index < checked(_items.Count); index++)
         {
-            if (this._intervals[(int)(index)].contains(t))
+            if (_intervals[(int)index].contains(t))
             {
                 return _evaluateAt(t, index);
             }
@@ -50,7 +50,7 @@ public class TweenSequence<T> : Animatable<T>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"TweenSequence({checked((long)(this._items.Count))} items)";
+    public override string ToString() => $"TweenSequence({checked((long)_items.Count)} items)";
 }
 
 public class FlippedTweenSequence : TweenSequence<double>
@@ -59,7 +59,7 @@ public class FlippedTweenSequence : TweenSequence<double>
     {
     }
 
-    public override double transform(double t) => (1L - base.transform((1L - t)));
+    public override double transform(double t) => 1L - base.transform(1L - t);
 }
 
 public class TweenSequenceItem<T>
@@ -71,7 +71,7 @@ public class TweenSequenceItem<T>
     {
         this.tween = tween;
         this.weight = weight;
-        System.Diagnostics.Debug.Assert((weight > 0.0));
+        System.Diagnostics.Debug.Assert(weight > 0.0);
     }
 
 }
@@ -85,10 +85,10 @@ internal class _Interval__tween_sequence
     {
         this.start = start;
         this.end = end;
-        System.Diagnostics.Debug.Assert((end > start));
+        System.Diagnostics.Debug.Assert(end > start);
     }
 
-    public virtual bool contains(double t) => ((t >= this.start) && (t < this.end));
-    public virtual double value(double t) => (((t - this.start)) / ((this.end - this.start)));
-    public override string ToString() => $"<{this.start}, {this.end}>";
+    public virtual bool contains(double t) => (t >= start) && (t < end);
+    public virtual double value(double t) => (t - start) / (end - start);
+    public override string ToString() => $"<{start}, {end}>";
 }

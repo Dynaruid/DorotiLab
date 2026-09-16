@@ -32,7 +32,7 @@ public abstract class ShaderWarmUp
         }
         try
         {
-            global::Doroti.Ui.Image image = await picture.toImage(this.size.width.ceil(), this.size.height.ceil());
+            global::Doroti.Ui.Image image = await picture.toImage(size.width.ceil(), size.height.ceil());
             DartRuntimePrimitives.Assert(() => DebugLibrary.debugCaptureShaderWarmUpImage(image));
             image.dispose();
         }

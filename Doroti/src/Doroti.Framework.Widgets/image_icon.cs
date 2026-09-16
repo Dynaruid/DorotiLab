@@ -20,34 +20,34 @@ public class ImageIcon : StatelessWidget
         this.color = color;
         this.semanticLabel = semanticLabel;
         this.useOriginalColors = useOriginalColors;
-        System.Diagnostics.Debug.Assert(!((useOriginalColors && (color is not null))));
+        System.Diagnostics.Debug.Assert(!(useOriginalColors && (color is not null)));
     }
 
     public override Widget build(BuildContext context)
     {
-        IconThemeData iconTheme = ((IconThemeData)IconTheme.of(context));
-        double? iconSize = (this.size ?? ((IconThemeData)iconTheme).size);
-        if ((this.image is null))
+        IconThemeData iconTheme = IconTheme.of(context);
+        double? iconSize = size ?? iconTheme.size;
+        if (image is null)
         {
-            return ((Widget)new Semantics(label: this.semanticLabel, child: new SizedBox(width: iconSize, height: iconSize)));
+            return new Semantics(label: semanticLabel, child: new SizedBox(width: iconSize, height: iconSize));
         }
-        double? iconOpacity = ((IconThemeData)iconTheme).opacity;
-        global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)(this.color ?? ((IconThemeData)iconTheme).color!));
-        if (((iconOpacity is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity) != 1.0)))
+        double? iconOpacity = iconTheme.opacity;
+        global::Doroti.Ui.Color iconColor = color ?? iconTheme.color!;
+        if ((iconOpacity is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity) != 1.0))
         {
             double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity);
-            iconColor = iconColor.withOpacity((iconColor.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432)));
+            iconColor = iconColor.withOpacity(iconColor.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432));
         }
-        return ((Widget)new Semantics(label: this.semanticLabel, child: new Image(image: this.image!, width: iconSize, height: iconSize, color: (this.useOriginalColors ? null : iconColor), fit: BoxFit.scaleDown, excludeFromSemantics: true)));
+        return new Semantics(label: semanticLabel, child: new Image(image: image!, width: iconSize, height: iconSize, color: useOriginalColors ? null : iconColor, fit: BoxFit.scaleDown, excludeFromSemantics: true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", this.image, ifNull: "<empty>", showName: false));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", image, ifNull: "<empty>", showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", size, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
     }
 
 }

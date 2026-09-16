@@ -22,26 +22,26 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
 
     public virtual bool isWithinBoundary(Rect draggedObject)
     {
-        if ((this.boundary is null))
+        if (boundary is null)
         {
             return true;
         }
-        return (DartRuntimePrimitives.RequireValue(this.boundary).contains(draggedObject.topLeft) && DartRuntimePrimitives.RequireValue(this.boundary).contains(draggedObject.bottomRight));
+        return DartRuntimePrimitives.RequireValue(boundary).contains(draggedObject.topLeft) && DartRuntimePrimitives.RequireValue(boundary).contains(draggedObject.bottomRight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Rect nearestPositionWithinBoundary(Rect draggedObject)
     {
-        if ((this.boundary is null))
+        if (boundary is null)
         {
             return draggedObject;
         }
-        if ((((DartRuntimePrimitives.RequireValue(this.boundary).right - draggedObject.width) < DartRuntimePrimitives.RequireValue(this.boundary).left) || ((DartRuntimePrimitives.RequireValue(this.boundary).bottom - draggedObject.height) < DartRuntimePrimitives.RequireValue(this.boundary).top)))
+        if (((DartRuntimePrimitives.RequireValue(boundary).right - draggedObject.width) < DartRuntimePrimitives.RequireValue(boundary).left) || ((DartRuntimePrimitives.RequireValue(boundary).bottom - draggedObject.height) < DartRuntimePrimitives.RequireValue(boundary).top))
         {
             throw DartRuntimePrimitives.AsException(FlutterError.Create("The rect is larger than the boundary. " + "The rect width must be less than the boundary width, and the rect height must be less than the boundary height."));
         }
-        double leftLocal = Dart_uiLibrary.clampDouble(draggedObject.left, DartRuntimePrimitives.RequireValue(this.boundary).left, (DartRuntimePrimitives.RequireValue(this.boundary).right - draggedObject.width));
-        double topLocal = Dart_uiLibrary.clampDouble(draggedObject.top, DartRuntimePrimitives.RequireValue(this.boundary).top, (DartRuntimePrimitives.RequireValue(this.boundary).bottom - draggedObject.height));
+        double leftLocal = Dart_uiLibrary.clampDouble(draggedObject.left, DartRuntimePrimitives.RequireValue(boundary).left, DartRuntimePrimitives.RequireValue(boundary).right - draggedObject.width);
+        double topLocal = Dart_uiLibrary.clampDouble(draggedObject.top, DartRuntimePrimitives.RequireValue(boundary).top, DartRuntimePrimitives.RequireValue(boundary).bottom - draggedObject.height);
         return Rect.fromLTWH(leftLocal, topLocal, draggedObject.width, draggedObject.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -56,21 +56,21 @@ public class DragBoundary : InheritedWidget
 
     public static DragBoundaryDelegate<global::Doroti.Ui.Rect> forRectOf(BuildContext context, bool useGlobalPosition = true)
     {
-        return ((DragBoundaryDelegate<global::Doroti.Ui.Rect>)(forRectMaybeOf(context, useGlobalPosition: useGlobalPosition) ?? new _DragBoundaryDelegateForRect__drag_boundary(null)));
+        return forRectMaybeOf(context, useGlobalPosition: useGlobalPosition) ?? new _DragBoundaryDelegateForRect__drag_boundary(null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static DragBoundaryDelegate<global::Doroti.Ui.Rect>? forRectMaybeOf(BuildContext context, bool useGlobalPosition = true)
     {
-        InheritedElement? element = ((InheritedElement?)context.getElementForInheritedWidgetOfExactType<DragBoundary>());
-        if ((element is null))
+        InheritedElement? element = context.getElementForInheritedWidgetOfExactType<DragBoundary>();
+        if (element is null)
         {
-            return ((DragBoundaryDelegate<global::Doroti.Ui.Rect>?)null);
+            return null;
         }
         var rb = ((global::Doroti.Framework.Rendering.RenderBox?)element.findRenderObject())!;
-        DartRuntimePrimitives.Assert(() => ((rb is not null) && ((global::Doroti.Framework.Rendering.RenderBox)rb).hasSize), () => (object?)"DragBoundary is not available");
-        global::Doroti.Ui.Rect boundary = ((global::Doroti.Ui.Rect)(useGlobalPosition ? Rect.fromPoints(((Offset)(rb!).localToGlobal(Offset.zero)), ((Offset)(rb).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)rb).size.bottomRight(Offset.zero)))) : (Offset.zero & rb!.size)));
-        return ((DragBoundaryDelegate<global::Doroti.Ui.Rect>?)new _DragBoundaryDelegateForRect__drag_boundary(boundary));
+        DartRuntimePrimitives.Assert(() => (rb is not null) && rb.hasSize, () => (object?)"DragBoundary is not available");
+        global::Doroti.Ui.Rect boundary = useGlobalPosition ? Rect.fromPoints(rb!.localToGlobal(Offset.zero), rb.localToGlobal(rb.size.bottomRight(Offset.zero))) : (Offset.zero & rb!.size);
+        return (DragBoundaryDelegate<global::Doroti.Ui.Rect>?)new _DragBoundaryDelegateForRect__drag_boundary(boundary);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

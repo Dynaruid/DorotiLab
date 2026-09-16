@@ -13,13 +13,13 @@ public abstract class InheritedTheme : InheritedWidget
     public abstract Widget wrap(BuildContext context, Widget child);
     public static Widget captureAll(BuildContext context, Widget child, BuildContext? to = null)
     {
-        return ((Widget)capture(from: context, to: to).wrap(child));
+        return capture(from: context, to: to).wrap(child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static CapturedThemes capture(BuildContext from, BuildContext? to)
     {
-        if ((Equals(from, to)))
+        if (Equals(from, to))
         {
             return new CapturedThemes(new List<InheritedTheme>());
         }
@@ -28,13 +28,13 @@ public abstract class InheritedTheme : InheritedWidget
         bool debugDidFindAncestor = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                debugDidFindAncestor = (to is null);
+                debugDidFindAncestor = to is null;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        from.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        from.visitAncestorElements((ancestor) =>
         {
-            if ((Equals(ancestor, to)))
+            if (Equals(ancestor, to))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
@@ -55,7 +55,7 @@ public abstract class InheritedTheme : InheritedWidget
             }
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         DartRuntimePrimitives.Assert(() => debugDidFindAncestor, () => (object?)"The provided `to` context must be an ancestor of the `from` context.");
         return new CapturedThemes(themes);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -74,7 +74,7 @@ public class CapturedThemes
 
     public virtual Widget wrap(Widget child)
     {
-        return ((Widget)new _CaptureAll__inherited_theme(themes: this._themes, child: child));
+        return new _CaptureAll__inherited_theme(themes: _themes, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -93,8 +93,8 @@ internal class _CaptureAll__inherited_theme : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget wrappedChild = this.child;
-        foreach (InheritedTheme theme in this.themes)
+        Widget wrappedChild = child;
+        foreach (InheritedTheme theme in themes)
         {
             wrappedChild = theme.wrap(context, wrappedChild);
         }

@@ -24,8 +24,8 @@ public interface WidgetsBindingObserver
     public Future<bool> didPushRoute(string route) => Future<bool>.value(false);
     public Future<bool> didPushRouteInformation(RouteInformation routeInformation)
     {
-        DartUri uriLocal = ((RouteInformation)routeInformation).uri;
-        return ((Future<bool>)didPushRoute(Dart_coreLibrary.decodeComponent(new DartUri(path: ((uriLocal.path.Length == 0) ? "/" : uriLocal.path), queryParameters: (!Enumerable.Any(uriLocal.queryParametersAll) ? null : uriLocal.queryParametersAll), fragment: ((uriLocal.fragment.Length == 0) ? null : uriLocal.fragment)).ToString())));
+        DartUri uriLocal = routeInformation.uri;
+        return didPushRoute(Dart_coreLibrary.decodeComponent(new DartUri(path: (uriLocal.path.Length == 0) ? "/" : uriLocal.path, queryParameters: !Enumerable.Any(uriLocal.queryParametersAll) ? null : uriLocal.queryParametersAll, fragment: (uriLocal.fragment.Length == 0) ? null : uriLocal.fragment).ToString()));
     }
     public void didChangeMetrics()
     {
@@ -142,7 +142,7 @@ public static partial class BindingLibrary
 {
     public static void runApp(Widget app)
     {
-        WidgetsBinding binding = ((WidgetsBinding)WidgetsFlutterBinding.ensureInitialized());
+        WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
         _runWidget(binding.wrapWithDefaultView(app), binding, "runApp");
     }
 }
@@ -151,7 +151,7 @@ public static partial class BindingLibrary
 {
     public static void runWidget(Widget app)
     {
-        WidgetsBinding binding = ((WidgetsBinding)WidgetsFlutterBinding.ensureInitialized());
+        WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
         _runWidget(app, binding, "runWidget");
     }
 }
@@ -175,12 +175,12 @@ public static partial class BindingLibrary
 {
     internal static string _debugDumpAppString()
     {
-        var mode = (Foundation.ConstantsLibrary.kDebugMode ? "DEBUG MODE" : (Foundation.ConstantsLibrary.kReleaseMode ? "RELEASE MODE" : "PROFILE MODE"));
+        var mode = Foundation.ConstantsLibrary.kDebugMode ? "DEBUG MODE" : (Foundation.ConstantsLibrary.kReleaseMode ? "RELEASE MODE" : "PROFILE MODE");
         var buffer = new StringBuffer();
         buffer.writeln($"{DartRuntimePrimitives.RuntimeType(WidgetsBinding.instance)} - {mode}");
-        if ((WidgetsBinding.instance.rootElement is not null))
+        if (WidgetsBinding.instance.rootElement is not null)
         {
-            buffer.writeln(((string)(WidgetsBinding.instance.rootElement!).toStringDeep()));
+            buffer.writeln(WidgetsBinding.instance.rootElement!.toStringDeep());
         }
         else
         {
@@ -213,18 +213,18 @@ public class RootWidget : Widget
     public override RootElement createElement() => new RootElement(this);
     public virtual RootElement attach(BuildOwner owner, RootElement? element = null)
     {
-        if ((element is null))
+        if (element is null)
         {
-            owner.lockState(((global::System.Action)(() =>
+            owner.lockState(() =>
             {
                 element = createElement();
-                DartRuntimePrimitives.Assert(() => (element is not null));
+                DartRuntimePrimitives.Assert(() => element is not null);
                 element!.assignOwner(owner);
-            })));
-            owner.buildScope(element!, ((global::System.Action)(() =>
+            });
+            owner.buildScope(element!, () =>
             {
-                element!.mount(((Element?)null), null);
-            })));
+                element!.mount(null, null);
+            });
         }
         else
         {
@@ -235,7 +235,7 @@ public class RootWidget : Widget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string toStringShort() => DartRuntimePrimitives.ConvertValue<string>(((this.debugShortDescription ?? (string)base.toStringShort())));
+    public override string toStringShort() => DartRuntimePrimitives.ConvertValue<string>(debugShortDescription ?? base.toStringShort());
 }
 
 public class RootElement : Element, RootElementMixin
@@ -249,27 +249,27 @@ public class RootElement : Element, RootElementMixin
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        if ((this._child is not null))
+        if (_child is not null)
         {
-            visitor(this._child!);
+            visitor(_child!);
         }
     }
 
     public override void forgetChild(Element child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child, this._child)));
+        DartRuntimePrimitives.Assert(() => Equals(child, _child));
         _child = null;
         base.forgetChild(child);
     }
 
     public override void mount(Element? parent, object? newSlot)
     {
-        DartRuntimePrimitives.Assert(() => (parent is null));
-        DartRuntimePrimitives.Assert(() => (parent is null));
-        DartRuntimePrimitives.Assert(() => (newSlot is null));
+        DartRuntimePrimitives.Assert(() => parent is null);
+        DartRuntimePrimitives.Assert(() => parent is null);
+        DartRuntimePrimitives.Assert(() => newSlot is null);
         base.mount(parent, newSlot);
         _rebuild();
-        DartRuntimePrimitives.Assert(() => (this._child is not null));
+        DartRuntimePrimitives.Assert(() => _child is not null);
         base.performRebuild();
     }
 
@@ -277,27 +277,27 @@ public class RootElement : Element, RootElementMixin
     {
         var __newWidget = (RootWidget)newWidget;
         base.update(__newWidget);
-        DartRuntimePrimitives.Assert(() => (Equals(this.widget, __newWidget)));
+        DartRuntimePrimitives.Assert(() => Equals(widget, __newWidget));
         _rebuild();
     }
 
     public override void performRebuild()
     {
-        if ((this._newWidget is not null))
+        if (_newWidget is not null)
         {
-            RootWidget newWidget = this._newWidget!;
+            RootWidget newWidget = _newWidget!;
             _newWidget = null;
             update(newWidget);
         }
         base.performRebuild();
-        DartRuntimePrimitives.Assert(() => (this._newWidget is null));
+        DartRuntimePrimitives.Assert(() => _newWidget is null);
     }
 
     internal virtual void _rebuild()
     {
         try
         {
-            _child = updateChild(this._child, ((RootWidget)this.widget).child, null);
+            _child = updateChild(_child, ((RootWidget)widget).child, null);
         }
         catch (Exception exceptionLocal)
         {
@@ -337,7 +337,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             if (!__late__semanticsEnabled_initialized)
             {
-                __late__semanticsEnabled = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(this.platformDispatcher.semanticsEnabled);
+                __late__semanticsEnabled = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(platformDispatcher.semanticsEnabled);
                 __late__semanticsEnabled_initialized = true;
             }
             return __late__semanticsEnabled;
@@ -355,7 +355,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             if (!__late__manifold_initialized)
             {
-                __late__manifold = ((PipelineManifold)new _BindingPipelineManifold__binding(this));
+                __late__manifold = new _BindingPipelineManifold__binding(this);
                 __late__manifold_initialized = true;
             }
             return __late__manifold;
@@ -370,16 +370,16 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             if (!__late_pipelineOwner_initialized)
             {
-                __late_pipelineOwner = new PipelineOwner(onSemanticsOwnerCreated: ((global::System.Action)(() =>
+                __late_pipelineOwner = new PipelineOwner(onSemanticsOwnerCreated: () =>
                 {
-                    (((RenderView?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.scheduleInitialSemantics();
-                })), onSemanticsUpdate: ((global::System.Action<SemanticsUpdate>)((update) =>
+                    ((RenderView?)pipelineOwner.rootNode)!?.scheduleInitialSemantics();
+                }, onSemanticsUpdate: (update) =>
                 {
-                    (((RenderView?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.updateSemantics(update);
-                })), onSemanticsOwnerDisposed: ((global::System.Action)(() =>
+                    ((RenderView?)pipelineOwner.rootNode)!?.updateSemantics(update);
+                }, onSemanticsOwnerDisposed: () =>
                 {
-                    (((RenderView?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.clearSemantics();
-                })));
+                    ((RenderView?)pipelineOwner.rootNode)!?.clearSemantics();
+                });
                 __late_pipelineOwner_initialized = true;
             }
             return __late_pipelineOwner;
@@ -393,7 +393,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             if (!__late_renderView_initialized)
             {
-                __late_renderView = ((RenderView)new _ReusableRenderView__binding(view: this.platformDispatcher.implicitView!));
+                __late_renderView = new _ReusableRenderView__binding(view: platformDispatcher.implicitView!);
                 __late_renderView_initialized = true;
             }
             return __late_renderView;
@@ -420,7 +420,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public static WidgetsBinding ensureInitialized()
     {
-        if ((WidgetsBinding._instance is null))
+        if (WidgetsBinding._instance is null)
         {
             new WidgetsFlutterBinding();
         }
@@ -435,10 +435,10 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         Framework.Semantics.SemanticsBinding._instance = this;
         RendererBinding._instance = this;
         WidgetsBinding._instance = this;
-        this._accessibilityFeatures = this.platformDispatcher.accessibilityFeatures;
-        this.platformDispatcher.onSemanticsEnabledChanged = this._handleSemanticsEnabledChanged;
-        this.platformDispatcher.onSemanticsActionEvent = this._handleSemanticsActionEvent;
-        this.platformDispatcher.onAccessibilityFeaturesChanged = () =>
+        _accessibilityFeatures = platformDispatcher.accessibilityFeatures;
+        platformDispatcher.onSemanticsEnabledChanged = _handleSemanticsEnabledChanged;
+        platformDispatcher.onSemanticsActionEvent = _handleSemanticsActionEvent;
+        platformDispatcher.onAccessibilityFeaturesChanged = () =>
         {
             if (Scheduler.SchedulerBinding.instance.schedulerPhase ==
                 Scheduler.SchedulerPhase.persistentCallbacks)
@@ -453,55 +453,55 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             }
         };
         _handleSemanticsEnabledChanged();
-        addSemanticsEnabledListener(this._handleFrameworkSemanticsEnabledChanged);
-        if (this.semanticsEnabled)
+        addSemanticsEnabledListener(_handleFrameworkSemanticsEnabledChanged);
+        if (semanticsEnabled)
         {
             _handleFrameworkSemanticsEnabledChanged();
         }
-        this._buildOwner = new BuildOwner();
-        this._buildOwner.onBuildScheduled = _handleBuildScheduled;
-        this._imageCache = createImageCache();
+        _buildOwner = new BuildOwner();
+        _buildOwner.onBuildScheduled = _handleBuildScheduled;
+        _imageCache = createImageCache();
         DartRuntimePrimitives.Ignore(PaintingBinding.shaderWarmUp?.execute());
-        this._rootPipelineOwner = createRootPipelineOwner();
-        this.platformDispatcher.onMetricsChanged = _ => handleMetricsChanged();
-        this.platformDispatcher.onLocaleChanged = handleLocaleChanged;
-        this.platformDispatcher.onTextScaleFactorChanged = handleTextScaleFactorChanged;
-        this.platformDispatcher.onPlatformBrightnessChanged = handlePlatformBrightnessChanged;
-        addPersistentFrameCallback(this._handlePersistentFrameCallback);
+        _rootPipelineOwner = createRootPipelineOwner();
+        platformDispatcher.onMetricsChanged = _ => handleMetricsChanged();
+        platformDispatcher.onLocaleChanged = handleLocaleChanged;
+        platformDispatcher.onTextScaleFactorChanged = handleTextScaleFactorChanged;
+        platformDispatcher.onPlatformBrightnessChanged = handlePlatformBrightnessChanged;
+        addPersistentFrameCallback(_handlePersistentFrameCallback);
         initMouseTracker();
-        this.rootPipelineOwner.attach(this._manifold);
+        rootPipelineOwner.attach(_manifold);
     }
 
-    public virtual ImageCache imageCache => this._imageCache;
+    public virtual ImageCache imageCache => _imageCache;
     public virtual ImageCache createImageCache() => new ImageCache();
     public virtual Future<global::Doroti.Ui.Codec> instantiateImageCodecFromBuffer(ImmutableBuffer buffer, long? cacheWidth = null, long? cacheHeight = null, bool allowUpscaling = false)
     {
-        DartRuntimePrimitives.Assert(() => ((cacheWidth is null) || (cacheWidth > 0L)));
-        DartRuntimePrimitives.Assert(() => ((cacheHeight is null) || (cacheHeight > 0L)));
-        return ((Future<global::Doroti.Ui.Codec>)Dart_uiLibrary.instantiateImageCodecFromBuffer(buffer, targetWidth: cacheWidth, targetHeight: cacheHeight, allowUpscaling: allowUpscaling));
+        DartRuntimePrimitives.Assert(() => (cacheWidth is null) || (cacheWidth > 0L));
+        DartRuntimePrimitives.Assert(() => (cacheHeight is null) || (cacheHeight > 0L));
+        return Dart_uiLibrary.instantiateImageCodecFromBuffer(buffer, targetWidth: cacheWidth, targetHeight: cacheHeight, allowUpscaling: allowUpscaling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Future<global::Doroti.Ui.Codec> instantiateImageCodecWithSize(ImmutableBuffer buffer, global::System.Func<long, long, TargetImageSize>? getTargetSize = null)
     {
-        return ((Future<global::Doroti.Ui.Codec>)Dart_uiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize));
+        return Dart_uiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void evict(string asset)
     {
         base.evict(asset);
-        this.imageCache.clear();
-        this.imageCache.clearLiveImages();
+        imageCache.clear();
+        imageCache.clearLiveImages();
     }
 
     public override void handleMemoryPressure()
     {
         base.handleMemoryPressure();
-        this.imageCache.clear();
+        imageCache.clear();
     }
 
-    public virtual global::Doroti.Framework.Foundation.Listenable systemFonts => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.Listenable>(this._systemFonts);
+    public virtual global::Doroti.Framework.Foundation.Listenable systemFonts => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.Listenable>(_systemFonts);
     public async override Future handleSystemMessage(object systemMessage)
     {
         await base.handleSystemMessage(systemMessage);
@@ -511,7 +511,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             case "fontsChange":
                 {
-                    this._systemFonts.notifyListeners();
+                    _systemFonts.notifyListeners();
                     break;
                 }
         }
@@ -522,71 +522,71 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._semanticsEnabled).value == ((this._outstandingHandles > 0L))));
-            return ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._semanticsEnabled).value;
+            DartRuntimePrimitives.Assert(() => _semanticsEnabled.value == _outstandingHandles > 0L);
+            return _semanticsEnabled.value;
         }
     }
     public virtual void addSemanticsEnabledListener(global::System.Action listener)
     {
-        this._semanticsEnabled.addListener(listener);
+        _semanticsEnabled.addListener(listener);
     }
 
     public virtual void removeSemanticsEnabledListener(global::System.Action listener)
     {
-        this._semanticsEnabled.removeListener(listener);
+        _semanticsEnabled.removeListener(listener);
     }
 
     public virtual void addSemanticsActionListener(global::System.Action<SemanticsActionEvent> listener)
     {
-        this._semanticsActionListeners.add((global::System.Action<SemanticsActionEvent>)listener);
+        _semanticsActionListeners.add(listener);
     }
 
     public virtual void removeSemanticsActionListener(global::System.Action<SemanticsActionEvent> listener)
     {
-        this._semanticsActionListeners.remove((global::System.Action<SemanticsActionEvent>)listener);
+        _semanticsActionListeners.remove(listener);
     }
 
     public virtual global::Doroti.Ui.Rect? getRectOfSemanticsNodeInViewCoordinates(long viewId, long nodeId) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Rect>(null);
-    public virtual long debugOutstandingSemanticsHandles => this._outstandingHandles;
+    public virtual long debugOutstandingSemanticsHandles => _outstandingHandles;
     public virtual SemanticsHandle ensureSemantics()
     {
-        DartRuntimePrimitives.Assert(() => (this._outstandingHandles >= 0L));
-        this._outstandingHandles++;
-        DartRuntimePrimitives.Assert(() => (this._outstandingHandles > 0L));
-        this._semanticsEnabled.value = true;
-        return new SemanticsHandle(() => this._didDisposeSemanticsHandle());
+        DartRuntimePrimitives.Assert(() => _outstandingHandles >= 0L);
+        _outstandingHandles++;
+        DartRuntimePrimitives.Assert(() => _outstandingHandles > 0L);
+        _semanticsEnabled.value = true;
+        return new SemanticsHandle(() => _didDisposeSemanticsHandle());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _didDisposeSemanticsHandle()
     {
-        DartRuntimePrimitives.Assert(() => (this._outstandingHandles > 0L));
-        this._outstandingHandles--;
-        DartRuntimePrimitives.Assert(() => (this._outstandingHandles >= 0L));
-        this._semanticsEnabled.value = (this._outstandingHandles > 0L);
+        DartRuntimePrimitives.Assert(() => _outstandingHandles > 0L);
+        _outstandingHandles--;
+        DartRuntimePrimitives.Assert(() => _outstandingHandles >= 0L);
+        _semanticsEnabled.value = _outstandingHandles > 0L;
     }
 
     public virtual void _handleSemanticsEnabledChanged()
     {
-        if (this.platformDispatcher.semanticsEnabled)
+        if (platformDispatcher.semanticsEnabled)
         {
-            this._semanticsHandle ??= ensureSemantics();
+            _semanticsHandle ??= ensureSemantics();
         }
         else
         {
-            this._semanticsHandle?.dispose();
-            this._semanticsHandle = null;
+            _semanticsHandle?.dispose();
+            _semanticsHandle = null;
         }
     }
 
     public virtual void _handleSemanticsActionEvent(SemanticsActionEvent action)
     {
         object? argumentsLocal = action.arguments;
-        global::Doroti.Ui.SemanticsActionEvent decodedAction = ((global::Doroti.Ui.SemanticsActionEvent)((argumentsLocal is ByteData) ? action.copyWith(arguments: new global::Doroti.Framework.Services.StandardMessageCodec().decodeMessage(((ByteData)argumentsLocal))) : action));
-        List<global::System.Action<global::Doroti.Ui.SemanticsActionEvent>> localListeners = ((List<global::System.Action<global::Doroti.Ui.SemanticsActionEvent>>)this._semanticsActionListeners.toList());
+        global::Doroti.Ui.SemanticsActionEvent decodedAction = (argumentsLocal is ByteData) ? action.copyWith(arguments: new global::Doroti.Framework.Services.StandardMessageCodec().decodeMessage((ByteData)argumentsLocal)) : action;
+        List<global::System.Action<global::Doroti.Ui.SemanticsActionEvent>> localListeners = _semanticsActionListeners.toList();
         foreach (var listener in localListeners)
         {
-            if (this._semanticsActionListeners.contains((global::System.Action<SemanticsActionEvent>)listener))
+            if (_semanticsActionListeners.contains(listener))
             {
                 listener(decodedAction);
             }
@@ -596,14 +596,14 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void _handleFrameworkSemanticsEnabledChanged()
     {
-        this.platformDispatcher.setSemanticsTreeEnabled(this.semanticsEnabled);
+        platformDispatcher.setSemanticsTreeEnabled(semanticsEnabled);
     }
 
-    public virtual global::Doroti.Ui.AccessibilityFeatures accessibilityFeatures => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.AccessibilityFeatures>(this._accessibilityFeatures);
+    public virtual global::Doroti.Ui.AccessibilityFeatures accessibilityFeatures => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.AccessibilityFeatures>(_accessibilityFeatures);
     public virtual void handleAccessibilityFeaturesChanged()
     {
-        this._accessibilityFeatures = this.platformDispatcher.accessibilityFeatures;
-        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        _accessibilityFeatures = platformDispatcher.accessibilityFeatures;
+        foreach (var observer in new List<WidgetsBindingObserver>(_observers))
         {
             try
             {
@@ -619,7 +619,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual global::Doroti.Ui.SemanticsUpdateBuilder createSemanticsUpdateBuilder()
     {
-        return ((global::Doroti.Ui.SemanticsUpdateBuilder)new global::Doroti.Ui.SemanticsUpdateBuilder());
+        return new global::Doroti.Ui.SemanticsUpdateBuilder();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -627,10 +627,10 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     {
         get
         {
-            bool value = this._accessibilityFeatures.disableAnimations;
+            bool value = _accessibilityFeatures.disableAnimations;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null))
+                    if (Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null)
                     {
                         value = DartRuntimePrimitives.RequireValue(Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations);
                     }
@@ -645,169 +645,169 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         base.initServiceExtensions();
         DartRuntimePrimitives.Assert(() =>
             {
-                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: ((Func<Future<bool>>)(async () => Painting.DebugLibrary.debugInvertOversizedImages)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: async () => Painting.DebugLibrary.debugInvertOversizedImages, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    if ((Painting.DebugLibrary.debugInvertOversizedImages != value))
+                    if (Painting.DebugLibrary.debugInvertOversizedImages != value)
                     {
                         Painting.DebugLibrary.debugInvertOversizedImages = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                     }
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugPaintSizeEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                }));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: async () => Rendering.DebugLibrary.debugPaintSizeEnabled, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    if ((Rendering.DebugLibrary.debugPaintSizeEnabled == value))
+                    if (Rendering.DebugLibrary.debugPaintSizeEnabled == value)
                     {
                         return;
                     }
                     Rendering.DebugLibrary.debugPaintSizeEnabled = value;
                     DartAsyncRuntime.unawaited(_forceRepaint());
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugPaintBaselinesEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                }));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: async () => Rendering.DebugLibrary.debugPaintBaselinesEnabled, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    if ((Rendering.DebugLibrary.debugPaintBaselinesEnabled == value))
+                    if (Rendering.DebugLibrary.debugPaintBaselinesEnabled == value)
                     {
                         return;
                     }
                     Rendering.DebugLibrary.debugPaintBaselinesEnabled = value;
                     DartAsyncRuntime.unawaited(_forceRepaint());
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugRepaintRainbowEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                }));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: async () => Rendering.DebugLibrary.debugRepaintRainbowEnabled, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    bool repaint = (Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
+                    bool repaint = Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value;
                     Rendering.DebugLibrary.debugRepaintRainbowEnabled = value;
                     if (repaint)
                     {
                         DartAsyncRuntime.unawaited(_forceRepaint());
                     }
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerServiceExtension(name: RenderingServiceExtensions.debugDumpLayerTree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+                }));
+                registerServiceExtension(name: RenderingServiceExtensions.debugDumpLayerTree.ToString(), callback: async (parameters) =>
                 {
                     return new DartMap<string, object> { ["data"] = Rendering.BindingLibrary._debugCollectLayerTrees() };
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugDisableClipLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                });
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: async () => Rendering.DebugLibrary.debugDisableClipLayers, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    if ((Rendering.DebugLibrary.debugDisableClipLayers == value))
+                    if (Rendering.DebugLibrary.debugDisableClipLayers == value)
                     {
                         return;
                     }
                     Rendering.DebugLibrary.debugDisableClipLayers = value;
                     DartAsyncRuntime.unawaited(_forceRepaint());
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugDisablePhysicalShapeLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                }));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: async () => Rendering.DebugLibrary.debugDisablePhysicalShapeLayers, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    if ((Rendering.DebugLibrary.debugDisablePhysicalShapeLayers == value))
+                    if (Rendering.DebugLibrary.debugDisablePhysicalShapeLayers == value)
                     {
                         return;
                     }
                     Rendering.DebugLibrary.debugDisablePhysicalShapeLayers = value;
                     DartAsyncRuntime.unawaited(_forceRepaint());
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugDisableOpacityLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                }));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: async () => Rendering.DebugLibrary.debugDisableOpacityLayers, setter: (Func<bool, Future>)(async (value) =>
                 {
-                    if ((Rendering.DebugLibrary.debugDisableOpacityLayers == value))
+                    if (Rendering.DebugLibrary.debugDisableOpacityLayers == value)
                     {
                         return;
                     }
                     Rendering.DebugLibrary.debugDisableOpacityLayers = value;
                     DartAsyncRuntime.unawaited(_forceRepaint());
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
+                }));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpRenderTree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+            registerServiceExtension(name: RenderingServiceExtensions.debugDumpRenderTree.ToString(), callback: async (parameters) =>
             {
                 return new DartMap<string, object> { ["data"] = Rendering.BindingLibrary._debugCollectRenderTrees() };
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+            });
+            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(), callback: async (parameters) =>
             {
                 return new DartMap<string, object> { ["data"] = Rendering.BindingLibrary._debugCollectSemanticsTrees(DebugSemanticsDumpOrder.traversalOrder) };
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+            });
+            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(), callback: async (parameters) =>
             {
                 return new DartMap<string, object> { ["data"] = Rendering.BindingLibrary._debugCollectSemanticsTrees(DebugSemanticsDumpOrder.inverseHitTest) };
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugProfilePaintsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+            });
+            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: async () => Rendering.DebugLibrary.debugProfilePaintsEnabled, setter: (Func<bool, Future>)(async (value) =>
             {
-                if ((Rendering.DebugLibrary.debugProfilePaintsEnabled != value))
+                if (Rendering.DebugLibrary.debugProfilePaintsEnabled != value)
                 {
                     Rendering.DebugLibrary.debugProfilePaintsEnabled = value;
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: ((Func<Future<bool>>)(async () => Rendering.DebugLibrary.debugProfileLayoutsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+            }));
+            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: async () => Rendering.DebugLibrary.debugProfileLayoutsEnabled, setter: (Func<bool, Future>)(async (value) =>
             {
-                if ((Rendering.DebugLibrary.debugProfileLayoutsEnabled != value))
+                if (Rendering.DebugLibrary.debugProfileLayoutsEnabled != value)
                 {
                     Rendering.DebugLibrary.debugProfileLayoutsEnabled = value;
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            }));
         }
     }
 
-    public virtual MouseTracker mouseTracker => DartRuntimePrimitives.ConvertValue<MouseTracker>(this._mouseTracker!);
+    public virtual MouseTracker mouseTracker => DartRuntimePrimitives.ConvertValue<MouseTracker>(_mouseTracker!);
     public virtual PipelineOwner createRootPipelineOwner()
     {
-        return ((PipelineOwner)new _DefaultRootPipelineOwner__binding());
+        return new _DefaultRootPipelineOwner__binding();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual PipelineOwner rootPipelineOwner => this._rootPipelineOwner;
-    public virtual IEnumerable<RenderView> renderViews => this._viewIdToRenderView.Values;
+    public virtual PipelineOwner rootPipelineOwner => _rootPipelineOwner;
+    public virtual IEnumerable<RenderView> renderViews => _viewIdToRenderView.Values;
     public virtual void addRenderView(RenderView view)
     {
-        object viewIdLocal = checked((long)((RenderView)view).flutterView.viewId);
-        DartRuntimePrimitives.Assert(() => !this._viewIdToRenderView.containsValue(view));
-        DartRuntimePrimitives.Assert(() => !this._viewIdToRenderView.ContainsKey(viewIdLocal));
-        this._viewIdToRenderView[viewIdLocal] = view;
+        object viewIdLocal = checked((long)view.flutterView.viewId);
+        DartRuntimePrimitives.Assert(() => !_viewIdToRenderView.containsValue(view));
+        DartRuntimePrimitives.Assert(() => !_viewIdToRenderView.ContainsKey(viewIdLocal));
+        _viewIdToRenderView[viewIdLocal] = view;
         view.configuration = createViewConfigurationFor(view);
     }
 
     public virtual void removeRenderView(RenderView view)
     {
-        object viewIdLocal = checked((long)((RenderView)view).flutterView.viewId);
-        DartRuntimePrimitives.Assert(() => (Equals(this._viewIdToRenderView.GetValueOrDefault(viewIdLocal), view)));
-        this._viewIdToRenderView.remove(viewIdLocal);
+        object viewIdLocal = checked((long)view.flutterView.viewId);
+        DartRuntimePrimitives.Assert(() => Equals(_viewIdToRenderView.GetValueOrDefault(viewIdLocal), view));
+        _viewIdToRenderView.remove(viewIdLocal);
     }
 
     public virtual global::Doroti.Framework.Rendering.ViewConfiguration createViewConfigurationFor(RenderView renderView)
     {
-        return Rendering.ViewConfiguration.CreateFromView(((RenderView)renderView).flutterView);
+        return Rendering.ViewConfiguration.CreateFromView(renderView.flutterView);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.SceneBuilder createSceneBuilder() =>
         new global::Doroti.Ui.SceneBuilder(
-            this.platformDispatcher.implicitView?.viewId ??
+            platformDispatcher.implicitView?.viewId ??
             throw new InvalidOperationException("Rendering a scene requires an implicit Flutter view."));
     public virtual global::Doroti.Ui.PictureRecorder createPictureRecorder() => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.PictureRecorder>(new global::Doroti.Ui.PictureRecorder());
     public virtual global::Doroti.Ui.Canvas createCanvas(PictureRecorder recorder) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Canvas>(new global::Doroti.Ui.Canvas(recorder));
     public virtual void handleMetricsChanged()
     {
         var forceFrame = false;
-        foreach (RenderView view in this.renderViews)
+        foreach (RenderView view in renderViews)
         {
-            forceFrame = (forceFrame || view.child is not null);
+            forceFrame = forceFrame || view.child is not null;
             view.configuration = createViewConfigurationFor(view);
         }
         if (forceFrame)
         {
             scheduleForcedFrame();
         }
-        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        foreach (var observer in new List<WidgetsBindingObserver>(_observers))
         {
             try
             {
@@ -823,7 +823,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void handleTextScaleFactorChanged()
     {
-        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        foreach (var observer in new List<WidgetsBindingObserver>(_observers))
         {
             try
             {
@@ -839,7 +839,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void handlePlatformBrightnessChanged()
     {
-        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        foreach (var observer in new List<WidgetsBindingObserver>(_observers))
         {
             try
             {
@@ -855,37 +855,37 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void initMouseTracker(MouseTracker? tracker = null)
     {
-        this._mouseTracker?.dispose();
-        this._mouseTracker = (tracker ?? new MouseTracker(((global::System.Func<Offset, long, global::Doroti.Framework.Gestures.HitTestResult>)((position, viewId) =>
+        _mouseTracker?.dispose();
+        _mouseTracker = tracker ?? new MouseTracker((position, viewId) =>
         {
             var result = new global::Doroti.Framework.Gestures.HitTestResult();
             hitTestInView(result, position, viewId);
             return result;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        });
     }
 
     public override void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, global::Doroti.Framework.Gestures.HitTestResult? result)
     {
-        this._mouseTracker!.updateWithEvent(@event, ((@event is global::Doroti.Framework.Gestures.PointerMoveEvent) ? null : result));
+        _mouseTracker!.updateWithEvent(@event, (@event is global::Doroti.Framework.Gestures.PointerMoveEvent) ? null : result);
         base.dispatchEvent(@event, result);
     }
 
     public virtual void performSemanticsAction(SemanticsActionEvent action)
     {
-        this._viewIdToRenderView.GetValueOrDefault(checked((long)action.viewId))?.owner?.semanticsOwner?.performAction(action.nodeId, action.type, action.arguments);
+        _viewIdToRenderView.GetValueOrDefault(checked((long)action.viewId))?.owner?.semanticsOwner?.performAction(action.nodeId, action.type, action.arguments);
     }
 
     public virtual void _handleWebFirstFrame(Duration __unused0)
     {
         DartRuntimePrimitives.Assert(() => Foundation.ConstantsLibrary.kIsWeb);
         var methodChannel = new global::Doroti.Framework.Services.MethodChannel("flutter/service_worker");
-        DartRuntimePrimitives.Ignore(methodChannel.invokeMethod<object?>("first-frame").then(((_) =>
+        DartRuntimePrimitives.Ignore(methodChannel.invokeMethod<object?>("first-frame").then((_) =>
         {
-        }), onError: ((error, stack) =>
+        }, onError: (error, stack) =>
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "rendering library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending the first-frame event")));
-        })));
+        }));
     }
 
     public virtual void _handlePersistentFrameCallback(Duration timeStamp)
@@ -896,38 +896,38 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void _scheduleMouseTrackerUpdate()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMouseTrackerUpdateScheduled);
+        DartRuntimePrimitives.Assert(() => !_debugMouseTrackerUpdateScheduled);
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugMouseTrackerUpdateScheduled = true;
+                _debugMouseTrackerUpdateScheduled = true;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) =>
         {
-            DartRuntimePrimitives.Assert(() => this._debugMouseTrackerUpdateScheduled);
+            DartRuntimePrimitives.Assert(() => _debugMouseTrackerUpdateScheduled);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    this._debugMouseTrackerUpdateScheduled = false;
+                    _debugMouseTrackerUpdateScheduled = false;
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            this._mouseTracker!.updateAllDevices();
-        })), debugLabel: "RendererBinding.mouseTrackerUpdate");
+            _mouseTracker!.updateAllDevices();
+        }, debugLabel: "RendererBinding.mouseTrackerUpdate");
     }
 
-    public virtual bool sendFramesToEngine => DartRuntimePrimitives.ConvertValue<bool>((this._firstFrameSent || (this._firstFrameDeferredCount == 0L)));
+    public virtual bool sendFramesToEngine => DartRuntimePrimitives.ConvertValue<bool>(_firstFrameSent || (_firstFrameDeferredCount == 0L));
     public virtual void deferFirstFrame()
     {
-        DartRuntimePrimitives.Assert(() => (this._firstFrameDeferredCount >= 0L));
-        this._firstFrameDeferredCount += 1L;
+        DartRuntimePrimitives.Assert(() => _firstFrameDeferredCount >= 0L);
+        _firstFrameDeferredCount += 1L;
     }
 
     public virtual void allowFirstFrame()
     {
-        DartRuntimePrimitives.Assert(() => (this._firstFrameDeferredCount > 0L));
-        this._firstFrameDeferredCount -= 1L;
-        if (!this._firstFrameSent)
+        DartRuntimePrimitives.Assert(() => _firstFrameDeferredCount > 0L);
+        _firstFrameDeferredCount -= 1L;
+        if (!_firstFrameSent)
         {
             scheduleWarmUpFrame();
         }
@@ -935,64 +935,64 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void resetFirstFrameSent()
     {
-        this._firstFrameSent = false;
+        _firstFrameSent = false;
     }
 
     public virtual void drawFrame()
     {
-        var frameViewId = this.platformDispatcher.implicitView?.viewId ?? 0;
+        var frameViewId = platformDispatcher.implicitView?.viewId ?? 0;
         // A long lazy layout cannot make an ongoing wheel stream idle merely
         // because the UI thread has not had a chance to receive its next event.
-        var scrollWasActive = this.platformDispatcher.frameTrace.HasActiveScrollActivity;
-        this.debugBuildingDirtyElements = true;
+        var scrollWasActive = platformDispatcher.frameTrace.HasActiveScrollActivity;
+        debugBuildingDirtyElements = true;
         try
         {
-            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.build, frameViewId, DorotiFrameClock.Now);
-            if (this.rootElement is not null)
+            platformDispatcher.frameTrace.Record(DorotiFramePhase.build, frameViewId, DorotiFrameClock.Now);
+            if (rootElement is not null)
             {
-                this.buildOwner!.buildScope(this.rootElement);
+                buildOwner!.buildScope(rootElement);
             }
-            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.layout, frameViewId, DorotiFrameClock.Now);
-            this.rootPipelineOwner.flushLayout();
-            this.rootPipelineOwner.flushCompositingBits();
-            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.paint, frameViewId, DorotiFrameClock.Now);
-            this.rootPipelineOwner.flushPaint();
-            if (this.sendFramesToEngine)
+            platformDispatcher.frameTrace.Record(DorotiFramePhase.layout, frameViewId, DorotiFrameClock.Now);
+            rootPipelineOwner.flushLayout();
+            rootPipelineOwner.flushCompositingBits();
+            platformDispatcher.frameTrace.Record(DorotiFramePhase.paint, frameViewId, DorotiFrameClock.Now);
+            rootPipelineOwner.flushPaint();
+            if (sendFramesToEngine)
             {
-                this.platformDispatcher.frameTrace.Record(DorotiFramePhase.sceneBuild, frameViewId, DorotiFrameClock.Now);
-                foreach (RenderView renderView in this.renderViews)
+                platformDispatcher.frameTrace.Record(DorotiFramePhase.sceneBuild, frameViewId, DorotiFrameClock.Now);
+                foreach (RenderView renderView in renderViews)
                 {
                     renderView.compositeFrame();
                 }
                 if (shouldFlushSemantics(frameViewId, scrollWasActive))
                 {
-                    this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuild, frameViewId, DorotiFrameClock.Now);
-                    this.rootPipelineOwner.flushSemantics();
-                    this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuildEnd, frameViewId, DorotiFrameClock.Now);
+                    platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuild, frameViewId, DorotiFrameClock.Now);
+                    rootPipelineOwner.flushSemantics();
+                    platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuildEnd, frameViewId, DorotiFrameClock.Now);
                 }
-                this._firstFrameSent = true;
+                _firstFrameSent = true;
             }
-            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.finalizeTree, frameViewId, DorotiFrameClock.Now);
-            this.buildOwner!.finalizeTree();
-            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.finalizeTreeEnd, frameViewId, DorotiFrameClock.Now);
+            platformDispatcher.frameTrace.Record(DorotiFramePhase.finalizeTree, frameViewId, DorotiFrameClock.Now);
+            buildOwner!.finalizeTree();
+            platformDispatcher.frameTrace.Record(DorotiFramePhase.finalizeTreeEnd, frameViewId, DorotiFrameClock.Now);
         }
         finally
         {
-            this.debugBuildingDirtyElements = false;
+            debugBuildingDirtyElements = false;
         }
-        this._needToReportFirstFrame = false;
+        _needToReportFirstFrame = false;
     }
 
     private bool shouldFlushSemantics(ulong frameViewId, bool scrollWasActive)
     {
-        if (!this.rootPipelineOwner.hasPendingSemanticsUpdate) return false;
+        if (!rootPipelineOwner.hasPendingSemanticsUpdate) return false;
 
         lock (_semanticsFlushGate)
         {
-            var activeScroll = scrollWasActive || this.platformDispatcher.frameTrace.HasActiveScrollActivity;
-            var activeMetrics = this.platformDispatcher.implicitView
+            var activeScroll = scrollWasActive || platformDispatcher.frameTrace.HasActiveScrollActivity;
+            var activeMetrics = platformDispatcher.implicitView
                 ?.coalesceSemanticsGeometryDuringActiveMetrics == true &&
-                this.platformDispatcher.frameTrace.HasActiveMetricsActivity;
+                platformDispatcher.frameTrace.HasActiveMetricsActivity;
             if (!activeScroll && !activeMetrics)
             {
                 _deferredSemanticsFlush?.cancel();
@@ -1002,7 +1002,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
             if (activeScroll && _deferredSemanticsFlush is null)
             {
-                this.platformDispatcher.frameTrace.Record(
+                platformDispatcher.frameTrace.Record(
                     DorotiFramePhase.semanticsDeferred,
                     frameViewId,
                     DorotiFrameClock.Now,
@@ -1011,7 +1011,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             }
             if (activeMetrics)
             {
-                this.platformDispatcher.frameTrace.Record(
+                platformDispatcher.frameTrace.Record(
                     DorotiFramePhase.semanticsDeferred,
                     frameViewId,
                     DorotiFrameClock.Now,
@@ -1032,10 +1032,10 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             lock (_semanticsFlushGate)
             {
                 _metricsSemanticsFramePumpArmed = false;
-                schedule = this.rootPipelineOwner.hasPendingSemanticsUpdate &&
-                    this.platformDispatcher.frameTrace.HasActiveMetricsActivity;
-                if (!schedule && this.rootPipelineOwner.hasPendingSemanticsUpdate &&
-                    !this.platformDispatcher.frameTrace.HasActiveScrollActivity)
+                schedule = rootPipelineOwner.hasPendingSemanticsUpdate &&
+                    platformDispatcher.frameTrace.HasActiveMetricsActivity;
+                if (!schedule && rootPipelineOwner.hasPendingSemanticsUpdate &&
+                    !platformDispatcher.frameTrace.HasActiveScrollActivity)
                 {
                     // One final frame crosses the quiet boundary and flushes
                     // the retained geometry. The browser/worker rAF owner, not
@@ -1055,14 +1055,14 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             lock (_semanticsFlushGate)
             {
                 _deferredSemanticsFlush = null;
-                if (this.platformDispatcher.frameTrace.HasActiveScrollActivity)
+                if (platformDispatcher.frameTrace.HasActiveScrollActivity)
                 {
                     // Polling only observes retained activity state. It does not
                     // request a visual frame or rebuild semantics while active.
                     armDeferredSemanticsFlush();
                     return;
                 }
-                schedule = this.rootPipelineOwner.hasPendingSemanticsUpdate;
+                schedule = rootPipelineOwner.hasPendingSemanticsUpdate;
             }
             if (schedule) scheduleFrame();
         });
@@ -1077,7 +1077,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         }
         try
         {
-            foreach (RenderView renderView in this.renderViews)
+            foreach (RenderView renderView in renderViews)
             {
                 renderView.reassemble();
             }
@@ -1090,29 +1090,29 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             }
         }
         scheduleWarmUpFrame();
-        await this.endOfFrame;
+        await endOfFrame;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void hitTestInView(global::Doroti.Framework.Gestures.HitTestResult result, Offset position, long viewId)
     {
-        this._viewIdToRenderView.GetValueOrDefault(viewId)?.hitTest(result, position: position);
+        _viewIdToRenderView.GetValueOrDefault(viewId)?.hitTest(result, position: position);
         base.hitTestInView(result, position, viewId);
     }
 
     public virtual Future _forceRepaint()
     {
         global::System.Action<RenderObject> visitor = default!;
-        visitor = (global::System.Action<RenderObject>)((child) =>
+        visitor = (child) =>
         {
             child.markNeedsPaint();
-            child.visitChildren((global::System.Action<RenderObject>)visitor);
-        });
-        foreach (RenderView renderView in this.renderViews)
+            child.visitChildren(visitor);
+        };
+        foreach (RenderView renderView in renderViews)
         {
-            renderView.visitChildren((global::System.Action<RenderObject>)visitor);
+            renderView.visitChildren(visitor);
         }
-        return this.endOfFrame;
+        return endOfFrame;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1120,32 +1120,32 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     {
         get
         {
-            return ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this.debugShowWidgetInspectorOverrideNotifier).value;
+            return debugShowWidgetInspectorOverrideNotifier.value;
         }
         set
         {
             var __value = value;
-            this.debugShowWidgetInspectorOverrideNotifier.value = __value;
+            debugShowWidgetInspectorOverrideNotifier.value = __value;
         }
     }
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> debugShowWidgetInspectorOverrideNotifier => this._debugShowWidgetInspectorOverrideNotifierObject ??= new global::Doroti.Framework.Foundation.ValueNotifier<bool>(false);
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> debugWidgetInspectorSelectionOnTapEnabled => this._debugWidgetInspectorSelectionOnTapEnabledNotifierObject ??= new global::Doroti.Framework.Foundation.ValueNotifier<bool>(true);
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> debugShowWidgetInspectorOverrideNotifier => _debugShowWidgetInspectorOverrideNotifierObject ??= new global::Doroti.Framework.Foundation.ValueNotifier<bool>(false);
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> debugWidgetInspectorSelectionOnTapEnabled => _debugWidgetInspectorSelectionOnTapEnabledNotifierObject ??= new global::Doroti.Framework.Foundation.ValueNotifier<bool>(true);
     public virtual bool debugExcludeRootWidgetInspector
     {
-        get => this._debugExcludeRootWidgetInspector;
+        get => _debugExcludeRootWidgetInspector;
         set
         {
             var __value = value;
-            this._debugExcludeRootWidgetInspector = __value;
+            _debugExcludeRootWidgetInspector = __value;
         }
     }
     public override void resetInternalState()
     {
         base.resetInternalState();
-        this._debugShowWidgetInspectorOverrideNotifierObject?.dispose();
-        this._debugShowWidgetInspectorOverrideNotifierObject = null;
-        this._debugWidgetInspectorSelectionOnTapEnabledNotifierObject?.dispose();
-        this._debugWidgetInspectorSelectionOnTapEnabledNotifierObject = null;
+        _debugShowWidgetInspectorOverrideNotifierObject?.dispose();
+        _debugShowWidgetInspectorOverrideNotifierObject = null;
+        _debugWidgetInspectorSelectionOnTapEnabledNotifierObject?.dispose();
+        _debugWidgetInspectorSelectionOnTapEnabledNotifierObject = null;
     }
 
     public virtual void _debugAddStackFilters()
@@ -1172,44 +1172,44 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     {
         return new DartMap<string, List<DartMap<string, string>>>
         {
-            ["result"] = violations.map<ViolationIo, DartMap<string, string>>(((violation) =>
+            ["result"] = violations.map<ViolationIo, DartMap<string, string>>((violation) =>
             {
-                return new DartMap<string, string> { ["nodeId"] = ((ViolationIo)violation).node.id.ToString(), ["message"] = ((ViolationIo)violation).reason };
+                return new DartMap<string, string> { ["nodeId"] = violation.node.id.ToString(), ["message"] = violation.reason };
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })).ToList()
+            }).ToList()
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Future _forceRebuild()
     {
-        if ((this.rootElement is not null))
+        if (rootElement is not null)
         {
-            this.buildOwner!.reassemble(this.rootElement!);
-            return this.endOfFrame;
+            buildOwner!.reassemble(rootElement!);
+            return endOfFrame;
         }
         return Future.value();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual BuildOwner? buildOwner => this._buildOwner;
-    public virtual FocusManager focusManager => this._buildOwner!.focusManager;
-    public virtual void addObserver(WidgetsBindingObserver observer) => this._observers.Add(observer);
+    public virtual BuildOwner? buildOwner => _buildOwner;
+    public virtual FocusManager focusManager => _buildOwner!.focusManager;
+    public virtual void addObserver(WidgetsBindingObserver observer) => _observers.Add(observer);
     public virtual bool removeObserver(WidgetsBindingObserver observer)
     {
-        this._backGestureObservers.Remove(observer);
-        return this._observers.Remove(observer);
+        _backGestureObservers.Remove(observer);
+        return _observers.Remove(observer);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public async override Future<global::Doroti.Ui.AppExitResponse> handleRequestAppExit()
     {
         var didCancel = false;
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
-                if ((Equals((await observer.didRequestAppExit()), AppExitResponse.cancel)))
+                if (Equals(await observer.didRequestAppExit(), AppExitResponse.cancel))
                 {
                     didCancel = true;
                 }
@@ -1220,18 +1220,18 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didRequestAppExit")));
             }
         }
-        return ((global::Doroti.Ui.AppExitResponse)(didCancel ? AppExitResponse.cancel : AppExitResponse.exit));
+        return didCancel ? AppExitResponse.cancel : AppExitResponse.exit;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void handleLocaleChanged()
     {
-        dispatchLocalesChanged(this.platformDispatcher.locales.ToList());
+        dispatchLocalesChanged(platformDispatcher.locales.ToList());
     }
 
     public virtual void dispatchLocalesChanged(List<Locale>? locales)
     {
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1247,7 +1247,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void dispatchAccessibilityFeaturesChanged()
     {
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             observer.didChangeAccessibilityFeatures();
         }
@@ -1255,8 +1255,8 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public async virtual Future _handleStatusBarActions(global::Doroti.Framework.Services.MethodCall call)
     {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Services.MethodCall)call).method == "handleScrollToTop"));
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        DartRuntimePrimitives.Assert(() => call.method == "handleScrollToTop");
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1273,7 +1273,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public async virtual Future<bool> handlePopRoute()
     {
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1288,25 +1288,25 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didPopRoute")));
             }
         }
-        DartRuntimePrimitives.Ignore(SystemNavigator.pop().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stack) =>
+        DartRuntimePrimitives.Ignore(SystemNavigator.pop().catchError((exception, stack) =>
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while popping route")));
-        }))));
+        }));
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _handleStartBackGesture(DartMap<string, object?> arguments)
     {
-        this._backGestureObservers.Clear();
+        _backGestureObservers.Clear();
         var backEvent = PredictiveBackEvent.CreateFromMap(arguments);
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
                 if (observer.handleStartBackGesture(backEvent))
                 {
-                    this._backGestureObservers.Add(observer);
+                    _backGestureObservers.Add(observer);
                 }
             }
             catch (Exception exceptionLocal)
@@ -1315,18 +1315,18 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.handleStartBackGesture")));
             }
         }
-        return Enumerable.Any(this._backGestureObservers);
+        return Enumerable.Any(_backGestureObservers);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _handleUpdateBackGestureProgress(DartMap<string, object?> arguments)
     {
-        if (!Enumerable.Any(this._backGestureObservers))
+        if (!Enumerable.Any(_backGestureObservers))
         {
             return;
         }
         var backEvent = PredictiveBackEvent.CreateFromMap(arguments);
-        foreach (WidgetsBindingObserver observer in this._backGestureObservers)
+        foreach (WidgetsBindingObserver observer in _backGestureObservers)
         {
             try
             {
@@ -1342,12 +1342,12 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public async virtual Future _handleCommitBackGesture()
     {
-        if (!Enumerable.Any(this._backGestureObservers))
+        if (!Enumerable.Any(_backGestureObservers))
         {
             await handlePopRoute();
             return;
         }
-        foreach (WidgetsBindingObserver observer in this._backGestureObservers)
+        foreach (WidgetsBindingObserver observer in _backGestureObservers)
         {
             try
             {
@@ -1363,7 +1363,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void _handleCancelBackGesture()
     {
-        foreach (WidgetsBindingObserver observer in this._backGestureObservers)
+        foreach (WidgetsBindingObserver observer in _backGestureObservers)
         {
             try
             {
@@ -1380,7 +1380,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     public async virtual Future<bool> handlePushRoute(string route)
     {
         var routeInformation = new RouteInformation(uri: DartUri.parse(route));
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1401,8 +1401,8 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public async virtual Future<bool> _handlePushRouteInformation(DartMap<object, object?> routeArguments)
     {
-        var routeInformation = new RouteInformation(uri: DartUri.parse(((string?)routeArguments.GetValueOrDefault("location"))!), state: ((object?)routeArguments.GetValueOrDefault("state"))!);
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        var routeInformation = new RouteInformation(uri: DartUri.parse(((string?)routeArguments.GetValueOrDefault("location"))!), state: routeArguments.GetValueOrDefault("state")!);
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1458,7 +1458,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     public override void handleAppLifecycleStateChanged(AppLifecycleState state)
     {
         base.handleAppLifecycleStateChanged(state);
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1475,7 +1475,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     public override void handleViewFocusChanged(ViewFocusEvent @event)
     {
         DartRuntimePrimitives.Noop();
-        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
+        foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(_observers)))
         {
             try
             {
@@ -1489,14 +1489,14 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         }
     }
 
-    public virtual bool firstFrameRasterized => this._firstFrameCompleter.isCompleted;
-    public virtual Future waitUntilFirstFrameRasterized => this._firstFrameCompleter.future;
-    public virtual bool debugDidSendFirstFrameEvent => !this._needToReportFirstFrame;
+    public virtual bool firstFrameRasterized => _firstFrameCompleter.isCompleted;
+    public virtual Future waitUntilFirstFrameRasterized => _firstFrameCompleter.future;
+    public virtual bool debugDidSendFirstFrameEvent => !_needToReportFirstFrame;
     public virtual void _handleBuildScheduled()
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (this.debugBuildingDirtyElements)
+                if (debugBuildingDirtyElements)
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Build scheduled during frame."), new global::Doroti.Framework.Foundation.ErrorDescription("While the widget tree was being built, laid out, and painted, " + "a new frame was scheduled to rebuild the widget tree."), new global::Doroti.Framework.Foundation.ErrorHint("This might be because setState() was called from a layout or " + "paint callback. " + "If a change is needed to the widget tree, it should be applied " + "as the tree is being built. Scheduling a change for the subsequent " + "frame instead results in an interface that lags behind by one frame. " + "If this was done to make your build dependent on a size measured at " + "layout time, consider using a LayoutBuilder, CustomSingleChildLayout, " + "or CustomMultiChildLayout. If, on the other hand, the one frame delay " + "is the desired effect, for example because this is an " + "animation, consider scheduling the frame in a post-frame callback " + "using SchedulerBinding.addPostFrameCallback or " + "using an AnimationController to trigger the animation.") }));
                 }
@@ -1506,25 +1506,25 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         ensureVisualUpdate();
     }
 
-    public virtual Element? rootElement => this._rootElement;
-    public virtual Element? renderViewElement => this.rootElement;
-    public override bool framesEnabled => DartRuntimePrimitives.ConvertValue<bool>((base.framesEnabled && this._readyToProduceFrames));
+    public virtual Element? rootElement => _rootElement;
+    public virtual Element? renderViewElement => rootElement;
+    public override bool framesEnabled => DartRuntimePrimitives.ConvertValue<bool>(base.framesEnabled && _readyToProduceFrames);
     public virtual Widget wrapWithDefaultView(Widget rootWidget)
     {
-        if ((this.platformDispatcher.implicitView is null))
+        if (platformDispatcher.implicitView is null)
         {
-            throw new InvalidOperationException("The app requested a view, but the platform did not provide one.\n" + "This is likely because the app called `runApp` to render its root " + "widget, which expects the platform to provide a default view to " + "render into (the \"implicit\" view).\n" + "However, the platform likely has multi-view mode enabled, which does " + "not create this default \"implicit\" view.\n" + "Try using `runWidget` instead of `runApp` to start your app.\n" + "`runWidget` allows you to provide a `View` widget, without requiring " + "a default view." + $"{((Foundation.ConstantsLibrary.kIsWeb ? "\nSee: https://flutter.dev/to/web-multiview-runwidget" : ""))}");
+            throw new InvalidOperationException("The app requested a view, but the platform did not provide one.\n" + "This is likely because the app called `runApp` to render its root " + "widget, which expects the platform to provide a default view to " + "render into (the \"implicit\" view).\n" + "However, the platform likely has multi-view mode enabled, which does " + "not create this default \"implicit\" view.\n" + "Try using `runWidget` instead of `runApp` to start your app.\n" + "`runWidget` allows you to provide a `View` widget, without requiring " + "a default view." + $"{(Foundation.ConstantsLibrary.kIsWeb ? "\nSee: https://flutter.dev/to/web-multiview-runwidget" : "")}");
         }
-        return ((Widget)new View(view: this.platformDispatcher.implicitView!, deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner: this.pipelineOwner, deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView: this.renderView, child: rootWidget));
+        return new View(view: platformDispatcher.implicitView!, deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner: pipelineOwner, deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView: renderView, child: rootWidget);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void scheduleAttachRootWidget(Widget rootWidget)
     {
-        Timer.run((() =>
+        Timer.run(() =>
         {
             attachRootWidget(rootWidget);
-        }));
+        });
     }
 
     public virtual void attachRootWidget(Widget rootWidget)
@@ -1534,19 +1534,19 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void attachToBuildOwner(RootWidget widget)
     {
-        var isBootstrapFrame = (this.rootElement is null);
-        this._readyToProduceFrames = true;
-        this._rootElement = DartRuntimePrimitives.ConvertValue<Element>(widget.attach(this.buildOwner!, ((RootElement?)this.rootElement)!));
+        var isBootstrapFrame = rootElement is null;
+        _readyToProduceFrames = true;
+        _rootElement = DartRuntimePrimitives.ConvertValue<Element>(widget.attach(buildOwner!, ((RootElement?)rootElement)!));
         if (isBootstrapFrame)
         {
             Scheduler.SchedulerBinding.instance.ensureVisualUpdate();
         }
     }
 
-    public virtual bool isRootWidgetAttached => DartRuntimePrimitives.ConvertValue<bool>((this._rootElement is not null));
+    public virtual bool isRootWidgetAttached => DartRuntimePrimitives.ConvertValue<bool>(_rootElement is not null);
     public virtual global::Doroti.Ui.Locale? computePlatformResolvedLocale(List<Locale> supportedLocales)
     {
-        return this.platformDispatcher.computePlatformResolvedLocale(supportedLocales);
+        return platformDispatcher.computePlatformResolvedLocale(supportedLocales);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1558,7 +1558,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             {
                 throw new NotSupportedException("Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n");
             }
-            return this._windowingOwner;
+            return _windowingOwner;
         }
         set
         {
@@ -1567,7 +1567,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             {
                 throw new NotSupportedException("Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n");
             }
-            this._windowingOwner = owner;
+            _windowingOwner = owner;
         }
     }
 }

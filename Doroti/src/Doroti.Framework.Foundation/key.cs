@@ -45,18 +45,18 @@ public class ValueKey<T> : LocalKey
     {
         var __other = other as ValueKey<T>;
         if (__other is null) return false;
-        if ((__other.GetType() != this.GetType()))
+        if (__other.GetType() != GetType())
         {
             return false;
         }
-        return ((__other is ValueKey<T>) && EqualityComparer<T>.Default.Equals(__other.value, value));
+        return (__other is ValueKey<T>) && EqualityComparer<T>.Default.Equals(__other.value, value);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.GetType(), value);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(GetType(), value);
     public override string ToString()
     {
-        var valueString = ((typeof(T) == typeof(string)) ? $"<'{value}'>" : $"<{value}>");
-        if ((this.GetType() == typeof(ValueKey<T>)))
+        var valueString = (typeof(T) == typeof(string)) ? $"<'{value}'>" : $"<{value}>";
+        if (GetType() == typeof(ValueKey<T>))
         {
             return $"[{valueString}]";
         }

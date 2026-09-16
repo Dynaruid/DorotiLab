@@ -125,15 +125,15 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         cupertinoOverrideTheme = cupertinoOverrideTheme?.noDefault();
         extensions ??= new List<ThemeExtension<object>>();
         adaptations ??= new List<Adaptation<object>>();
-        if ((inputDecorationTheme is not null))
+        if (inputDecorationTheme is not null)
         {
-            if ((inputDecorationTheme is InputDecorationTheme))
+            if (inputDecorationTheme is InputDecorationTheme)
             {
                 inputDecorationTheme = ((InputDecorationTheme)inputDecorationTheme).data;
             }
             else
             {
-                if ((inputDecorationTheme is not InputDecorationThemeData))
+                if (inputDecorationTheme is not InputDecorationThemeData)
                 {
                     throw DartRuntimePrimitives.AsException(new DartArgumentError("inputDecorationTheme must be either a InputDecorationThemeData or a InputDecorationTheme"));
                 }
@@ -162,28 +162,28 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         scrollbarTheme ??= new ScrollbarThemeData();
         visualDensity ??= VisualDensity.defaultDensityForPlatform(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform)));
         useSystemColors ??= false;
-        bool useInkSparkle = ((Equals(DartRuntimePrimitives.RequireValue(platform), TargetPlatform.android)) && !Foundation.ConstantsLibrary.kIsWeb);
-        splashFactory ??= (((useInkSparkle ? InkSparkle.splashFactory : InkRipple.splashFactory)));
-        DartRuntimePrimitives.Assert(() => (((colorScheme?.brightness is null) || (brightness is null)) || (Equals(colorScheme!.brightness, DartRuntimePrimitives.RequireValue(brightness)))), () => (object?)"ThemeData.brightness does not match ColorScheme.brightness. " + "Either override ColorScheme.brightness or ThemeData.brightness to " + "match the other.");
-        DartRuntimePrimitives.Assert(() => ((colorSchemeSeed is null) || (colorScheme is null)));
-        DartRuntimePrimitives.Assert(() => ((colorSchemeSeed is null) || (primarySwatch is null)));
-        DartRuntimePrimitives.Assert(() => ((colorSchemeSeed is null) || (primaryColor is null)));
-        global::Doroti.Ui.Brightness effectiveBrightness = ((brightness ?? colorScheme?.brightness) ?? Brightness.light);
-        var isDark = (Equals(effectiveBrightness, Brightness.dark));
+        bool useInkSparkle = Equals(DartRuntimePrimitives.RequireValue(platform), TargetPlatform.android) && !Foundation.ConstantsLibrary.kIsWeb;
+        splashFactory ??= (useInkSparkle ? InkSparkle.splashFactory : InkRipple.splashFactory);
+        DartRuntimePrimitives.Assert(() => (colorScheme?.brightness is null) || (brightness is null) || Equals(colorScheme!.brightness, DartRuntimePrimitives.RequireValue(brightness)), () => (object?)"ThemeData.brightness does not match ColorScheme.brightness. " + "Either override ColorScheme.brightness or ThemeData.brightness to " + "match the other.");
+        DartRuntimePrimitives.Assert(() => (colorSchemeSeed is null) || (colorScheme is null));
+        DartRuntimePrimitives.Assert(() => (colorSchemeSeed is null) || (primarySwatch is null));
+        DartRuntimePrimitives.Assert(() => (colorSchemeSeed is null) || (primaryColor is null));
+        global::Doroti.Ui.Brightness effectiveBrightness = (brightness ?? colorScheme?.brightness) ?? Brightness.light;
+        var isDark = Equals(effectiveBrightness, Brightness.dark);
         {
-            if ((colorSchemeSeed is not null))
+            if (colorSchemeSeed is not null)
             {
                 colorScheme = ColorScheme.CreateFromSeed(seedColor: colorSchemeSeed, brightness: effectiveBrightness);
             }
             colorScheme ??= (isDark ? Theme_dataLibrary._colorSchemeDarkM3 : Theme_dataLibrary._colorSchemeLightM3);
-            global::Doroti.Ui.Color primarySurfaceColor = ((global::Doroti.Ui.Color)(isDark ? ((ColorScheme)colorScheme).surface : ((ColorScheme)colorScheme).primary));
-            global::Doroti.Ui.Color onPrimarySurfaceColor = ((global::Doroti.Ui.Color)(isDark ? ((ColorScheme)colorScheme).onSurface : ((ColorScheme)colorScheme).onPrimary));
+            global::Doroti.Ui.Color primarySurfaceColor = isDark ? colorScheme.surface : colorScheme.primary;
+            global::Doroti.Ui.Color onPrimarySurfaceColor = isDark ? colorScheme.onSurface : colorScheme.onPrimary;
             primaryColor ??= primarySurfaceColor;
-            canvasColor ??= ((ColorScheme)colorScheme).surface;
-            scaffoldBackgroundColor ??= ((ColorScheme)colorScheme).surface;
-            cardColor ??= ((ColorScheme)colorScheme).surface;
-            dividerColor ??= ((ColorScheme)colorScheme).outline;
-            dialogBackgroundColor ??= ((ColorScheme)colorScheme).surface;
+            canvasColor ??= colorScheme.surface;
+            scaffoldBackgroundColor ??= colorScheme.surface;
+            cardColor ??= colorScheme.surface;
+            dividerColor ??= colorScheme.outline;
+            dialogBackgroundColor ??= colorScheme.surface;
             indicatorColor ??= onPrimarySurfaceColor;
             applyElevationOverlayColor ??= (Equals(brightness, Brightness.dark));
         }
@@ -193,7 +193,7 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         global::Doroti.Ui.Brightness estimatedPrimaryColorBrightness = estimateBrightnessForColor(primaryColor);
         primaryColorLight ??= (isDark ? Colors.grey[500L]! : primarySwatch[100L]!);
         primaryColorDark ??= (isDark ? Colors.black : primarySwatch[700L]!);
-        var primaryIsDark = (Equals(estimatedPrimaryColorBrightness, Brightness.dark));
+        var primaryIsDark = Equals(estimatedPrimaryColorBrightness, Brightness.dark);
         focusColor ??= (isDark ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.12));
         hoverColor ??= (isDark ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.04));
         shadowColor ??= Colors.black;
@@ -201,28 +201,28 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         scaffoldBackgroundColor ??= canvasColor;
         cardColor ??= (isDark ? Colors.grey[800L]! : Colors.white);
         dividerColor ??= (isDark ? new global::Doroti.Ui.Color(536870911L) : new global::Doroti.Ui.Color(520093696L));
-        colorScheme ??= ColorScheme.CreateFromSwatch(primarySwatch: primarySwatch, accentColor: (isDark ? Colors.tealAccent[200L]! : primarySwatch[500L]!), cardColor: cardColor, backgroundColor: (isDark ? Colors.grey[700L]! : primarySwatch[200L]!), errorColor: Colors.red[700L], brightness: effectiveBrightness);
+        colorScheme ??= ColorScheme.CreateFromSwatch(primarySwatch: primarySwatch, accentColor: isDark ? Colors.tealAccent[200L]! : primarySwatch[500L]!, cardColor: cardColor, backgroundColor: isDark ? Colors.grey[700L]! : primarySwatch[200L]!, errorColor: Colors.red[700L], brightness: effectiveBrightness);
         unselectedWidgetColor ??= (isDark ? Colors.white70 : Colors.black54);
         secondaryHeaderColor ??= (isDark ? Colors.grey[700L]! : primarySwatch[50L]!);
         hintColor ??= (isDark ? Colors.white60 : Colors.black.withOpacity(0.6));
-        buttonTheme ??= new ButtonThemeData(colorScheme: colorScheme, buttonColor: (isDark ? primarySwatch[600L]! : Colors.grey[300L]!), disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, materialTapTargetSize: DartRuntimePrimitives.RequireValue(materialTapTargetSize));
+        buttonTheme ??= new ButtonThemeData(colorScheme: colorScheme, buttonColor: isDark ? primarySwatch[600L]! : Colors.grey[300L]!, disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, materialTapTargetSize: DartRuntimePrimitives.RequireValue(materialTapTargetSize));
         disabledColor ??= (isDark ? Colors.white38 : Colors.black38);
         highlightColor ??= (isDark ? new global::Doroti.Ui.Color(1087163596L) : new global::Doroti.Ui.Color(1723645116L));
         splashColor ??= (isDark ? new global::Doroti.Ui.Color(1087163596L) : new global::Doroti.Ui.Color(1724434632L));
-        typography ??= ((Typography.CreateMaterial2021(platform: DartRuntimePrimitives.RequireValue(platform), colorScheme: colorScheme)));
-        TextTheme defaultTextTheme = (isDark ? ((Typography)typography).white : ((Typography)typography).black);
-        TextTheme defaultPrimaryTextTheme = (primaryIsDark ? ((Typography)typography).white : ((Typography)typography).black);
-        if ((fontFamily is not null))
+        typography ??= (Typography.CreateMaterial2021(platform: DartRuntimePrimitives.RequireValue(platform), colorScheme: colorScheme));
+        TextTheme defaultTextTheme = isDark ? typography.white : typography.black;
+        TextTheme defaultPrimaryTextTheme = primaryIsDark ? typography.white : typography.black;
+        if (fontFamily is not null)
         {
             defaultTextTheme = defaultTextTheme.apply(fontFamily: fontFamily);
             defaultPrimaryTextTheme = defaultPrimaryTextTheme.apply(fontFamily: fontFamily);
         }
-        if ((fontFamilyFallback is not null))
+        if (fontFamilyFallback is not null)
         {
             defaultTextTheme = defaultTextTheme.apply(fontFamilyFallback: fontFamilyFallback);
             defaultPrimaryTextTheme = defaultPrimaryTextTheme.apply(fontFamilyFallback: fontFamilyFallback);
         }
-        if ((package is not null))
+        if (package is not null)
         {
             defaultTextTheme = defaultTextTheme.apply(package: package);
             defaultPrimaryTextTheme = defaultPrimaryTextTheme.apply(package: package);
@@ -231,15 +231,15 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         primaryTextTheme = defaultPrimaryTextTheme.merge(primaryTextTheme);
         iconTheme ??= (isDark ? new global::Doroti.Framework.Widgets.IconThemeData(color: ConstantsLibrary.kDefaultIconLightColor) : new global::Doroti.Framework.Widgets.IconThemeData(color: ConstantsLibrary.kDefaultIconDarkColor));
         primaryIconTheme ??= (primaryIsDark ? new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.white) : new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.black));
-        if ((appBarTheme is not null))
+        if (appBarTheme is not null)
         {
-            if ((appBarTheme is AppBarTheme))
+            if (appBarTheme is AppBarTheme)
             {
                 appBarTheme = ((AppBarTheme)appBarTheme).data;
             }
             else
             {
-                if ((appBarTheme is not AppBarThemeData))
+                if (appBarTheme is not AppBarThemeData)
                 {
                     throw DartRuntimePrimitives.AsException(new DartArgumentError("appBarTheme must be either a AppBarThemeData or a AppBarTheme"));
                 }
@@ -290,8 +290,8 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         tooltipTheme ??= new TooltipThemeData();
         buttonBarTheme ??= new ButtonBarThemeData();
         dialogBackgroundColor ??= (isDark ? Colors.grey[800L]! : Colors.white);
-        indicatorColor ??= ((Equals(((ColorScheme)colorScheme).secondary, primaryColor)) ? Colors.white : ((ColorScheme)colorScheme).secondary);
-        var theme = new ThemeData(adaptationMap: _createAdaptationMap(adaptations.Cast<Adaptation<object>>()), applyElevationOverlayColor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(applyElevationOverlayColor)), cupertinoOverrideTheme: cupertinoOverrideTheme, extensions: _themeExtensionIterableToMap(extensions), inputDecorationTheme: ((InputDecorationThemeData?)inputDecorationTheme)!, materialTapTargetSize: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(materialTapTargetSize)), pageTransitionsTheme: pageTransitionsTheme, platform: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform)), scrollbarTheme: scrollbarTheme, splashFactory: splashFactory, visualDensity: visualDensity, canvasColor: canvasColor, cardColor: cardColor, colorScheme: colorScheme, disabledColor: disabledColor, dividerColor: dividerColor, focusColor: focusColor, highlightColor: highlightColor, hintColor: hintColor, hoverColor: hoverColor, primaryColor: primaryColor, primaryColorDark: primaryColorDark, primaryColorLight: primaryColorLight, scaffoldBackgroundColor: scaffoldBackgroundColor, secondaryHeaderColor: secondaryHeaderColor, shadowColor: shadowColor, splashColor: splashColor, unselectedWidgetColor: unselectedWidgetColor, iconTheme: iconTheme, primaryTextTheme: primaryTextTheme, textTheme: textTheme, typography: typography, primaryIconTheme: primaryIconTheme, actionIconTheme: actionIconTheme, appBarTheme: ((((AppBarThemeData?)appBarTheme)!) ?? new AppBarThemeData()), badgeTheme: badgeTheme, bannerTheme: bannerTheme, bottomAppBarTheme: bottomAppBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme, bottomSheetTheme: bottomSheetTheme, buttonTheme: buttonTheme, cardTheme: cardTheme, carouselViewTheme: carouselViewTheme, checkboxTheme: checkboxTheme, chipTheme: chipTheme, dataTableTheme: dataTableTheme, datePickerTheme: datePickerTheme, dialogTheme: dialogTheme, dividerTheme: dividerTheme, drawerTheme: drawerTheme, dropdownMenuTheme: dropdownMenuTheme, elevatedButtonTheme: elevatedButtonTheme, expansionTileTheme: expansionTileTheme, filledButtonTheme: filledButtonTheme, floatingActionButtonTheme: floatingActionButtonTheme, iconButtonTheme: iconButtonTheme, listTileTheme: listTileTheme, menuBarTheme: menuBarTheme, menuButtonTheme: menuButtonTheme, menuTheme: menuTheme, navigationBarTheme: navigationBarTheme, navigationDrawerTheme: navigationDrawerTheme, navigationRailTheme: navigationRailTheme, outlinedButtonTheme: outlinedButtonTheme, popupMenuTheme: popupMenuTheme, progressIndicatorTheme: progressIndicatorTheme, radioTheme: radioTheme, searchBarTheme: searchBarTheme, searchViewTheme: searchViewTheme, segmentedButtonTheme: segmentedButtonTheme, sliderTheme: sliderTheme, snackBarTheme: snackBarTheme, switchTheme: switchTheme, tabBarTheme: tabBarTheme, textButtonTheme: textButtonTheme, textSelectionTheme: textSelectionTheme, timePickerTheme: timePickerTheme, toggleButtonsTheme: toggleButtonsTheme, tooltipTheme: tooltipTheme, buttonBarTheme: buttonBarTheme, dialogBackgroundColor: dialogBackgroundColor, indicatorColor: indicatorColor);
+        indicatorColor ??= (Equals(colorScheme.secondary, primaryColor) ? Colors.white : colorScheme.secondary);
+        var theme = new ThemeData(adaptationMap: _createAdaptationMap(adaptations.Cast<Adaptation<object>>()), applyElevationOverlayColor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(applyElevationOverlayColor)), cupertinoOverrideTheme: cupertinoOverrideTheme, extensions: _themeExtensionIterableToMap(extensions), inputDecorationTheme: ((InputDecorationThemeData?)inputDecorationTheme)!, materialTapTargetSize: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(materialTapTargetSize)), pageTransitionsTheme: pageTransitionsTheme, platform: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform)), scrollbarTheme: scrollbarTheme, splashFactory: splashFactory, visualDensity: visualDensity, canvasColor: canvasColor, cardColor: cardColor, colorScheme: colorScheme, disabledColor: disabledColor, dividerColor: dividerColor, focusColor: focusColor, highlightColor: highlightColor, hintColor: hintColor, hoverColor: hoverColor, primaryColor: primaryColor, primaryColorDark: primaryColorDark, primaryColorLight: primaryColorLight, scaffoldBackgroundColor: scaffoldBackgroundColor, secondaryHeaderColor: secondaryHeaderColor, shadowColor: shadowColor, splashColor: splashColor, unselectedWidgetColor: unselectedWidgetColor, iconTheme: iconTheme, primaryTextTheme: primaryTextTheme, textTheme: textTheme, typography: typography, primaryIconTheme: primaryIconTheme, actionIconTheme: actionIconTheme, appBarTheme: ((AppBarThemeData?)appBarTheme)! ?? new AppBarThemeData(), badgeTheme: badgeTheme, bannerTheme: bannerTheme, bottomAppBarTheme: bottomAppBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme, bottomSheetTheme: bottomSheetTheme, buttonTheme: buttonTheme, cardTheme: cardTheme, carouselViewTheme: carouselViewTheme, checkboxTheme: checkboxTheme, chipTheme: chipTheme, dataTableTheme: dataTableTheme, datePickerTheme: datePickerTheme, dialogTheme: dialogTheme, dividerTheme: dividerTheme, drawerTheme: drawerTheme, dropdownMenuTheme: dropdownMenuTheme, elevatedButtonTheme: elevatedButtonTheme, expansionTileTheme: expansionTileTheme, filledButtonTheme: filledButtonTheme, floatingActionButtonTheme: floatingActionButtonTheme, iconButtonTheme: iconButtonTheme, listTileTheme: listTileTheme, menuBarTheme: menuBarTheme, menuButtonTheme: menuButtonTheme, menuTheme: menuTheme, navigationBarTheme: navigationBarTheme, navigationDrawerTheme: navigationDrawerTheme, navigationRailTheme: navigationRailTheme, outlinedButtonTheme: outlinedButtonTheme, popupMenuTheme: popupMenuTheme, progressIndicatorTheme: progressIndicatorTheme, radioTheme: radioTheme, searchBarTheme: searchBarTheme, searchViewTheme: searchViewTheme, segmentedButtonTheme: segmentedButtonTheme, sliderTheme: sliderTheme, snackBarTheme: snackBarTheme, switchTheme: switchTheme, tabBarTheme: tabBarTheme, textButtonTheme: textButtonTheme, textSelectionTheme: textSelectionTheme, timePickerTheme: timePickerTheme, toggleButtonsTheme: toggleButtonsTheme, tooltipTheme: tooltipTheme, buttonBarTheme: buttonBarTheme, dialogBackgroundColor: dialogBackgroundColor, indicatorColor: indicatorColor);
         if (DartRuntimePrimitives.RequireValue(useSystemColors))
         {
             theme = theme._overrideWithSystemColors();
@@ -382,16 +382,16 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         this.tooltipTheme = tooltipTheme;
         this.dialogBackgroundColor = dialogBackgroundColor;
         this.indicatorColor = indicatorColor;
-        this._buttonBarTheme = buttonBarTheme;
-        System.Diagnostics.Debug.Assert((buttonBarTheme is not null));
+        _buttonBarTheme = buttonBarTheme;
+        System.Diagnostics.Debug.Assert(buttonBarTheme is not null);
     }
 
     public static ThemeData CreateFrom(ColorScheme colorScheme, TextTheme? textTheme = null)
     {
-        var isDark = (Equals(((ColorScheme)colorScheme).brightness, Brightness.dark));
-        global::Doroti.Ui.Color primarySurfaceColor = ((global::Doroti.Ui.Color)(isDark ? ((ColorScheme)colorScheme).surface : ((ColorScheme)colorScheme).primary));
-        global::Doroti.Ui.Color onPrimarySurfaceColor = ((global::Doroti.Ui.Color)(isDark ? ((ColorScheme)colorScheme).onSurface : ((ColorScheme)colorScheme).onPrimary));
-        return Create(colorScheme: colorScheme, brightness: ((ColorScheme)colorScheme).brightness, primaryColor: primarySurfaceColor, canvasColor: ((ColorScheme)colorScheme).surface, scaffoldBackgroundColor: ((ColorScheme)colorScheme).surface, cardColor: ((ColorScheme)colorScheme).surface, dividerColor: ((ColorScheme)colorScheme).onSurface.withOpacity(0.12), dialogBackgroundColor: ((ColorScheme)colorScheme).surface, indicatorColor: onPrimarySurfaceColor, textTheme: textTheme, applyElevationOverlayColor: isDark);
+        var isDark = Equals(colorScheme.brightness, Brightness.dark);
+        global::Doroti.Ui.Color primarySurfaceColor = isDark ? colorScheme.surface : colorScheme.primary;
+        global::Doroti.Ui.Color onPrimarySurfaceColor = isDark ? colorScheme.onSurface : colorScheme.onPrimary;
+        return Create(colorScheme: colorScheme, brightness: colorScheme.brightness, primaryColor: primarySurfaceColor, canvasColor: colorScheme.surface, scaffoldBackgroundColor: colorScheme.surface, cardColor: colorScheme.surface, dividerColor: colorScheme.onSurface.withOpacity(0.12), dialogBackgroundColor: colorScheme.surface, indicatorColor: onPrimarySurfaceColor, textTheme: textTheme, applyElevationOverlayColor: isDark);
     }
 
     public static ThemeData CreateLight() => Create(brightness: Brightness.light);
@@ -400,7 +400,7 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public static ThemeData CreateFallback() => CreateLight();
 
-    public virtual Adaptation<T>? getAdaptation<T>() => ((Adaptation<T>?)(object?)this.adaptationMap.GetValueOrDefault(typeof(T)))!;
+    public virtual Adaptation<T>? getAdaptation<T>() => ((Adaptation<T>?)(object?)adaptationMap.GetValueOrDefault(typeof(T)))!;
     internal static DartMap<Type, Adaptation<object>> _createAdaptationMap(IEnumerable<Adaptation<object>> adaptations)
     {
         var adaptationMap = new DartMap<Type, Adaptation<object>>();
@@ -408,55 +408,55 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Brightness brightness => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Brightness>(((ColorScheme)this.colorScheme).brightness);
-    public virtual T? extension<T>() => ((T?)(object?)this.extensions.GetValueOrDefault(typeof(T)))!;
-    public virtual ButtonBarThemeData buttonBarTheme => DartRuntimePrimitives.ConvertValue<ButtonBarThemeData>(this._buttonBarTheme!);
+    public virtual global::Doroti.Ui.Brightness brightness => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Brightness>(colorScheme.brightness);
+    public virtual T? extension<T>() => ((T?)(object?)extensions.GetValueOrDefault(typeof(T)))!;
+    public virtual ButtonBarThemeData buttonBarTheme => DartRuntimePrimitives.ConvertValue<ButtonBarThemeData>(_buttonBarTheme!);
     public virtual ThemeData copyWith(IEnumerable<Adaptation<object>>? adaptations = null, bool? applyElevationOverlayColor = null, NoDefaultCupertinoThemeData? cupertinoOverrideTheme = null, IEnumerable<ThemeExtension<object>>? extensions = null, object? inputDecorationTheme = null, MaterialTapTargetSize? materialTapTargetSize = null, PageTransitionsTheme? pageTransitionsTheme = null, global::Doroti.Framework.Foundation.TargetPlatform? platform = null, ScrollbarThemeData? scrollbarTheme = null, InteractiveInkFeatureFactory? splashFactory = null, VisualDensity? visualDensity = null, ColorScheme? colorScheme = null, Brightness? brightness = null, Color? canvasColor = null, Color? cardColor = null, Color? disabledColor = null, Color? dividerColor = null, Color? focusColor = null, Color? highlightColor = null, Color? hintColor = null, Color? hoverColor = null, Color? primaryColor = null, Color? primaryColorDark = null, Color? primaryColorLight = null, Color? scaffoldBackgroundColor = null, Color? secondaryHeaderColor = null, Color? shadowColor = null, Color? splashColor = null, Color? unselectedWidgetColor = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? primaryIconTheme = null, TextTheme? primaryTextTheme = null, TextTheme? textTheme = null, Typography? typography = null, ActionIconThemeData? actionIconTheme = null, object? appBarTheme = null, BadgeThemeData? badgeTheme = null, MaterialBannerThemeData? bannerTheme = null, BottomAppBarThemeData? bottomAppBarTheme = null, BottomNavigationBarThemeData? bottomNavigationBarTheme = null, BottomSheetThemeData? bottomSheetTheme = null, ButtonThemeData? buttonTheme = null, CardThemeData? cardTheme = null, CarouselViewThemeData? carouselViewTheme = null, CheckboxThemeData? checkboxTheme = null, ChipThemeData? chipTheme = null, DataTableThemeData? dataTableTheme = null, DatePickerThemeData? datePickerTheme = null, DialogThemeData? dialogTheme = null, DividerThemeData? dividerTheme = null, DrawerThemeData? drawerTheme = null, DropdownMenuThemeData? dropdownMenuTheme = null, ElevatedButtonThemeData? elevatedButtonTheme = null, ExpansionTileThemeData? expansionTileTheme = null, FilledButtonThemeData? filledButtonTheme = null, FloatingActionButtonThemeData? floatingActionButtonTheme = null, IconButtonThemeData? iconButtonTheme = null, ListTileThemeData? listTileTheme = null, MenuBarThemeData? menuBarTheme = null, MenuButtonThemeData? menuButtonTheme = null, MenuThemeData? menuTheme = null, NavigationBarThemeData? navigationBarTheme = null, NavigationDrawerThemeData? navigationDrawerTheme = null, NavigationRailThemeData? navigationRailTheme = null, OutlinedButtonThemeData? outlinedButtonTheme = null, PopupMenuThemeData? popupMenuTheme = null, ProgressIndicatorThemeData? progressIndicatorTheme = null, RadioThemeData? radioTheme = null, SearchBarThemeData? searchBarTheme = null, SearchViewThemeData? searchViewTheme = null, SegmentedButtonThemeData? segmentedButtonTheme = null, SliderThemeData? sliderTheme = null, SnackBarThemeData? snackBarTheme = null, SwitchThemeData? switchTheme = null, TabBarThemeData? tabBarTheme = null, TextButtonThemeData? textButtonTheme = null, TextSelectionThemeData? textSelectionTheme = null, TimePickerThemeData? timePickerTheme = null, ToggleButtonsThemeData? toggleButtonsTheme = null, TooltipThemeData? tooltipTheme = null, ButtonBarThemeData? buttonBarTheme = null, Color? dialogBackgroundColor = null, Color? indicatorColor = null)
     {
         cupertinoOverrideTheme = cupertinoOverrideTheme?.noDefault();
-        if ((inputDecorationTheme is not null))
+        if (inputDecorationTheme is not null)
         {
-            if ((inputDecorationTheme is InputDecorationTheme))
+            if (inputDecorationTheme is InputDecorationTheme)
             {
                 inputDecorationTheme = ((InputDecorationTheme)inputDecorationTheme).data;
             }
             else
             {
-                if ((inputDecorationTheme is not InputDecorationThemeData))
+                if (inputDecorationTheme is not InputDecorationThemeData)
                 {
                     throw DartRuntimePrimitives.AsException(new DartArgumentError("inputDecorationTheme must be either a InputDecorationThemeData or a InputDecorationTheme"));
                 }
             }
         }
-        return new ThemeData(adaptationMap: ((adaptations is not null) ? _createAdaptationMap(adaptations.Cast<Adaptation<object>>()) : this.adaptationMap), applyElevationOverlayColor: (applyElevationOverlayColor ?? this.applyElevationOverlayColor), cupertinoOverrideTheme: (cupertinoOverrideTheme ?? this.cupertinoOverrideTheme), extensions: (((extensions is not null)) ? _themeExtensionIterableToMap(extensions) : this.extensions), inputDecorationTheme: (((InputDecorationThemeData?)inputDecorationTheme)! ?? this.inputDecorationTheme), materialTapTargetSize: (materialTapTargetSize ?? this.materialTapTargetSize), pageTransitionsTheme: (pageTransitionsTheme ?? this.pageTransitionsTheme), platform: (platform ?? this.platform), scrollbarTheme: (scrollbarTheme ?? this.scrollbarTheme), splashFactory: (splashFactory ?? this.splashFactory), visualDensity: (visualDensity ?? this.visualDensity), canvasColor: (canvasColor ?? this.canvasColor), cardColor: (cardColor ?? this.cardColor), colorScheme: ((colorScheme ?? this.colorScheme)).copyWith(brightness: brightness), disabledColor: (disabledColor ?? this.disabledColor), dividerColor: (dividerColor ?? this.dividerColor), focusColor: (focusColor ?? this.focusColor), highlightColor: (highlightColor ?? this.highlightColor), hintColor: (hintColor ?? this.hintColor), hoverColor: (hoverColor ?? this.hoverColor), primaryColor: (primaryColor ?? this.primaryColor), primaryColorDark: (primaryColorDark ?? this.primaryColorDark), primaryColorLight: (primaryColorLight ?? this.primaryColorLight), scaffoldBackgroundColor: (scaffoldBackgroundColor ?? this.scaffoldBackgroundColor), secondaryHeaderColor: (secondaryHeaderColor ?? this.secondaryHeaderColor), shadowColor: (shadowColor ?? this.shadowColor), splashColor: (splashColor ?? this.splashColor), unselectedWidgetColor: (unselectedWidgetColor ?? this.unselectedWidgetColor), iconTheme: (iconTheme ?? this.iconTheme), primaryIconTheme: (primaryIconTheme ?? this.primaryIconTheme), primaryTextTheme: (primaryTextTheme ?? this.primaryTextTheme), textTheme: (textTheme ?? this.textTheme), typography: (typography ?? this.typography), actionIconTheme: (actionIconTheme ?? this.actionIconTheme), appBarTheme: ((global::System.Func<AppBarThemeData>)(() =>
+        return new ThemeData(adaptationMap: (adaptations is not null) ? _createAdaptationMap(adaptations.Cast<Adaptation<object>>()) : adaptationMap, applyElevationOverlayColor: applyElevationOverlayColor ?? this.applyElevationOverlayColor, cupertinoOverrideTheme: cupertinoOverrideTheme ?? this.cupertinoOverrideTheme, extensions: (extensions is not null) ? _themeExtensionIterableToMap(extensions) : this.extensions, inputDecorationTheme: ((InputDecorationThemeData?)inputDecorationTheme)! ?? this.inputDecorationTheme, materialTapTargetSize: materialTapTargetSize ?? this.materialTapTargetSize, pageTransitionsTheme: pageTransitionsTheme ?? this.pageTransitionsTheme, platform: platform ?? this.platform, scrollbarTheme: scrollbarTheme ?? this.scrollbarTheme, splashFactory: splashFactory ?? this.splashFactory, visualDensity: visualDensity ?? this.visualDensity, canvasColor: canvasColor ?? this.canvasColor, cardColor: cardColor ?? this.cardColor, colorScheme: (colorScheme ?? this.colorScheme).copyWith(brightness: brightness), disabledColor: disabledColor ?? this.disabledColor, dividerColor: dividerColor ?? this.dividerColor, focusColor: focusColor ?? this.focusColor, highlightColor: highlightColor ?? this.highlightColor, hintColor: hintColor ?? this.hintColor, hoverColor: hoverColor ?? this.hoverColor, primaryColor: primaryColor ?? this.primaryColor, primaryColorDark: primaryColorDark ?? this.primaryColorDark, primaryColorLight: primaryColorLight ?? this.primaryColorLight, scaffoldBackgroundColor: scaffoldBackgroundColor ?? this.scaffoldBackgroundColor, secondaryHeaderColor: secondaryHeaderColor ?? this.secondaryHeaderColor, shadowColor: shadowColor ?? this.shadowColor, splashColor: splashColor ?? this.splashColor, unselectedWidgetColor: unselectedWidgetColor ?? this.unselectedWidgetColor, iconTheme: iconTheme ?? this.iconTheme, primaryIconTheme: primaryIconTheme ?? this.primaryIconTheme, primaryTextTheme: primaryTextTheme ?? this.primaryTextTheme, textTheme: textTheme ?? this.textTheme, typography: typography ?? this.typography, actionIconTheme: actionIconTheme ?? this.actionIconTheme, appBarTheme: ((global::System.Func<AppBarThemeData>)(() =>
         {
-            if ((appBarTheme is not null))
+            if (appBarTheme is not null)
             {
-                if ((appBarTheme is AppBarTheme))
+                if (appBarTheme is AppBarTheme)
                 {
                     AppBarTheme appBarTheme__as70567 = (AppBarTheme)appBarTheme;
-                    return ((AppBarTheme)appBarTheme__as70567).data;
+                    return appBarTheme__as70567.data;
                 }
                 else
                 {
-                    if ((appBarTheme is not AppBarThemeData))
+                    if (appBarTheme is not AppBarThemeData)
                     {
                         throw DartRuntimePrimitives.AsException(new DartArgumentError("appBarTheme must be either a AppBarThemeData or a AppBarTheme"));
                     }
                 }
             }
-            return (((AppBarThemeData?)appBarTheme)! ?? this.appBarTheme);
+            return ((AppBarThemeData?)appBarTheme)! ?? this.appBarTheme;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))(), badgeTheme: (badgeTheme ?? this.badgeTheme), bannerTheme: (bannerTheme ?? this.bannerTheme), bottomAppBarTheme: (bottomAppBarTheme ?? this.bottomAppBarTheme), bottomNavigationBarTheme: (bottomNavigationBarTheme ?? this.bottomNavigationBarTheme), bottomSheetTheme: (bottomSheetTheme ?? this.bottomSheetTheme), buttonTheme: (buttonTheme ?? this.buttonTheme), cardTheme: (cardTheme ?? this.cardTheme), carouselViewTheme: (carouselViewTheme ?? this.carouselViewTheme), checkboxTheme: (checkboxTheme ?? this.checkboxTheme), chipTheme: (chipTheme ?? this.chipTheme), dataTableTheme: (dataTableTheme ?? this.dataTableTheme), datePickerTheme: (datePickerTheme ?? this.datePickerTheme), dialogTheme: (dialogTheme ?? this.dialogTheme), dividerTheme: (dividerTheme ?? this.dividerTheme), drawerTheme: (drawerTheme ?? this.drawerTheme), dropdownMenuTheme: (dropdownMenuTheme ?? this.dropdownMenuTheme), elevatedButtonTheme: (elevatedButtonTheme ?? this.elevatedButtonTheme), expansionTileTheme: (expansionTileTheme ?? this.expansionTileTheme), filledButtonTheme: (filledButtonTheme ?? this.filledButtonTheme), floatingActionButtonTheme: (floatingActionButtonTheme ?? this.floatingActionButtonTheme), iconButtonTheme: (iconButtonTheme ?? this.iconButtonTheme), listTileTheme: (listTileTheme ?? this.listTileTheme), menuBarTheme: (menuBarTheme ?? this.menuBarTheme), menuButtonTheme: (menuButtonTheme ?? this.menuButtonTheme), menuTheme: (menuTheme ?? this.menuTheme), navigationBarTheme: (navigationBarTheme ?? this.navigationBarTheme), navigationDrawerTheme: (navigationDrawerTheme ?? this.navigationDrawerTheme), navigationRailTheme: (navigationRailTheme ?? this.navigationRailTheme), outlinedButtonTheme: (outlinedButtonTheme ?? this.outlinedButtonTheme), popupMenuTheme: (popupMenuTheme ?? this.popupMenuTheme), progressIndicatorTheme: (progressIndicatorTheme ?? this.progressIndicatorTheme), radioTheme: (radioTheme ?? this.radioTheme), searchBarTheme: (searchBarTheme ?? this.searchBarTheme), searchViewTheme: (searchViewTheme ?? this.searchViewTheme), segmentedButtonTheme: (segmentedButtonTheme ?? this.segmentedButtonTheme), sliderTheme: (sliderTheme ?? this.sliderTheme), snackBarTheme: (snackBarTheme ?? this.snackBarTheme), switchTheme: (switchTheme ?? this.switchTheme), tabBarTheme: (tabBarTheme ?? this.tabBarTheme), textButtonTheme: (textButtonTheme ?? this.textButtonTheme), textSelectionTheme: (textSelectionTheme ?? this.textSelectionTheme), timePickerTheme: (timePickerTheme ?? this.timePickerTheme), toggleButtonsTheme: (toggleButtonsTheme ?? this.toggleButtonsTheme), tooltipTheme: (tooltipTheme ?? this.tooltipTheme), buttonBarTheme: (buttonBarTheme ?? this._buttonBarTheme), dialogBackgroundColor: (dialogBackgroundColor ?? this.dialogBackgroundColor), indicatorColor: (indicatorColor ?? this.indicatorColor));
+        }))(), badgeTheme: badgeTheme ?? this.badgeTheme, bannerTheme: bannerTheme ?? this.bannerTheme, bottomAppBarTheme: bottomAppBarTheme ?? this.bottomAppBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme ?? this.bottomNavigationBarTheme, bottomSheetTheme: bottomSheetTheme ?? this.bottomSheetTheme, buttonTheme: buttonTheme ?? this.buttonTheme, cardTheme: cardTheme ?? this.cardTheme, carouselViewTheme: carouselViewTheme ?? this.carouselViewTheme, checkboxTheme: checkboxTheme ?? this.checkboxTheme, chipTheme: chipTheme ?? this.chipTheme, dataTableTheme: dataTableTheme ?? this.dataTableTheme, datePickerTheme: datePickerTheme ?? this.datePickerTheme, dialogTheme: dialogTheme ?? this.dialogTheme, dividerTheme: dividerTheme ?? this.dividerTheme, drawerTheme: drawerTheme ?? this.drawerTheme, dropdownMenuTheme: dropdownMenuTheme ?? this.dropdownMenuTheme, elevatedButtonTheme: elevatedButtonTheme ?? this.elevatedButtonTheme, expansionTileTheme: expansionTileTheme ?? this.expansionTileTheme, filledButtonTheme: filledButtonTheme ?? this.filledButtonTheme, floatingActionButtonTheme: floatingActionButtonTheme ?? this.floatingActionButtonTheme, iconButtonTheme: iconButtonTheme ?? this.iconButtonTheme, listTileTheme: listTileTheme ?? this.listTileTheme, menuBarTheme: menuBarTheme ?? this.menuBarTheme, menuButtonTheme: menuButtonTheme ?? this.menuButtonTheme, menuTheme: menuTheme ?? this.menuTheme, navigationBarTheme: navigationBarTheme ?? this.navigationBarTheme, navigationDrawerTheme: navigationDrawerTheme ?? this.navigationDrawerTheme, navigationRailTheme: navigationRailTheme ?? this.navigationRailTheme, outlinedButtonTheme: outlinedButtonTheme ?? this.outlinedButtonTheme, popupMenuTheme: popupMenuTheme ?? this.popupMenuTheme, progressIndicatorTheme: progressIndicatorTheme ?? this.progressIndicatorTheme, radioTheme: radioTheme ?? this.radioTheme, searchBarTheme: searchBarTheme ?? this.searchBarTheme, searchViewTheme: searchViewTheme ?? this.searchViewTheme, segmentedButtonTheme: segmentedButtonTheme ?? this.segmentedButtonTheme, sliderTheme: sliderTheme ?? this.sliderTheme, snackBarTheme: snackBarTheme ?? this.snackBarTheme, switchTheme: switchTheme ?? this.switchTheme, tabBarTheme: tabBarTheme ?? this.tabBarTheme, textButtonTheme: textButtonTheme ?? this.textButtonTheme, textSelectionTheme: textSelectionTheme ?? this.textSelectionTheme, timePickerTheme: timePickerTheme ?? this.timePickerTheme, toggleButtonsTheme: toggleButtonsTheme ?? this.toggleButtonsTheme, tooltipTheme: tooltipTheme ?? this.tooltipTheme, buttonBarTheme: buttonBarTheme ?? _buttonBarTheme, dialogBackgroundColor: dialogBackgroundColor ?? this.dialogBackgroundColor, indicatorColor: indicatorColor ?? this.indicatorColor);
     }
 
     public static ThemeData localize(ThemeData baseTheme, TextTheme localTextGeometry)
     {
-        return ((ThemeData)_localizedThemeDataCache.putIfAbsent(new _IdentityThemeDataCacheKey__theme_data(baseTheme, localTextGeometry), (() =>
+        return _localizedThemeDataCache.putIfAbsent(new _IdentityThemeDataCacheKey__theme_data(baseTheme, localTextGeometry), () =>
         {
-            return baseTheme.copyWith(primaryTextTheme: localTextGeometry.merge(((ThemeData)baseTheme).primaryTextTheme), textTheme: localTextGeometry.merge(((ThemeData)baseTheme).textTheme));
+            return baseTheme.copyWith(primaryTextTheme: localTextGeometry.merge(baseTheme.primaryTextTheme), textTheme: localTextGeometry.merge(baseTheme.textTheme));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -464,7 +464,7 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
     {
         double relativeLuminance = color.computeLuminance();
         var kThreshold = 0.15;
-        if (((((relativeLuminance + 0.05)) * ((relativeLuminance + 0.05))) > kThreshold))
+        if (((relativeLuminance + 0.05) * (relativeLuminance + 0.05)) > kThreshold)
         {
             return Brightness.light;
         }
@@ -474,13 +474,13 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     internal static DartMap<object, ThemeExtension<object>> _lerpThemeExtensions(ThemeData a, ThemeData b, double t)
     {
-        DartMap<object, ThemeExtension<object>> newExtensions = ((ThemeData)a).extensions.map<object, ThemeExtension<object>, object, ThemeExtension<object>>(((id, extensionA) =>
+        DartMap<object, ThemeExtension<object>> newExtensions = a.extensions.map<object, ThemeExtension<object>, object, ThemeExtension<object>>((id, extensionA) =>
         {
-            ThemeExtension<object>? extensionB = ((ThemeData)b).extensions.GetValueOrDefault(id);
+            ThemeExtension<object>? extensionB = b.extensions.GetValueOrDefault(id);
             return new MapEntry<object, ThemeExtension<object>>(id, extensionA.lerp(extensionB, t));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
-        newExtensions.addEntries(((ThemeData)b).extensions.entries.where(((entry) => !((ThemeData)a).extensions.ContainsKey(entry.key))).Cast<MapEntry<object, ThemeExtension<object>>>());
+        });
+        newExtensions.addEntries(b.extensions.entries.where((entry) => !a.extensions.ContainsKey(entry.key)).Cast<MapEntry<object, ThemeExtension<object>>>());
         return newExtensions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -497,18 +497,18 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return this;
         }
-        global::Doroti.Ui.SystemColorPalette systemColors = ((global::Doroti.Ui.SystemColorPalette)((Equals(this.brightness, Brightness.dark)) ? SystemColor.dark : SystemColor.light));
+        global::Doroti.Ui.SystemColorPalette systemColors = Equals(brightness, Brightness.dark) ? SystemColor.dark : SystemColor.light;
         var theme = this;
-        theme = theme.copyWith(colorScheme: this.colorScheme.copyWith(secondary: systemColors.accentColor.value, onSecondary: systemColors.accentColorText.value, surface: systemColors.canvas.value, onSurface: systemColors.canvasText.value), textTheme: this.textTheme.apply(displayColor: systemColors.canvasText.value, bodyColor: systemColors.canvasText.value));
-        bool overrideButtons = (((systemColors.buttonFace.value is not null) || (systemColors.buttonBorder.value is not null)) || (systemColors.buttonText.value is not null));
+        theme = theme.copyWith(colorScheme: colorScheme.copyWith(secondary: systemColors.accentColor.value, onSecondary: systemColors.accentColorText.value, surface: systemColors.canvas.value, onSurface: systemColors.canvasText.value), textTheme: textTheme.apply(displayColor: systemColors.canvasText.value, bodyColor: systemColors.canvasText.value));
+        bool overrideButtons = (systemColors.buttonFace.value is not null) || (systemColors.buttonBorder.value is not null) || (systemColors.buttonText.value is not null);
         if (overrideButtons)
         {
-            theme = theme.copyWith(elevatedButtonTheme: new ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), textButtonTheme: new TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), outlinedButtonTheme: new OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), filledButtonTheme: new FilledButtonThemeData(style: FilledButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), floatingActionButtonTheme: new FloatingActionButtonThemeData(backgroundColor: systemColors.buttonFace.value, foregroundColor: systemColors.buttonText.value));
+            theme = theme.copyWith(elevatedButtonTheme: new ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: (systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!))), textButtonTheme: new TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: (systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!))), outlinedButtonTheme: new OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: (systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!))), filledButtonTheme: new FilledButtonThemeData(style: FilledButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: (systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!))), floatingActionButtonTheme: new FloatingActionButtonThemeData(backgroundColor: systemColors.buttonFace.value, foregroundColor: systemColors.buttonText.value));
         }
-        bool overrideInputDecoration = ((systemColors.field.value is not null) || (systemColors.fieldText.value is not null));
+        bool overrideInputDecoration = (systemColors.field.value is not null) || (systemColors.fieldText.value is not null);
         if (overrideInputDecoration)
         {
-            theme = theme.copyWith(inputDecorationTheme: this.inputDecorationTheme.copyWith(fillColor: systemColors.field.value, labelStyle: (this.inputDecorationTheme.labelStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), hintStyle: (this.inputDecorationTheme.hintStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), helperStyle: (this.inputDecorationTheme.helperStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), prefixStyle: (this.inputDecorationTheme.prefixStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), suffixStyle: (this.inputDecorationTheme.suffixStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), counterStyle: (this.inputDecorationTheme.counterStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value))));
+            theme = theme.copyWith(inputDecorationTheme: inputDecorationTheme.copyWith(fillColor: systemColors.field.value, labelStyle: inputDecorationTheme.labelStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value), hintStyle: inputDecorationTheme.hintStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value), helperStyle: inputDecorationTheme.helperStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value), prefixStyle: inputDecorationTheme.prefixStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value), suffixStyle: inputDecorationTheme.suffixStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value), counterStyle: inputDecorationTheme.counterStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)));
         }
         return theme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -520,110 +520,110 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return a;
         }
-        return new ThemeData(adaptationMap: ((t < 0.5) ? ((ThemeData)a).adaptationMap : ((ThemeData)b).adaptationMap), applyElevationOverlayColor: ((t < 0.5) ? ((ThemeData)a).applyElevationOverlayColor : ((ThemeData)b).applyElevationOverlayColor), cupertinoOverrideTheme: ((t < 0.5) ? ((ThemeData)a).cupertinoOverrideTheme : ((ThemeData)b).cupertinoOverrideTheme), extensions: _lerpThemeExtensions(a, b, t), inputDecorationTheme: ((t < 0.5) ? ((ThemeData)a).inputDecorationTheme : ((ThemeData)b).inputDecorationTheme), materialTapTargetSize: ((t < 0.5) ? ((ThemeData)a).materialTapTargetSize : ((ThemeData)b).materialTapTargetSize), pageTransitionsTheme: ((t < 0.5) ? ((ThemeData)a).pageTransitionsTheme : ((ThemeData)b).pageTransitionsTheme), platform: ((t < 0.5) ? ((ThemeData)a).platform : ((ThemeData)b).platform), scrollbarTheme: ScrollbarThemeData.lerp(((ThemeData)a).scrollbarTheme, ((ThemeData)b).scrollbarTheme, t), splashFactory: ((t < 0.5) ? ((ThemeData)a).splashFactory : ((ThemeData)b).splashFactory), visualDensity: VisualDensity.lerp(((ThemeData)a).visualDensity, ((ThemeData)b).visualDensity, t), canvasColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).canvasColor, ((ThemeData)b).canvasColor, t)!, cardColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).cardColor, ((ThemeData)b).cardColor, t)!, colorScheme: ColorScheme.lerp(((ThemeData)a).colorScheme, ((ThemeData)b).colorScheme, t), disabledColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).disabledColor, ((ThemeData)b).disabledColor, t)!, dividerColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).dividerColor, ((ThemeData)b).dividerColor, t)!, focusColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).focusColor, ((ThemeData)b).focusColor, t)!, highlightColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).highlightColor, ((ThemeData)b).highlightColor, t)!, hintColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).hintColor, ((ThemeData)b).hintColor, t)!, hoverColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).hoverColor, ((ThemeData)b).hoverColor, t)!, primaryColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).primaryColor, ((ThemeData)b).primaryColor, t)!, primaryColorDark: Dart_uiLibrary.Color.lerp(((ThemeData)a).primaryColorDark, ((ThemeData)b).primaryColorDark, t)!, primaryColorLight: Dart_uiLibrary.Color.lerp(((ThemeData)a).primaryColorLight, ((ThemeData)b).primaryColorLight, t)!, scaffoldBackgroundColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).scaffoldBackgroundColor, ((ThemeData)b).scaffoldBackgroundColor, t)!, secondaryHeaderColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).secondaryHeaderColor, ((ThemeData)b).secondaryHeaderColor, t)!, shadowColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).shadowColor, ((ThemeData)b).shadowColor, t)!, splashColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).splashColor, ((ThemeData)b).splashColor, t)!, unselectedWidgetColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).unselectedWidgetColor, ((ThemeData)b).unselectedWidgetColor, t)!, iconTheme: IconThemeData.lerp(((ThemeData)a).iconTheme, ((ThemeData)b).iconTheme, t), primaryIconTheme: IconThemeData.lerp(((ThemeData)a).primaryIconTheme, ((ThemeData)b).primaryIconTheme, t), primaryTextTheme: TextTheme.lerp(((ThemeData)a).primaryTextTheme, ((ThemeData)b).primaryTextTheme, t), textTheme: TextTheme.lerp(((ThemeData)a).textTheme, ((ThemeData)b).textTheme, t), typography: Typography.lerp(((ThemeData)a).typography, ((ThemeData)b).typography, t), actionIconTheme: ActionIconThemeData.lerp(((ThemeData)a).actionIconTheme, ((ThemeData)b).actionIconTheme, t), appBarTheme: AppBarThemeData.lerp(((ThemeData)a).appBarTheme, ((ThemeData)b).appBarTheme, t), badgeTheme: BadgeThemeData.lerp(((ThemeData)a).badgeTheme, ((ThemeData)b).badgeTheme, t), bannerTheme: MaterialBannerThemeData.lerp(((ThemeData)a).bannerTheme, ((ThemeData)b).bannerTheme, t), bottomAppBarTheme: BottomAppBarThemeData.lerp(((ThemeData)a).bottomAppBarTheme, ((ThemeData)b).bottomAppBarTheme, t), bottomNavigationBarTheme: BottomNavigationBarThemeData.lerp(((ThemeData)a).bottomNavigationBarTheme, ((ThemeData)b).bottomNavigationBarTheme, t), bottomSheetTheme: BottomSheetThemeData.lerp(((ThemeData)a).bottomSheetTheme, ((ThemeData)b).bottomSheetTheme, t)!, buttonTheme: ((t < 0.5) ? ((ThemeData)a).buttonTheme : ((ThemeData)b).buttonTheme), cardTheme: CardThemeData.lerp(((ThemeData)a).cardTheme, ((ThemeData)b).cardTheme, t), carouselViewTheme: CarouselViewThemeData.lerp(((ThemeData)a).carouselViewTheme, ((ThemeData)b).carouselViewTheme, t), checkboxTheme: CheckboxThemeData.lerp(((ThemeData)a).checkboxTheme, ((ThemeData)b).checkboxTheme, t), chipTheme: ChipThemeData.lerp(((ThemeData)a).chipTheme, ((ThemeData)b).chipTheme, t)!, dataTableTheme: DataTableThemeData.lerp(((ThemeData)a).dataTableTheme, ((ThemeData)b).dataTableTheme, t), datePickerTheme: DatePickerThemeData.lerp(((ThemeData)a).datePickerTheme, ((ThemeData)b).datePickerTheme, t), dialogTheme: DialogThemeData.lerp(((ThemeData)a).dialogTheme, ((ThemeData)b).dialogTheme, t), dividerTheme: DividerThemeData.lerp(((ThemeData)a).dividerTheme, ((ThemeData)b).dividerTheme, t), drawerTheme: DrawerThemeData.lerp(((ThemeData)a).drawerTheme, ((ThemeData)b).drawerTheme, t)!, dropdownMenuTheme: DropdownMenuThemeData.lerp(((ThemeData)a).dropdownMenuTheme, ((ThemeData)b).dropdownMenuTheme, t), elevatedButtonTheme: ElevatedButtonThemeData.lerp(((ThemeData)a).elevatedButtonTheme, ((ThemeData)b).elevatedButtonTheme, t)!, expansionTileTheme: ExpansionTileThemeData.lerp(((ThemeData)a).expansionTileTheme, ((ThemeData)b).expansionTileTheme, t)!, filledButtonTheme: FilledButtonThemeData.lerp(((ThemeData)a).filledButtonTheme, ((ThemeData)b).filledButtonTheme, t)!, floatingActionButtonTheme: FloatingActionButtonThemeData.lerp(((ThemeData)a).floatingActionButtonTheme, ((ThemeData)b).floatingActionButtonTheme, t)!, iconButtonTheme: IconButtonThemeData.lerp(((ThemeData)a).iconButtonTheme, ((ThemeData)b).iconButtonTheme, t)!, listTileTheme: ListTileThemeData.lerp(((ThemeData)a).listTileTheme, ((ThemeData)b).listTileTheme, t)!, menuBarTheme: MenuBarThemeData.lerp(((ThemeData)a).menuBarTheme, ((ThemeData)b).menuBarTheme, t)!, menuButtonTheme: MenuButtonThemeData.lerp(((ThemeData)a).menuButtonTheme, ((ThemeData)b).menuButtonTheme, t)!, menuTheme: MenuThemeData.lerp(((ThemeData)a).menuTheme, ((ThemeData)b).menuTheme, t)!, navigationBarTheme: NavigationBarThemeData.lerp(((ThemeData)a).navigationBarTheme, ((ThemeData)b).navigationBarTheme, t)!, navigationDrawerTheme: NavigationDrawerThemeData.lerp(((ThemeData)a).navigationDrawerTheme, ((ThemeData)b).navigationDrawerTheme, t)!, navigationRailTheme: NavigationRailThemeData.lerp(((ThemeData)a).navigationRailTheme, ((ThemeData)b).navigationRailTheme, t)!, outlinedButtonTheme: OutlinedButtonThemeData.lerp(((ThemeData)a).outlinedButtonTheme, ((ThemeData)b).outlinedButtonTheme, t)!, popupMenuTheme: PopupMenuThemeData.lerp(((ThemeData)a).popupMenuTheme, ((ThemeData)b).popupMenuTheme, t)!, progressIndicatorTheme: ProgressIndicatorThemeData.lerp(((ThemeData)a).progressIndicatorTheme, ((ThemeData)b).progressIndicatorTheme, t)!, radioTheme: RadioThemeData.lerp(((ThemeData)a).radioTheme, ((ThemeData)b).radioTheme, t), searchBarTheme: SearchBarThemeData.lerp(((ThemeData)a).searchBarTheme, ((ThemeData)b).searchBarTheme, t)!, searchViewTheme: SearchViewThemeData.lerp(((ThemeData)a).searchViewTheme, ((ThemeData)b).searchViewTheme, t)!, segmentedButtonTheme: SegmentedButtonThemeData.lerp(((ThemeData)a).segmentedButtonTheme, ((ThemeData)b).segmentedButtonTheme, t), sliderTheme: SliderThemeData.lerp(((ThemeData)a).sliderTheme, ((ThemeData)b).sliderTheme, t), snackBarTheme: SnackBarThemeData.lerp(((ThemeData)a).snackBarTheme, ((ThemeData)b).snackBarTheme, t), switchTheme: SwitchThemeData.lerp(((ThemeData)a).switchTheme, ((ThemeData)b).switchTheme, t), tabBarTheme: TabBarThemeData.lerp(((ThemeData)a).tabBarTheme, ((ThemeData)b).tabBarTheme, t), textButtonTheme: TextButtonThemeData.lerp(((ThemeData)a).textButtonTheme, ((ThemeData)b).textButtonTheme, t)!, textSelectionTheme: TextSelectionThemeData.lerp(((ThemeData)a).textSelectionTheme, ((ThemeData)b).textSelectionTheme, t)!, timePickerTheme: TimePickerThemeData.lerp(((ThemeData)a).timePickerTheme, ((ThemeData)b).timePickerTheme, t), toggleButtonsTheme: ToggleButtonsThemeData.lerp(((ThemeData)a).toggleButtonsTheme, ((ThemeData)b).toggleButtonsTheme, t)!, tooltipTheme: TooltipThemeData.lerp(((ThemeData)a).tooltipTheme, ((ThemeData)b).tooltipTheme, t)!, buttonBarTheme: ButtonBarThemeData.lerp(((ThemeData)a).buttonBarTheme, ((ThemeData)b).buttonBarTheme, t), dialogBackgroundColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).dialogBackgroundColor, ((ThemeData)b).dialogBackgroundColor, t)!, indicatorColor: Dart_uiLibrary.Color.lerp(((ThemeData)a).indicatorColor, ((ThemeData)b).indicatorColor, t)!);
+        return new ThemeData(adaptationMap: (t < 0.5) ? a.adaptationMap : b.adaptationMap, applyElevationOverlayColor: (t < 0.5) ? a.applyElevationOverlayColor : b.applyElevationOverlayColor, cupertinoOverrideTheme: (t < 0.5) ? a.cupertinoOverrideTheme : b.cupertinoOverrideTheme, extensions: _lerpThemeExtensions(a, b, t), inputDecorationTheme: (t < 0.5) ? a.inputDecorationTheme : b.inputDecorationTheme, materialTapTargetSize: (t < 0.5) ? a.materialTapTargetSize : b.materialTapTargetSize, pageTransitionsTheme: (t < 0.5) ? a.pageTransitionsTheme : b.pageTransitionsTheme, platform: (t < 0.5) ? a.platform : b.platform, scrollbarTheme: ScrollbarThemeData.lerp(a.scrollbarTheme, b.scrollbarTheme, t), splashFactory: (t < 0.5) ? a.splashFactory : b.splashFactory, visualDensity: VisualDensity.lerp(a.visualDensity, b.visualDensity, t), canvasColor: Dart_uiLibrary.Color.lerp(a.canvasColor, b.canvasColor, t)!, cardColor: Dart_uiLibrary.Color.lerp(a.cardColor, b.cardColor, t)!, colorScheme: ColorScheme.lerp(a.colorScheme, b.colorScheme, t), disabledColor: Dart_uiLibrary.Color.lerp(a.disabledColor, b.disabledColor, t)!, dividerColor: Dart_uiLibrary.Color.lerp(a.dividerColor, b.dividerColor, t)!, focusColor: Dart_uiLibrary.Color.lerp(a.focusColor, b.focusColor, t)!, highlightColor: Dart_uiLibrary.Color.lerp(a.highlightColor, b.highlightColor, t)!, hintColor: Dart_uiLibrary.Color.lerp(a.hintColor, b.hintColor, t)!, hoverColor: Dart_uiLibrary.Color.lerp(a.hoverColor, b.hoverColor, t)!, primaryColor: Dart_uiLibrary.Color.lerp(a.primaryColor, b.primaryColor, t)!, primaryColorDark: Dart_uiLibrary.Color.lerp(a.primaryColorDark, b.primaryColorDark, t)!, primaryColorLight: Dart_uiLibrary.Color.lerp(a.primaryColorLight, b.primaryColorLight, t)!, scaffoldBackgroundColor: Dart_uiLibrary.Color.lerp(a.scaffoldBackgroundColor, b.scaffoldBackgroundColor, t)!, secondaryHeaderColor: Dart_uiLibrary.Color.lerp(a.secondaryHeaderColor, b.secondaryHeaderColor, t)!, shadowColor: Dart_uiLibrary.Color.lerp(a.shadowColor, b.shadowColor, t)!, splashColor: Dart_uiLibrary.Color.lerp(a.splashColor, b.splashColor, t)!, unselectedWidgetColor: Dart_uiLibrary.Color.lerp(a.unselectedWidgetColor, b.unselectedWidgetColor, t)!, iconTheme: IconThemeData.lerp(a.iconTheme, b.iconTheme, t), primaryIconTheme: IconThemeData.lerp(a.primaryIconTheme, b.primaryIconTheme, t), primaryTextTheme: TextTheme.lerp(a.primaryTextTheme, b.primaryTextTheme, t), textTheme: TextTheme.lerp(a.textTheme, b.textTheme, t), typography: Typography.lerp(a.typography, b.typography, t), actionIconTheme: ActionIconThemeData.lerp(a.actionIconTheme, b.actionIconTheme, t), appBarTheme: AppBarThemeData.lerp(a.appBarTheme, b.appBarTheme, t), badgeTheme: BadgeThemeData.lerp(a.badgeTheme, b.badgeTheme, t), bannerTheme: MaterialBannerThemeData.lerp(a.bannerTheme, b.bannerTheme, t), bottomAppBarTheme: BottomAppBarThemeData.lerp(a.bottomAppBarTheme, b.bottomAppBarTheme, t), bottomNavigationBarTheme: BottomNavigationBarThemeData.lerp(a.bottomNavigationBarTheme, b.bottomNavigationBarTheme, t), bottomSheetTheme: BottomSheetThemeData.lerp(a.bottomSheetTheme, b.bottomSheetTheme, t)!, buttonTheme: (t < 0.5) ? a.buttonTheme : b.buttonTheme, cardTheme: CardThemeData.lerp(a.cardTheme, b.cardTheme, t), carouselViewTheme: CarouselViewThemeData.lerp(a.carouselViewTheme, b.carouselViewTheme, t), checkboxTheme: CheckboxThemeData.lerp(a.checkboxTheme, b.checkboxTheme, t), chipTheme: ChipThemeData.lerp(a.chipTheme, b.chipTheme, t)!, dataTableTheme: DataTableThemeData.lerp(a.dataTableTheme, b.dataTableTheme, t), datePickerTheme: DatePickerThemeData.lerp(a.datePickerTheme, b.datePickerTheme, t), dialogTheme: DialogThemeData.lerp(a.dialogTheme, b.dialogTheme, t), dividerTheme: DividerThemeData.lerp(a.dividerTheme, b.dividerTheme, t), drawerTheme: DrawerThemeData.lerp(a.drawerTheme, b.drawerTheme, t)!, dropdownMenuTheme: DropdownMenuThemeData.lerp(a.dropdownMenuTheme, b.dropdownMenuTheme, t), elevatedButtonTheme: ElevatedButtonThemeData.lerp(a.elevatedButtonTheme, b.elevatedButtonTheme, t)!, expansionTileTheme: ExpansionTileThemeData.lerp(a.expansionTileTheme, b.expansionTileTheme, t)!, filledButtonTheme: FilledButtonThemeData.lerp(a.filledButtonTheme, b.filledButtonTheme, t)!, floatingActionButtonTheme: FloatingActionButtonThemeData.lerp(a.floatingActionButtonTheme, b.floatingActionButtonTheme, t)!, iconButtonTheme: IconButtonThemeData.lerp(a.iconButtonTheme, b.iconButtonTheme, t)!, listTileTheme: ListTileThemeData.lerp(a.listTileTheme, b.listTileTheme, t)!, menuBarTheme: MenuBarThemeData.lerp(a.menuBarTheme, b.menuBarTheme, t)!, menuButtonTheme: MenuButtonThemeData.lerp(a.menuButtonTheme, b.menuButtonTheme, t)!, menuTheme: MenuThemeData.lerp(a.menuTheme, b.menuTheme, t)!, navigationBarTheme: NavigationBarThemeData.lerp(a.navigationBarTheme, b.navigationBarTheme, t)!, navigationDrawerTheme: NavigationDrawerThemeData.lerp(a.navigationDrawerTheme, b.navigationDrawerTheme, t)!, navigationRailTheme: NavigationRailThemeData.lerp(a.navigationRailTheme, b.navigationRailTheme, t)!, outlinedButtonTheme: OutlinedButtonThemeData.lerp(a.outlinedButtonTheme, b.outlinedButtonTheme, t)!, popupMenuTheme: PopupMenuThemeData.lerp(a.popupMenuTheme, b.popupMenuTheme, t)!, progressIndicatorTheme: ProgressIndicatorThemeData.lerp(a.progressIndicatorTheme, b.progressIndicatorTheme, t)!, radioTheme: RadioThemeData.lerp(a.radioTheme, b.radioTheme, t), searchBarTheme: SearchBarThemeData.lerp(a.searchBarTheme, b.searchBarTheme, t)!, searchViewTheme: SearchViewThemeData.lerp(a.searchViewTheme, b.searchViewTheme, t)!, segmentedButtonTheme: SegmentedButtonThemeData.lerp(a.segmentedButtonTheme, b.segmentedButtonTheme, t), sliderTheme: SliderThemeData.lerp(a.sliderTheme, b.sliderTheme, t), snackBarTheme: SnackBarThemeData.lerp(a.snackBarTheme, b.snackBarTheme, t), switchTheme: SwitchThemeData.lerp(a.switchTheme, b.switchTheme, t), tabBarTheme: TabBarThemeData.lerp(a.tabBarTheme, b.tabBarTheme, t), textButtonTheme: TextButtonThemeData.lerp(a.textButtonTheme, b.textButtonTheme, t)!, textSelectionTheme: TextSelectionThemeData.lerp(a.textSelectionTheme, b.textSelectionTheme, t)!, timePickerTheme: TimePickerThemeData.lerp(a.timePickerTheme, b.timePickerTheme, t), toggleButtonsTheme: ToggleButtonsThemeData.lerp(a.toggleButtonsTheme, b.toggleButtonsTheme, t)!, tooltipTheme: TooltipThemeData.lerp(a.tooltipTheme, b.tooltipTheme, t)!, buttonBarTheme: ButtonBarThemeData.lerp(a.buttonBarTheme, b.buttonBarTheme, t), dialogBackgroundColor: Dart_uiLibrary.Color.lerp(a.dialogBackgroundColor, b.dialogBackgroundColor, t)!, indicatorColor: Dart_uiLibrary.Color.lerp(a.indicatorColor, b.indicatorColor, t)!);
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as ThemeData;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((__other is ThemeData) && CollectionsLibrary.mapEquals(((ThemeData)((ThemeData)__other)).adaptationMap, this.adaptationMap)) && (((ThemeData)((ThemeData)__other)).applyElevationOverlayColor == this.applyElevationOverlayColor)) && (Equals(((ThemeData)((ThemeData)__other)).cupertinoOverrideTheme, this.cupertinoOverrideTheme))) && CollectionsLibrary.mapEquals(((ThemeData)((ThemeData)__other)).extensions, this.extensions)) && (Equals(((ThemeData)((ThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (Equals(((ThemeData)((ThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (Equals(((ThemeData)((ThemeData)__other)).pageTransitionsTheme, this.pageTransitionsTheme))) && (Equals(((ThemeData)((ThemeData)__other)).platform, this.platform))) && (Equals(((ThemeData)((ThemeData)__other)).scrollbarTheme, this.scrollbarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).splashFactory, this.splashFactory))))) && (Equals(((ThemeData)((ThemeData)__other)).visualDensity, this.visualDensity))) && (Equals(((ThemeData)((ThemeData)__other)).canvasColor, this.canvasColor))) && (Equals(((ThemeData)((ThemeData)__other)).cardColor, this.cardColor))) && (Equals(((ThemeData)((ThemeData)__other)).colorScheme, this.colorScheme))) && (Equals(((ThemeData)((ThemeData)__other)).disabledColor, this.disabledColor))) && (Equals(((ThemeData)((ThemeData)__other)).dividerColor, this.dividerColor))) && (Equals(((ThemeData)((ThemeData)__other)).focusColor, this.focusColor))) && (Equals(((ThemeData)((ThemeData)__other)).highlightColor, this.highlightColor))) && (Equals(((ThemeData)((ThemeData)__other)).hintColor, this.hintColor))) && (Equals(((ThemeData)((ThemeData)__other)).hoverColor, this.hoverColor))) && (Equals(((ThemeData)((ThemeData)__other)).primaryColor, this.primaryColor))) && (Equals(((ThemeData)((ThemeData)__other)).primaryColorDark, this.primaryColorDark))) && (Equals(((ThemeData)((ThemeData)__other)).primaryColorLight, this.primaryColorLight))) && (Equals(((ThemeData)((ThemeData)__other)).scaffoldBackgroundColor, this.scaffoldBackgroundColor))) && (Equals(((ThemeData)((ThemeData)__other)).secondaryHeaderColor, this.secondaryHeaderColor))) && (Equals(((ThemeData)((ThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((ThemeData)((ThemeData)__other)).splashColor, this.splashColor))) && (Equals(((ThemeData)((ThemeData)__other)).unselectedWidgetColor, this.unselectedWidgetColor))) && (Equals(((ThemeData)((ThemeData)__other)).iconTheme, this.iconTheme))) && (Equals(((ThemeData)((ThemeData)__other)).primaryIconTheme, this.primaryIconTheme))) && (Equals(((ThemeData)((ThemeData)__other)).primaryTextTheme, this.primaryTextTheme))) && (Equals(((ThemeData)((ThemeData)__other)).textTheme, this.textTheme))) && (Equals(((ThemeData)((ThemeData)__other)).typography, this.typography))) && (Equals(((ThemeData)((ThemeData)__other)).actionIconTheme, this.actionIconTheme))) && (Equals(((ThemeData)((ThemeData)__other)).appBarTheme, this.appBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).badgeTheme, this.badgeTheme))) && (Equals(((ThemeData)((ThemeData)__other)).bannerTheme, this.bannerTheme))) && (Equals(((ThemeData)((ThemeData)__other)).bottomAppBarTheme, this.bottomAppBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).bottomNavigationBarTheme, this.bottomNavigationBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).bottomSheetTheme, this.bottomSheetTheme))) && (Equals(((ThemeData)((ThemeData)__other)).buttonTheme, this.buttonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).cardTheme, this.cardTheme))) && (Equals(((ThemeData)((ThemeData)__other)).carouselViewTheme, this.carouselViewTheme))) && (Equals(((ThemeData)((ThemeData)__other)).checkboxTheme, this.checkboxTheme))) && (Equals(((ThemeData)((ThemeData)__other)).chipTheme, this.chipTheme))) && (Equals(((ThemeData)((ThemeData)__other)).dataTableTheme, this.dataTableTheme))) && (Equals(((ThemeData)((ThemeData)__other)).datePickerTheme, this.datePickerTheme))) && (Equals(((ThemeData)((ThemeData)__other)).dialogTheme, this.dialogTheme))) && (Equals(((ThemeData)((ThemeData)__other)).dividerTheme, this.dividerTheme))) && (Equals(((ThemeData)((ThemeData)__other)).drawerTheme, this.drawerTheme))) && (Equals(((ThemeData)((ThemeData)__other)).dropdownMenuTheme, this.dropdownMenuTheme))) && (Equals(((ThemeData)((ThemeData)__other)).elevatedButtonTheme, this.elevatedButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).expansionTileTheme, this.expansionTileTheme))) && (Equals(((ThemeData)((ThemeData)__other)).filledButtonTheme, this.filledButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).floatingActionButtonTheme, this.floatingActionButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).iconButtonTheme, this.iconButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).listTileTheme, this.listTileTheme))) && (Equals(((ThemeData)((ThemeData)__other)).menuBarTheme, this.menuBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).menuButtonTheme, this.menuButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).menuTheme, this.menuTheme))) && (Equals(((ThemeData)((ThemeData)__other)).navigationBarTheme, this.navigationBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).navigationDrawerTheme, this.navigationDrawerTheme))) && (Equals(((ThemeData)((ThemeData)__other)).navigationRailTheme, this.navigationRailTheme))) && (Equals(((ThemeData)((ThemeData)__other)).outlinedButtonTheme, this.outlinedButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).popupMenuTheme, this.popupMenuTheme))) && (Equals(((ThemeData)((ThemeData)__other)).progressIndicatorTheme, this.progressIndicatorTheme))) && (Equals(((ThemeData)((ThemeData)__other)).radioTheme, this.radioTheme))) && (Equals(((ThemeData)((ThemeData)__other)).searchBarTheme, this.searchBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).searchViewTheme, this.searchViewTheme))) && (Equals(((ThemeData)((ThemeData)__other)).segmentedButtonTheme, this.segmentedButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).sliderTheme, this.sliderTheme))) && (Equals(((ThemeData)((ThemeData)__other)).snackBarTheme, this.snackBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).switchTheme, this.switchTheme))) && (Equals(((ThemeData)((ThemeData)__other)).tabBarTheme, this.tabBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).textButtonTheme, this.textButtonTheme))) && (Equals(((ThemeData)((ThemeData)__other)).textSelectionTheme, this.textSelectionTheme))) && (Equals(((ThemeData)((ThemeData)__other)).timePickerTheme, this.timePickerTheme))) && (Equals(((ThemeData)((ThemeData)__other)).toggleButtonsTheme, this.toggleButtonsTheme))) && (Equals(((ThemeData)((ThemeData)__other)).tooltipTheme, this.tooltipTheme))) && (Equals(((ThemeData)((ThemeData)__other)).buttonBarTheme, this.buttonBarTheme))) && (Equals(((ThemeData)((ThemeData)__other)).dialogBackgroundColor, this.dialogBackgroundColor))) && (Equals(((ThemeData)((ThemeData)__other)).indicatorColor, this.indicatorColor)));
+        return (__other is ThemeData) && CollectionsLibrary.mapEquals(__other.adaptationMap, adaptationMap) && (__other.applyElevationOverlayColor == applyElevationOverlayColor) && Equals(__other.cupertinoOverrideTheme, cupertinoOverrideTheme) && CollectionsLibrary.mapEquals(__other.extensions, extensions) && Equals(__other.inputDecorationTheme, inputDecorationTheme) && Equals(__other.materialTapTargetSize, materialTapTargetSize) && Equals(__other.pageTransitionsTheme, pageTransitionsTheme) && Equals(__other.platform, platform) && Equals(__other.scrollbarTheme, scrollbarTheme) && Equals(__other.splashFactory, splashFactory) && Equals(__other.visualDensity, visualDensity) && Equals(__other.canvasColor, canvasColor) && Equals(__other.cardColor, cardColor) && Equals(__other.colorScheme, colorScheme) && Equals(__other.disabledColor, disabledColor) && Equals(__other.dividerColor, dividerColor) && Equals(__other.focusColor, focusColor) && Equals(__other.highlightColor, highlightColor) && Equals(__other.hintColor, hintColor) && Equals(__other.hoverColor, hoverColor) && Equals(__other.primaryColor, primaryColor) && Equals(__other.primaryColorDark, primaryColorDark) && Equals(__other.primaryColorLight, primaryColorLight) && Equals(__other.scaffoldBackgroundColor, scaffoldBackgroundColor) && Equals(__other.secondaryHeaderColor, secondaryHeaderColor) && Equals(__other.shadowColor, shadowColor) && Equals(__other.splashColor, splashColor) && Equals(__other.unselectedWidgetColor, unselectedWidgetColor) && Equals(__other.iconTheme, iconTheme) && Equals(__other.primaryIconTheme, primaryIconTheme) && Equals(__other.primaryTextTheme, primaryTextTheme) && Equals(__other.textTheme, textTheme) && Equals(__other.typography, typography) && Equals(__other.actionIconTheme, actionIconTheme) && Equals(__other.appBarTheme, appBarTheme) && Equals(__other.badgeTheme, badgeTheme) && Equals(__other.bannerTheme, bannerTheme) && Equals(__other.bottomAppBarTheme, bottomAppBarTheme) && Equals(__other.bottomNavigationBarTheme, bottomNavigationBarTheme) && Equals(__other.bottomSheetTheme, bottomSheetTheme) && Equals(__other.buttonTheme, buttonTheme) && Equals(__other.cardTheme, cardTheme) && Equals(__other.carouselViewTheme, carouselViewTheme) && Equals(__other.checkboxTheme, checkboxTheme) && Equals(__other.chipTheme, chipTheme) && Equals(__other.dataTableTheme, dataTableTheme) && Equals(__other.datePickerTheme, datePickerTheme) && Equals(__other.dialogTheme, dialogTheme) && Equals(__other.dividerTheme, dividerTheme) && Equals(__other.drawerTheme, drawerTheme) && Equals(__other.dropdownMenuTheme, dropdownMenuTheme) && Equals(__other.elevatedButtonTheme, elevatedButtonTheme) && Equals(__other.expansionTileTheme, expansionTileTheme) && Equals(__other.filledButtonTheme, filledButtonTheme) && Equals(__other.floatingActionButtonTheme, floatingActionButtonTheme) && Equals(__other.iconButtonTheme, iconButtonTheme) && Equals(__other.listTileTheme, listTileTheme) && Equals(__other.menuBarTheme, menuBarTheme) && Equals(__other.menuButtonTheme, menuButtonTheme) && Equals(__other.menuTheme, menuTheme) && Equals(__other.navigationBarTheme, navigationBarTheme) && Equals(__other.navigationDrawerTheme, navigationDrawerTheme) && Equals(__other.navigationRailTheme, navigationRailTheme) && Equals(__other.outlinedButtonTheme, outlinedButtonTheme) && Equals(__other.popupMenuTheme, popupMenuTheme) && Equals(__other.progressIndicatorTheme, progressIndicatorTheme) && Equals(__other.radioTheme, radioTheme) && Equals(__other.searchBarTheme, searchBarTheme) && Equals(__other.searchViewTheme, searchViewTheme) && Equals(__other.segmentedButtonTheme, segmentedButtonTheme) && Equals(__other.sliderTheme, sliderTheme) && Equals(__other.snackBarTheme, snackBarTheme) && Equals(__other.switchTheme, switchTheme) && Equals(__other.tabBarTheme, tabBarTheme) && Equals(__other.textButtonTheme, textButtonTheme) && Equals(__other.textSelectionTheme, textSelectionTheme) && Equals(__other.timePickerTheme, timePickerTheme) && Equals(__other.toggleButtonsTheme, toggleButtonsTheme) && Equals(__other.tooltipTheme, tooltipTheme) && Equals(__other.buttonBarTheme, buttonBarTheme) && Equals(__other.dialogBackgroundColor, dialogBackgroundColor) && Equals(__other.indicatorColor, indicatorColor);
     }
 
     public override int GetHashCode()
     {
-        var values = ((Func<List<object?>>)(() => { var __collection95592 = new List<object?>(); __collection95592.AddRange(this.adaptationMap.Keys); __collection95592.AddRange(this.adaptationMap.Values); __collection95592.Add(this.applyElevationOverlayColor); __collection95592.Add(this.cupertinoOverrideTheme); __collection95592.AddRange(this.extensions.Keys); __collection95592.AddRange(this.extensions.Values); __collection95592.Add(this.inputDecorationTheme); __collection95592.Add(this.materialTapTargetSize); __collection95592.Add(this.pageTransitionsTheme); __collection95592.Add(this.platform); __collection95592.Add(this.scrollbarTheme); __collection95592.Add(this.splashFactory); __collection95592.Add(this.visualDensity); __collection95592.Add(this.canvasColor); __collection95592.Add(this.cardColor); __collection95592.Add(this.colorScheme); __collection95592.Add(this.disabledColor); __collection95592.Add(this.dividerColor); __collection95592.Add(this.focusColor); __collection95592.Add(this.highlightColor); __collection95592.Add(this.hintColor); __collection95592.Add(this.hoverColor); __collection95592.Add(this.primaryColor); __collection95592.Add(this.primaryColorDark); __collection95592.Add(this.primaryColorLight); __collection95592.Add(this.scaffoldBackgroundColor); __collection95592.Add(this.secondaryHeaderColor); __collection95592.Add(this.shadowColor); __collection95592.Add(this.splashColor); __collection95592.Add(this.unselectedWidgetColor); __collection95592.Add(this.iconTheme); __collection95592.Add(this.primaryIconTheme); __collection95592.Add(this.primaryTextTheme); __collection95592.Add(this.textTheme); __collection95592.Add(this.typography); __collection95592.Add(this.actionIconTheme); __collection95592.Add(this.appBarTheme); __collection95592.Add(this.badgeTheme); __collection95592.Add(this.bannerTheme); __collection95592.Add(this.bottomAppBarTheme); __collection95592.Add(this.bottomNavigationBarTheme); __collection95592.Add(this.bottomSheetTheme); __collection95592.Add(this.buttonTheme); __collection95592.Add(this.cardTheme); __collection95592.Add(this.carouselViewTheme); __collection95592.Add(this.checkboxTheme); __collection95592.Add(this.chipTheme); __collection95592.Add(this.dataTableTheme); __collection95592.Add(this.datePickerTheme); __collection95592.Add(this.dialogTheme); __collection95592.Add(this.dividerTheme); __collection95592.Add(this.drawerTheme); __collection95592.Add(this.dropdownMenuTheme); __collection95592.Add(this.elevatedButtonTheme); __collection95592.Add(this.expansionTileTheme); __collection95592.Add(this.filledButtonTheme); __collection95592.Add(this.floatingActionButtonTheme); __collection95592.Add(this.iconButtonTheme); __collection95592.Add(this.listTileTheme); __collection95592.Add(this.menuBarTheme); __collection95592.Add(this.menuButtonTheme); __collection95592.Add(this.menuTheme); __collection95592.Add(this.navigationBarTheme); __collection95592.Add(this.navigationDrawerTheme); __collection95592.Add(this.navigationRailTheme); __collection95592.Add(this.outlinedButtonTheme); __collection95592.Add(this.popupMenuTheme); __collection95592.Add(this.progressIndicatorTheme); __collection95592.Add(this.radioTheme); __collection95592.Add(this.searchBarTheme); __collection95592.Add(this.searchViewTheme); __collection95592.Add(this.segmentedButtonTheme); __collection95592.Add(this.sliderTheme); __collection95592.Add(this.snackBarTheme); __collection95592.Add(this.switchTheme); __collection95592.Add(this.tabBarTheme); __collection95592.Add(this.textButtonTheme); __collection95592.Add(this.textSelectionTheme); __collection95592.Add(this.timePickerTheme); __collection95592.Add(this.toggleButtonsTheme); __collection95592.Add(this.tooltipTheme); __collection95592.Add(this.buttonBarTheme); __collection95592.Add(this.dialogBackgroundColor); __collection95592.Add(this.indicatorColor); return __collection95592; }))();
+        var values = ((Func<List<object?>>)(() => { var __collection95592 = new List<object?>(); __collection95592.AddRange(adaptationMap.Keys); __collection95592.AddRange(adaptationMap.Values); __collection95592.Add(applyElevationOverlayColor); __collection95592.Add(cupertinoOverrideTheme); __collection95592.AddRange(extensions.Keys); __collection95592.AddRange(extensions.Values); __collection95592.Add(inputDecorationTheme); __collection95592.Add(materialTapTargetSize); __collection95592.Add(pageTransitionsTheme); __collection95592.Add(platform); __collection95592.Add(scrollbarTheme); __collection95592.Add(splashFactory); __collection95592.Add(visualDensity); __collection95592.Add(canvasColor); __collection95592.Add(cardColor); __collection95592.Add(colorScheme); __collection95592.Add(disabledColor); __collection95592.Add(dividerColor); __collection95592.Add(focusColor); __collection95592.Add(highlightColor); __collection95592.Add(hintColor); __collection95592.Add(hoverColor); __collection95592.Add(primaryColor); __collection95592.Add(primaryColorDark); __collection95592.Add(primaryColorLight); __collection95592.Add(scaffoldBackgroundColor); __collection95592.Add(secondaryHeaderColor); __collection95592.Add(shadowColor); __collection95592.Add(splashColor); __collection95592.Add(unselectedWidgetColor); __collection95592.Add(iconTheme); __collection95592.Add(primaryIconTheme); __collection95592.Add(primaryTextTheme); __collection95592.Add(textTheme); __collection95592.Add(typography); __collection95592.Add(actionIconTheme); __collection95592.Add(appBarTheme); __collection95592.Add(badgeTheme); __collection95592.Add(bannerTheme); __collection95592.Add(bottomAppBarTheme); __collection95592.Add(bottomNavigationBarTheme); __collection95592.Add(bottomSheetTheme); __collection95592.Add(buttonTheme); __collection95592.Add(cardTheme); __collection95592.Add(carouselViewTheme); __collection95592.Add(checkboxTheme); __collection95592.Add(chipTheme); __collection95592.Add(dataTableTheme); __collection95592.Add(datePickerTheme); __collection95592.Add(dialogTheme); __collection95592.Add(dividerTheme); __collection95592.Add(drawerTheme); __collection95592.Add(dropdownMenuTheme); __collection95592.Add(elevatedButtonTheme); __collection95592.Add(expansionTileTheme); __collection95592.Add(filledButtonTheme); __collection95592.Add(floatingActionButtonTheme); __collection95592.Add(iconButtonTheme); __collection95592.Add(listTileTheme); __collection95592.Add(menuBarTheme); __collection95592.Add(menuButtonTheme); __collection95592.Add(menuTheme); __collection95592.Add(navigationBarTheme); __collection95592.Add(navigationDrawerTheme); __collection95592.Add(navigationRailTheme); __collection95592.Add(outlinedButtonTheme); __collection95592.Add(popupMenuTheme); __collection95592.Add(progressIndicatorTheme); __collection95592.Add(radioTheme); __collection95592.Add(searchBarTheme); __collection95592.Add(searchViewTheme); __collection95592.Add(segmentedButtonTheme); __collection95592.Add(sliderTheme); __collection95592.Add(snackBarTheme); __collection95592.Add(switchTheme); __collection95592.Add(tabBarTheme); __collection95592.Add(textButtonTheme); __collection95592.Add(textSelectionTheme); __collection95592.Add(timePickerTheme); __collection95592.Add(toggleButtonsTheme); __collection95592.Add(tooltipTheme); __collection95592.Add(buttonBarTheme); __collection95592.Add(dialogBackgroundColor); __collection95592.Add(indicatorColor); return __collection95592; }))();
         return FoundationRuntimePorts.ObjectHashAll(values);
     }
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         var defaultData = CreateFallback();
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<Adaptation<object>>("adaptations", this.adaptationMap.Values.Cast<Adaptation<object>>(), defaultValue: ((ThemeData)defaultData).adaptationMap.Values, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyElevationOverlayColor", this.applyElevationOverlayColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NoDefaultCupertinoThemeData>("cupertinoOverrideTheme", this.cupertinoOverrideTheme, defaultValue: ((ThemeData)defaultData).cupertinoOverrideTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<ThemeExtension<object>>("extensions", this.extensions.Values.Cast<ThemeExtension<object>>(), defaultValue: ((ThemeData)defaultData).extensions.Values, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InputDecorationThemeData>("inputDecorationTheme", this.inputDecorationTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", this.materialTapTargetSize, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PageTransitionsTheme>("pageTransitionsTheme", this.pageTransitionsTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Foundation.TargetPlatform>("platform", this.platform, defaultValue: PlatformLibrary.defaultTargetPlatform, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollbarThemeData>("scrollbarTheme", this.scrollbarTheme, defaultValue: ((ThemeData)defaultData).scrollbarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InteractiveInkFeatureFactory>("splashFactory", this.splashFactory, defaultValue: ((ThemeData)defaultData).splashFactory, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", this.visualDensity, defaultValue: ((ThemeData)defaultData).visualDensity, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("canvasColor", this.canvasColor, defaultValue: ((ThemeData)defaultData).canvasColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cardColor", this.cardColor, defaultValue: ((ThemeData)defaultData).cardColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ColorScheme>("colorScheme", this.colorScheme, defaultValue: ((ThemeData)defaultData).colorScheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: ((ThemeData)defaultData).disabledColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dividerColor", this.dividerColor, defaultValue: ((ThemeData)defaultData).dividerColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", this.focusColor, defaultValue: ((ThemeData)defaultData).focusColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", this.highlightColor, defaultValue: ((ThemeData)defaultData).highlightColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hintColor", this.hintColor, defaultValue: ((ThemeData)defaultData).hintColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", this.hoverColor, defaultValue: ((ThemeData)defaultData).hoverColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorDark", this.primaryColorDark, defaultValue: ((ThemeData)defaultData).primaryColorDark, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorLight", this.primaryColorLight, defaultValue: ((ThemeData)defaultData).primaryColorLight, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColor", this.primaryColor, defaultValue: ((ThemeData)defaultData).primaryColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("scaffoldBackgroundColor", this.scaffoldBackgroundColor, defaultValue: ((ThemeData)defaultData).scaffoldBackgroundColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryHeaderColor", this.secondaryHeaderColor, defaultValue: ((ThemeData)defaultData).secondaryHeaderColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: ((ThemeData)defaultData).shadowColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", this.splashColor, defaultValue: ((ThemeData)defaultData).splashColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("unselectedWidgetColor", this.unselectedWidgetColor, defaultValue: ((ThemeData)defaultData).unselectedWidgetColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("iconTheme", this.iconTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("primaryIconTheme", this.primaryIconTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("primaryTextTheme", this.primaryTextTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("textTheme", this.textTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Typography>("typography", this.typography, defaultValue: ((ThemeData)defaultData).typography, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ActionIconThemeData>("actionIconTheme", this.actionIconTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<AppBarThemeData>("appBarTheme", this.appBarTheme, defaultValue: ((ThemeData)defaultData).appBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BadgeThemeData>("badgeTheme", this.badgeTheme, defaultValue: ((ThemeData)defaultData).badgeTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialBannerThemeData>("bannerTheme", this.bannerTheme, defaultValue: ((ThemeData)defaultData).bannerTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomAppBarThemeData>("bottomAppBarTheme", this.bottomAppBarTheme, defaultValue: ((ThemeData)defaultData).bottomAppBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarThemeData>("bottomNavigationBarTheme", this.bottomNavigationBarTheme, defaultValue: ((ThemeData)defaultData).bottomNavigationBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomSheetThemeData>("bottomSheetTheme", this.bottomSheetTheme, defaultValue: ((ThemeData)defaultData).bottomSheetTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonThemeData>("buttonTheme", this.buttonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CardThemeData>("cardTheme", this.cardTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CarouselViewThemeData>("carouselViewTheme", this.carouselViewTheme, defaultValue: ((ThemeData)defaultData).carouselViewTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CheckboxThemeData>("checkboxTheme", this.checkboxTheme, defaultValue: ((ThemeData)defaultData).checkboxTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ChipThemeData>("chipTheme", this.chipTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DataTableThemeData>("dataTableTheme", this.dataTableTheme, defaultValue: ((ThemeData)defaultData).dataTableTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DatePickerThemeData>("datePickerTheme", this.datePickerTheme, defaultValue: ((ThemeData)defaultData).datePickerTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DialogThemeData>("dialogTheme", this.dialogTheme, defaultValue: ((ThemeData)defaultData).dialogTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DividerThemeData>("dividerTheme", this.dividerTheme, defaultValue: ((ThemeData)defaultData).dividerTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DrawerThemeData>("drawerTheme", this.drawerTheme, defaultValue: ((ThemeData)defaultData).drawerTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DropdownMenuThemeData>("dropdownMenuTheme", this.dropdownMenuTheme, defaultValue: ((ThemeData)defaultData).dropdownMenuTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ElevatedButtonThemeData>("elevatedButtonTheme", this.elevatedButtonTheme, defaultValue: ((ThemeData)defaultData).elevatedButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ExpansionTileThemeData>("expansionTileTheme", this.expansionTileTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FilledButtonThemeData>("filledButtonTheme", this.filledButtonTheme, defaultValue: ((ThemeData)defaultData).filledButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FloatingActionButtonThemeData>("floatingActionButtonTheme", this.floatingActionButtonTheme, defaultValue: ((ThemeData)defaultData).floatingActionButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IconButtonThemeData>("iconButtonTheme", this.iconButtonTheme, defaultValue: ((ThemeData)defaultData).iconButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTileThemeData>("listTileTheme", this.listTileTheme, defaultValue: ((ThemeData)defaultData).listTileTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuBarThemeData>("menuBarTheme", this.menuBarTheme, defaultValue: ((ThemeData)defaultData).menuBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuButtonThemeData>("menuButtonTheme", this.menuButtonTheme, defaultValue: ((ThemeData)defaultData).menuButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuThemeData>("menuTheme", this.menuTheme, defaultValue: ((ThemeData)defaultData).menuTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationBarThemeData>("navigationBarTheme", this.navigationBarTheme, defaultValue: ((ThemeData)defaultData).navigationBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationDrawerThemeData>("navigationDrawerTheme", this.navigationDrawerTheme, defaultValue: ((ThemeData)defaultData).navigationDrawerTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationRailThemeData>("navigationRailTheme", this.navigationRailTheme, defaultValue: ((ThemeData)defaultData).navigationRailTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OutlinedButtonThemeData>("outlinedButtonTheme", this.outlinedButtonTheme, defaultValue: ((ThemeData)defaultData).outlinedButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PopupMenuThemeData>("popupMenuTheme", this.popupMenuTheme, defaultValue: ((ThemeData)defaultData).popupMenuTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ProgressIndicatorThemeData>("progressIndicatorTheme", this.progressIndicatorTheme, defaultValue: ((ThemeData)defaultData).progressIndicatorTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RadioThemeData>("radioTheme", this.radioTheme, defaultValue: ((ThemeData)defaultData).radioTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchBarThemeData>("searchBarTheme", this.searchBarTheme, defaultValue: ((ThemeData)defaultData).searchBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchViewThemeData>("searchViewTheme", this.searchViewTheme, defaultValue: ((ThemeData)defaultData).searchViewTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SegmentedButtonThemeData>("segmentedButtonTheme", this.segmentedButtonTheme, defaultValue: ((ThemeData)defaultData).segmentedButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderThemeData>("sliderTheme", this.sliderTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SnackBarThemeData>("snackBarTheme", this.snackBarTheme, defaultValue: ((ThemeData)defaultData).snackBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SwitchThemeData>("switchTheme", this.switchTheme, defaultValue: ((ThemeData)defaultData).switchTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TabBarThemeData>("tabBarTheme", this.tabBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextButtonThemeData>("textButtonTheme", this.textButtonTheme, defaultValue: ((ThemeData)defaultData).textButtonTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextSelectionThemeData>("textSelectionTheme", this.textSelectionTheme, defaultValue: ((ThemeData)defaultData).textSelectionTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TimePickerThemeData>("timePickerTheme", this.timePickerTheme, defaultValue: ((ThemeData)defaultData).timePickerTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ToggleButtonsThemeData>("toggleButtonsTheme", this.toggleButtonsTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TooltipThemeData>("tooltipTheme", this.tooltipTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonBarThemeData>("buttonBarTheme", this.buttonBarTheme, defaultValue: ((ThemeData)defaultData).buttonBarTheme, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dialogBackgroundColor", this.dialogBackgroundColor, defaultValue: ((ThemeData)defaultData).dialogBackgroundColor, level: DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", this.indicatorColor, defaultValue: ((ThemeData)defaultData).indicatorColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<Adaptation<object>>("adaptations", adaptationMap.Values.Cast<Adaptation<object>>(), defaultValue: defaultData.adaptationMap.Values, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyElevationOverlayColor", applyElevationOverlayColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NoDefaultCupertinoThemeData>("cupertinoOverrideTheme", cupertinoOverrideTheme, defaultValue: defaultData.cupertinoOverrideTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<ThemeExtension<object>>("extensions", extensions.Values.Cast<ThemeExtension<object>>(), defaultValue: defaultData.extensions.Values, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InputDecorationThemeData>("inputDecorationTheme", inputDecorationTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", materialTapTargetSize, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PageTransitionsTheme>("pageTransitionsTheme", pageTransitionsTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Foundation.TargetPlatform>("platform", platform, defaultValue: PlatformLibrary.defaultTargetPlatform, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollbarThemeData>("scrollbarTheme", scrollbarTheme, defaultValue: defaultData.scrollbarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InteractiveInkFeatureFactory>("splashFactory", splashFactory, defaultValue: defaultData.splashFactory, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: defaultData.visualDensity, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("canvasColor", canvasColor, defaultValue: defaultData.canvasColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cardColor", cardColor, defaultValue: defaultData.cardColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ColorScheme>("colorScheme", colorScheme, defaultValue: defaultData.colorScheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", disabledColor, defaultValue: defaultData.disabledColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dividerColor", dividerColor, defaultValue: defaultData.dividerColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", focusColor, defaultValue: defaultData.focusColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", highlightColor, defaultValue: defaultData.highlightColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hintColor", hintColor, defaultValue: defaultData.hintColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", hoverColor, defaultValue: defaultData.hoverColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorDark", primaryColorDark, defaultValue: defaultData.primaryColorDark, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorLight", primaryColorLight, defaultValue: defaultData.primaryColorLight, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColor", primaryColor, defaultValue: defaultData.primaryColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("scaffoldBackgroundColor", scaffoldBackgroundColor, defaultValue: defaultData.scaffoldBackgroundColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryHeaderColor", secondaryHeaderColor, defaultValue: defaultData.secondaryHeaderColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor, defaultValue: defaultData.shadowColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", splashColor, defaultValue: defaultData.splashColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("unselectedWidgetColor", unselectedWidgetColor, defaultValue: defaultData.unselectedWidgetColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("iconTheme", iconTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("primaryIconTheme", primaryIconTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("primaryTextTheme", primaryTextTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("textTheme", textTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Typography>("typography", typography, defaultValue: defaultData.typography, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ActionIconThemeData>("actionIconTheme", actionIconTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<AppBarThemeData>("appBarTheme", appBarTheme, defaultValue: defaultData.appBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BadgeThemeData>("badgeTheme", badgeTheme, defaultValue: defaultData.badgeTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialBannerThemeData>("bannerTheme", bannerTheme, defaultValue: defaultData.bannerTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomAppBarThemeData>("bottomAppBarTheme", bottomAppBarTheme, defaultValue: defaultData.bottomAppBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarThemeData>("bottomNavigationBarTheme", bottomNavigationBarTheme, defaultValue: defaultData.bottomNavigationBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomSheetThemeData>("bottomSheetTheme", bottomSheetTheme, defaultValue: defaultData.bottomSheetTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonThemeData>("buttonTheme", buttonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CardThemeData>("cardTheme", cardTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CarouselViewThemeData>("carouselViewTheme", carouselViewTheme, defaultValue: defaultData.carouselViewTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CheckboxThemeData>("checkboxTheme", checkboxTheme, defaultValue: defaultData.checkboxTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ChipThemeData>("chipTheme", chipTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DataTableThemeData>("dataTableTheme", dataTableTheme, defaultValue: defaultData.dataTableTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DatePickerThemeData>("datePickerTheme", datePickerTheme, defaultValue: defaultData.datePickerTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DialogThemeData>("dialogTheme", dialogTheme, defaultValue: defaultData.dialogTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DividerThemeData>("dividerTheme", dividerTheme, defaultValue: defaultData.dividerTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DrawerThemeData>("drawerTheme", drawerTheme, defaultValue: defaultData.drawerTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DropdownMenuThemeData>("dropdownMenuTheme", dropdownMenuTheme, defaultValue: defaultData.dropdownMenuTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ElevatedButtonThemeData>("elevatedButtonTheme", elevatedButtonTheme, defaultValue: defaultData.elevatedButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ExpansionTileThemeData>("expansionTileTheme", expansionTileTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FilledButtonThemeData>("filledButtonTheme", filledButtonTheme, defaultValue: defaultData.filledButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FloatingActionButtonThemeData>("floatingActionButtonTheme", floatingActionButtonTheme, defaultValue: defaultData.floatingActionButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IconButtonThemeData>("iconButtonTheme", iconButtonTheme, defaultValue: defaultData.iconButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTileThemeData>("listTileTheme", listTileTheme, defaultValue: defaultData.listTileTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuBarThemeData>("menuBarTheme", menuBarTheme, defaultValue: defaultData.menuBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuButtonThemeData>("menuButtonTheme", menuButtonTheme, defaultValue: defaultData.menuButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuThemeData>("menuTheme", menuTheme, defaultValue: defaultData.menuTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationBarThemeData>("navigationBarTheme", navigationBarTheme, defaultValue: defaultData.navigationBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationDrawerThemeData>("navigationDrawerTheme", navigationDrawerTheme, defaultValue: defaultData.navigationDrawerTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationRailThemeData>("navigationRailTheme", navigationRailTheme, defaultValue: defaultData.navigationRailTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OutlinedButtonThemeData>("outlinedButtonTheme", outlinedButtonTheme, defaultValue: defaultData.outlinedButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PopupMenuThemeData>("popupMenuTheme", popupMenuTheme, defaultValue: defaultData.popupMenuTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ProgressIndicatorThemeData>("progressIndicatorTheme", progressIndicatorTheme, defaultValue: defaultData.progressIndicatorTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RadioThemeData>("radioTheme", radioTheme, defaultValue: defaultData.radioTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchBarThemeData>("searchBarTheme", searchBarTheme, defaultValue: defaultData.searchBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchViewThemeData>("searchViewTheme", searchViewTheme, defaultValue: defaultData.searchViewTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SegmentedButtonThemeData>("segmentedButtonTheme", segmentedButtonTheme, defaultValue: defaultData.segmentedButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderThemeData>("sliderTheme", sliderTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SnackBarThemeData>("snackBarTheme", snackBarTheme, defaultValue: defaultData.snackBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SwitchThemeData>("switchTheme", switchTheme, defaultValue: defaultData.switchTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TabBarThemeData>("tabBarTheme", tabBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextButtonThemeData>("textButtonTheme", textButtonTheme, defaultValue: defaultData.textButtonTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextSelectionThemeData>("textSelectionTheme", textSelectionTheme, defaultValue: defaultData.textSelectionTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TimePickerThemeData>("timePickerTheme", timePickerTheme, defaultValue: defaultData.timePickerTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ToggleButtonsThemeData>("toggleButtonsTheme", toggleButtonsTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TooltipThemeData>("tooltipTheme", tooltipTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonBarThemeData>("buttonBarTheme", buttonBarTheme, defaultValue: defaultData.buttonBarTheme, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dialogBackgroundColor", dialogBackgroundColor, defaultValue: defaultData.dialogBackgroundColor, level: DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", indicatorColor, defaultValue: defaultData.indicatorColor, level: DiagnosticLevel.debug));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -637,13 +637,13 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -654,30 +654,30 @@ public class MaterialBasedCupertinoThemeData : CupertinoThemeData
     internal virtual ThemeData _materialTheme { get; private set; } = default!;
     internal virtual NoDefaultCupertinoThemeData _cupertinoOverrideTheme { get; private set; } = default!;
 
-    public MaterialBasedCupertinoThemeData(ThemeData materialTheme) : this(materialTheme, ((((ThemeData)materialTheme).cupertinoOverrideTheme ?? new CupertinoThemeData())).noDefault())
+    public MaterialBasedCupertinoThemeData(ThemeData materialTheme) : this(materialTheme, (materialTheme.cupertinoOverrideTheme ?? new CupertinoThemeData()).noDefault())
     {
     }
 
-    public MaterialBasedCupertinoThemeData(ThemeData _materialTheme, NoDefaultCupertinoThemeData _cupertinoOverrideTheme) : base(_cupertinoOverrideTheme.brightness, _cupertinoOverrideTheme.primaryColor, _cupertinoOverrideTheme.primaryContrastingColor, _cupertinoOverrideTheme.textTheme, _cupertinoOverrideTheme.barBackgroundColor, _cupertinoOverrideTheme.scaffoldBackgroundColor, (_cupertinoOverrideTheme.selectionHandleColor ?? ((ThemeData)_materialTheme).textSelectionTheme.selectionHandleColor), _cupertinoOverrideTheme.applyThemeToAll)
+    public MaterialBasedCupertinoThemeData(ThemeData _materialTheme, NoDefaultCupertinoThemeData _cupertinoOverrideTheme) : base(_cupertinoOverrideTheme.brightness, _cupertinoOverrideTheme.primaryColor, _cupertinoOverrideTheme.primaryContrastingColor, _cupertinoOverrideTheme.textTheme, _cupertinoOverrideTheme.barBackgroundColor, _cupertinoOverrideTheme.scaffoldBackgroundColor, _cupertinoOverrideTheme.selectionHandleColor ?? _materialTheme.textSelectionTheme.selectionHandleColor, _cupertinoOverrideTheme.applyThemeToAll)
     {
         this._materialTheme = _materialTheme;
         this._cupertinoOverrideTheme = _cupertinoOverrideTheme;
     }
 
-    public override global::Doroti.Ui.Brightness? brightness => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Brightness>(((this._cupertinoOverrideTheme.brightness ?? (Brightness)((ThemeData)this._materialTheme).brightness)));
-    public override global::Doroti.Ui.Color primaryColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this._cupertinoOverrideTheme.primaryColor ?? ((ThemeData)this._materialTheme).colorScheme.primary));
-    public override global::Doroti.Ui.Color primaryContrastingColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this._cupertinoOverrideTheme.primaryContrastingColor ?? ((ThemeData)this._materialTheme).colorScheme.onPrimary));
-    public override global::Doroti.Ui.Color scaffoldBackgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this._cupertinoOverrideTheme.scaffoldBackgroundColor ?? ((ThemeData)this._materialTheme).scaffoldBackgroundColor));
+    public override global::Doroti.Ui.Brightness? brightness => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Brightness>(_cupertinoOverrideTheme.brightness ?? _materialTheme.brightness);
+    public override global::Doroti.Ui.Color primaryColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_cupertinoOverrideTheme.primaryColor ?? _materialTheme.colorScheme.primary);
+    public override global::Doroti.Ui.Color primaryContrastingColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_cupertinoOverrideTheme.primaryContrastingColor ?? _materialTheme.colorScheme.onPrimary);
+    public override global::Doroti.Ui.Color scaffoldBackgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_cupertinoOverrideTheme.scaffoldBackgroundColor ?? _materialTheme.scaffoldBackgroundColor);
     public override MaterialBasedCupertinoThemeData copyWith(Brightness? brightness = null, Color? primaryColor = null, Color? primaryContrastingColor = null, CupertinoTextThemeData? textTheme = null, Color? barBackgroundColor = null, Color? scaffoldBackgroundColor = null, Color? selectionHandleColor = null, bool? applyThemeToAll = null)
     {
-        return new MaterialBasedCupertinoThemeData(this._materialTheme, this._cupertinoOverrideTheme.copyWith(brightness: brightness, primaryColor: primaryColor, primaryContrastingColor: primaryContrastingColor, textTheme: textTheme, barBackgroundColor: barBackgroundColor, scaffoldBackgroundColor: scaffoldBackgroundColor, selectionHandleColor: selectionHandleColor, applyThemeToAll: applyThemeToAll));
+        return new MaterialBasedCupertinoThemeData(_materialTheme, _cupertinoOverrideTheme.copyWith(brightness: brightness, primaryColor: primaryColor, primaryContrastingColor: primaryContrastingColor, textTheme: textTheme, barBackgroundColor: barBackgroundColor, scaffoldBackgroundColor: scaffoldBackgroundColor, selectionHandleColor: selectionHandleColor, applyThemeToAll: applyThemeToAll));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override CupertinoThemeData resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        NoDefaultCupertinoThemeData cupertinoOverrideThemeWithTextTheme = ((NoDefaultCupertinoThemeData)this._cupertinoOverrideTheme.copyWith(textTheme: textTheme));
-        return ((CupertinoThemeData)new MaterialBasedCupertinoThemeData(this._materialTheme, cupertinoOverrideThemeWithTextTheme.resolveFrom(context)));
+        NoDefaultCupertinoThemeData cupertinoOverrideThemeWithTextTheme = _cupertinoOverrideTheme.copyWith(textTheme: textTheme);
+        return new MaterialBasedCupertinoThemeData(_materialTheme, cupertinoOverrideThemeWithTextTheme.resolveFrom(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -689,7 +689,7 @@ public class CupertinoBasedMaterialThemeData
 
     public CupertinoBasedMaterialThemeData(CupertinoThemeData themeData)
     {
-        this.materialTheme = ThemeData.Create(colorScheme: ColorScheme.CreateFromSeed(seedColor: themeData.primaryColor, brightness: (themeData.brightness ?? Brightness.light), primary: themeData.primaryColor, onPrimary: themeData.primaryContrastingColor));
+        materialTheme = ThemeData.Create(colorScheme: ColorScheme.CreateFromSeed(seedColor: themeData.primaryColor, brightness: themeData.brightness ?? Brightness.light, primary: themeData.primaryColor, onPrimary: themeData.primaryContrastingColor));
     }
 
 }
@@ -705,12 +705,12 @@ internal class _IdentityThemeDataCacheKey__theme_data
         this.localTextGeometry = localTextGeometry;
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>((Dart_coreLibrary.identityHashCode(this.baseTheme) ^ Dart_coreLibrary.identityHashCode(this.localTextGeometry)));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(Dart_coreLibrary.identityHashCode(baseTheme) ^ Dart_coreLibrary.identityHashCode(localTextGeometry));
     public override bool Equals(object? other)
     {
         var __other = other as _IdentityThemeDataCacheKey__theme_data;
         if (__other is null) return false;
-        return (((__other is _IdentityThemeDataCacheKey__theme_data) && DartRuntimePrimitives.Identical(((_IdentityThemeDataCacheKey__theme_data)((_IdentityThemeDataCacheKey__theme_data)__other)).baseTheme, this.baseTheme)) && DartRuntimePrimitives.Identical(((_IdentityThemeDataCacheKey__theme_data)((_IdentityThemeDataCacheKey__theme_data)__other)).localTextGeometry, this.localTextGeometry));
+        return (__other is _IdentityThemeDataCacheKey__theme_data) && DartRuntimePrimitives.Identical(__other.baseTheme, baseTheme) && DartRuntimePrimitives.Identical(__other.localTextGeometry, localTextGeometry);
     }
 
 }
@@ -723,22 +723,22 @@ internal class _FifoCache__theme_data<K, V> where K : notnull
     internal _FifoCache__theme_data(long _maximumSize)
     {
         this._maximumSize = _maximumSize;
-        System.Diagnostics.Debug.Assert((_maximumSize > 0L));
+        System.Diagnostics.Debug.Assert(_maximumSize > 0L);
     }
 
     public virtual V putIfAbsent(K key, global::System.Func<V> loader)
     {
-        DartRuntimePrimitives.Assert(() => (key is not null));
-        V? result = this._cache.GetValueOrDefault(key);
-        if ((result is not null))
+        DartRuntimePrimitives.Assert(() => key is not null);
+        V? result = _cache.GetValueOrDefault(key);
+        if (result is not null)
         {
-            return ((V)result);
+            return result;
         }
-        if ((checked((long)(this._cache.Count)) == this._maximumSize))
+        if (checked(_cache.Count) == _maximumSize)
         {
-            this._cache.remove(this._cache.Keys.First());
+            _cache.remove(_cache.Keys.First());
         }
-        return this._cache[key] = loader();
+        return _cache[key] = loader();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -758,22 +758,22 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
     {
         this.horizontal = horizontal;
         this.vertical = vertical;
-        System.Diagnostics.Debug.Assert((vertical <= maximumDensity));
-        System.Diagnostics.Debug.Assert((vertical >= minimumDensity));
-        System.Diagnostics.Debug.Assert((horizontal <= maximumDensity));
-        System.Diagnostics.Debug.Assert((horizontal >= minimumDensity));
+        System.Diagnostics.Debug.Assert(vertical <= maximumDensity);
+        System.Diagnostics.Debug.Assert(vertical >= minimumDensity);
+        System.Diagnostics.Debug.Assert(horizontal <= maximumDensity);
+        System.Diagnostics.Debug.Assert(horizontal >= minimumDensity);
     }
 
     public static VisualDensity adaptivePlatformDensity => defaultDensityForPlatform(PlatformLibrary.defaultTargetPlatform);
     public static VisualDensity defaultDensityForPlatform(global::Doroti.Framework.Foundation.TargetPlatform platform)
     {
-        return (platform switch { TargetPlatform.android or TargetPlatform.iOS => standard, TargetPlatform.fuchsia => standard, TargetPlatform.linux or TargetPlatform.macOS => compact, TargetPlatform.windows => compact, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return platform switch { TargetPlatform.android or TargetPlatform.iOS => standard, TargetPlatform.fuchsia => standard, TargetPlatform.linux or TargetPlatform.macOS => compact, TargetPlatform.windows => compact, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual VisualDensity copyWith(double? horizontal = null, double? vertical = null)
     {
-        return new VisualDensity(horizontal: (horizontal ?? this.horizontal), vertical: (vertical ?? this.vertical));
+        return new VisualDensity(horizontal: horizontal ?? this.horizontal, vertical: vertical ?? this.vertical);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -782,7 +782,7 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
         get
         {
             var interval = 4.0;
-            return (new global::Doroti.Ui.Offset(this.horizontal, this.vertical) * interval);
+            return new global::Doroti.Ui.Offset(horizontal, vertical) * interval;
         }
     }
     public static VisualDensity lerp(VisualDensity a, VisualDensity b, double t)
@@ -791,14 +791,14 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return a;
         }
-        return new VisualDensity(horizontal: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((VisualDensity)a).horizontal, ((VisualDensity)b).horizontal, t)), vertical: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((VisualDensity)a).vertical, ((VisualDensity)b).vertical, t)));
+        return new VisualDensity(horizontal: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.horizontal, b.horizontal, t)), vertical: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.vertical, b.vertical, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.copyWith(minWidth: Dart_uiLibrary.clampDouble((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth + this.baseSizeAdjustment.dx), 0.0, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth), minHeight: Dart_uiLibrary.clampDouble((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight + this.baseSizeAdjustment.dy), 0.0, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight)));
+        return constraints.copyWith(minWidth: Dart_uiLibrary.clampDouble(constraints.minWidth + baseSizeAdjustment.dx, 0.0, constraints.maxWidth), minHeight: Dart_uiLibrary.clampDouble(constraints.minHeight + baseSizeAdjustment.dy, 0.0, constraints.maxHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -806,23 +806,23 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
     {
         var __other = other as VisualDensity;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is VisualDensity) && (((VisualDensity)((VisualDensity)__other)).horizontal == this.horizontal)) && (((VisualDensity)((VisualDensity)__other)).vertical == this.vertical));
+        return (__other is VisualDensity) && (__other.horizontal == horizontal) && (__other.vertical == vertical);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.horizontal, this.vertical));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(horizontal, vertical));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("horizontal", this.horizontal, defaultValue: 0.0));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("vertical", this.vertical, defaultValue: 0.0));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("horizontal", horizontal, defaultValue: 0.0));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("vertical", vertical, defaultValue: 0.0));
     }
 
     public virtual string toStringShort()
     {
-        return $"{(DiagnosticsLibrary.describeIdentity(this))}(h: {(Foundation.DebugLibrary.debugFormatDouble(this.horizontal))}, v: {(Foundation.DebugLibrary.debugFormatDouble(this.vertical))})";
+        return $"{DiagnosticsLibrary.describeIdentity(this)}(h: {Foundation.DebugLibrary.debugFormatDouble(horizontal)}, v: {Foundation.DebugLibrary.debugFormatDouble(vertical)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -836,13 +836,13 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

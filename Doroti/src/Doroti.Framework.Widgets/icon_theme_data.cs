@@ -27,10 +27,10 @@ public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         this.color = color;
         this.shadows = shadows;
         this.applyTextScaling = applyTextScaling;
-        this._opacity = opacity;
-        System.Diagnostics.Debug.Assert(((fill is null) || (((0.0 <= DartRuntimePrimitives.RequireValue(fill)) && (fill <= 1.0)))));
-        System.Diagnostics.Debug.Assert(((weight is null) || ((0.0 < DartRuntimePrimitives.RequireValue(weight)))));
-        System.Diagnostics.Debug.Assert(((opticalSize is null) || ((0.0 < DartRuntimePrimitives.RequireValue(opticalSize)))));
+        _opacity = opacity;
+        System.Diagnostics.Debug.Assert((fill is null) || (0.0 <= DartRuntimePrimitives.RequireValue(fill)) && (fill <= 1.0));
+        System.Diagnostics.Debug.Assert((weight is null) || 0.0 < DartRuntimePrimitives.RequireValue(weight));
+        System.Diagnostics.Debug.Assert((opticalSize is null) || 0.0 < DartRuntimePrimitives.RequireValue(opticalSize));
     }
 
     public static IconThemeData CreateFallback()
@@ -50,30 +50,30 @@ public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual IconThemeData copyWith(double? size = null, double? fill = null, double? weight = null, double? grade = null, double? opticalSize = null, Color? color = null, double? opacity = null, List<Shadow>? shadows = null, bool? applyTextScaling = null)
     {
-        return new IconThemeData(size: (size ?? this.size), fill: (fill ?? this.fill), weight: (weight ?? this.weight), grade: (grade ?? this.grade), opticalSize: (opticalSize ?? this.opticalSize), color: (color ?? this.color), opacity: (opacity ?? this.opacity), shadows: (shadows ?? this.shadows), applyTextScaling: (applyTextScaling ?? this.applyTextScaling));
+        return new IconThemeData(size: size ?? this.size, fill: fill ?? this.fill, weight: weight ?? this.weight, grade: grade ?? this.grade, opticalSize: opticalSize ?? this.opticalSize, color: color ?? this.color, opacity: opacity ?? this.opacity, shadows: shadows ?? this.shadows, applyTextScaling: applyTextScaling ?? this.applyTextScaling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual IconThemeData merge(IconThemeData? other)
     {
-        if ((other is null))
+        if (other is null)
         {
             return this;
         }
-        return ((IconThemeData)copyWith(size: ((IconThemeData)other).size, fill: ((IconThemeData)other).fill, weight: ((IconThemeData)other).weight, grade: ((IconThemeData)other).grade, opticalSize: ((IconThemeData)other).opticalSize, color: ((IconThemeData)other).color, opacity: ((IconThemeData)other).opacity, shadows: ((IconThemeData)other).shadows, applyTextScaling: ((IconThemeData)other).applyTextScaling));
+        return copyWith(size: other.size, fill: other.fill, weight: other.weight, grade: other.grade, opticalSize: other.opticalSize, color: other.color, opacity: other.opacity, shadows: other.shadows, applyTextScaling: other.applyTextScaling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual IconThemeData resolve(BuildContext context) => this;
-    public virtual bool isConcrete => DartRuntimePrimitives.ConvertValue<bool>(((((((((this.size is not null) && (this.fill is not null)) && (this.weight is not null)) && (this.grade is not null)) && (this.opticalSize is not null)) && (this.color is not null)) && (this.opacity is not null)) && (this.applyTextScaling is not null)));
-    public virtual double? opacity => ((this._opacity is null) ? null : Dart_uiLibrary.clampDouble(this._opacity, 0.0, 1.0));
+    public virtual bool isConcrete => DartRuntimePrimitives.ConvertValue<bool>((size is not null) && (fill is not null) && (weight is not null) && (grade is not null) && (opticalSize is not null) && (color is not null) && (opacity is not null) && (applyTextScaling is not null));
+    public virtual double? opacity => (_opacity is null) ? null : Dart_uiLibrary.clampDouble(_opacity, 0.0, 1.0);
     public static IconThemeData lerp(IconThemeData? a, IconThemeData? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
-        return new IconThemeData(size: Dart_uiLibrary.lerpDouble(a?.size, b?.size, t), fill: Dart_uiLibrary.lerpDouble(a?.fill, b?.fill, t), weight: Dart_uiLibrary.lerpDouble(a?.weight, b?.weight, t), grade: Dart_uiLibrary.lerpDouble(a?.grade, b?.grade, t), opticalSize: Dart_uiLibrary.lerpDouble(a?.opticalSize, b?.opticalSize, t), color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), opacity: Dart_uiLibrary.lerpDouble(a?.opacity, b?.opacity, t), shadows: Dart_uiLibrary.Shadow.lerpList(a?.shadows, b?.shadows, t), applyTextScaling: ((t < 0.5) ? a?.applyTextScaling : b?.applyTextScaling));
+        return new IconThemeData(size: Dart_uiLibrary.lerpDouble(a?.size, b?.size, t), fill: Dart_uiLibrary.lerpDouble(a?.fill, b?.fill, t), weight: Dart_uiLibrary.lerpDouble(a?.weight, b?.weight, t), grade: Dart_uiLibrary.lerpDouble(a?.grade, b?.grade, t), opticalSize: Dart_uiLibrary.lerpDouble(a?.opticalSize, b?.opticalSize, t), color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), opacity: Dart_uiLibrary.lerpDouble(a?.opacity, b?.opacity, t), shadows: Dart_uiLibrary.Shadow.lerpList(a?.shadows, b?.shadows, t), applyTextScaling: (t < 0.5) ? a?.applyTextScaling : b?.applyTextScaling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -81,25 +81,25 @@ public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
     {
         var __other = other as IconThemeData;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((__other is IconThemeData) && (((IconThemeData)((IconThemeData)__other)).size == this.size)) && (((IconThemeData)((IconThemeData)__other)).fill == this.fill)) && (((IconThemeData)((IconThemeData)__other)).weight == this.weight)) && (((IconThemeData)((IconThemeData)__other)).grade == this.grade)) && (((IconThemeData)((IconThemeData)__other)).opticalSize == this.opticalSize)) && (Equals(((IconThemeData)((IconThemeData)__other)).color, this.color))) && (((IconThemeData)((IconThemeData)__other)).opacity == this.opacity)) && CollectionsLibrary.listEquals(((IconThemeData)((IconThemeData)__other)).shadows, this.shadows)) && (((IconThemeData)((IconThemeData)__other)).applyTextScaling == this.applyTextScaling));
+        return (__other is IconThemeData) && (__other.size == size) && (__other.fill == fill) && (__other.weight == weight) && (__other.grade == grade) && (__other.opticalSize == opticalSize) && Equals(__other.color, color) && (__other.opacity == opacity) && CollectionsLibrary.listEquals(__other.shadows, shadows) && (__other.applyTextScaling == applyTextScaling);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.size, this.fill, this.weight, this.grade, this.opticalSize, this.color, this.opacity, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!)), this.applyTextScaling));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(size, fill, weight, grade, opticalSize, color, opacity, (shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(shadows!), applyTextScaling));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fill", this.fill, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("weight", this.weight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("grade", this.grade, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opticalSize", this.opticalSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", this.opacity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", this.shadows, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", this.applyTextScaling, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", size, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fill", fill, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("weight", weight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("grade", grade, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opticalSize", opticalSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", opacity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", shadows, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", applyTextScaling, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -114,13 +114,13 @@ public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

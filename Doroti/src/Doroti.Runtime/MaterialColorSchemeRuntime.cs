@@ -30,7 +30,7 @@ public static class MaterialColorSchemeRuntime
                 BuildScheme(Hct.FromInt(item.SeedArgb), item.IsDark, item.Variant, item.ContrastLevel));
             var tone = ResolveTone(scheme, key.Role);
             var palette = PaletteForRole(scheme, key.Role);
-            return unchecked((long)Hct.From(palette.Hue, palette.Chroma, tone).ToInt());
+            return unchecked(Hct.From(palette.Hue, palette.Chroma, tone).ToInt());
         });
     }
 
@@ -271,7 +271,7 @@ public static class MaterialColorSchemeRuntime
     private static double LstarFromY(double y)
     {
         var normalized = y / 100;
-        var f = normalized > 216d / 24389d ? Math.Pow(normalized, 1d / 3d) : ((24389d / 27d) * normalized + 16) / 116;
+        var f = normalized > 216d / 24389d ? Math.Pow(normalized, 1d / 3d) : (24389d / 27d * normalized + 16) / 116;
         return 116 * f - 16;
     }
 

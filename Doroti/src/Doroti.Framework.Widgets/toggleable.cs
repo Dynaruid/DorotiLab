@@ -80,75 +80,75 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
 
     public virtual global::Doroti.Framework.Animation.Animation<double> position
     {
-        get => this._position!;
+        get => _position!;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._position)))
+            if (Equals(__value, _position))
             {
                 return;
             }
-            this._position?.removeListener(this.notifyListeners);
-            __value.addListener(this.notifyListeners);
+            _position?.removeListener(notifyListeners);
+            __value.addListener(notifyListeners);
             _position = __value;
             notifyListeners();
         }
     }
     public virtual global::Doroti.Framework.Animation.Animation<double> reaction
     {
-        get => this._reaction!;
+        get => _reaction!;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._reaction)))
+            if (Equals(__value, _reaction))
             {
                 return;
             }
-            this._reaction?.removeListener(this.notifyListeners);
-            __value.addListener(this.notifyListeners);
+            _reaction?.removeListener(notifyListeners);
+            __value.addListener(notifyListeners);
             _reaction = __value;
             notifyListeners();
         }
     }
     public virtual global::Doroti.Framework.Animation.Animation<double> reactionFocusFade
     {
-        get => this._reactionFocusFade!;
+        get => _reactionFocusFade!;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._reactionFocusFade)))
+            if (Equals(__value, _reactionFocusFade))
             {
                 return;
             }
-            this._reactionFocusFade?.removeListener(this.notifyListeners);
-            __value.addListener(this.notifyListeners);
+            _reactionFocusFade?.removeListener(notifyListeners);
+            __value.addListener(notifyListeners);
             _reactionFocusFade = __value;
             notifyListeners();
         }
     }
     public virtual global::Doroti.Framework.Animation.Animation<double> reactionHoverFade
     {
-        get => this._reactionHoverFade!;
+        get => _reactionHoverFade!;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._reactionHoverFade)))
+            if (Equals(__value, _reactionHoverFade))
             {
                 return;
             }
-            this._reactionHoverFade?.removeListener(this.notifyListeners);
-            __value.addListener(this.notifyListeners);
+            _reactionHoverFade?.removeListener(notifyListeners);
+            __value.addListener(notifyListeners);
             _reactionHoverFade = __value;
             notifyListeners();
         }
     }
     public virtual global::Doroti.Ui.Color activeColor
     {
-        get => this._activeColor!;
+        get => _activeColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(this._activeColor, __value)))
+            var __value = value;
+            if (Equals(_activeColor, __value))
             {
                 return;
             }
@@ -158,11 +158,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual global::Doroti.Ui.Color inactiveColor
     {
-        get => this._inactiveColor!;
+        get => _inactiveColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(this._inactiveColor, __value)))
+            var __value = value;
+            if (Equals(_inactiveColor, __value))
             {
                 return;
             }
@@ -172,11 +172,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual global::Doroti.Ui.Color inactiveReactionColor
     {
-        get => this._inactiveReactionColor!;
+        get => _inactiveReactionColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._inactiveReactionColor)))
+            var __value = value;
+            if (Equals(__value, _inactiveReactionColor))
             {
                 return;
             }
@@ -186,11 +186,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual global::Doroti.Ui.Color reactionColor
     {
-        get => this._reactionColor!;
+        get => _reactionColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._reactionColor)))
+            var __value = value;
+            if (Equals(__value, _reactionColor))
             {
                 return;
             }
@@ -200,11 +200,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual global::Doroti.Ui.Color hoverColor
     {
-        get => this._hoverColor!;
+        get => _hoverColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._hoverColor)))
+            var __value = value;
+            if (Equals(__value, _hoverColor))
             {
                 return;
             }
@@ -214,11 +214,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual global::Doroti.Ui.Color focusColor
     {
-        get => this._focusColor!;
+        get => _focusColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._focusColor)))
+            var __value = value;
+            if (Equals(__value, _focusColor))
             {
                 return;
             }
@@ -228,11 +228,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual double splashRadius
     {
-        get => DartRuntimePrimitives.RequireValue(this._splashRadius);
+        get => DartRuntimePrimitives.RequireValue(_splashRadius);
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._splashRadius))
+            if (DartRuntimePrimitives.RequireValue(__value) == _splashRadius)
             {
                 return;
             }
@@ -242,11 +242,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual global::Doroti.Ui.Offset? downPosition
     {
-        get => this._downPosition;
+        get => _downPosition;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._downPosition)))
+            if (Equals(__value, _downPosition))
             {
                 return;
             }
@@ -256,11 +256,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual bool isFocused
     {
-        get => DartRuntimePrimitives.RequireValue(this._isFocused);
+        get => DartRuntimePrimitives.RequireValue(_isFocused);
         set
         {
             bool? __value = value;
-            if ((__value == this._isFocused))
+            if (__value == _isFocused)
             {
                 return;
             }
@@ -270,11 +270,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual bool isHovered
     {
-        get => DartRuntimePrimitives.RequireValue(this._isHovered);
+        get => DartRuntimePrimitives.RequireValue(_isHovered);
         set
         {
             bool? __value = value;
-            if ((__value == this._isHovered))
+            if (__value == _isHovered)
             {
                 return;
             }
@@ -284,11 +284,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual bool isActive
     {
-        get => DartRuntimePrimitives.RequireValue(this._isActive);
+        get => DartRuntimePrimitives.RequireValue(_isActive);
         set
         {
             bool? __value = value;
-            if ((__value == this._isActive))
+            if (__value == _isActive)
             {
                 return;
             }
@@ -298,19 +298,19 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
     public virtual void paintRadialReaction(Canvas canvas, Offset offset = default, Offset origin = default!)
     {
-        if (((!((global::Doroti.Framework.Animation.Animation<double>)this.reaction).isDismissed || !((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).isDismissed) || !((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).isDismissed))
+        if (!reaction.isDismissed || !reactionFocusFade.isDismissed || !reactionHoverFade.isDismissed)
         {
             var reactionPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(this.inactiveReactionColor, this.reactionColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), this.hoverColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).value), this.focusColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).value)!;
+    __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(inactiveReactionColor, reactionColor, position.value), hoverColor, reactionHoverFade.value), focusColor, reactionFocusFade.value)!;
     return __cascade;
 }))();
-            global::Doroti.Framework.Animation.Animatable<double> radialReactionRadiusTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: this.splashRadius));
-            double reactionRadius = ((this.isFocused || this.isHovered) ? this.splashRadius : radialReactionRadiusTween.evaluate(this.reaction));
-            if ((reactionRadius > 0.0))
+            global::Doroti.Framework.Animation.Animatable<double> radialReactionRadiusTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: splashRadius);
+            double reactionRadius = (isFocused || isHovered) ? splashRadius : radialReactionRadiusTween.evaluate(reaction);
+            if (reactionRadius > 0.0)
             {
-                canvas.drawCircle((origin + offset), reactionRadius, reactionPaint);
+                canvas.drawCircle(origin + offset, reactionRadius, reactionPaint);
             }
         }
     }
@@ -319,10 +319,10 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
 
     public override void dispose()
     {
-        this._position?.removeListener(this.notifyListeners);
-        this._reaction?.removeListener(this.notifyListeners);
-        this._reactionFocusFade?.removeListener(this.notifyListeners);
-        this._reactionHoverFade?.removeListener(this.notifyListeners);
+        _position?.removeListener(notifyListeners);
+        _reaction?.removeListener(notifyListeners);
+        _reactionFocusFade?.removeListener(notifyListeners);
+        _reactionHoverFade?.removeListener(notifyListeners);
         base.dispose();
     }
 

@@ -9,7 +9,7 @@ public static partial class ImageLibrary
 {
     public static global::Doroti.Framework.Painting.ImageConfiguration createLocalImageConfiguration(BuildContext context, Size? size = null)
     {
-        return new global::Doroti.Framework.Painting.ImageConfiguration(bundle: DefaultAssetBundle.of(context), devicePixelRatio: (MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0), locale: Localizations.maybeLocaleOf(context), textDirection: Directionality.maybeOf(context), size: size, platform: PlatformLibrary.defaultTargetPlatform);
+        return new global::Doroti.Framework.Painting.ImageConfiguration(bundle: DefaultAssetBundle.of(context), devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0, locale: Localizations.maybeLocaleOf(context), textDirection: Directionality.maybeOf(context), size: size, platform: PlatformLibrary.defaultTargetPlatform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -20,27 +20,27 @@ public static partial class ImageLibrary
     {
         global::Doroti.Framework.Painting.ImageConfiguration config = createLocalImageConfiguration(context, size: size);
         var completer = new Completer<object?>();
-        global::Doroti.Framework.Painting.ImageStream stream = ((global::Doroti.Framework.Painting.ImageStream)((global::Doroti.Framework.Painting.ImageStream)provider.resolve(config)));
+        global::Doroti.Framework.Painting.ImageStream stream = provider.resolve(config);
         global::Doroti.Framework.Painting.ImageStreamListener? listener = default!;
-        listener = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo?, bool>)((image, sync) =>
+        listener = new global::Doroti.Framework.Painting.ImageStreamListener((image, sync) =>
         {
             if (!completer.isCompleted)
             {
                 completer.complete();
             }
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
             {
                 image?.dispose();
                 stream.removeListener(listener!);
-            })), debugLabel: "precacheImage.removeListener");
-        })), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
+            }, debugLabel: "precacheImage.removeListener");
+        }, onError: (exception, stackTrace) =>
         {
             if (!completer.isCompleted)
             {
                 completer.complete();
             }
             stream.removeListener(listener!);
-            if ((onError is not null))
+            if (onError is not null)
             {
                 onError(exception, stackTrace);
             }
@@ -48,7 +48,7 @@ public static partial class ImageLibrary
             {
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(context: new global::Doroti.Framework.Foundation.ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
             }
-        })));
+        });
         stream.addListener(listener);
         return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -180,7 +180,7 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.isAntiAlias = isAntiAlias;
         __instance.filterQuality = filterQuality;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, ((scale is not null) ? new global::Doroti.Framework.Painting.ExactAssetImage(name, bundle: bundle, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale)), package: package) : new global::Doroti.Framework.Painting.AssetImage(name, bundle: bundle, package: package)));
+        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, (scale is not null) ? new global::Doroti.Framework.Painting.ExactAssetImage(name, bundle: bundle, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale)), package: package) : new global::Doroti.Framework.Painting.AssetImage(name, bundle: bundle, package: package));
         __instance.loadingBuilder = null;
         return __instance;
     }
@@ -215,22 +215,22 @@ public class Image : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", this.image));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Delegate>("frameBuilder", this.frameBuilder));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Delegate>("loadingBuilder", this.loadingBuilder));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>?>("opacity", this.opacity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", this.colorBlendMode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", this.repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", this.centerSlice, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("matchTextDirection", value: this.matchTextDirection, ifTrue: "match text direction"));
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticLabel", this.semanticLabel, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("this.excludeFromSemantics", this.excludeFromSemantics));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", image));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Delegate>("frameBuilder", frameBuilder));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Delegate>("loadingBuilder", loadingBuilder));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>?>("opacity", opacity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", centerSlice, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticLabel", semanticLabel, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("this.excludeFromSemantics", excludeFromSemantics));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", filterQuality));
     }
 
 }
@@ -260,12 +260,12 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     public override void dispose()
     {
-        DartRuntimePrimitives.Assert(() => (this._imageStream is not null));
+        DartRuntimePrimitives.Assert(() => _imageStream is not null);
         WidgetsBinding.instance.removeObserver(this);
         _stopListeningToStream();
-        this._completerHandle?.dispose();
-        this._scrollAwareContext.dispose();
-        _replaceImage(info: ((global::Doroti.Framework.Painting.ImageInfo?)null));
+        _completerHandle?.dispose();
+        _scrollAwareContext.dispose();
+        _replaceImage(info: null);
         base.dispose();
     }
 
@@ -273,8 +273,8 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     {
         _updateInvertColors();
         _resolveImage();
-        _isPaused = (!TickerMode.of(this.context) || ((MediaQuery.maybeDisableAnimationsOf(this.context) ?? false)));
-        if ((this._isPaused && (this._frameNumber is not null)))
+        _isPaused = !TickerMode.of(context) || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
+        if (_isPaused && (_frameNumber is not null))
         {
             _stopListeningToStream(keepStreamAlive: true);
         }
@@ -288,13 +288,13 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     public override void didUpdateWidget(Image oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((this._isListeningToStream && (((((Image)this.widget).loadingBuilder is null)) != ((((Image)oldWidget).loadingBuilder is null)))))
+        if (_isListeningToStream && (widget.loadingBuilder is null != oldWidget.loadingBuilder is null))
         {
-            global::Doroti.Framework.Painting.ImageStreamListener oldListener = ((global::Doroti.Framework.Painting.ImageStreamListener)_getListener());
-            this._imageStream!.addListener(_getListener(recreateListener: true));
-            this._imageStream!.removeListener(oldListener);
+            global::Doroti.Framework.Painting.ImageStreamListener oldListener = _getListener();
+            _imageStream!.addListener(_getListener(recreateListener: true));
+            _imageStream!.removeListener(oldListener);
         }
-        if ((!Equals(((Image)this.widget).image, ((Image)oldWidget).image)))
+        if (!Equals(widget.image, oldWidget.image))
         {
             _resolveImage();
             _listenToStream();
@@ -304,10 +304,10 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     public override void didChangeAccessibilityFeatures()
     {
         base.didChangeAccessibilityFeatures();
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _updateInvertColors();
-        })));
+        });
     }
 
     public override void reassemble()
@@ -318,59 +318,59 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual void _updateInvertColors()
     {
-        _invertColors = (MediaQuery.maybeInvertColorsOf(this.context) ?? Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors);
+        _invertColors = MediaQuery.maybeInvertColorsOf(context) ?? Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors;
     }
 
     private ScrollAwareImageProvider CreateScrollAwareProvider(global::Doroti.Framework.Painting.IImageProvider imageProvider) =>
-        new(context: this._scrollAwareContext, imageProvider: imageProvider);
+        new(context: _scrollAwareContext, imageProvider: imageProvider);
 
     internal virtual void _resolveImage()
     {
-        global::Doroti.Framework.Painting.IImageProvider provider = CreateScrollAwareProvider(((Image)this.widget).image);
-        global::Doroti.Framework.Painting.ImageStream newStream = ((global::Doroti.Framework.Painting.ImageStream)provider.resolve(ImageLibrary.createLocalImageConfiguration(this.context, size: (((((Image)this.widget).width is not null) && (((Image)this.widget).height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((Image)this.widget).width), DartRuntimePrimitives.RequireValue(((Image)this.widget).height)) : null))));
+        global::Doroti.Framework.Painting.IImageProvider provider = CreateScrollAwareProvider(widget.image);
+        global::Doroti.Framework.Painting.ImageStream newStream = provider.resolve(ImageLibrary.createLocalImageConfiguration(context, size: ((widget.width is not null) && (widget.height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(widget.width), DartRuntimePrimitives.RequireValue(widget.height)) : null));
         _updateSourceStream(newStream);
     }
 
     internal virtual global::Doroti.Framework.Painting.ImageStreamListener _getListener(bool recreateListener = false)
     {
-        if (((this._imageStreamListener is null) || recreateListener))
+        if ((_imageStreamListener is null) || recreateListener)
         {
             _lastException = null;
             _lastStack = null;
-            _imageStreamListener = new global::Doroti.Framework.Painting.ImageStreamListener((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)this._handleImageFrame, onChunk: ((global::System.Action<global::Doroti.Framework.Painting.ImageChunkEvent>?)((((Image)this.widget).loadingBuilder is null) ? null : this._handleImageChunk)), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>?)(((((Image)this.widget).errorBuilder is not null) || Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) =>
+            _imageStreamListener = new global::Doroti.Framework.Painting.ImageStreamListener(_handleImageFrame, onChunk: (widget.loadingBuilder is null) ? null : _handleImageChunk, onError: ((widget.errorBuilder is not null) || Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) =>
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
                     _lastException = error;
                     _lastStack = stackTrace;
-                })));
+                });
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        if ((((Image)this.widget).errorBuilder is null))
+                        if (widget.errorBuilder is null)
                         {
                             throw DartRuntimePrimitives.AsException(error);
                         }
                         return true;
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     });
-            }) : null)), reportErrors: (((Image)this.widget).errorBuilder is null));
+            }) : null, reportErrors: widget.errorBuilder is null);
         }
-        return this._imageStreamListener!;
+        return _imageStreamListener!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleImageFrame(global::Doroti.Framework.Painting.ImageInfo imageInfo, bool synchronousCall)
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _replaceImage(info: imageInfo);
             _loadingProgress = null;
             _lastException = null;
             _lastStack = null;
-            _frameNumber = ((this._frameNumber is null) ? 0L : (DartRuntimePrimitives.RequireValue(this._frameNumber) + 1L));
-            _wasSynchronouslyLoaded = (this._wasSynchronouslyLoaded | synchronousCall);
-        })));
-        if (this._isPaused)
+            _frameNumber = (_frameNumber is null) ? 0L : (DartRuntimePrimitives.RequireValue(_frameNumber) + 1L);
+            _wasSynchronouslyLoaded = _wasSynchronouslyLoaded | synchronousCall;
+        });
+        if (_isPaused)
         {
             _stopListeningToStream(keepStreamAlive: true);
         }
@@ -378,126 +378,126 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual void _handleImageChunk(global::Doroti.Framework.Painting.ImageChunkEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (((Image)this.widget).loadingBuilder is not null));
-        setState(((global::System.Action)(() =>
+        DartRuntimePrimitives.Assert(() => widget.loadingBuilder is not null);
+        setState(() =>
         {
             _loadingProgress = @event;
             _lastException = null;
             _lastStack = null;
-        })));
+        });
     }
 
     internal virtual void _replaceImage(global::Doroti.Framework.Painting.ImageInfo? info)
     {
-        global::Doroti.Framework.Painting.ImageInfo? oldImageInfo = this._imageInfo;
-        if ((oldImageInfo is not null))
+        global::Doroti.Framework.Painting.ImageInfo? oldImageInfo = _imageInfo;
+        if (oldImageInfo is not null)
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => { oldImageInfo.dispose(); })), debugLabel: "Image.disposeOldInfo");
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) => { oldImageInfo.dispose(); }, debugLabel: "Image.disposeOldInfo");
         }
         _imageInfo = info;
     }
 
     internal virtual void _updateSourceStream(global::Doroti.Framework.Painting.ImageStream newStream)
     {
-        if ((Equals(this._imageStream?.key, ((global::Doroti.Framework.Painting.ImageStream)newStream).key)))
+        if (Equals(_imageStream?.key, newStream.key))
         {
             return;
         }
-        if (this._isListeningToStream)
+        if (_isListeningToStream)
         {
-            this._imageStream!.removeListener(_getListener());
+            _imageStream!.removeListener(_getListener());
         }
-        if (!((Image)this.widget).gaplessPlayback)
+        if (!widget.gaplessPlayback)
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                _replaceImage(info: ((global::Doroti.Framework.Painting.ImageInfo?)null));
-            })));
+                _replaceImage(info: null);
+            });
         }
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _loadingProgress = null;
             _frameNumber = null;
             _wasSynchronouslyLoaded = false;
-        })));
+        });
         _imageStream = newStream;
-        if (this._isListeningToStream)
+        if (_isListeningToStream)
         {
-            this._imageStream!.addListener(_getListener());
+            _imageStream!.addListener(_getListener());
         }
     }
 
     internal virtual void _listenToStream()
     {
-        if (this._isListeningToStream)
+        if (_isListeningToStream)
         {
             return;
         }
         _isListeningToStream = true;
-        this._imageStream!.addListener(_getListener());
-        this._completerHandle?.dispose();
+        _imageStream!.addListener(_getListener());
+        _completerHandle?.dispose();
         _completerHandle = null;
     }
 
     internal virtual void _stopListeningToStream(bool keepStreamAlive = false)
     {
-        if (!this._isListeningToStream)
+        if (!_isListeningToStream)
         {
             return;
         }
-        if (((keepStreamAlive && (this._completerHandle is null)) && (this._imageStream?.completer is not null)))
+        if (keepStreamAlive && (_completerHandle is null) && (_imageStream?.completer is not null))
         {
-            _completerHandle = this._imageStream!.completer!.keepAlive();
+            _completerHandle = _imageStream!.completer!.keepAlive();
         }
-        if (((this._imageStream!.completer is not null) && (((Image)this.widget).errorBuilder is not null)))
+        if ((_imageStream!.completer is not null) && (widget.errorBuilder is not null))
         {
-            this._imageStream!.completer!.addEphemeralErrorListener(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
+            _imageStream!.completer!.addEphemeralErrorListener((exception, stackTrace) =>
             {
-            })));
+            });
         }
-        this._imageStream!.removeListener(_getListener());
+        _imageStream!.removeListener(_getListener());
         _isListeningToStream = false;
     }
 
     internal virtual Widget _debugBuildErrorWidget(BuildContext context, object error)
     {
-        return ((Widget)new Stack(alignment: Alignment.center, children: new List<Widget> { Positioned.CreateFill(child: new Placeholder(color: new global::Doroti.Ui.Color(3482124831L))), new Padding(padding: EdgeInsets.CreateAll(4.0), child: new FittedBox(child: new Text($"{error}", textAlign: TextAlign.center, textDirection: TextDirection.ltr, style: new global::Doroti.Framework.Painting.TextStyle(shadows: new List<global::Doroti.Ui.Shadow> { new global::Doroti.Ui.Shadow(blurRadius: 1.0) })))) }));
+        return new Stack(alignment: Alignment.center, children: new List<Widget> { Positioned.CreateFill(child: new Placeholder(color: new global::Doroti.Ui.Color(3482124831L))), new Padding(padding: EdgeInsets.CreateAll(4.0), child: new FittedBox(child: new Text($"{error}", textAlign: TextAlign.center, textDirection: TextDirection.ltr, style: new global::Doroti.Framework.Painting.TextStyle(shadows: new List<global::Doroti.Ui.Shadow> { new global::Doroti.Ui.Shadow(blurRadius: 1.0) })))) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        if ((this._lastException is not null))
+        if (_lastException is not null)
         {
-            if ((((Image)this.widget).errorBuilder is not null))
+            if (widget.errorBuilder is not null)
             {
-                return ((Image)this.widget).errorBuilder!(context, this._lastException!, this._lastStack);
+                return widget.errorBuilder!(context, _lastException!, _lastStack);
             }
             if (Foundation.ConstantsLibrary.kDebugMode)
             {
-                return ((Widget)_debugBuildErrorWidget(context, this._lastException!));
+                return _debugBuildErrorWidget(context, _lastException!);
             }
         }
         Widget result = default!;
-        if (this._imageInfo is WebImageInfoIo webImage)
+        if (_imageInfo is WebImageInfoIo webImage)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawWebImageIo(image: webImage, debugImageLabel: this._imageInfo?.debugLabel, width: ((Image)this.widget).width, height: ((Image)this.widget).height, fit: ((Image)this.widget).fit, alignment: ((Image)this.widget).alignment, matchTextDirection: ((Image)this.widget).matchTextDirection));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawWebImageIo(image: webImage, debugImageLabel: _imageInfo?.debugLabel, width: widget.width, height: widget.height, fit: widget.fit, alignment: widget.alignment, matchTextDirection: widget.matchTextDirection));
         }
         else
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawImage(image: this._imageInfo?.image, debugImageLabel: this._imageInfo?.debugLabel, width: ((Image)this.widget).width, height: ((Image)this.widget).height, scale: (this._imageInfo?.scale ?? 1.0), color: ((Image)this.widget).color, opacity: ((Image)this.widget).opacity, colorBlendMode: ((Image)this.widget).colorBlendMode, fit: ((Image)this.widget).fit, alignment: ((Image)this.widget).alignment, repeat: ((Image)this.widget).repeat, centerSlice: ((Image)this.widget).centerSlice, matchTextDirection: ((Image)this.widget).matchTextDirection, invertColors: this._invertColors, isAntiAlias: ((Image)this.widget).isAntiAlias, filterQuality: ((Image)this.widget).filterQuality));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawImage(image: _imageInfo?.image, debugImageLabel: _imageInfo?.debugLabel, width: widget.width, height: widget.height, scale: _imageInfo?.scale ?? 1.0, color: widget.color, opacity: widget.opacity, colorBlendMode: widget.colorBlendMode, fit: widget.fit, alignment: widget.alignment, repeat: widget.repeat, centerSlice: widget.centerSlice, matchTextDirection: widget.matchTextDirection, invertColors: _invertColors, isAntiAlias: widget.isAntiAlias, filterQuality: widget.filterQuality));
         }
-        if (!((Image)this.widget).excludeFromSemantics)
+        if (!widget.excludeFromSemantics)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((Image)this.widget).semanticLabel is not null), image: true, label: (((Image)this.widget).semanticLabel ?? ""), child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: widget.semanticLabel is not null, image: true, label: widget.semanticLabel ?? "", child: result));
         }
-        if ((((Image)this.widget).frameBuilder is not null))
+        if (widget.frameBuilder is not null)
         {
-            result = ((Image)this.widget).frameBuilder!(context, result, this._frameNumber, this._wasSynchronouslyLoaded);
+            result = widget.frameBuilder!(context, result, _frameNumber, _wasSynchronouslyLoaded);
         }
-        if ((((Image)this.widget).loadingBuilder is not null))
+        if (widget.loadingBuilder is not null)
         {
-            result = ((Image)this.widget).loadingBuilder!(context, result, this._loadingProgress);
+            result = widget.loadingBuilder!(context, result, _loadingProgress);
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -506,11 +506,11 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageStream>("stream", this._imageStream));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageInfo>("pixels", this._imageInfo));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageChunkEvent>("loadingProgress", this._loadingProgress));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<long>("frameNumber", this._frameNumber));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("wasSynchronouslyLoaded", this._wasSynchronouslyLoaded));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageStream>("stream", _imageStream));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageInfo>("pixels", _imageInfo));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageChunkEvent>("loadingProgress", _loadingProgress));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<long>("frameNumber", _frameNumber));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("wasSynchronouslyLoaded", _wasSynchronouslyLoaded));
     }
 
 }

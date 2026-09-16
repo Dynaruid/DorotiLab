@@ -9,7 +9,7 @@ public abstract class ClipContext
     public abstract global::Doroti.Ui.Canvas canvas { get; }
     internal virtual void _clipAndPaint(Action<bool> canvasClipCall, Clip clipBehavior, Rect bounds, Action painter)
     {
-        this.canvas.save();
+        canvas.save();
         switch (clipBehavior)
         {
             case Clip.none:
@@ -29,36 +29,36 @@ public abstract class ClipContext
             case Clip.antiAliasWithSaveLayer:
                 {
                     canvasClipCall(true);
-                    this.canvas.saveLayer(bounds, new global::Doroti.Ui.Paint());
+                    canvas.saveLayer(bounds, new global::Doroti.Ui.Paint());
                     break;
                 }
         }
         painter();
-        if ((Equals(clipBehavior, Clip.antiAliasWithSaveLayer)))
+        if (Equals(clipBehavior, Clip.antiAliasWithSaveLayer))
         {
-            this.canvas.restore();
+            canvas.restore();
         }
-        this.canvas.restore();
+        canvas.restore();
     }
 
     public virtual void clipPathAndPaint(Path path, Clip clipBehavior, Rect bounds, Action painter)
     {
-        _clipAndPaint(((Action<bool>)((doAntiAlias) => this.canvas.clipPath(path, doAntiAlias: doAntiAlias))), clipBehavior, bounds, (Action)painter);
+        _clipAndPaint((doAntiAlias) => canvas.clipPath(path, doAntiAlias: doAntiAlias), clipBehavior, bounds, painter);
     }
 
     public virtual void clipRRectAndPaint(RRect rrect, Clip clipBehavior, Rect bounds, Action painter)
     {
-        _clipAndPaint(((Action<bool>)((doAntiAlias) => this.canvas.clipRRect(rrect, doAntiAlias: doAntiAlias))), clipBehavior, bounds, (Action)painter);
+        _clipAndPaint((doAntiAlias) => canvas.clipRRect(rrect, doAntiAlias: doAntiAlias), clipBehavior, bounds, painter);
     }
 
     public virtual void clipRSuperellipseAndPaint(RSuperellipse rse, Clip clipBehavior, Rect bounds, Action painter)
     {
-        _clipAndPaint(((Action<bool>)((doAntiAlias) => this.canvas.clipRSuperellipse(rse, doAntiAlias: doAntiAlias))), clipBehavior, bounds, (Action)painter);
+        _clipAndPaint((doAntiAlias) => canvas.clipRSuperellipse(rse, doAntiAlias: doAntiAlias), clipBehavior, bounds, painter);
     }
 
     public virtual void clipRectAndPaint(Rect rect, Clip clipBehavior, Rect bounds, Action painter)
     {
-        _clipAndPaint(((Action<bool>)((doAntiAlias) => this.canvas.clipRect(rect, doAntiAlias: doAntiAlias))), clipBehavior, bounds, (Action)painter);
+        _clipAndPaint((doAntiAlias) => canvas.clipRect(rect, doAntiAlias: doAntiAlias), clipBehavior, bounds, painter);
     }
 
 }

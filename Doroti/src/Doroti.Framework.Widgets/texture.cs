@@ -18,13 +18,13 @@ public class Texture : LeafRenderObjectWidget
         this.filterQuality = filterQuality;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.TextureBox(textureId: this.textureId, freeze: this.freeze, filterQuality: this.filterQuality));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.TextureBox(textureId: textureId, freeze: freeze, filterQuality: filterQuality));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.TextureBox)renderObject;
-        __renderObject.textureId = this.textureId;
-        __renderObject.freeze = this.freeze;
-        __renderObject.filterQuality = this.filterQuality;
+        __renderObject.textureId = textureId;
+        __renderObject.freeze = freeze;
+        __renderObject.filterQuality = filterQuality;
     }
 
 }

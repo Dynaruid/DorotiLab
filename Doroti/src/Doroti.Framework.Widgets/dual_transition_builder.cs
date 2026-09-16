@@ -33,16 +33,16 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     public override void initState()
     {
         base.initState();
-        _effectiveAnimationStatus = ((DualTransitionBuilder)this.widget).animation.status;
-        ((DualTransitionBuilder)this.widget).animation.addStatusListener((AnimationStatusListener)this._animationListener);
+        _effectiveAnimationStatus = widget.animation.status;
+        widget.animation.addStatusListener(_animationListener);
         _updateAnimations();
     }
 
     internal virtual void _animationListener(global::Doroti.Framework.Animation.AnimationStatus animationStatus)
     {
-        global::Doroti.Framework.Animation.AnimationStatus oldEffective = this._effectiveAnimationStatus;
-        _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(lastEffective: this._effectiveAnimationStatus, current: animationStatus);
-        if ((!Equals(oldEffective, this._effectiveAnimationStatus)))
+        global::Doroti.Framework.Animation.AnimationStatus oldEffective = _effectiveAnimationStatus;
+        _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(lastEffective: _effectiveAnimationStatus, current: animationStatus);
+        if (!Equals(oldEffective, _effectiveAnimationStatus))
         {
             _updateAnimations();
         }
@@ -51,11 +51,11 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     public override void didUpdateWidget(DualTransitionBuilder oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((DualTransitionBuilder)oldWidget).animation, ((DualTransitionBuilder)this.widget).animation)))
+        if (!Equals(oldWidget.animation, widget.animation))
         {
-            ((DualTransitionBuilder)oldWidget).animation.removeStatusListener((AnimationStatusListener)this._animationListener);
-            ((DualTransitionBuilder)this.widget).animation.addStatusListener((AnimationStatusListener)this._animationListener);
-            _animationListener(((DualTransitionBuilder)this.widget).animation.status);
+            oldWidget.animation.removeStatusListener(_animationListener);
+            widget.animation.addStatusListener(_animationListener);
+            _animationListener(widget.animation.status);
         }
     }
 
@@ -110,20 +110,20 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
 
     internal virtual void _updateAnimations()
     {
-        switch (this._effectiveAnimationStatus)
+        switch (_effectiveAnimationStatus)
         {
             case AnimationStatus.dismissed:
             case AnimationStatus.forward:
                 {
-                    this._forwardAnimation.parent = ((DualTransitionBuilder)this.widget).animation;
-                    this._reverseAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
+                    _forwardAnimation.parent = widget.animation;
+                    _reverseAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
                     break;
                 }
             case AnimationStatus.reverse:
             case AnimationStatus.completed:
                 {
-                    this._forwardAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    this._reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(((DualTransitionBuilder)this.widget).animation));
+                    _forwardAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
+                    _reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(widget.animation));
                     break;
                 }
         }
@@ -131,13 +131,13 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
 
     public override void dispose()
     {
-        ((DualTransitionBuilder)this.widget).animation.removeStatusListener((AnimationStatusListener)this._animationListener);
+        widget.animation.removeStatusListener(_animationListener);
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        return this.widget.forwardBuilder(context, this._forwardAnimation, this.widget.reverseBuilder(context, this._reverseAnimation, ((DualTransitionBuilder)this.widget).child));
+        return widget.forwardBuilder(context, _forwardAnimation, widget.reverseBuilder(context, _reverseAnimation, widget.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

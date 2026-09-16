@@ -34,15 +34,15 @@ public class PrimaryScrollController : InheritedWidget
 
     public static bool shouldInherit(BuildContext context, global::Doroti.Framework.Painting.Axis scrollDirection)
     {
-        PrimaryScrollController? result = ((PrimaryScrollController?)context.findAncestorWidgetOfExactType<PrimaryScrollController>());
-        if ((result is null))
+        PrimaryScrollController? result = context.findAncestorWidgetOfExactType<PrimaryScrollController>();
+        if (result is null)
         {
             return false;
         }
         global::Doroti.Framework.Foundation.TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
-        if (((PrimaryScrollController)result).automaticallyInheritForPlatforms.Contains(platform))
+        if (result.automaticallyInheritForPlatforms.Contains(platform))
         {
-            return (Equals(((PrimaryScrollController)result).scrollDirection, DartRuntimePrimitives.RequireValue(scrollDirection)));
+            return Equals(result.scrollDirection, DartRuntimePrimitives.RequireValue(scrollDirection));
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -50,17 +50,17 @@ public class PrimaryScrollController : InheritedWidget
 
     public static ScrollController? maybeOf(BuildContext context)
     {
-        PrimaryScrollController? result = ((PrimaryScrollController?)context.dependOnInheritedWidgetOfExactType<PrimaryScrollController>());
+        PrimaryScrollController? result = context.dependOnInheritedWidgetOfExactType<PrimaryScrollController>();
         return result?.controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ScrollController of(BuildContext context)
     {
-        ScrollController? controller = ((ScrollController?)maybeOf(context));
+        ScrollController? controller = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((controller is null))
+                if (controller is null)
                 {
                     throw DartRuntimePrimitives.AsException(FlutterError.Create("PrimaryScrollController.of() was called with a context that does not contain a " + "PrimaryScrollController widget.\n" + "No PrimaryScrollController widget ancestor could be found starting from the " + "context that was passed to PrimaryScrollController.of(). This can happen " + "because you are using a widget that looks for a PrimaryScrollController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
@@ -71,11 +71,11 @@ public class PrimaryScrollController : InheritedWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.controller, ((PrimaryScrollController)oldWidget).controller)));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(controller, ((PrimaryScrollController)oldWidget).controller));
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", this.controller, ifNull: "no controller", showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", controller, ifNull: "no controller", showName: false));
     }
 
 }

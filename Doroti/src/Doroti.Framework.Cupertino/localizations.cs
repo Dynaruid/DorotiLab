@@ -86,7 +86,7 @@ internal class _CupertinoLocalizationsDelegate__localizations : global::Doroti.F
     {
     }
 
-    public override bool isSupported(Locale locale) => DartRuntimePrimitives.ConvertValue<bool>((locale.languageCode == "en"));
+    public override bool isSupported(Locale locale) => DartRuntimePrimitives.ConvertValue<bool>(locale.languageCode == "en");
     public override Future<CupertinoLocalizations> load(Locale locale) => DefaultCupertinoLocalizations.load(locale);
     public override bool shouldReload(global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> old) => false;
     public override string ToString() => "DefaultCupertinoLocalizations.delegate(en_US)";
@@ -97,21 +97,21 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     internal static List<string> _shortWeekdays = new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     internal static List<string> _shortMonths = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     internal static List<string> _months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> @delegate = ((global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations>)new _CupertinoLocalizationsDelegate__localizations());
+    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> @delegate = new _CupertinoLocalizationsDelegate__localizations();
 
     public DefaultCupertinoLocalizations()
     {
     }
 
     public override string datePickerYear(long yearIndex) => yearIndex.ToString();
-    public override string datePickerMonth(long monthIndex) => _months[(int)((monthIndex - 1L))];
-    public override string datePickerStandaloneMonth(long monthIndex) => _months[(int)((monthIndex - 1L))];
+    public override string datePickerMonth(long monthIndex) => _months[(int)(monthIndex - 1L)];
+    public override string datePickerStandaloneMonth(long monthIndex) => _months[(int)(monthIndex - 1L)];
     public override string datePickerDayOfMonth(long dayIndex, long? weekDay = null)
     {
-        if ((weekDay is not null))
+        if (weekDay is not null)
         {
             long weekDay__value15239 = DartRuntimePrimitives.RequireValue(weekDay);
-            return $" {_shortWeekdays[(int)((DartRuntimePrimitives.RequireValue(weekDay__value15239) - 1L))]} {dayIndex} ";
+            return $" {_shortWeekdays[(int)(DartRuntimePrimitives.RequireValue(weekDay__value15239) - 1L)]} {dayIndex} ";
         }
         return dayIndex.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -122,7 +122,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public override string datePickerMinute(long minute) => minute.ToString().padLeft(2L, "0");
     public override string? datePickerMinuteSemanticsLabel(long minute)
     {
-        if ((minute == 1L))
+        if (minute == 1L)
         {
             return "1 minute";
         }
@@ -132,7 +132,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
 
     public override string datePickerMediumDate(DateTime date)
     {
-        return $"{_shortWeekdays[(int)((date.DayOfWeek.ToDartWeekday() - 1L))]} " + $"{_shortMonths[(int)((date.Month - 1L))]} " + $"{date.Day.ToString().padRight(2L)}";
+        return $"{_shortWeekdays[(int)(date.DayOfWeek.ToDartWeekday() - 1L)]} " + $"{_shortMonths[(int)(date.Month - 1L)]} " + $"{date.Day.ToString().padRight(2L)}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -144,8 +144,8 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public override string alertDialogLabel => "Alert";
     public override string tabSemanticsLabel(long tabIndex, long tabCount)
     {
-        DartRuntimePrimitives.Assert(() => (tabIndex >= 1L));
-        DartRuntimePrimitives.Assert(() => (tabCount >= 1L));
+        DartRuntimePrimitives.Assert(() => tabIndex >= 1L);
+        DartRuntimePrimitives.Assert(() => tabCount >= 1L);
         return $"Tab {tabIndex} of {tabCount}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -153,7 +153,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public override string timerPickerHour(long hour) => hour.ToString();
     public override string timerPickerMinute(long minute) => minute.ToString();
     public override string timerPickerSecond(long second) => second.ToString();
-    public override string? timerPickerHourLabel(long hour) => ((hour == 1L) ? "hour" : "hours");
+    public override string? timerPickerHourLabel(long hour) => (hour == 1L) ? "hour" : "hours";
     public override List<string> timerPickerHourLabels => new List<string> { "hour", "hours" };
     public override string? timerPickerMinuteLabel(long minute) => "min.";
     public override List<string> timerPickerMinuteLabels => new List<string> { "min." };
@@ -181,7 +181,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public override string collapsedHint => "Expanded";
     public static Future<CupertinoLocalizations> load(Locale locale)
     {
-        return ((Future<CupertinoLocalizations>)new global::Doroti.Framework.Foundation.SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations()));
+        return new global::Doroti.Framework.Foundation.SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

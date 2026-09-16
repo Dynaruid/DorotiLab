@@ -18,7 +18,7 @@ public class DecoratedBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderDecoratedBox(decoration: this.decoration, position: this.position, configuration: ImageLibrary.createLocalImageConfiguration(context)));
+        return new global::Doroti.Framework.Rendering.RenderDecoratedBox(decoration: decoration, position: position, configuration: ImageLibrary.createLocalImageConfiguration(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -28,9 +28,9 @@ public class DecoratedBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderDecoratedBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.decoration = this.decoration;
+    __cascade.decoration = decoration;
     __cascade.configuration = ImageLibrary.createLocalImageConfiguration(context);
-    __cascade.position = this.position;
+    __cascade.position = position;
     return __cascade;
 }))());
     }
@@ -38,9 +38,9 @@ public class DecoratedBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string label = (this.position switch { DecorationPosition.background => "bg", DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.DecorationPosition>("position", this.position, level: DiagnosticLevel.hidden));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label, this.decoration));
+        string label = position switch { DecorationPosition.background => "bg", DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.DecorationPosition>("position", position, level: DiagnosticLevel.hidden));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label, decoration));
     }
 
 }
@@ -73,75 +73,75 @@ public class Container : StatelessWidget
         this.transformAlignment = transformAlignment;
         this.child = child;
         this.clipBehavior = clipBehavior;
-        this.constraints = ((((width is not null) || (height is not null))) ? (constraints?.tighten(width: width, height: height) ?? BoxConstraints.CreateTightFor(width: width, height: height)) : constraints);
-        System.Diagnostics.Debug.Assert(((margin is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)margin).isNonNegative));
-        System.Diagnostics.Debug.Assert(((padding is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative));
-        System.Diagnostics.Debug.Assert(((decoration is null) || decoration.debugAssertIsValid()));
-        System.Diagnostics.Debug.Assert(((constraints is null) || constraints.debugAssertIsValid()));
-        System.Diagnostics.Debug.Assert(((decoration is not null) || (Equals(clipBehavior, Clip.none))));
-        System.Diagnostics.Debug.Assert(((color is null) || (decoration is null)));
+        this.constraints = ((width is not null) || (height is not null)) ? (constraints?.tighten(width: width, height: height) ?? BoxConstraints.CreateTightFor(width: width, height: height)) : constraints;
+        System.Diagnostics.Debug.Assert((margin is null) || margin.isNonNegative);
+        System.Diagnostics.Debug.Assert((padding is null) || padding.isNonNegative);
+        System.Diagnostics.Debug.Assert((decoration is null) || decoration.debugAssertIsValid());
+        System.Diagnostics.Debug.Assert((constraints is null) || constraints.debugAssertIsValid());
+        System.Diagnostics.Debug.Assert((decoration is not null) || Equals(clipBehavior, Clip.none));
+        System.Diagnostics.Debug.Assert((color is null) || (decoration is null));
     }
 
     internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _paddingIncludingDecoration
     {
         get
         {
-            return ((this.padding, this.decoration?.padding) switch
+            return (padding, decoration?.padding) switch
             {
                 (null, null) => null,
                 (null, global::Doroti.Framework.Painting.EdgeInsetsGeometry decorationPadding) => decorationPadding,
                 (global::Doroti.Framework.Painting.EdgeInsetsGeometry widgetPadding, null) => widgetPadding,
                 (global::Doroti.Framework.Painting.EdgeInsetsGeometry widgetPadding, global::Doroti.Framework.Painting.EdgeInsetsGeometry decorationPadding) => widgetPadding.add(decorationPadding),
-            });
+            };
         }
     }
     public override Widget build(BuildContext context)
     {
-        Widget? current = this.child;
-        if (((this.child is null) && (((this.constraints is null) || !this.constraints!.isTight))))
+        Widget? current = child;
+        if ((child is null) && ((constraints is null) || !constraints!.isTight))
         {
             current = DartRuntimePrimitives.ConvertValue<Widget>(new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: new ConstrainedBox(constraints: BoxConstraints.CreateExpand())));
         }
         else
         {
-            if ((this.alignment is not null))
+            if (alignment is not null)
             {
-                current = DartRuntimePrimitives.ConvertValue<Widget>(new Align(alignment: this.alignment!, child: current));
+                current = DartRuntimePrimitives.ConvertValue<Widget>(new Align(alignment: alignment!, child: current));
             }
         }
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = this._paddingIncludingDecoration;
-        if ((effectivePadding is not null))
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = _paddingIncludingDecoration;
+        if (effectivePadding is not null)
         {
             current = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: effectivePadding, child: current));
         }
-        if ((this.color is not null))
+        if (color is not null)
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: this.color!, isAntiAlias: this.isAntiAlias, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: color!, isAntiAlias: isAntiAlias, child: current));
         }
-        if ((!Equals(this.clipBehavior, Clip.none)))
+        if (!Equals(clipBehavior, Clip.none))
         {
-            DartRuntimePrimitives.Assert(() => (this.decoration is not null));
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new ClipPath(clipper: new _DecorationClipper__container(textDirection: Directionality.maybeOf(context), decoration: this.decoration!), clipBehavior: this.clipBehavior, child: current));
+            DartRuntimePrimitives.Assert(() => decoration is not null);
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new ClipPath(clipper: new _DecorationClipper__container(textDirection: Directionality.maybeOf(context), decoration: decoration!), clipBehavior: clipBehavior, child: current));
         }
-        if ((this.decoration is not null))
+        if (decoration is not null)
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.decoration!, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: decoration!, child: current));
         }
-        if ((this.foregroundDecoration is not null))
+        if (foregroundDecoration is not null)
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.foregroundDecoration!, position: DecorationPosition.foreground, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: foregroundDecoration!, position: DecorationPosition.foreground, child: current));
         }
-        if ((this.constraints is not null))
+        if (constraints is not null)
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: this.constraints!, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: constraints!, child: current));
         }
-        if ((this.margin is not null))
+        if (margin is not null)
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: this.margin!, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: margin!, child: current));
         }
-        if ((this.transform is not null))
+        if (transform is not null)
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: this.transform!, alignment: this.transformAlignment, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: transform!, alignment: transformAlignment, child: current));
         }
         return current!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -150,21 +150,21 @@ public class Container : StatelessWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, showName: false, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: Clip.none));
-        if ((this.color is not null))
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: Clip.none));
+        if (color is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color>("bg", this.color));
+            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color>("bg", color));
         }
         else
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("bg", this.decoration, defaultValue: null));
+            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("bg", decoration, defaultValue: null));
         }
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("fg", this.foregroundDecoration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(ObjectFlagProperty<Matrix4>.CreateHas("transform", this.transform));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("fg", foregroundDecoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", constraints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", margin, defaultValue: null));
+        properties.add(ObjectFlagProperty<Matrix4>.CreateHas("transform", transform));
     }
 
 }
@@ -177,19 +177,19 @@ internal class _DecorationClipper__container : global::Doroti.Framework.Renderin
     internal _DecorationClipper__container(TextDirection? textDirection = null, global::Doroti.Framework.Painting.Decoration decoration = default!)
     {
         this.decoration = decoration;
-        this.textDirection = (textDirection ?? TextDirection.ltr);
+        this.textDirection = textDirection ?? TextDirection.ltr;
     }
 
     public override Path getClip(Size size)
     {
-        return ((Path)this.decoration.getClipPath((Offset.zero & size), DartRuntimePrimitives.RequireValue(this.textDirection)));
+        return decoration.getClipPath(Offset.zero & size, DartRuntimePrimitives.RequireValue(textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Path> oldClipper)
     {
         var __oldClipper = (_DecorationClipper__container)oldClipper;
-        return ((!Equals(((_DecorationClipper__container)__oldClipper).decoration, this.decoration)) || (!Equals(((_DecorationClipper__container)__oldClipper).textDirection, this.textDirection)));
+        return (!Equals(__oldClipper.decoration, decoration)) || (!Equals(__oldClipper.textDirection, textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

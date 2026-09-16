@@ -34,31 +34,31 @@ public class ButtonBar : global::Doroti.Framework.Widgets.StatelessWidget
         this.overflowDirection = overflowDirection;
         this.overflowButtonSpacing = overflowButtonSpacing;
         this.children = __children;
-        System.Diagnostics.Debug.Assert(((buttonMinWidth is null) || (buttonMinWidth >= 0.0)));
-        System.Diagnostics.Debug.Assert(((buttonHeight is null) || (buttonHeight >= 0.0)));
-        System.Diagnostics.Debug.Assert(((overflowButtonSpacing is null) || (overflowButtonSpacing >= 0.0)));
+        System.Diagnostics.Debug.Assert((buttonMinWidth is null) || (buttonMinWidth >= 0.0));
+        System.Diagnostics.Debug.Assert((buttonHeight is null) || (buttonHeight >= 0.0));
+        System.Diagnostics.Debug.Assert((overflowButtonSpacing is null) || (overflowButtonSpacing >= 0.0));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ButtonThemeData parentButtonTheme = ButtonTheme.of(context);
         ButtonBarThemeData barTheme = ButtonBarTheme.of(context);
-        ButtonThemeData buttonTheme = parentButtonTheme.copyWith(textTheme: ((this.buttonTextTheme ?? barTheme.buttonTextTheme) ?? ButtonTextTheme.primary), minWidth: ((this.buttonMinWidth ?? barTheme.buttonMinWidth) ?? 64.0), height: ((this.buttonHeight ?? barTheme.buttonHeight) ?? 36.0), padding: ((this.buttonPadding ?? barTheme.buttonPadding) ?? EdgeInsets.CreateSymmetric(horizontal: 8.0)), alignedDropdown: ((this.buttonAlignedDropdown ?? barTheme.buttonAlignedDropdown) ?? false), layoutBehavior: ((this.layoutBehavior ?? barTheme.layoutBehavior) ?? ButtonBarLayoutBehavior.padded));
-        double paddingUnit = (buttonTheme.padding.horizontal / 4.0);
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)ButtonTheme.CreateFromButtonThemeData(data: buttonTheme, child: new _ButtonBarRow__button_bar(mainAxisAlignment: ((this.alignment ?? barTheme.alignment) ?? MainAxisAlignment.end), mainAxisSize: ((this.mainAxisSize ?? barTheme.mainAxisSize) ?? MainAxisSize.max), overflowDirection: ((this.overflowDirection ?? barTheme.overflowDirection) ?? VerticalDirection.down), overflowButtonSpacing: this.overflowButtonSpacing, children: this.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) =>
+        ButtonThemeData buttonTheme = parentButtonTheme.copyWith(textTheme: (buttonTextTheme ?? barTheme.buttonTextTheme) ?? ButtonTextTheme.primary, minWidth: (buttonMinWidth ?? barTheme.buttonMinWidth) ?? 64.0, height: (buttonHeight ?? barTheme.buttonHeight) ?? 36.0, padding: (buttonPadding ?? barTheme.buttonPadding) ?? EdgeInsets.CreateSymmetric(horizontal: 8.0), alignedDropdown: (buttonAlignedDropdown ?? barTheme.buttonAlignedDropdown) ?? false, layoutBehavior: (layoutBehavior ?? barTheme.layoutBehavior) ?? ButtonBarLayoutBehavior.padded);
+        double paddingUnit = buttonTheme.padding.horizontal / 4.0;
+        global::Doroti.Framework.Widgets.Widget childLocal = ButtonTheme.CreateFromButtonThemeData(data: buttonTheme, child: new _ButtonBarRow__button_bar(mainAxisAlignment: (alignment ?? barTheme.alignment) ?? MainAxisAlignment.end, mainAxisSize: (mainAxisSize ?? barTheme.mainAxisSize) ?? MainAxisSize.max, overflowDirection: (overflowDirection ?? barTheme.overflowDirection) ?? VerticalDirection.down, overflowButtonSpacing: overflowButtonSpacing, children: children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>((child) =>
         {
             return new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: paddingUnit), child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })).ToList())));
+        }).ToList()));
         switch (buttonTheme.layoutBehavior)
         {
-            case var __constant10272 when (Equals(__constant10272, ButtonBarLayoutBehavior.padded)):
+            case var __constant10272 when Equals(__constant10272, ButtonBarLayoutBehavior.padded):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(vertical: (2.0 * paddingUnit), horizontal: paddingUnit), child: childLocal));
+                    return new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(vertical: 2.0 * paddingUnit, horizontal: paddingUnit), child: childLocal);
                 }
-            case var __constant10469 when (Equals(__constant10469, ButtonBarLayoutBehavior.constrained)):
+            case var __constant10469 when Equals(__constant10469, ButtonBarLayoutBehavior.constrained):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: paddingUnit), child: new global::Doroti.Framework.Widgets.Center(child: childLocal))));
+                    return new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: paddingUnit), child: new global::Doroti.Framework.Widgets.Center(child: childLocal)));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -79,7 +79,7 @@ internal class _ButtonBarRow__button_bar : global::Doroti.Framework.Widgets.Flex
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderButtonBarRow__button_bar(direction: this.direction, mainAxisAlignment: this.mainAxisAlignment, mainAxisSize: this.mainAxisSize, crossAxisAlignment: this.crossAxisAlignment, textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)), verticalDirection: this.verticalDirection, textBaseline: this.textBaseline, overflowButtonSpacing: this.overflowButtonSpacing));
+        return new _RenderButtonBarRow__button_bar(direction: direction, mainAxisAlignment: mainAxisAlignment, mainAxisSize: mainAxisSize, crossAxisAlignment: crossAxisAlignment, textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)), verticalDirection: verticalDirection, textBaseline: textBaseline, overflowButtonSpacing: overflowButtonSpacing);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -89,14 +89,14 @@ internal class _ButtonBarRow__button_bar : global::Doroti.Framework.Widgets.Flex
         DartRuntimePrimitives.Ignore(((Func<_RenderButtonBarRow__button_bar>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.direction = this.direction;
-    __cascade.mainAxisAlignment = this.mainAxisAlignment;
-    __cascade.mainAxisSize = this.mainAxisSize;
-    __cascade.crossAxisAlignment = this.crossAxisAlignment;
+    __cascade.direction = direction;
+    __cascade.mainAxisAlignment = mainAxisAlignment;
+    __cascade.mainAxisSize = mainAxisSize;
+    __cascade.crossAxisAlignment = crossAxisAlignment;
     __cascade.textDirection = getEffectiveTextDirection(context);
-    __cascade.verticalDirection = this.verticalDirection;
-    __cascade.textBaseline = this.textBaseline;
-    __cascade.overflowButtonSpacing = this.overflowButtonSpacing;
+    __cascade.verticalDirection = verticalDirection;
+    __cascade.textBaseline = textBaseline;
+    __cascade.overflowButtonSpacing = overflowButtonSpacing;
     return __cascade;
 }))());
     }
@@ -111,42 +111,42 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
     internal _RenderButtonBarRow__button_bar(global::Doroti.Framework.Painting.Axis direction = Axis.horizontal, global::Doroti.Framework.Rendering.MainAxisSize mainAxisSize = MainAxisSize.max, global::Doroti.Framework.Rendering.MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start, global::Doroti.Framework.Rendering.CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, TextDirection textDirection = default!, global::Doroti.Framework.Painting.VerticalDirection verticalDirection = VerticalDirection.down, TextBaseline? textBaseline = null, double? overflowButtonSpacing = null) : base(direction: direction, mainAxisSize: mainAxisSize, mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: crossAxisAlignment, textDirection: textDirection, verticalDirection: verticalDirection, textBaseline: textBaseline)
     {
         this.overflowButtonSpacing = overflowButtonSpacing;
-        System.Diagnostics.Debug.Assert(((overflowButtonSpacing is null) || (overflowButtonSpacing >= 0L)));
+        System.Diagnostics.Debug.Assert((overflowButtonSpacing is null) || (overflowButtonSpacing >= 0L));
     }
 
     public override global::Doroti.Framework.Rendering.BoxConstraints constraints
     {
         get
         {
-            if (this._hasCheckedLayoutWidth)
+            if (_hasCheckedLayoutWidth)
             {
                 return base.constraints;
             }
-            return ((global::Doroti.Framework.Rendering.BoxConstraints)base.constraints.copyWith(maxWidth: double.PositiveInfinity));
+            return base.constraints.copyWith(maxWidth: double.PositiveInfinity);
         }
     }
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        global::Doroti.Ui.Size size = ((global::Doroti.Ui.Size)base.computeDryLayout(constraints.copyWith(maxWidth: double.PositiveInfinity)));
-        if ((size.width <= ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth))
+        global::Doroti.Ui.Size size = base.computeDryLayout(constraints.copyWith(maxWidth: double.PositiveInfinity));
+        if (size.width <= constraints.maxWidth)
         {
             return base.computeDryLayout(constraints);
         }
         var currentHeight = 0.0;
-        global::Doroti.Framework.Rendering.RenderBox? child = ((global::Doroti.Framework.Rendering.RenderBox?)this.firstChild);
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        while (child is not null)
         {
-            global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.copyWith(minWidth: 0.0));
-            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)child.getDryLayout(childConstraints));
+            global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.copyWith(minWidth: 0.0);
+            global::Doroti.Ui.Size childSize = child.getDryLayout(childConstraints);
             currentHeight += childSize.height;
             child = childAfter(child);
-            if (((this.overflowButtonSpacing is not null) && (child is not null)))
+            if ((overflowButtonSpacing is not null) && (child is not null))
             {
                 double overflowButtonSpacing__value15257 = DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
-                currentHeight += DartRuntimePrimitives.RequireValue(this.overflowButtonSpacing);
+                currentHeight += DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
             }
         }
-        return constraints.constrain(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, currentHeight));
+        return constraints.constrain(new global::Doroti.Ui.Size(constraints.maxWidth, currentHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -155,34 +155,34 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
         _hasCheckedLayoutWidth = false;
         base.performLayout();
         _hasCheckedLayoutWidth = true;
-        if ((this.size.width <= ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth))
+        if (size.width <= constraints.maxWidth)
         {
             base.performLayout();
         }
         else
         {
-            global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints.copyWith(minWidth: 0.0));
+            global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.copyWith(minWidth: 0.0);
             var currentHeight = 0.0;
-            global::Doroti.Framework.Rendering.RenderBox? child = (this.verticalDirection switch { VerticalDirection.down => this.firstChild, VerticalDirection.up => this.lastChild, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            while ((child is not null))
+            global::Doroti.Framework.Rendering.RenderBox? child = verticalDirection switch { VerticalDirection.down => firstChild, VerticalDirection.up => lastChild, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            while (child is not null)
             {
                 var childParentData = ((global::Doroti.Framework.Rendering.FlexParentData?)child.parentData!)!;
                 child.layout(childConstraints, parentUsesSize: true);
-                switch (DartRuntimePrimitives.RequireValue(this.textDirection))
+                switch (DartRuntimePrimitives.RequireValue(textDirection))
                 {
                     case TextDirection.ltr:
                         {
-                            switch (this.mainAxisAlignment)
+                            switch (mainAxisAlignment)
                             {
                                 case MainAxisAlignment.center:
                                     {
-                                        double midpoint = (((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width)) / 2.0);
+                                        double midpoint = (constraints.maxWidth - child.size.width) / 2.0;
                                         childParentData.offset = new global::Doroti.Ui.Offset(midpoint, currentHeight);
                                         break;
                                     }
                                 case MainAxisAlignment.end:
                                     {
-                                        childParentData.offset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width), currentHeight);
+                                        childParentData.offset = new global::Doroti.Ui.Offset(constraints.maxWidth - child.size.width, currentHeight);
                                         break;
                                     }
                                 case MainAxisAlignment.spaceAround:
@@ -198,11 +198,11 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
                         }
                     case TextDirection.rtl:
                         {
-                            switch (this.mainAxisAlignment)
+                            switch (mainAxisAlignment)
                             {
                                 case MainAxisAlignment.center:
                                     {
-                                        double midpointLocal = ((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth / 2.0) - (((global::Doroti.Framework.Rendering.RenderBox)child).size.width / 2.0));
+                                        double midpointLocal = (constraints.maxWidth / 2.0) - (child.size.width / 2.0);
                                         childParentData.offset = new global::Doroti.Ui.Offset(midpointLocal, currentHeight);
                                         break;
                                     }
@@ -216,22 +216,22 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
                                 case MainAxisAlignment.spaceEvenly:
                                 case MainAxisAlignment.start:
                                     {
-                                        childParentData.offset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width), currentHeight);
+                                        childParentData.offset = new global::Doroti.Ui.Offset(constraints.maxWidth - child.size.width, currentHeight);
                                         break;
                                     }
                             }
                             break;
                         }
                 }
-                currentHeight += ((global::Doroti.Framework.Rendering.RenderBox)child).size.height;
-                child = (this.verticalDirection switch { VerticalDirection.down => childParentData.nextSibling, VerticalDirection.up => childParentData.previousSibling, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                if (((this.overflowButtonSpacing is not null) && (child is not null)))
+                currentHeight += child.size.height;
+                child = verticalDirection switch { VerticalDirection.down => childParentData.nextSibling, VerticalDirection.up => childParentData.previousSibling, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                if ((overflowButtonSpacing is not null) && (child is not null))
                 {
                     double overflowButtonSpacing__value18856 = DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
-                    currentHeight += DartRuntimePrimitives.RequireValue(this.overflowButtonSpacing);
+                    currentHeight += DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
                 }
             }
-            this.size = this.constraints.constrain(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth, currentHeight));
+            size = constraints.constrain(new global::Doroti.Ui.Size(constraints.maxWidth, currentHeight));
         }
     }
 

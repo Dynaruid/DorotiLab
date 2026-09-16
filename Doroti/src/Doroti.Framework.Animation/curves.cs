@@ -13,7 +13,7 @@ public abstract class ParametricCurve<T>
 
     public virtual T transform(double t)
     {
-        DartRuntimePrimitives.Assert(() => ((t >= 0.0) && (t <= 1.0)));
+        DartRuntimePrimitives.Assert(() => (t >= 0.0) && (t <= 1.0));
         return transformInternal(t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -35,7 +35,7 @@ public abstract class Curve : ParametricCurve<double>
 
     public override double transform(double t)
     {
-        if (((t == 0.0) || (t == 1.0)))
+        if ((t == 0.0) || (t == 1.0))
         {
             return t;
         }
@@ -66,14 +66,14 @@ public class SawTooth : Curve
 
     public override double transformInternal(double t)
     {
-        t *= this.count;
-        return (t - t.truncateToDouble());
+        t *= count;
+        return t - t.truncateToDouble();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SawTooth"))}({this.count})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SawTooth")}({count})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -95,27 +95,27 @@ public class Interval : Curve
 
     public override double transformInternal(double t)
     {
-        DartRuntimePrimitives.Assert(() => (this.begin >= 0.0));
-        DartRuntimePrimitives.Assert(() => (this.begin <= 1.0));
-        DartRuntimePrimitives.Assert(() => (this.end >= 0.0));
-        DartRuntimePrimitives.Assert(() => (this.end <= 1.0));
-        DartRuntimePrimitives.Assert(() => (this.end >= this.begin));
-        t = Dart_uiLibrary.clampDouble((((t - this.begin)) / ((this.end - this.begin))), 0.0, 1.0);
-        if (((t == 0.0) || (t == 1.0)))
+        DartRuntimePrimitives.Assert(() => begin >= 0.0);
+        DartRuntimePrimitives.Assert(() => begin <= 1.0);
+        DartRuntimePrimitives.Assert(() => end >= 0.0);
+        DartRuntimePrimitives.Assert(() => end <= 1.0);
+        DartRuntimePrimitives.Assert(() => end >= begin);
+        t = Dart_uiLibrary.clampDouble((t - begin) / (end - begin), 0.0, 1.0);
+        if ((t == 0.0) || (t == 1.0))
         {
             return t;
         }
-        return this.curve.transform(t);
+        return curve.transform(t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        if ((this.curve is not _Linear__curves))
+        if (curve is not _Linear__curves)
         {
-            return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval"))}({this.begin}⋯{this.end})➩{this.curve}";
+            return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval")}({begin}⋯{end})➩{curve}";
         }
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval"))}({this.begin}⋯{this.end})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval")}({begin}⋯{end})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -138,34 +138,34 @@ public class Split : Curve
 
     public override double transform(double t)
     {
-        DartRuntimePrimitives.Assert(() => ((t >= 0.0) && (t <= 1.0)));
-        DartRuntimePrimitives.Assert(() => ((this.split >= 0.0) && (this.split <= 1.0)));
-        if (((t == 0.0) || (t == 1.0)))
+        DartRuntimePrimitives.Assert(() => (t >= 0.0) && (t <= 1.0));
+        DartRuntimePrimitives.Assert(() => (split >= 0.0) && (split <= 1.0));
+        if ((t == 0.0) || (t == 1.0))
         {
             return t;
         }
-        if ((t == this.split))
+        if (t == split)
         {
-            return this.split;
+            return split;
         }
-        if ((t < this.split))
+        if (t < split)
         {
-            double curveProgress = (t / this.split);
-            double transformed = this.beginCurve.transform(curveProgress);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, this.split, transformed));
+            double curveProgress = t / split;
+            double transformed = beginCurve.transform(curveProgress);
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, split, transformed));
         }
         else
         {
-            double curveProgressLocal = (((t - this.split)) / ((1L - this.split)));
-            double transformedLocal = this.endCurve.transform(curveProgressLocal);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.split, 1L, transformedLocal));
+            double curveProgressLocal = (t - split) / (1L - split);
+            double transformedLocal = endCurve.transform(curveProgressLocal);
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(split, 1L, transformedLocal));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(DiagnosticsLibrary.describeIdentity(this))}({this.split}, {this.beginCurve}, {this.endCurve})";
+        return $"{DiagnosticsLibrary.describeIdentity(this)}({split}, {beginCurve}, {endCurve})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -182,9 +182,9 @@ public class Threshold : Curve
 
     public override double transformInternal(double t)
     {
-        DartRuntimePrimitives.Assert(() => (this.threshold >= 0.0));
-        DartRuntimePrimitives.Assert(() => (this.threshold <= 1.0));
-        return ((t < this.threshold) ? 0.0 : 1.0);
+        DartRuntimePrimitives.Assert(() => threshold >= 0.0);
+        DartRuntimePrimitives.Assert(() => threshold <= 1.0);
+        return (t < threshold) ? 0.0 : 1.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -208,7 +208,7 @@ public class Cubic : Curve
 
     internal virtual double _evaluateCubic(double a, double b, double m)
     {
-        return ((((((3L * a) * ((1L - m))) * ((1L - m))) * m) + ((((3L * b) * ((1L - m))) * m) * m)) + ((m * m) * m));
+        return (3L * a * (1L - m) * (1L - m) * m) + (3L * b * (1L - m) * m * m) + (m * m * m);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -218,11 +218,11 @@ public class Cubic : Curve
         {
             throw new DartArgumentError(t, "t", "must not be NaN");
         }
-        if ((t <= 0.0))
+        if (t <= 0.0)
         {
             return 0.0;
         }
-        if ((t >= 1.0))
+        if (t >= 1.0)
         {
             return 1.0;
         }
@@ -230,13 +230,13 @@ public class Cubic : Curve
         var end = 1.0;
         while (true)
         {
-            double midpoint = (((start + end)) / 2L);
-            double estimate = _evaluateCubic(this.a, this.c, midpoint);
-            if ((((t - estimate)).abs() < _cubicErrorBound))
+            double midpoint = (start + end) / 2L;
+            double estimate = _evaluateCubic(a, c, midpoint);
+            if ((t - estimate).abs() < _cubicErrorBound)
             {
-                return _evaluateCubic(this.b, this.d, midpoint);
+                return _evaluateCubic(b, d, midpoint);
             }
-            if ((estimate < t))
+            if (estimate < t)
             {
                 start = midpoint;
             }
@@ -250,7 +250,7 @@ public class Cubic : Curve
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Cubic"))}({this.a.toStringAsFixed(2L)}, {this.b.toStringAsFixed(2L)}, {this.c.toStringAsFixed(2L)}, {this.d.toStringAsFixed(2L)})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Cubic")}({a.toStringAsFixed(2L)}, {b.toStringAsFixed(2L)}, {c.toStringAsFixed(2L)}, {d.toStringAsFixed(2L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -275,24 +275,24 @@ public class ThreePointCubic : Curve
 
     public override double transformInternal(double t)
     {
-        bool firstCurve = (t < this.midpoint.dx);
-        double scaleX = (firstCurve ? this.midpoint.dx : (1.0 - this.midpoint.dx));
-        double scaleY = (firstCurve ? this.midpoint.dy : (1.0 - this.midpoint.dy));
-        double scaledT = (((t - ((firstCurve ? 0.0 : this.midpoint.dx)))) / scaleX);
+        bool firstCurve = t < midpoint.dx;
+        double scaleX = firstCurve ? midpoint.dx : (1.0 - midpoint.dx);
+        double scaleY = firstCurve ? midpoint.dy : (1.0 - midpoint.dy);
+        double scaledT = (t - (firstCurve ? 0.0 : midpoint.dx)) / scaleX;
         if (firstCurve)
         {
-            return (new Cubic((this.a1.dx / scaleX), (this.a1.dy / scaleY), (this.b1.dx / scaleX), (this.b1.dy / scaleY)).transform(scaledT) * scaleY);
+            return new Cubic(a1.dx / scaleX, a1.dy / scaleY, b1.dx / scaleX, b1.dy / scaleY).transform(scaledT) * scaleY;
         }
         else
         {
-            return ((new Cubic((((this.a2.dx - this.midpoint.dx)) / scaleX), (((this.a2.dy - this.midpoint.dy)) / scaleY), (((this.b2.dx - this.midpoint.dx)) / scaleX), (((this.b2.dy - this.midpoint.dy)) / scaleY)).transform(scaledT) * scaleY) + this.midpoint.dy);
+            return (new Cubic((a2.dx - midpoint.dx) / scaleX, (a2.dy - midpoint.dy) / scaleY, (b2.dx - midpoint.dx) / scaleX, (b2.dy - midpoint.dy) / scaleY).transform(scaledT) * scaleY) + midpoint.dy;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, $"ThreePointCubic({this.a1}, {this.b1}, {this.midpoint}, {this.a2}, {this.b2})"))} ";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, $"ThreePointCubic({a1}, {b1}, {midpoint}, {a2}, {b2})")} ";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -306,14 +306,14 @@ public abstract class Curve2D : ParametricCurve<Offset>
 
     public virtual IEnumerable<Curve2DSample> generateSamples(double start = 0.0, double end = 1.0, double tolerance = 1e-10)
     {
-        DartRuntimePrimitives.Assert(() => (end > start));
-        var rand = new DartRandom(this.samplingSeed);
+        DartRuntimePrimitives.Assert(() => end > start);
+        var rand = new DartRandom(samplingSeed);
         bool isFlat(Offset p, Offset q, Offset r)
         {
-            global::Doroti.Ui.Offset pr = (p - r);
-            global::Doroti.Ui.Offset qr = (q - r);
-            double z = ((pr.dx * qr.dy) - (qr.dx * pr.dy));
-            return (((z * z)) < tolerance);
+            global::Doroti.Ui.Offset pr = p - r;
+            global::Doroti.Ui.Offset qr = q - r;
+            double z = (pr.dx * qr.dy) - (qr.dx * pr.dy);
+            return z * z < tolerance;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         var first = new Curve2DSample(start, transform(start));
@@ -321,9 +321,9 @@ public abstract class Curve2D : ParametricCurve<Offset>
         var samples = new List<Curve2DSample> { first };
         void sample(Curve2DSample p, Curve2DSample q, bool forceSubdivide = false)
         {
-            double tLocal = (((Curve2DSample)p).t + (((0.45 + (0.1 * rand.nextDouble()))) * ((((Curve2DSample)q).t - ((Curve2DSample)p).t))));
+            double tLocal = p.t + ((0.45 + (0.1 * rand.nextDouble())) * (q.t - p.t));
             var rLocal = new Curve2DSample(tLocal, transform(tLocal));
-            if ((!forceSubdivide && isFlat(((Curve2DSample)p).value, ((Curve2DSample)q).value, ((Curve2DSample)rLocal).value)))
+            if (!forceSubdivide && isFlat(p.value, q.value, rLocal.value))
             {
                 samples.Add(q);
             }
@@ -333,7 +333,7 @@ public abstract class Curve2D : ParametricCurve<Offset>
                 sample(rLocal, q);
             }
         }
-        sample(first, last, forceSubdivide: ((((((Curve2DSample)first).value.dx - ((Curve2DSample)last).value.dx)).abs() < tolerance) && (((((Curve2DSample)first).value.dy - ((Curve2DSample)last).value.dy)).abs() < tolerance)));
+        sample(first, last, forceSubdivide: ((first.value.dx - last.value.dx).abs() < tolerance) && ((first.value.dy - last.value.dy).abs() < tolerance));
         return samples;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -346,17 +346,17 @@ public abstract class Curve2D : ParametricCurve<Offset>
         double mid = default!;
         double offsetToOrigin(double pos)
         {
-            return (x - transform(pos).dx);
+            return x - transform(pos).dx;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         var errorLimit = 0.000001;
         var count = 100L;
         double startValue = offsetToOrigin(start);
-        while ((((((end - start)) / 2.0) > errorLimit) && (count > 0L)))
+        while ((((end - start) / 2.0) > errorLimit) && (count > 0L))
         {
-            mid = (((end + start)) / 2.0);
+            mid = (end + start) / 2.0;
             double value = offsetToOrigin(mid);
-            if ((Math.Sign(value) == Math.Sign(startValue)))
+            if (Math.Sign(value) == Math.Sign(startValue))
             {
                 start = mid;
             }
@@ -385,7 +385,7 @@ public class Curve2DSample
 
     public override string ToString()
     {
-        return $"[({this.value.dx.toStringAsFixed(2L)}, {this.value.dy.toStringAsFixed(2L)}), {this.t.toStringAsFixed(2L)}]";
+        return $"[({value.dx.toStringAsFixed(2L)}, {value.dy.toStringAsFixed(2L)}), {t.toStringAsFixed(2L)}]";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -401,14 +401,14 @@ public class CatmullRomSpline : Curve2D
 
     public CatmullRomSpline(List<Offset> controlPoints, double tension = 0.0, Offset? startHandle = null, Offset? endHandle = null)
     {
-        this._controlPoints = controlPoints;
-        this._startHandle = startHandle;
-        this._endHandle = endHandle;
-        this._tension = tension;
-        this._cubicSegments = new List<List<global::Doroti.Ui.Offset>>();
-        System.Diagnostics.Debug.Assert((tension <= 1.0));
-        System.Diagnostics.Debug.Assert((tension >= 0.0));
-        System.Diagnostics.Debug.Assert((checked((long)(controlPoints.Count)) > 3L));
+        _controlPoints = controlPoints;
+        _startHandle = startHandle;
+        _endHandle = endHandle;
+        _tension = tension;
+        _cubicSegments = new List<List<global::Doroti.Ui.Offset>>();
+        System.Diagnostics.Debug.Assert(tension <= 1.0);
+        System.Diagnostics.Debug.Assert(tension >= 0.0);
+        System.Diagnostics.Debug.Assert(checked(controlPoints.Count) > 3L);
     }
 
     public static CatmullRomSpline CreatePrecompute(List<Offset> controlPoints, double tension = 0.0, Offset? startHandle = null, Offset? endHandle = null)
@@ -424,38 +424,38 @@ public class CatmullRomSpline : Curve2D
 
     internal static List<List<global::Doroti.Ui.Offset>> _computeSegments(List<Offset> controlPoints, double tension, Offset? startHandle = null, Offset? endHandle = null)
     {
-        DartRuntimePrimitives.Assert(() => ((startHandle is null) || DartRuntimePrimitives.RequireValue(startHandle).isFinite));
-        DartRuntimePrimitives.Assert(() => ((endHandle is null) || DartRuntimePrimitives.RequireValue(endHandle).isFinite));
+        DartRuntimePrimitives.Assert(() => (startHandle is null) || DartRuntimePrimitives.RequireValue(startHandle).isFinite);
+        DartRuntimePrimitives.Assert(() => (endHandle is null) || DartRuntimePrimitives.RequireValue(endHandle).isFinite);
         DartRuntimePrimitives.Assert(() =>
             {
-                for (var index = 0L; (index < checked((long)(controlPoints.Count))); index++)
+                for (var index = 0L; index < checked(controlPoints.Count); index++)
                 {
-                    if (!controlPoints[(int)(index)].isFinite)
+                    if (!controlPoints[(int)index].isFinite)
                     {
-                        throw new FlutterError($"The provided CatmullRomSpline control point at index {index} is not " + $"finite. The control point given was {controlPoints[(int)(index)]}.");
+                        throw new FlutterError($"The provided CatmullRomSpline control point at index {index} is not " + $"finite. The control point given was {controlPoints[(int)index]}.");
                     }
                 }
                 return true;
             });
-        startHandle ??= ((controlPoints[(int)(0L)] * 2.0) - controlPoints[(int)(1L)]);
-        endHandle ??= ((controlPoints.Last() * 2.0) - controlPoints[(int)((checked((long)(controlPoints.Count)) - 2L))]);
+        startHandle ??= ((controlPoints[(int)0L] * 2.0) - controlPoints[(int)1L]);
+        endHandle ??= ((controlPoints.Last() * 2.0) - controlPoints[(int)(checked(controlPoints.Count) - 2L)]);
         var allPoints = new List<global::Doroti.Ui.Offset> { DartRuntimePrimitives.RequireValue(startHandle), DartRuntimePrimitives.RequireValue(endHandle) };
         var alpha = 0.5;
-        double reverseTension = (1.0 - tension);
+        double reverseTension = 1.0 - tension;
         var result = new List<List<global::Doroti.Ui.Offset>>();
-        for (var i = 0L; (i < (checked((long)(allPoints.Count)) - 3L)); ++i)
+        for (var i = 0L; i < (checked(allPoints.Count) - 3L); ++i)
         {
-            var curve = new List<global::Doroti.Ui.Offset> { allPoints[(int)(i)], allPoints[(int)((i + 1L))], allPoints[(int)((i + 2L))], allPoints[(int)((i + 3L))] };
-            global::Doroti.Ui.Offset diffCurve10 = (curve[(int)(1L)] - curve[(int)(0L)]);
-            global::Doroti.Ui.Offset diffCurve21 = (curve[(int)(2L)] - curve[(int)(1L)]);
-            global::Doroti.Ui.Offset diffCurve32 = (curve[(int)(3L)] - curve[(int)(2L)]);
+            var curve = new List<global::Doroti.Ui.Offset> { allPoints[(int)i], allPoints[(int)(i + 1L)], allPoints[(int)(i + 2L)], allPoints[(int)(i + 3L)] };
+            global::Doroti.Ui.Offset diffCurve10 = curve[(int)1L] - curve[(int)0L];
+            global::Doroti.Ui.Offset diffCurve21 = curve[(int)2L] - curve[(int)1L];
+            global::Doroti.Ui.Offset diffCurve32 = curve[(int)3L] - curve[(int)2L];
             double t01 = Dart_mathLibrary.pow(diffCurve10.distance, alpha).toDouble();
             double t12 = Dart_mathLibrary.pow(diffCurve21.distance, alpha).toDouble();
             double t23 = Dart_mathLibrary.pow(diffCurve32.distance, alpha).toDouble();
-            global::Doroti.Ui.Offset m1 = (((diffCurve21 + ((((diffCurve10 / t01) - (((curve[(int)(2L)] - curve[(int)(0L)])) / ((t01 + t12))))) * t12))) * reverseTension);
-            global::Doroti.Ui.Offset m2 = (((diffCurve21 + ((((diffCurve32 / t23) - (((curve[(int)(3L)] - curve[(int)(1L)])) / ((t12 + t23))))) * t12))) * reverseTension);
-            global::Doroti.Ui.Offset sumM12 = (m1 + m2);
-            var segment = new List<global::Doroti.Ui.Offset> { ((diffCurve21 * -2.0) + sumM12), (((diffCurve21 * 3.0) - m1) - sumM12), m1, curve[(int)(1L)] };
+            global::Doroti.Ui.Offset m1 = (diffCurve21 + (((diffCurve10 / t01) - ((curve[(int)2L] - curve[(int)0L]) / (t01 + t12))) * t12)) * reverseTension;
+            global::Doroti.Ui.Offset m2 = (diffCurve21 + (((diffCurve32 / t23) - ((curve[(int)3L] - curve[(int)1L]) / (t12 + t23))) * t12)) * reverseTension;
+            global::Doroti.Ui.Offset sumM12 = m1 + m2;
+            var segment = new List<global::Doroti.Ui.Offset> { (diffCurve21 * -2.0) + sumM12, (diffCurve21 * 3.0) - m1 - sumM12, m1, curve[(int)1L] };
             result.Add(segment);
         }
         return result;
@@ -464,11 +464,11 @@ public class CatmullRomSpline : Curve2D
 
     internal virtual void _initializeIfNeeded()
     {
-        if ((checked((long)(this._cubicSegments.Count)) != 0))
+        if (checked((long)_cubicSegments.Count) != 0)
         {
             return;
         }
-        this._cubicSegments.AddRange(_computeSegments(this._controlPoints!, DartRuntimePrimitives.RequireValue(this._tension), startHandle: this._startHandle, endHandle: this._endHandle));
+        _cubicSegments.AddRange(_computeSegments(_controlPoints!, DartRuntimePrimitives.RequireValue(_tension), startHandle: _startHandle, endHandle: _endHandle));
     }
 
     public override long samplingSeed
@@ -476,32 +476,32 @@ public class CatmullRomSpline : Curve2D
         get
         {
             _initializeIfNeeded();
-            global::Doroti.Ui.Offset seedPoint = this._cubicSegments[(int)(0L)][(int)(1L)];
-            return ((((seedPoint.dx + seedPoint.dy)) * 10000L)).round();
+            global::Doroti.Ui.Offset seedPoint = _cubicSegments[(int)0L][(int)1L];
+            return ((seedPoint.dx + seedPoint.dy) * 10000L).round();
         }
     }
     public override global::Doroti.Ui.Offset transformInternal(double t)
     {
         _initializeIfNeeded();
-        double length = checked((long)(this._cubicSegments.Count)).toDouble();
+        double length = checked((long)_cubicSegments.Count).toDouble();
         double position = default!;
         double localT = default!;
         long index = default!;
-        if ((t < 1.0))
+        if (t < 1.0)
         {
-            position = (t * length);
-            localT = (position % 1.0);
+            position = t * length;
+            localT = position % 1.0;
             index = position.floor();
         }
         else
         {
             position = length;
             localT = 1.0;
-            index = (checked((long)(this._cubicSegments.Count)) - 1L);
+            index = checked(_cubicSegments.Count) - 1L;
         }
-        List<global::Doroti.Ui.Offset> cubicControlPoints = this._cubicSegments[(int)(index)];
-        double localT2 = (localT * localT);
-        return (((((cubicControlPoints[(int)(0L)] * localT2) * localT) + (cubicControlPoints[(int)(1L)] * localT2)) + (cubicControlPoints[(int)(2L)] * localT)) + cubicControlPoints[(int)(3L)]);
+        List<global::Doroti.Ui.Offset> cubicControlPoints = _cubicSegments[(int)index];
+        double localT2 = localT * localT;
+        return (cubicControlPoints[(int)0L] * localT2 * localT) + (cubicControlPoints[(int)1L] * localT2) + (cubicControlPoints[(int)2L] * localT) + cubicControlPoints[(int)3L];
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -518,7 +518,7 @@ public class CatmullRomCurve : Curve
     {
         this.controlPoints = controlPoints;
         this.tension = tension;
-        this._precomputedSamples = new List<Curve2DSample>();
+        _precomputedSamples = new List<Curve2DSample>();
         System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
         {
             return validateControlPoints(controlPoints, tension: tension, reasons: ((Func<List<string>>)(() =>
@@ -547,7 +547,7 @@ public class CatmullRomCurve : Curve
 
     public static bool validateControlPoints(List<Offset>? controlPoints, double tension = 0.0, List<string>? reasons = null)
     {
-        if ((controlPoints is null))
+        if (controlPoints is null)
         {
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -556,7 +556,7 @@ public class CatmullRomCurve : Curve
                 });
             return false;
         }
-        if ((checked((long)(controlPoints.Count)) < 2L))
+        if (checked(controlPoints.Count) < 2L)
         {
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -566,31 +566,31 @@ public class CatmullRomCurve : Curve
             return false;
         }
         controlPoints = new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset(1.0, 1.0) };
-        global::Doroti.Ui.Offset startHandle = ((controlPoints[(int)(0L)] * 2.0) - controlPoints[(int)(1L)]);
-        global::Doroti.Ui.Offset endHandle = ((controlPoints.Last() * 2.0) - controlPoints[(int)((checked((long)(controlPoints.Count)) - 2L))]);
+        global::Doroti.Ui.Offset startHandle = (controlPoints[(int)0L] * 2.0) - controlPoints[(int)1L];
+        global::Doroti.Ui.Offset endHandle = (controlPoints.Last() * 2.0) - controlPoints[(int)(checked(controlPoints.Count) - 2L)];
         controlPoints = new List<global::Doroti.Ui.Offset> { startHandle, endHandle };
         double lastX = -double.PositiveInfinity;
-        for (var i = 0L; (i < checked((long)(controlPoints.Count))); ++i)
+        for (var i = 0L; i < checked(controlPoints.Count); ++i)
         {
-            if ((((i > 1L) && (i < (checked((long)(controlPoints.Count)) - 2L))) && (((controlPoints[(int)(i)].dx <= 0.0) || (controlPoints[(int)(i)].dx >= 1.0)))))
+            if ((i > 1L) && (i < (checked(controlPoints.Count) - 2L)) && ((controlPoints[(int)i].dx <= 0.0) || (controlPoints[(int)i].dx >= 1.0)))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        reasons?.Add("Control points must have X values between 0.0 and 1.0, exclusive. " + $"Point {i} has an x value ({controlPoints![(int)(i)].dx}) which is outside the range.");
+                        reasons?.Add("Control points must have X values between 0.0 and 1.0, exclusive. " + $"Point {i} has an x value ({controlPoints![(int)i].dx}) which is outside the range.");
                         return true;
                     });
                 return false;
             }
-            if ((controlPoints[(int)(i)].dx <= lastX))
+            if (controlPoints[(int)i].dx <= lastX)
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        reasons?.Add("Each X coordinate must be greater than the preceding X coordinate " + $"(i.e. must be monotonically increasing in X). Point {i} has an x value of " + $"{controlPoints![(int)(i)].dx}, which is not greater than {lastX}");
+                        reasons?.Add("Each X coordinate must be greater than the preceding X coordinate " + $"(i.e. must be monotonically increasing in X). Point {i} has an x value of " + $"{controlPoints![(int)i].dx}, which is not greater than {lastX}");
                         return true;
                     });
                 return false;
             }
-            lastX = controlPoints[(int)(i)].dx;
+            lastX = controlPoints[(int)i].dx;
         }
         var success = true;
         lastX = -double.PositiveInfinity;
@@ -599,14 +599,14 @@ public class CatmullRomCurve : Curve
         double startLocal = testSpline.findInverse(0.0);
         double endLocal = testSpline.findInverse(1.0);
         IEnumerable<Curve2DSample> samplePoints = testSpline.generateSamples(start: startLocal, end: endLocal);
-        if (((samplePoints.First().value.dy.abs() > tolerance) || (((1.0 - samplePoints.Last().value.dy)).abs() > tolerance)))
+        if ((samplePoints.First().value.dy.abs() > tolerance) || ((1.0 - samplePoints.Last().value.dy).abs() > tolerance))
         {
             var bail = true;
             success = false;
             DartRuntimePrimitives.Assert(() =>
                 {
                     reasons?.Add($"The curve has more than one Y value at X = {samplePoints.First().value.dx}. " + "Try moving some control points further away from this value of X, or increasing " + "the tension.");
-                    bail = (reasons is null);
+                    bail = reasons is null;
                     return true;
                 });
             if (bail)
@@ -616,17 +616,17 @@ public class CatmullRomCurve : Curve
         }
         foreach (var sample in samplePoints)
         {
-            global::Doroti.Ui.Offset point = ((Curve2DSample)sample).value;
-            double tLocal = ((Curve2DSample)sample).t;
+            global::Doroti.Ui.Offset point = sample.value;
+            double tLocal = sample.t;
             double x = point.dx;
-            if ((((tLocal >= startLocal) && (tLocal <= endLocal)) && (((x < -0.001) || (x > (1.0 + 0.001))))))
+            if ((tLocal >= startLocal) && (tLocal <= endLocal) && ((x < -0.001) || (x > (1.0 + 0.001))))
             {
                 var bailLocal = true;
                 success = false;
                 DartRuntimePrimitives.Assert(() =>
                     {
                         reasons?.Add($"The resulting curve has an X value ({x}) which is outside " + "the range [0.0, 1.0], inclusive.");
-                        bailLocal = (reasons is null);
+                        bailLocal = reasons is null;
                         return true;
                     });
                 if (bailLocal)
@@ -634,14 +634,14 @@ public class CatmullRomCurve : Curve
                     return false;
                 }
             }
-            if ((x < lastX))
+            if (x < lastX)
             {
                 var bailAlternate = true;
                 success = false;
                 DartRuntimePrimitives.Assert(() =>
                     {
                         reasons?.Add($"The curve has more than one Y value at x = {x}. Try moving " + "some control points further apart in X, or increasing the tension.");
-                        bailAlternate = (reasons is null);
+                        bailAlternate = reasons is null;
                         return true;
                     });
                 if (bailAlternate)
@@ -657,21 +657,21 @@ public class CatmullRomCurve : Curve
 
     public override double transformInternal(double t)
     {
-        if ((checked((long)(this._precomputedSamples.Count)) == 0))
+        if (checked((long)_precomputedSamples.Count) == 0)
         {
-            this._precomputedSamples.AddRange(_computeSamples(this.controlPoints, this.tension));
+            _precomputedSamples.AddRange(_computeSamples(controlPoints, tension));
         }
         var start = 0L;
-        long end = (checked((long)(this._precomputedSamples.Count)) - 1L);
+        long end = checked(_precomputedSamples.Count) - 1L;
         long mid = default!;
         global::Doroti.Ui.Offset valueLocal = default!;
-        global::Doroti.Ui.Offset startValue = this._precomputedSamples[(int)(start)].value;
-        global::Doroti.Ui.Offset endValue = this._precomputedSamples[(int)(end)].value;
-        while (((end - start) > 1L))
+        global::Doroti.Ui.Offset startValue = _precomputedSamples[(int)start].value;
+        global::Doroti.Ui.Offset endValue = _precomputedSamples[(int)end].value;
+        while ((end - start) > 1L)
         {
-            mid = (checked((long)(((end + start)) / 2L)));
-            valueLocal = this._precomputedSamples[(int)(mid)].value;
-            if ((t >= valueLocal.dx))
+            mid = checked((end + start) / 2L);
+            valueLocal = _precomputedSamples[(int)mid].value;
+            if (t >= valueLocal.dx)
             {
                 start = mid;
                 startValue = valueLocal;
@@ -682,7 +682,7 @@ public class CatmullRomCurve : Curve
                 endValue = valueLocal;
             }
         }
-        double t2 = (((t - startValue.dx)) / ((endValue.dx - startValue.dx)));
+        double t2 = (t - startValue.dx) / (endValue.dx - startValue.dx);
         return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(startValue.dy, endValue.dy, t2));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -698,10 +698,10 @@ public class FlippedCurve : Curve
         this.curve = curve;
     }
 
-    public override double transformInternal(double t) => (1.0 - this.curve.transform((1.0 - t)));
+    public override double transformInternal(double t) => 1.0 - curve.transform(1.0 - t);
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "FlippedCurve"))}({this.curve})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FlippedCurve")}({curve})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -715,8 +715,8 @@ internal class _DecelerateCurve__curves : Curve
 
     public override double transformInternal(double t)
     {
-        t = (1.0 - t);
-        return (1.0 - (t * t));
+        t = 1.0 - t;
+        return 1.0 - (t * t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -726,28 +726,28 @@ public static partial class CurvesLibrary
 {
     internal static double _bounce(double t)
     {
-        if ((t < (1.0 / 2.75)))
+        if (t < (1.0 / 2.75))
         {
-            return ((7.5625 * t) * t);
+            return 7.5625 * t * t;
         }
         else
         {
-            if ((t < (2L / 2.75)))
+            if (t < (2L / 2.75))
             {
-                t -= (1.5 / 2.75);
-                return (((7.5625 * t) * t) + 0.75);
+                t -= 1.5 / 2.75;
+                return (7.5625 * t * t) + 0.75;
             }
             else
             {
-                if ((t < (2.5 / 2.75)))
+                if (t < (2.5 / 2.75))
                 {
-                    t -= (2.25 / 2.75);
-                    return (((7.5625 * t) * t) + 0.9375);
+                    t -= 2.25 / 2.75;
+                    return (7.5625 * t * t) + 0.9375;
                 }
             }
         }
-        t -= (2.625 / 2.75);
-        return (((7.5625 * t) * t) + 0.984375);
+        t -= 2.625 / 2.75;
+        return (7.5625 * t * t) + 0.984375;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -760,7 +760,7 @@ internal class _BounceInCurve__curves : Curve
 
     public override double transformInternal(double t)
     {
-        return (1.0 - CurvesLibrary._bounce((1.0 - t)));
+        return 1.0 - CurvesLibrary._bounce(1.0 - t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -788,13 +788,13 @@ internal class _BounceInOutCurve__curves : Curve
 
     public override double transformInternal(double t)
     {
-        if ((t < 0.5))
+        if (t < 0.5)
         {
-            return (((1.0 - CurvesLibrary._bounce((1.0 - (t * 2.0))))) * 0.5);
+            return (1.0 - CurvesLibrary._bounce(1.0 - (t * 2.0))) * 0.5;
         }
         else
         {
-            return ((CurvesLibrary._bounce(((t * 2.0) - 1.0)) * 0.5) + 0.5);
+            return (CurvesLibrary._bounce((t * 2.0) - 1.0) * 0.5) + 0.5;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -812,15 +812,15 @@ public class ElasticInCurve : Curve
 
     public override double transformInternal(double t)
     {
-        double s = (this.period / 4.0);
-        t = (t - 1.0);
-        return (-Dart_mathLibrary.pow(2.0, (10.0 * t)) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
+        double s = period / 4.0;
+        t = t - 1.0;
+        return -Dart_mathLibrary.pow(2.0, 10.0 * t) * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInCurve"))}({this.period})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInCurve")}({period})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -837,14 +837,14 @@ public class ElasticOutCurve : Curve
 
     public override double transformInternal(double t)
     {
-        double s = (this.period / 4.0);
-        return ((Dart_mathLibrary.pow(2.0, (-10L * t)) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) + 1.0);
+        double s = period / 4.0;
+        return (Dart_mathLibrary.pow(2.0, -10L * t) * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period)) + 1.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticOutCurve"))}({this.period})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticOutCurve")}({period})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -861,22 +861,22 @@ public class ElasticInOutCurve : Curve
 
     public override double transformInternal(double t)
     {
-        double s = (this.period / 4.0);
-        t = ((2.0 * t) - 1.0);
-        if ((t < 0.0))
+        double s = period / 4.0;
+        t = (2.0 * t) - 1.0;
+        if (t < 0.0)
         {
-            return ((-0.5 * Dart_mathLibrary.pow(2.0, (10.0 * t))) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
+            return -0.5 * Dart_mathLibrary.pow(2.0, 10.0 * t) * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period);
         }
         else
         {
-            return (((Dart_mathLibrary.pow(2.0, (-10.0 * t)) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) * 0.5) + 1.0);
+            return (Dart_mathLibrary.pow(2.0, -10.0 * t) * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period) * 0.5) + 1.0;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInOutCurve"))}({this.period})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInOutCurve")}({period})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -15,9 +15,8 @@
 
 #nullable disable
 
-using MaterialColorUtilities.Utils;
-
 using MaterialColorUtilities.Quantize;
+using MaterialColorUtilities.Utils;
 namespace Doroti.Runtime;
 
 /// <summary>
@@ -83,10 +82,10 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
             int iB = (blue >> bitsToRemove) + 1;
             int index = GetIndex(iR, iG, iB);
             weights[index] += count;
-            momentsR[index] += (red * count);
-            momentsG[index] += (green * count);
-            momentsB[index] += (blue * count);
-            moments[index] += ((double)count * ((red * red) + (green * green) + (blue * blue)));
+            momentsR[index] += red * count;
+            momentsG[index] += green * count;
+            momentsB[index] += blue * count;
+            moments[index] += (double)count * ((red * red) + (green * green) + (blue * blue));
         }
     }
 
@@ -335,7 +334,7 @@ internal sealed class MaterialImageQuantizerWu : IQuantizer
 
             tempNumerator = (double)halfR * halfR + (double)halfG * halfG + (double)halfB * halfB;
             tempDenominator = halfW;
-            temp += (tempNumerator / tempDenominator);
+            temp += tempNumerator / tempDenominator;
 
             if (temp > max)
             {

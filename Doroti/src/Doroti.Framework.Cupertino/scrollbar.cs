@@ -33,7 +33,7 @@ public static partial class ScrollbarLibrary
 
 public static partial class ScrollbarLibrary
 {
-    internal static Color _kScrollbarColor = ((Color)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(1493172224L), darkColor: new global::Doroti.Ui.Color(2164260863L)));
+    internal static Color _kScrollbarColor = new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(1493172224L), darkColor: new global::Doroti.Ui.Color(2164260863L));
 }
 
 public static partial class ScrollbarLibrary
@@ -55,14 +55,14 @@ public class CupertinoScrollbar : global::Doroti.Framework.Widgets.RawScrollbar
     public virtual double thicknessWhileDragging { get; private set; } = default!;
     public virtual Radius radiusWhileDragging { get; private set; } = default!;
 
-    public CupertinoScrollbar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!, global::Doroti.Framework.Widgets.ScrollController? controller = null, bool? thumbVisibility = null, double? thickness = null, double? thicknessWhileDragging = null, Radius? radius = null, Radius? radiusWhileDragging = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate = null, global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation = null, double? mainAxisMargin = null) : base(key: key, child: child, controller: controller, thickness: thickness ?? defaultThickness, radius: radius ?? defaultRadius, scrollbarOrientation: scrollbarOrientation, mainAxisMargin: mainAxisMargin ?? ScrollbarLibrary._kScrollbarMainAxisMargin, thumbVisibility: (thumbVisibility ?? false), fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.Create(milliseconds: 100L), notificationPredicate: ((notificationPredicate ?? (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)Scroll_notificationLibrary.defaultScrollNotificationPredicate)))
+    public CupertinoScrollbar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!, global::Doroti.Framework.Widgets.ScrollController? controller = null, bool? thumbVisibility = null, double? thickness = null, double? thicknessWhileDragging = null, Radius? radius = null, Radius? radiusWhileDragging = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate = null, global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation = null, double? mainAxisMargin = null) : base(key: key, child: child, controller: controller, thickness: thickness ?? defaultThickness, radius: radius ?? defaultRadius, scrollbarOrientation: scrollbarOrientation, mainAxisMargin: mainAxisMargin ?? ScrollbarLibrary._kScrollbarMainAxisMargin, thumbVisibility: thumbVisibility ?? false, fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.Create(milliseconds: 100L), notificationPredicate: notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate)
     {
         double __thicknessWhileDragging = thicknessWhileDragging ?? defaultThicknessWhileDragging;
         Radius __radiusWhileDragging = radiusWhileDragging ?? defaultRadiusWhileDragging;
         this.thicknessWhileDragging = __thicknessWhileDragging;
         this.radiusWhileDragging = __radiusWhileDragging;
-        System.Diagnostics.Debug.Assert((thickness < double.PositiveInfinity));
-        System.Diagnostics.Debug.Assert((__thicknessWhileDragging < double.PositiveInfinity));
+        System.Diagnostics.Debug.Assert(thickness < double.PositiveInfinity);
+        System.Diagnostics.Debug.Assert(__thicknessWhileDragging < double.PositiveInfinity);
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoScrollbarState__scrollbar());
@@ -77,41 +77,41 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
     {
         get
         {
-            return (DartRuntimePrimitives.RequireValue(this.widget.thickness) + (((global::Doroti.Framework.Animation.AnimationController)this._thicknessAnimationController).value * ((((CupertinoScrollbar)this.widget).thicknessWhileDragging - DartRuntimePrimitives.RequireValue(this.widget.thickness)))));
+            return DartRuntimePrimitives.RequireValue(widget.thickness) + (_thicknessAnimationController.value * (widget.thicknessWhileDragging - DartRuntimePrimitives.RequireValue(widget.thickness)));
         }
     }
     internal virtual global::Doroti.Ui.Radius _radius
     {
         get
         {
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(this.widget.radius, ((CupertinoScrollbar)this.widget).radiusWhileDragging, ((global::Doroti.Framework.Animation.AnimationController)this._thicknessAnimationController).value));
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(widget.radius, widget.radiusWhileDragging, _thicknessAnimationController.value));
         }
     }
     public override void initState()
     {
         base.initState();
         _thicknessAnimationController = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: ScrollbarLibrary._kScrollbarResizeDuration);
-        this._thicknessAnimationController.addListener(((global::System.Action)(() =>
+        _thicknessAnimationController.addListener(() =>
         {
             updateScrollbarPainter();
-        })));
+        });
     }
 
     public override void updateScrollbarPainter()
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.ScrollbarPainter>)(() =>
 {
-    var __cascade = this.scrollbarPainter;
-    __cascade.color = CupertinoDynamicColor.resolve(ScrollbarLibrary._kScrollbarColor, this.context);
-    __cascade.textDirection = Directionality.of(this.context);
-    __cascade.thickness = this._thickness;
-    __cascade.mainAxisMargin = this.widget.mainAxisMargin;
+    var __cascade = scrollbarPainter;
+    __cascade.color = CupertinoDynamicColor.resolve(ScrollbarLibrary._kScrollbarColor, context);
+    __cascade.textDirection = Directionality.of(context);
+    __cascade.thickness = _thickness;
+    __cascade.mainAxisMargin = widget.mainAxisMargin;
     __cascade.crossAxisMargin = ScrollbarLibrary._kScrollbarCrossAxisMargin;
-    __cascade.radius = this._radius;
-    __cascade.padding = MediaQuery.paddingOf(this.context);
+    __cascade.radius = _radius;
+    __cascade.padding = MediaQuery.paddingOf(context);
     __cascade.minLength = ScrollbarLibrary._kScrollbarMinLength;
     __cascade.minOverscrollLength = ScrollbarLibrary._kScrollbarMinOverscrollLength;
-    __cascade.scrollbarOrientation = this.widget.scrollbarOrientation;
+    __cascade.scrollbarOrientation = widget.scrollbarOrientation;
     return __cascade;
 }))());
     }
@@ -120,34 +120,34 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
     {
         base.handleThumbPressStart(localPosition);
         global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
-        if ((direction is null))
+        if (direction is null)
         {
             return;
         }
-        _pressStartAxisPosition = (DartRuntimePrimitives.RequireValue(direction) switch { Axis.vertical => localPosition.dy, Axis.horizontal => localPosition.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        _pressStartAxisPosition = DartRuntimePrimitives.RequireValue(direction) switch { Axis.vertical => localPosition.dy, Axis.horizontal => localPosition.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
     }
 
     public override void handleThumbPress()
     {
-        if ((getScrollbarDirection() is null))
+        if (getScrollbarDirection() is null)
         {
             return;
         }
         base.handleThumbPress();
-        DartRuntimePrimitives.Ignore(this._thicknessAnimationController.forward().then(((global::System.Func<object?, object>)((_) => HapticFeedback.mediumImpact()))));
+        DartRuntimePrimitives.Ignore(_thicknessAnimationController.forward().then((_) => HapticFeedback.mediumImpact()));
     }
 
     public override void handleThumbPressEnd(Offset localPosition, global::Doroti.Framework.Gestures.Velocity velocity)
     {
         global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
-        if ((direction is null))
+        if (direction is null)
         {
             return;
         }
-        this._thicknessAnimationController.reverse();
+        _thicknessAnimationController.reverse();
         base.handleThumbPressEnd(localPosition, velocity);
-        var (axisPosition, axisVelocity) = (DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => (((double, double))((localPosition.dx, ((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond.dx))), Axis.vertical => (((double, double))((localPosition.dy, ((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond.dy))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if (((axisPosition != this._pressStartAxisPosition) && (axisVelocity.abs() < 10L)))
+        var (axisPosition, axisVelocity) = DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => (localPosition.dx, velocity.pixelsPerSecond.dx), Axis.vertical => (localPosition.dy, velocity.pixelsPerSecond.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        if ((axisPosition != _pressStartAxisPosition) && (axisVelocity.abs() < 10L))
         {
             DartRuntimePrimitives.Ignore(HapticFeedback.mediumImpact());
         }
@@ -155,7 +155,7 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
 
     public override void handleTrackTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        if ((!Equals(ScrollConfiguration.of(this.context).getPlatform(this.context), TargetPlatform.iOS)))
+        if (!Equals(ScrollConfiguration.of(context).getPlatform(context), TargetPlatform.iOS))
         {
             base.handleTrackTapDown(details);
         }
@@ -163,7 +163,7 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
 
     public override void dispose()
     {
-        this._thicknessAnimationController.dispose();
+        _thicknessAnimationController.dispose();
         base.dispose();
     }
 

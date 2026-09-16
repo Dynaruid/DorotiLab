@@ -36,17 +36,17 @@ public class Autocomplete<T> : global::Doroti.Framework.Widgets.StatelessWidget 
 
     internal static global::Doroti.Framework.Widgets.Widget _defaultFieldViewBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.TextEditingController textEditingController, global::Doroti.Framework.Widgets.FocusNode focusNode, global::System.Action onFieldSubmitted)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _AutocompleteField__autocomplete(focusNode: focusNode, textEditingController: textEditingController, onFieldSubmitted: () => onFieldSubmitted()));
+        return new _AutocompleteField__autocomplete(focusNode: focusNode, textEditingController: textEditingController, onFieldSubmitted: () => onFieldSubmitted());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.RawAutocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, fieldViewBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.TextEditingController, global::Doroti.Framework.Widgets.FocusNode, global::System.Action, global::Doroti.Framework.Widgets.Widget>)this.fieldViewBuilder, focusNode: this.focusNode, textEditingController: this.textEditingController, initialValue: this.initialValue, optionsBuilder: (global::System.Func<global::Doroti.Framework.Services.TextEditingValue, object>)this.optionsBuilder, optionsViewOpenDirection: this.optionsViewOpenDirection, optionsViewBuilder: ((this.optionsViewBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::System.Action<T>, IEnumerable<T>, global::Doroti.Framework.Widgets.Widget>)((context, onSelected, options) =>
+        return new global::Doroti.Framework.Widgets.RawAutocomplete<T>(displayStringForOption: displayStringForOption, fieldViewBuilder: fieldViewBuilder, focusNode: focusNode, textEditingController: textEditingController, initialValue: initialValue, optionsBuilder: optionsBuilder, optionsViewOpenDirection: optionsViewOpenDirection, optionsViewBuilder: optionsViewBuilder ?? ((context, onSelected, options) =>
         {
-            return new _AutocompleteOptions__autocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, onSelected: (global::System.Action<T>)onSelected, options: options.Cast<T>(), openDirection: this.optionsViewOpenDirection, optionsMaxHeight: this.optionsMaxHeight);
+            return new _AutocompleteOptions__autocomplete<T>(displayStringForOption: displayStringForOption, onSelected: onSelected, options: options.Cast<T>(), openDirection: optionsViewOpenDirection, optionsMaxHeight: optionsMaxHeight);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))), onSelected: (global::System.Action<T>?)this.onSelected));
+        }), onSelected: onSelected);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -67,10 +67,10 @@ internal class _AutocompleteField__autocomplete : global::Doroti.Framework.Widge
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new TextFormField(controller: this.textEditingController, focusNode: this.focusNode, onFieldSubmitted: ((value) =>
+        return new TextFormField(controller: textEditingController, focusNode: focusNode, onFieldSubmitted: (value) =>
         {
-            this.onFieldSubmitted();
-        })));
+            onFieldSubmitted();
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -96,7 +96,7 @@ internal class _AutocompleteOptions__autocomplete<T> : global::Doroti.Framework.
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         long highlightedIndexLocal = AutocompleteHighlightedOption.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)new Material(elevation: 4.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: this.optionsMaxHeight), child: new _AutocompleteOptionsList__autocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, highlightedIndex: highlightedIndexLocal, onSelected: (global::System.Action<T>)this.onSelected, options: this.options.Cast<T>()))));
+        return new Material(elevation: 4.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: optionsMaxHeight), child: new _AutocompleteOptionsList__autocomplete<T>(displayStringForOption: displayStringForOption, highlightedIndex: highlightedIndexLocal, onSelected: onSelected, options: options.Cast<T>())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -127,50 +127,50 @@ internal class _AutocompleteOptionsListState__autocomplete<T> : global::Doroti.F
     public override void didUpdateWidget(_AutocompleteOptionsList__autocomplete<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((((_AutocompleteOptionsList__autocomplete<T>)this.widget).highlightedIndex != ((_AutocompleteOptionsList__autocomplete<T>)oldWidget).highlightedIndex))
+        if (widget.highlightedIndex != oldWidget.highlightedIndex)
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
             {
-                if (!this.mounted)
+                if (!mounted)
                 {
                     return;
                 }
-                global::Doroti.Framework.Widgets.BuildContext? highlightedContext = new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(((_AutocompleteOptionsList__autocomplete<T>)this.widget).options.elementAt(((_AutocompleteOptionsList__autocomplete<T>)this.widget).highlightedIndex)).currentContext;
-                if ((highlightedContext is null))
+                global::Doroti.Framework.Widgets.BuildContext? highlightedContext = new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(widget.options.elementAt(widget.highlightedIndex)).currentContext;
+                if (highlightedContext is null)
                 {
-                    this._scrollController.jumpTo(((((_AutocompleteOptionsList__autocomplete<T>)this.widget).highlightedIndex == 0L) ? 0.0 : ((global::Doroti.Framework.Widgets.ScrollController)this._scrollController).position.maxScrollExtent));
+                    _scrollController.jumpTo((widget.highlightedIndex == 0L) ? 0.0 : _scrollController.position.maxScrollExtent);
                 }
                 else
                 {
                     DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(highlightedContext, alignment: 0.5));
                 }
-            })), debugLabel: "AutocompleteOptions.ensureVisible");
+            }, debugLabel: "AutocompleteOptions.ensureVisible");
         }
     }
 
     public override void dispose()
     {
-        this._scrollController.dispose();
+        _scrollController.dispose();
         base.dispose();
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         long highlightedIndex = AutocompleteHighlightedOption.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)ListView.CreateBuilder(padding: EdgeInsets.zero, shrinkWrap: true, controller: this._scrollController, itemCount: ((_AutocompleteOptionsList__autocomplete<T>)this.widget).options.Count(), itemBuilder: ((context, index) =>
+        return ListView.CreateBuilder(padding: EdgeInsets.zero, shrinkWrap: true, controller: _scrollController, itemCount: widget.options.Count(), itemBuilder: (context, index) =>
         {
-            T option = ((_AutocompleteOptionsList__autocomplete<T>)this.widget).options.elementAt(index);
-            return new global::Doroti.Framework.Widgets.Semantics(button: true, child: new InkWell(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(option), onTap: (() =>
+            T option = widget.options.elementAt(index);
+            return new global::Doroti.Framework.Widgets.Semantics(button: true, child: new InkWell(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(option), onTap: () =>
             {
-                this.widget.onSelected(option);
-            }), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+                widget.onSelected(option);
+            }, child: new global::Doroti.Framework.Widgets.Builder(builder: (context) =>
             {
-                var highlight = (highlightedIndex == index);
-                return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(color: (highlight ? Theme.of(context).focusColor : null), padding: EdgeInsets.CreateAll(16.0), child: new global::Doroti.Framework.Widgets.Text(this.widget.displayStringForOption(option))));
+                var highlight = highlightedIndex == index;
+                return new global::Doroti.Framework.Widgets.Container(color: highlight ? Theme.of(context).focusColor : null, padding: EdgeInsets.CreateAll(16.0), child: new global::Doroti.Framework.Widgets.Text(widget.displayStringForOption(option)));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })))));
+            })));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -60,30 +60,30 @@ public class CupertinoDesktopTextSelectionToolbar : global::Doroti.Framework.Wid
     {
         this.anchor = anchor;
         this.children = children;
-        System.Diagnostics.Debug.Assert((checked((long)(children.Count)) > 0L));
+        System.Diagnostics.Debug.Assert(checked(children.Count) > 0L);
     }
 
     internal static List<double> _matrixWithSaturation(double saturation)
     {
-        double r = (0.213 * ((1L - saturation)));
-        double g = (0.715 * ((1L - saturation)));
-        double b = (0.072 * ((1L - saturation)));
-        return new List<double> { (r + saturation), g, b, 0, 0, r, (g + saturation), b, 0, 0, r, g, (b + saturation), 0, 0, 0, 0, 0, 1, 0 };
+        double r = 0.213 * (1L - saturation);
+        double g = 0.715 * (1L - saturation);
+        double b = 0.072 * (1L - saturation);
+        return new List<double> { r + saturation, g, b, 0, 0, r, g + saturation, b, 0, 0, r, g, b + saturation, 0, 0, 0, 0, 0, 1, 0 };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Framework.Widgets.Widget _defaultToolbarBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(width: Desktop_text_selection_toolbarLibrary._kToolbarWidth, clipBehavior: Clip.hardEdge, decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shadows: Desktop_text_selection_toolbarLibrary._kToolbarShadow, shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: BorderRadius.CreateAll(Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius))), child: new global::Doroti.Framework.Widgets.BackdropFilter(filter: new global::Doroti.Ui.ImageFilter(outer: ColorFilter.matrix(_matrixWithSaturation(Desktop_text_selection_toolbarLibrary._kToolbarSaturationBoost)), inner: new global::Doroti.Ui.ImageFilter(sigmaX: Desktop_text_selection_toolbarLibrary._kToolbarBlurSigma, sigmaY: Desktop_text_selection_toolbarLibrary._kToolbarBlurSigma)), child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(color: Desktop_text_selection_toolbarLibrary._kToolbarBackgroundColor.resolveFrom(context), shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: new global::Doroti.Framework.Painting.BorderSide(color: Desktop_text_selection_toolbarLibrary._kToolbarBorderColor.resolveFrom(context)), borderRadius: BorderRadius.CreateAll(Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius))), child: new global::Doroti.Framework.Widgets.Padding(padding: Desktop_text_selection_toolbarLibrary._kToolbarPadding, child: child)))));
+        return new global::Doroti.Framework.Widgets.Container(width: Desktop_text_selection_toolbarLibrary._kToolbarWidth, clipBehavior: Clip.hardEdge, decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shadows: Desktop_text_selection_toolbarLibrary._kToolbarShadow, shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: BorderRadius.CreateAll(Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius))), child: new global::Doroti.Framework.Widgets.BackdropFilter(filter: new global::Doroti.Ui.ImageFilter(outer: ColorFilter.matrix(_matrixWithSaturation(Desktop_text_selection_toolbarLibrary._kToolbarSaturationBoost)), inner: new global::Doroti.Ui.ImageFilter(sigmaX: Desktop_text_selection_toolbarLibrary._kToolbarBlurSigma, sigmaY: Desktop_text_selection_toolbarLibrary._kToolbarBlurSigma)), child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(color: Desktop_text_selection_toolbarLibrary._kToolbarBackgroundColor.resolveFrom(context), shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: new global::Doroti.Framework.Painting.BorderSide(color: Desktop_text_selection_toolbarLibrary._kToolbarBorderColor.resolveFrom(context)), borderRadius: BorderRadius.CreateAll(Desktop_text_selection_toolbarLibrary._kToolbarBorderRadius))), child: new global::Doroti.Framework.Widgets.Padding(padding: Desktop_text_selection_toolbarLibrary._kToolbarPadding, child: child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        double paddingAbove = (MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding);
+        double paddingAbove = MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding;
         var localAdjustment = new global::Doroti.Ui.Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove);
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: (this.anchor - localAdjustment)), child: _defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, children: this.children)))));
+        return new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: anchor - localAdjustment), child: _defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, children: children))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

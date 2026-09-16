@@ -32,17 +32,17 @@ public class ImageSizeInfo
         this.imageSize = imageSize;
     }
 
-    public virtual long displaySizeInBytes => _sizeToBytes(this.displaySize);
-    public virtual long decodedSizeInBytes => _sizeToBytes(this.imageSize);
+    public virtual long displaySizeInBytes => _sizeToBytes(displaySize);
+    public virtual long decodedSizeInBytes => _sizeToBytes(imageSize);
     internal virtual long _sizeToBytes(Size size)
     {
-        return ((((size.width * size.height) * 4L) * ((4L / 3L)))).toInt();
+        return (size.width * size.height * 4L * (4L / 3L)).toInt();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DartMap<string, object?> toJson()
     {
-        return new DartMap<string, object?> { ["source"] = this.source, ["displaySize"] = new DartMap<string, object?> { ["width"] = this.displaySize.width, ["height"] = this.displaySize.height }, ["imageSize"] = new DartMap<string, object?> { ["width"] = this.imageSize.width, ["height"] = this.imageSize.height }, ["displaySizeInBytes"] = this.displaySizeInBytes, ["decodedSizeInBytes"] = this.decodedSizeInBytes };
+        return new DartMap<string, object?> { ["source"] = source, ["displaySize"] = new DartMap<string, object?> { ["width"] = displaySize.width, ["height"] = displaySize.height }, ["imageSize"] = new DartMap<string, object?> { ["width"] = imageSize.width, ["height"] = imageSize.height }, ["displaySizeInBytes"] = displaySizeInBytes, ["decodedSizeInBytes"] = decodedSizeInBytes };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -50,15 +50,15 @@ public class ImageSizeInfo
     {
         var __other = other as ImageSizeInfo;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is ImageSizeInfo) && (((ImageSizeInfo)((ImageSizeInfo)__other)).source == this.source)) && (Equals(((ImageSizeInfo)((ImageSizeInfo)__other)).imageSize, this.imageSize))) && (Equals(((ImageSizeInfo)((ImageSizeInfo)__other)).displaySize, this.displaySize)));
+        return (__other is ImageSizeInfo) && (__other.source == source) && Equals(__other.imageSize, imageSize) && Equals(__other.displaySize, displaySize);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.source, this.displaySize, this.imageSize);
-    public override string ToString() => $"ImageSizeInfo({this.source}, imageSize: {this.imageSize}, displaySize: {this.displaySize})";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(source, displaySize, imageSize);
+    public override string ToString() => $"ImageSizeInfo({source}, imageSize: {imageSize}, displaySize: {displaySize})";
 }
 
 public static partial class DebugLibrary
@@ -73,7 +73,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    internal static long _imageOverheadAllowanceDefault = (128L * 1024L);
+    internal static long _imageOverheadAllowanceDefault = 128L * 1024L;
 }
 
 public static partial class DebugLibrary
@@ -87,7 +87,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((((debugDisableShadows != debugDisableShadowsOverride) || (debugNetworkImageHttpClientProvider is not null)) || (debugOnPaintImage is not null)) || debugInvertOversizedImages) || (debugImageOverheadAllowance != _imageOverheadAllowanceDefault)))
+                if ((debugDisableShadows != debugDisableShadowsOverride) || (debugNetworkImageHttpClientProvider is not null) || (debugOnPaintImage is not null) || debugInvertOversizedImages || (debugImageOverheadAllowance != _imageOverheadAllowanceDefault))
                 {
                     throw new FlutterError(reason);
                 }
@@ -128,7 +128,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((direction is null))
+                if (direction is null)
                 {
                     throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("No TextDirection found."), new ErrorDescription($"To resolve {target} properties, it must be provided with a TextDirection."), new ErrorHint($"This error usually occurs when {target} is used in a widget without " + "a Directionality ancestor."), new ErrorHint("Typically, the Directionality widget is introduced by the MaterialApp " + "or WidgetsApp widget at the top of your application widget tree. It " + "determines the ambient reading direction and is used, for example, to " + "determine how to lay out text, how to interpret \"start\" and \"end\" " + "values, and to resolve EdgeInsetsDirectional, " + "AlignmentDirectional, and other *Directional objects.") });
                 }

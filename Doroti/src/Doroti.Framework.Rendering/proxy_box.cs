@@ -18,9 +18,9 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -30,58 +30,58 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
 
     public virtual RenderBox? child
     {
-        get => this._child;
+        get => _child;
         set
         {
             var __value = value;
-            if ((this._child is not null))
+            if (_child is not null)
             {
-                dropChild(this._child!);
+                dropChild(_child!);
             }
-            this._child = __value;
-            if ((this._child is not null))
+            _child = __value;
+            if (_child is not null)
             {
-                adoptChild(this._child!);
+                adoptChild(_child!);
             }
         }
     }
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        this._child?.attach(owner);
+        _child?.attach(owner);
     }
 
     public override void detach()
     {
         base.detach();
-        this._child?.detach();
+        _child?.detach();
     }
 
     public override void redepthChildren()
     {
-        if ((this._child is not null))
+        if (_child is not null)
         {
-            redepthChild(this._child!);
+            redepthChild(_child!);
         }
     }
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        if ((this._child is not null))
+        if (_child is not null)
         {
-            visitor(this._child!);
+            visitor(_child!);
         }
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return ((this.child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)this.child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>());
+        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void setupParentData(RenderObject child)
     {
-        if ((((RenderObject)child).parentData is not ParentData))
+        if (child.parentData is not ParentData)
         {
             child.parentData = new ParentData();
         }
@@ -89,44 +89,44 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        return (child?.getMinIntrinsicWidth(height) ?? 0.0);
+        return child?.getMinIntrinsicWidth(height) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return (child?.getMaxIntrinsicWidth(height) ?? 0.0);
+        return child?.getMaxIntrinsicWidth(height) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        return (child?.getMinIntrinsicHeight(width) ?? 0.0);
+        return child?.getMinIntrinsicHeight(width) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return (child?.getMaxIntrinsicHeight(width) ?? 0.0);
+        return child?.getMaxIntrinsicHeight(width) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        return (child?.getDistanceToActualBaseline(baseline) ?? base.computeDistanceToActualBaseline(baseline));
+        return child?.getDistanceToActualBaseline(baseline) ?? base.computeDistanceToActualBaseline(baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        RenderBox? childLocal = this.child;
-        return ((childLocal is null) ? base.computeDryBaseline(constraints, baseline) : childLocal.getDryBaseline(constraints, baseline));
+        RenderBox? childLocal = child;
+        return (childLocal is null) ? base.computeDryBaseline(constraints, baseline) : childLocal.getDryBaseline(constraints, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return (child?.getDryLayout(constraints) ?? computeSizeForNoChild(constraints));
+        return child?.getDryLayout(constraints) ?? computeSizeForNoChild(constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -139,13 +139,13 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
 
     public virtual Size computeSizeForNoChild(BoxConstraints constraints)
     {
-        return ((BoxConstraints)constraints).smallest;
+        return constraints.smallest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        return (child?.hitTest(result, position: position) ?? false);
+        return child?.hitTest(result, position: position) ?? false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -155,8 +155,8 @@ public class RenderProxyBox : RenderBox, RenderObjectWithChildMixin<RenderBox>, 
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        RenderBox? childLocal = this.child;
-        if ((childLocal is null))
+        RenderBox? childLocal = child;
+        if (childLocal is null)
         {
             return;
         }
@@ -203,8 +203,8 @@ public abstract class RenderProxyBoxWithHitTestBehavior : RenderProxyBox
         var hitTarget = false;
         if (size.contains(position))
         {
-            hitTarget = (hitTestChildren(result, position: position) || hitTestSelf(position));
-            if ((hitTarget || (Equals(this.behavior, HitTestBehavior.translucent))))
+            hitTarget = hitTestChildren(result, position: position) || hitTestSelf(position);
+            if (hitTarget || Equals(behavior, HitTestBehavior.translucent))
             {
                 result.add(new BoxHitTestEntry(this, position));
             }
@@ -213,11 +213,11 @@ public abstract class RenderProxyBoxWithHitTestBehavior : RenderProxyBox
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestSelf(Offset position) => (Equals(this.behavior, HitTestBehavior.opaque));
+    public override bool hitTestSelf(Offset position) => Equals(behavior, HitTestBehavior.opaque);
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<HitTestBehavior>("behavior", this.behavior, defaultValue: null));
+        properties.add(new EnumProperty<HitTestBehavior>("behavior", behavior, defaultValue: null));
     }
 
 }
@@ -228,18 +228,18 @@ public class RenderConstrainedBox : RenderProxyBox
 
     public RenderConstrainedBox(RenderBox? child = null, BoxConstraints additionalConstraints = default!) : base(child)
     {
-        this._additionalConstraints = additionalConstraints;
+        _additionalConstraints = additionalConstraints;
         System.Diagnostics.Debug.Assert(additionalConstraints.debugAssertIsValid());
     }
 
     public virtual BoxConstraints additionalConstraints
     {
-        get => this._additionalConstraints;
+        get => _additionalConstraints;
         set
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => __value.debugAssertIsValid());
-            if ((Equals(this._additionalConstraints, __value)))
+            if (Equals(_additionalConstraints, __value))
             {
                 return;
             }
@@ -249,15 +249,15 @@ public class RenderConstrainedBox : RenderProxyBox
     }
     public override double computeMinIntrinsicWidth(double height)
     {
-        if ((((BoxConstraints)this._additionalConstraints).hasBoundedWidth && ((BoxConstraints)this._additionalConstraints).hasTightWidth))
+        if (_additionalConstraints.hasBoundedWidth && _additionalConstraints.hasTightWidth)
         {
-            return ((BoxConstraints)this._additionalConstraints).minWidth;
+            return _additionalConstraints.minWidth;
         }
         double width = base.computeMinIntrinsicWidth(height);
         DartRuntimePrimitives.Assert(() => double.IsFinite(width));
-        if (!((BoxConstraints)this._additionalConstraints).hasInfiniteWidth)
+        if (!_additionalConstraints.hasInfiniteWidth)
         {
-            return this._additionalConstraints.constrainWidth(width);
+            return _additionalConstraints.constrainWidth(width);
         }
         return width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -265,15 +265,15 @@ public class RenderConstrainedBox : RenderProxyBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        if ((((BoxConstraints)this._additionalConstraints).hasBoundedWidth && ((BoxConstraints)this._additionalConstraints).hasTightWidth))
+        if (_additionalConstraints.hasBoundedWidth && _additionalConstraints.hasTightWidth)
         {
-            return ((BoxConstraints)this._additionalConstraints).minWidth;
+            return _additionalConstraints.minWidth;
         }
         double width = base.computeMaxIntrinsicWidth(height);
         DartRuntimePrimitives.Assert(() => double.IsFinite(width));
-        if (!((BoxConstraints)this._additionalConstraints).hasInfiniteWidth)
+        if (!_additionalConstraints.hasInfiniteWidth)
         {
-            return this._additionalConstraints.constrainWidth(width);
+            return _additionalConstraints.constrainWidth(width);
         }
         return width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -281,15 +281,15 @@ public class RenderConstrainedBox : RenderProxyBox
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        if ((((BoxConstraints)this._additionalConstraints).hasBoundedHeight && ((BoxConstraints)this._additionalConstraints).hasTightHeight))
+        if (_additionalConstraints.hasBoundedHeight && _additionalConstraints.hasTightHeight)
         {
-            return ((BoxConstraints)this._additionalConstraints).minHeight;
+            return _additionalConstraints.minHeight;
         }
         double height = base.computeMinIntrinsicHeight(width);
         DartRuntimePrimitives.Assert(() => double.IsFinite(height));
-        if (!((BoxConstraints)this._additionalConstraints).hasInfiniteHeight)
+        if (!_additionalConstraints.hasInfiniteHeight)
         {
-            return this._additionalConstraints.constrainHeight(height);
+            return _additionalConstraints.constrainHeight(height);
         }
         return height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -297,15 +297,15 @@ public class RenderConstrainedBox : RenderProxyBox
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        if ((((BoxConstraints)this._additionalConstraints).hasBoundedHeight && ((BoxConstraints)this._additionalConstraints).hasTightHeight))
+        if (_additionalConstraints.hasBoundedHeight && _additionalConstraints.hasTightHeight)
         {
-            return ((BoxConstraints)this._additionalConstraints).minHeight;
+            return _additionalConstraints.minHeight;
         }
         double height = base.computeMaxIntrinsicHeight(width);
         DartRuntimePrimitives.Assert(() => double.IsFinite(height));
-        if (!((BoxConstraints)this._additionalConstraints).hasInfiniteHeight)
+        if (!_additionalConstraints.hasInfiniteHeight)
         {
-            return this._additionalConstraints.constrainHeight(height);
+            return _additionalConstraints.constrainHeight(height);
         }
         return height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -313,27 +313,27 @@ public class RenderConstrainedBox : RenderProxyBox
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        return child?.getDryBaseline(this._additionalConstraints.enforce(constraints), baseline);
+        return child?.getDryBaseline(_additionalConstraints.enforce(constraints), baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        BoxConstraints constraintsLocal = this.constraints;
-        if ((child is not null))
+        BoxConstraints constraintsLocal = constraints;
+        if (child is not null)
         {
-            child!.layout(this._additionalConstraints.enforce(constraintsLocal), parentUsesSize: true);
+            child!.layout(_additionalConstraints.enforce(constraintsLocal), parentUsesSize: true);
             size = child!.size;
         }
         else
         {
-            size = this._additionalConstraints.enforce(constraintsLocal).constrain(Size.zero);
+            size = _additionalConstraints.enforce(constraintsLocal).constrain(Size.zero);
         }
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return (child?.getDryLayout(this._additionalConstraints.enforce(constraints)) ?? this._additionalConstraints.enforce(constraints).constrain(Size.zero));
+        return child?.getDryLayout(_additionalConstraints.enforce(constraints)) ?? _additionalConstraints.enforce(constraints).constrain(Size.zero);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -343,7 +343,7 @@ public class RenderConstrainedBox : RenderProxyBox
         DartRuntimePrimitives.Assert(() =>
             {
                 global::Doroti.Ui.Paint paint = default!;
-                if (((child is null) || child!.size.isEmpty))
+                if ((child is null) || child!.size.isEmpty)
                 {
                     paint = ((Func<Paint>)(() =>
 {
@@ -351,7 +351,7 @@ public class RenderConstrainedBox : RenderProxyBox
     __cascade.color = new global::Doroti.Ui.Color(2425393296L);
     return __cascade;
 }))();
-                    ((PaintingContext)context).canvas.drawRect((offset & size), paint);
+                    context.canvas.drawRect(offset & size, paint);
                 }
                 return true;
             });
@@ -360,7 +360,7 @@ public class RenderConstrainedBox : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<BoxConstraints>("additionalConstraints", this.additionalConstraints));
+        properties.add(new DiagnosticsProperty<BoxConstraints>("additionalConstraints", additionalConstraints));
     }
 
 }
@@ -372,20 +372,20 @@ public class RenderLimitedBox : RenderProxyBox
 
     public RenderLimitedBox(RenderBox? child = null, double maxWidth = double.PositiveInfinity, double maxHeight = double.PositiveInfinity) : base(child)
     {
-        this._maxWidth = maxWidth;
-        this._maxHeight = maxHeight;
-        System.Diagnostics.Debug.Assert((maxWidth >= 0.0));
-        System.Diagnostics.Debug.Assert((maxHeight >= 0.0));
+        _maxWidth = maxWidth;
+        _maxHeight = maxHeight;
+        System.Diagnostics.Debug.Assert(maxWidth >= 0.0);
+        System.Diagnostics.Debug.Assert(maxHeight >= 0.0);
     }
 
     public virtual double maxWidth
     {
-        get => this._maxWidth;
+        get => _maxWidth;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value >= 0.0));
-            if ((this._maxWidth == __value))
+            DartRuntimePrimitives.Assert(() => __value >= 0.0);
+            if (_maxWidth == __value)
             {
                 return;
             }
@@ -395,12 +395,12 @@ public class RenderLimitedBox : RenderProxyBox
     }
     public virtual double maxHeight
     {
-        get => this._maxHeight;
+        get => _maxHeight;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value >= 0.0));
-            if ((this._maxHeight == __value))
+            DartRuntimePrimitives.Assert(() => __value >= 0.0);
+            if (_maxHeight == __value)
             {
                 return;
             }
@@ -410,13 +410,13 @@ public class RenderLimitedBox : RenderProxyBox
     }
     internal virtual BoxConstraints _limitConstraints(BoxConstraints constraints)
     {
-        return new BoxConstraints(minWidth: ((BoxConstraints)constraints).minWidth, maxWidth: (((BoxConstraints)constraints).hasBoundedWidth ? ((BoxConstraints)constraints).maxWidth : constraints.constrainWidth(this.maxWidth)), minHeight: ((BoxConstraints)constraints).minHeight, maxHeight: (((BoxConstraints)constraints).hasBoundedHeight ? ((BoxConstraints)constraints).maxHeight : constraints.constrainHeight(this.maxHeight)));
+        return new BoxConstraints(minWidth: constraints.minWidth, maxWidth: constraints.hasBoundedWidth ? constraints.maxWidth : constraints.constrainWidth(maxWidth), minHeight: constraints.minHeight, maxHeight: constraints.hasBoundedHeight ? constraints.maxHeight : constraints.constrainHeight(maxHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
     {
-        if ((child is not null))
+        if (child is not null)
         {
             global::Doroti.Ui.Size childSize = layoutChild(child!, _limitConstraints(constraints));
             return constraints.constrain(childSize);
@@ -427,20 +427,20 @@ public class RenderLimitedBox : RenderProxyBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(constraints: constraints, layoutChild: (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild);
+        return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        size = _computeSize(constraints: constraints, layoutChild: (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild);
+        size = _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.layoutChild);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("maxWidth", this.maxWidth, defaultValue: double.PositiveInfinity));
-        properties.add(new DoubleProperty("maxHeight", this.maxHeight, defaultValue: double.PositiveInfinity));
+        properties.add(new DoubleProperty("maxWidth", maxWidth, defaultValue: double.PositiveInfinity));
+        properties.add(new DoubleProperty("maxHeight", maxHeight, defaultValue: double.PositiveInfinity));
     }
 
 }
@@ -451,20 +451,20 @@ public class RenderAspectRatio : RenderProxyBox
 
     public RenderAspectRatio(RenderBox? child = null, double aspectRatio = default!) : base(child)
     {
-        this._aspectRatio = aspectRatio;
-        System.Diagnostics.Debug.Assert((aspectRatio > 0.0));
+        _aspectRatio = aspectRatio;
+        System.Diagnostics.Debug.Assert(aspectRatio > 0.0);
         System.Diagnostics.Debug.Assert(double.IsFinite(aspectRatio));
     }
 
     public virtual double aspectRatio
     {
-        get => this._aspectRatio;
+        get => _aspectRatio;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value > 0.0));
+            DartRuntimePrimitives.Assert(() => __value > 0.0);
             DartRuntimePrimitives.Assert(() => double.IsFinite(__value));
-            if ((this._aspectRatio == __value))
+            if (_aspectRatio == __value)
             {
                 return;
             }
@@ -476,9 +476,9 @@ public class RenderAspectRatio : RenderProxyBox
     {
         if (double.IsFinite(height))
         {
-            return (height * this._aspectRatio);
+            return height * _aspectRatio;
         }
-        return (child?.getMinIntrinsicWidth(height) ?? 0.0);
+        return child?.getMinIntrinsicWidth(height) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -486,9 +486,9 @@ public class RenderAspectRatio : RenderProxyBox
     {
         if (double.IsFinite(height))
         {
-            return (height * this._aspectRatio);
+            return height * _aspectRatio;
         }
-        return (child?.getMaxIntrinsicWidth(height) ?? 0.0);
+        return child?.getMaxIntrinsicWidth(height) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -496,9 +496,9 @@ public class RenderAspectRatio : RenderProxyBox
     {
         if (double.IsFinite(width))
         {
-            return (width / this._aspectRatio);
+            return width / _aspectRatio;
         }
-        return (child?.getMinIntrinsicHeight(width) ?? 0.0);
+        return child?.getMinIntrinsicHeight(width) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -506,9 +506,9 @@ public class RenderAspectRatio : RenderProxyBox
     {
         if (double.IsFinite(width))
         {
-            return (width / this._aspectRatio);
+            return width / _aspectRatio;
         }
-        return (child?.getMaxIntrinsicHeight(width) ?? 0.0);
+        return child?.getMaxIntrinsicHeight(width) ?? 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -517,46 +517,46 @@ public class RenderAspectRatio : RenderProxyBox
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((!((BoxConstraints)constraints).hasBoundedWidth && !((BoxConstraints)constraints).hasBoundedHeight))
+                if (!constraints.hasBoundedWidth && !constraints.hasBoundedHeight)
                 {
-                    throw new FlutterError($"{this.GetType()} has unbounded constraints.\n" + $"This {this.GetType()} was given an aspect ratio of {this.aspectRatio} but was given " + "both unbounded width and unbounded height constraints. Because both " + "constraints were unbounded, this render object doesn't know how much " + "size to consume.");
+                    throw new FlutterError($"{GetType()} has unbounded constraints.\n" + $"This {GetType()} was given an aspect ratio of {aspectRatio} but was given " + "both unbounded width and unbounded height constraints. Because both " + "constraints were unbounded, this render object doesn't know how much " + "size to consume.");
                 }
                 return true;
             });
-        if (((BoxConstraints)constraints).isTight)
+        if (constraints.isTight)
         {
-            return ((BoxConstraints)constraints).smallest;
+            return constraints.smallest;
         }
-        double width = ((BoxConstraints)constraints).maxWidth;
+        double width = constraints.maxWidth;
         double height = default!;
         if (double.IsFinite(width))
         {
-            height = (width / this._aspectRatio);
+            height = width / _aspectRatio;
         }
         else
         {
-            height = ((BoxConstraints)constraints).maxHeight;
-            width = (height * this._aspectRatio);
+            height = constraints.maxHeight;
+            width = height * _aspectRatio;
         }
-        if ((width > ((BoxConstraints)constraints).maxWidth))
+        if (width > constraints.maxWidth)
         {
-            width = ((BoxConstraints)constraints).maxWidth;
-            height = (width / this._aspectRatio);
+            width = constraints.maxWidth;
+            height = width / _aspectRatio;
         }
-        if ((height > ((BoxConstraints)constraints).maxHeight))
+        if (height > constraints.maxHeight)
         {
-            height = ((BoxConstraints)constraints).maxHeight;
-            width = (height * this._aspectRatio);
+            height = constraints.maxHeight;
+            width = height * _aspectRatio;
         }
-        if ((width < ((BoxConstraints)constraints).minWidth))
+        if (width < constraints.minWidth)
         {
-            width = ((BoxConstraints)constraints).minWidth;
-            height = (width / this._aspectRatio);
+            width = constraints.minWidth;
+            height = width / _aspectRatio;
         }
-        if ((height < ((BoxConstraints)constraints).minHeight))
+        if (height < constraints.minHeight)
         {
-            height = ((BoxConstraints)constraints).minHeight;
-            width = (height * this._aspectRatio);
+            height = constraints.minHeight;
+            width = height * _aspectRatio;
         }
         return constraints.constrain(new global::Doroti.Ui.Size(width, height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -583,7 +583,7 @@ public class RenderAspectRatio : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("aspectRatio", this.aspectRatio));
+        properties.add(new DoubleProperty("aspectRatio", aspectRatio));
     }
 
 }
@@ -595,20 +595,20 @@ public class RenderIntrinsicWidth : RenderProxyBox
 
     public RenderIntrinsicWidth(double? stepWidth = null, double? stepHeight = null, RenderBox? child = null) : base(child)
     {
-        this._stepWidth = stepWidth;
-        this._stepHeight = stepHeight;
-        System.Diagnostics.Debug.Assert(((stepWidth is null) || (DartRuntimePrimitives.RequireValue(stepWidth) > 0.0)));
-        System.Diagnostics.Debug.Assert(((stepHeight is null) || (DartRuntimePrimitives.RequireValue(stepHeight) > 0.0)));
+        _stepWidth = stepWidth;
+        _stepHeight = stepHeight;
+        System.Diagnostics.Debug.Assert((stepWidth is null) || (DartRuntimePrimitives.RequireValue(stepWidth) > 0.0));
+        System.Diagnostics.Debug.Assert((stepHeight is null) || (DartRuntimePrimitives.RequireValue(stepHeight) > 0.0));
     }
 
     public virtual double? stepWidth
     {
-        get => this._stepWidth;
+        get => _stepWidth;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => ((__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0)));
-            if ((__value == this._stepWidth))
+            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0));
+            if (__value == _stepWidth)
             {
                 return;
             }
@@ -618,12 +618,12 @@ public class RenderIntrinsicWidth : RenderProxyBox
     }
     public virtual double? stepHeight
     {
-        get => this._stepHeight;
+        get => _stepHeight;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => ((__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0)));
-            if ((__value == this._stepHeight))
+            DartRuntimePrimitives.Assert(() => (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0));
+            if (__value == _stepHeight)
             {
                 return;
             }
@@ -634,11 +634,11 @@ public class RenderIntrinsicWidth : RenderProxyBox
     internal static double _applyStep(double input, double? step)
     {
         DartRuntimePrimitives.Assert(() => double.IsFinite(input));
-        if ((step is null))
+        if (step is null)
         {
             return input;
         }
-        return (((input / DartRuntimePrimitives.RequireValue(step))).ceil() * DartRuntimePrimitives.RequireValue(step));
+        return (input / DartRuntimePrimitives.RequireValue(step)).ceil() * DartRuntimePrimitives.RequireValue(step);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -650,18 +650,18 @@ public class RenderIntrinsicWidth : RenderProxyBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        if ((child is null))
+        if (child is null)
         {
             return 0.0;
         }
         double width = child!.getMaxIntrinsicWidth(height);
-        return _applyStep(width, this._stepWidth);
+        return _applyStep(width, _stepWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        if ((child is null))
+        if (child is null)
         {
             return 0.0;
         }
@@ -671,13 +671,13 @@ public class RenderIntrinsicWidth : RenderProxyBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(width));
         double height = child!.getMinIntrinsicHeight(width);
-        return _applyStep(height, this._stepHeight);
+        return _applyStep(height, _stepHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        if ((child is null))
+        if (child is null)
         {
             return 0.0;
         }
@@ -687,46 +687,46 @@ public class RenderIntrinsicWidth : RenderProxyBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(width));
         double height = child!.getMaxIntrinsicHeight(width);
-        return _applyStep(height, this._stepHeight);
+        return _applyStep(height, _stepHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
     {
-        return constraints.tighten(width: (((BoxConstraints)constraints).hasTightWidth ? null : _applyStep(child.getMaxIntrinsicWidth(((BoxConstraints)constraints).maxHeight), this._stepWidth)), height: ((this.stepHeight is null) ? null : _applyStep(child.getMaxIntrinsicHeight(((BoxConstraints)constraints).maxWidth), this._stepHeight)));
+        return constraints.tighten(width: constraints.hasTightWidth ? null : _applyStep(child.getMaxIntrinsicWidth(constraints.maxHeight), _stepWidth), height: (stepHeight is null) ? null : _applyStep(child.getMaxIntrinsicHeight(constraints.maxWidth), _stepHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _computeSize(Func<RenderBox, BoxConstraints, Size> layoutChild, BoxConstraints constraints)
     {
-        RenderBox? childLocal = this.child;
-        return ((childLocal is null) ? ((BoxConstraints)constraints).smallest : layoutChild(childLocal, _childConstraints(childLocal, constraints)));
+        RenderBox? childLocal = child;
+        return (childLocal is null) ? constraints.smallest : layoutChild(childLocal, _childConstraints(childLocal, constraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(layoutChild: (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, constraints: constraints);
+        return _computeSize(layoutChild: ChildLayoutHelper.dryLayoutChild, constraints: constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        RenderBox? childLocal = this.child;
+        RenderBox? childLocal = child;
         return childLocal?.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        size = _computeSize(layoutChild: (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild, constraints: constraints);
+        size = _computeSize(layoutChild: ChildLayoutHelper.layoutChild, constraints: constraints);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("stepWidth", this.stepWidth));
-        properties.add(new DoubleProperty("stepHeight", this.stepHeight));
+        properties.add(new DoubleProperty("stepWidth", stepWidth));
+        properties.add(new DoubleProperty("stepHeight", stepHeight));
     }
 
 }
@@ -739,7 +739,7 @@ public class RenderIntrinsicHeight : RenderProxyBox
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        if ((child is null))
+        if (child is null)
         {
             return 0.0;
         }
@@ -754,7 +754,7 @@ public class RenderIntrinsicHeight : RenderProxyBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        if ((child is null))
+        if (child is null)
         {
             return 0.0;
         }
@@ -775,33 +775,33 @@ public class RenderIntrinsicHeight : RenderProxyBox
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
     {
-        return (((BoxConstraints)constraints).hasTightHeight ? constraints : constraints.tighten(height: child.getMaxIntrinsicHeight(((BoxConstraints)constraints).maxWidth)));
+        return constraints.hasTightHeight ? constraints : constraints.tighten(height: child.getMaxIntrinsicHeight(constraints.maxWidth));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _computeSize(Func<RenderBox, BoxConstraints, Size> layoutChild, BoxConstraints constraints)
     {
-        RenderBox? childLocal = this.child;
-        return ((childLocal is null) ? ((BoxConstraints)constraints).smallest : layoutChild(childLocal, _childConstraints(childLocal, constraints)));
+        RenderBox? childLocal = child;
+        return (childLocal is null) ? constraints.smallest : layoutChild(childLocal, _childConstraints(childLocal, constraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return _computeSize(layoutChild: (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, constraints: constraints);
+        return _computeSize(layoutChild: ChildLayoutHelper.dryLayoutChild, constraints: constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        RenderBox? childLocal = this.child;
+        RenderBox? childLocal = child;
         return childLocal?.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        size = _computeSize(layoutChild: (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild, constraints: constraints);
+        size = _computeSize(layoutChild: ChildLayoutHelper.layoutChild, constraints: constraints);
     }
 
 }
@@ -834,35 +834,35 @@ public class RenderOpacity : RenderProxyBox
 
     public RenderOpacity(double opacity = 1.0, bool alwaysIncludeSemantics = false, RenderBox? child = null) : base(child)
     {
-        this._opacity = opacity;
-        this._alwaysIncludeSemantics = alwaysIncludeSemantics;
-        this._alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(opacity);
-        System.Diagnostics.Debug.Assert(((opacity >= 0.0) && (opacity <= 1.0)));
+        _opacity = opacity;
+        _alwaysIncludeSemantics = alwaysIncludeSemantics;
+        _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(opacity);
+        System.Diagnostics.Debug.Assert((opacity >= 0.0) && (opacity <= 1.0));
     }
 
-    public override bool alwaysNeedsCompositing => ((child is not null) && (this._alpha > 0L));
-    public override bool isRepaintBoundary => this.alwaysNeedsCompositing;
+    public override bool alwaysNeedsCompositing => (child is not null) && (_alpha > 0L);
+    public override bool isRepaintBoundary => alwaysNeedsCompositing;
     public virtual double opacity
     {
-        get => this._opacity;
+        get => _opacity;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => ((__value >= 0.0) && (__value <= 1.0)));
-            if ((this._opacity == __value))
+            DartRuntimePrimitives.Assert(() => (__value >= 0.0) && (__value <= 1.0));
+            if (_opacity == __value)
             {
                 return;
             }
-            bool didNeedCompositing = this.alwaysNeedsCompositing;
-            var wasVisible = (this._alpha != 0L);
+            bool didNeedCompositing = alwaysNeedsCompositing;
+            var wasVisible = _alpha != 0L;
             _opacity = __value;
-            _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(this._opacity);
-            if ((didNeedCompositing != this.alwaysNeedsCompositing))
+            _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(_opacity);
+            if (didNeedCompositing != alwaysNeedsCompositing)
             {
                 markNeedsCompositingBitsUpdate();
             }
             markNeedsCompositedLayerUpdate();
-            if (((wasVisible != ((this._alpha != 0L))) && !this.alwaysIncludeSemantics))
+            if ((wasVisible != (_alpha != 0L)) && !alwaysIncludeSemantics)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -870,11 +870,11 @@ public class RenderOpacity : RenderProxyBox
     }
     public virtual bool alwaysIncludeSemantics
     {
-        get => this._alwaysIncludeSemantics;
+        get => _alwaysIncludeSemantics;
         set
         {
             var __value = value;
-            if ((__value == this._alwaysIncludeSemantics))
+            if (__value == _alwaysIncludeSemantics)
             {
                 return;
             }
@@ -885,23 +885,23 @@ public class RenderOpacity : RenderProxyBox
     public override bool paintsChild(RenderObject child)
     {
         var __child = (RenderBox)child;
-        DartRuntimePrimitives.Assert(() => (Equals(__child.parent, this)));
-        return (this._alpha > 0L);
+        DartRuntimePrimitives.Assert(() => Equals(__child.parent, this));
+        return _alpha > 0L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (OpacityLayer)oldLayer;
-        OpacityLayer layer = (__oldLayer ?? new OpacityLayer());
-        layer.alpha = this._alpha;
+        OpacityLayer layer = __oldLayer ?? new OpacityLayer();
+        layer.alpha = _alpha;
         return layer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if (((child is null) || (this._alpha == 0L)))
+        if ((child is null) || (_alpha == 0L))
         {
             return;
         }
@@ -910,7 +910,7 @@ public class RenderOpacity : RenderProxyBox
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if (((child is not null) && (((this._alpha != 0L) || this.alwaysIncludeSemantics))))
+        if ((child is not null) && ((_alpha != 0L) || alwaysIncludeSemantics))
         {
             visitor(child!);
         }
@@ -919,8 +919,8 @@ public class RenderOpacity : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("opacity", this.opacity));
-        properties.add(new FlagProperty("alwaysIncludeSemantics", value: this.alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(new DoubleProperty("opacity", opacity));
+        properties.add(new FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
     }
 
 }
@@ -958,79 +958,79 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
         this.alwaysIncludeSemantics = alwaysIncludeSemantics;
     }
 
-    public override bool isRepaintBoundary => ((child is not null) && DartRuntimePrimitives.RequireValue(this._currentlyIsRepaintBoundary));
+    public override bool isRepaintBoundary => (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (OpacityLayer)oldLayer;
-        OpacityLayer updatedLayer = (__oldLayer ?? new OpacityLayer());
-        updatedLayer.alpha = this._alpha;
+        OpacityLayer updatedLayer = __oldLayer ?? new OpacityLayer();
+        updatedLayer.alpha = _alpha;
         return updatedLayer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Animation<double> opacity
     {
-        get => this._opacity!;
+        get => _opacity!;
         set
         {
             var __value = value;
-            if ((Equals(this._opacity, __value)))
+            if (Equals(_opacity, __value))
             {
                 return;
             }
-            if ((attached && (this._opacity is not null)))
+            if (attached && (_opacity is not null))
             {
-                this.opacity.removeListener(this._updateOpacity);
+                opacity.removeListener(_updateOpacity);
             }
-            this._opacity = __value;
+            _opacity = __value;
             if (attached)
             {
-                this.opacity.addListener(this._updateOpacity);
+                opacity.addListener(_updateOpacity);
             }
             _updateOpacity();
         }
     }
     public virtual bool alwaysIncludeSemantics
     {
-        get => DartRuntimePrimitives.RequireValue(this._alwaysIncludeSemantics);
+        get => DartRuntimePrimitives.RequireValue(_alwaysIncludeSemantics);
         set
         {
             var __value = value;
-            if ((__value == this._alwaysIncludeSemantics))
+            if (__value == _alwaysIncludeSemantics)
             {
                 return;
             }
-            this._alwaysIncludeSemantics = __value;
+            _alwaysIncludeSemantics = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        this.opacity.addListener(this._updateOpacity);
+        opacity.addListener(_updateOpacity);
         _updateOpacity();
     }
 
     public override void detach()
     {
-        this.opacity.removeListener(this._updateOpacity);
+        opacity.removeListener(_updateOpacity);
         base.detach();
     }
 
     public virtual void _updateOpacity()
     {
-        long? oldAlpha = this._alpha;
-        this._alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(this.opacity.value);
-        if ((oldAlpha != this._alpha))
+        long? oldAlpha = _alpha;
+        _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(opacity.value);
+        if (oldAlpha != _alpha)
         {
-            bool? wasRepaintBoundary = this._currentlyIsRepaintBoundary;
-            this._currentlyIsRepaintBoundary = (DartRuntimePrimitives.RequireValue(this._alpha) > 0L);
-            if (((child is not null) && (wasRepaintBoundary != this._currentlyIsRepaintBoundary)))
+            bool? wasRepaintBoundary = _currentlyIsRepaintBoundary;
+            _currentlyIsRepaintBoundary = DartRuntimePrimitives.RequireValue(_alpha) > 0L;
+            if ((child is not null) && (wasRepaintBoundary != _currentlyIsRepaintBoundary))
             {
                 markNeedsCompositingBitsUpdate();
             }
             markNeedsCompositedLayerUpdate();
-            if (((oldAlpha == 0L) || (this._alpha == 0L)))
+            if ((oldAlpha == 0L) || (_alpha == 0L))
             {
                 markNeedsSemanticsUpdate();
             }
@@ -1039,14 +1039,14 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
 
     public override bool paintsChild(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
-        return (this.opacity.value > 0L);
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
+        return opacity.value > 0L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((this._alpha == 0L))
+        if (_alpha == 0L)
         {
             return;
         }
@@ -1055,7 +1055,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if (((child is not null) && (((this._alpha != 0L) || this.alwaysIncludeSemantics))))
+        if ((child is not null) && ((_alpha != 0L) || alwaysIncludeSemantics))
         {
             visitor(child!);
         }
@@ -1064,8 +1064,8 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<Animation<double>>("opacity", this.opacity));
-        properties.add(new FlagProperty("alwaysIncludeSemantics", value: this.alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(new DiagnosticsProperty<Animation<double>>("opacity", opacity));
+        properties.add(new FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
     }
 
 }
@@ -1079,18 +1079,18 @@ public class RenderShaderMask : RenderProxyBox
 
     public RenderShaderMask(RenderBox? child = null, Func<Rect, Shader> shaderCallback = default!, BlendMode blendMode = BlendMode.modulate) : base(child)
     {
-        this._shaderCallback = shaderCallback;
-        this._blendMode = blendMode;
+        _shaderCallback = shaderCallback;
+        _blendMode = blendMode;
     }
 
     public override ShaderMaskLayer? layer => ((ShaderMaskLayer?)base.layer)!;
     public virtual Func<Rect, Shader> shaderCallback
     {
-        get => this._shaderCallback;
+        get => _shaderCallback;
         set
         {
             var __value = value;
-            if ((Equals((Func<Rect, Shader>)this._shaderCallback, (Func<Rect, Shader>)__value)))
+            if (Equals(_shaderCallback, __value))
             {
                 return;
             }
@@ -1100,11 +1100,11 @@ public class RenderShaderMask : RenderProxyBox
     }
     public virtual global::Doroti.Ui.BlendMode blendMode
     {
-        get => this._blendMode;
+        get => _blendMode;
         set
         {
             var __value = value;
-            if ((Equals(this._blendMode, __value)))
+            if (Equals(_blendMode, __value))
             {
                 return;
             }
@@ -1112,25 +1112,25 @@ public class RenderShaderMask : RenderProxyBox
             markNeedsPaint();
         }
     }
-    public override bool alwaysNeedsCompositing => (child is not null);
+    public override bool alwaysNeedsCompositing => child is not null;
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
             DartRuntimePrimitives.Assert(() => needsCompositing);
             layer ??= new ShaderMaskLayer();
             ((Func<ShaderMaskLayer>)(() =>
 {
-    var __cascade = this.layer!;
-    __cascade.shader = this._shaderCallback((Offset.zero & size));
-    __cascade.maskRect = (offset & size);
-    __cascade.blendMode = this._blendMode;
+    var __cascade = layer!;
+    __cascade.shader = _shaderCallback(Offset.zero & size);
+    __cascade.maskRect = offset & size;
+    __cascade.blendMode = _blendMode;
     return __cascade;
 }))();
-            context.pushLayer(this.layer!, (Action<PaintingContext, Offset>)base.paint, offset);
+            context.pushLayer(layer!, base.paint, offset);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    this.layer!.debugCreator = debugCreator;
+                    layer!.debugCreator = debugCreator;
                     return true;
                 });
         }
@@ -1151,22 +1151,22 @@ public class RenderBackdropFilter : RenderProxyBox
 
     public RenderBackdropFilter(RenderBox? child = null, ImageFilter? filter = null, ImageFilterConfig? filterConfig = null, BlendMode blendMode = BlendMode.srcOver, bool enabled = true, BackdropKey? backdropKey = null) : base(child)
     {
-        this._filterConfig = (filterConfig ?? ImageFilterConfig.Create(filter!));
-        this._enabled = enabled;
-        this._blendMode = blendMode;
-        this._backdropKey = backdropKey;
-        System.Diagnostics.Debug.Assert(((filter is not null) || (filterConfig is not null)));
-        System.Diagnostics.Debug.Assert(((filter is null) || (filterConfig is null)));
+        _filterConfig = filterConfig ?? ImageFilterConfig.Create(filter!);
+        _enabled = enabled;
+        _blendMode = blendMode;
+        _backdropKey = backdropKey;
+        System.Diagnostics.Debug.Assert((filter is not null) || (filterConfig is not null));
+        System.Diagnostics.Debug.Assert((filter is null) || (filterConfig is null));
     }
 
     public override BackdropFilterLayer? layer => ((BackdropFilterLayer?)base.layer)!;
     public virtual bool enabled
     {
-        get => this._enabled;
+        get => _enabled;
         set
         {
             var __value = value;
-            if ((this.enabled == DartRuntimePrimitives.RequireValue(__value)))
+            if (enabled == DartRuntimePrimitives.RequireValue(__value))
             {
                 return;
             }
@@ -1178,22 +1178,22 @@ public class RenderBackdropFilter : RenderProxyBox
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => (((ImageFilterConfig)this.filterConfig).filter is not null));
-            return ((ImageFilterConfig)this.filterConfig).filter!;
+            DartRuntimePrimitives.Assert(() => filterConfig.filter is not null);
+            return filterConfig.filter!;
         }
         set
         {
-            var __value = (ImageFilter)value;
+            var __value = value;
             filterConfig = ImageFilterConfig.Create(__value);
         }
     }
     public virtual ImageFilterConfig filterConfig
     {
-        get => this._filterConfig;
+        get => _filterConfig;
         set
         {
             var __value = value;
-            if ((Equals(this._filterConfig, __value)))
+            if (Equals(_filterConfig, __value))
             {
                 return;
             }
@@ -1203,11 +1203,11 @@ public class RenderBackdropFilter : RenderProxyBox
     }
     public virtual global::Doroti.Ui.BlendMode blendMode
     {
-        get => this._blendMode;
+        get => _blendMode;
         set
         {
             var __value = value;
-            if ((Equals(this._blendMode, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_blendMode, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -1217,11 +1217,11 @@ public class RenderBackdropFilter : RenderProxyBox
     }
     public virtual BackdropKey? backdropKey
     {
-        get => this._backdropKey;
+        get => _backdropKey;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._backdropKey)))
+            if (Equals(__value, _backdropKey))
             {
                 return;
             }
@@ -1229,26 +1229,26 @@ public class RenderBackdropFilter : RenderProxyBox
             markNeedsPaint();
         }
     }
-    public override bool alwaysNeedsCompositing => (child is not null);
+    public override bool alwaysNeedsCompositing => child is not null;
     public override void paint(PaintingContext context, Offset offset)
     {
-        if (!this._enabled)
+        if (!_enabled)
         {
             base.paint(context, offset);
             return;
         }
-        global::Doroti.Ui.ImageFilter effectiveFilter = this._filterConfig.resolve(new ImageFilterContext(bounds: (offset & size)));
-        if ((child is not null))
+        global::Doroti.Ui.ImageFilter effectiveFilter = _filterConfig.resolve(new ImageFilterContext(bounds: offset & size));
+        if (child is not null)
         {
             DartRuntimePrimitives.Assert(() => needsCompositing);
             layer ??= new BackdropFilterLayer();
-            this.layer!.filter = effectiveFilter;
-            this.layer!.blendMode = this._blendMode;
-            this.layer!.backdropKey = this._backdropKey;
-            context.pushLayer(this.layer!, (Action<PaintingContext, Offset>)base.paint, offset);
+            layer!.filter = effectiveFilter;
+            layer!.blendMode = _blendMode;
+            layer!.backdropKey = _backdropKey;
+            context.pushLayer(layer!, base.paint, offset);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    this.layer!.debugCreator = debugCreator;
+                    layer!.debugCreator = debugCreator;
                     return true;
                 });
         }
@@ -1261,9 +1261,9 @@ public class RenderBackdropFilter : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<ImageFilterConfig>("filterConfig", this.filterConfig, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", this.blendMode));
-        properties.add(new FlagProperty("enabled", value: this.enabled, ifTrue: "enabled"));
+        properties.add(new DiagnosticsProperty<ImageFilterConfig>("filterConfig", filterConfig, defaultValue: null));
+        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode));
+        properties.add(new FlagProperty("enabled", value: enabled, ifTrue: "enabled"));
     }
 
 }
@@ -1274,13 +1274,13 @@ public abstract class CustomClipper<T> : Listenable
 
     protected CustomClipper(Listenable? reclip = null)
     {
-        this._reclip = reclip;
+        _reclip = reclip;
     }
 
-    public virtual void addListener(Action listener) => this._reclip?.addListener(listener);
-    public virtual void removeListener(Action listener) => this._reclip?.removeListener(listener);
+    public virtual void addListener(Action listener) => _reclip?.addListener(listener);
+    public virtual void removeListener(Action listener) => _reclip?.removeListener(listener);
     public abstract T getClip(Size size);
-    public virtual global::Doroti.Ui.Rect getApproximateClipRect(Size size) => (Offset.zero & size);
+    public virtual global::Doroti.Ui.Rect getApproximateClipRect(Size size) => Offset.zero & size;
     public abstract bool shouldReclip(CustomClipper<T> oldClipper);
     public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "CustomClipper");
 }
@@ -1298,18 +1298,18 @@ public class ShapeBorderClipper : CustomClipper<Path>
 
     public override global::Doroti.Ui.Path getClip(Size size)
     {
-        return this.shape.getOuterPath((Offset.zero & size), textDirection: this.textDirection);
+        return shape.getOuterPath(Offset.zero & size, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool shouldReclip(CustomClipper<Path> oldClipper)
     {
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(oldClipper), typeof(ShapeBorderClipper))))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(oldClipper), typeof(ShapeBorderClipper)))
         {
             return true;
         }
         var typedOldClipper = ((ShapeBorderClipper?)oldClipper)!;
-        return ((!Equals(((ShapeBorderClipper)typedOldClipper).shape, this.shape)) || (!Equals(((ShapeBorderClipper)typedOldClipper).textDirection, this.textDirection)));
+        return (!Equals(typedOldClipper.shape, shape)) || (!Equals(typedOldClipper.textDirection, textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1329,43 +1329,43 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
 
     internal _RenderCustomClip__proxy_box(RenderBox? child = null, CustomClipper<T>? clipper = null, Clip clipBehavior = Clip.antiAlias) : base(child)
     {
-        this._clipper = clipper;
-        this._clipBehavior = clipBehavior;
+        _clipper = clipper;
+        _clipBehavior = clipBehavior;
     }
 
     public virtual CustomClipper<T>? clipper
     {
-        get => this._clipper;
+        get => _clipper;
         set
         {
             var newClipper = value;
-            if ((Equals(this._clipper, newClipper)))
+            if (Equals(_clipper, newClipper))
             {
                 return;
             }
-            CustomClipper<T>? oldClipper = this._clipper;
+            CustomClipper<T>? oldClipper = _clipper;
             _clipper = newClipper;
-            DartRuntimePrimitives.Assert(() => ((newClipper is not null) || (oldClipper is not null)));
-            if (((((newClipper is null) || (oldClipper is null)) || (!Equals(DartRuntimePrimitives.RuntimeType(newClipper), DartRuntimePrimitives.RuntimeType(oldClipper)))) || newClipper.shouldReclip(oldClipper)))
+            DartRuntimePrimitives.Assert(() => (newClipper is not null) || (oldClipper is not null));
+            if ((newClipper is null) || (oldClipper is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newClipper), DartRuntimePrimitives.RuntimeType(oldClipper))) || newClipper.shouldReclip(oldClipper))
             {
                 _markNeedsClip();
             }
             if (attached)
             {
-                oldClipper?.removeListener(this._markNeedsClip);
-                newClipper?.addListener(this._markNeedsClip);
+                oldClipper?.removeListener(_markNeedsClip);
+                newClipper?.addListener(_markNeedsClip);
             }
         }
     }
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        this._clipper?.addListener(this._markNeedsClip);
+        _clipper?.addListener(_markNeedsClip);
     }
 
     public override void detach()
     {
-        this._clipper?.removeListener(this._markNeedsClip);
+        _clipper?.removeListener(_markNeedsClip);
         base.detach();
     }
 
@@ -1380,11 +1380,11 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
     internal abstract T _defaultClip { get; }
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._clipBehavior)))
+            if (!Equals(__value, _clipBehavior))
             {
                 _clipBehavior = __value;
                 markNeedsPaint();
@@ -1393,9 +1393,9 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
     }
     public override void performLayout()
     {
-        global::Doroti.Ui.Size? oldSize = (hasSize ? size : null);
+        global::Doroti.Ui.Size? oldSize = hasSize ? size : null;
         base.performLayout();
-        if ((!Equals(oldSize, size)))
+        if (!Equals(oldSize, size))
         {
             _clip = default;
             _clipIsValid = false;
@@ -1419,7 +1419,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
     }
     public override Rect? describeApproximatePaintClip(RenderObject child)
     {
-        switch (this.clipBehavior)
+        switch (clipBehavior)
         {
             case Clip.none:
                 {
@@ -1429,7 +1429,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
             case Clip.antiAlias:
             case Clip.antiAliasWithSaveLayer:
                 {
-                    return (this._clipper?.getApproximateClipRect(size) ?? (Offset.zero & size));
+                    return _clipper?.getApproximateClipRect(size) ?? (Offset.zero & size);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1459,7 +1459,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
 
     public override void dispose()
     {
-        this._debugText?.dispose();
+        _debugText?.dispose();
         _debugText = null;
         base.dispose();
     }
@@ -1472,10 +1472,10 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
     {
     }
 
-    internal override global::Doroti.Ui.Rect _defaultClip => (Offset.zero & size);
+    internal override global::Doroti.Ui.Rect _defaultClip => Offset.zero & size;
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if ((_clipper is not null))
+        if (_clipper is not null)
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
@@ -1490,12 +1490,12 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
-            if ((!Equals(clipBehavior, Clip.none)))
+            if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipRect(needsCompositing, offset, DartRuntimePrimitives.RequireValue(_clip), (Action<PaintingContext, Offset>)base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRectLayer?)layer)!);
+                layer = context.pushClipRect(needsCompositing, offset, DartRuntimePrimitives.RequireValue(_clip), base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRectLayer?)layer)!);
             }
             else
             {
@@ -1513,13 +1513,13 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not null))
+                if (child is not null)
                 {
                     base.debugPaintSize(context, offset);
-                    if ((!Equals(clipBehavior, Clip.none)))
+                    if (!Equals(clipBehavior, Clip.none))
                     {
-                        ((PaintingContext)context).canvas.drawRect(DartRuntimePrimitives.RequireValue(_clip).shift(offset), _debugPaint!);
-                        _debugText!.paint(((PaintingContext)context).canvas, (offset + new global::Doroti.Ui.Offset((DartRuntimePrimitives.RequireValue(_clip).width / 8.0), (-DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1))));
+                        context.canvas.drawRect(DartRuntimePrimitives.RequireValue(_clip).shift(offset), _debugPaint!);
+                        _debugText!.paint(context.canvas, offset + new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(_clip).width / 8.0, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
                     }
                 }
                 return true;
@@ -1536,17 +1536,17 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
     public RenderClipRRect(RenderBox? child = null, global::Doroti.Framework.Painting.BorderRadiusGeometry borderRadius = default!, CustomClipper<RRect>? clipper = null, Clip clipBehavior = Clip.antiAlias, TextDirection? textDirection = null) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
     {
         global::Doroti.Framework.Painting.BorderRadiusGeometry __borderRadius = borderRadius ?? BorderRadius.zero;
-        this._borderRadius = __borderRadius;
-        this._textDirection = textDirection;
+        _borderRadius = __borderRadius;
+        _textDirection = textDirection;
     }
 
     public virtual global::Doroti.Framework.Painting.BorderRadiusGeometry borderRadius
     {
-        get => this._borderRadius;
+        get => _borderRadius;
         set
         {
             var __value = value;
-            if ((Equals(this._borderRadius, __value)))
+            if (Equals(_borderRadius, __value))
             {
                 return;
             }
@@ -1556,11 +1556,11 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
     }
     public virtual global::Doroti.Ui.TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._textDirection, __value)))
+            if (Equals(_textDirection, __value))
             {
                 return;
             }
@@ -1568,10 +1568,10 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
             _markNeedsClip();
         }
     }
-    internal override global::Doroti.Ui.RRect _defaultClip => this._borderRadius.resolve(this.textDirection).toRRect((Offset.zero & size));
+    internal override global::Doroti.Ui.RRect _defaultClip => _borderRadius.resolve(textDirection).toRRect(Offset.zero & size);
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if ((_clipper is not null))
+        if (_clipper is not null)
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
@@ -1586,12 +1586,12 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
-            if ((!Equals(clipBehavior, Clip.none)))
+            if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipRRect(needsCompositing, offset, _clip!.outerRect, _clip!, (Action<PaintingContext, Offset>)base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRRectLayer?)layer)!);
+                layer = context.pushClipRRect(needsCompositing, offset, _clip!.outerRect, _clip!, base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRRectLayer?)layer)!);
             }
             else
             {
@@ -1609,13 +1609,13 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not null))
+                if (child is not null)
                 {
                     base.debugPaintSize(context, offset);
-                    if ((!Equals(clipBehavior, Clip.none)))
+                    if (!Equals(clipBehavior, Clip.none))
                     {
-                        ((PaintingContext)context).canvas.drawRRect(_clip!.shift(offset), _debugPaint!);
-                        _debugText!.paint(((PaintingContext)context).canvas, (offset + new global::Doroti.Ui.Offset(_clip!.tlRadiusX, (-DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1))));
+                        context.canvas.drawRRect(_clip!.shift(offset), _debugPaint!);
+                        _debugText!.paint(context.canvas, offset + new global::Doroti.Ui.Offset(_clip!.tlRadiusX, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
                     }
                 }
                 return true;
@@ -1632,17 +1632,17 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
     public RenderClipRSuperellipse(RenderBox? child = null, global::Doroti.Framework.Painting.BorderRadiusGeometry borderRadius = default!, CustomClipper<RSuperellipse>? clipper = null, Clip clipBehavior = Clip.antiAlias, TextDirection? textDirection = null) : base(child: child, clipper: clipper, clipBehavior: clipBehavior)
     {
         global::Doroti.Framework.Painting.BorderRadiusGeometry __borderRadius = borderRadius ?? BorderRadius.zero;
-        this._borderRadius = __borderRadius;
-        this._textDirection = textDirection;
+        _borderRadius = __borderRadius;
+        _textDirection = textDirection;
     }
 
     public virtual global::Doroti.Framework.Painting.BorderRadiusGeometry borderRadius
     {
-        get => this._borderRadius;
+        get => _borderRadius;
         set
         {
             var __value = value;
-            if ((Equals(this._borderRadius, __value)))
+            if (Equals(_borderRadius, __value))
             {
                 return;
             }
@@ -1652,11 +1652,11 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
     }
     public virtual global::Doroti.Ui.TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._textDirection, __value)))
+            if (Equals(_textDirection, __value))
             {
                 return;
             }
@@ -1664,10 +1664,10 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
             _markNeedsClip();
         }
     }
-    internal override global::Doroti.Ui.RSuperellipse _defaultClip => this._borderRadius.resolve(this.textDirection).toRSuperellipse((Offset.zero & size));
+    internal override global::Doroti.Ui.RSuperellipse _defaultClip => _borderRadius.resolve(textDirection).toRSuperellipse(Offset.zero & size);
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if ((_clipper is not null))
+        if (_clipper is not null)
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
@@ -1682,12 +1682,12 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
-            if ((!Equals(clipBehavior, Clip.none)))
+            if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipRSuperellipse(needsCompositing, offset, _clip!.outerRect, _clip!, (Action<PaintingContext, Offset>)base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRSuperellipseLayer?)layer)!);
+                layer = context.pushClipRSuperellipse(needsCompositing, offset, _clip!.outerRect, _clip!, base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipRSuperellipseLayer?)layer)!);
             }
             else
             {
@@ -1705,13 +1705,13 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not null))
+                if (child is not null)
                 {
                     base.debugPaintSize(context, offset);
-                    if ((!Equals(clipBehavior, Clip.none)))
+                    if (!Equals(clipBehavior, Clip.none))
                     {
-                        ((PaintingContext)context).canvas.drawRSuperellipse(_clip!.shift(offset), _debugPaint!);
-                        _debugText!.paint(((PaintingContext)context).canvas, (offset + new global::Doroti.Ui.Offset(_clip!.tlRadiusX, (-DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1))));
+                        context.canvas.drawRSuperellipse(_clip!.shift(offset), _debugPaint!);
+                        _debugText!.paint(context.canvas, offset + new global::Doroti.Ui.Offset(_clip!.tlRadiusX, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
                     }
                 }
                 return true;
@@ -1731,28 +1731,28 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
 
     internal virtual global::Doroti.Ui.Path _getClipPath(Rect rect)
     {
-        if ((!Equals(rect, this._cachedRect)))
+        if (!Equals(rect, _cachedRect))
         {
             _cachedRect = rect;
             _cachedPath = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addOval(DartRuntimePrimitives.RequireValue(this._cachedRect));
+    __cascade.addOval(DartRuntimePrimitives.RequireValue(_cachedRect));
     return __cascade;
 }))();
         }
-        return this._cachedPath;
+        return _cachedPath;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal override global::Doroti.Ui.Rect _defaultClip => (Offset.zero & size);
+    internal override global::Doroti.Ui.Rect _defaultClip => Offset.zero & size;
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         _updateClip();
         DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
         global::Doroti.Ui.Offset centerLocal = DartRuntimePrimitives.RequireValue(_clip).center;
-        var offset = new global::Doroti.Ui.Offset((((position.dx - centerLocal.dx)) / DartRuntimePrimitives.RequireValue(_clip).width), (((position.dy - centerLocal.dy)) / DartRuntimePrimitives.RequireValue(_clip).height));
-        if ((offset.distanceSquared > 0.25))
+        var offset = new global::Doroti.Ui.Offset((position.dx - centerLocal.dx) / DartRuntimePrimitives.RequireValue(_clip).width, (position.dy - centerLocal.dy) / DartRuntimePrimitives.RequireValue(_clip).height);
+        if (offset.distanceSquared > 0.25)
         {
             return false;
         }
@@ -1762,12 +1762,12 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
-            if ((!Equals(clipBehavior, Clip.none)))
+            if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipPath(needsCompositing, offset, DartRuntimePrimitives.RequireValue(_clip), _getClipPath(DartRuntimePrimitives.RequireValue(_clip)), (Action<PaintingContext, Offset>)base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipPathLayer?)layer)!);
+                layer = context.pushClipPath(needsCompositing, offset, DartRuntimePrimitives.RequireValue(_clip), _getClipPath(DartRuntimePrimitives.RequireValue(_clip)), base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipPathLayer?)layer)!);
             }
             else
             {
@@ -1785,13 +1785,13 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not null))
+                if (child is not null)
                 {
                     base.debugPaintSize(context, offset);
-                    if ((!Equals(clipBehavior, Clip.none)))
+                    if (!Equals(clipBehavior, Clip.none))
                     {
-                        ((PaintingContext)context).canvas.drawPath(_getClipPath(DartRuntimePrimitives.RequireValue(_clip)).shift(offset), _debugPaint!);
-                        _debugText!.paint(((PaintingContext)context).canvas, (offset + new global::Doroti.Ui.Offset((((DartRuntimePrimitives.RequireValue(_clip).width - _debugText!.width)) / 2.0), (-DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1))));
+                        context.canvas.drawPath(_getClipPath(DartRuntimePrimitives.RequireValue(_clip)).shift(offset), _debugPaint!);
+                        _debugText!.paint(context.canvas, offset + new global::Doroti.Ui.Offset((DartRuntimePrimitives.RequireValue(_clip).width - _debugText!.width) / 2.0, -DartRuntimePrimitives.RequireValue(_debugText!.text!.style!.fontSize) * 1.1));
                     }
                 }
                 return true;
@@ -1809,12 +1809,12 @@ public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
     internal override global::Doroti.Ui.Path _defaultClip => ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRect((Offset.zero & size));
+    __cascade.addRect(Offset.zero & size);
     return __cascade;
 }))();
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if ((_clipper is not null))
+        if (_clipper is not null)
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
@@ -1829,12 +1829,12 @@ public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
-            if ((!Equals(clipBehavior, Clip.none)))
+            if (!Equals(clipBehavior, Clip.none))
             {
                 _updateClip();
-                layer = context.pushClipPath(needsCompositing, offset, (Offset.zero & size), _clip!, (Action<PaintingContext, Offset>)base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipPathLayer?)layer)!);
+                layer = context.pushClipPath(needsCompositing, offset, Offset.zero & size, _clip!, base.paint, clipBehavior: clipBehavior, oldLayer: ((ClipPathLayer?)layer)!);
             }
             else
             {
@@ -1852,13 +1852,13 @@ public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not null))
+                if (child is not null)
                 {
                     base.debugPaintSize(context, offset);
-                    if ((!Equals(clipBehavior, Clip.none)))
+                    if (!Equals(clipBehavior, Clip.none))
                     {
-                        ((PaintingContext)context).canvas.drawPath(_clip!.shift(offset), _debugPaint!);
-                        _debugText!.paint(((PaintingContext)context).canvas, offset);
+                        context.canvas.drawPath(_clip!.shift(offset), _debugPaint!);
+                        _debugText!.paint(context.canvas, offset);
                     }
                 }
                 return true;
@@ -1875,26 +1875,26 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
 
     internal _RenderPhysicalModelBase__proxy_box(RenderBox? child, double elevation, Color color, Color shadowColor, Clip clipBehavior = Clip.none, CustomClipper<T>? clipper = null) : base(child: child, clipBehavior: clipBehavior, clipper: clipper)
     {
-        this._elevation = elevation;
-        this._color = color;
-        this._shadowColor = shadowColor;
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
+        _elevation = elevation;
+        _color = color;
+        _shadowColor = shadowColor;
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
     public virtual double elevation
     {
-        get => this._elevation;
+        get => _elevation;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value >= 0.0));
-            if ((this.elevation == __value))
+            DartRuntimePrimitives.Assert(() => __value >= 0.0);
+            if (elevation == __value)
             {
                 return;
             }
             bool didNeedCompositing = alwaysNeedsCompositing;
             _elevation = __value;
-            if ((didNeedCompositing != alwaysNeedsCompositing))
+            if (didNeedCompositing != alwaysNeedsCompositing)
             {
                 markNeedsCompositingBitsUpdate();
             }
@@ -1903,11 +1903,11 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
     }
     public virtual global::Doroti.Ui.Color shadowColor
     {
-        get => this._shadowColor;
+        get => _shadowColor;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(this.shadowColor, __value)))
+            var __value = value;
+            if (Equals(shadowColor, __value))
             {
                 return;
             }
@@ -1917,11 +1917,11 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
     }
     public virtual global::Doroti.Ui.Color color
     {
-        get => this._color;
+        get => _color;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(this.color, __value)))
+            var __value = value;
+            if (Equals(color, __value))
             {
                 return;
             }
@@ -1932,9 +1932,9 @@ public abstract class _RenderPhysicalModelBase__proxy_box<T> : _RenderCustomClip
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DoubleProperty("elevation", this.elevation));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.color));
+        properties.add(new DoubleProperty("elevation", elevation));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", color));
     }
 
 }
@@ -1946,18 +1946,18 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
 
     public RenderPhysicalModel(RenderBox? child = null, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, Clip clipBehavior = Clip.none, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double elevation = 0.0, Color color = default!, Color shadowColor = default!) : base(child: child, clipBehavior: clipBehavior, elevation: elevation, color: color, shadowColor: shadowColor ?? new Color(0xFF000000))
     {
-        this._shape = shape;
-        this._borderRadius = borderRadius;
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
+        _shape = shape;
+        _borderRadius = borderRadius;
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
     public virtual global::Doroti.Framework.Painting.BoxShape shape
     {
-        get => this._shape;
+        get => _shape;
         set
         {
             var __value = value;
-            if ((Equals(this.shape, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(shape, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -1967,11 +1967,11 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
     }
     public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius
     {
-        get => this._borderRadius;
+        get => _borderRadius;
         set
         {
             var __value = value;
-            if ((Equals(this.borderRadius, __value)))
+            if (Equals(borderRadius, __value))
             {
                 return;
             }
@@ -1984,13 +1984,13 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            global::Doroti.Ui.Rect rect = (Offset.zero & size);
-            return (this._shape switch { BoxShape.rectangle => ((this.borderRadius ?? BorderRadius.zero)).toRRect(rect), BoxShape.circle => RRect.fromRectXY(rect, (rect.width / 2L), (rect.height / 2L)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            global::Doroti.Ui.Rect rect = Offset.zero & size;
+            return _shape switch { BoxShape.rectangle => (borderRadius ?? BorderRadius.zero).toRRect(rect), BoxShape.circle => RRect.fromRectXY(rect, rect.width / 2L, rect.height / 2L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
     }
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if ((_clipper is not null))
+        if (_clipper is not null)
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
@@ -2005,7 +2005,7 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is null))
+        if (child is null)
         {
             layer = null;
             return;
@@ -2017,14 +2017,14 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
             {
                 if (Painting.DebugLibrary.debugDisableShadows)
                 {
-                    if ((elevation > 0.0))
+                    if (elevation > 0.0)
                     {
-                        ((PaintingContext)context).canvas.drawRRect(offsetRRect, ((Func<Paint>)(() =>
+                        context.canvas.drawRRect(offsetRRect, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = shadowColor;
     __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = (elevation * 2.0);
+    __cascade.strokeWidth = elevation * 2.0;
     return __cascade;
 }))());
                     }
@@ -2032,8 +2032,8 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
                 }
                 return true;
             });
-        global::Doroti.Ui.Canvas canvasLocal = ((PaintingContext)context).canvas;
-        if (((elevation != 0.0) && paintShadows))
+        global::Doroti.Ui.Canvas canvasLocal = context.canvas;
+        if ((elevation != 0.0) && paintShadows)
         {
             var offsetRRectAsPath = ((Func<Path>)(() =>
 {
@@ -2041,9 +2041,9 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
     __cascade.addRRect(offsetRRect);
     return __cascade;
 }))();
-            canvasLocal.drawShadow(offsetRRectAsPath, shadowColor, elevation, (color.alpha != 255L));
+            canvasLocal.drawShadow(offsetRRectAsPath, shadowColor, elevation, color.alpha != 255L);
         }
-        var usesSaveLayer = (Equals(clipBehavior, Clip.antiAliasWithSaveLayer));
+        var usesSaveLayer = Equals(clipBehavior, Clip.antiAliasWithSaveLayer);
         if (!usesSaveLayer)
         {
             canvasLocal.drawRRect(offsetRRect, ((Func<Paint>)(() =>
@@ -2053,11 +2053,11 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
     return __cascade;
 }))());
         }
-        layer = context.pushClipRRect(needsCompositing, offset, (Offset.zero & size), _clip!, ((Action<PaintingContext, Offset>)((context, offset) =>
+        layer = context.pushClipRRect(needsCompositing, offset, Offset.zero & size, _clip!, (context, offset) =>
         {
             if (usesSaveLayer)
             {
-                ((PaintingContext)context).canvas.drawPaint(((Func<Paint>)(() =>
+                context.canvas.drawPaint(((Func<Paint>)(() =>
             {
                 var __cascade = new global::Doroti.Ui.Paint();
                 __cascade.color = color;
@@ -2065,7 +2065,7 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
             }))());
             }
             base.paint(context, offset);
-        })), oldLayer: ((ClipRRectLayer?)layer)!, clipBehavior: clipBehavior);
+        }, oldLayer: ((ClipRRectLayer?)layer)!, clipBehavior: clipBehavior);
         DartRuntimePrimitives.Assert(() =>
             {
                 layer?.debugCreator = debugCreator;
@@ -2076,8 +2076,8 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.BoxShape>("shape", this.shape));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius>("borderRadius", this.borderRadius));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.BoxShape>("shape", shape));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius>("borderRadius", borderRadius));
     }
 
 }
@@ -2086,18 +2086,18 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
 {
     public RenderPhysicalShape(RenderBox? child = null, CustomClipper<Path> clipper = default!, Clip clipBehavior = Clip.none, double elevation = 0.0, Color color = default!, Color shadowColor = default!) : base(child: child, clipper: clipper, clipBehavior: clipBehavior, elevation: elevation, color: color, shadowColor: shadowColor ?? new Color(0xFF000000))
     {
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
     internal override global::Doroti.Ui.Path _defaultClip => ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRect((Offset.zero & size));
+    __cascade.addRect(Offset.zero & size);
     return __cascade;
 }))();
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if ((_clipper is not null))
+        if (_clipper is not null)
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
@@ -2112,7 +2112,7 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is null))
+        if (child is null)
         {
             layer = null;
             return;
@@ -2124,14 +2124,14 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
             {
                 if (Painting.DebugLibrary.debugDisableShadows)
                 {
-                    if ((elevation > 0.0))
+                    if (elevation > 0.0)
                     {
-                        ((PaintingContext)context).canvas.drawPath(offsetPath, ((Func<Paint>)(() =>
+                        context.canvas.drawPath(offsetPath, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = shadowColor;
     __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = (elevation * 2.0);
+    __cascade.strokeWidth = elevation * 2.0;
     return __cascade;
 }))());
                     }
@@ -2139,12 +2139,12 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
                 }
                 return true;
             });
-        global::Doroti.Ui.Canvas canvasLocal = ((PaintingContext)context).canvas;
-        if (((elevation != 0.0) && paintShadows))
+        global::Doroti.Ui.Canvas canvasLocal = context.canvas;
+        if ((elevation != 0.0) && paintShadows)
         {
-            canvasLocal.drawShadow(offsetPath, shadowColor, elevation, (color.alpha != 255L));
+            canvasLocal.drawShadow(offsetPath, shadowColor, elevation, color.alpha != 255L);
         }
-        var usesSaveLayer = (Equals(clipBehavior, Clip.antiAliasWithSaveLayer));
+        var usesSaveLayer = Equals(clipBehavior, Clip.antiAliasWithSaveLayer);
         if (!usesSaveLayer)
         {
             canvasLocal.drawPath(offsetPath, ((Func<Paint>)(() =>
@@ -2154,11 +2154,11 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
     return __cascade;
 }))());
         }
-        layer = context.pushClipPath(needsCompositing, offset, (Offset.zero & size), _clip!, ((Action<PaintingContext, Offset>)((context, offset) =>
+        layer = context.pushClipPath(needsCompositing, offset, Offset.zero & size, _clip!, (context, offset) =>
         {
             if (usesSaveLayer)
             {
-                ((PaintingContext)context).canvas.drawPaint(((Func<Paint>)(() =>
+                context.canvas.drawPaint(((Func<Paint>)(() =>
             {
                 var __cascade = new global::Doroti.Ui.Paint();
                 __cascade.color = color;
@@ -2166,7 +2166,7 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
             }))());
             }
             base.paint(context, offset);
-        })), oldLayer: ((ClipPathLayer?)layer)!, clipBehavior: clipBehavior);
+        }, oldLayer: ((ClipPathLayer?)layer)!, clipBehavior: clipBehavior);
         DartRuntimePrimitives.Assert(() =>
             {
                 layer?.debugCreator = debugCreator;
@@ -2198,22 +2198,22 @@ public class RenderDecoratedBox : RenderProxyBox
     public RenderDecoratedBox(global::Doroti.Framework.Painting.Decoration decoration, DecorationPosition position = DecorationPosition.background, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!, RenderBox? child = null) : base(child)
     {
         global::Doroti.Framework.Painting.ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
-        this._decoration = decoration;
-        this._position = position;
-        this._configuration = __configuration;
+        _decoration = decoration;
+        _position = position;
+        _configuration = __configuration;
     }
 
     public virtual global::Doroti.Framework.Painting.Decoration decoration
     {
-        get => this._decoration;
+        get => _decoration;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._decoration)))
+            if (Equals(__value, _decoration))
             {
                 return;
             }
-            this._painter?.dispose();
+            _painter?.dispose();
             _painter = null;
             _decoration = __value;
             markNeedsPaint();
@@ -2221,11 +2221,11 @@ public class RenderDecoratedBox : RenderProxyBox
     }
     public virtual DecorationPosition position
     {
-        get => this._position;
+        get => _position;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._position)))
+            if (Equals(__value, _position))
             {
                 return;
             }
@@ -2235,11 +2235,11 @@ public class RenderDecoratedBox : RenderProxyBox
     }
     public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
     {
-        get => this._configuration;
+        get => _configuration;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._configuration)))
+            if (Equals(__value, _configuration))
             {
                 return;
             }
@@ -2249,7 +2249,7 @@ public class RenderDecoratedBox : RenderProxyBox
     }
     public override void detach()
     {
-        this._painter?.dispose();
+        _painter?.dispose();
         _painter = null;
         base.detach();
         markNeedsPaint();
@@ -2257,47 +2257,47 @@ public class RenderDecoratedBox : RenderProxyBox
 
     public override void dispose()
     {
-        this._painter?.dispose();
+        _painter?.dispose();
         base.dispose();
     }
 
     public override bool hitTestSelf(Offset position)
     {
-        return this._decoration.hitTest(size, position, textDirection: ((global::Doroti.Framework.Painting.ImageConfiguration)this.configuration).textDirection);
+        return _decoration.hitTest(size, position, textDirection: configuration.textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        _painter ??= this._decoration.createBoxPainter((Action)markNeedsPaint);
-        global::Doroti.Framework.Painting.ImageConfiguration filledConfiguration = this.configuration.copyWith(size: size);
-        if ((Equals(this.position, DecorationPosition.background)))
+        _painter ??= _decoration.createBoxPainter(markNeedsPaint);
+        global::Doroti.Framework.Painting.ImageConfiguration filledConfiguration = configuration.copyWith(size: size);
+        if (Equals(position, DecorationPosition.background))
         {
             long? debugSaveCount = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    debugSaveCount = ((PaintingContext)context).canvas.getSaveCount();
+                    debugSaveCount = context.canvas.getSaveCount();
                     return true;
                 });
-            this._painter!.paint(((PaintingContext)context).canvas, offset, filledConfiguration);
+            _painter!.paint(context.canvas, offset, filledConfiguration);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((debugSaveCount != ((PaintingContext)context).canvas.getSaveCount()))
+                    if (debugSaveCount != context.canvas.getSaveCount())
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this._decoration)} painter had mismatching save and restore calls."), new ErrorDescription($"Before painting the decoration, the canvas save count was {debugSaveCount}. " + $"After painting it, the canvas save count was {((PaintingContext)context).canvas.getSaveCount()}. " + "Every call to save() or saveLayer() must be matched by a call to restore()."), new DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("The decoration was", this.decoration, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<global::Doroti.Framework.Painting.BoxPainter>("The painter was", this._painter, style: DiagnosticsTreeStyle.errorProperty) });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{DartRuntimePrimitives.RuntimeType(_decoration)} painter had mismatching save and restore calls."), new ErrorDescription($"Before painting the decoration, the canvas save count was {debugSaveCount}. " + $"After painting it, the canvas save count was {context.canvas.getSaveCount()}. " + "Every call to save() or saveLayer() must be matched by a call to restore()."), new DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("The decoration was", decoration, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<global::Doroti.Framework.Painting.BoxPainter>("The painter was", _painter, style: DiagnosticsTreeStyle.errorProperty) });
                     }
                     return true;
                 });
-            if (((global::Doroti.Framework.Painting.Decoration)this.decoration).isComplex)
+            if (decoration.isComplex)
             {
                 context.setIsComplexHint();
             }
         }
         base.paint(context, offset);
-        if ((Equals(this.position, DecorationPosition.foreground)))
+        if (Equals(position, DecorationPosition.foreground))
         {
-            this._painter!.paint(((PaintingContext)context).canvas, offset, filledConfiguration);
-            if (((global::Doroti.Framework.Painting.Decoration)this.decoration).isComplex)
+            _painter!.paint(context.canvas, offset, filledConfiguration);
+            if (decoration.isComplex)
             {
                 context.setIsComplexHint();
             }
@@ -2307,8 +2307,8 @@ public class RenderDecoratedBox : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(((Diagnosticable)this._decoration).toDiagnosticsNode(name: "decoration"));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.ImageConfiguration>("configuration", this.configuration));
+        properties.add(((Diagnosticable)_decoration).toDiagnosticsNode(name: "decoration"));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.ImageConfiguration>("configuration", configuration));
     }
 
 }
@@ -2324,21 +2324,21 @@ public class RenderTransform : RenderProxyBox
 
     public RenderTransform(Matrix4 transform, Offset? origin = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, TextDirection? textDirection = null, bool transformHitTests = true, FilterQuality? filterQuality = null, RenderBox? child = null) : base(child)
     {
-        this._transform = Matrix4.copy(transform);
-        this._origin = origin;
-        this._alignment = alignment;
-        this._textDirection = textDirection;
+        _transform = Matrix4.copy(transform);
+        _origin = origin;
+        _alignment = alignment;
+        _textDirection = textDirection;
         this.transformHitTests = transformHitTests;
-        this._filterQuality = filterQuality;
+        _filterQuality = filterQuality;
     }
 
     public virtual global::Doroti.Ui.Offset? origin
     {
-        get => this._origin;
+        get => _origin;
         set
         {
             var __value = value;
-            if ((Equals(this._origin, __value)))
+            if (Equals(_origin, __value))
             {
                 return;
             }
@@ -2349,11 +2349,11 @@ public class RenderTransform : RenderProxyBox
     }
     public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment
     {
-        get => this._alignment;
+        get => _alignment;
         set
         {
             var __value = value;
-            if ((Equals(this._alignment, __value)))
+            if (Equals(_alignment, __value))
             {
                 return;
             }
@@ -2364,11 +2364,11 @@ public class RenderTransform : RenderProxyBox
     }
     public virtual global::Doroti.Ui.TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._textDirection, __value)))
+            if (Equals(_textDirection, __value))
             {
                 return;
             }
@@ -2377,13 +2377,13 @@ public class RenderTransform : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
-    public override bool alwaysNeedsCompositing => ((child is not null) && (this._filterQuality is not null));
+    public override bool alwaysNeedsCompositing => (child is not null) && (_filterQuality is not null);
     public virtual Matrix4 transform
     {
         set
         {
             var __value = value;
-            if ((Equals(this._transform, __value)))
+            if (Equals(_transform, __value))
             {
                 return;
             }
@@ -2394,17 +2394,17 @@ public class RenderTransform : RenderProxyBox
     }
     public virtual global::Doroti.Ui.FilterQuality? filterQuality
     {
-        get => this._filterQuality;
+        get => _filterQuality;
         set
         {
             var __value = value;
-            if ((Equals(this._filterQuality, __value)))
+            if (Equals(_filterQuality, __value))
             {
                 return;
             }
-            bool didNeedCompositing = this.alwaysNeedsCompositing;
+            bool didNeedCompositing = alwaysNeedsCompositing;
             _filterQuality = __value;
-            if ((didNeedCompositing != this.alwaysNeedsCompositing))
+            if (didNeedCompositing != alwaysNeedsCompositing)
             {
                 markNeedsCompositingBitsUpdate();
             }
@@ -2413,42 +2413,42 @@ public class RenderTransform : RenderProxyBox
     }
     public virtual void setIdentity()
     {
-        this._transform!.setIdentity();
+        _transform!.setIdentity();
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
 
     public virtual void rotateX(double radians)
     {
-        this._transform!.rotateX(radians);
+        _transform!.rotateX(radians);
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
 
     public virtual void rotateY(double radians)
     {
-        this._transform!.rotateY(radians);
+        _transform!.rotateY(radians);
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
 
     public virtual void rotateZ(double radians)
     {
-        this._transform!.rotateZ(radians);
+        _transform!.rotateZ(radians);
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
 
     public virtual void translate(double x, double y = 0.0, double z = 0.0)
     {
-        this._transform!.translateByDouble(x, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(y)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(z)), 1);
+        _transform!.translateByDouble(x, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(y)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(z)), 1);
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
 
     public virtual void scale(double x, double? y = null, double? z = null)
     {
-        this._transform!.scaleByDouble(x, (y ?? x), (z ?? x), 1);
+        _transform!.scaleByDouble(x, y ?? x, z ?? x, 1);
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
@@ -2457,30 +2457,30 @@ public class RenderTransform : RenderProxyBox
     {
         get
         {
-            global::Doroti.Framework.Painting.Alignment? resolvedAlignment = this.alignment?.resolve(this.textDirection);
-            if (((this._origin is null) && (resolvedAlignment is null)))
+            global::Doroti.Framework.Painting.Alignment? resolvedAlignment = alignment?.resolve(textDirection);
+            if ((_origin is null) && (resolvedAlignment is null))
             {
-                return this._transform;
+                return _transform;
             }
             var result = Matrix4.identity();
-            if ((this._origin is not null))
+            if (_origin is not null)
             {
-                result.translateByDouble(DartRuntimePrimitives.RequireValue(this._origin).dx, DartRuntimePrimitives.RequireValue(this._origin).dy, 0, 1);
+                result.translateByDouble(DartRuntimePrimitives.RequireValue(_origin).dx, DartRuntimePrimitives.RequireValue(_origin).dy, 0, 1);
             }
             global::Doroti.Ui.Offset? translation = default!;
-            if ((resolvedAlignment is not null))
+            if (resolvedAlignment is not null)
             {
                 translation = resolvedAlignment.alongSize(size);
                 result.translateByDouble(DartRuntimePrimitives.RequireValue(translation).dx, DartRuntimePrimitives.RequireValue(translation).dy, 0, 1);
             }
-            result.multiply(this._transform!);
-            if ((resolvedAlignment is not null))
+            result.multiply(_transform!);
+            if (resolvedAlignment is not null)
             {
                 result.translateByDouble(-DartRuntimePrimitives.RequireValue(translation).dx, -DartRuntimePrimitives.RequireValue(translation).dy, 0, 1);
             }
-            if ((this._origin is not null))
+            if (_origin is not null)
             {
-                result.translateByDouble(-DartRuntimePrimitives.RequireValue(this._origin).dx, -DartRuntimePrimitives.RequireValue(this._origin).dy, 0, 1);
+                result.translateByDouble(-DartRuntimePrimitives.RequireValue(_origin).dx, -DartRuntimePrimitives.RequireValue(_origin).dy, 0, 1);
             }
             return result;
         }
@@ -2493,35 +2493,35 @@ public class RenderTransform : RenderProxyBox
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        DartRuntimePrimitives.Assert(() => (!this.transformHitTests || (this._effectiveTransform is not null)));
-        return result.addWithPaintTransform(transform: (this.transformHitTests ? this._effectiveTransform : null), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
+        DartRuntimePrimitives.Assert(() => !transformHitTests || (_effectiveTransform is not null));
+        return result.addWithPaintTransform(transform: transformHitTests ? _effectiveTransform : null, position: position, hitTest: (result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((child is not null))
+        if (child is not null)
         {
-            Matrix4 transform = this._effectiveTransform!;
-            if ((this.filterQuality is null))
+            Matrix4 transform = _effectiveTransform!;
+            if (filterQuality is null)
             {
                 global::Doroti.Ui.Offset? childOffset = MatrixUtils.getAsTranslation(transform);
-                if ((childOffset is null))
+                if (childOffset is null)
                 {
                     double det = transform.determinant;
-                    if (((det == 0L) || !double.IsFinite(det)))
+                    if ((det == 0L) || !double.IsFinite(det))
                     {
                         layer = null;
                         return;
                     }
-                    layer = context.pushTransform(needsCompositing, offset, transform, (Action<PaintingContext, Offset>)base.paint, oldLayer: ((layer is TransformLayer) ? ((TransformLayer?)layer)! : null));
+                    layer = context.pushTransform(needsCompositing, offset, transform, base.paint, oldLayer: (layer is TransformLayer) ? ((TransformLayer?)layer)! : null);
                 }
                 else
                 {
-                    base.paint(context, (offset + DartRuntimePrimitives.RequireValue(childOffset)));
+                    base.paint(context, offset + DartRuntimePrimitives.RequireValue(childOffset));
                     layer = null;
                 }
             }
@@ -2534,7 +2534,7 @@ public class RenderTransform : RenderProxyBox
     __cascade.translateByDouble(-offset.dx, -offset.dy, 0, 1);
     return __cascade;
 }))();
-                var filter = new global::Doroti.Ui.ImageFilter(effectiveTransform.storage, filterQuality: DartRuntimePrimitives.RequireValue(this.filterQuality));
+                var filter = new global::Doroti.Ui.ImageFilter(effectiveTransform.storage, filterQuality: DartRuntimePrimitives.RequireValue(filterQuality));
                 if (layer is ImageFilterLayer filterLayer)
                 {
                     filterLayer.imageFilter = filter;
@@ -2543,7 +2543,7 @@ public class RenderTransform : RenderProxyBox
                 {
                     layer = new ImageFilterLayer(imageFilter: filter);
                 }
-                context.pushLayer(layer!, (Action<PaintingContext, Offset>)base.paint, offset);
+                context.pushLayer(layer!, base.paint, offset);
                 DartRuntimePrimitives.Assert(() =>
                     {
                         layer!.debugCreator = debugCreator;
@@ -2556,17 +2556,17 @@ public class RenderTransform : RenderProxyBox
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         var __child = (RenderBox)child;
-        transform.multiply(this._effectiveTransform!);
+        transform.multiply(_effectiveTransform!);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform matrix", this._transform));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("origin", this.origin));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("transformHitTests", this.transformHitTests));
+        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform matrix", _transform));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("origin", origin));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("transformHitTests", transformHitTests));
     }
 
 }
@@ -2584,13 +2584,13 @@ public class RenderFittedBox : RenderProxyBox
     public RenderFittedBox(global::Doroti.Framework.Painting.BoxFit fit = BoxFit.contain, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.none) : base(child)
     {
         global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
-        this._fit = fit;
-        this._alignment = __alignment;
-        this._textDirection = textDirection;
-        this._clipBehavior = clipBehavior;
+        _fit = fit;
+        _alignment = __alignment;
+        _textDirection = textDirection;
+        _clipBehavior = clipBehavior;
     }
 
-    internal virtual global::Doroti.Framework.Painting.Alignment _resolve() => _resolvedAlignment ??= this.alignment.resolve(this.textDirection);
+    internal virtual global::Doroti.Framework.Painting.Alignment _resolve() => _resolvedAlignment ??= alignment.resolve(textDirection);
     internal virtual void _markNeedResolution()
     {
         _resolvedAlignment = null;
@@ -2620,17 +2620,17 @@ public class RenderFittedBox : RenderProxyBox
 
     public virtual global::Doroti.Framework.Painting.BoxFit fit
     {
-        get => this._fit;
+        get => _fit;
         set
         {
             var __value = value;
-            if ((Equals(this._fit, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_fit, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
-            global::Doroti.Framework.Painting.BoxFit lastFit = this._fit;
+            global::Doroti.Framework.Painting.BoxFit lastFit = _fit;
             _fit = DartRuntimePrimitives.RequireValue(__value);
-            if ((_fitAffectsLayout(lastFit) || _fitAffectsLayout(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value)))))
+            if (_fitAffectsLayout(lastFit) || _fitAffectsLayout(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value))))
             {
                 markNeedsLayout();
             }
@@ -2643,11 +2643,11 @@ public class RenderFittedBox : RenderProxyBox
     }
     public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment
     {
-        get => this._alignment;
+        get => _alignment;
         set
         {
             var __value = value;
-            if ((Equals(this._alignment, __value)))
+            if (Equals(_alignment, __value))
             {
                 return;
             }
@@ -2658,11 +2658,11 @@ public class RenderFittedBox : RenderProxyBox
     }
     public virtual global::Doroti.Ui.TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._textDirection, __value)))
+            if (Equals(_textDirection, __value))
             {
                 return;
             }
@@ -2673,10 +2673,10 @@ public class RenderFittedBox : RenderProxyBox
     }
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        if ((child is not null))
+        if (child is not null)
         {
             global::Doroti.Ui.Size childSize = child!.getDryLayout(new BoxConstraints());
-            switch (this.fit)
+            switch (fit)
             {
                 case BoxFit.scaleDown:
                     {
@@ -2697,7 +2697,7 @@ public class RenderFittedBox : RenderProxyBox
         }
         else
         {
-            return ((BoxConstraints)constraints).smallest;
+            return constraints.smallest;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2710,10 +2710,10 @@ public class RenderFittedBox : RenderProxyBox
 
     public override void performLayout()
     {
-        if ((child is not null))
+        if (child is not null)
         {
             child!.layout(new BoxConstraints(), parentUsesSize: true);
-            switch (this.fit)
+            switch (fit)
             {
                 case BoxFit.scaleDown:
                     {
@@ -2737,17 +2737,17 @@ public class RenderFittedBox : RenderProxyBox
         }
         else
         {
-            size = ((BoxConstraints)constraints).smallest;
+            size = constraints.smallest;
         }
     }
 
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -2763,11 +2763,11 @@ public class RenderFittedBox : RenderProxyBox
 
     internal virtual void _updatePaintData()
     {
-        if ((this._transform is not null))
+        if (_transform is not null)
         {
             return;
         }
-        if ((child is null))
+        if (child is null)
         {
             _hasVisualOverflow = false;
             _transform = Matrix4.identity();
@@ -2776,13 +2776,13 @@ public class RenderFittedBox : RenderProxyBox
         {
             global::Doroti.Framework.Painting.Alignment resolvedAlignment = _resolve();
             global::Doroti.Ui.Size childSize = child!.size;
-            global::Doroti.Framework.Painting.FittedSizes sizes = Box_fitLibrary.applyBoxFit(this._fit, childSize, size);
-            double scaleX = (((global::Doroti.Framework.Painting.FittedSizes)sizes).destination.width / ((global::Doroti.Framework.Painting.FittedSizes)sizes).source.width);
-            double scaleY = (((global::Doroti.Framework.Painting.FittedSizes)sizes).destination.height / ((global::Doroti.Framework.Painting.FittedSizes)sizes).source.height);
-            global::Doroti.Ui.Rect sourceRect = resolvedAlignment.inscribe(((global::Doroti.Framework.Painting.FittedSizes)sizes).source, (Offset.zero & childSize));
-            global::Doroti.Ui.Rect destinationRect = resolvedAlignment.inscribe(((global::Doroti.Framework.Painting.FittedSizes)sizes).destination, (Offset.zero & size));
-            _hasVisualOverflow = ((sourceRect.width < childSize.width) || (sourceRect.height < childSize.height));
-            DartRuntimePrimitives.Assert(() => (double.IsFinite(scaleX) && double.IsFinite(scaleY)));
+            global::Doroti.Framework.Painting.FittedSizes sizes = Box_fitLibrary.applyBoxFit(_fit, childSize, size);
+            double scaleX = sizes.destination.width / sizes.source.width;
+            double scaleY = sizes.destination.height / sizes.source.height;
+            global::Doroti.Ui.Rect sourceRect = resolvedAlignment.inscribe(sizes.source, Offset.zero & childSize);
+            global::Doroti.Ui.Rect destinationRect = resolvedAlignment.inscribe(sizes.destination, Offset.zero & size);
+            _hasVisualOverflow = (sourceRect.width < childSize.width) || (sourceRect.height < childSize.height);
+            DartRuntimePrimitives.Assert(() => double.IsFinite(scaleX) && double.IsFinite(scaleY));
             _transform = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.translationValues(destinationRect.left, destinationRect.top, 0.0);
@@ -2790,20 +2790,20 @@ public class RenderFittedBox : RenderProxyBox
     __cascade.translateByDouble(-sourceRect.left, -sourceRect.top, 0, 1);
     return __cascade;
 }))();
-            DartRuntimePrimitives.Assert(() => this._transform!.storage.All(((value) => double.IsFinite(DartRuntimePrimitives.RequireValue(value)))));
+            DartRuntimePrimitives.Assert(() => _transform!.storage.All((value) => double.IsFinite(DartRuntimePrimitives.RequireValue(value))));
         }
     }
 
     internal virtual TransformLayer? _paintChildWithTransform(PaintingContext context, Offset offset)
     {
-        global::Doroti.Ui.Offset? childOffset = MatrixUtils.getAsTranslation(this._transform!);
-        if ((childOffset is null))
+        global::Doroti.Ui.Offset? childOffset = MatrixUtils.getAsTranslation(_transform!);
+        if (childOffset is null)
         {
-            return context.pushTransform(needsCompositing, offset, this._transform!, (Action<PaintingContext, Offset>)base.paint, oldLayer: ((layer is TransformLayer) ? ((TransformLayer?)layer!)! : null));
+            return context.pushTransform(needsCompositing, offset, _transform!, base.paint, oldLayer: (layer is TransformLayer) ? ((TransformLayer?)layer!)! : null);
         }
         else
         {
-            base.paint(context, (offset + DartRuntimePrimitives.RequireValue(childOffset)));
+            base.paint(context, offset + DartRuntimePrimitives.RequireValue(childOffset));
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2811,15 +2811,15 @@ public class RenderFittedBox : RenderProxyBox
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((((child is null) || size.isEmpty) || child!.size.isEmpty))
+        if ((child is null) || size.isEmpty || child!.size.isEmpty)
         {
             return;
         }
         _updatePaintData();
-        DartRuntimePrimitives.Assert(() => (child is not null));
-        if ((DartRuntimePrimitives.RequireValue(this._hasVisualOverflow) && (!Equals(this.clipBehavior, Clip.none))))
+        DartRuntimePrimitives.Assert(() => child is not null);
+        if (DartRuntimePrimitives.RequireValue(_hasVisualOverflow) && (!Equals(clipBehavior, Clip.none)))
         {
-            layer = context.pushClipRect(needsCompositing, offset, (Offset.zero & size), (__arg0, __arg1) => { _ = ((Func<PaintingContext, Offset, TransformLayer?>)this._paintChildWithTransform)(__arg0, __arg1); }, oldLayer: ((layer is ClipRectLayer) ? ((ClipRectLayer?)layer!)! : null), clipBehavior: this.clipBehavior);
+            layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, (__arg0, __arg1) => { _ = ((Func<PaintingContext, Offset, TransformLayer?>)_paintChildWithTransform)(__arg0, __arg1); }, oldLayer: (layer is ClipRectLayer) ? ((ClipRectLayer?)layer!)! : null, clipBehavior: clipBehavior);
         }
         else
         {
@@ -2829,23 +2829,23 @@ public class RenderFittedBox : RenderProxyBox
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        if ((size.isEmpty || ((child?.size.isEmpty ?? false))))
+        if (size.isEmpty || (child?.size.isEmpty ?? false))
         {
             return false;
         }
         _updatePaintData();
-        return result.addWithPaintTransform(transform: this._transform, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
+        return result.addWithPaintTransform(transform: _transform, position: position, hitTest: (result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool paintsChild(RenderObject child)
     {
         var __child = (RenderBox)child;
-        DartRuntimePrimitives.Assert(() => (Equals(__child.parent, this)));
-        return (!size.isEmpty && !((RenderBox)__child).size.isEmpty);
+        DartRuntimePrimitives.Assert(() => Equals(__child.parent, this));
+        return !size.isEmpty && !__child.size.isEmpty;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2859,16 +2859,16 @@ public class RenderFittedBox : RenderProxyBox
         else
         {
             _updatePaintData();
-            transform.multiply(this._transform!);
+            transform.multiply(_transform!);
         }
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
     }
 
 }
@@ -2881,16 +2881,16 @@ public class RenderFractionalTranslation : RenderProxyBox
     public RenderFractionalTranslation(Offset translation, bool transformHitTests = true, RenderBox? child = null) : base(child)
     {
         this.transformHitTests = transformHitTests;
-        this._translation = translation;
+        _translation = translation;
     }
 
     public virtual global::Doroti.Ui.Offset translation
     {
-        get => this._translation;
+        get => _translation;
         set
         {
             var __value = value;
-            if ((Equals(this._translation, __value)))
+            if (Equals(_translation, __value))
             {
                 return;
             }
@@ -2908,33 +2908,33 @@ public class RenderFractionalTranslation : RenderProxyBox
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-        return result.addWithPaintOffset(offset: (this.transformHitTests ? new global::Doroti.Ui.Offset((this.translation.dx * size.width), (this.translation.dy * size.height)) : null), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
+        return result.addWithPaintOffset(offset: transformHitTests ? new global::Doroti.Ui.Offset(translation.dx * size.width, translation.dy * size.height) : null, position: position, hitTest: (result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-        if ((child is not null))
+        if (child is not null)
         {
-            base.paint(context, new global::Doroti.Ui.Offset((offset.dx + (this.translation.dx * size.width)), (offset.dy + (this.translation.dy * size.height))));
+            base.paint(context, new global::Doroti.Ui.Offset(offset.dx + (translation.dx * size.width), offset.dy + (translation.dy * size.height)));
         }
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         var __child = (RenderBox)child;
-        transform.translateByDouble((this.translation.dx * size.width), (this.translation.dy * size.height), 0, 1);
+        transform.translateByDouble(translation.dx * size.width, translation.dy * size.height, 0, 1);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("translation", this.translation));
-        properties.add(new DiagnosticsProperty<bool>("transformHitTests", this.transformHitTests));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("translation", translation));
+        properties.add(new DiagnosticsProperty<bool>("transformHitTests", transformHitTests));
     }
 
 }
@@ -2982,7 +2982,7 @@ public class RenderPointerListener : RenderProxyBoxWithHitTestBehavior
 
     public override Size computeSizeForNoChild(BoxConstraints constraints)
     {
-        return ((BoxConstraints)constraints).biggest;
+        return constraints.biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2992,31 +2992,31 @@ public class RenderPointerListener : RenderProxyBoxWithHitTestBehavior
         switch (@event)
         {
             case global::Doroti.Framework.Gestures.PointerDownEvent __object105825:
-                this.onPointerDown?.Invoke(__object105825);
+                onPointerDown?.Invoke(__object105825);
                 break;
             case global::Doroti.Framework.Gestures.PointerMoveEvent __object105881:
-                this.onPointerMove?.Invoke(__object105881);
+                onPointerMove?.Invoke(__object105881);
                 break;
             case global::Doroti.Framework.Gestures.PointerUpEvent __object105937:
-                this.onPointerUp?.Invoke(__object105937);
+                onPointerUp?.Invoke(__object105937);
                 break;
             case global::Doroti.Framework.Gestures.PointerHoverEvent __object105989:
-                this.onPointerHover?.Invoke(__object105989);
+                onPointerHover?.Invoke(__object105989);
                 break;
             case global::Doroti.Framework.Gestures.PointerCancelEvent __object106047:
-                this.onPointerCancel?.Invoke(__object106047);
+                onPointerCancel?.Invoke(__object106047);
                 break;
             case global::Doroti.Framework.Gestures.PointerPanZoomStartEvent __object106107:
-                this.onPointerPanZoomStart?.Invoke(__object106107);
+                onPointerPanZoomStart?.Invoke(__object106107);
                 break;
             case global::Doroti.Framework.Gestures.PointerPanZoomUpdateEvent __object106179:
-                this.onPointerPanZoomUpdate?.Invoke(__object106179);
+                onPointerPanZoomUpdate?.Invoke(__object106179);
                 break;
             case global::Doroti.Framework.Gestures.PointerPanZoomEndEvent __object106253:
-                this.onPointerPanZoomEnd?.Invoke(__object106253);
+                onPointerPanZoomEnd?.Invoke(__object106253);
                 break;
             case global::Doroti.Framework.Gestures.PointerSignalEvent __object106321:
-                this.onPointerSignal?.Invoke(__object106321);
+                onPointerSignal?.Invoke(__object106321);
                 break;
             default:
                 break;
@@ -3027,7 +3027,7 @@ public class RenderPointerListener : RenderProxyBoxWithHitTestBehavior
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagsSummary<Delegate?>("listeners", new DartMap<string, Delegate?> { ["down"] = this.onPointerDown, ["move"] = this.onPointerMove, ["up"] = this.onPointerUp, ["hover"] = this.onPointerHover, ["cancel"] = this.onPointerCancel, ["panZoomStart"] = this.onPointerPanZoomStart, ["panZoomUpdate"] = this.onPointerPanZoomUpdate, ["panZoomEnd"] = this.onPointerPanZoomEnd, ["signal"] = this.onPointerSignal }, ifEmpty: "<none>"));
+        properties.add(new FlagsSummary<Delegate?>("listeners", new DartMap<string, Delegate?> { ["down"] = onPointerDown, ["move"] = onPointerMove, ["up"] = onPointerUp, ["hover"] = onPointerHover, ["cancel"] = onPointerCancel, ["panZoomStart"] = onPointerPanZoomStart, ["panZoomUpdate"] = onPointerPanZoomUpdate, ["panZoomEnd"] = onPointerPanZoomEnd, ["signal"] = onPointerSignal }, ifEmpty: "<none>"));
     }
 
 }
@@ -3040,43 +3040,43 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, global::Doro
     public virtual Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit { get; set; } = default;
     internal virtual MouseCursor _cursor { get; set; } = default!;
     internal virtual bool _validForMouseTracker { get; set; } = default!;
-    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerEnterEvent>(this.onEnter);
-    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerExitEvent>(this.onExit);
+    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => onEnter is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerEnterEvent>(onEnter);
+    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => onExit is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerExitEvent>(onExit);
 
-    public RenderMouseRegion(Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter = null, Action<global::Doroti.Framework.Gestures.PointerHoverEvent>? onHover = null, Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true, bool opaque = true, RenderBox? child = null, HitTestBehavior? hitTestBehavior = HitTestBehavior.opaque) : base(child: child, behavior: (hitTestBehavior ?? HitTestBehavior.opaque))
+    public RenderMouseRegion(Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter = null, Action<global::Doroti.Framework.Gestures.PointerHoverEvent>? onHover = null, Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true, bool opaque = true, RenderBox? child = null, HitTestBehavior? hitTestBehavior = HitTestBehavior.opaque) : base(child: child, behavior: hitTestBehavior ?? HitTestBehavior.opaque)
     {
         MouseCursor __cursor = cursor ?? MouseCursor.defer;
         this.onEnter = onEnter;
         this.onHover = onHover;
         this.onExit = onExit;
-        this._cursor = __cursor;
-        this._validForMouseTracker = validForMouseTracker;
-        this._opaque = opaque;
+        _cursor = __cursor;
+        _validForMouseTracker = validForMouseTracker;
+        _opaque = opaque;
     }
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        return (base.hitTest(result, position: position) && this._opaque);
+        return base.hitTest(result, position: position) && _opaque;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
-        if ((@event is global::Doroti.Framework.Gestures.PointerHoverEvent))
+        if (@event is global::Doroti.Framework.Gestures.PointerHoverEvent)
         {
             global::Doroti.Framework.Gestures.PointerHoverEvent @event__as108765 = (global::Doroti.Framework.Gestures.PointerHoverEvent)@event;
-            this.onHover?.Invoke(@event__as108765);
+            onHover?.Invoke(@event__as108765);
         }
     }
 
     public virtual bool opaque
     {
-        get => this._opaque;
+        get => _opaque;
         set
         {
             var __value = value;
-            if ((this._opaque != DartRuntimePrimitives.RequireValue(__value)))
+            if (_opaque != DartRuntimePrimitives.RequireValue(__value))
             {
                 _opaque = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -3089,8 +3089,8 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, global::Doro
         set
         {
             var __value = value;
-            HitTestBehavior newValue = (__value ?? HitTestBehavior.opaque);
-            if ((!Equals(behavior, newValue)))
+            HitTestBehavior newValue = __value ?? HitTestBehavior.opaque;
+            if (!Equals(behavior, newValue))
             {
                 behavior = newValue;
                 markNeedsPaint();
@@ -3099,18 +3099,18 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, global::Doro
     }
     public virtual MouseCursor cursor
     {
-        get => this._cursor;
+        get => _cursor;
         set
         {
             var __value = value;
-            if ((!Equals(this._cursor, __value)))
+            if (!Equals(_cursor, __value))
             {
                 _cursor = __value;
                 markNeedsPaint();
             }
         }
     }
-    public virtual bool validForMouseTracker => this._validForMouseTracker;
+    public virtual bool validForMouseTracker => _validForMouseTracker;
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
@@ -3125,17 +3125,17 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, global::Doro
 
     public override Size computeSizeForNoChild(BoxConstraints constraints)
     {
-        return ((BoxConstraints)constraints).biggest;
+        return constraints.biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagsSummary<Delegate?>("listeners", new DartMap<string, Delegate?> { ["enter"] = this.onEnter, ["hover"] = this.onHover, ["exit"] = this.onExit }, ifEmpty: "<none>"));
-        properties.add(new DiagnosticsProperty<MouseCursor>("cursor", this.cursor, defaultValue: MouseCursor.defer));
-        properties.add(new DiagnosticsProperty<bool>("opaque", this.opaque, defaultValue: true));
-        properties.add(new FlagProperty("validForMouseTracker", value: this.validForMouseTracker, defaultValue: true, ifFalse: "invalid for MouseTracker"));
+        properties.add(new FlagsSummary<Delegate?>("listeners", new DartMap<string, Delegate?> { ["enter"] = onEnter, ["hover"] = onHover, ["exit"] = onExit }, ifEmpty: "<none>"));
+        properties.add(new DiagnosticsProperty<MouseCursor>("cursor", cursor, defaultValue: MouseCursor.defer));
+        properties.add(new DiagnosticsProperty<bool>("opaque", opaque, defaultValue: true));
+        properties.add(new FlagProperty("validForMouseTracker", value: validForMouseTracker, defaultValue: true, ifFalse: "invalid for MouseTracker"));
     }
 
 }
@@ -3154,7 +3154,7 @@ public class RenderRepaintBoundary : RenderProxyBox
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsPaint);
         var offsetLayer = ((OffsetLayer?)layer!)!;
-        return offsetLayer.toImage((Offset.zero & size), pixelRatio: pixelRatio);
+        return offsetLayer.toImage(Offset.zero & size, pixelRatio: pixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3162,12 +3162,12 @@ public class RenderRepaintBoundary : RenderProxyBox
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsPaint);
         var offsetLayer = ((OffsetLayer?)layer!)!;
-        return offsetLayer.toImageSync((Offset.zero & size), pixelRatio: pixelRatio);
+        return offsetLayer.toImageSync(Offset.zero & size, pixelRatio: pixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long debugSymmetricPaintCount => this._debugSymmetricPaintCount;
-    public virtual long debugAsymmetricPaintCount => this._debugAsymmetricPaintCount;
+    public virtual long debugSymmetricPaintCount => _debugSymmetricPaintCount;
+    public virtual long debugAsymmetricPaintCount => _debugAsymmetricPaintCount;
     public virtual void debugResetMetrics()
     {
         DartRuntimePrimitives.Assert(() =>
@@ -3182,7 +3182,7 @@ public class RenderRepaintBoundary : RenderProxyBox
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((includedParent && includedChild))
+                if (includedParent && includedChild)
                 {
                     _debugSymmetricPaintCount += 1L;
                 }
@@ -3201,16 +3201,16 @@ public class RenderRepaintBoundary : RenderProxyBox
         DartRuntimePrimitives.Assert(() =>
             {
                 inReleaseMode = false;
-                long totalPaints = (this.debugSymmetricPaintCount + this.debugAsymmetricPaintCount);
-                if ((totalPaints == 0L))
+                long totalPaints = debugSymmetricPaintCount + debugAsymmetricPaintCount;
+                if (totalPaints == 0L)
                 {
                     properties.add(new MessageProperty("usefulness ratio", "no metrics collected yet (never painted)"));
                 }
                 else
                 {
-                    double fraction = (this.debugAsymmetricPaintCount / totalPaints);
-                    string diagnosis = (fraction switch { _ when (totalPaints < 5L) => "insufficient data to draw conclusion (less than five repaints)", > 0.9 => "this is an outstandingly useful repaint boundary and should definitely be kept", > 0.5 => "this is a useful repaint boundary and should be kept", > 0.3 => "this repaint boundary is probably useful, but maybe it would be more useful in tandem with adding more repaint boundaries elsewhere", > 0.1 => "this repaint boundary does sometimes show value, though currently not that often", _ when (this.debugAsymmetricPaintCount > 0L) => "this repaint boundary is not very effective and should probably be removed", _ => "this repaint boundary is astoundingly ineffectual and should be removed" });
-                    properties.add(new PercentProperty("metrics", fraction, unit: "useful", tooltip: $"{this.debugSymmetricPaintCount} bad vs {this.debugAsymmetricPaintCount} good"));
+                    double fraction = debugAsymmetricPaintCount / totalPaints;
+                    string diagnosis = fraction switch { _ when totalPaints < 5L => "insufficient data to draw conclusion (less than five repaints)", > 0.9 => "this is an outstandingly useful repaint boundary and should definitely be kept", > 0.5 => "this is a useful repaint boundary and should be kept", > 0.3 => "this repaint boundary is probably useful, but maybe it would be more useful in tandem with adding more repaint boundaries elsewhere", > 0.1 => "this repaint boundary does sometimes show value, though currently not that often", _ when debugAsymmetricPaintCount > 0L => "this repaint boundary is not very effective and should probably be removed", _ => "this repaint boundary is astoundingly ineffectual and should be removed" };
+                    properties.add(new PercentProperty("metrics", fraction, unit: "useful", tooltip: $"{debugSymmetricPaintCount} bad vs {debugAsymmetricPaintCount} good"));
                     properties.add(new MessageProperty("diagnosis", diagnosis));
                 }
                 return true;
@@ -3230,22 +3230,22 @@ public class RenderIgnorePointer : RenderProxyBox
 
     public RenderIgnorePointer(RenderBox? child = null, bool ignoring = true, bool? ignoringSemantics = null) : base(child)
     {
-        this._ignoring = ignoring;
-        this._ignoringSemantics = ignoringSemantics;
+        _ignoring = ignoring;
+        _ignoringSemantics = ignoringSemantics;
     }
 
     public virtual bool ignoring
     {
-        get => this._ignoring;
+        get => _ignoring;
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._ignoring))
+            if (DartRuntimePrimitives.RequireValue(__value) == _ignoring)
             {
                 return;
             }
             _ignoring = DartRuntimePrimitives.RequireValue(__value);
-            if ((this.ignoringSemantics is null))
+            if (ignoringSemantics is null)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3253,11 +3253,11 @@ public class RenderIgnorePointer : RenderProxyBox
     }
     public virtual bool? ignoringSemantics
     {
-        get => this._ignoringSemantics;
+        get => _ignoringSemantics;
         set
         {
             var __value = value;
-            if ((__value == this._ignoringSemantics))
+            if (__value == _ignoringSemantics)
             {
                 return;
             }
@@ -3267,30 +3267,30 @@ public class RenderIgnorePointer : RenderProxyBox
     }
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        return (!this.ignoring && base.hitTest(result, position: position));
+        return !ignoring && base.hitTest(result, position: position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if ((this._ignoringSemantics ?? false))
+        if (_ignoringSemantics ?? false)
         {
             return;
         }
-        base.visitChildrenForSemantics((Action<RenderObject>)visitor);
+        base.visitChildrenForSemantics(visitor);
     }
 
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        config.isBlockingUserActions = (this._ignoring && ((this._ignoringSemantics ?? true)));
+        config.isBlockingUserActions = _ignoring && (_ignoringSemantics ?? true);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<bool>("ignoring", this._ignoring));
-        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", this._ignoringSemantics, description: ((this._ignoringSemantics is null) ? null : $"implicitly {this._ignoringSemantics}")));
+        properties.add(new DiagnosticsProperty<bool>("ignoring", _ignoring));
+        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", _ignoringSemantics, description: (_ignoringSemantics is null) ? null : $"implicitly {_ignoringSemantics}"));
     }
 
 }
@@ -3301,16 +3301,16 @@ public class RenderOffstage : RenderProxyBox
 
     public RenderOffstage(bool offstage = true, RenderBox? child = null) : base(child)
     {
-        this._offstage = offstage;
+        _offstage = offstage;
     }
 
     public virtual bool offstage
     {
-        get => this._offstage;
+        get => _offstage;
         set
         {
             var __value = value;
-            if ((__value == this._offstage))
+            if (__value == _offstage)
             {
                 return;
             }
@@ -3320,7 +3320,7 @@ public class RenderOffstage : RenderProxyBox
     }
     public override double computeMinIntrinsicWidth(double height)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return 0.0;
         }
@@ -3330,7 +3330,7 @@ public class RenderOffstage : RenderProxyBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return 0.0;
         }
@@ -3340,7 +3340,7 @@ public class RenderOffstage : RenderProxyBox
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return 0.0;
         }
@@ -3350,7 +3350,7 @@ public class RenderOffstage : RenderProxyBox
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return 0.0;
         }
@@ -3360,7 +3360,7 @@ public class RenderOffstage : RenderProxyBox
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return null;
         }
@@ -3368,18 +3368,18 @@ public class RenderOffstage : RenderProxyBox
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool sizedByParent => this.offstage;
+    public override bool sizedByParent => offstage;
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        return (this.offstage ? null : base.computeDryBaseline(constraints, baseline));
+        return offstage ? null : base.computeDryBaseline(constraints, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        if (this.offstage)
+        if (offstage)
         {
-            return ((BoxConstraints)constraints).smallest;
+            return constraints.smallest;
         }
         return base.computeDryLayout(constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3387,13 +3387,13 @@ public class RenderOffstage : RenderProxyBox
 
     public override void performResize()
     {
-        DartRuntimePrimitives.Assert(() => this.offstage);
+        DartRuntimePrimitives.Assert(() => offstage);
         base.performResize();
     }
 
     public override void performLayout()
     {
-        if (this.offstage)
+        if (offstage)
         {
             child?.layout(constraints);
         }
@@ -3405,21 +3405,21 @@ public class RenderOffstage : RenderProxyBox
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        return (!this.offstage && base.hitTest(result, position: position));
+        return !offstage && base.hitTest(result, position: position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool paintsChild(RenderObject child)
     {
         var __child = (RenderBox)child;
-        DartRuntimePrimitives.Assert(() => (Equals(__child.parent, this)));
-        return !this.offstage;
+        DartRuntimePrimitives.Assert(() => Equals(__child.parent, this));
+        return !offstage;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return;
         }
@@ -3428,26 +3428,26 @@ public class RenderOffstage : RenderProxyBox
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if (this.offstage)
+        if (offstage)
         {
             return;
         }
-        base.visitChildrenForSemantics((Action<RenderObject>)visitor);
+        base.visitChildrenForSemantics(visitor);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<bool>("offstage", this.offstage));
+        properties.add(new DiagnosticsProperty<bool>("offstage", offstage));
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        if ((child is null))
+        if (child is null)
         {
             return new List<DiagnosticsNode>();
         }
-        return new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child", style: (this.offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse)) };
+        return new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child", style: offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse) };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3460,22 +3460,22 @@ public class RenderAbsorbPointer : RenderProxyBox
 
     public RenderAbsorbPointer(RenderBox? child = null, bool absorbing = true, bool? ignoringSemantics = null) : base(child)
     {
-        this._absorbing = absorbing;
-        this._ignoringSemantics = ignoringSemantics;
+        _absorbing = absorbing;
+        _ignoringSemantics = ignoringSemantics;
     }
 
     public virtual bool absorbing
     {
-        get => this._absorbing;
+        get => _absorbing;
         set
         {
             var __value = value;
-            if ((this._absorbing == DartRuntimePrimitives.RequireValue(__value)))
+            if (_absorbing == DartRuntimePrimitives.RequireValue(__value))
             {
                 return;
             }
             _absorbing = DartRuntimePrimitives.RequireValue(__value);
-            if ((this.ignoringSemantics is null))
+            if (ignoringSemantics is null)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3483,11 +3483,11 @@ public class RenderAbsorbPointer : RenderProxyBox
     }
     public virtual bool? ignoringSemantics
     {
-        get => this._ignoringSemantics;
+        get => _ignoringSemantics;
         set
         {
             var __value = value;
-            if ((__value == this._ignoringSemantics))
+            if (__value == _ignoringSemantics)
             {
                 return;
             }
@@ -3497,30 +3497,30 @@ public class RenderAbsorbPointer : RenderProxyBox
     }
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        return (this.absorbing ? size.contains(position) : base.hitTest(result, position: position));
+        return absorbing ? size.contains(position) : base.hitTest(result, position: position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if ((this._ignoringSemantics ?? false))
+        if (_ignoringSemantics ?? false)
         {
             return;
         }
-        base.visitChildrenForSemantics((Action<RenderObject>)visitor);
+        base.visitChildrenForSemantics(visitor);
     }
 
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        config.isBlockingUserActions = (this.absorbing && ((this._ignoringSemantics ?? true)));
+        config.isBlockingUserActions = absorbing && (_ignoringSemantics ?? true);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<bool>("absorbing", this.absorbing));
-        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", this.ignoringSemantics, description: ((this.ignoringSemantics is null) ? null : $"implicitly {this.ignoringSemantics}")));
+        properties.add(new DiagnosticsProperty<bool>("absorbing", absorbing));
+        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", ignoringSemantics, description: (ignoringSemantics is null) ? null : $"implicitly {ignoringSemantics}"));
     }
 
 }
@@ -3537,7 +3537,7 @@ public class RenderMetaData : RenderProxyBoxWithHitTestBehavior
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<object>("metaData", this.metaData));
+        properties.add(new DiagnosticsProperty<object>("metaData", metaData));
     }
 
 }
@@ -3554,19 +3554,19 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     public RenderSemanticsGestureHandler(RenderBox? child = null, Action? onTap = null, Action? onLongPress = null, Action<DragUpdateDetails>? onHorizontalDragUpdate = null, Action<DragUpdateDetails>? onVerticalDragUpdate = null, double scrollFactor = 0.8, HitTestBehavior behavior = HitTestBehavior.deferToChild) : base(child: child, behavior: behavior)
     {
         this.scrollFactor = scrollFactor;
-        this._onTap = onTap;
-        this._onLongPress = onLongPress;
-        this._onHorizontalDragUpdate = onHorizontalDragUpdate;
-        this._onVerticalDragUpdate = onVerticalDragUpdate;
+        _onTap = onTap;
+        _onLongPress = onLongPress;
+        _onHorizontalDragUpdate = onHorizontalDragUpdate;
+        _onVerticalDragUpdate = onVerticalDragUpdate;
     }
 
     public virtual HashSet<global::Doroti.Ui.SemanticsAction>? validActions
     {
-        get => this._validActions;
+        get => _validActions;
         set
         {
-            var __value = value is null ? null : (HashSet<SemanticsAction>)value;
-            if (CollectionsLibrary.setEquals<global::Doroti.Ui.SemanticsAction>(__value, this._validActions))
+            var __value = value is null ? null : value;
+            if (CollectionsLibrary.setEquals<global::Doroti.Ui.SemanticsAction>(__value, _validActions))
             {
                 return;
             }
@@ -3576,17 +3576,17 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     }
     public virtual Action? onTap
     {
-        get => this._onTap;
+        get => _onTap;
         set
         {
             var __value = value;
-            if ((Equals((Action?)this._onTap, (Action?)__value)))
+            if (Equals(_onTap, __value))
             {
                 return;
             }
-            var hadHandler = (this._onTap is not null);
+            var hadHandler = _onTap is not null;
             _onTap = __value;
-            if ((((__value is not null)) != hadHandler))
+            if (__value is not null != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3594,17 +3594,17 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     }
     public virtual Action? onLongPress
     {
-        get => this._onLongPress;
+        get => _onLongPress;
         set
         {
             var __value = value;
-            if ((Equals((Action?)this._onLongPress, (Action?)__value)))
+            if (Equals(_onLongPress, __value))
             {
                 return;
             }
-            var hadHandler = (this._onLongPress is not null);
+            var hadHandler = _onLongPress is not null;
             _onLongPress = __value;
-            if ((((__value is not null)) != hadHandler))
+            if (__value is not null != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3612,17 +3612,17 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     }
     public virtual Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onHorizontalDragUpdate
     {
-        get => this._onHorizontalDragUpdate;
+        get => _onHorizontalDragUpdate;
         set
         {
-            var __value = value is null ? null : (Action<DragUpdateDetails>)value;
-            if ((Equals((Action<DragUpdateDetails>?)this._onHorizontalDragUpdate, (Action<DragUpdateDetails>?)__value)))
+            var __value = value is null ? null : value;
+            if (Equals(_onHorizontalDragUpdate, __value))
             {
                 return;
             }
-            var hadHandler = (this._onHorizontalDragUpdate is not null);
+            var hadHandler = _onHorizontalDragUpdate is not null;
             _onHorizontalDragUpdate = __value;
-            if ((((__value is not null)) != hadHandler))
+            if (__value is not null != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3630,17 +3630,17 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     }
     public virtual Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onVerticalDragUpdate
     {
-        get => this._onVerticalDragUpdate;
+        get => _onVerticalDragUpdate;
         set
         {
-            var __value = value is null ? null : (Action<DragUpdateDetails>)value;
-            if ((Equals((Action<DragUpdateDetails>?)this._onVerticalDragUpdate, (Action<DragUpdateDetails>?)__value)))
+            var __value = value is null ? null : value;
+            if (Equals(_onVerticalDragUpdate, __value))
             {
                 return;
             }
-            var hadHandler = (this._onVerticalDragUpdate is not null);
+            var hadHandler = _onVerticalDragUpdate is not null;
             _onVerticalDragUpdate = __value;
-            if ((((__value is not null)) != hadHandler))
+            if (__value is not null != hadHandler)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -3649,77 +3649,77 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        if (((this.onTap is not null) && _isValidAction(SemanticsAction.tap)))
+        if ((onTap is not null) && _isValidAction(SemanticsAction.tap))
         {
-            config.onTap = this.onTap;
+            config.onTap = onTap;
         }
-        if (((this.onLongPress is not null) && _isValidAction(SemanticsAction.longPress)))
+        if ((onLongPress is not null) && _isValidAction(SemanticsAction.longPress))
         {
-            config.onLongPress = this.onLongPress;
+            config.onLongPress = onLongPress;
         }
-        if ((this.onHorizontalDragUpdate is not null))
+        if (onHorizontalDragUpdate is not null)
         {
             if (_isValidAction(SemanticsAction.scrollRight))
             {
-                config.onScrollRight = this._performSemanticScrollRight;
+                config.onScrollRight = _performSemanticScrollRight;
             }
             if (_isValidAction(SemanticsAction.scrollLeft))
             {
-                config.onScrollLeft = this._performSemanticScrollLeft;
+                config.onScrollLeft = _performSemanticScrollLeft;
             }
         }
-        if ((this.onVerticalDragUpdate is not null))
+        if (onVerticalDragUpdate is not null)
         {
             if (_isValidAction(SemanticsAction.scrollUp))
             {
-                config.onScrollUp = this._performSemanticScrollUp;
+                config.onScrollUp = _performSemanticScrollUp;
             }
             if (_isValidAction(SemanticsAction.scrollDown))
             {
-                config.onScrollDown = this._performSemanticScrollDown;
+                config.onScrollDown = _performSemanticScrollDown;
             }
         }
     }
 
     internal virtual bool _isValidAction(SemanticsAction action)
     {
-        return ((this.validActions is null) || this.validActions!.Contains(action));
+        return (validActions is null) || validActions!.Contains(action);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _performSemanticScrollLeft()
     {
-        if ((this.onHorizontalDragUpdate is not null))
+        if (onHorizontalDragUpdate is not null)
         {
-            double primaryDeltaLocal = (size.width * -this.scrollFactor);
-            this.onHorizontalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(primaryDeltaLocal, 0.0), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            double primaryDeltaLocal = size.width * -scrollFactor;
+            onHorizontalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(primaryDeltaLocal, 0.0), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
         }
     }
 
     internal virtual void _performSemanticScrollRight()
     {
-        if ((this.onHorizontalDragUpdate is not null))
+        if (onHorizontalDragUpdate is not null)
         {
-            double primaryDeltaLocal = (size.width * this.scrollFactor);
-            this.onHorizontalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(primaryDeltaLocal, 0.0), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            double primaryDeltaLocal = size.width * scrollFactor;
+            onHorizontalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(primaryDeltaLocal, 0.0), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
         }
     }
 
     internal virtual void _performSemanticScrollUp()
     {
-        if ((this.onVerticalDragUpdate is not null))
+        if (onVerticalDragUpdate is not null)
         {
-            double primaryDeltaLocal = (size.height * -this.scrollFactor);
-            this.onVerticalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(0.0, primaryDeltaLocal), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            double primaryDeltaLocal = size.height * -scrollFactor;
+            onVerticalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(0.0, primaryDeltaLocal), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
         }
     }
 
     internal virtual void _performSemanticScrollDown()
     {
-        if ((this.onVerticalDragUpdate is not null))
+        if (onVerticalDragUpdate is not null)
         {
-            double primaryDeltaLocal = (size.height * this.scrollFactor);
-            this.onVerticalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(0.0, primaryDeltaLocal), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
+            double primaryDeltaLocal = size.height * scrollFactor;
+            onVerticalDragUpdate!(new DragUpdateDetails(delta: new global::Doroti.Ui.Offset(0.0, primaryDeltaLocal), primaryDelta: primaryDeltaLocal, globalPosition: localToGlobal(size.center(Offset.zero))));
         }
     }
 
@@ -3727,7 +3727,7 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         var gestures = new List<string>();
-        if ((checked((long)(gestures.Count)) == 0))
+        if (checked((long)gestures.Count) == 0)
         {
             gestures.Add("<none>");
         }
@@ -3765,582 +3765,582 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
 
     public virtual void initSemanticsAnnotations(global::Doroti.Framework.Semantics.SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection)
     {
-        this._properties = properties;
-        this._container = container;
-        this._explicitChildNodes = explicitChildNodes;
-        this._excludeSemantics = excludeSemantics;
-        this._blockUserActions = blockUserActions;
-        this._localeForSubtree = localeForSubtree;
-        this._textDirection = textDirection;
-        _updateAttributedFields(this._properties);
+        _properties = properties;
+        _container = container;
+        _explicitChildNodes = explicitChildNodes;
+        _excludeSemantics = excludeSemantics;
+        _blockUserActions = blockUserActions;
+        _localeForSubtree = localeForSubtree;
+        _textDirection = textDirection;
+        _updateAttributedFields(_properties);
     }
 
     public virtual global::Doroti.Framework.Semantics.SemanticsProperties properties
     {
-        get => this._properties;
+        get => _properties;
         set
         {
             var __value = value;
-            if ((Equals(this._properties, __value)))
+            if (Equals(_properties, __value))
             {
                 return;
             }
-            this._properties = __value;
-            _updateAttributedFields(this._properties);
+            _properties = __value;
+            _updateAttributedFields(_properties);
             markNeedsSemanticsUpdate();
         }
     }
     public virtual bool container
     {
-        get => this._container;
+        get => _container;
         set
         {
             var __value = value;
-            if ((this.container == __value))
+            if (container == __value)
             {
                 return;
             }
-            this._container = __value;
+            _container = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public virtual bool explicitChildNodes
     {
-        get => this._explicitChildNodes;
+        get => _explicitChildNodes;
         set
         {
             var __value = value;
-            if ((this._explicitChildNodes == __value))
+            if (_explicitChildNodes == __value)
             {
                 return;
             }
-            this._explicitChildNodes = __value;
+            _explicitChildNodes = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public virtual bool excludeSemantics
     {
-        get => this._excludeSemantics;
+        get => _excludeSemantics;
         set
         {
             var __value = value;
-            if ((this._excludeSemantics == __value))
+            if (_excludeSemantics == __value)
             {
                 return;
             }
-            this._excludeSemantics = __value;
+            _excludeSemantics = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public virtual bool blockUserActions
     {
-        get => this._blockUserActions;
+        get => _blockUserActions;
         set
         {
             var __value = value;
-            if ((this._blockUserActions == __value))
+            if (_blockUserActions == __value)
             {
                 return;
             }
-            this._blockUserActions = __value;
+            _blockUserActions = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public virtual Locale? localeForSubtree
     {
-        get => this._localeForSubtree;
+        get => _localeForSubtree;
         set
         {
             var __value = value;
-            if ((Equals(this._localeForSubtree, __value)))
+            if (Equals(_localeForSubtree, __value))
             {
                 return;
             }
-            this._localeForSubtree = __value;
+            _localeForSubtree = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public virtual void _updateAttributedFields(global::Doroti.Framework.Semantics.SemanticsProperties value)
     {
-        this._attributedLabel = _effectiveAttributedLabel(value);
-        this._attributedValue = _effectiveAttributedValue(value);
-        this._attributedIncreasedValue = _effectiveAttributedIncreasedValue(value);
-        this._attributedDecreasedValue = _effectiveAttributedDecreasedValue(value);
-        this._attributedHint = _effectiveAttributedHint(value);
+        _attributedLabel = _effectiveAttributedLabel(value);
+        _attributedValue = _effectiveAttributedValue(value);
+        _attributedIncreasedValue = _effectiveAttributedIncreasedValue(value);
+        _attributedDecreasedValue = _effectiveAttributedDecreasedValue(value);
+        _attributedHint = _effectiveAttributedHint(value);
     }
 
     public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedLabel(global::Doroti.Framework.Semantics.SemanticsProperties value)
     {
-        return (((global::Doroti.Framework.Semantics.SemanticsProperties)value).attributedLabel ?? (((((global::Doroti.Framework.Semantics.SemanticsProperties)value).label is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(((global::Doroti.Framework.Semantics.SemanticsProperties)value).label!))));
+        return value.attributedLabel ?? ((value.label is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.label!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedValue(global::Doroti.Framework.Semantics.SemanticsProperties value)
     {
-        return (((global::Doroti.Framework.Semantics.SemanticsProperties)value).attributedValue ?? (((((global::Doroti.Framework.Semantics.SemanticsProperties)value).value is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(((global::Doroti.Framework.Semantics.SemanticsProperties)value).value!))));
+        return value.attributedValue ?? ((value.value is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.value!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedIncreasedValue(global::Doroti.Framework.Semantics.SemanticsProperties value)
     {
-        return (((global::Doroti.Framework.Semantics.SemanticsProperties)value).attributedIncreasedValue ?? (((((global::Doroti.Framework.Semantics.SemanticsProperties)value).increasedValue is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(((global::Doroti.Framework.Semantics.SemanticsProperties)value).increasedValue!))));
+        return value.attributedIncreasedValue ?? ((value.increasedValue is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.increasedValue!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedDecreasedValue(global::Doroti.Framework.Semantics.SemanticsProperties value)
     {
-        return (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedDecreasedValue ?? (((((global::Doroti.Framework.Semantics.SemanticsProperties)value).decreasedValue is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(((global::Doroti.Framework.Semantics.SemanticsProperties)value).decreasedValue!))));
+        return properties.attributedDecreasedValue ?? ((value.decreasedValue is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.decreasedValue!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedHint(global::Doroti.Framework.Semantics.SemanticsProperties value)
     {
-        return (((global::Doroti.Framework.Semantics.SemanticsProperties)value).attributedHint ?? (((((global::Doroti.Framework.Semantics.SemanticsProperties)value).hint is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(((global::Doroti.Framework.Semantics.SemanticsProperties)value).hint!))));
+        return value.attributedHint ?? ((value.hint is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.hint!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(this.textDirection, __value)))
+            if (Equals(textDirection, __value))
             {
                 return;
             }
-            this._textDirection = __value;
+            _textDirection = __value;
             markNeedsSemanticsUpdate();
         }
     }
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if (this.excludeSemantics)
+        if (excludeSemantics)
         {
             return;
         }
-        base.visitChildrenForSemantics((Action<RenderObject>)visitor);
+        base.visitChildrenForSemantics(visitor);
     }
 
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        config.isSemanticBoundary = (this.container || ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).identifier is not null)));
-        config.explicitChildNodes = this.explicitChildNodes;
-        config.isBlockingUserActions = this.blockUserActions;
-        if ((this.localeForSubtree is not null))
+        config.isSemanticBoundary = container || _properties.identifier is not null;
+        config.explicitChildNodes = explicitChildNodes;
+        config.isBlockingUserActions = blockUserActions;
+        if (localeForSubtree is not null)
         {
-            config.localeForSubtree = this.localeForSubtree;
+            config.localeForSubtree = localeForSubtree;
         }
-        DartRuntimePrimitives.Assert(() => (((((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).scopesRoute ?? false)) && this.explicitChildNodes)) || !((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).scopesRoute ?? false))));
-        DartRuntimePrimitives.Assert(() => !((((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).toggled ?? false)) && ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).@checked ?? false)))));
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).enabled is not null))
+        DartRuntimePrimitives.Assert(() => (_properties.scopesRoute ?? false) && explicitChildNodes || !(_properties.scopesRoute ?? false));
+        DartRuntimePrimitives.Assert(() => !((_properties.toggled ?? false) && (_properties.@checked ?? false)));
+        if (_properties.enabled is not null)
         {
-            config.isEnabled = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).enabled;
+            config.isEnabled = _properties.enabled;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).@checked is not null))
+        if (_properties.@checked is not null)
         {
-            config.isChecked = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).@checked;
+            config.isChecked = _properties.@checked;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).mixed is not null))
+        if (_properties.mixed is not null)
         {
-            config.isCheckStateMixed = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).mixed;
+            config.isCheckStateMixed = _properties.mixed;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).toggled is not null))
+        if (_properties.toggled is not null)
         {
-            config.isToggled = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).toggled;
+            config.isToggled = _properties.toggled;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).selected is not null))
+        if (_properties.selected is not null)
         {
-            config.isSelected = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).selected);
+            config.isSelected = DartRuntimePrimitives.RequireValue(_properties.selected);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).button is not null))
+        if (_properties.button is not null)
         {
-            config.isButton = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).button);
+            config.isButton = DartRuntimePrimitives.RequireValue(_properties.button);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).expanded is not null))
+        if (_properties.expanded is not null)
         {
-            config.isExpanded = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).expanded;
+            config.isExpanded = _properties.expanded;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).link is not null))
+        if (_properties.link is not null)
         {
-            config.isLink = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).link);
+            config.isLink = DartRuntimePrimitives.RequireValue(_properties.link);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).linkUrl is not null))
+        if (_properties.linkUrl is not null)
         {
-            config.linkUrl = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).linkUrl;
+            config.linkUrl = _properties.linkUrl;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).slider is not null))
+        if (_properties.slider is not null)
         {
-            config.isSlider = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).slider);
+            config.isSlider = DartRuntimePrimitives.RequireValue(_properties.slider);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).keyboardKey is not null))
+        if (_properties.keyboardKey is not null)
         {
-            config.isKeyboardKey = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).keyboardKey);
+            config.isKeyboardKey = DartRuntimePrimitives.RequireValue(_properties.keyboardKey);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).header is not null))
+        if (_properties.header is not null)
         {
-            config.isHeader = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).header);
+            config.isHeader = DartRuntimePrimitives.RequireValue(_properties.header);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).headingLevel is not null))
+        if (_properties.headingLevel is not null)
         {
-            config.headingLevel = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).headingLevel);
+            config.headingLevel = DartRuntimePrimitives.RequireValue(_properties.headingLevel);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).textField is not null))
+        if (_properties.textField is not null)
         {
-            config.isTextField = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).textField);
+            config.isTextField = DartRuntimePrimitives.RequireValue(_properties.textField);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).readOnly is not null))
+        if (_properties.readOnly is not null)
         {
-            config.isReadOnly = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).readOnly);
+            config.isReadOnly = DartRuntimePrimitives.RequireValue(_properties.readOnly);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).focusable is not null))
+        if (_properties.focusable is not null)
         {
-            config.isFocusable = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).focusable);
+            config.isFocusable = DartRuntimePrimitives.RequireValue(_properties.focusable);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).focused is not null))
+        if (_properties.focused is not null)
         {
-            config.isFocused = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).focused;
+            config.isFocused = _properties.focused;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).accessibilityFocusBlockType is not null))
+        if (_properties.accessibilityFocusBlockType is not null)
         {
-            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).accessibilityFocusBlockType);
+            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(_properties.accessibilityFocusBlockType);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).inMutuallyExclusiveGroup is not null))
+        if (_properties.inMutuallyExclusiveGroup is not null)
         {
-            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).inMutuallyExclusiveGroup);
+            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(_properties.inMutuallyExclusiveGroup);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).obscured is not null))
+        if (_properties.obscured is not null)
         {
-            config.isObscured = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).obscured);
+            config.isObscured = DartRuntimePrimitives.RequireValue(_properties.obscured);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).multiline is not null))
+        if (_properties.multiline is not null)
         {
-            config.isMultiline = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).multiline);
+            config.isMultiline = DartRuntimePrimitives.RequireValue(_properties.multiline);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hidden is not null))
+        if (_properties.hidden is not null)
         {
-            config.isHidden = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hidden);
+            config.isHidden = DartRuntimePrimitives.RequireValue(_properties.hidden);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).image is not null))
+        if (_properties.image is not null)
         {
-            config.isImage = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).image);
+            config.isImage = DartRuntimePrimitives.RequireValue(_properties.image);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).isRequired is not null))
+        if (_properties.isRequired is not null)
         {
-            config.isRequired = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).isRequired;
+            config.isRequired = _properties.isRequired;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).identifier is not null))
+        if (_properties.identifier is not null)
         {
-            config.identifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).identifier!;
+            config.identifier = _properties.identifier!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).traversalParentIdentifier is not null))
+        if (_properties.traversalParentIdentifier is not null)
         {
-            config.traversalParentIdentifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).traversalParentIdentifier;
+            config.traversalParentIdentifier = _properties.traversalParentIdentifier;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).traversalChildIdentifier is not null))
+        if (_properties.traversalChildIdentifier is not null)
         {
-            config.traversalChildIdentifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).traversalChildIdentifier;
+            config.traversalChildIdentifier = _properties.traversalChildIdentifier;
         }
-        if ((this._attributedLabel is not null))
+        if (_attributedLabel is not null)
         {
-            config.attributedLabel = this._attributedLabel!;
+            config.attributedLabel = _attributedLabel!;
         }
-        if ((this._attributedValue is not null))
+        if (_attributedValue is not null)
         {
-            config.attributedValue = this._attributedValue!;
+            config.attributedValue = _attributedValue!;
         }
-        if ((this._attributedIncreasedValue is not null))
+        if (_attributedIncreasedValue is not null)
         {
-            config.attributedIncreasedValue = this._attributedIncreasedValue!;
+            config.attributedIncreasedValue = _attributedIncreasedValue!;
         }
-        if ((this._attributedDecreasedValue is not null))
+        if (_attributedDecreasedValue is not null)
         {
-            config.attributedDecreasedValue = this._attributedDecreasedValue!;
+            config.attributedDecreasedValue = _attributedDecreasedValue!;
         }
-        if ((this._attributedHint is not null))
+        if (_attributedHint is not null)
         {
-            config.attributedHint = this._attributedHint!;
+            config.attributedHint = _attributedHint!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).tooltip is not null))
+        if (_properties.tooltip is not null)
         {
-            config.tooltip = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).tooltip!;
+            config.tooltip = _properties.tooltip!;
         }
-        if (((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hintOverrides is not null) && ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hintOverrides!.isNotEmpty))
+        if ((_properties.hintOverrides is not null) && _properties.hintOverrides!.isNotEmpty)
         {
-            config.hintOverrides = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hintOverrides;
+            config.hintOverrides = _properties.hintOverrides;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).scopesRoute is not null))
+        if (_properties.scopesRoute is not null)
         {
-            config.scopesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).scopesRoute);
+            config.scopesRoute = DartRuntimePrimitives.RequireValue(_properties.scopesRoute);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).namesRoute is not null))
+        if (_properties.namesRoute is not null)
         {
-            config.namesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).namesRoute);
+            config.namesRoute = DartRuntimePrimitives.RequireValue(_properties.namesRoute);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).liveRegion is not null))
+        if (_properties.liveRegion is not null)
         {
-            config.liveRegion = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).liveRegion);
+            config.liveRegion = DartRuntimePrimitives.RequireValue(_properties.liveRegion);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).maxValueLength is not null))
+        if (_properties.maxValueLength is not null)
         {
-            config.maxValueLength = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).maxValueLength;
+            config.maxValueLength = _properties.maxValueLength;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).currentValueLength is not null))
+        if (_properties.currentValueLength is not null)
         {
-            config.currentValueLength = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).currentValueLength;
+            config.currentValueLength = _properties.currentValueLength;
         }
-        if ((this.textDirection is not null))
+        if (textDirection is not null)
         {
-            config.textDirection = this.textDirection;
+            config.textDirection = textDirection;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).sortKey is not null))
+        if (_properties.sortKey is not null)
         {
-            config.sortKey = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).sortKey;
+            config.sortKey = _properties.sortKey;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).tagForChildren is not null))
+        if (_properties.tagForChildren is not null)
         {
-            config.addTagForChildren(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).tagForChildren!);
+            config.addTagForChildren(_properties.tagForChildren!);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).role is not null))
+        if (properties.role is not null)
         {
-            config.role = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).role);
+            config.role = DartRuntimePrimitives.RequireValue(_properties.role);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).controlsNodes is not null))
+        if (_properties.controlsNodes is not null)
         {
-            config.controlsNodes = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).controlsNodes;
+            config.controlsNodes = _properties.controlsNodes;
         }
-        if ((!Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).validationResult)))
+        if (!Equals(config.validationResult, _properties.validationResult))
         {
-            config.validationResult = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).validationResult;
+            config.validationResult = _properties.validationResult;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hitTestBehavior is not null))
+        if (_properties.hitTestBehavior is not null)
         {
-            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).hitTestBehavior);
+            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(_properties.hitTestBehavior);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).inputType is not null))
+        if (_properties.inputType is not null)
         {
-            config.inputType = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).inputType);
+            config.inputType = DartRuntimePrimitives.RequireValue(_properties.inputType);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).minValue is not null))
+        if (_properties.minValue is not null)
         {
-            config.minValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).minValue;
+            config.minValue = _properties.minValue;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).maxValue is not null))
+        if (_properties.maxValue is not null)
         {
-            config.maxValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).maxValue;
+            config.maxValue = _properties.maxValue;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onTap is not null))
+        if (_properties.onTap is not null)
         {
-            config.onTap = this._performTap;
+            config.onTap = _performTap;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onLongPress is not null))
+        if (_properties.onLongPress is not null)
         {
-            config.onLongPress = this._performLongPress;
+            config.onLongPress = _performLongPress;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDismiss is not null))
+        if (_properties.onDismiss is not null)
         {
-            config.onDismiss = this._performDismiss;
+            config.onDismiss = _performDismiss;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollLeft is not null))
+        if (_properties.onScrollLeft is not null)
         {
-            config.onScrollLeft = this._performScrollLeft;
+            config.onScrollLeft = _performScrollLeft;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollRight is not null))
+        if (_properties.onScrollRight is not null)
         {
-            config.onScrollRight = this._performScrollRight;
+            config.onScrollRight = _performScrollRight;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollUp is not null))
+        if (_properties.onScrollUp is not null)
         {
-            config.onScrollUp = this._performScrollUp;
+            config.onScrollUp = _performScrollUp;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollDown is not null))
+        if (_properties.onScrollDown is not null)
         {
-            config.onScrollDown = this._performScrollDown;
+            config.onScrollDown = _performScrollDown;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onIncrease is not null))
+        if (_properties.onIncrease is not null)
         {
-            config.onIncrease = this._performIncrease;
+            config.onIncrease = _performIncrease;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDecrease is not null))
+        if (_properties.onDecrease is not null)
         {
-            config.onDecrease = this._performDecrease;
+            config.onDecrease = _performDecrease;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onCopy is not null))
+        if (_properties.onCopy is not null)
         {
-            config.onCopy = this._performCopy;
+            config.onCopy = _performCopy;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onCut is not null))
+        if (_properties.onCut is not null)
         {
-            config.onCut = this._performCut;
+            config.onCut = _performCut;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onPaste is not null))
+        if (_properties.onPaste is not null)
         {
-            config.onPaste = this._performPaste;
+            config.onPaste = _performPaste;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorForwardByCharacter is not null))
+        if (_properties.onMoveCursorForwardByCharacter is not null)
         {
-            config.onMoveCursorForwardByCharacter = this._performMoveCursorForwardByCharacter;
+            config.onMoveCursorForwardByCharacter = _performMoveCursorForwardByCharacter;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorBackwardByCharacter is not null))
+        if (_properties.onMoveCursorBackwardByCharacter is not null)
         {
-            config.onMoveCursorBackwardByCharacter = this._performMoveCursorBackwardByCharacter;
+            config.onMoveCursorBackwardByCharacter = _performMoveCursorBackwardByCharacter;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorForwardByWord is not null))
+        if (_properties.onMoveCursorForwardByWord is not null)
         {
-            config.onMoveCursorForwardByWord = this._performMoveCursorForwardByWord;
+            config.onMoveCursorForwardByWord = _performMoveCursorForwardByWord;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorBackwardByWord is not null))
+        if (_properties.onMoveCursorBackwardByWord is not null)
         {
-            config.onMoveCursorBackwardByWord = this._performMoveCursorBackwardByWord;
+            config.onMoveCursorBackwardByWord = _performMoveCursorBackwardByWord;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onSetSelection is not null))
+        if (_properties.onSetSelection is not null)
         {
-            config.onSetSelection = this._performSetSelection;
+            config.onSetSelection = _performSetSelection;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onSetText is not null))
+        if (_properties.onSetText is not null)
         {
-            config.onSetText = this._performSetText;
+            config.onSetText = _performSetText;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDidGainAccessibilityFocus is not null))
+        if (_properties.onDidGainAccessibilityFocus is not null)
         {
-            config.onDidGainAccessibilityFocus = this._performDidGainAccessibilityFocus;
+            config.onDidGainAccessibilityFocus = _performDidGainAccessibilityFocus;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDidLoseAccessibilityFocus is not null))
+        if (_properties.onDidLoseAccessibilityFocus is not null)
         {
-            config.onDidLoseAccessibilityFocus = this._performDidLoseAccessibilityFocus;
+            config.onDidLoseAccessibilityFocus = _performDidLoseAccessibilityFocus;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onFocus is not null))
+        if (_properties.onFocus is not null)
         {
-            config.onFocus = this._performFocus;
+            config.onFocus = _performFocus;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onExpand is not null))
+        if (_properties.onExpand is not null)
         {
-            config.onExpand = this._performExpand;
+            config.onExpand = _performExpand;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onCollapse is not null))
+        if (_properties.onCollapse is not null)
         {
-            config.onCollapse = this._performCollapse;
+            config.onCollapse = _performCollapse;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).customSemanticsActions is not null))
+        if (_properties.customSemanticsActions is not null)
         {
-            config.customSemanticsActions = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).customSemanticsActions!;
+            config.customSemanticsActions = _properties.customSemanticsActions!;
         }
     }
 
     public virtual void _performTap()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onTap?.Invoke();
+        _properties.onTap?.Invoke();
     }
 
     public virtual void _performLongPress()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onLongPress?.Invoke();
+        _properties.onLongPress?.Invoke();
     }
 
     public virtual void _performDismiss()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDismiss?.Invoke();
+        _properties.onDismiss?.Invoke();
     }
 
     public virtual void _performScrollLeft()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollLeft?.Invoke();
+        _properties.onScrollLeft?.Invoke();
     }
 
     public virtual void _performScrollRight()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollRight?.Invoke();
+        _properties.onScrollRight?.Invoke();
     }
 
     public virtual void _performScrollUp()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollUp?.Invoke();
+        _properties.onScrollUp?.Invoke();
     }
 
     public virtual void _performScrollDown()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onScrollDown?.Invoke();
+        _properties.onScrollDown?.Invoke();
     }
 
     public virtual void _performIncrease()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onIncrease?.Invoke();
+        _properties.onIncrease?.Invoke();
     }
 
     public virtual void _performDecrease()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDecrease?.Invoke();
+        _properties.onDecrease?.Invoke();
     }
 
     public virtual void _performCopy()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onCopy?.Invoke();
+        _properties.onCopy?.Invoke();
     }
 
     public virtual void _performCut()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onCut?.Invoke();
+        _properties.onCut?.Invoke();
     }
 
     public virtual void _performPaste()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onPaste?.Invoke();
+        _properties.onPaste?.Invoke();
     }
 
     public virtual void _performMoveCursorForwardByCharacter(bool extendSelection)
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorForwardByCharacter?.Invoke(extendSelection);
+        _properties.onMoveCursorForwardByCharacter?.Invoke(extendSelection);
     }
 
     public virtual void _performMoveCursorBackwardByCharacter(bool extendSelection)
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorBackwardByCharacter?.Invoke(extendSelection);
+        _properties.onMoveCursorBackwardByCharacter?.Invoke(extendSelection);
     }
 
     public virtual void _performMoveCursorForwardByWord(bool extendSelection)
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorForwardByWord?.Invoke(extendSelection);
+        _properties.onMoveCursorForwardByWord?.Invoke(extendSelection);
     }
 
     public virtual void _performMoveCursorBackwardByWord(bool extendSelection)
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onMoveCursorBackwardByWord?.Invoke(extendSelection);
+        _properties.onMoveCursorBackwardByWord?.Invoke(extendSelection);
     }
 
     public virtual void _performSetSelection(TextSelection selection)
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onSetSelection?.Invoke(selection);
+        _properties.onSetSelection?.Invoke(selection);
     }
 
     public virtual void _performSetText(string text)
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onSetText?.Invoke(text);
+        _properties.onSetText?.Invoke(text);
     }
 
     public virtual void _performDidGainAccessibilityFocus()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDidGainAccessibilityFocus?.Invoke();
+        _properties.onDidGainAccessibilityFocus?.Invoke();
     }
 
     public virtual void _performDidLoseAccessibilityFocus()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onDidLoseAccessibilityFocus?.Invoke();
+        _properties.onDidLoseAccessibilityFocus?.Invoke();
     }
 
     public virtual void _performFocus()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onFocus?.Invoke();
+        _properties.onFocus?.Invoke();
     }
 
     public virtual void _performExpand()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onExpand?.Invoke();
+        _properties.onExpand?.Invoke();
     }
 
     public virtual void _performCollapse()
     {
-        ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).onCollapse?.Invoke();
+        _properties.onCollapse?.Invoke();
     }
 
 }
@@ -4351,16 +4351,16 @@ public class RenderBlockSemantics : RenderProxyBox
 
     public RenderBlockSemantics(RenderBox? child = null, bool blocking = true) : base(child)
     {
-        this._blocking = blocking;
+        _blocking = blocking;
     }
 
     public virtual bool blocking
     {
-        get => this._blocking;
+        get => _blocking;
         set
         {
             var __value = value;
-            if ((__value == this._blocking))
+            if (__value == _blocking)
             {
                 return;
             }
@@ -4371,13 +4371,13 @@ public class RenderBlockSemantics : RenderProxyBox
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        config.isBlockingSemanticsOfPreviouslyPaintedNodes = this.blocking;
+        config.isBlockingSemanticsOfPreviouslyPaintedNodes = blocking;
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<bool>("blocking", this.blocking));
+        properties.add(new DiagnosticsProperty<bool>("blocking", blocking));
     }
 
 }
@@ -4408,16 +4408,16 @@ public class RenderExcludeSemantics : RenderProxyBox
 
     public RenderExcludeSemantics(RenderBox? child = null, bool excluding = true) : base(child)
     {
-        this._excluding = excluding;
+        _excluding = excluding;
     }
 
     public virtual bool excluding
     {
-        get => this._excluding;
+        get => _excluding;
         set
         {
             var __value = value;
-            if ((__value == this._excluding))
+            if (__value == _excluding)
             {
                 return;
             }
@@ -4427,17 +4427,17 @@ public class RenderExcludeSemantics : RenderProxyBox
     }
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        if (this.excluding)
+        if (excluding)
         {
             return;
         }
-        base.visitChildrenForSemantics((Action<RenderObject>)visitor);
+        base.visitChildrenForSemantics(visitor);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<bool>("excluding", this.excluding));
+        properties.add(new DiagnosticsProperty<bool>("excluding", excluding));
     }
 
 }
@@ -4448,16 +4448,16 @@ public class RenderIndexedSemantics : RenderProxyBox
 
     public RenderIndexedSemantics(RenderBox? child = null, long index = default!) : base(child)
     {
-        this._index = index;
+        _index = index;
     }
 
     public virtual long index
     {
-        get => this._index;
+        get => _index;
         set
         {
             var __value = value;
-            if ((__value == this.index))
+            if (__value == index)
             {
                 return;
             }
@@ -4468,13 +4468,13 @@ public class RenderIndexedSemantics : RenderProxyBox
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        config.indexInParent = this.index;
+        config.indexInParent = index;
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<long>("index", this.index));
+        properties.add(new DiagnosticsProperty<long>("index", index));
     }
 
 }
@@ -4486,24 +4486,24 @@ public class RenderLeaderLayer : RenderProxyBox
 
     public RenderLeaderLayer(LayerLink link, RenderBox? child = null) : base(child)
     {
-        this._link = link;
+        _link = link;
     }
 
     public virtual LayerLink link
     {
-        get => this._link;
+        get => _link;
         set
         {
             var __value = value;
-            if ((Equals(this._link, __value)))
+            if (Equals(_link, __value))
             {
                 return;
             }
-            this._link.leaderSize = null;
+            _link.leaderSize = null;
             _link = __value;
-            if ((this._previousLayoutSize is not null))
+            if (_previousLayoutSize is not null)
             {
-                this._link.leaderSize = this._previousLayoutSize;
+                _link.leaderSize = _previousLayoutSize;
             }
             markNeedsPaint();
         }
@@ -4513,14 +4513,14 @@ public class RenderLeaderLayer : RenderProxyBox
     {
         base.performLayout();
         _previousLayoutSize = size;
-        this.link.leaderSize = size;
+        link.leaderSize = size;
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((layer is null))
+        if (layer is null)
         {
-            layer = new LeaderLayer(link: this.link, offset: offset);
+            layer = new LeaderLayer(link: link, offset: offset);
         }
         else
         {
@@ -4528,12 +4528,12 @@ public class RenderLeaderLayer : RenderProxyBox
             ((Func<LeaderLayer>)(() =>
 {
     var __cascade = leaderLayer;
-    __cascade.link = this.link;
+    __cascade.link = link;
     __cascade.offset = offset;
     return __cascade;
 }))();
         }
-        context.pushLayer(layer!, (Action<PaintingContext, Offset>)base.paint, Offset.zero);
+        context.pushLayer(layer!, base.paint, Offset.zero);
         DartRuntimePrimitives.Assert(() =>
             {
                 layer!.debugCreator = debugCreator;
@@ -4544,7 +4544,7 @@ public class RenderLeaderLayer : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<LayerLink>("link", this.link));
+        properties.add(new DiagnosticsProperty<LayerLink>("link", link));
     }
 
 }
@@ -4561,20 +4561,20 @@ public class RenderFollowerLayer : RenderProxyBox
     {
         global::Doroti.Framework.Painting.Alignment __leaderAnchor = leaderAnchor ?? Alignment.topLeft;
         global::Doroti.Framework.Painting.Alignment __followerAnchor = followerAnchor ?? Alignment.topLeft;
-        this._link = link;
-        this._showWhenUnlinked = showWhenUnlinked;
-        this._offset = offset;
-        this._leaderAnchor = __leaderAnchor;
-        this._followerAnchor = __followerAnchor;
+        _link = link;
+        _showWhenUnlinked = showWhenUnlinked;
+        _offset = offset;
+        _leaderAnchor = __leaderAnchor;
+        _followerAnchor = __followerAnchor;
     }
 
     public virtual LayerLink link
     {
-        get => this._link;
+        get => _link;
         set
         {
             var __value = value;
-            if ((Equals(this._link, __value)))
+            if (Equals(_link, __value))
             {
                 return;
             }
@@ -4584,11 +4584,11 @@ public class RenderFollowerLayer : RenderProxyBox
     }
     public virtual bool showWhenUnlinked
     {
-        get => this._showWhenUnlinked;
+        get => _showWhenUnlinked;
         set
         {
             var __value = value;
-            if ((this._showWhenUnlinked == __value))
+            if (_showWhenUnlinked == __value)
             {
                 return;
             }
@@ -4598,11 +4598,11 @@ public class RenderFollowerLayer : RenderProxyBox
     }
     public virtual global::Doroti.Ui.Offset offset
     {
-        get => this._offset;
+        get => _offset;
         set
         {
             var __value = value;
-            if ((Equals(this._offset, __value)))
+            if (Equals(_offset, __value))
             {
                 return;
             }
@@ -4612,11 +4612,11 @@ public class RenderFollowerLayer : RenderProxyBox
     }
     public virtual global::Doroti.Framework.Painting.Alignment leaderAnchor
     {
-        get => this._leaderAnchor;
+        get => _leaderAnchor;
         set
         {
             var __value = value;
-            if ((Equals(this._leaderAnchor, __value)))
+            if (Equals(_leaderAnchor, __value))
             {
                 return;
             }
@@ -4626,11 +4626,11 @@ public class RenderFollowerLayer : RenderProxyBox
     }
     public virtual global::Doroti.Framework.Painting.Alignment followerAnchor
     {
-        get => this._followerAnchor;
+        get => _followerAnchor;
         set
         {
             var __value = value;
-            if ((Equals(this._followerAnchor, __value)))
+            if (Equals(_followerAnchor, __value))
             {
                 return;
             }
@@ -4648,13 +4648,13 @@ public class RenderFollowerLayer : RenderProxyBox
     public override FollowerLayer? layer => ((FollowerLayer?)base.layer)!;
     public virtual Matrix4 getCurrentTransform()
     {
-        return (this.layer?.getLastTransform() ?? Matrix4.identity());
+        return layer?.getLastTransform() ?? Matrix4.identity();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if (((((LayerLink)this.link).leader is null) && !this.showWhenUnlinked))
+        if ((link.leader is null) && !showWhenUnlinked)
         {
             return false;
         }
@@ -4664,38 +4664,38 @@ public class RenderFollowerLayer : RenderProxyBox
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        return result.addWithPaintTransform(transform: getCurrentTransform(), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
+        return result.addWithPaintTransform(transform: getCurrentTransform(), position: position, hitTest: (result, position) =>
         {
             return base.hitTestChildren(result, position: position);
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        global::Doroti.Ui.Size? leaderSizeLocal = ((LayerLink)this.link).leaderSize;
-        DartRuntimePrimitives.Assert(() => (((((LayerLink)this.link).leaderSize is not null) || (((LayerLink)this.link).leader is null)) || (Equals(this.leaderAnchor, Alignment.topLeft))));
-        global::Doroti.Ui.Offset effectiveLinkedOffset = ((leaderSizeLocal is null) ? this.offset : ((this.leaderAnchor.alongSize(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leaderSizeLocal))) - this.followerAnchor.alongSize(size)) + this.offset));
-        if ((this.layer is null))
+        global::Doroti.Ui.Size? leaderSizeLocal = link.leaderSize;
+        DartRuntimePrimitives.Assert(() => (link.leaderSize is not null) || (link.leader is null) || Equals(leaderAnchor, Alignment.topLeft));
+        global::Doroti.Ui.Offset effectiveLinkedOffset = (leaderSizeLocal is null) ? this.offset : (leaderAnchor.alongSize(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leaderSizeLocal))) - followerAnchor.alongSize(size) + this.offset);
+        if (layer is null)
         {
-            layer = new FollowerLayer(link: this.link, showWhenUnlinked: this.showWhenUnlinked, linkedOffset: effectiveLinkedOffset, unlinkedOffset: offset);
+            layer = new FollowerLayer(link: link, showWhenUnlinked: showWhenUnlinked, linkedOffset: effectiveLinkedOffset, unlinkedOffset: offset);
         }
         else
         {
             ((Func<FollowerLayer?>)(() =>
 {
-    var __cascade = this.layer;
-    __cascade.link = this.link;
-    __cascade.showWhenUnlinked = this.showWhenUnlinked;
+    var __cascade = layer;
+    __cascade.link = link;
+    __cascade.showWhenUnlinked = showWhenUnlinked;
     __cascade.linkedOffset = effectiveLinkedOffset;
     __cascade.unlinkedOffset = offset;
     return __cascade;
 }))();
         }
-        context.pushLayer(this.layer!, (Action<PaintingContext, Offset>)base.paint, Offset.zero, childPaintBounds: Rect.fromLTRB(double.NegativeInfinity, double.NegativeInfinity, double.PositiveInfinity, double.PositiveInfinity));
+        context.pushLayer(layer!, base.paint, Offset.zero, childPaintBounds: Rect.fromLTRB(double.NegativeInfinity, double.NegativeInfinity, double.PositiveInfinity, double.PositiveInfinity));
         DartRuntimePrimitives.Assert(() =>
             {
-                this.layer!.debugCreator = debugCreator;
+                layer!.debugCreator = debugCreator;
                 return true;
             });
     }
@@ -4709,9 +4709,9 @@ public class RenderFollowerLayer : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<LayerLink>("link", this.link));
-        properties.add(new DiagnosticsProperty<bool>("showWhenUnlinked", this.showWhenUnlinked));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset));
+        properties.add(new DiagnosticsProperty<LayerLink>("link", link));
+        properties.add(new DiagnosticsProperty<bool>("showWhenUnlinked", showWhenUnlinked));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset));
         properties.add(new global::Doroti.Framework.Painting.TransformProperty("current transform matrix", getCurrentTransform()));
     }
 
@@ -4728,18 +4728,18 @@ public class RenderAnnotatedRegion<T> : RenderProxyBox
 
     public RenderAnnotatedRegion(T value, bool sized, RenderBox? child = null) : base(child)
     {
-        this._value = value;
-        this._sized = sized;
-        this._layerHandle = new LayerHandle<AnnotatedRegionLayer<T>>();
+        _value = value;
+        _sized = sized;
+        _layerHandle = new LayerHandle<AnnotatedRegionLayer<T>>();
     }
 
     public virtual T value
     {
-        get => this._value;
+        get => _value;
         set
         {
             var newValue = value;
-            if (EqualityComparer<T>.Default.Equals(this._value, newValue))
+            if (EqualityComparer<T>.Default.Equals(_value, newValue))
             {
                 return;
             }
@@ -4749,11 +4749,11 @@ public class RenderAnnotatedRegion<T> : RenderProxyBox
     }
     public virtual bool sized
     {
-        get => this._sized;
+        get => _sized;
         set
         {
             var __value = value;
-            if ((this._sized == __value))
+            if (_sized == __value)
             {
                 return;
             }
@@ -4763,14 +4763,14 @@ public class RenderAnnotatedRegion<T> : RenderProxyBox
     }
     public override void paint(PaintingContext context, Offset offset)
     {
-        var layerLocal = new AnnotatedRegionLayer<T>(this.value, size: (this.sized ? size : null), offset: (this.sized ? offset : null));
-        this._layerHandle.layer = layerLocal;
-        context.pushLayer(layerLocal, (Action<PaintingContext, Offset>)base.paint, offset);
+        var layerLocal = new AnnotatedRegionLayer<T>(value, size: sized ? size : null, offset: sized ? offset : null);
+        _layerHandle.layer = layerLocal;
+        context.pushLayer(layerLocal, base.paint, offset);
     }
 
     public override void dispose()
     {
-        this._layerHandle.layer = null;
+        _layerHandle.layer = null;
         base.dispose();
     }
 

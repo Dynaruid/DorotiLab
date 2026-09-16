@@ -10,9 +10,9 @@ public static partial class SearchLibrary
 {
     public static Future<T?> showSearch<T>(global::Doroti.Framework.Widgets.BuildContext context, SearchDelegate<T> @delegate, string? query = "", bool useRootNavigator = false, bool maintainState = false)
     {
-        @delegate.query = ((query ?? (string)((SearchDelegate<T>)@delegate).query));
+        @delegate.query = query ?? @delegate.query;
         @delegate._currentBody = _SearchBody__search.suggestions;
-        return ((Future<T?>)Navigator.of(context, rootNavigator: useRootNavigator).push(new _SearchPageRoute__search<T>(@delegate: @delegate, maintainState: maintainState)));
+        return Navigator.of(context, rootNavigator: useRootNavigator).push(new _SearchPageRoute__search<T>(@delegate: @delegate, maintainState: maintainState));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -43,7 +43,7 @@ public abstract class SearchDelegate<T>
         this.textInputAction = textInputAction;
         this.autocorrect = autocorrect;
         this.enableSuggestions = enableSuggestions;
-        System.Diagnostics.Debug.Assert(((searchFieldStyle is null) || (searchFieldDecorationTheme is null)));
+        System.Diagnostics.Debug.Assert((searchFieldStyle is null) || (searchFieldDecorationTheme is null));
     }
 
     public abstract global::Doroti.Framework.Widgets.Widget buildSuggestions(global::Doroti.Framework.Widgets.BuildContext context);
@@ -56,40 +56,40 @@ public abstract class SearchDelegate<T>
     {
         ThemeData theme = Theme.of(context);
         ColorScheme colorSchemeLocal = theme.colorScheme;
-        return theme.copyWith(appBarTheme: new AppBarThemeData(systemOverlayStyle: ((Equals(colorSchemeLocal.brightness, Brightness.dark)) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark), backgroundColor: ((Equals(colorSchemeLocal.brightness, Brightness.dark)) ? Colors.grey[900L] : Colors.white), iconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey), titleTextStyle: theme.textTheme.titleLarge, toolbarTextStyle: theme.textTheme.bodyMedium), inputDecorationTheme: (this.searchFieldDecorationTheme ?? new InputDecorationTheme(hintStyle: (this.searchFieldStyle ?? theme.inputDecorationTheme.hintStyle), border: InputBorder.none)));
+        return theme.copyWith(appBarTheme: new AppBarThemeData(systemOverlayStyle: Equals(colorSchemeLocal.brightness, Brightness.dark) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark, backgroundColor: Equals(colorSchemeLocal.brightness, Brightness.dark) ? Colors.grey[900L] : Colors.white, iconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey), titleTextStyle: theme.textTheme.titleLarge, toolbarTextStyle: theme.textTheme.bodyMedium), inputDecorationTheme: searchFieldDecorationTheme ?? new InputDecorationTheme(hintStyle: searchFieldStyle ?? theme.inputDecorationTheme.hintStyle, border: InputBorder.none));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string query
     {
-        get => ((global::Doroti.Framework.Widgets.TextEditingController)this._queryTextController).text;
+        get => _queryTextController.text;
         set
         {
             var __value = value;
-            this._queryTextController.value = new global::Doroti.Framework.Services.TextEditingValue(text: __value, selection: TextSelection.CreateCollapsed(offset: __value.Length));
+            _queryTextController.value = new global::Doroti.Framework.Services.TextEditingValue(text: __value, selection: TextSelection.CreateCollapsed(offset: __value.Length));
         }
     }
     public virtual void showResults(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        this._focusNode?.unfocus();
+        _focusNode?.unfocus();
         _currentBody = _SearchBody__search.results;
     }
 
     public virtual void showSuggestions(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => (this._focusNode is not null), () => (object?)"_focusNode must be set by route before showSuggestions is called.");
-        this._focusNode!.requestFocus();
+        DartRuntimePrimitives.Assert(() => _focusNode is not null, () => (object?)"_focusNode must be set by route before showSuggestions is called.");
+        _focusNode!.requestFocus();
         _currentBody = _SearchBody__search.suggestions;
     }
 
     public virtual void close(global::Doroti.Framework.Widgets.BuildContext context, T result)
     {
         _currentBody = null;
-        this._focusNode?.unfocus();
+        _focusNode?.unfocus();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.NavigatorState>)(() =>
 {
     var __cascade = Navigator.of(context);
-    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (Equals((object?)route, this._route)))));
+    __cascade.popUntil((route) => Equals((object?)route, _route));
     __cascade.pop(result);
     return __cascade;
 }))());
@@ -98,32 +98,32 @@ public abstract class SearchDelegate<T>
     internal virtual void _pop(global::Doroti.Framework.Widgets.BuildContext context)
     {
         _currentBody = null;
-        this._focusNode?.unfocus();
+        _focusNode?.unfocus();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.NavigatorState>)(() =>
 {
     var __cascade = Navigator.of(context);
-    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (Equals((object?)route, this._route)))));
+    __cascade.popUntil((route) => Equals((object?)route, _route));
     __cascade.pop<object>(null);
     return __cascade;
 }))());
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> transitionAnimation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._proxyAnimation);
+    public virtual global::Doroti.Framework.Animation.Animation<double> transitionAnimation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(_proxyAnimation);
     internal virtual _SearchBody__search? _currentBody
     {
-        get => ((global::Doroti.Framework.Foundation.ValueNotifier<_SearchBody__search?>)this._currentBodyNotifier).value;
+        get => _currentBodyNotifier.value;
         set
         {
             var __value = value;
-            this._currentBodyNotifier.value = __value;
+            _currentBodyNotifier.value = __value;
         }
     }
     public virtual void dispose()
     {
-        this._currentBodyNotifier.dispose();
-        this._focusNode?.dispose();
-        this._queryTextController.dispose();
-        this._proxyAnimation.parent = null;
+        _currentBodyNotifier.dispose();
+        _focusNode?.dispose();
+        _queryTextController.dispose();
+        _proxyAnimation.parent = null;
     }
 
 }
@@ -143,8 +143,8 @@ internal class _SearchPageRoute__search<T> : global::Doroti.Framework.Widgets.Pa
     internal _SearchPageRoute__search(SearchDelegate<T> @delegate, bool maintainState)
     {
         this.@delegate = @delegate;
-        this.__field_maintainState = maintainState;
-        DartRuntimePrimitives.Assert(() => (((SearchDelegate<T>)this.@delegate)._route is null), () => (object?)$"The {DartRuntimePrimitives.RuntimeType(this.@delegate)} instance is currently used by another active " + "search. Please close that search by calling close() on the SearchDelegate " + "before opening another search with the same delegate instance.");
+        __field_maintainState = maintainState;
+        DartRuntimePrimitives.Assert(() => this.@delegate._route is null, () => (object?)$"The {DartRuntimePrimitives.RuntimeType(this.@delegate)} instance is currently used by another active " + "search. Please close that search by calling close() on the SearchDelegate " + "before opening another search with the same delegate instance.");
         this.@delegate._route = this;
     }
 
@@ -153,30 +153,30 @@ internal class _SearchPageRoute__search<T> : global::Doroti.Framework.Widgets.Pa
     public override Duration transitionDuration => Duration.Create(milliseconds: 300L);
     public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: child));
+        return new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Animation.Animation<double> createAnimation()
     {
-        global::Doroti.Framework.Animation.Animation<double> animation = ((global::Doroti.Framework.Animation.Animation<double>)base.createAnimation());
-        ((SearchDelegate<T>)this.@delegate)._proxyAnimation.parent = animation;
+        global::Doroti.Framework.Animation.Animation<double> animation = base.createAnimation();
+        @delegate._proxyAnimation.parent = animation;
         return animation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _SearchPage__search<T>(@delegate: this.@delegate, animation: animation));
+        return new _SearchPage__search<T>(@delegate: @delegate, animation: animation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didComplete(T? result)
     {
         base.didComplete(result);
-        DartRuntimePrimitives.Assert(() => (Equals(((SearchDelegate<T>)this.@delegate)._route, this)));
-        this.@delegate._route = null;
-        this.@delegate._currentBody = null;
+        DartRuntimePrimitives.Assert(() => Equals(@delegate._route, this));
+        @delegate._route = null;
+        @delegate._currentBody = null;
     }
 
 }
@@ -205,16 +205,16 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
         {
             if (!__late_focusNode_initialized)
             {
-                __late_focusNode = new global::Doroti.Framework.Widgets.FocusNode(onKeyEvent: ((global::System.Func<global::Doroti.Framework.Widgets.FocusNode, global::Doroti.Framework.Services.KeyEvent, global::Doroti.Framework.Widgets.KeyEventResult>?)((node, @event) =>
+                __late_focusNode = new global::Doroti.Framework.Widgets.FocusNode(onKeyEvent: (node, @event) =>
                 {
-                    if (((@event is global::Doroti.Framework.Services.KeyDownEvent) && (Equals(((global::Doroti.Framework.Services.KeyDownEvent)@event).logicalKey, LogicalKeyboardKey.escape))))
+                    if ((@event is global::Doroti.Framework.Services.KeyDownEvent) && Equals(((global::Doroti.Framework.Services.KeyDownEvent)@event).logicalKey, LogicalKeyboardKey.escape))
                     {
-                        ((_SearchPage__search<T>)this.widget).@delegate._pop(this.context);
+                        widget.@delegate._pop(context);
                         return KeyEventResult.handled;
                     }
                     return KeyEventResult.ignored;
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
+                });
                 __late_focusNode_initialized = true;
             }
             return __late_focusNode;
@@ -224,21 +224,21 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
     public override void initState()
     {
         base.initState();
-        ((_SearchPage__search<T>)this.widget).@delegate._queryTextController.addListener(this._onQueryChanged);
-        ((_SearchPage__search<T>)this.widget).animation.addStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
-        ((_SearchPage__search<T>)this.widget).@delegate._currentBodyNotifier.addListener(this._onSearchBodyChanged);
-        this.focusNode.addListener(this._onFocusChanged);
-        ((_SearchPage__search<T>)this.widget).@delegate._focusNode = this.focusNode;
+        widget.@delegate._queryTextController.addListener(_onQueryChanged);
+        widget.animation.addStatusListener(_onAnimationStatusChanged);
+        widget.@delegate._currentBodyNotifier.addListener(_onSearchBodyChanged);
+        focusNode.addListener(_onFocusChanged);
+        widget.@delegate._focusNode = focusNode;
     }
 
     public override void dispose()
     {
         base.dispose();
-        ((_SearchPage__search<T>)this.widget).@delegate._queryTextController.removeListener(this._onQueryChanged);
-        ((_SearchPage__search<T>)this.widget).animation.removeStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
-        ((_SearchPage__search<T>)this.widget).@delegate._currentBodyNotifier.removeListener(this._onSearchBodyChanged);
-        ((_SearchPage__search<T>)this.widget).@delegate._focusNode = null;
-        this.focusNode.dispose();
+        widget.@delegate._queryTextController.removeListener(_onQueryChanged);
+        widget.animation.removeStatusListener(_onAnimationStatusChanged);
+        widget.@delegate._currentBodyNotifier.removeListener(_onSearchBodyChanged);
+        widget.@delegate._focusNode = null;
+        focusNode.dispose();
     }
 
     internal virtual void _onAnimationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
@@ -247,65 +247,65 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
         {
             return;
         }
-        ((_SearchPage__search<T>)this.widget).animation.removeStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
-        if ((Equals(((_SearchPage__search<T>)this.widget).@delegate._currentBody, _SearchBody__search.suggestions)))
+        widget.animation.removeStatusListener(_onAnimationStatusChanged);
+        if (Equals(widget.@delegate._currentBody, _SearchBody__search.suggestions))
         {
-            this.focusNode.requestFocus();
+            focusNode.requestFocus();
         }
     }
 
     public override void didUpdateWidget(_SearchPage__search<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((_SearchPage__search<T>)this.widget).@delegate, ((_SearchPage__search<T>)oldWidget).@delegate)))
+        if (!Equals(widget.@delegate, oldWidget.@delegate))
         {
-            ((_SearchPage__search<T>)oldWidget).@delegate._queryTextController.removeListener(this._onQueryChanged);
-            ((_SearchPage__search<T>)this.widget).@delegate._queryTextController.addListener(this._onQueryChanged);
-            ((_SearchPage__search<T>)oldWidget).@delegate._currentBodyNotifier.removeListener(this._onSearchBodyChanged);
-            ((_SearchPage__search<T>)this.widget).@delegate._currentBodyNotifier.addListener(this._onSearchBodyChanged);
-            ((_SearchPage__search<T>)oldWidget).@delegate._focusNode = null;
-            ((_SearchPage__search<T>)this.widget).@delegate._focusNode = this.focusNode;
+            oldWidget.@delegate._queryTextController.removeListener(_onQueryChanged);
+            widget.@delegate._queryTextController.addListener(_onQueryChanged);
+            oldWidget.@delegate._currentBodyNotifier.removeListener(_onSearchBodyChanged);
+            widget.@delegate._currentBodyNotifier.addListener(_onSearchBodyChanged);
+            oldWidget.@delegate._focusNode = null;
+            widget.@delegate._focusNode = focusNode;
         }
     }
 
     internal virtual void _onFocusChanged()
     {
-        if ((((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus && (!Equals(((_SearchPage__search<T>)this.widget).@delegate._currentBody, _SearchBody__search.suggestions))))
+        if (focusNode.hasFocus && (!Equals(widget.@delegate._currentBody, _SearchBody__search.suggestions)))
         {
-            ((_SearchPage__search<T>)this.widget).@delegate.showSuggestions(this.context);
+            widget.@delegate.showSuggestions(context);
         }
     }
 
     internal virtual void _onQueryChanged()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
     internal virtual void _onSearchBodyChanged()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        ThemeData theme = ((ThemeData)((_SearchPage__search<T>)this.widget).@delegate.appBarTheme(context));
-        string searchFieldLabelLocal = (((_SearchPage__search<T>)this.widget).@delegate.searchFieldLabel ?? MaterialLocalizations.of(context).searchFieldLabel);
+        ThemeData theme = widget.@delegate.appBarTheme(context);
+        string searchFieldLabelLocal = widget.@delegate.searchFieldLabel ?? MaterialLocalizations.of(context).searchFieldLabel;
         global::Doroti.Framework.Widgets.Widget? bodyLocal = default!;
-        switch (((_SearchPage__search<T>)this.widget).@delegate._currentBody)
+        switch (widget.@delegate._currentBody)
         {
             case _SearchBody__search.suggestions:
                 {
-                    bodyLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.KeyedSubtree(key: new global::Doroti.Framework.Foundation.ValueKey<_SearchBody__search>(_SearchBody__search.suggestions), child: ((_SearchPage__search<T>)this.widget).@delegate.buildSuggestions(context)));
+                    bodyLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.KeyedSubtree(key: new global::Doroti.Framework.Foundation.ValueKey<_SearchBody__search>(_SearchBody__search.suggestions), child: widget.@delegate.buildSuggestions(context)));
                     break;
                 }
             case _SearchBody__search.results:
                 {
-                    bodyLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.KeyedSubtree(key: new global::Doroti.Framework.Foundation.ValueKey<_SearchBody__search>(_SearchBody__search.results), child: ((_SearchPage__search<T>)this.widget).@delegate.buildResults(context)));
+                    bodyLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.KeyedSubtree(key: new global::Doroti.Framework.Foundation.ValueKey<_SearchBody__search>(_SearchBody__search.results), child: widget.@delegate.buildResults(context)));
                     break;
                 }
             case null:
@@ -331,7 +331,7 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, scopesRoute: true, namesRoute: true, label: routeName, child: new Theme(data: theme, child: new Scaffold(appBar: new AppBar(leadingWidth: ((_SearchPage__search<T>)this.widget).@delegate.leadingWidth, automaticallyImplyLeading: (((_SearchPage__search<T>)this.widget).@delegate.automaticallyImplyLeading ?? true), leading: ((_SearchPage__search<T>)this.widget).@delegate.buildLeading(context), title: new global::Doroti.Framework.Widgets.Semantics(inputType: SemanticsInputType.search, child: new TextField(controller: ((_SearchPage__search<T>)this.widget).@delegate._queryTextController, focusNode: this.focusNode, style: (((_SearchPage__search<T>)this.widget).@delegate.searchFieldStyle ?? theme.textTheme.titleLarge), textInputAction: ((_SearchPage__search<T>)this.widget).@delegate.textInputAction, autocorrect: ((_SearchPage__search<T>)this.widget).@delegate.autocorrect, enableSuggestions: ((_SearchPage__search<T>)this.widget).@delegate.enableSuggestions, keyboardType: ((_SearchPage__search<T>)this.widget).@delegate.keyboardType, onSubmitted: ((global::System.Action<string>)((_) => { ((_SearchPage__search<T>)this.widget).@delegate.showResults(context); })), decoration: new InputDecoration(hintText: searchFieldLabelLocal))), flexibleSpace: ((_SearchPage__search<T>)this.widget).@delegate.buildFlexibleSpace(context), actions: ((_SearchPage__search<T>)this.widget).@delegate.buildActions(context), bottom: ((_SearchPage__search<T>)this.widget).@delegate.buildBottom(context)), body: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: Duration.Create(milliseconds: 300L), child: bodyLocal)))));
+        return new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, scopesRoute: true, namesRoute: true, label: routeName, child: new Theme(data: theme, child: new Scaffold(appBar: new AppBar(leadingWidth: widget.@delegate.leadingWidth, automaticallyImplyLeading: widget.@delegate.automaticallyImplyLeading ?? true, leading: widget.@delegate.buildLeading(context), title: new global::Doroti.Framework.Widgets.Semantics(inputType: SemanticsInputType.search, child: new TextField(controller: widget.@delegate._queryTextController, focusNode: focusNode, style: widget.@delegate.searchFieldStyle ?? theme.textTheme.titleLarge, textInputAction: widget.@delegate.textInputAction, autocorrect: widget.@delegate.autocorrect, enableSuggestions: widget.@delegate.enableSuggestions, keyboardType: widget.@delegate.keyboardType, onSubmitted: (_) => { widget.@delegate.showResults(context); }, decoration: new InputDecoration(hintText: searchFieldLabelLocal))), flexibleSpace: widget.@delegate.buildFlexibleSpace(context), actions: widget.@delegate.buildActions(context), bottom: widget.@delegate.buildBottom(context)), body: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: Duration.Create(milliseconds: 300L), child: bodyLocal))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

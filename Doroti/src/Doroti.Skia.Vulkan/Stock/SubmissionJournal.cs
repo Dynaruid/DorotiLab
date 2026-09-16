@@ -97,7 +97,7 @@ internal sealed class SubmissionJournal
                 var current = proposed.GetValueOrDefault(t.Image, (t.Image.Layout, t.Image.Family));
                 if (t.Old != ImageLayout.Undefined && current.Layout != t.Old)
                     throw new InvalidOperationException($"Image {t.Image.Handle:x}/{t.Image.Epoch}: expected {t.Old}, scheduled {current.Layout}.");
-                if ((t.SourceFamily == Vk.QueueFamilyIgnored) != (t.DestinationFamily == Vk.QueueFamilyIgnored))
+                if (t.SourceFamily == Vk.QueueFamilyIgnored != (t.DestinationFamily == Vk.QueueFamilyIgnored))
                     throw new NotSupportedException("Partial queue ownership descriptor.");
                 if (t.SourceFamily != Vk.QueueFamilyIgnored && (t.SourceFamily != current.Family || t.DestinationFamily != current.Family))
                     throw new NotSupportedException("Host Graphite target must stay in its single queue family.");

@@ -16,23 +16,23 @@ public class StretchEffect : StatelessWidget
         this.stretchStrength = stretchStrength;
         this.axis = axis;
         this.child = child;
-        System.Diagnostics.Debug.Assert(((stretchStrength >= -1.0) && (stretchStrength <= 1.0)));
+        System.Diagnostics.Debug.Assert((stretchStrength >= -1.0) && (stretchStrength <= 1.0));
     }
 
     internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _getAlignment(TextDirection direction)
     {
-        bool isForward = (this.stretchStrength > 0L);
-        if ((Equals(this.axis, Axis.vertical)))
+        bool isForward = stretchStrength > 0L;
+        if (Equals(axis, Axis.vertical))
         {
-            return ((global::Doroti.Framework.Painting.AlignmentGeometry)(isForward ? AlignmentDirectional.topCenter : AlignmentDirectional.bottomCenter));
+            return isForward ? AlignmentDirectional.topCenter : AlignmentDirectional.bottomCenter;
         }
-        if ((Equals(direction, TextDirection.rtl)))
+        if (Equals(direction, TextDirection.rtl))
         {
-            return ((global::Doroti.Framework.Painting.AlignmentGeometry)(isForward ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart));
+            return isForward ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart;
         }
         else
         {
-            return ((global::Doroti.Framework.Painting.AlignmentGeometry)(isForward ? AlignmentDirectional.centerStart : AlignmentDirectional.centerEnd));
+            return isForward ? AlignmentDirectional.centerStart : AlignmentDirectional.centerEnd;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -41,25 +41,25 @@ public class StretchEffect : StatelessWidget
     {
         if (ImageFilter.isShaderFilterSupported)
         {
-            return ((Widget)new _StretchOverscrollEffect__stretch_effect(stretchStrength: this.stretchStrength, axis: this.axis, child: this.child));
+            return new _StretchOverscrollEffect__stretch_effect(stretchStrength: stretchStrength, axis: axis, child: child);
         }
         global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
         var x = 1.0;
         var y = 1.0;
-        switch (this.axis)
+        switch (axis)
         {
             case Axis.horizontal:
                 {
-                    x += this.stretchStrength.abs();
+                    x += stretchStrength.abs();
                     break;
                 }
             case Axis.vertical:
                 {
-                    y += this.stretchStrength.abs();
+                    y += stretchStrength.abs();
                     break;
                 }
         }
-        return ((Widget)new Transform(alignment: _getAlignment(textDirection), transform: Matrix4.diagonal3Values(x, y, 1.0), filterQuality: ((this.stretchStrength == 0L) ? null : FilterQuality.medium), child: this.child));
+        return new Transform(alignment: _getAlignment(textDirection), transform: Matrix4.diagonal3Values(x, y, 1.0), filterQuality: (stretchStrength == 0L) ? null : FilterQuality.medium, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,7 +76,7 @@ internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
         this.stretchStrength = stretchStrength;
         this.axis = axis;
         this.child = child;
-        System.Diagnostics.Debug.Assert(((stretchStrength >= -1.0) && (stretchStrength <= 1.0)));
+        System.Diagnostics.Debug.Assert((stretchStrength >= -1.0) && (stretchStrength <= 1.0));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _StretchOverscrollEffectState__stretch_effect());
@@ -91,7 +91,7 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
 
     public override void dispose()
     {
-        this._fragmentShader?.dispose();
+        _fragmentShader?.dispose();
         base.dispose();
     }
 
@@ -100,40 +100,40 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
         base.initState();
         _StretchEffectShader__stretch_effect.initializeShader(() =>
         {
-            if (this.mounted)
-                this.setState(() => { });
+            if (mounted)
+                setState(() => { });
         });
     }
 
     public override Widget build(BuildContext context)
     {
-        bool isShaderNeeded = (((_StretchOverscrollEffect__stretch_effect)this.widget).stretchStrength.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance);
+        bool isShaderNeeded = widget.stretchStrength.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance;
         global::Doroti.Ui.ImageFilter imageFilterLocal = default!;
         if (_StretchEffectShader__stretch_effect._initialized)
         {
-            this._fragmentShader?.dispose();
+            _fragmentShader?.dispose();
             _fragmentShader = _StretchEffectShader__stretch_effect._program!.fragmentShader();
-            this._fragmentShader!.setFloat(2L, maxStretchIntensity);
-            if ((Equals(((_StretchOverscrollEffect__stretch_effect)this.widget).axis, Axis.vertical)))
+            _fragmentShader!.setFloat(2L, maxStretchIntensity);
+            if (Equals(widget.axis, Axis.vertical))
             {
-                this._fragmentShader!.setFloat(3L, 0.0);
-                this._fragmentShader!.setFloat(4L, ((_StretchOverscrollEffect__stretch_effect)this.widget).stretchStrength);
+                _fragmentShader!.setFloat(3L, 0.0);
+                _fragmentShader!.setFloat(4L, widget.stretchStrength);
             }
             else
             {
-                this._fragmentShader!.setFloat(3L, ((_StretchOverscrollEffect__stretch_effect)this.widget).stretchStrength);
-                this._fragmentShader!.setFloat(4L, 0.0);
+                _fragmentShader!.setFloat(3L, widget.stretchStrength);
+                _fragmentShader!.setFloat(4L, 0.0);
             }
-            this._fragmentShader!.setFloat(5L, interpolationStrength);
-            imageFilterLocal = new global::Doroti.Ui.ImageFilter(this._fragmentShader!);
+            _fragmentShader!.setFloat(5L, interpolationStrength);
+            imageFilterLocal = new global::Doroti.Ui.ImageFilter(_fragmentShader!);
         }
         else
         {
-            this._fragmentShader?.dispose();
+            _fragmentShader?.dispose();
             _fragmentShader = null;
             imageFilterLocal = _emptyFilter;
         }
-        return ((Widget)new ImageFiltered(imageFilter: imageFilterLocal, enabled: isShaderNeeded, child: new CustomPaint(painter: (isShaderNeeded ? new _StretchEffectPainter__stretch_effect() : null), child: ((_StretchOverscrollEffect__stretch_effect)this.widget).child)));
+        return new ImageFiltered(imageFilter: imageFilterLocal, enabled: isShaderNeeded, child: new CustomPaint(painter: isShaderNeeded ? new _StretchEffectPainter__stretch_effect() : null, child: widget.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -150,7 +150,7 @@ internal class _StretchEffectPainter__stretch_effect : global::Doroti.Framework.
     __cascade.style = PaintingStyle.fill;
     return __cascade;
 }))();
-        canvas.drawPoints(PointMode.points, new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset((size.width - 1L), 0), new global::Doroti.Ui.Offset(0, (size.height - 1L)), new global::Doroti.Ui.Offset((size.width - 1L), (size.height - 1L)) }, paintLocal);
+        canvas.drawPoints(PointMode.points, new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset(size.width - 1L, 0), new global::Doroti.Ui.Offset(0, size.height - 1L), new global::Doroti.Ui.Offset(size.width - 1L, size.height - 1L) }, paintLocal);
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;

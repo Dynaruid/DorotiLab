@@ -33,7 +33,7 @@ public class ContextMenuButtonItem
 
     public virtual ContextMenuButtonItem copyWith(global::System.Action? onPressed = null, ContextMenuButtonType? type = null, string? label = null)
     {
-        return new ContextMenuButtonItem(onPressed: ((onPressed ?? (global::System.Action?)this.onPressed)), type: (type ?? this.type), label: (label ?? this.label));
+        return new ContextMenuButtonItem(onPressed: onPressed ?? this.onPressed, type: type ?? this.type, label: label ?? this.label);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -41,14 +41,14 @@ public class ContextMenuButtonItem
     {
         var __other = other as ContextMenuButtonItem;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is ContextMenuButtonItem) && (((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).label == this.label)) && (Equals((global::System.Action?)((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).onPressed, (global::System.Action?)this.onPressed))) && (Equals(((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).type, this.type)));
+        return (__other is ContextMenuButtonItem) && (__other.label == label) && Equals(__other.onPressed, onPressed) && Equals(__other.type, type);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.label, this.onPressed, this.type));
-    public override string ToString() => $"ContextMenuButtonItem {this.type}, {this.label}";
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(label, onPressed, type));
+    public override string ToString() => $"ContextMenuButtonItem {type}, {label}";
 }
 

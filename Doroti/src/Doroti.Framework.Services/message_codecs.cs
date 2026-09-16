@@ -27,7 +27,7 @@ public class StringCodec : MessageCodec<string>
 
     public virtual string? decodeMessage(ByteData? message)
     {
-        if ((message is null))
+        if (message is null)
         {
             return null;
         }
@@ -37,7 +37,7 @@ public class StringCodec : MessageCodec<string>
 
     public virtual ByteData? encodeMessage(string? message)
     {
-        if ((message is null))
+        if (message is null)
         {
             return null;
         }
@@ -55,7 +55,7 @@ public class JSONMessageCodec : MessageCodec<object?>
 
     public virtual ByteData? encodeMessage(object? message)
     {
-        if ((message is null))
+        if (message is null)
         {
             return null;
         }
@@ -65,7 +65,7 @@ public class JSONMessageCodec : MessageCodec<object?>
 
     public virtual object? decodeMessage(ByteData? message)
     {
-        if ((message is null))
+        if (message is null)
         {
             return message;
         }
@@ -101,23 +101,23 @@ public class JSONMethodCodec : MethodCodec
     public virtual object? decodeEnvelope(ByteData envelope)
     {
         object? decoded = new JSONMessageCodec().decodeMessage(envelope);
-        if ((decoded is not System.Collections.IList))
+        if (decoded is not System.Collections.IList)
         {
             throw new FormatException($"Expected envelope List, got {decoded}");
         }
-        if ((((List<object>)decoded).Count == 1L))
+        if (((List<object>)decoded).Count == 1L)
         {
-            return ((List<object>)decoded)[(int)(0L)];
+            return ((List<object>)decoded)[(int)0L];
         }
-        if ((((((List<object>)decoded).Count == 3L) && (((List<object>)decoded)[(int)(0L)] is string)) && (((((List<object>)decoded)[(int)(1L)] is null) || (((List<object>)decoded)[(int)(1L)] is string)))))
+        if ((((List<object>)decoded).Count == 3L) && (((List<object>)decoded)[(int)0L] is string) && ((((List<object>)decoded)[(int)1L] is null) || (((List<object>)decoded)[(int)1L] is string)))
         {
-            throw new PlatformException(code: ((string?)((List<object>)decoded)[(int)(0L)])!, message: ((string?)((List<object>)decoded)[(int)(1L)])!, details: ((List<object>)decoded)[(int)(2L)]);
+            throw new PlatformException(code: ((string?)((List<object>)decoded)[(int)0L])!, message: ((string?)((List<object>)decoded)[(int)1L])!, details: ((List<object>)decoded)[(int)2L]);
         }
-        if (((((((List<object>)decoded).Count == 4L) && (((List<object>)decoded)[(int)(0L)] is string)) && (((((List<object>)decoded)[(int)(1L)] is null) || (((List<object>)decoded)[(int)(1L)] is string)))) && (((((List<object>)decoded)[(int)(3L)] is null) || (((List<object>)decoded)[(int)(3L)] is string)))))
+        if ((((List<object>)decoded).Count == 4L) && (((List<object>)decoded)[(int)0L] is string) && ((((List<object>)decoded)[(int)1L] is null) || (((List<object>)decoded)[(int)1L] is string)) && ((((List<object>)decoded)[(int)3L] is null) || (((List<object>)decoded)[(int)3L] is string)))
         {
-            throw new PlatformException(code: ((string?)((List<object>)decoded)[(int)(0L)])!, message: ((string?)((List<object>)decoded)[(int)(1L)])!, details: ((List<object>)decoded)[(int)(2L)], stacktrace: ((string?)((List<object>)decoded)[(int)(3L)])!);
+            throw new PlatformException(code: ((string?)((List<object>)decoded)[(int)0L])!, message: ((string?)((List<object>)decoded)[(int)1L])!, details: ((List<object>)decoded)[(int)2L], stacktrace: ((string?)((List<object>)decoded)[(int)3L])!);
         }
-        throw new FormatException($"Invalid envelope: {((List<object>)decoded)}");
+        throw new FormatException($"Invalid envelope: {(List<object>)decoded}");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -159,7 +159,7 @@ public class StandardMessageCodec : MessageCodec<object?>
 
     public virtual ByteData? encodeMessage(object? message)
     {
-        if ((message is null))
+        if (message is null)
         {
             return null;
         }
@@ -171,7 +171,7 @@ public class StandardMessageCodec : MessageCodec<object?>
 
     public virtual object? decodeMessage(ByteData? message)
     {
-        if ((message is null))
+        if (message is null)
         {
             return null;
         }
@@ -187,7 +187,7 @@ public class StandardMessageCodec : MessageCodec<object?>
 
     public virtual void writeValue(WriteBuffer buffer, object? value)
     {
-        if ((value is null))
+        if (value is null)
         {
             buffer.putUint8(_valueNull);
         }
@@ -195,28 +195,28 @@ public class StandardMessageCodec : MessageCodec<object?>
         {
             if (value is bool value__as14776)
             {
-                buffer.putUint8((((bool)value__as14776) ? _valueTrue : _valueFalse));
+                buffer.putUint8(value__as14776 ? _valueTrue : _valueFalse);
             }
             else
             {
                 if (value is double value__as14865)
                 {
                     buffer.putUint8(_valueFloat64);
-                    buffer.putFloat64(((double)value__as14865));
+                    buffer.putFloat64((double)value__as14865);
                 }
                 else
                 {
                     if (value is long value__as15467)
                     {
-                        if ((((-2147483647L - 1L) <= ((long)value__as15467)) && (value__as15467 <= 2147483647L)))
+                        if (((-2147483647L - 1L) <= value__as15467) && (value__as15467 <= 2147483647L))
                         {
                             buffer.putUint8(_valueInt32);
-                            buffer.putInt32(((long)value__as15467));
+                            buffer.putInt32(value__as15467);
                         }
                         else
                         {
                             buffer.putUint8(_valueInt64);
-                            buffer.putInt64(((long)value__as15467));
+                            buffer.putInt64(value__as15467);
                         }
                     }
                     else
@@ -224,26 +224,26 @@ public class StandardMessageCodec : MessageCodec<object?>
                         if (value is string value__as15722)
                         {
                             buffer.putUint8(_valueString);
-                            var asciiBytes = new Uint8List(((string)value__as15722).Length);
+                            var asciiBytes = new Uint8List(value__as15722.Length);
                             Uint8List? utf8Bytes = default!;
                             var utf8Offset = 0L;
-                            for (var i = 0L; (i < ((string)value__as15722).Length); i += 1L)
+                            for (var i = 0L; i < value__as15722.Length; i += 1L)
                             {
-                                long @char = ((string)value__as15722).codeUnitAt(i);
-                                if ((@char <= 127L))
+                                long @char = value__as15722.codeUnitAt(i);
+                                if (@char <= 127L)
                                 {
                                     asciiBytes[i] = @char;
                                 }
                                 else
                                 {
-                                    utf8Bytes = Dart_convertLibrary.utf8.encode(((string)value__as15722).substring(i));
+                                    utf8Bytes = Dart_convertLibrary.utf8.encode(value__as15722.substring(i));
                                     utf8Offset = i;
                                     break;
                                 }
                             }
-                            if ((utf8Bytes is not null))
+                            if (utf8Bytes is not null)
                             {
-                                writeSize(buffer, (utf8Offset + utf8Bytes.Count));
+                                writeSize(buffer, utf8Offset + utf8Bytes.Count);
                                 buffer.putUint8List(new Uint8List(asciiBytes, 0L, utf8Offset));
                                 buffer.putUint8List(utf8Bytes);
                             }
@@ -258,40 +258,40 @@ public class StandardMessageCodec : MessageCodec<object?>
                             if (value is Uint8List value__as16573)
                             {
                                 buffer.putUint8(_valueUint8List);
-                                writeSize(buffer, ((Uint8List)value__as16573).Count);
-                                buffer.putUint8List(((Uint8List)value__as16573));
+                                writeSize(buffer, value__as16573.Count);
+                                buffer.putUint8List(value__as16573);
                             }
                             else
                             {
                                 if (value is Int32List value__as16723)
                                 {
                                     buffer.putUint8(_valueInt32List);
-                                    writeSize(buffer, ((Int32List)value__as16723).Count);
-                                    buffer.putInt32List(((Int32List)value__as16723));
+                                    writeSize(buffer, value__as16723.Count);
+                                    buffer.putInt32List(value__as16723);
                                 }
                                 else
                                 {
                                     if (value is Int64List value__as16873)
                                     {
                                         buffer.putUint8(_valueInt64List);
-                                        writeSize(buffer, ((Int64List)value__as16873).Count);
-                                        buffer.putInt64List(((Int64List)value__as16873));
+                                        writeSize(buffer, value__as16873.Count);
+                                        buffer.putInt64List(value__as16873);
                                     }
                                     else
                                     {
                                         if (value is Float32List value__as17023)
                                         {
                                             buffer.putUint8(_valueFloat32List);
-                                            writeSize(buffer, ((Float32List)value__as17023).Count);
-                                            buffer.putFloat32List(((Float32List)value__as17023));
+                                            writeSize(buffer, value__as17023.Count);
+                                            buffer.putFloat32List(value__as17023);
                                         }
                                         else
                                         {
                                             if (value is Float64List value__as17179)
                                             {
                                                 buffer.putUint8(_valueFloat64List);
-                                                writeSize(buffer, ((Float64List)value__as17179).Count);
-                                                buffer.putFloat64List(((Float64List)value__as17179));
+                                                writeSize(buffer, value__as17179.Count);
+                                                buffer.putFloat64List(value__as17179);
                                             }
                                             else
                                             {
@@ -407,9 +407,9 @@ public class StandardMessageCodec : MessageCodec<object?>
                 {
                     long lengthCandidate = readSize(buffer);
                     var result = new List<object?>(Enumerable.Repeat<object?>(null, checked((int)lengthCandidate)));
-                    for (var i = 0L; (i < lengthCandidate); i++)
+                    for (var i = 0L; i < lengthCandidate; i++)
                     {
-                        result[(int)(i)] = readValue(buffer);
+                        result[(int)i] = readValue(buffer);
                     }
                     return result;
                 }
@@ -417,7 +417,7 @@ public class StandardMessageCodec : MessageCodec<object?>
                 {
                     long lengthA = readSize(buffer);
                     var resultLocal = new DartMap<object?, object?>();
-                    for (var iLocal = 0L; (iLocal < lengthA); iLocal++)
+                    for (var iLocal = 0L; iLocal < lengthA; iLocal++)
                     {
                         resultLocal[readValue(buffer)] = readValue(buffer);
                     }
@@ -433,14 +433,14 @@ public class StandardMessageCodec : MessageCodec<object?>
 
     public virtual void writeSize(WriteBuffer buffer, long value)
     {
-        DartRuntimePrimitives.Assert(() => ((0L <= value) && (value <= 4294967295L)));
-        if ((value < 254L))
+        DartRuntimePrimitives.Assert(() => (0L <= value) && (value <= 4294967295L));
+        if (value < 254L)
         {
             buffer.putUint8(value);
         }
         else
         {
-            if ((value <= 65535L))
+            if (value <= 65535L)
             {
                 buffer.putUint8(254L);
                 buffer.putUint16(value);
@@ -456,7 +456,7 @@ public class StandardMessageCodec : MessageCodec<object?>
     public virtual long readSize(ReadBuffer buffer)
     {
         long value = buffer.getUint8();
-        return (value switch { var __case20966 when Equals(__case20966, 254L) => buffer.getUint16(), var __case20999 when Equals(__case20999, 255L) => buffer.getUint32(), _ => value });
+        return value switch { var __case20966 when Equals(__case20966, 254L) => buffer.getUint16(), var __case20999 when Equals(__case20999, 255L) => buffer.getUint32(), _ => value };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -485,9 +485,9 @@ public class StandardMethodCodec : MethodCodec
         var buffer = new ReadBuffer(methodCall!);
         object? method = messageCodec.readValue(buffer);
         object? arguments = messageCodec.readValue(buffer);
-        if (((method is string) && !buffer.hasRemaining))
+        if ((method is string) && !buffer.hasRemaining)
         {
-            return new MethodCall(((string)method), arguments);
+            return new MethodCall((string)method, arguments);
         }
         else
         {
@@ -518,22 +518,22 @@ public class StandardMethodCodec : MethodCodec
 
     public virtual object? decodeEnvelope(ByteData envelope)
     {
-        if ((envelope.lengthInBytes == 0L))
+        if (envelope.lengthInBytes == 0L)
         {
             throw new FormatException("Expected envelope, got nothing");
         }
         var buffer = new ReadBuffer(envelope);
-        if ((buffer.getUint8() == 0L))
+        if (buffer.getUint8() == 0L)
         {
             return messageCodec.readValue(buffer);
         }
         object? errorCode = messageCodec.readValue(buffer);
         object? errorMessage = messageCodec.readValue(buffer);
         object? errorDetails = messageCodec.readValue(buffer);
-        string? errorStacktrace = (buffer.hasRemaining ? ((string?)messageCodec.readValue(buffer))! : null);
-        if ((((errorCode is string) && (((errorMessage is null) || (errorMessage is string)))) && !buffer.hasRemaining))
+        string? errorStacktrace = buffer.hasRemaining ? ((string?)messageCodec.readValue(buffer))! : null;
+        if ((errorCode is string) && ((errorMessage is null) || (errorMessage is string)) && !buffer.hasRemaining)
         {
-            throw new PlatformException(code: ((string)errorCode), message: ((string?)errorMessage)!, details: errorDetails, stacktrace: errorStacktrace);
+            throw new PlatformException(code: (string)errorCode, message: ((string?)errorMessage)!, details: errorDetails, stacktrace: errorStacktrace);
         }
         else
         {

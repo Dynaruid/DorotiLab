@@ -17,16 +17,16 @@ public class BeveledRectangleBorder : OutlinedBorder
 
     public override ShapeBorder scale(double t)
     {
-        return new BeveledRectangleBorder(side: side.scale(t), borderRadius: (this.borderRadius.op_Multiply(t)));
+        return new BeveledRectangleBorder(side: side.scale(t), borderRadius: borderRadius.op_Multiply(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is BeveledRectangleBorder))
+        if (a is BeveledRectangleBorder)
         {
             BeveledRectangleBorder a__as1688 = (BeveledRectangleBorder)a;
-            return new BeveledRectangleBorder(side: BorderSide.lerp(((BeveledRectangleBorder)a__as1688).side, side, t), borderRadius: BorderRadiusGeometry.lerp(((BeveledRectangleBorder)((BeveledRectangleBorder)a__as1688)).borderRadius, this.borderRadius, t)!);
+            return new BeveledRectangleBorder(side: BorderSide.lerp(a__as1688.side, side, t), borderRadius: BorderRadiusGeometry.lerp(a__as1688.borderRadius, borderRadius, t)!);
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -34,10 +34,10 @@ public class BeveledRectangleBorder : OutlinedBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is BeveledRectangleBorder))
+        if (b is BeveledRectangleBorder)
         {
             BeveledRectangleBorder b__as2010 = (BeveledRectangleBorder)b;
-            return new BeveledRectangleBorder(side: BorderSide.lerp(side, ((BeveledRectangleBorder)b__as2010).side, t), borderRadius: BorderRadiusGeometry.lerp(this.borderRadius, ((BeveledRectangleBorder)((BeveledRectangleBorder)b__as2010)).borderRadius, t)!);
+            return new BeveledRectangleBorder(side: BorderSide.lerp(side, b__as2010.side, t), borderRadius: BorderRadiusGeometry.lerp(borderRadius, b__as2010.borderRadius, t)!);
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -45,7 +45,7 @@ public class BeveledRectangleBorder : OutlinedBorder
 
     public override BeveledRectangleBorder copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
     {
-        return new BeveledRectangleBorder(side: (side ?? this.side), borderRadius: (borderRadius ?? this.borderRadius));
+        return new BeveledRectangleBorder(side: side ?? this.side, borderRadius: borderRadius ?? this.borderRadius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -63,7 +63,7 @@ public class BeveledRectangleBorder : OutlinedBorder
         double blRadiusYLocal = Math.Max(0.0, rrect.blRadiusY);
         double brRadiusXLocal = Math.Max(0.0, rrect.brRadiusX);
         double brRadiusYLocal = Math.Max(0.0, rrect.brRadiusY);
-        var vertices = new List<global::Doroti.Ui.Offset> { new global::Doroti.Ui.Offset(rrect.left, Math.Min(centerLeft.dy, (rrect.top + tlRadiusYLocal))), new global::Doroti.Ui.Offset(Math.Min(centerTop.dx, (rrect.left + tlRadiusXLocal)), rrect.top), new global::Doroti.Ui.Offset(Math.Max(centerTop.dx, (rrect.right - trRadiusXLocal)), rrect.top), new global::Doroti.Ui.Offset(rrect.right, Math.Min(centerRight.dy, (rrect.top + trRadiusYLocal))), new global::Doroti.Ui.Offset(rrect.right, Math.Max(centerRight.dy, (rrect.bottom - brRadiusYLocal))), new global::Doroti.Ui.Offset(Math.Max(centerBottom.dx, (rrect.right - brRadiusXLocal)), rrect.bottom), new global::Doroti.Ui.Offset(Math.Min(centerBottom.dx, (rrect.left + blRadiusXLocal)), rrect.bottom), new global::Doroti.Ui.Offset(rrect.left, Math.Max(centerLeft.dy, (rrect.bottom - blRadiusYLocal))) };
+        var vertices = new List<global::Doroti.Ui.Offset> { new global::Doroti.Ui.Offset(rrect.left, Math.Min(centerLeft.dy, rrect.top + tlRadiusYLocal)), new global::Doroti.Ui.Offset(Math.Min(centerTop.dx, rrect.left + tlRadiusXLocal), rrect.top), new global::Doroti.Ui.Offset(Math.Max(centerTop.dx, rrect.right - trRadiusXLocal), rrect.top), new global::Doroti.Ui.Offset(rrect.right, Math.Min(centerRight.dy, rrect.top + trRadiusYLocal)), new global::Doroti.Ui.Offset(rrect.right, Math.Max(centerRight.dy, rrect.bottom - brRadiusYLocal)), new global::Doroti.Ui.Offset(Math.Max(centerBottom.dx, rrect.right - brRadiusXLocal), rrect.bottom), new global::Doroti.Ui.Offset(Math.Min(centerBottom.dx, rrect.left + blRadiusXLocal), rrect.bottom), new global::Doroti.Ui.Offset(rrect.left, Math.Max(centerLeft.dy, rrect.bottom - blRadiusYLocal)) };
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -75,13 +75,13 @@ public class BeveledRectangleBorder : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        return _getPath(this.borderRadius.resolve(textDirection).toRRect(rect).deflate(((BorderSide)side).strokeInset));
+        return _getPath(borderRadius.resolve(textDirection).toRRect(rect).deflate(side.strokeInset));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        return _getPath(this.borderRadius.resolve(textDirection).toRRect(rect));
+        return _getPath(borderRadius.resolve(textDirection).toRRect(rect));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -91,7 +91,7 @@ public class BeveledRectangleBorder : OutlinedBorder
         {
             return;
         }
-        switch (((BorderSide)side).style)
+        switch (side.style)
         {
             case BorderStyle.none:
                 {
@@ -100,7 +100,7 @@ public class BeveledRectangleBorder : OutlinedBorder
             case BorderStyle.solid:
                 {
                     global::Doroti.Ui.RRect borderRect = this.borderRadius.resolve(textDirection).toRRect(rect);
-                    global::Doroti.Ui.RRect adjustedRect = borderRect.inflate(((BorderSide)side).strokeOutset);
+                    global::Doroti.Ui.RRect adjustedRect = borderRect.inflate(side.strokeOutset);
                     global::Doroti.Ui.Path path = ((Func<Path>)(() =>
 {
     var __cascade = _getPath(adjustedRect);
@@ -117,17 +117,17 @@ public class BeveledRectangleBorder : OutlinedBorder
     {
         var __other = other as BeveledRectangleBorder;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is BeveledRectangleBorder) && (Equals(((BeveledRectangleBorder)__other).side, side))) && (Equals(((BeveledRectangleBorder)((BeveledRectangleBorder)__other)).borderRadius, this.borderRadius)));
+        return (__other is BeveledRectangleBorder) && Equals(__other.side, side) && Equals(__other.borderRadius, borderRadius);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, borderRadius);
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "BeveledRectangleBorder"))}({side}, {this.borderRadius})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "BeveledRectangleBorder")}({side}, {borderRadius})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

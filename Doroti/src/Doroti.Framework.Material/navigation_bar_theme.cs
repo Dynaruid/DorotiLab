@@ -39,7 +39,7 @@ public class NavigationBarThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public virtual NavigationBarThemeData copyWith(double? height = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? indicatorColor = null, global::Doroti.Framework.Painting.ShapeBorder? indicatorShape = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>? iconTheme = null, NavigationDestinationLabelBehavior? labelBehavior = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null)
     {
-        return new NavigationBarThemeData(height: (height ?? this.height), backgroundColor: (backgroundColor ?? this.backgroundColor), elevation: (elevation ?? this.elevation), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), indicatorColor: (indicatorColor ?? this.indicatorColor), indicatorShape: (indicatorShape ?? this.indicatorShape), labelTextStyle: (labelTextStyle ?? this.labelTextStyle), iconTheme: (iconTheme ?? this.iconTheme), labelBehavior: (labelBehavior ?? this.labelBehavior), overlayColor: (overlayColor ?? this.overlayColor), labelPadding: (labelPadding ?? this.labelPadding));
+        return new NavigationBarThemeData(height: height ?? this.height, backgroundColor: backgroundColor ?? this.backgroundColor, elevation: elevation ?? this.elevation, shadowColor: shadowColor ?? this.shadowColor, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, indicatorColor: indicatorColor ?? this.indicatorColor, indicatorShape: indicatorShape ?? this.indicatorShape, labelTextStyle: labelTextStyle ?? this.labelTextStyle, iconTheme: iconTheme ?? this.iconTheme, labelBehavior: labelBehavior ?? this.labelBehavior, overlayColor: overlayColor ?? this.overlayColor, labelPadding: labelPadding ?? this.labelPadding);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -49,11 +49,11 @@ public class NavigationBarThemeData : global::Doroti.Framework.Foundation.Diagno
         {
             return a;
         }
-        return new NavigationBarThemeData(height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t), backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), indicatorColor: Dart_uiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t), indicatorShape: ShapeBorder.lerp(a?.indicatorShape, b?.indicatorShape, t), labelTextStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.labelTextStyle, b?.labelTextStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)TextStyle.lerp), iconTheme: WidgetStateProperty.lerp<global::Doroti.Framework.Widgets.IconThemeData?>(a?.iconTheme, b?.iconTheme, t, (global::System.Func<global::Doroti.Framework.Widgets.IconThemeData?, global::Doroti.Framework.Widgets.IconThemeData?, double, global::Doroti.Framework.Widgets.IconThemeData>)IconThemeData.lerp), labelBehavior: ((t < 0.5) ? a?.labelBehavior : b?.labelBehavior), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), labelPadding: EdgeInsetsGeometry.lerp(a?.labelPadding, b?.labelPadding, t));
+        return new NavigationBarThemeData(height: Dart_uiLibrary.lerpDouble(a?.height, b?.height, t), backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), indicatorColor: Dart_uiLibrary.Color.lerp(a?.indicatorColor, b?.indicatorColor, t), indicatorShape: ShapeBorder.lerp(a?.indicatorShape, b?.indicatorShape, t), labelTextStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.labelTextStyle, b?.labelTextStyle, t, TextStyle.lerp), iconTheme: WidgetStateProperty.lerp<global::Doroti.Framework.Widgets.IconThemeData?>(a?.iconTheme, b?.iconTheme, t, IconThemeData.lerp), labelBehavior: (t < 0.5) ? a?.labelBehavior : b?.labelBehavior, overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, Color.lerp), labelPadding: EdgeInsetsGeometry.lerp(a?.labelPadding, b?.labelPadding, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.height, this.backgroundColor, this.elevation, this.shadowColor, this.surfaceTintColor, this.indicatorColor, this.indicatorShape, this.labelTextStyle, this.iconTheme, this.labelBehavior, this.overlayColor, this.labelPadding));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(height, backgroundColor, elevation, shadowColor, surfaceTintColor, indicatorColor, indicatorShape, labelTextStyle, iconTheme, labelBehavior, overlayColor, labelPadding));
     public override bool Equals(object? other)
     {
         var __other = other as NavigationBarThemeData;
@@ -62,27 +62,27 @@ public class NavigationBarThemeData : global::Doroti.Framework.Foundation.Diagno
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((((((((__other is NavigationBarThemeData) && (((NavigationBarThemeData)((NavigationBarThemeData)__other)).height == this.height)) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (((NavigationBarThemeData)((NavigationBarThemeData)__other)).elevation == this.elevation)) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).indicatorColor, this.indicatorColor))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).indicatorShape, this.indicatorShape))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).labelTextStyle, this.labelTextStyle))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).iconTheme, this.iconTheme))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).labelBehavior, this.labelBehavior))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).overlayColor, this.overlayColor))) && (Equals(((NavigationBarThemeData)((NavigationBarThemeData)__other)).labelPadding, this.labelPadding)));
+        return (__other is NavigationBarThemeData) && (__other.height == height) && Equals(__other.backgroundColor, backgroundColor) && (__other.elevation == elevation) && Equals(__other.shadowColor, shadowColor) && Equals(__other.surfaceTintColor, surfaceTintColor) && Equals(__other.indicatorColor, indicatorColor) && Equals(__other.indicatorShape, indicatorShape) && Equals(__other.labelTextStyle, labelTextStyle) && Equals(__other.iconTheme, iconTheme) && Equals(__other.labelBehavior, labelBehavior) && Equals(__other.overlayColor, overlayColor) && Equals(__other.labelPadding, labelPadding);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", this.indicatorColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("indicatorShape", this.indicatorShape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>("labelTextStyle", this.labelTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>>("iconTheme", this.iconTheme, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationDestinationLabelBehavior>("labelBehavior", this.labelBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("overlayColor", this.overlayColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("labelPadding", this.labelPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", indicatorColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("indicatorShape", indicatorShape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>("labelTextStyle", labelTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>>("iconTheme", iconTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationDestinationLabelBehavior>("labelBehavior", labelBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("overlayColor", overlayColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("labelPadding", labelPadding, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -96,13 +96,13 @@ public class NavigationBarThemeData : global::Doroti.Framework.Foundation.Diagno
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,16 +119,16 @@ public class NavigationBarTheme : global::Doroti.Framework.Widgets.InheritedThem
 
     public static NavigationBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        NavigationBarTheme? navigationBarThemeLocal = ((NavigationBarTheme?)context.dependOnInheritedWidgetOfExactType<NavigationBarTheme>());
-        return (navigationBarThemeLocal?.data ?? Theme.of(context).navigationBarTheme);
+        NavigationBarTheme? navigationBarThemeLocal = context.dependOnInheritedWidgetOfExactType<NavigationBarTheme>();
+        return navigationBarThemeLocal?.data ?? Theme.of(context).navigationBarTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new NavigationBarTheme(data: this.data, child: child));
+        return new NavigationBarTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((NavigationBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((NavigationBarTheme)oldWidget).data));
 }

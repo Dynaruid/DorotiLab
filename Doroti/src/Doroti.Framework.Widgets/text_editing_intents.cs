@@ -58,7 +58,7 @@ public abstract class DirectionalCaretMovementIntent : DirectionalTextEditingInt
         this.collapseSelection = collapseSelection;
         this.collapseAtReversal = collapseAtReversal;
         this.continuesAtWrap = continuesAtWrap;
-        System.Diagnostics.Debug.Assert((!collapseSelection || !collapseAtReversal));
+        System.Diagnostics.Debug.Assert(!collapseSelection || !collapseAtReversal);
     }
 
 }
@@ -107,7 +107,7 @@ public class ExtendSelectionToLineBreakIntent : DirectionalCaretMovementIntent
 {
     public ExtendSelectionToLineBreakIntent(bool forward, bool collapseSelection, bool collapseAtReversal = false, bool continuesAtWrap = false) : base(forward, collapseSelection, collapseAtReversal, continuesAtWrap)
     {
-        System.Diagnostics.Debug.Assert((!collapseSelection || !collapseAtReversal));
+        System.Diagnostics.Debug.Assert(!collapseSelection || !collapseAtReversal);
     }
 
 }

@@ -12,18 +12,18 @@ public class TextureBox : RenderBox
 
     public TextureBox(long textureId, bool freeze = false, FilterQuality filterQuality = FilterQuality.low)
     {
-        this._textureId = textureId;
-        this._freeze = freeze;
-        this._filterQuality = filterQuality;
+        _textureId = textureId;
+        _freeze = freeze;
+        _filterQuality = filterQuality;
     }
 
     public virtual long textureId
     {
-        get => this._textureId;
+        get => _textureId;
         set
         {
             var __value = value;
-            if ((__value != this._textureId))
+            if (__value != _textureId)
             {
                 _textureId = __value;
                 markNeedsPaint();
@@ -32,11 +32,11 @@ public class TextureBox : RenderBox
     }
     public virtual bool freeze
     {
-        get => this._freeze;
+        get => _freeze;
         set
         {
             var __value = value;
-            if ((__value != this._freeze))
+            if (__value != _freeze)
             {
                 _freeze = __value;
                 markNeedsPaint();
@@ -45,11 +45,11 @@ public class TextureBox : RenderBox
     }
     public virtual global::Doroti.Ui.FilterQuality filterQuality
     {
-        get => this._filterQuality;
+        get => _filterQuality;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._filterQuality)))
+            if (!Equals(__value, _filterQuality))
             {
                 _filterQuality = __value;
                 markNeedsPaint();
@@ -61,14 +61,14 @@ public class TextureBox : RenderBox
     public override bool isRepaintBoundary => true;
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return ((BoxConstraints)constraints).biggest;
+        return constraints.biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
     public override void paint(PaintingContext context, Offset offset)
     {
-        context.addLayer(new TextureLayer(rect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), textureId: this._textureId, freeze: this.freeze, filterQuality: this._filterQuality));
+        context.addLayer(new TextureLayer(rect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), textureId: _textureId, freeze: freeze, filterQuality: _filterQuality));
     }
 
 }

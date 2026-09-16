@@ -39,44 +39,44 @@ public class FixedScrollMetrics : ScrollMetrics
     {
         this.axisDirection = axisDirection;
         this.devicePixelRatio = devicePixelRatio;
-        this._minScrollExtent = minScrollExtent;
-        this._maxScrollExtent = maxScrollExtent;
-        this._pixels = pixels;
-        this._viewportDimension = viewportDimension;
+        _minScrollExtent = minScrollExtent;
+        _maxScrollExtent = maxScrollExtent;
+        _pixels = pixels;
+        _viewportDimension = viewportDimension;
     }
 
-    public virtual double minScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._minScrollExtent));
-    public virtual double maxScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._maxScrollExtent));
-    public virtual bool hasContentDimensions => DartRuntimePrimitives.ConvertValue<bool>(((this._minScrollExtent is not null) && (this._maxScrollExtent is not null)));
-    public virtual double pixels => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._pixels));
-    public virtual bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>((this._pixels is not null));
-    public virtual double viewportDimension => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._viewportDimension));
-    public virtual bool hasViewportDimension => DartRuntimePrimitives.ConvertValue<bool>((this._viewportDimension is not null));
+    public virtual double minScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_minScrollExtent));
+    public virtual double maxScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_maxScrollExtent));
+    public virtual bool hasContentDimensions => DartRuntimePrimitives.ConvertValue<bool>((_minScrollExtent is not null) && (_maxScrollExtent is not null));
+    public virtual double pixels => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_pixels));
+    public virtual bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>(_pixels is not null);
+    public virtual double viewportDimension => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_viewportDimension));
+    public virtual bool hasViewportDimension => DartRuntimePrimitives.ConvertValue<bool>(_viewportDimension is not null);
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedScrollMetrics"))}({this.extentBefore.toStringAsFixed(1L)}..[{this.extentInside.toStringAsFixed(1L)}]..{this.extentAfter.toStringAsFixed(1L)})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedScrollMetrics")}({extentBefore.toStringAsFixed(1L)}..[{extentInside.toStringAsFixed(1L)}]..{extentAfter.toStringAsFixed(1L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ScrollMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
-        return ((ScrollMetrics)new FixedScrollMetrics(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio)));
+        return new FixedScrollMetrics(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(this.axisDirection));
-    public virtual bool outOfRange => DartRuntimePrimitives.ConvertValue<bool>(((this.pixels < this.minScrollExtent) || (this.pixels > this.maxScrollExtent)));
-    public virtual bool atEdge => DartRuntimePrimitives.ConvertValue<bool>(((this.pixels == this.minScrollExtent) || (this.pixels == this.maxScrollExtent)));
-    public virtual double extentBefore => Math.Max((this.pixels - this.minScrollExtent), 0.0);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(axisDirection));
+    public virtual bool outOfRange => DartRuntimePrimitives.ConvertValue<bool>((pixels < minScrollExtent) || (pixels > maxScrollExtent));
+    public virtual bool atEdge => DartRuntimePrimitives.ConvertValue<bool>((pixels == minScrollExtent) || (pixels == maxScrollExtent));
+    public virtual double extentBefore => Math.Max(pixels - minScrollExtent, 0.0);
     public virtual double extentInside
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => (this.minScrollExtent <= this.maxScrollExtent));
-            return ((this.viewportDimension - Dart_uiLibrary.clampDouble((this.minScrollExtent - this.pixels), 0, this.viewportDimension)) - Dart_uiLibrary.clampDouble((this.pixels - this.maxScrollExtent), 0, this.viewportDimension));
+            DartRuntimePrimitives.Assert(() => minScrollExtent <= maxScrollExtent);
+            return viewportDimension - Dart_uiLibrary.clampDouble(minScrollExtent - pixels, 0, viewportDimension) - Dart_uiLibrary.clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
         }
     }
-    public virtual double extentAfter => Math.Max((this.maxScrollExtent - this.pixels), 0.0);
-    public virtual double extentTotal => DartRuntimePrimitives.ConvertValue<double>(((this.maxScrollExtent - this.minScrollExtent) + this.viewportDimension));
+    public virtual double extentAfter => Math.Max(maxScrollExtent - pixels, 0.0);
+    public virtual double extentTotal => DartRuntimePrimitives.ConvertValue<double>(maxScrollExtent - minScrollExtent + viewportDimension);
 }
 

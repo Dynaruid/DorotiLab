@@ -21,22 +21,22 @@ internal class _StorageEntryIdentifier__page_storage
         this.keys = keys;
     }
 
-    public virtual bool isNotEmpty => Enumerable.Any(this.keys);
+    public virtual bool isNotEmpty => Enumerable.Any(keys);
     public override bool Equals(object? other)
     {
         var __other = other as _StorageEntryIdentifier__page_storage;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is _StorageEntryIdentifier__page_storage) && CollectionsLibrary.listEquals<PageStorageKey<object>>(((_StorageEntryIdentifier__page_storage)((_StorageEntryIdentifier__page_storage)__other)).keys, this.keys));
+        return (__other is _StorageEntryIdentifier__page_storage) && CollectionsLibrary.listEquals<PageStorageKey<object>>(__other.keys, keys);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHashAll(this.keys));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHashAll(keys));
     public override string ToString()
     {
-        return $"StorageEntryIdentifier({string.Join(":", this.keys)})";
+        return $"StorageEntryIdentifier({string.Join(":", keys)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -48,14 +48,14 @@ public class PageStorageBucket
 
     internal static bool _maybeAddKey(BuildContext context, List<PageStorageKey<object>> keys)
     {
-        Widget widgetLocal = ((BuildContext)context).widget;
-        global::Doroti.Framework.Foundation.Key? keyLocal = ((Widget)widgetLocal).key;
-        if ((keyLocal is PageStorageKey<object>))
+        Widget widgetLocal = context.widget;
+        global::Doroti.Framework.Foundation.Key? keyLocal = widgetLocal.key;
+        if (keyLocal is PageStorageKey<object>)
         {
             PageStorageKey<object> key__2231__as2257 = (PageStorageKey<object>)keyLocal;
-            keys.Add(((PageStorageKey<object>)key__2231__as2257));
+            keys.Add(key__2231__as2257);
         }
-        return (widgetLocal is not PageStorage);
+        return widgetLocal is not PageStorage;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,11 +64,11 @@ public class PageStorageBucket
         var keys = new List<PageStorageKey<object>>();
         if (_maybeAddKey(context, keys))
         {
-            context.visitAncestorElements(((global::System.Func<Element, bool>)((element) =>
+            context.visitAncestorElements((element) =>
             {
                 return _maybeAddKey(element, keys);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            });
         }
         return keys;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -83,32 +83,32 @@ public class PageStorageBucket
     public virtual void writeState(BuildContext context, object? data, object? identifier = null)
     {
         _storage ??= new DartMap<object, object?>();
-        if ((identifier is not null))
+        if (identifier is not null)
         {
-            this._storage![identifier] = data;
+            _storage![identifier] = data;
         }
         else
         {
-            _StorageEntryIdentifier__page_storage contextIdentifier = ((_StorageEntryIdentifier__page_storage)_computeIdentifier(context));
-            if (((_StorageEntryIdentifier__page_storage)contextIdentifier).isNotEmpty)
+            _StorageEntryIdentifier__page_storage contextIdentifier = _computeIdentifier(context);
+            if (contextIdentifier.isNotEmpty)
             {
-                this._storage![contextIdentifier] = data;
+                _storage![contextIdentifier] = data;
             }
         }
     }
 
     public virtual object? readState(BuildContext context, object? identifier = null)
     {
-        if ((this._storage is null))
+        if (_storage is null)
         {
             return null;
         }
-        if ((identifier is not null))
+        if (identifier is not null)
         {
-            return this._storage!.GetValueOrDefault(identifier);
+            return _storage!.GetValueOrDefault(identifier);
         }
-        _StorageEntryIdentifier__page_storage contextIdentifier = ((_StorageEntryIdentifier__page_storage)_computeIdentifier(context));
-        return (((_StorageEntryIdentifier__page_storage)contextIdentifier).isNotEmpty ? this._storage!.GetValueOrDefault(contextIdentifier) : null);
+        _StorageEntryIdentifier__page_storage contextIdentifier = _computeIdentifier(context);
+        return contextIdentifier.isNotEmpty ? _storage!.GetValueOrDefault(contextIdentifier) : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -127,17 +127,17 @@ public class PageStorage : StatelessWidget
 
     public static PageStorageBucket? maybeOf(BuildContext context)
     {
-        PageStorage? widget = ((PageStorage?)context.findAncestorWidgetOfExactType<PageStorage>());
+        PageStorage? widget = context.findAncestorWidgetOfExactType<PageStorage>();
         return widget?.bucket;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static PageStorageBucket of(BuildContext context)
     {
-        PageStorageBucket? bucket = ((PageStorageBucket?)maybeOf(context));
+        PageStorageBucket? bucket = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((bucket is null))
+                if (bucket is null)
                 {
                     throw DartRuntimePrimitives.AsException(FlutterError.Create("PageStorage.of() was called with a context that does not contain a " + "PageStorage widget.\n" + "No PageStorage widget ancestor could be found starting from the " + "context that was passed to PageStorage.of(). This can happen " + "because you are using a widget that looks for a PageStorage " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
@@ -148,6 +148,6 @@ public class PageStorage : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Widget build(BuildContext context) => this.child;
+    public override Widget build(BuildContext context) => child;
 }
 

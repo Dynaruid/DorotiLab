@@ -32,11 +32,11 @@ public abstract class ScrollNotification : LayoutChangedNotification, ViewportNo
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"depth: {this.depth} ({((this.depth == 0L) ? "local" : "remote")})");
-        description.Add($"{this.metrics}");
+        description.Add($"depth: {depth} ({((depth == 0L) ? "local" : "remote")})");
+        description.Add($"{metrics}");
     }
 
-    public virtual long depth => this._depth;
+    public virtual long depth => _depth;
 }
 
 public class ScrollStartNotification : ScrollNotification
@@ -51,9 +51,9 @@ public class ScrollStartNotification : ScrollNotification
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        if ((this.dragDetails is not null))
+        if (dragDetails is not null)
         {
-            description.Add($"{this.dragDetails}");
+            description.Add($"{dragDetails}");
         }
     }
 
@@ -68,7 +68,7 @@ public class ScrollUpdateNotification : ScrollNotification
     {
         this.dragDetails = dragDetails;
         this.scrollDelta = scrollDelta;
-        if ((depth is not null))
+        if (depth is not null)
         {
             long depth__value8172 = DartRuntimePrimitives.RequireValue(depth);
             _depth = DartRuntimePrimitives.RequireValue(depth__value8172);
@@ -78,10 +78,10 @@ public class ScrollUpdateNotification : ScrollNotification
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"scrollDelta: {this.scrollDelta}");
-        if ((this.dragDetails is not null))
+        description.Add($"scrollDelta: {scrollDelta}");
+        if (dragDetails is not null)
         {
-            description.Add($"{this.dragDetails}");
+            description.Add($"{dragDetails}");
         }
     }
 
@@ -99,17 +99,17 @@ public class OverscrollNotification : ScrollNotification
         this.overscroll = overscroll;
         this.velocity = velocity;
         System.Diagnostics.Debug.Assert(double.IsFinite(overscroll));
-        System.Diagnostics.Debug.Assert((overscroll != 0.0));
+        System.Diagnostics.Debug.Assert(overscroll != 0.0);
     }
 
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"overscroll: {this.overscroll.toStringAsFixed(1L)}");
-        description.Add($"velocity: {this.velocity.toStringAsFixed(1L)}");
-        if ((this.dragDetails is not null))
+        description.Add($"overscroll: {overscroll.toStringAsFixed(1L)}");
+        description.Add($"velocity: {velocity.toStringAsFixed(1L)}");
+        if (dragDetails is not null)
         {
-            description.Add($"{this.dragDetails}");
+            description.Add($"{dragDetails}");
         }
     }
 
@@ -127,9 +127,9 @@ public class ScrollEndNotification : ScrollNotification
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        if ((this.dragDetails is not null))
+        if (dragDetails is not null)
         {
-            description.Add($"{this.dragDetails}");
+            description.Add($"{dragDetails}");
         }
     }
 
@@ -147,7 +147,7 @@ public class UserScrollNotification : ScrollNotification
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"direction: {this.direction}");
+        description.Add($"direction: {direction}");
     }
 
 }
@@ -158,7 +158,7 @@ public static partial class Scroll_notificationLibrary
 {
     public static bool defaultScrollNotificationPredicate(ScrollNotification notification)
     {
-        return (notification.depth == 0L);
+        return notification.depth == 0L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

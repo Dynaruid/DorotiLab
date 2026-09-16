@@ -15,20 +15,20 @@ public abstract class PageRoute<T> : ModalRoute<T>, IPageRoute
 
     protected PageRoute(RouteSettings? settings = null, bool? requestFocus = null, TraversalEdgeBehavior? traversalEdgeBehavior = null, TraversalEdgeBehavior? directionalTraversalEdgeBehavior = null, bool fullscreenDialog = false, bool allowSnapshotting = true, bool barrierDismissible = false) : base(settings: settings, requestFocus: requestFocus, traversalEdgeBehavior: traversalEdgeBehavior, directionalTraversalEdgeBehavior: directionalTraversalEdgeBehavior)
     {
-        this.__field_fullscreenDialog = fullscreenDialog;
-        this.__field_allowSnapshotting = allowSnapshotting;
-        this._barrierDismissible = barrierDismissible;
+        __field_fullscreenDialog = fullscreenDialog;
+        __field_allowSnapshotting = allowSnapshotting;
+        _barrierDismissible = barrierDismissible;
     }
 
     public override bool opaque => true;
-    public override bool barrierDismissible => this._barrierDismissible;
-    public override bool canTransitionTo(dynamic nextRoute) => (nextRoute is IPageRoute);
-    public override bool canTransitionFrom(dynamic previousRoute) => (previousRoute is IPageRoute);
+    public override bool barrierDismissible => _barrierDismissible;
+    public override bool canTransitionTo(dynamic nextRoute) => nextRoute is IPageRoute;
+    public override bool canTransitionFrom(dynamic previousRoute) => previousRoute is IPageRoute;
     public override bool popGestureEnabled
     {
         get
         {
-            return (!this.fullscreenDialog && base.popGestureEnabled);
+            return !fullscreenDialog && base.popGestureEnabled;
         }
     }
 }
@@ -68,24 +68,24 @@ public class PageRouteBuilder<T> : PageRoute<T>
         Duration __reverseTransitionDuration = reverseTransitionDuration ?? Duration.Create(milliseconds: 300);
         this.pageBuilder = pageBuilder;
         this.transitionsBuilder = __transitionsBuilder;
-        this.__field_transitionDuration = __transitionDuration;
-        this.__field_reverseTransitionDuration = __reverseTransitionDuration;
-        this.__field_opaque = opaque;
-        this.__field_barrierDismissible = barrierDismissible;
-        this.__field_barrierColor = barrierColor;
-        this.__field_barrierLabel = barrierLabel;
-        this.__field_maintainState = maintainState;
+        __field_transitionDuration = __transitionDuration;
+        __field_reverseTransitionDuration = __reverseTransitionDuration;
+        __field_opaque = opaque;
+        __field_barrierDismissible = barrierDismissible;
+        __field_barrierColor = barrierColor;
+        __field_barrierLabel = barrierLabel;
+        __field_maintainState = maintainState;
     }
 
     public override Widget buildPage(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        return this.pageBuilder(context, animation, secondaryAnimation);
+        return pageBuilder(context, animation, secondaryAnimation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget buildTransitions(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
     {
-        return this.transitionsBuilder(context, animation, secondaryAnimation, child);
+        return transitionsBuilder(context, animation, secondaryAnimation, child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

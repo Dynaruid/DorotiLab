@@ -33,33 +33,33 @@ public class RenderImage : RenderBox
     {
         global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.debugImageLabel = debugImageLabel;
-        this._image = image;
-        this._width = width;
-        this._height = height;
-        this._scale = scale;
-        this._color = color;
-        this._opacity = opacity;
-        this._colorBlendMode = colorBlendMode;
-        this._fit = fit;
-        this._alignment = __alignment;
-        this._repeat = repeat;
-        this._centerSlice = centerSlice;
-        this._matchTextDirection = matchTextDirection;
-        this._invertColors = invertColors;
-        this._textDirection = textDirection;
-        this._isAntiAlias = isAntiAlias;
-        this._filterQuality = filterQuality;
-        this._blendMode = blendMode;
+        _image = image;
+        _width = width;
+        _height = height;
+        _scale = scale;
+        _color = color;
+        _opacity = opacity;
+        _colorBlendMode = colorBlendMode;
+        _fit = fit;
+        _alignment = __alignment;
+        _repeat = repeat;
+        _centerSlice = centerSlice;
+        _matchTextDirection = matchTextDirection;
+        _invertColors = invertColors;
+        _textDirection = textDirection;
+        _isAntiAlias = isAntiAlias;
+        _filterQuality = filterQuality;
+        _blendMode = blendMode;
     }
 
     internal virtual void _resolve()
     {
-        if ((this._resolvedAlignment is not null))
+        if (_resolvedAlignment is not null)
         {
             return;
         }
-        _resolvedAlignment = this.alignment.resolve(this.textDirection);
-        _flipHorizontally = (this.matchTextDirection && (Equals(this.textDirection, TextDirection.rtl)));
+        _resolvedAlignment = alignment.resolve(textDirection);
+        _flipHorizontally = matchTextDirection && Equals(textDirection, TextDirection.rtl);
     }
 
     internal virtual void _markNeedResolution()
@@ -71,24 +71,24 @@ public class RenderImage : RenderBox
 
     public virtual global::Doroti.Ui.Image? image
     {
-        get => this._image;
+        get => _image;
         set
         {
             var __value = value is null ? null : (Image)(object)value;
-            if ((Equals(__value, this._image)))
+            if (Equals(__value, _image))
             {
                 return;
             }
-            if ((((__value is not null) && (this._image is not null)) && __value.isCloneOf(this._image!)))
+            if ((__value is not null) && (_image is not null) && __value.isCloneOf(_image!))
             {
                 __value.dispose();
                 return;
             }
-            bool sizeChanged = ((this._image?.width != __value?.width) || (this._image?.height != __value?.height));
-            this._image?.dispose();
+            bool sizeChanged = (_image?.width != __value?.width) || (_image?.height != __value?.height);
+            _image?.dispose();
             _image = __value;
             markNeedsPaint();
-            if ((sizeChanged && (((this._width is null) || (this._height is null)))))
+            if (sizeChanged && ((_width is null) || (_height is null)))
             {
                 markNeedsLayout();
             }
@@ -96,11 +96,11 @@ public class RenderImage : RenderBox
     }
     public virtual double? width
     {
-        get => this._width;
+        get => _width;
         set
         {
             var __value = value;
-            if ((__value == this._width))
+            if (__value == _width)
             {
                 return;
             }
@@ -110,11 +110,11 @@ public class RenderImage : RenderBox
     }
     public virtual double? height
     {
-        get => this._height;
+        get => _height;
         set
         {
             var __value = value;
-            if ((__value == this._height))
+            if (__value == _height)
             {
                 return;
             }
@@ -124,11 +124,11 @@ public class RenderImage : RenderBox
     }
     public virtual double scale
     {
-        get => this._scale;
+        get => _scale;
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._scale))
+            if (DartRuntimePrimitives.RequireValue(__value) == _scale)
             {
                 return;
             }
@@ -138,23 +138,23 @@ public class RenderImage : RenderBox
     }
     internal virtual void _updateColorFilter()
     {
-        if ((this._color is null))
+        if (_color is null)
         {
             _colorFilter = null;
         }
         else
         {
-            _colorFilter = ColorFilter.mode(this._color!, (this._colorBlendMode ?? BlendMode.srcIn));
+            _colorFilter = ColorFilter.mode(_color!, _colorBlendMode ?? BlendMode.srcIn);
         }
     }
 
     public virtual global::Doroti.Ui.Color? color
     {
-        get => this._color;
+        get => _color;
         set
         {
             var __value = value is null ? null : (Color)(object)value;
-            if ((Equals(__value, this._color)))
+            if (Equals(__value, _color))
             {
                 return;
             }
@@ -165,17 +165,17 @@ public class RenderImage : RenderBox
     }
     public virtual Animation<double>? opacity
     {
-        get => this._opacity;
+        get => _opacity;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._opacity)))
+            if (Equals(__value, _opacity))
             {
                 return;
             }
             if (attached)
             {
-                this._opacity?.removeListener(markNeedsPaint);
+                _opacity?.removeListener(markNeedsPaint);
             }
             _opacity = __value;
             if (attached)
@@ -186,11 +186,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Ui.FilterQuality filterQuality
     {
-        get => this._filterQuality;
+        get => _filterQuality;
         set
         {
             var __value = value;
-            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._filterQuality)))
+            if (Equals(DartRuntimePrimitives.RequireValue(__value), _filterQuality))
             {
                 return;
             }
@@ -200,11 +200,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Ui.BlendMode? colorBlendMode
     {
-        get => this._colorBlendMode;
+        get => _colorBlendMode;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._colorBlendMode)))
+            if (Equals(__value, _colorBlendMode))
             {
                 return;
             }
@@ -215,11 +215,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Ui.BlendMode blendMode
     {
-        get => this._blendMode;
+        get => _blendMode;
         set
         {
             var __value = value;
-            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._blendMode)))
+            if (Equals(DartRuntimePrimitives.RequireValue(__value), _blendMode))
             {
                 return;
             }
@@ -229,11 +229,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Framework.Painting.BoxFit? fit
     {
-        get => this._fit;
+        get => _fit;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._fit)))
+            if (Equals(__value, _fit))
             {
                 return;
             }
@@ -243,11 +243,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment
     {
-        get => this._alignment;
+        get => _alignment;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._alignment)))
+            if (Equals(__value, _alignment))
             {
                 return;
             }
@@ -257,11 +257,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Framework.Painting.ImageRepeat repeat
     {
-        get => this._repeat;
+        get => _repeat;
         set
         {
             var __value = value;
-            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._repeat)))
+            if (Equals(DartRuntimePrimitives.RequireValue(__value), _repeat))
             {
                 return;
             }
@@ -271,11 +271,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Ui.Rect? centerSlice
     {
-        get => this._centerSlice;
+        get => _centerSlice;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._centerSlice)))
+            if (Equals(__value, _centerSlice))
             {
                 return;
             }
@@ -285,11 +285,11 @@ public class RenderImage : RenderBox
     }
     public virtual bool invertColors
     {
-        get => this._invertColors;
+        get => _invertColors;
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._invertColors))
+            if (DartRuntimePrimitives.RequireValue(__value) == _invertColors)
             {
                 return;
             }
@@ -299,11 +299,11 @@ public class RenderImage : RenderBox
     }
     public virtual bool matchTextDirection
     {
-        get => this._matchTextDirection;
+        get => _matchTextDirection;
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._matchTextDirection))
+            if (DartRuntimePrimitives.RequireValue(__value) == _matchTextDirection)
             {
                 return;
             }
@@ -313,11 +313,11 @@ public class RenderImage : RenderBox
     }
     public virtual global::Doroti.Ui.TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._textDirection, __value)))
+            if (Equals(_textDirection, __value))
             {
                 return;
             }
@@ -327,11 +327,11 @@ public class RenderImage : RenderBox
     }
     public virtual bool isAntiAlias
     {
-        get => this._isAntiAlias;
+        get => _isAntiAlias;
         set
         {
             var __value = value;
-            if ((this._isAntiAlias == DartRuntimePrimitives.RequireValue(__value)))
+            if (_isAntiAlias == DartRuntimePrimitives.RequireValue(__value))
             {
                 return;
             }
@@ -341,19 +341,19 @@ public class RenderImage : RenderBox
     }
     internal virtual global::Doroti.Ui.Size _sizeForConstraints(BoxConstraints constraints)
     {
-        constraints = BoxConstraints.CreateTightFor(width: this._width, height: this._height).enforce(constraints);
-        if ((this._image is null))
+        constraints = BoxConstraints.CreateTightFor(width: _width, height: _height).enforce(constraints);
+        if (_image is null)
         {
-            return ((BoxConstraints)constraints).smallest;
+            return constraints.smallest;
         }
-        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(new global::Doroti.Ui.Size((this._image!.width.toDouble() / this._scale), (this._image!.height.toDouble() / this._scale)));
+        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(new global::Doroti.Ui.Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        DartRuntimePrimitives.Assert(() => (height >= 0.0));
-        if (((this._width is null) && (this._height is null)))
+        DartRuntimePrimitives.Assert(() => height >= 0.0);
+        if ((_width is null) && (_height is null))
         {
             return 0.0;
         }
@@ -363,15 +363,15 @@ public class RenderImage : RenderBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        DartRuntimePrimitives.Assert(() => (height >= 0.0));
+        DartRuntimePrimitives.Assert(() => height >= 0.0);
         return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        DartRuntimePrimitives.Assert(() => (width >= 0.0));
-        if (((this._width is null) && (this._height is null)))
+        DartRuntimePrimitives.Assert(() => width >= 0.0);
+        if ((_width is null) && (_height is null))
         {
             return 0.0;
         }
@@ -381,7 +381,7 @@ public class RenderImage : RenderBox
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        DartRuntimePrimitives.Assert(() => (width >= 0.0));
+        DartRuntimePrimitives.Assert(() => width >= 0.0);
         return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -401,30 +401,30 @@ public class RenderImage : RenderBox
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        this._opacity?.addListener(markNeedsPaint);
+        _opacity?.addListener(markNeedsPaint);
     }
 
     public override void detach()
     {
-        this._opacity?.removeListener(markNeedsPaint);
+        _opacity?.removeListener(markNeedsPaint);
         base.detach();
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((this._image is null))
+        if (_image is null)
         {
             return;
         }
         _resolve();
-        DartRuntimePrimitives.Assert(() => (this._resolvedAlignment is not null));
-        DartRuntimePrimitives.Assert(() => (this._flipHorizontally is not null));
-        Decoration_imageLibrary.paintImage(canvas: ((PaintingContext)context).canvas, rect: (offset & size), image: this._image!, debugImageLabel: this.debugImageLabel, scale: this._scale, opacity: (this._opacity?.value ?? 1.0), colorFilter: this._colorFilter, fit: this._fit, alignment: this._resolvedAlignment!, centerSlice: this._centerSlice, repeat: this._repeat, flipHorizontally: DartRuntimePrimitives.RequireValue(this._flipHorizontally), invertColors: this.invertColors, filterQuality: this._filterQuality, isAntiAlias: this._isAntiAlias, blendMode: this._blendMode);
+        DartRuntimePrimitives.Assert(() => _resolvedAlignment is not null);
+        DartRuntimePrimitives.Assert(() => _flipHorizontally is not null);
+        Decoration_imageLibrary.paintImage(canvas: context.canvas, rect: offset & size, image: _image!, debugImageLabel: debugImageLabel, scale: _scale, opacity: _opacity?.value ?? 1.0, colorFilter: _colorFilter, fit: _fit, alignment: _resolvedAlignment!, centerSlice: _centerSlice, repeat: _repeat, flipHorizontally: DartRuntimePrimitives.RequireValue(_flipHorizontally), invertColors: invertColors, filterQuality: _filterQuality, isAntiAlias: _isAntiAlias, blendMode: _blendMode);
     }
 
     public override void dispose()
     {
-        this._image?.dispose();
+        _image?.dispose();
         _image = null;
         base.dispose();
     }
@@ -432,22 +432,22 @@ public class RenderImage : RenderBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Image>("image", this.image));
-        properties.add(new DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new DoubleProperty("scale", this.scale, defaultValue: 1.0));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Animation<double>?>("opacity", this.opacity, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", this.colorBlendMode, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit, defaultValue: null));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", this.repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", this.centerSlice, defaultValue: null));
-        properties.add(new FlagProperty("matchTextDirection", value: this.matchTextDirection, ifTrue: "match text direction"));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("invertColors", this.invertColors));
-        properties.add(new EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", this.blendMode, defaultValue: BlendMode.srcOver));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Image>("image", image));
+        properties.add(new DoubleProperty("width", width, defaultValue: null));
+        properties.add(new DoubleProperty("height", height, defaultValue: null));
+        properties.add(new DoubleProperty("scale", scale, defaultValue: 1.0));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null));
+        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit, defaultValue: null));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: null));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", centerSlice, defaultValue: null));
+        properties.add(new FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
+        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("invertColors", invertColors));
+        properties.add(new EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", filterQuality));
+        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode, defaultValue: BlendMode.srcOver));
     }
 
 }

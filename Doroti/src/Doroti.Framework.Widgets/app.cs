@@ -13,7 +13,7 @@ public static partial class AppLibrary
 {
     public static Locale basicLocaleListResolution(List<Locale>? preferredLocales, IEnumerable<Locale> supportedLocales)
     {
-        if (((preferredLocales is null) || !Enumerable.Any(preferredLocales)))
+        if ((preferredLocales is null) || !Enumerable.Any(preferredLocales))
         {
             return supportedLocales.First();
         }
@@ -32,57 +32,57 @@ public static partial class AppLibrary
         }
         global::Doroti.Ui.Locale? matchesLanguageCode = default!;
         global::Doroti.Ui.Locale? matchesCountryCode = default!;
-        for (var localeIndex = 0L; (localeIndex < checked((long)(preferredLocales.Count))); localeIndex += 1L)
+        for (var localeIndex = 0L; localeIndex < checked(preferredLocales.Count); localeIndex += 1L)
         {
-            global::Doroti.Ui.Locale userLocale = preferredLocales[(int)(localeIndex)];
+            global::Doroti.Ui.Locale userLocale = preferredLocales[(int)localeIndex];
             if (allSupportedLocales.ContainsKey($"{userLocale.languageCode}_{userLocale.scriptCode}_{userLocale.countryCode}"))
             {
                 return userLocale;
             }
-            if ((userLocale.scriptCode is not null))
+            if (userLocale.scriptCode is not null)
             {
                 global::Doroti.Ui.Locale? match = DartCollectionRuntime.NullableMapValue<Locale>(languageAndScriptLocales, $"{userLocale.languageCode}_{userLocale.scriptCode}");
-                if ((match is not null))
+                if (match is not null)
                 {
                     Locale match__8388__value8497 = DartRuntimePrimitives.RequireValue(match);
                     return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(match__8388__value8497));
                 }
             }
-            if ((userLocale.countryCode is not null))
+            if (userLocale.countryCode is not null)
             {
                 global::Doroti.Ui.Locale? matchLocal = DartCollectionRuntime.NullableMapValue<Locale>(languageAndCountryLocales, $"{userLocale.languageCode}_{userLocale.countryCode}");
-                if ((matchLocal is not null))
+                if (matchLocal is not null)
                 {
                     Locale match__8652__value8763 = DartRuntimePrimitives.RequireValue(matchLocal);
                     return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(match__8652__value8763));
                 }
             }
-            if ((matchesLanguageCode is not null))
+            if (matchesLanguageCode is not null)
             {
                 Locale matchesLanguageCode__7850__value9013 = DartRuntimePrimitives.RequireValue(matchesLanguageCode);
                 return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(matchesLanguageCode__7850__value9013));
             }
             global::Doroti.Ui.Locale? matchAlternate = DartCollectionRuntime.NullableMapValue<Locale>(languageLocales, userLocale.languageCode);
-            if ((matchAlternate is not null))
+            if (matchAlternate is not null)
             {
                 Locale match__9139__value9197 = DartRuntimePrimitives.RequireValue(matchAlternate);
                 matchesLanguageCode = DartRuntimePrimitives.RequireValue(match__9139__value9197);
-                if (((localeIndex == 0L) && !((((localeIndex + 1L) < checked((long)(preferredLocales.Count))) && (preferredLocales[(int)((localeIndex + 1L))].languageCode == userLocale.languageCode)))))
+                if ((localeIndex == 0L) && !(((localeIndex + 1L) < checked(preferredLocales.Count)) && (preferredLocales[(int)(localeIndex + 1L)].languageCode == userLocale.languageCode)))
                 {
                     return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(matchesLanguageCode));
                 }
             }
-            if (((matchesCountryCode is null) && (userLocale.countryCode is not null)))
+            if ((matchesCountryCode is null) && (userLocale.countryCode is not null))
             {
                 matchAlternate = DartCollectionRuntime.NullableMapValue<Locale>(countryLocales, userLocale.countryCode);
-                if ((matchAlternate is not null))
+                if (matchAlternate is not null)
                 {
                     Locale match__9139__value10144 = DartRuntimePrimitives.RequireValue(matchAlternate);
                     matchesCountryCode = DartRuntimePrimitives.RequireValue(match__9139__value10144);
                 }
             }
         }
-        global::Doroti.Ui.Locale resolvedLocale = ((matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First());
+        global::Doroti.Ui.Locale resolvedLocale = (matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First();
         return resolvedLocale;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -134,9 +134,9 @@ public class WidgetsApp : StatefulWidget
     public virtual bool useInheritedMediaQuery { get; private set; } = default!;
     public static bool showPerformanceOverlayOverride = false;
     public static bool debugAllowBannerOverride = true;
-    internal static DartMap<ShortcutActivator, Intent> _defaultShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.gameButtonA)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.select)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.tab)] = ((Intent)new NextFocusIntent()), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = ((Intent)new PreviousFocusIntent()), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.right)), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.right)), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page)) };
-    internal static DartMap<ShortcutActivator, Intent> _defaultWebShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new PrioritizedIntents(orderedIntents: new List<Intent> { new ActivateIntent(), new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page) })), [new SingleActivator(LogicalKeyboardKey.enter)] = ((Intent)new ButtonActivateIntent()), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = ((Intent)new ButtonActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.tab)] = ((Intent)new NextFocusIntent()), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = ((Intent)new PreviousFocusIntent()), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new ScrollIntent(direction: AxisDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new ScrollIntent(direction: AxisDirection.right)), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page)) };
-    internal static DartMap<ShortcutActivator, Intent> _defaultAppleOsShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.tab)] = ((Intent)new NextFocusIntent()), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = ((Intent)new PreviousFocusIntent()), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.right)), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.right)), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page)) };
+    internal static DartMap<ShortcutActivator, Intent> _defaultShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.space)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.gameButtonA)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.select)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent(), [new SingleActivator(LogicalKeyboardKey.tab)] = new NextFocusIntent(), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = new PreviousFocusIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DirectionalFocusIntent(TraversalDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DirectionalFocusIntent(TraversalDirection.right), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(TraversalDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(TraversalDirection.up), [new SingleActivator(LogicalKeyboardKey.arrowUp, control: true)] = new ScrollIntent(direction: AxisDirection.up), [new SingleActivator(LogicalKeyboardKey.arrowDown, control: true)] = new ScrollIntent(direction: AxisDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] = new ScrollIntent(direction: AxisDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] = new ScrollIntent(direction: AxisDirection.right), [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page) };
+    internal static DartMap<ShortcutActivator, Intent> _defaultWebShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.space)] = new PrioritizedIntents(orderedIntents: new List<Intent> { new ActivateIntent(), new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page) }), [new SingleActivator(LogicalKeyboardKey.enter)] = new ButtonActivateIntent(), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = new ButtonActivateIntent(), [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent(), [new SingleActivator(LogicalKeyboardKey.tab)] = new NextFocusIntent(), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = new PreviousFocusIntent(), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new ScrollIntent(direction: AxisDirection.up), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new ScrollIntent(direction: AxisDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new ScrollIntent(direction: AxisDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new ScrollIntent(direction: AxisDirection.right), [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page) };
+    internal static DartMap<ShortcutActivator, Intent> _defaultAppleOsShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.space)] = new ActivateIntent(), [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent(), [new SingleActivator(LogicalKeyboardKey.tab)] = new NextFocusIntent(), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = new PreviousFocusIntent(), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = new DirectionalFocusIntent(TraversalDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = new DirectionalFocusIntent(TraversalDirection.right), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new DirectionalFocusIntent(TraversalDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new DirectionalFocusIntent(TraversalDirection.up), [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] = new ScrollIntent(direction: AxisDirection.up), [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] = new ScrollIntent(direction: AxisDirection.down), [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] = new ScrollIntent(direction: AxisDirection.left), [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] = new ScrollIntent(direction: AxisDirection.right), [new SingleActivator(LogicalKeyboardKey.pageUp)] = new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page), [new SingleActivator(LogicalKeyboardKey.pageDown)] = new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page) };
     public static DartMap<Type, dynamic> defaultActions = new DartMap<Type, dynamic> { [typeof(DoNothingIntent)] = new DoNothingAction(), [typeof(DoNothingAndStopPropagationIntent)] = new DoNothingAction(consumesKey: false), [typeof(RequestFocusIntent)] = new RequestFocusAction(), [typeof(NextFocusIntent)] = new NextFocusAction(), [typeof(PreviousFocusIntent)] = new PreviousFocusAction(), [typeof(DirectionalFocusIntent)] = new DirectionalFocusAction(), [typeof(ScrollIntent)] = new ScrollAction(), [typeof(PrioritizedIntents)] = new PrioritizedAction(), [typeof(VoidCallbackIntent)] = new VoidCallbackAction() };
 
     internal static DartMap<Type, dynamic> defaultActionsForContext(BuildContext context)
@@ -184,16 +184,16 @@ public class WidgetsApp : StatefulWidget
         this.actions = actions;
         this.restorationScopeId = restorationScopeId;
         this.useInheritedMediaQuery = useInheritedMediaQuery;
-        this.routeInformationProvider = null;
-        this.routeInformationParser = null;
-        this.routerDelegate = null;
-        this.backButtonDispatcher = null;
-        this.routerConfig = null;
-        System.Diagnostics.Debug.Assert(((home is null) || (onGenerateInitialRoutes is null)));
-        System.Diagnostics.Debug.Assert(((home is null) || !__routes.ContainsKey(Navigator.defaultRouteName)));
-        System.Diagnostics.Debug.Assert((((((builder is not null) || (home is not null)) || __routes.ContainsKey(Navigator.defaultRouteName)) || (onGenerateRoute is not null)) || (onUnknownRoute is not null)));
-        System.Diagnostics.Debug.Assert(((((((home is not null) || Enumerable.Any(__routes)) || (onGenerateRoute is not null)) || (onUnknownRoute is not null))) || (((((builder is not null) && (navigatorKey is null)) && (initialRoute is null)) && !Enumerable.Any(__navigatorObservers)))));
-        System.Diagnostics.Debug.Assert((((builder is not null) || (onGenerateRoute is not null)) || (pageRouteBuilder is not null)));
+        routeInformationProvider = null;
+        routeInformationParser = null;
+        routerDelegate = null;
+        backButtonDispatcher = null;
+        routerConfig = null;
+        System.Diagnostics.Debug.Assert((home is null) || (onGenerateInitialRoutes is null));
+        System.Diagnostics.Debug.Assert((home is null) || !__routes.ContainsKey(Navigator.defaultRouteName));
+        System.Diagnostics.Debug.Assert((builder is not null) || (home is not null) || __routes.ContainsKey(Navigator.defaultRouteName) || (onGenerateRoute is not null) || (onUnknownRoute is not null));
+        System.Diagnostics.Debug.Assert((home is not null) || Enumerable.Any(__routes) || (onGenerateRoute is not null) || (onUnknownRoute is not null) || (builder is not null) && (navigatorKey is null) && (initialRoute is null) && !Enumerable.Any(__navigatorObservers));
+        System.Diagnostics.Debug.Assert((builder is not null) || (onGenerateRoute is not null) || (pageRouteBuilder is not null));
         System.Diagnostics.Debug.Assert(Enumerable.Any(__supportedLocales));
     }
 
@@ -296,29 +296,29 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
         {
             if (!__late__localizationsResolver_initialized)
             {
-                __late__localizationsResolver = new LocalizationsResolver(locale: ((WidgetsApp)this.widget).locale, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, localizationsDelegates: ((WidgetsApp)this.widget).localizationsDelegates, supportedLocales: ((WidgetsApp)this.widget).supportedLocales.Cast<Locale>());
+                __late__localizationsResolver = new LocalizationsResolver(locale: widget.locale, localeListResolutionCallback: widget.localeListResolutionCallback, localeResolutionCallback: widget.localeResolutionCallback, localizationsDelegates: widget.localizationsDelegates, supportedLocales: widget.supportedLocales.Cast<Locale>());
                 __late__localizationsResolver_initialized = true;
             }
             return __late__localizationsResolver;
         }
     }
 
-    internal virtual string _initialRouteName => ((WidgetsBinding.instance.platformDispatcher.defaultRouteName != Navigator.defaultRouteName) ? WidgetsBinding.instance.platformDispatcher.defaultRouteName : (((WidgetsApp)this.widget).initialRoute ?? WidgetsBinding.instance.platformDispatcher.defaultRouteName));
+    internal virtual string _initialRouteName => (WidgetsBinding.instance.platformDispatcher.defaultRouteName != Navigator.defaultRouteName) ? WidgetsBinding.instance.platformDispatcher.defaultRouteName : (widget.initialRoute ?? WidgetsBinding.instance.platformDispatcher.defaultRouteName);
     internal virtual bool _defaultOnNavigationNotification(NavigationNotification notification)
     {
-        switch (this._appLifecycleState)
+        switch (_appLifecycleState)
         {
             case null:
-            case var __constant63443 when (Equals(__constant63443, AppLifecycleState.detached)):
+            case var __constant63443 when Equals(__constant63443, AppLifecycleState.detached):
                 {
                     return true;
                 }
-            case var __constant63566 when (Equals(__constant63566, AppLifecycleState.inactive)):
-            case var __constant63605 when (Equals(__constant63605, AppLifecycleState.resumed)):
-            case var __constant63643 when (Equals(__constant63643, AppLifecycleState.hidden)):
-            case var __constant63680 when (Equals(__constant63680, AppLifecycleState.paused)):
+            case var __constant63566 when Equals(__constant63566, AppLifecycleState.inactive):
+            case var __constant63605 when Equals(__constant63605, AppLifecycleState.resumed):
+            case var __constant63643 when Equals(__constant63643, AppLifecycleState.hidden):
+            case var __constant63680 when Equals(__constant63680, AppLifecycleState.paused):
                 {
-                    DartRuntimePrimitives.Ignore(SystemNavigator.setFrameworkHandlesBack(((NavigationNotification)notification).canHandlePop));
+                    DartRuntimePrimitives.Ignore(SystemNavigator.setFrameworkHandlesBack(notification.canHandlePop));
                     return true;
                 }
             default:
@@ -351,14 +351,14 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
     public override void dispose()
     {
         WidgetsBinding.instance.removeObserver(this);
-        this._defaultRouteInformationProvider?.dispose();
-        this._localizationsResolver.dispose();
+        _defaultRouteInformationProvider?.dispose();
+        _localizationsResolver.dispose();
         base.dispose();
     }
 
     internal virtual void _clearRouterResource()
     {
-        this._defaultRouteInformationProvider?.dispose();
+        _defaultRouteInformationProvider?.dispose();
         _defaultRouteInformationProvider = null;
         _defaultBackButtonDispatcher = null;
     }
@@ -370,65 +370,65 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
 
     internal virtual void _updateRouting(WidgetsApp? oldWidget = null)
     {
-        if (this._usesRouterWithDelegates)
+        if (_usesRouterWithDelegates)
         {
-            DartRuntimePrimitives.Assert(() => (!this._usesNavigator && !this._usesRouterWithConfig));
+            DartRuntimePrimitives.Assert(() => !_usesNavigator && !_usesRouterWithConfig);
             _clearNavigatorResource();
-            if (((((WidgetsApp)this.widget).routeInformationProvider is null) && (((WidgetsApp)this.widget).routeInformationParser is not null)))
+            if ((widget.routeInformationProvider is null) && (widget.routeInformationParser is not null))
             {
-                _defaultRouteInformationProvider ??= new PlatformRouteInformationProvider(initialRouteInformation: new RouteInformation(uri: DartUri.parse(this._initialRouteName)));
+                _defaultRouteInformationProvider ??= new PlatformRouteInformationProvider(initialRouteInformation: new RouteInformation(uri: DartUri.parse(_initialRouteName)));
             }
             else
             {
-                this._defaultRouteInformationProvider?.dispose();
+                _defaultRouteInformationProvider?.dispose();
                 _defaultRouteInformationProvider = null;
             }
-            if ((((WidgetsApp)this.widget).backButtonDispatcher is null))
+            if (widget.backButtonDispatcher is null)
             {
                 _defaultBackButtonDispatcher ??= new RootBackButtonDispatcher();
             }
         }
         else
         {
-            if (this._usesNavigator)
+            if (_usesNavigator)
             {
-                DartRuntimePrimitives.Assert(() => (!this._usesRouterWithDelegates && !this._usesRouterWithConfig));
+                DartRuntimePrimitives.Assert(() => !_usesRouterWithDelegates && !_usesRouterWithConfig);
                 _clearRouterResource();
-                if (((this._navigator is null) || (!Equals(((WidgetsApp)this.widget).navigatorKey, oldWidget!.navigatorKey))))
+                if ((_navigator is null) || (!Equals(widget.navigatorKey, oldWidget!.navigatorKey)))
                 {
-                    _navigator = (((WidgetsApp)this.widget).navigatorKey ?? new GlobalObjectKey<NavigatorState>(this));
+                    _navigator = widget.navigatorKey ?? new GlobalObjectKey<NavigatorState>(this);
                 }
-                DartRuntimePrimitives.Assert(() => (this._navigator is not null));
+                DartRuntimePrimitives.Assert(() => _navigator is not null);
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => ((((WidgetsApp)this.widget).builder is not null) || this._usesRouterWithConfig));
-                DartRuntimePrimitives.Assert(() => (!this._usesRouterWithDelegates && !this._usesNavigator));
+                DartRuntimePrimitives.Assert(() => (widget.builder is not null) || _usesRouterWithConfig);
+                DartRuntimePrimitives.Assert(() => !_usesRouterWithDelegates && !_usesNavigator);
                 _clearRouterResource();
                 _clearNavigatorResource();
             }
         }
-        DartRuntimePrimitives.Assert(() => (this._usesNavigator == ((this._navigator is not null))));
+        DartRuntimePrimitives.Assert(() => _usesNavigator == _navigator is not null);
     }
 
-    internal virtual bool _usesRouterWithDelegates => DartRuntimePrimitives.ConvertValue<bool>((((WidgetsApp)this.widget).routerDelegate is not null));
-    internal virtual bool _usesRouterWithConfig => DartRuntimePrimitives.ConvertValue<bool>((((WidgetsApp)this.widget).routerConfig is not null));
-    internal virtual bool _usesNavigator => DartRuntimePrimitives.ConvertValue<bool>(((((((WidgetsApp)this.widget).home is not null) || (((((WidgetsApp)this.widget).routes is { } __items66337 ? System.Linq.Enumerable.Any(__items66337) : (bool?)null) ?? false))) || (((WidgetsApp)this.widget).onGenerateRoute is not null)) || (((WidgetsApp)this.widget).onUnknownRoute is not null)));
-    internal virtual RouteInformationProvider? _effectiveRouteInformationProvider => DartRuntimePrimitives.ConvertValue<RouteInformationProvider>((((WidgetsApp)this.widget).routeInformationProvider ?? this._defaultRouteInformationProvider));
-    internal virtual BackButtonDispatcher _effectiveBackButtonDispatcher => DartRuntimePrimitives.ConvertValue<BackButtonDispatcher>((((WidgetsApp)this.widget).backButtonDispatcher ?? this._defaultBackButtonDispatcher!));
+    internal virtual bool _usesRouterWithDelegates => DartRuntimePrimitives.ConvertValue<bool>(widget.routerDelegate is not null);
+    internal virtual bool _usesRouterWithConfig => DartRuntimePrimitives.ConvertValue<bool>(widget.routerConfig is not null);
+    internal virtual bool _usesNavigator => DartRuntimePrimitives.ConvertValue<bool>((((WidgetsApp)widget).home is not null) || ((((WidgetsApp)widget).routes is { } __items66337 ? System.Linq.Enumerable.Any(__items66337) : (bool?)null) ?? false) || (((WidgetsApp)widget).onGenerateRoute is not null) || (((WidgetsApp)widget).onUnknownRoute is not null));
+    internal virtual RouteInformationProvider? _effectiveRouteInformationProvider => DartRuntimePrimitives.ConvertValue<RouteInformationProvider>(widget.routeInformationProvider ?? _defaultRouteInformationProvider);
+    internal virtual BackButtonDispatcher _effectiveBackButtonDispatcher => DartRuntimePrimitives.ConvertValue<BackButtonDispatcher>(widget.backButtonDispatcher ?? _defaultBackButtonDispatcher!);
     internal virtual dynamic? _onGenerateRoute(RouteSettings settings)
     {
-        string? nameLocal = ((RouteSettings)settings).name;
-        global::System.Func<BuildContext, Widget>? pageContentBuilder = ((global::System.Func<BuildContext, Widget>?)(((nameLocal == Navigator.defaultRouteName) && (((WidgetsApp)this.widget).home is not null)) ? ((context) => ((WidgetsApp)this.widget).home!) : ((WidgetsApp)this.widget).routes!.GetValueOrDefault(DartRuntimePrimitives.RequireReference(nameLocal))));
-        if ((pageContentBuilder is not null))
+        string? nameLocal = settings.name;
+        global::System.Func<BuildContext, Widget>? pageContentBuilder = ((nameLocal == Navigator.defaultRouteName) && (widget.home is not null)) ? ((context) => widget.home!) : widget.routes!.GetValueOrDefault(DartRuntimePrimitives.RequireReference(nameLocal));
+        if (pageContentBuilder is not null)
         {
-            DartRuntimePrimitives.Assert(() => (((WidgetsApp)this.widget).pageRouteBuilder is not null), () => (object?)"The default onGenerateRoute handler for WidgetsApp must have a " + "pageRouteBuilder set if the home or routes properties are set.");
-            dynamic route = ((WidgetsApp)this.widget).pageRouteBuilder!(settings, pageContentBuilder);
+            DartRuntimePrimitives.Assert(() => widget.pageRouteBuilder is not null, () => (object?)"The default onGenerateRoute handler for WidgetsApp must have a " + "pageRouteBuilder set if the home or routes properties are set.");
+            dynamic route = widget.pageRouteBuilder!(settings, pageContentBuilder);
             return route;
         }
-        if ((((WidgetsApp)this.widget).onGenerateRoute is not null))
+        if (widget.onGenerateRoute is not null)
         {
-            return ((WidgetsApp)this.widget).onGenerateRoute!(settings);
+            return widget.onGenerateRoute!(settings);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -438,19 +438,19 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((WidgetsApp)this.widget).onUnknownRoute is null))
+                if (widget.onUnknownRoute is null)
                 {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Could not find a generator for route {settings} in the {this.GetType()}.\n" + "Make sure your root app widget has provided a way to generate \n" + "this route.\n" + "Generators for routes are searched for in the following order:\n" + " 1. For the \"/\" route, the \"home\" property, if non-null, is used.\n" + " 2. Otherwise, the \"routes\" table is used, if it has an entry for " + "the route.\n" + " 3. Otherwise, onGenerateRoute is called. It should return a " + "non-null value for any valid route not handled by \"home\" and \"routes\".\n" + " 4. Finally if all else fails onUnknownRoute is called.\n" + "Unfortunately, onUnknownRoute was not set."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Could not find a generator for route {settings} in the {GetType()}.\n" + "Make sure your root app widget has provided a way to generate \n" + "this route.\n" + "Generators for routes are searched for in the following order:\n" + " 1. For the \"/\" route, the \"home\" property, if non-null, is used.\n" + " 2. Otherwise, the \"routes\" table is used, if it has an entry for " + "the route.\n" + " 3. Otherwise, onGenerateRoute is called. It should return a " + "non-null value for any valid route not handled by \"home\" and \"routes\".\n" + " 4. Finally if all else fails onUnknownRoute is called.\n" + "Unfortunately, onUnknownRoute was not set."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        dynamic result = ((WidgetsApp)this.widget).onUnknownRoute!(settings) ?? throw new InvalidOperationException("The onUnknownRoute callback must return a route.");
+        dynamic result = widget.onUnknownRoute!(settings) ?? throw new InvalidOperationException("The onUnknownRoute callback must return a route.");
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((result is null))
+                if (result is null)
                 {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {this.GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -461,13 +461,13 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
 
     public async virtual Future<bool> didPopRoute()
     {
-        DartRuntimePrimitives.Assert(() => this.mounted);
-        if (this._usesRouterWithDelegates)
+        DartRuntimePrimitives.Assert(() => mounted);
+        if (_usesRouterWithDelegates)
         {
             return false;
         }
-        NavigatorState? navigator = this._navigator?.currentState;
-        if ((navigator is null))
+        NavigatorState? navigator = _navigator?.currentState;
+        if (navigator is null)
         {
             return false;
         }
@@ -477,25 +477,25 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
 
     public async virtual Future<bool> didPushRouteInformation(RouteInformation routeInformation)
     {
-        DartRuntimePrimitives.Assert(() => this.mounted);
-        if (this._usesRouterWithDelegates)
+        DartRuntimePrimitives.Assert(() => mounted);
+        if (_usesRouterWithDelegates)
         {
             return false;
         }
-        NavigatorState? navigator = this._navigator?.currentState;
-        if ((navigator is null))
+        NavigatorState? navigator = _navigator?.currentState;
+        if (navigator is null)
         {
             return false;
         }
-        DartUri uriLocal = ((RouteInformation)routeInformation).uri;
-        DartRuntimePrimitives.Ignore(navigator.pushNamed<object>(Dart_coreLibrary.decodeComponent(new DartUri(path: ((uriLocal.path.Length == 0) ? "/" : uriLocal.path), queryParameters: (!Enumerable.Any(uriLocal.queryParametersAll) ? null : uriLocal.queryParametersAll), fragment: ((uriLocal.fragment.Length == 0) ? null : uriLocal.fragment)).ToString())));
+        DartUri uriLocal = routeInformation.uri;
+        DartRuntimePrimitives.Ignore(navigator.pushNamed<object>(Dart_coreLibrary.decodeComponent(new DartUri(path: (uriLocal.path.Length == 0) ? "/" : uriLocal.path, queryParameters: !Enumerable.Any(uriLocal.queryParametersAll) ? null : uriLocal.queryParametersAll, fragment: (uriLocal.fragment.Length == 0) ? null : uriLocal.fragment).ToString())));
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _shouldUpdateLocalizations(WidgetsApp oldWidget)
     {
-        return (((((!Equals(((WidgetsApp)this.widget).locale, ((WidgetsApp)oldWidget).locale)) || (!Equals((global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)oldWidget).localeListResolutionCallback))) || (!Equals((global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)oldWidget).localeResolutionCallback))) || (!Equals(((WidgetsApp)this.widget).supportedLocales, ((WidgetsApp)oldWidget).supportedLocales))) || (!Equals(((WidgetsApp)this.widget).localizationsDelegates, ((WidgetsApp)oldWidget).localizationsDelegates)));
+        return (!Equals(widget.locale, oldWidget.locale)) || (!Equals(widget.localeListResolutionCallback, oldWidget.localeListResolutionCallback)) || (!Equals(widget.localeResolutionCallback, oldWidget.localeResolutionCallback)) || (!Equals(widget.supportedLocales, oldWidget.supportedLocales)) || (!Equals(widget.localizationsDelegates, oldWidget.localizationsDelegates));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -503,59 +503,59 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
     {
         if (_shouldUpdateLocalizations(oldWidget))
         {
-            this._localizationsResolver.update(locale: ((WidgetsApp)this.widget).locale, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, localizationsDelegates: ((WidgetsApp)this.widget).localizationsDelegates, supportedLocales: ((WidgetsApp)this.widget).supportedLocales.Cast<Locale>());
+            _localizationsResolver.update(locale: widget.locale, localeListResolutionCallback: widget.localeListResolutionCallback, localeResolutionCallback: widget.localeResolutionCallback, localizationsDelegates: widget.localizationsDelegates, supportedLocales: widget.supportedLocales.Cast<Locale>());
         }
     }
 
     public override Widget build(BuildContext context)
     {
         Widget? routing = default!;
-        if (this._usesRouterWithDelegates)
+        if (_usesRouterWithDelegates)
         {
-            routing = DartRuntimePrimitives.ConvertValue<Widget>(this.widget.routerDelegate!.createRouterWidget(this._effectiveRouteInformationProvider, this.widget.routeInformationParser, this._effectiveBackButtonDispatcher, "router"));
+            routing = DartRuntimePrimitives.ConvertValue<Widget>(widget.routerDelegate!.createRouterWidget(_effectiveRouteInformationProvider, widget.routeInformationParser, _effectiveBackButtonDispatcher, "router"));
         }
         else
         {
-            if (this._usesNavigator)
+            if (_usesNavigator)
             {
-                DartRuntimePrimitives.Assert(() => (this._navigator is not null));
-                routing = DartRuntimePrimitives.ConvertValue<Widget>(new FocusScope(debugLabel: "Navigator Scope", autofocus: true, child: new Navigator(clipBehavior: Clip.none, restorationScopeId: "nav", key: this._navigator, initialRoute: this._initialRouteName, onGenerateRoute: (global::System.Func<RouteSettings, dynamic?>)this._onGenerateRoute, onGenerateInitialRoutes: ((global::System.Func<NavigatorState, string, List<dynamic>>)((((WidgetsApp)this.widget).onGenerateInitialRoutes is null) ? Navigator.defaultGenerateInitialRoutes : ((navigator, initialRouteName) =>
+                DartRuntimePrimitives.Assert(() => _navigator is not null);
+                routing = DartRuntimePrimitives.ConvertValue<Widget>(new FocusScope(debugLabel: "Navigator Scope", autofocus: true, child: new Navigator(clipBehavior: Clip.none, restorationScopeId: "nav", key: _navigator, initialRoute: _initialRouteName, onGenerateRoute: _onGenerateRoute, onGenerateInitialRoutes: (widget.onGenerateInitialRoutes is null) ? Navigator.defaultGenerateInitialRoutes : ((navigator, initialRouteName) =>
                 {
-                    return ((List<object>)((WidgetsApp)this.widget).onGenerateInitialRoutes!(initialRouteName));
+                    return widget.onGenerateInitialRoutes!(initialRouteName);
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                }))), onUnknownRoute: (global::System.Func<RouteSettings, dynamic?>)this._onUnknownRoute, observers: ((WidgetsApp)this.widget).navigatorObservers!, routeTraversalEdgeBehavior: (Foundation.ConstantsLibrary.kIsWeb ? TraversalEdgeBehavior.leaveDorotiView : TraversalEdgeBehavior.parentScope), reportsRouteUpdateToEngine: true)));
+                }), onUnknownRoute: _onUnknownRoute, observers: widget.navigatorObservers!, routeTraversalEdgeBehavior: Foundation.ConstantsLibrary.kIsWeb ? TraversalEdgeBehavior.leaveDorotiView : TraversalEdgeBehavior.parentScope, reportsRouteUpdateToEngine: true)));
             }
             else
             {
-                if (this._usesRouterWithConfig)
+                if (_usesRouterWithConfig)
                 {
-                    routing = DartRuntimePrimitives.ConvertValue<Widget>(this.widget.routerConfig!.createRouterWidget(restorationScopeId: "router"));
+                    routing = DartRuntimePrimitives.ConvertValue<Widget>(widget.routerConfig!.createRouterWidget(restorationScopeId: "router"));
                 }
             }
         }
         Widget result = default!;
-        if ((((WidgetsApp)this.widget).builder is not null))
+        if (widget.builder is not null)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: (context) =>
             {
-                return ((WidgetsApp)this.widget).builder!(context, routing);
+                return widget.builder!(context, routing);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))));
+            }));
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (routing is not null));
+            DartRuntimePrimitives.Assert(() => routing is not null);
             result = routing!;
         }
-        if ((((WidgetsApp)this.widget).textStyle is not null))
+        if (widget.textStyle is not null)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: ((WidgetsApp)this.widget).textStyle!, child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: widget.textStyle!, child: result));
         }
-        if ((((WidgetsApp)this.widget).showPerformanceOverlay || WidgetsApp.showPerformanceOverlayOverride))
+        if (widget.showPerformanceOverlay || WidgetsApp.showPerformanceOverlayOverride)
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new Stack(children: new List<Widget> { result, new Positioned(top: 0.0, left: 0.0, right: 0.0, child: PerformanceOverlay.CreateAllEnabled()) }));
         }
-        if (((WidgetsApp)this.widget).showSemanticsDebugger)
+        if (widget.showSemanticsDebugger)
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new SemanticsDebugger(child: result));
         }
@@ -563,58 +563,58 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             {
                 if (!WidgetsBinding.instance.debugExcludeRootWidgetInspector)
                 {
-                    result = DartRuntimePrimitives.ConvertValue<Widget>(new ValueListenableBuilder<bool>(valueListenable: WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier, builder: ((global::System.Func<BuildContext, bool, Widget?, Widget>)((context, debugShowWidgetInspectorOverride, child) =>
+                    result = DartRuntimePrimitives.ConvertValue<Widget>(new ValueListenableBuilder<bool>(valueListenable: WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier, builder: (context, debugShowWidgetInspectorOverride, child) =>
                     {
-                        if ((((WidgetsApp)this.widget).debugShowWidgetInspector || debugShowWidgetInspectorOverride))
+                        if (widget.debugShowWidgetInspector || debugShowWidgetInspectorOverride)
                         {
-                            return ((Widget)new WidgetInspector(exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder?)((WidgetsApp)this.widget).tapBehaviorButtonBuilder, child: child!));
+                            return new WidgetInspector(exitWidgetSelectionButtonBuilder: widget.exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: widget.moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: widget.tapBehaviorButtonBuilder, child: child!);
                         }
                         return child!;
                         throw new InvalidOperationException("Dart closure completed without a value.");
-                    })), child: result));
+                    }, child: result));
                 }
-                if ((((WidgetsApp)this.widget).debugShowCheckedModeBanner && WidgetsApp.debugAllowBannerOverride))
+                if (widget.debugShowCheckedModeBanner && WidgetsApp.debugAllowBannerOverride)
                 {
                     result = DartRuntimePrimitives.ConvertValue<Widget>(new CheckedModeBanner(child: result));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        result = DartRuntimePrimitives.ConvertValue<Widget>(new Focus(canRequestFocus: false, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        result = DartRuntimePrimitives.ConvertValue<Widget>(new Focus(canRequestFocus: false, onKeyEvent: (node, @event) =>
         {
-            if (((((@event is not KeyDownEvent) && (@event is not KeyRepeatEvent))) || (!Equals(((global::Doroti.Framework.Services.KeyEvent)@event).logicalKey, LogicalKeyboardKey.escape))))
+            if ((@event is not KeyDownEvent) && (@event is not KeyRepeatEvent) || (!Equals(@event.logicalKey, LogicalKeyboardKey.escape)))
             {
                 return KeyEventResult.ignored;
             }
-            return (RawTooltip.dismissAllToolTips() ? KeyEventResult.handled : KeyEventResult.ignored);
+            return RawTooltip.dismissAllToolTips() ? KeyEventResult.handled : KeyEventResult.ignored;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: result));
+        }, child: result));
         Widget? titleLocal = default!;
-        if ((((WidgetsApp)this.widget).onGenerateTitle is not null))
+        if (widget.onGenerateTitle is not null)
         {
-            titleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+            titleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: (context) =>
             {
-                string titleAlternate = ((WidgetsApp)this.widget).onGenerateTitle!(context);
-                return ((Widget)new Title(title: titleAlternate, color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result));
+                string titleAlternate = widget.onGenerateTitle!(context);
+                return new Title(title: titleAlternate, color: widget.color.withOpacity(1.0), child: result);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))));
+            }));
         }
         else
         {
-            if (((((WidgetsApp)this.widget).title is null) && Foundation.ConstantsLibrary.kIsWeb))
+            if ((widget.title is null) && Foundation.ConstantsLibrary.kIsWeb)
             {
                 titleLocal = null;
             }
             else
             {
-                titleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Title(title: (((WidgetsApp)this.widget).title ?? ""), color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result));
+                titleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Title(title: widget.title ?? "", color: widget.color.withOpacity(1.0), child: result));
             }
         }
-        return ((Widget)new RootRestorationScope(restorationId: ((WidgetsApp)this.widget).restorationScopeId, child: new SharedAppData(child: new NotificationListener<NavigationNotification>(onNotification: ((((WidgetsApp)this.widget).onNavigationNotification ?? (global::System.Func<NavigationNotification, bool>)this._defaultOnNavigationNotification)), child: new Shortcuts(debugLabel: "<Default WidgetsApp Shortcuts>", shortcuts: ((((WidgetsApp)this.widget).shortcuts ?? (DartMap<ShortcutActivator, Intent>)WidgetsApp.defaultShortcuts)), child: new DefaultTextEditingShortcuts(child: new Actions(actions: (((WidgetsApp)this.widget).actions ?? WidgetsApp.defaultActionsForContext(context)), child: new FocusTraversalGroup(policy: new ReadingOrderTraversalPolicy(), child: new TapRegionSurface(child: new ShortcutRegistrar(child: new ListenableBuilder(listenable: this._localizationsResolver, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) =>
+        return new RootRestorationScope(restorationId: widget.restorationScopeId, child: new SharedAppData(child: new NotificationListener<NavigationNotification>(onNotification: widget.onNavigationNotification ?? _defaultOnNavigationNotification, child: new Shortcuts(debugLabel: "<Default WidgetsApp Shortcuts>", shortcuts: widget.shortcuts ?? WidgetsApp.defaultShortcuts, child: new DefaultTextEditingShortcuts(child: new Actions(actions: widget.actions ?? WidgetsApp.defaultActionsForContext(context), child: new FocusTraversalGroup(policy: new ReadingOrderTraversalPolicy(), child: new TapRegionSurface(child: new ShortcutRegistrar(child: new ListenableBuilder(listenable: _localizationsResolver, builder: (context, _) =>
         {
-            return ((Widget)new Localizations(isApplicationLevel: true, locale: ((LocalizationsResolver)this._localizationsResolver).locale, delegates: ((LocalizationsResolver)this._localizationsResolver).localizationsDelegates.ToList(), child: (titleLocal ?? result)));
+            return new Localizations(isApplicationLevel: true, locale: _localizationsResolver.locale, delegates: _localizationsResolver.localizationsDelegates.ToList(), child: titleLocal ?? result);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })))))))))))));
+        }))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

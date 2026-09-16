@@ -38,7 +38,7 @@ public abstract class AlignmentGeometry
     internal abstract double _y { get; }
     public virtual AlignmentGeometry add(AlignmentGeometry other)
     {
-        return new _MixedAlignment__alignment((this._x + ((AlignmentGeometry)other)._x), (this._start + ((AlignmentGeometry)other)._start), (this._y + ((AlignmentGeometry)other)._y));
+        return new _MixedAlignment__alignment(_x + other._x, _start + other._start, _y + other._y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -53,42 +53,42 @@ public abstract class AlignmentGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.op_Multiply(t));
+            return b!.op_Multiply(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.op_Multiply(((1.0 - t))));
+            return a.op_Multiply(1.0 - t);
         }
-        if (((a is Alignment) && (b is Alignment)))
+        if ((a is Alignment) && (b is Alignment))
         {
             Alignment a__as7939 = (Alignment)a;
             Alignment b__as7957 = (Alignment)b;
-            return Alignment.lerp(((Alignment)a__as7939), ((Alignment)b__as7957), t);
+            return Alignment.lerp(a__as7939, b__as7957, t);
         }
-        if (((a is AlignmentDirectional) && (b is AlignmentDirectional)))
+        if ((a is AlignmentDirectional) && (b is AlignmentDirectional))
         {
             AlignmentDirectional a__as8027 = (AlignmentDirectional)a;
             AlignmentDirectional b__as8056 = (AlignmentDirectional)b;
-            return AlignmentDirectional.lerp(((AlignmentDirectional)a__as8027), ((AlignmentDirectional)b__as8056), t);
+            return AlignmentDirectional.lerp(a__as8027, b__as8056, t);
         }
-        return new _MixedAlignment__alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentGeometry)a)._x, ((AlignmentGeometry)b)._x, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentGeometry)a)._start, ((AlignmentGeometry)b)._start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentGeometry)a)._y, ((AlignmentGeometry)b)._y, t)));
+        return new _MixedAlignment__alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._x, b._x, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._start, b._start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._y, b._y, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract Alignment resolve(TextDirection? direction);
     public override string ToString()
     {
-        if ((this._start == 0.0))
+        if (_start == 0.0)
         {
-            return Alignment._stringify(this._x, this._y);
+            return Alignment._stringify(_x, _y);
         }
-        if ((this._x == 0.0))
+        if (_x == 0.0)
         {
-            return AlignmentDirectional._stringify(this._start, this._y);
+            return AlignmentDirectional._stringify(_start, _y);
         }
-        return $"{Alignment._stringify(this._x, this._y)} + {AlignmentDirectional._stringify(this._start, 0.0)}";
+        return $"{Alignment._stringify(_x, _y)} + {AlignmentDirectional._stringify(_start, 0.0)}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -96,10 +96,10 @@ public abstract class AlignmentGeometry
     {
         var __other = other as AlignmentGeometry;
         if (__other is null) return false;
-        return ((((__other is AlignmentGeometry) && (((AlignmentGeometry)((AlignmentGeometry)__other))._x == this._x)) && (((AlignmentGeometry)((AlignmentGeometry)__other))._start == this._start)) && (((AlignmentGeometry)((AlignmentGeometry)__other))._y == this._y));
+        return (__other is AlignmentGeometry) && (__other._x == _x) && (__other._start == _start) && (__other._y == _y);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this._x, this._start, this._y);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(_x, _start, _y);
 }
 
 public class Alignment : AlignmentGeometry
@@ -122,15 +122,15 @@ public class Alignment : AlignmentGeometry
         this.y = y;
     }
 
-    internal override double _x => this.x;
+    internal override double _x => x;
     internal override double _start => 0.0;
-    internal override double _y => this.y;
+    internal override double _y => y;
     public override AlignmentGeometry add(AlignmentGeometry other)
     {
-        if ((other is Alignment))
+        if (other is Alignment)
         {
             Alignment other__as12977 = (Alignment)other;
-            return (this.op_Add(((Alignment)other__as12977)));
+            return op_Add(other__as12977);
         }
         return base.add(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -138,75 +138,75 @@ public class Alignment : AlignmentGeometry
 
     public virtual Alignment op_Subtract(Alignment other)
     {
-        return new Alignment((this.x - ((Alignment)other).x), (this.y - ((Alignment)other).y));
+        return new Alignment(x - other.x, y - other.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Alignment op_Add(Alignment other)
     {
-        return new Alignment((this.x + ((Alignment)other).x), (this.y + ((Alignment)other).y));
+        return new Alignment(x + other.x, y + other.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment op_Subtract()
     {
-        return new Alignment(-this.x, -this.y);
+        return new Alignment(-x, -y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment op_Multiply(double other)
     {
-        return new Alignment((this.x * other), (this.y * other));
+        return new Alignment(x * other, y * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment op_Divide(double other)
     {
-        return new Alignment((this.x / other), (this.y / other));
+        return new Alignment(x / other, y / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment ___(double other)
     {
-        return new Alignment(((checked((long)(this.x / other)))).toDouble(), ((checked((long)(this.y / other)))).toDouble());
+        return new Alignment(checked((long)(x / other)).toDouble(), checked((long)(y / other)).toDouble());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment __(double other)
     {
-        return new Alignment((this.x % other), (this.y % other));
+        return new Alignment(x % other, y % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Offset alongOffset(Offset other)
     {
-        double centerX = (other.dx / 2.0);
-        double centerY = (other.dy / 2.0);
-        return new global::Doroti.Ui.Offset((centerX + (this.x * centerX)), (centerY + (this.y * centerY)));
+        double centerX = other.dx / 2.0;
+        double centerY = other.dy / 2.0;
+        return new global::Doroti.Ui.Offset(centerX + (x * centerX), centerY + (y * centerY));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Offset alongSize(Size other)
     {
-        double centerX = (other.width / 2.0);
-        double centerY = (other.height / 2.0);
-        return new global::Doroti.Ui.Offset((centerX + (this.x * centerX)), (centerY + (this.y * centerY)));
+        double centerX = other.width / 2.0;
+        double centerY = other.height / 2.0;
+        return new global::Doroti.Ui.Offset(centerX + (x * centerX), centerY + (y * centerY));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Offset withinRect(Rect rect)
     {
-        double halfWidth = (rect.width / 2.0);
-        double halfHeight = (rect.height / 2.0);
-        return new global::Doroti.Ui.Offset(((rect.left + halfWidth) + (this.x * halfWidth)), ((rect.top + halfHeight) + (this.y * halfHeight)));
+        double halfWidth = rect.width / 2.0;
+        double halfHeight = rect.height / 2.0;
+        return new global::Doroti.Ui.Offset(rect.left + halfWidth + (x * halfWidth), rect.top + halfHeight + (y * halfHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Rect inscribe(Size size, Rect rect)
     {
-        double halfWidthDelta = (((rect.width - size.width)) / 2.0);
-        double halfHeightDelta = (((rect.height - size.height)) / 2.0);
-        return Rect.fromLTWH(((rect.left + halfWidthDelta) + (this.x * halfWidthDelta)), ((rect.top + halfHeightDelta) + (this.y * halfHeightDelta)), size.width, size.height);
+        double halfWidthDelta = (rect.width - size.width) / 2.0;
+        double halfHeightDelta = (rect.height - size.height) / 2.0;
+        return Rect.fromLTWH(rect.left + halfWidthDelta + (x * halfWidthDelta), rect.top + halfHeightDelta + (y * halfHeightDelta), size.width, size.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -216,26 +216,26 @@ public class Alignment : AlignmentGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return new Alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b!.x, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, ((Alignment)b).y, t)));
+            return new Alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b!.x, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b.y, t)));
         }
-        if ((b is null))
+        if (b is null)
         {
-            return new Alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((Alignment)a).x, 0.0, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((Alignment)a).y, 0.0, t)));
+            return new Alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.x, 0.0, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, 0.0, t)));
         }
-        return new Alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((Alignment)a).x, ((Alignment)b).x, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((Alignment)a).y, ((Alignment)b).y, t)));
+        return new Alignment(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.x, b.x, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, b.y, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment resolve(TextDirection? direction) => this;
     internal static string _stringify(double x, double y)
     {
-        return ((x, y) switch { (-1.0, -1.0) => "Alignment.topLeft", (0.0, -1.0) => "Alignment.topCenter", (1.0, -1.0) => "Alignment.topRight", (-1.0, 0.0) => "Alignment.centerLeft", (0.0, 0.0) => "Alignment.center", (1.0, 0.0) => "Alignment.centerRight", (-1.0, 1.0) => "Alignment.bottomLeft", (0.0, 1.0) => "Alignment.bottomCenter", (1.0, 1.0) => "Alignment.bottomRight", _ => $"Alignment({x.toStringAsFixed(1L)}, {y.toStringAsFixed(1L)})" });
+        return (x, y) switch { (-1.0, -1.0) => "Alignment.topLeft", (0.0, -1.0) => "Alignment.topCenter", (1.0, -1.0) => "Alignment.topRight", (-1.0, 0.0) => "Alignment.centerLeft", (0.0, 0.0) => "Alignment.center", (1.0, 0.0) => "Alignment.centerRight", (-1.0, 1.0) => "Alignment.bottomLeft", (0.0, 1.0) => "Alignment.bottomCenter", (1.0, 1.0) => "Alignment.bottomRight", _ => $"Alignment({x.toStringAsFixed(1L)}, {y.toStringAsFixed(1L)})" };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => _stringify(this.x, this.y);
+    public override string ToString() => _stringify(x, y);
 }
 
 public class AlignmentDirectional : AlignmentGeometry
@@ -259,14 +259,14 @@ public class AlignmentDirectional : AlignmentGeometry
     }
 
     internal override double _x => 0.0;
-    internal override double _start => this.start;
-    internal override double _y => this.y;
+    internal override double _start => start;
+    internal override double _y => y;
     public override AlignmentGeometry add(AlignmentGeometry other)
     {
-        if ((other is AlignmentDirectional))
+        if (other is AlignmentDirectional)
         {
             AlignmentDirectional other__as20364 = (AlignmentDirectional)other;
-            return (this.op_Add(((AlignmentDirectional)other__as20364)));
+            return op_Add(other__as20364);
         }
         return base.add(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -274,43 +274,43 @@ public class AlignmentDirectional : AlignmentGeometry
 
     public virtual AlignmentDirectional op_Subtract(AlignmentDirectional other)
     {
-        return new AlignmentDirectional((this.start - ((AlignmentDirectional)other).start), (this.y - ((AlignmentDirectional)other).y));
+        return new AlignmentDirectional(start - other.start, y - other.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual AlignmentDirectional op_Add(AlignmentDirectional other)
     {
-        return new AlignmentDirectional((this.start + ((AlignmentDirectional)other).start), (this.y + ((AlignmentDirectional)other).y));
+        return new AlignmentDirectional(start + other.start, y + other.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override AlignmentDirectional op_Subtract()
     {
-        return new AlignmentDirectional(-this.start, -this.y);
+        return new AlignmentDirectional(-start, -y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override AlignmentDirectional op_Multiply(double other)
     {
-        return new AlignmentDirectional((this.start * other), (this.y * other));
+        return new AlignmentDirectional(start * other, y * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override AlignmentDirectional op_Divide(double other)
     {
-        return new AlignmentDirectional((this.start / other), (this.y / other));
+        return new AlignmentDirectional(start / other, y / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override AlignmentDirectional ___(double other)
     {
-        return new AlignmentDirectional(((checked((long)(this.start / other)))).toDouble(), ((checked((long)(this.y / other)))).toDouble());
+        return new AlignmentDirectional(checked((long)(start / other)).toDouble(), checked((long)(y / other)).toDouble());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override AlignmentDirectional __(double other)
     {
-        return new AlignmentDirectional((this.start % other), (this.y % other));
+        return new AlignmentDirectional(start % other, y % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -320,32 +320,32 @@ public class AlignmentDirectional : AlignmentGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return new AlignmentDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b!.start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, ((AlignmentDirectional)b).y, t)));
+            return new AlignmentDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b!.start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b.y, t)));
         }
-        if ((b is null))
+        if (b is null)
         {
-            return new AlignmentDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentDirectional)a).start, 0.0, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentDirectional)a).y, 0.0, t)));
+            return new AlignmentDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.start, 0.0, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, 0.0, t)));
         }
-        return new AlignmentDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentDirectional)a).start, ((AlignmentDirectional)b).start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((AlignmentDirectional)a).y, ((AlignmentDirectional)b).y, t)));
+        return new AlignmentDirectional(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.start, b.start, t)), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, b.y, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment resolve(TextDirection? direction)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(AlignmentDirectional)}"));
-        return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new Alignment(-this.start, this.y), TextDirection.ltr => new Alignment(this.start, this.y), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new Alignment(-start, y), TextDirection.ltr => new Alignment(start, y), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static string _stringify(double start, double y)
     {
-        return ((start, y) switch { (-1.0, -1.0) => "AlignmentDirectional.topStart", (0.0, -1.0) => "AlignmentDirectional.topCenter", (1.0, -1.0) => "AlignmentDirectional.topEnd", (-1.0, 0.0) => "AlignmentDirectional.centerStart", (0.0, 0.0) => "AlignmentDirectional.center", (1.0, 0.0) => "AlignmentDirectional.centerEnd", (-1.0, 1.0) => "AlignmentDirectional.bottomStart", (0.0, 1.0) => "AlignmentDirectional.bottomCenter", (1.0, 1.0) => "AlignmentDirectional.bottomEnd", _ => $"AlignmentDirectional({start.toStringAsFixed(1L)}, {y.toStringAsFixed(1L)})" });
+        return (start, y) switch { (-1.0, -1.0) => "AlignmentDirectional.topStart", (0.0, -1.0) => "AlignmentDirectional.topCenter", (1.0, -1.0) => "AlignmentDirectional.topEnd", (-1.0, 0.0) => "AlignmentDirectional.centerStart", (0.0, 0.0) => "AlignmentDirectional.center", (1.0, 0.0) => "AlignmentDirectional.centerEnd", (-1.0, 1.0) => "AlignmentDirectional.bottomStart", (0.0, 1.0) => "AlignmentDirectional.bottomCenter", (1.0, 1.0) => "AlignmentDirectional.bottomEnd", _ => $"AlignmentDirectional({start.toStringAsFixed(1L)}, {y.toStringAsFixed(1L)})" };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => _stringify(this.start, this.y);
+    public override string ToString() => _stringify(start, y);
 }
 
 internal class _MixedAlignment__alignment : AlignmentGeometry
@@ -359,45 +359,45 @@ internal class _MixedAlignment__alignment : AlignmentGeometry
 
     internal _MixedAlignment__alignment(double _x, double _start, double _y)
     {
-        this.__field__x = _x;
-        this.__field__start = _start;
-        this.__field__y = _y;
+        __field__x = _x;
+        __field__start = _start;
+        __field__y = _y;
     }
 
     public override _MixedAlignment__alignment op_Subtract()
     {
-        return new _MixedAlignment__alignment(-this._x, -this._start, -this._y);
+        return new _MixedAlignment__alignment(-_x, -_start, -_y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedAlignment__alignment op_Multiply(double other)
     {
-        return new _MixedAlignment__alignment((this._x * other), (this._start * other), (this._y * other));
+        return new _MixedAlignment__alignment(_x * other, _start * other, _y * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedAlignment__alignment op_Divide(double other)
     {
-        return new _MixedAlignment__alignment((this._x / other), (this._start / other), (this._y / other));
+        return new _MixedAlignment__alignment(_x / other, _start / other, _y / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedAlignment__alignment ___(double other)
     {
-        return new _MixedAlignment__alignment(((checked((long)(this._x / other)))).toDouble(), ((checked((long)(this._start / other)))).toDouble(), ((checked((long)(this._y / other)))).toDouble());
+        return new _MixedAlignment__alignment(checked((long)(_x / other)).toDouble(), checked((long)(_start / other)).toDouble(), checked((long)(_y / other)).toDouble());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedAlignment__alignment __(double other)
     {
-        return new _MixedAlignment__alignment((this._x % other), (this._start % other), (this._y % other));
+        return new _MixedAlignment__alignment(_x % other, _start % other, _y % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Alignment resolve(TextDirection? direction)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedAlignment__alignment)}"));
-        return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new Alignment((this._x - this._start), this._y), TextDirection.ltr => new Alignment((this._x + this._start), this._y), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new Alignment(_x - _start, _y), TextDirection.ltr => new Alignment(_x + _start, _y), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -413,12 +413,12 @@ public class TextAlignVertical
     public TextAlignVertical(double y)
     {
         this.y = y;
-        System.Diagnostics.Debug.Assert(((y >= -1.0) && (y <= 1.0)));
+        System.Diagnostics.Debug.Assert((y >= -1.0) && (y <= 1.0));
     }
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TextAlignVertical"))}(y: {this.y})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "TextAlignVertical")}(y: {y})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

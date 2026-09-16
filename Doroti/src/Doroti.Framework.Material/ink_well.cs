@@ -13,8 +13,8 @@ public abstract class InteractiveInkFeature : InkFeature
 
     protected InteractiveInkFeature(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::System.Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
     {
-        this._color = color;
-        this._customBorder = customBorder;
+        _color = color;
+        _customBorder = customBorder;
     }
 
     public virtual void confirm()
@@ -27,37 +27,37 @@ public abstract class InteractiveInkFeature : InkFeature
 
     public virtual global::Doroti.Ui.Color color
     {
-        get => this._color;
+        get => _color;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._color)))
+            var __value = value;
+            if (Equals(__value, _color))
             {
                 return;
             }
             _color = __value;
-            this.controller.markNeedsPaint();
+            controller.markNeedsPaint();
         }
     }
     public virtual global::Doroti.Framework.Painting.ShapeBorder? customBorder
     {
-        get => this._customBorder;
+        get => _customBorder;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._customBorder)))
+            if (Equals(__value, _customBorder))
             {
                 return;
             }
             _customBorder = __value;
-            this.controller.markNeedsPaint();
+            controller.markNeedsPaint();
         }
     }
     public virtual void paintInkCircle(Canvas canvas, Matrix4 transform, Paint paint, Offset center, double radius, TextDirection? textDirection = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!, global::System.Func<Rect>? clipCallback = null)
     {
-        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)MatrixUtils.getAsTranslation(transform));
+        global::Doroti.Ui.Offset? originOffset = MatrixUtils.getAsTranslation(transform);
         canvas.save();
-        if ((originOffset is null))
+        if (originOffset is null)
         {
             canvas.transform(transform.storage);
         }
@@ -65,18 +65,18 @@ public abstract class InteractiveInkFeature : InkFeature
         {
             canvas.translate(DartRuntimePrimitives.RequireValue(originOffset).dx, DartRuntimePrimitives.RequireValue(originOffset).dy);
         }
-        if ((clipCallback is not null))
+        if (clipCallback is not null)
         {
-            global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)clipCallback());
-            if ((customBorder is not null))
+            global::Doroti.Ui.Rect rect = clipCallback();
+            if (customBorder is not null)
             {
                 canvas.clipPath(customBorder.getOuterPath(rect, textDirection: textDirection));
             }
             else
             {
-                if ((!Equals(borderRadius, BorderRadius.zero)))
+                if (!Equals(borderRadius, BorderRadius.zero))
                 {
-                    canvas.clipRRect(RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomRight));
+                    canvas.clipRRect(RRect.fromRectAndCorners(rect, topLeft: borderRadius.topLeft, topRight: borderRadius.topRight, bottomLeft: borderRadius.bottomLeft, bottomRight: borderRadius.bottomRight));
                 }
                 else
                 {
@@ -109,7 +109,7 @@ internal class _ParentInkResponseProvider__ink_well : global::Doroti.Framework.W
         this.state = state;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.state, ((_ParentInkResponseProvider__ink_well)oldWidget).state)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(state, ((_ParentInkResponseProvider__ink_well)oldWidget).state));
     public static _ParentInkResponseState__ink_well? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<_ParentInkResponseProvider__ink_well>()?.state;
@@ -200,8 +200,8 @@ public class InkResponse : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual global::System.Func<Rect>? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox) => DartRuntimePrimitives.ConvertValue<global::System.Func<Rect>>(null);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _ParentInkResponseState__ink_well? parentStateLocal = ((_ParentInkResponseState__ink_well?)_ParentInkResponseProvider__ink_well.maybeOf(context));
-        return ((global::Doroti.Framework.Widgets.Widget)new _InkResponseStateWidget__ink_well(onTap: this.onTap, onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)this.onTapDown, onTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)this.onTapUp, onTapCancel: this.onTapCancel, onDoubleTap: this.onDoubleTap, onLongPress: this.onLongPress, onLongPressUp: this.onLongPressUp, onSecondaryTap: this.onSecondaryTap, onSecondaryTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)this.onSecondaryTapUp, onSecondaryTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)this.onSecondaryTapDown, onSecondaryTapCancel: this.onSecondaryTapCancel, onHighlightChanged: (global::System.Action<bool>?)this.onHighlightChanged, onHover: (global::System.Action<bool>?)this.onHover, mouseCursor: this.mouseCursor, containedInkWell: this.containedInkWell, highlightShape: this.highlightShape, radius: this.radius, borderRadius: this.borderRadius, customBorder: this.customBorder, focusColor: this.focusColor, hoverColor: this.hoverColor, highlightColor: this.highlightColor, overlayColor: this.overlayColor, splashColor: this.splashColor, splashFactory: this.splashFactory, enableFeedback: this.enableFeedback, excludeFromSemantics: this.excludeFromSemantics, focusNode: this.focusNode, canRequestFocus: this.canRequestFocus, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, autofocus: this.autofocus, parentState: parentStateLocal, getRectCallback: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::System.Func<Rect>?>)this.getRectCallback, debugCheckContext: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool>)this.debugCheckContext, statesController: this.statesController, hoverDuration: this.hoverDuration, child: this.child));
+        _ParentInkResponseState__ink_well? parentStateLocal = _ParentInkResponseProvider__ink_well.maybeOf(context);
+        return new _InkResponseStateWidget__ink_well(onTap: onTap, onTapDown: onTapDown, onTapUp: onTapUp, onTapCancel: onTapCancel, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onLongPressUp: onLongPressUp, onSecondaryTap: onSecondaryTap, onSecondaryTapUp: onSecondaryTapUp, onSecondaryTapDown: onSecondaryTapDown, onSecondaryTapCancel: onSecondaryTapCancel, onHighlightChanged: onHighlightChanged, onHover: onHover, mouseCursor: mouseCursor, containedInkWell: containedInkWell, highlightShape: highlightShape, radius: radius, borderRadius: borderRadius, customBorder: customBorder, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, overlayColor: overlayColor, splashColor: splashColor, splashFactory: splashFactory, enableFeedback: enableFeedback, excludeFromSemantics: excludeFromSemantics, focusNode: focusNode, canRequestFocus: canRequestFocus, onFocusChange: onFocusChange, autofocus: autofocus, parentState: parentStateLocal, getRectCallback: getRectCallback, debugCheckContext: debugCheckContext, statesController: statesController, hoverDuration: hoverDuration, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -300,11 +300,11 @@ public class _InkResponseStateWidget__ink_well : global::Doroti.Framework.Widget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        var gestures = ((Func<List<string>>)(() => { var __collection30382 = new List<string>(); if ((this.onTap is not null)) { __collection30382.Add("tap"); } if ((this.onDoubleTap is not null)) { __collection30382.Add("double tap"); } if ((this.onLongPress is not null)) { __collection30382.Add("long press"); } if ((this.onLongPressUp is not null)) { __collection30382.Add("long press up"); } if ((this.onTapDown is not null)) { __collection30382.Add("tap down"); } if ((this.onTapUp is not null)) { __collection30382.Add("tap up"); } if ((this.onTapCancel is not null)) { __collection30382.Add("tap cancel"); } if ((this.onSecondaryTap is not null)) { __collection30382.Add("secondary tap"); } if ((this.onSecondaryTapUp is not null)) { __collection30382.Add("secondary tap up"); } if ((this.onSecondaryTapDown is not null)) { __collection30382.Add("secondary tap down"); } if ((this.onSecondaryTapCancel is not null)) { __collection30382.Add("secondary tap cancel"); } return __collection30382; }))();
+        var gestures = ((Func<List<string>>)(() => { var __collection30382 = new List<string>(); if (onTap is not null) { __collection30382.Add("tap"); } if (onDoubleTap is not null) { __collection30382.Add("double tap"); } if (onLongPress is not null) { __collection30382.Add("long press"); } if (onLongPressUp is not null) { __collection30382.Add("long press up"); } if (onTapDown is not null) { __collection30382.Add("tap down"); } if (onTapUp is not null) { __collection30382.Add("tap up"); } if (onTapCancel is not null) { __collection30382.Add("tap cancel"); } if (onSecondaryTap is not null) { __collection30382.Add("secondary tap"); } if (onSecondaryTapUp is not null) { __collection30382.Add("secondary tap up"); } if (onSecondaryTapDown is not null) { __collection30382.Add("secondary tap down"); } if (onSecondaryTapCancel is not null) { __collection30382.Add("secondary tap cancel"); } return __collection30382; }))();
         properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("gestures", gestures.Cast<string>(), ifEmpty: "<none>"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.MouseCursor>("mouseCursor", this.mouseCursor));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("containedInkWell", this.containedInkWell, level: DiagnosticLevel.fine));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BoxShape>("highlightShape", this.highlightShape, description: $"{(this.containedInkWell ? "clipped to " : "")}{this.highlightShape}", showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.MouseCursor>("mouseCursor", mouseCursor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("containedInkWell", containedInkWell, level: DiagnosticLevel.fine));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BoxShape>("highlightShape", highlightShape, description: $"{(containedInkWell ? "clipped to " : "")}{highlightShape}", showName: false));
     }
 
 }
@@ -330,7 +330,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.ActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ActivateIntent>(onInvoke: (global::System.Action<global::Doroti.Framework.Widgets.Intent?>)this.activateOnIntent), [typeof(global::Doroti.Framework.Widgets.ButtonActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ButtonActivateIntent>(onInvoke: (global::System.Action<global::Doroti.Framework.Widgets.Intent?>)this.activateOnIntent) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.ActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ActivateIntent>(onInvoke: activateOnIntent), [typeof(global::Doroti.Framework.Widgets.ButtonActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ButtonActivateIntent>(onInvoke: activateOnIntent) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -343,144 +343,144 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
     internal virtual bool _hasFocus { get; set; } = false;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
 
-    public virtual bool highlightsExist => Enumerable.Any(this._highlights.Values.where(((highlight) => (highlight is not null))));
+    public virtual bool highlightsExist => Enumerable.Any(_highlights.Values.where((highlight) => highlight is not null));
     public virtual void markChildInkResponsePressed(_ParentInkResponseState__ink_well childState, bool value)
     {
-        bool lastAnyPressed = this._anyChildInkResponsePressed;
+        bool lastAnyPressed = _anyChildInkResponsePressed;
         if (value)
         {
-            this._activeChildren.add(childState);
+            _activeChildren.add(childState);
         }
         else
         {
-            this._activeChildren.remove(childState);
+            _activeChildren.remove(childState);
         }
-        bool nowAnyPressed = this._anyChildInkResponsePressed;
-        if ((nowAnyPressed != lastAnyPressed))
+        bool nowAnyPressed = _anyChildInkResponsePressed;
+        if (nowAnyPressed != lastAnyPressed)
         {
-            ((_InkResponseStateWidget__ink_well)this.widget).parentState?.markChildInkResponsePressed(this, nowAnyPressed);
+            widget.parentState?.markChildInkResponsePressed(this, nowAnyPressed);
         }
     }
 
-    internal virtual bool _anyChildInkResponsePressed => Enumerable.Any(this._activeChildren);
+    internal virtual bool _anyChildInkResponsePressed => Enumerable.Any(_activeChildren);
     public virtual void activateOnIntent(global::Doroti.Framework.Widgets.Intent? intent)
     {
-        this._activationTimer?.cancel();
+        _activationTimer?.cancel();
         _activationTimer = null;
-        _startNewSplash(context: this.context);
-        this._currentSplash?.confirm();
+        _startNewSplash(context: context);
+        _currentSplash?.confirm();
         _currentSplash = null;
-        if ((((_InkResponseStateWidget__ink_well)this.widget).onTap is not null))
+        if (widget.onTap is not null)
         {
-            if (((_InkResponseStateWidget__ink_well)this.widget).enableFeedback)
+            if (widget.enableFeedback)
             {
-                DartRuntimePrimitives.Ignore(Feedback.forTap(this.context));
+                DartRuntimePrimitives.Ignore(Feedback.forTap(context));
             }
-            ((_InkResponseStateWidget__ink_well)this.widget).onTap?.Invoke();
+            widget.onTap?.Invoke();
         }
-        _activationTimer = new Timer(_activationDuration, (() =>
+        _activationTimer = new Timer(_activationDuration, () =>
         {
             updateHighlight(_HighlightType__ink_well.pressed, value: false);
-        }));
+        });
     }
 
     public virtual void simulateTap(global::Doroti.Framework.Widgets.Intent? intent = null)
     {
-        _startNewSplash(context: this.context);
+        _startNewSplash(context: context);
         handleTap();
     }
 
     public virtual void simulateLongPress()
     {
-        _startNewSplash(context: this.context);
+        _startNewSplash(context: context);
         handleLongPress();
     }
 
     public virtual void handleStatesControllerChange()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStatesController statesController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStatesController>((((_InkResponseStateWidget__ink_well)this.widget).statesController ?? this.internalStatesController!));
+    public virtual global::Doroti.Framework.Widgets.WidgetStatesController statesController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStatesController>(widget.statesController ?? internalStatesController!);
     public virtual void initStatesController()
     {
-        if ((((_InkResponseStateWidget__ink_well)this.widget).statesController is null))
+        if (widget.statesController is null)
         {
             internalStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController();
         }
-        this.statesController.update(WidgetState.disabled, !this.enabled);
-        this.statesController.addListener(this.handleStatesControllerChange);
+        statesController.update(WidgetState.disabled, !enabled);
+        statesController.addListener(handleStatesControllerChange);
     }
 
     public override void initState()
     {
         base.initState();
-        if (this.wantKeepAlive)
+        if (wantKeepAlive)
         {
             _ensureKeepAlive();
         }
         initStatesController();
-        FocusManager.instance.addHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
+        FocusManager.instance.addHighlightModeListener(handleFocusHighlightModeChange);
     }
 
     public override void didUpdateWidget(_InkResponseStateWidget__ink_well oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((_InkResponseStateWidget__ink_well)this.widget).statesController, ((_InkResponseStateWidget__ink_well)oldWidget).statesController)))
+        if (!Equals(widget.statesController, oldWidget.statesController))
         {
-            ((_InkResponseStateWidget__ink_well)oldWidget).statesController?.removeListener(this.handleStatesControllerChange);
-            if ((((_InkResponseStateWidget__ink_well)this.widget).statesController is not null))
+            oldWidget.statesController?.removeListener(handleStatesControllerChange);
+            if (widget.statesController is not null)
             {
-                this.internalStatesController?.dispose();
+                internalStatesController?.dispose();
                 internalStatesController = null;
             }
             initStatesController();
         }
-        if ((((((_InkResponseStateWidget__ink_well)this.widget).radius != ((_InkResponseStateWidget__ink_well)oldWidget).radius) || (!Equals(((_InkResponseStateWidget__ink_well)this.widget).highlightShape, ((_InkResponseStateWidget__ink_well)oldWidget).highlightShape))) || (!Equals(((_InkResponseStateWidget__ink_well)this.widget).borderRadius, ((_InkResponseStateWidget__ink_well)oldWidget).borderRadius))))
+        if ((widget.radius != oldWidget.radius) || (!Equals(widget.highlightShape, oldWidget.highlightShape)) || (!Equals(widget.borderRadius, oldWidget.borderRadius)))
         {
-            InkHighlight? hoverHighlight = this._highlights.GetValueOrDefault(_HighlightType__ink_well.hover);
-            if ((hoverHighlight is not null))
+            InkHighlight? hoverHighlight = _highlights.GetValueOrDefault(_HighlightType__ink_well.hover);
+            if (hoverHighlight is not null)
             {
                 hoverHighlight.dispose();
-                updateHighlight(_HighlightType__ink_well.hover, value: this._hovering, callOnHover: false);
+                updateHighlight(_HighlightType__ink_well.hover, value: _hovering, callOnHover: false);
             }
-            InkHighlight? focusHighlight = this._highlights.GetValueOrDefault(_HighlightType__ink_well.focus);
-            if ((focusHighlight is not null))
+            InkHighlight? focusHighlight = _highlights.GetValueOrDefault(_HighlightType__ink_well.focus);
+            if (focusHighlight is not null)
             {
                 focusHighlight.dispose();
             }
         }
-        if ((!Equals(((_InkResponseStateWidget__ink_well)this.widget).customBorder, ((_InkResponseStateWidget__ink_well)oldWidget).customBorder)))
+        if (!Equals(widget.customBorder, oldWidget.customBorder))
         {
             _updateHighlightsAndSplashes();
         }
-        if ((this.enabled != isWidgetEnabled(oldWidget)))
+        if (enabled != isWidgetEnabled(oldWidget))
         {
-            this.statesController.update(WidgetState.disabled, !this.enabled);
-            if (!this.enabled)
+            statesController.update(WidgetState.disabled, !enabled);
+            if (!enabled)
             {
-                this.statesController.update(WidgetState.pressed, false);
-                InkHighlight? hoverHighlightLocal = this._highlights.GetValueOrDefault(_HighlightType__ink_well.hover);
+                statesController.update(WidgetState.pressed, false);
+                InkHighlight? hoverHighlightLocal = _highlights.GetValueOrDefault(_HighlightType__ink_well.hover);
                 hoverHighlightLocal?.dispose();
             }
-            updateHighlight(_HighlightType__ink_well.hover, value: this._hovering, callOnHover: false);
+            updateHighlight(_HighlightType__ink_well.hover, value: _hovering, callOnHover: false);
         }
         updateFocusHighlights();
     }
 
     public override void dispose()
     {
-        FocusManager.instance.removeHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
-        this.statesController.removeListener(this.handleStatesControllerChange);
-        this.internalStatesController?.dispose();
-        this._activationTimer?.cancel();
+        FocusManager.instance.removeHighlightModeListener(handleFocusHighlightModeChange);
+        statesController.removeListener(handleStatesControllerChange);
+        internalStatesController?.dispose();
+        _activationTimer?.cancel();
         _activationTimer = null;
         base.dispose();
     }
 
-    public virtual bool wantKeepAlive => DartRuntimePrimitives.ConvertValue<bool>((this.highlightsExist || (((this._splashes is not null) && Enumerable.Any(this._splashes!)))));
+    public virtual bool wantKeepAlive => DartRuntimePrimitives.ConvertValue<bool>(highlightsExist || (_splashes is not null) && Enumerable.Any(_splashes!));
     public virtual Duration getFadeDurationForType(_HighlightType__ink_well type)
     {
         switch (type)
@@ -492,7 +492,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             case _HighlightType__ink_well.hover:
             case _HighlightType__ink_well.focus:
                 {
-                    return (((_InkResponseStateWidget__ink_well)this.widget).hoverDuration ?? Duration.Create(milliseconds: 50L));
+                    return widget.hoverDuration ?? Duration.Create(milliseconds: 50L);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -502,25 +502,25 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     public virtual void updateHighlight(_HighlightType__ink_well type, bool value, bool callOnHover = true)
     {
-        InkHighlight? highlight = this._highlights.GetValueOrDefault(type);
+        InkHighlight? highlight = _highlights.GetValueOrDefault(type);
         void handleInkRemoval()
         {
-            DartRuntimePrimitives.Assert(() => (this._highlights.ContainsKey(type)));
-            this._highlights[type] = null;
+            DartRuntimePrimitives.Assert(() => _highlights.ContainsKey(type));
+            _highlights[type] = null;
             updateKeepAlive();
         }
         switch (type)
         {
             case _HighlightType__ink_well.pressed:
                 {
-                    this.statesController.update(WidgetState.pressed, value);
+                    statesController.update(WidgetState.pressed, value);
                     break;
                 }
             case _HighlightType__ink_well.hover:
                 {
                     if (callOnHover)
                     {
-                        this.statesController.update(WidgetState.hovered, value);
+                        statesController.update(WidgetState.hovered, value);
                     }
                     break;
                 }
@@ -529,21 +529,21 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
                     break;
                 }
         }
-        if ((Equals(type, _HighlightType__ink_well.pressed)))
+        if (Equals(type, _HighlightType__ink_well.pressed))
         {
-            ((_InkResponseStateWidget__ink_well)this.widget).parentState?.markChildInkResponsePressed(this, value);
+            widget.parentState?.markChildInkResponsePressed(this, value);
         }
-        if ((value == (((highlight is not null) && ((InkHighlight)highlight).active))))
+        if (value == ((highlight is not null) && highlight.active))
         {
             return;
         }
         if (value)
         {
-            if ((highlight is null))
+            if (highlight is null)
             {
-                global::Doroti.Ui.Color resolvedOverlayColor = ((global::Doroti.Ui.Color)(((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? (type switch { _HighlightType__ink_well.pressed => (((_InkResponseStateWidget__ink_well)this.widget).highlightColor ?? Theme.of(this.context).highlightColor), _HighlightType__ink_well.focus => (((_InkResponseStateWidget__ink_well)this.widget).focusColor ?? Theme.of(this.context).focusColor), _HighlightType__ink_well.hover => (((_InkResponseStateWidget__ink_well)this.widget).hoverColor ?? Theme.of(this.context).hoverColor), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
-                var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject()!)!;
-                this._highlights[type] = new InkHighlight(controller: Material.of(this.context), referenceBox: referenceBoxLocal, color: (this.enabled ? resolvedOverlayColor : resolvedOverlayColor.withAlpha(0L)), shape: ((_InkResponseStateWidget__ink_well)this.widget).highlightShape, radius: ((_InkResponseStateWidget__ink_well)this.widget).radius, borderRadius: ((_InkResponseStateWidget__ink_well)this.widget).borderRadius, customBorder: ((_InkResponseStateWidget__ink_well)this.widget).customBorder, rectCallback: ((_InkResponseStateWidget__ink_well)this.widget).getRectCallback!(referenceBoxLocal), onRemoved: () => handleInkRemoval(), textDirection: Directionality.of(this.context), fadeDuration: getFadeDurationForType(type));
+                global::Doroti.Ui.Color resolvedOverlayColor = widget.overlayColor?.resolve(statesController.value) ?? (type switch { _HighlightType__ink_well.pressed => widget.highlightColor ?? Theme.of(context).highlightColor, _HighlightType__ink_well.focus => widget.focusColor ?? Theme.of(context).focusColor, _HighlightType__ink_well.hover => widget.hoverColor ?? Theme.of(context).hoverColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
+                _highlights[type] = new InkHighlight(controller: Material.of(context), referenceBox: referenceBoxLocal, color: enabled ? resolvedOverlayColor : resolvedOverlayColor.withAlpha(0L), shape: widget.highlightShape, radius: widget.radius, borderRadius: widget.borderRadius, customBorder: widget.customBorder, rectCallback: widget.getRectCallback!(referenceBoxLocal), onRemoved: () => handleInkRemoval(), textDirection: Directionality.of(context), fadeDuration: getFadeDurationForType(type));
                 updateKeepAlive();
             }
             else
@@ -555,19 +555,19 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             highlight!.deactivate();
         }
-        DartRuntimePrimitives.Assert(() => (value == ((this._highlights.GetValueOrDefault(type) is InkHighlight currentHighlight) && currentHighlight.active)));
+        DartRuntimePrimitives.Assert(() => value == ((_highlights.GetValueOrDefault(type) is InkHighlight currentHighlight) && currentHighlight.active));
         switch (type)
         {
             case _HighlightType__ink_well.pressed:
                 {
-                    ((_InkResponseStateWidget__ink_well)this.widget).onHighlightChanged?.Invoke(value);
+                    widget.onHighlightChanged?.Invoke(value);
                     break;
                 }
             case _HighlightType__ink_well.hover:
                 {
                     if (callOnHover)
                     {
-                        ((_InkResponseStateWidget__ink_well)this.widget).onHover?.Invoke(value);
+                        widget.onHover?.Invoke(value);
                     }
                     break;
                 }
@@ -580,78 +580,78 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     internal virtual void _updateHighlightsAndSplashes()
     {
-        foreach (InkHighlight? highlight in this._highlights.Values)
+        foreach (InkHighlight? highlight in _highlights.Values)
         {
-            highlight?.customBorder = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
+            highlight?.customBorder = widget.customBorder;
         }
-        this._currentSplash?.customBorder = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
-        if (((this._splashes is not null) && Enumerable.Any(this._splashes!)))
+        _currentSplash?.customBorder = widget.customBorder;
+        if ((_splashes is not null) && Enumerable.Any(_splashes!))
         {
-            foreach (InteractiveInkFeature inkFeature in this._splashes!)
+            foreach (InteractiveInkFeature inkFeature in _splashes!)
             {
-                inkFeature.customBorder = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
+                inkFeature.customBorder = widget.customBorder;
             }
         }
     }
 
     internal virtual InteractiveInkFeature _createSplash(Offset globalPosition)
     {
-        MaterialInkController inkController = ((MaterialInkController)Material.of(this.context));
-        var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset positionLocal = ((global::Doroti.Ui.Offset)((Offset)(referenceBoxLocal).globalToLocal(globalPosition)));
-        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? ((_InkResponseStateWidget__ink_well)this.widget).splashColor) ?? Theme.of(this.context).splashColor));
-        global::System.Func<Rect>? rectCallbackLocal = ((global::System.Func<Rect>?)(((_InkResponseStateWidget__ink_well)this.widget).containedInkWell ? ((_InkResponseStateWidget__ink_well)this.widget).getRectCallback!(referenceBoxLocal) : null));
-        global::Doroti.Framework.Painting.BorderRadius? borderRadiusLocal = ((_InkResponseStateWidget__ink_well)this.widget).borderRadius;
-        global::Doroti.Framework.Painting.ShapeBorder? customBorderLocal = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
+        MaterialInkController inkController = Material.of(context);
+        var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
+        global::Doroti.Ui.Offset positionLocal = referenceBoxLocal.globalToLocal(globalPosition);
+        global::Doroti.Ui.Color colorLocal = (widget.overlayColor?.resolve(statesController.value) ?? widget.splashColor) ?? Theme.of(context).splashColor;
+        global::System.Func<Rect>? rectCallbackLocal = widget.containedInkWell ? widget.getRectCallback!(referenceBoxLocal) : null;
+        global::Doroti.Framework.Painting.BorderRadius? borderRadiusLocal = widget.borderRadius;
+        global::Doroti.Framework.Painting.ShapeBorder? customBorderLocal = widget.customBorder;
         InteractiveInkFeature? splash = default!;
         void onRemoved()
         {
-            if ((this._splashes is not null))
+            if (_splashes is not null)
             {
-                DartRuntimePrimitives.Assert(() => this._splashes!.Contains(splash));
-                this._splashes!.Remove(splash);
-                if ((Equals(this._currentSplash, splash)))
+                DartRuntimePrimitives.Assert(() => _splashes!.Contains(splash));
+                _splashes!.Remove(splash);
+                if (Equals(_currentSplash, splash))
                 {
                     _currentSplash = null;
                 }
                 updateKeepAlive();
             }
         }
-        splash = ((((_InkResponseStateWidget__ink_well)this.widget).splashFactory ?? Theme.of(this.context).splashFactory)).create(controller: inkController, referenceBox: referenceBoxLocal, position: positionLocal, color: colorLocal, containedInkWell: ((_InkResponseStateWidget__ink_well)this.widget).containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallbackLocal, radius: ((_InkResponseStateWidget__ink_well)this.widget).radius, borderRadius: borderRadiusLocal, customBorder: customBorderLocal, onRemoved: () => onRemoved(), textDirection: Directionality.of(this.context));
+        splash = (widget.splashFactory ?? Theme.of(context).splashFactory).create(controller: inkController, referenceBox: referenceBoxLocal, position: positionLocal, color: colorLocal, containedInkWell: widget.containedInkWell, rectCallback: rectCallbackLocal, radius: widget.radius, borderRadius: borderRadiusLocal, customBorder: customBorderLocal, onRemoved: () => onRemoved(), textDirection: Directionality.of(context));
         return splash;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void handleFocusHighlightModeChange(global::Doroti.Framework.Widgets.FocusHighlightMode mode)
     {
-        if (!this.mounted)
+        if (!mounted)
         {
             return;
         }
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             updateFocusHighlights();
-        })));
+        });
     }
 
-    internal virtual bool _shouldShowFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { NavigationMode.traditional => (this.enabled && this._hasFocus), null => (this.enabled && this._hasFocus), NavigationMode.directional => this._hasFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _shouldShowFocus => MediaQuery.maybeNavigationModeOf(context) switch { NavigationMode.traditional => enabled && _hasFocus, null => enabled && _hasFocus, NavigationMode.directional => _hasFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
     public virtual void updateFocusHighlights()
     {
-        bool showFocus = (FocusManager.instance.highlightMode switch { FocusHighlightMode.touch => false, FocusHighlightMode.traditional => this._shouldShowFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool showFocus = FocusManager.instance.highlightMode switch { FocusHighlightMode.touch => false, FocusHighlightMode.traditional => _shouldShowFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         updateHighlight(_HighlightType__ink_well.focus, value: showFocus);
     }
 
     public virtual void handleFocusUpdate(bool hasFocus)
     {
         _hasFocus = hasFocus;
-        this.statesController.update(WidgetState.focused, hasFocus);
+        statesController.update(WidgetState.focused, hasFocus);
         updateFocusHighlights();
-        ((_InkResponseStateWidget__ink_well)this.widget).onFocusChange?.Invoke(hasFocus);
+        widget.onFocusChange?.Invoke(hasFocus);
     }
 
     public virtual void handleAnyTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        if (this._anyChildInkResponsePressed)
+        if (_anyChildInkResponsePressed)
         {
             return;
         }
@@ -661,44 +661,44 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
     public virtual void handleTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
         handleAnyTapDown(details);
-        ((_InkResponseStateWidget__ink_well)this.widget).onTapDown?.Invoke(details);
+        widget.onTapDown?.Invoke(details);
     }
 
     public virtual void handleTapUp(global::Doroti.Framework.Gestures.TapUpDetails details)
     {
-        ((_InkResponseStateWidget__ink_well)this.widget).onTapUp?.Invoke(details);
+        widget.onTapUp?.Invoke(details);
     }
 
     public virtual void handleSecondaryTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
         handleAnyTapDown(details);
-        ((_InkResponseStateWidget__ink_well)this.widget).onSecondaryTapDown?.Invoke(details);
+        widget.onSecondaryTapDown?.Invoke(details);
     }
 
     public virtual void handleSecondaryTapUp(global::Doroti.Framework.Gestures.TapUpDetails details)
     {
-        ((_InkResponseStateWidget__ink_well)this.widget).onSecondaryTapUp?.Invoke(details);
+        widget.onSecondaryTapUp?.Invoke(details);
     }
 
     internal virtual void _startNewSplash(global::Doroti.Framework.Gestures.TapDownDetails? details = null, global::Doroti.Framework.Widgets.BuildContext? context = null)
     {
-        DartRuntimePrimitives.Assert(() => ((details is not null) || (context is not null)));
+        DartRuntimePrimitives.Assert(() => (details is not null) || (context is not null));
         global::Doroti.Ui.Offset globalPositionLocal = default!;
-        if ((context is not null))
+        if (context is not null)
         {
             var referenceBox = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
-            DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).hasSize, () => (object?)"InkResponse must be done with layout before starting a splash.");
-            globalPositionLocal = ((Offset)(referenceBox).localToGlobal(((Offset)(((global::Doroti.Framework.Rendering.RenderBox)referenceBox).paintBounds).center)));
+            DartRuntimePrimitives.Assert(() => referenceBox.hasSize, () => (object?)"InkResponse must be done with layout before starting a splash.");
+            globalPositionLocal = referenceBox.localToGlobal(referenceBox.paintBounds.center);
         }
         else
         {
             globalPositionLocal = details!.globalPosition;
         }
-        this.statesController.update(WidgetState.pressed, true);
-        InteractiveInkFeature splash = ((InteractiveInkFeature)_createSplash(globalPositionLocal));
+        statesController.update(WidgetState.pressed, true);
+        InteractiveInkFeature splash = _createSplash(globalPositionLocal);
         _splashes ??= new HashSet<InteractiveInkFeature>();
-        this._splashes!.Add(splash);
-        this._currentSplash?.cancel();
+        _splashes!.Add(splash);
+        _currentSplash?.cancel();
         _currentSplash = splash;
         updateKeepAlive();
         updateHighlight(_HighlightType__ink_well.pressed, value: true);
@@ -706,77 +706,77 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     public virtual void handleTap()
     {
-        this._currentSplash?.confirm();
+        _currentSplash?.confirm();
         _currentSplash = null;
         updateHighlight(_HighlightType__ink_well.pressed, value: false);
-        if ((((_InkResponseStateWidget__ink_well)this.widget).onTap is not null))
+        if (widget.onTap is not null)
         {
-            if (((_InkResponseStateWidget__ink_well)this.widget).enableFeedback)
+            if (widget.enableFeedback)
             {
-                DartRuntimePrimitives.Ignore(Feedback.forTap(this.context));
+                DartRuntimePrimitives.Ignore(Feedback.forTap(context));
             }
-            ((_InkResponseStateWidget__ink_well)this.widget).onTap?.Invoke();
+            widget.onTap?.Invoke();
         }
     }
 
     public virtual void handleTapCancel()
     {
-        this._currentSplash?.cancel();
+        _currentSplash?.cancel();
         _currentSplash = null;
-        ((_InkResponseStateWidget__ink_well)this.widget).onTapCancel?.Invoke();
+        widget.onTapCancel?.Invoke();
         updateHighlight(_HighlightType__ink_well.pressed, value: false);
     }
 
     public virtual void handleDoubleTap()
     {
-        this._currentSplash?.confirm();
+        _currentSplash?.confirm();
         _currentSplash = null;
         updateHighlight(_HighlightType__ink_well.pressed, value: false);
-        ((_InkResponseStateWidget__ink_well)this.widget).onDoubleTap?.Invoke();
+        widget.onDoubleTap?.Invoke();
     }
 
     public virtual void handleLongPress()
     {
-        this._currentSplash?.confirm();
+        _currentSplash?.confirm();
         _currentSplash = null;
-        if ((((_InkResponseStateWidget__ink_well)this.widget).onLongPress is not null))
+        if (widget.onLongPress is not null)
         {
-            if (((_InkResponseStateWidget__ink_well)this.widget).enableFeedback)
+            if (widget.enableFeedback)
             {
-                DartRuntimePrimitives.Ignore(Feedback.forLongPress(this.context));
+                DartRuntimePrimitives.Ignore(Feedback.forLongPress(context));
             }
-            ((_InkResponseStateWidget__ink_well)this.widget).onLongPress!();
+            widget.onLongPress!();
         }
     }
 
     public virtual void handleLongPressUp()
     {
-        this._currentSplash?.confirm();
+        _currentSplash?.confirm();
         _currentSplash = null;
-        ((_InkResponseStateWidget__ink_well)this.widget).onLongPressUp?.Invoke();
+        widget.onLongPressUp?.Invoke();
     }
 
     public virtual void handleSecondaryTap()
     {
-        this._currentSplash?.confirm();
+        _currentSplash?.confirm();
         _currentSplash = null;
         updateHighlight(_HighlightType__ink_well.pressed, value: false);
-        ((_InkResponseStateWidget__ink_well)this.widget).onSecondaryTap?.Invoke();
+        widget.onSecondaryTap?.Invoke();
     }
 
     public virtual void handleSecondaryTapCancel()
     {
-        this._currentSplash?.cancel();
+        _currentSplash?.cancel();
         _currentSplash = null;
-        ((_InkResponseStateWidget__ink_well)this.widget).onSecondaryTapCancel?.Invoke();
+        widget.onSecondaryTapCancel?.Invoke();
         updateHighlight(_HighlightType__ink_well.pressed, value: false);
     }
 
     public override void deactivate()
     {
-        if ((this._splashes is not null))
+        if (_splashes is not null)
         {
-            HashSet<InteractiveInkFeature> splashes = this._splashes!;
+            HashSet<InteractiveInkFeature> splashes = _splashes!;
             _splashes = null;
             foreach (var splash in splashes)
             {
@@ -784,14 +784,14 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             }
             _currentSplash = null;
         }
-        DartRuntimePrimitives.Assert(() => (this._currentSplash is null));
-        foreach (_HighlightType__ink_well highlight in this._highlights.Keys)
+        DartRuntimePrimitives.Assert(() => _currentSplash is null);
+        foreach (_HighlightType__ink_well highlight in _highlights.Keys)
         {
-            this._highlights.GetValueOrDefault(highlight)?.dispose();
-            this._highlights[DartRuntimePrimitives.RequireValue(highlight)] = null;
+            _highlights.GetValueOrDefault(highlight)?.dispose();
+            _highlights[DartRuntimePrimitives.RequireValue(highlight)] = null;
         }
-        ((_InkResponseStateWidget__ink_well)this.widget).parentState?.markChildInkResponsePressed(this, false);
-        if ((this._keepAliveHandle is not null))
+        widget.parentState?.markChildInkResponsePressed(this, false);
+        if (_keepAliveHandle is not null)
         {
             _releaseKeepAlive();
         }
@@ -800,29 +800,29 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     public virtual bool isWidgetEnabled(_InkResponseStateWidget__ink_well widget)
     {
-        return (_primaryButtonEnabled(widget) || _secondaryButtonEnabled(widget));
+        return _primaryButtonEnabled(widget) || _secondaryButtonEnabled(widget);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _primaryButtonEnabled(_InkResponseStateWidget__ink_well widget)
     {
-        return ((((((((_InkResponseStateWidget__ink_well)widget).onTap is not null) || (((_InkResponseStateWidget__ink_well)widget).onDoubleTap is not null)) || (((_InkResponseStateWidget__ink_well)widget).onLongPress is not null)) || (((_InkResponseStateWidget__ink_well)widget).onLongPressUp is not null)) || (((_InkResponseStateWidget__ink_well)widget).onTapUp is not null)) || (((_InkResponseStateWidget__ink_well)widget).onTapDown is not null));
+        return (widget.onTap is not null) || (widget.onDoubleTap is not null) || (widget.onLongPress is not null) || (widget.onLongPressUp is not null) || (widget.onTapUp is not null) || (widget.onTapDown is not null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _secondaryButtonEnabled(_InkResponseStateWidget__ink_well widget)
     {
-        return (((((_InkResponseStateWidget__ink_well)widget).onSecondaryTap is not null) || (((_InkResponseStateWidget__ink_well)widget).onSecondaryTapUp is not null)) || (((_InkResponseStateWidget__ink_well)widget).onSecondaryTapDown is not null));
+        return (widget.onSecondaryTap is not null) || (widget.onSecondaryTapUp is not null) || (widget.onSecondaryTapDown is not null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool enabled => isWidgetEnabled(this.widget);
-    internal virtual bool _primaryEnabled => _primaryButtonEnabled(this.widget);
-    internal virtual bool _secondaryEnabled => _secondaryButtonEnabled(this.widget);
+    public virtual bool enabled => isWidgetEnabled(widget);
+    internal virtual bool _primaryEnabled => _primaryButtonEnabled(widget);
+    internal virtual bool _secondaryEnabled => _secondaryButtonEnabled(widget);
     public virtual void handleMouseEnter(global::Doroti.Framework.Gestures.PointerEnterEvent @event)
     {
         _hovering = true;
-        if (this.enabled)
+        if (enabled)
         {
             handleHoverChange();
         }
@@ -836,63 +836,63 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     public virtual void handleHoverChange()
     {
-        updateHighlight(_HighlightType__ink_well.hover, value: this._hovering);
+        updateHighlight(_HighlightType__ink_well.hover, value: _hovering);
     }
 
-    internal virtual bool _canRequestFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { NavigationMode.traditional => (this.enabled && ((_InkResponseStateWidget__ink_well)this.widget).canRequestFocus), null => (this.enabled && ((_InkResponseStateWidget__ink_well)this.widget).canRequestFocus), NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _canRequestFocus => MediaQuery.maybeNavigationModeOf(context) switch { NavigationMode.traditional => enabled && widget.canRequestFocus, null => enabled && widget.canRequestFocus, NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => this.widget.debugCheckContext(context));
-        if ((this.wantKeepAlive && (this._keepAliveHandle is null)))
+        DartRuntimePrimitives.Assert(() => widget.debugCheckContext(context));
+        if (wantKeepAlive && (_keepAliveHandle is null))
         {
             _ensureKeepAlive();
         }
         ThemeData theme = Theme.of(context);
         var highlightableStates = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { WidgetState.focused, WidgetState.hovered, WidgetState.pressed };
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> nonHighlightableStates = this.statesController.value.difference<global::Doroti.Framework.Widgets.WidgetState>(highlightableStates);
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> nonHighlightableStates = statesController.value.difference<global::Doroti.Framework.Widgets.WidgetState>(highlightableStates);
         var pressedLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48677 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48677.UnionWith(nonHighlightableStates); __collection48677.Add(WidgetState.pressed); return __collection48677; }))();
         var focusedLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48760 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48760.UnionWith(nonHighlightableStates); __collection48760.Add(WidgetState.focused); return __collection48760; }))();
         var hoveredLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48843 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48843.UnionWith(nonHighlightableStates); __collection48843.Add(WidgetState.hovered); return __collection48843; }))();
         Color getHighlightColorForType(_HighlightType__ink_well type)
         {
-            return (type switch { _HighlightType__ink_well.pressed => ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(pressedLocal) ?? ((_InkResponseStateWidget__ink_well)this.widget).highlightColor) ?? theme.highlightColor), _HighlightType__ink_well.focus => ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(focusedLocal) ?? ((_InkResponseStateWidget__ink_well)this.widget).focusColor) ?? theme.focusColor), _HighlightType__ink_well.hover => ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(hoveredLocal) ?? ((_InkResponseStateWidget__ink_well)this.widget).hoverColor) ?? theme.hoverColor), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return type switch { _HighlightType__ink_well.pressed => (widget.overlayColor?.resolve(pressedLocal) ?? widget.highlightColor) ?? theme.highlightColor, _HighlightType__ink_well.focus => (widget.overlayColor?.resolve(focusedLocal) ?? widget.focusColor) ?? theme.focusColor, _HighlightType__ink_well.hover => (widget.overlayColor?.resolve(hoveredLocal) ?? widget.hoverColor) ?? theme.hoverColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        foreach (_HighlightType__ink_well typeLocal in this._highlights.Keys)
+        foreach (_HighlightType__ink_well typeLocal in _highlights.Keys)
         {
-            this._highlights[typeLocal]?.color = getHighlightColorForType(typeLocal);
+            _highlights[typeLocal]?.color = getHighlightColorForType(typeLocal);
         }
-        this._currentSplash?.color = ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? ((_InkResponseStateWidget__ink_well)this.widget).splashColor) ?? Theme.of(context).splashColor);
-        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((global::Doroti.Framework.Services.MouseCursor)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>((((_InkResponseStateWidget__ink_well)this.widget).mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable), this.statesController.value));
-        return ((global::Doroti.Framework.Widgets.Widget)new _ParentInkResponseProvider__ink_well(state: this, child: new global::Doroti.Framework.Widgets.Actions(actions: this._actionMap, child: new global::Doroti.Framework.Widgets.Focus(focusNode: ((_InkResponseStateWidget__ink_well)this.widget).focusNode, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this.handleFocusUpdate, autofocus: ((_InkResponseStateWidget__ink_well)this.widget).autofocus, child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this.handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this.handleMouseExit, child: DefaultSelectionStyle.merge(mouseCursor: effectiveMouseCursor, child: new global::Doroti.Framework.Widgets.Semantics(onTap: (((_InkResponseStateWidget__ink_well)this.widget).excludeFromSemantics || ((_InkResponseStateWidget__ink_well)this.widget).onTap is null) ? null : () => this.simulateTap(null), onLongPress: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).excludeFromSemantics || (((_InkResponseStateWidget__ink_well)this.widget).onLongPress is null)) ? null : this.simulateLongPress)), child: new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)(this._primaryEnabled ? this.handleTapDown : null)), onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)(this._primaryEnabled ? this.handleTapUp : null)), onTap: ((global::System.Action?)(this._primaryEnabled ? this.handleTap : null)), onTapCancel: ((global::System.Action?)(this._primaryEnabled ? this.handleTapCancel : null)), onDoubleTap: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).onDoubleTap is not null) ? this.handleDoubleTap : null)), onLongPress: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).onLongPress is not null) ? this.handleLongPress : null)), onLongPressUp: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).onLongPressUp is not null) ? this.handleLongPressUp : null)), onSecondaryTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)(this._secondaryEnabled ? this.handleSecondaryTapDown : null)), onSecondaryTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)(this._secondaryEnabled ? this.handleSecondaryTapUp : null)), onSecondaryTap: ((global::System.Action?)(this._secondaryEnabled ? this.handleSecondaryTap : null)), onSecondaryTapCancel: ((global::System.Action?)(this._secondaryEnabled ? this.handleSecondaryTapCancel : null)), behavior: HitTestBehavior.opaque, excludeFromSemantics: true, child: ((_InkResponseStateWidget__ink_well)this.widget).child))))))));
+        _currentSplash?.color = (widget.overlayColor?.resolve(statesController.value) ?? widget.splashColor) ?? Theme.of(context).splashColor;
+        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>(widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable, statesController.value);
+        return new _ParentInkResponseProvider__ink_well(state: this, child: new global::Doroti.Framework.Widgets.Actions(actions: _actionMap, child: new global::Doroti.Framework.Widgets.Focus(focusNode: widget.focusNode, canRequestFocus: _canRequestFocus, onFocusChange: handleFocusUpdate, autofocus: widget.autofocus, child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor, onEnter: handleMouseEnter, onExit: handleMouseExit, child: DefaultSelectionStyle.merge(mouseCursor: effectiveMouseCursor, child: new global::Doroti.Framework.Widgets.Semantics(onTap: (widget.excludeFromSemantics || widget.onTap is null) ? null : () => simulateTap(null), onLongPress: (widget.excludeFromSemantics || (widget.onLongPress is null)) ? null : simulateLongPress, child: new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: _primaryEnabled ? handleTapDown : null, onTapUp: _primaryEnabled ? handleTapUp : null, onTap: _primaryEnabled ? handleTap : null, onTapCancel: _primaryEnabled ? handleTapCancel : null, onDoubleTap: (widget.onDoubleTap is not null) ? handleDoubleTap : null, onLongPress: (widget.onLongPress is not null) ? handleLongPress : null, onLongPressUp: (widget.onLongPressUp is not null) ? handleLongPressUp : null, onSecondaryTapDown: _secondaryEnabled ? handleSecondaryTapDown : null, onSecondaryTapUp: _secondaryEnabled ? handleSecondaryTapUp : null, onSecondaryTap: _secondaryEnabled ? handleSecondaryTap : null, onSecondaryTapCancel: _secondaryEnabled ? handleSecondaryTapCancel : null, behavior: HitTestBehavior.opaque, excludeFromSemantics: true, child: widget.child)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _ensureKeepAlive()
     {
-        DartRuntimePrimitives.Assert(() => (this._keepAliveHandle is null));
-        this._keepAliveHandle = new KeepAliveHandle();
-        new KeepAliveNotification(this._keepAliveHandle!).dispatch(this.context);
+        DartRuntimePrimitives.Assert(() => _keepAliveHandle is null);
+        _keepAliveHandle = new KeepAliveHandle();
+        new KeepAliveNotification(_keepAliveHandle!).dispatch(context);
     }
 
     public virtual void _releaseKeepAlive()
     {
-        this._keepAliveHandle!.dispose();
-        this._keepAliveHandle = null;
+        _keepAliveHandle!.dispose();
+        _keepAliveHandle = null;
     }
 
     public virtual void updateKeepAlive()
     {
-        if (this.wantKeepAlive)
+        if (wantKeepAlive)
         {
-            if ((this._keepAliveHandle is null))
+            if (_keepAliveHandle is null)
             {
                 _ensureKeepAlive();
             }
         }
         else
         {
-            if ((this._keepAliveHandle is not null))
+            if (_keepAliveHandle is not null)
             {
                 _releaseKeepAlive();
             }

@@ -43,30 +43,30 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
     public abstract Widget buildViewport(BuildContext context, global::Doroti.Framework.Rendering.ViewportOffset verticalOffset, global::Doroti.Framework.Rendering.ViewportOffset horizontalOffset);
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(Basic_typesLibrary.axisDirectionToAxis(((ScrollableDetails)this.verticalDetails).direction), Axis.vertical)), () => (object?)"TwoDimensionalScrollView.verticalDetails are not Axis.vertical.");
-        DartRuntimePrimitives.Assert(() => (Equals(Basic_typesLibrary.axisDirectionToAxis(((ScrollableDetails)this.horizontalDetails).direction), Axis.horizontal)), () => (object?)"TwoDimensionalScrollView.horizontalDetails are not Axis.horizontal.");
-        ScrollableDetails mainAxisDetails = (this.mainAxis switch { Axis.vertical => this.verticalDetails, Axis.horizontal => this.horizontalDetails, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        bool effectivePrimary = (this.primary ?? ((((ScrollableDetails)mainAxisDetails).controller is null) && PrimaryScrollController.shouldInherit(context, this.mainAxis)));
+        DartRuntimePrimitives.Assert(() => Equals(Basic_typesLibrary.axisDirectionToAxis(verticalDetails.direction), Axis.vertical), () => (object?)"TwoDimensionalScrollView.verticalDetails are not Axis.vertical.");
+        DartRuntimePrimitives.Assert(() => Equals(Basic_typesLibrary.axisDirectionToAxis(horizontalDetails.direction), Axis.horizontal), () => (object?)"TwoDimensionalScrollView.horizontalDetails are not Axis.horizontal.");
+        ScrollableDetails mainAxisDetails = mainAxis switch { Axis.vertical => verticalDetails, Axis.horizontal => horizontalDetails, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        bool effectivePrimary = primary ?? ((mainAxisDetails.controller is null) && PrimaryScrollController.shouldInherit(context, mainAxis));
         if (effectivePrimary)
         {
-            DartRuntimePrimitives.Assert(() => (((ScrollableDetails)mainAxisDetails).controller is null), () => (object?)"TwoDimensionalScrollView.primary was explicitly set to true, but a " + "ScrollController was provided in the ScrollableDetails of the " + "TwoDimensionalScrollView.mainAxis.");
+            DartRuntimePrimitives.Assert(() => mainAxisDetails.controller is null, () => (object?)"TwoDimensionalScrollView.primary was explicitly set to true, but a " + "ScrollController was provided in the ScrollableDetails of the " + "TwoDimensionalScrollView.mainAxis.");
             mainAxisDetails = mainAxisDetails.copyWith(controller: PrimaryScrollController.of(context));
         }
-        var scrollable = new TwoDimensionalScrollable(horizontalDetails: (this.mainAxis switch { Axis.horizontal => mainAxisDetails, Axis.vertical => this.horizontalDetails, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), verticalDetails: (this.mainAxis switch { Axis.vertical => mainAxisDetails, Axis.horizontal => this.verticalDetails, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), diagonalDragBehavior: this.diagonalDragBehavior, viewportBuilder: (global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)this.buildViewport, dragStartBehavior: this.dragStartBehavior, hitTestBehavior: this.hitTestBehavior);
-        Widget scrollableResult = (effectivePrimary ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable);
-        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = ((this.keyboardDismissBehavior ?? (ScrollViewKeyboardDismissBehavior)ScrollConfiguration.of(context).getKeyboardDismissBehavior(context)));
-        if ((Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag)))
+        var scrollable = new TwoDimensionalScrollable(horizontalDetails: mainAxis switch { Axis.horizontal => mainAxisDetails, Axis.vertical => horizontalDetails, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }, verticalDetails: mainAxis switch { Axis.vertical => mainAxisDetails, Axis.horizontal => verticalDetails, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }, diagonalDragBehavior: diagonalDragBehavior, viewportBuilder: buildViewport, dragStartBehavior: dragStartBehavior, hitTestBehavior: hitTestBehavior);
+        Widget scrollableResult = effectivePrimary ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable;
+        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = keyboardDismissBehavior ?? ScrollConfiguration.of(context).getKeyboardDismissBehavior(context);
+        if (Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag))
         {
-            return ((Widget)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
+            return new NotificationListener<ScrollUpdateNotification>(child: scrollableResult, onNotification: (notification) =>
             {
-                FocusScopeNode currentScope = ((FocusScopeNode)FocusScope.of(context));
-                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope.hasPrimaryFocus) && currentScope.hasFocus))
+                FocusScopeNode currentScope = FocusScope.of(context);
+                if ((notification.dragDetails is not null) && !currentScope.hasPrimaryFocus && currentScope.hasFocus)
                 {
                     FocusManager.instance.primaryFocus?.unfocus();
                 }
                 return false;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))));
+            });
         }
         return scrollableResult;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -75,11 +75,11 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("mainAxis", this.mainAxis));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<DiagonalDragBehavior>("diagonalDragBehavior", this.diagonalDragBehavior));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("primary", value: this.primary, ifTrue: "using primary controller", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollableDetails>("verticalDetails", this.verticalDetails, showName: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollableDetails>("horizontalDetails", this.horizontalDetails, showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("mainAxis", mainAxis));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<DiagonalDragBehavior>("diagonalDragBehavior", diagonalDragBehavior));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("primary", value: primary, ifTrue: "using primary controller", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollableDetails>("verticalDetails", verticalDetails, showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollableDetails>("horizontalDetails", horizontalDetails, showName: false));
     }
 
 }

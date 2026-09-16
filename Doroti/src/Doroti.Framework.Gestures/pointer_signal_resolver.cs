@@ -10,7 +10,7 @@ public static partial class Pointer_signal_resolverLibrary
 {
     internal static bool _isSameEvent(PointerSignalEvent event1, PointerSignalEvent event2)
     {
-        return (Equals(((event1.original ?? event1)), ((event2.original ?? event2))));
+        return Equals(event1.original ?? event1, event2.original ?? event2);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -22,8 +22,8 @@ public class PointerSignalResolver
 
     public virtual void register(PointerSignalEvent @event, Action<PointerSignalEvent> callback)
     {
-        DartRuntimePrimitives.Assert(() => ((this._currentEvent is null) || Pointer_signal_resolverLibrary._isSameEvent(this._currentEvent!, @event)));
-        if ((this._firstRegisteredCallback is not null))
+        DartRuntimePrimitives.Assert(() => (_currentEvent is null) || Pointer_signal_resolverLibrary._isSameEvent(_currentEvent!, @event));
+        if (_firstRegisteredCallback is not null)
         {
             return;
         }
@@ -33,16 +33,16 @@ public class PointerSignalResolver
 
     public virtual void resolve(PointerSignalEvent @event)
     {
-        if ((this._firstRegisteredCallback is null))
+        if (_firstRegisteredCallback is null)
         {
-            DartRuntimePrimitives.Assert(() => (this._currentEvent is null));
+            DartRuntimePrimitives.Assert(() => _currentEvent is null);
             @event.respond(allowPlatformDefault: true);
             return;
         }
-        DartRuntimePrimitives.Assert(() => Pointer_signal_resolverLibrary._isSameEvent(this._currentEvent!, @event));
+        DartRuntimePrimitives.Assert(() => Pointer_signal_resolverLibrary._isSameEvent(_currentEvent!, @event));
         try
         {
-            this._firstRegisteredCallback!(this._currentEvent!);
+            _firstRegisteredCallback!(_currentEvent!);
         }
         catch (Exception exceptionLocal)
         {
@@ -50,7 +50,7 @@ public class PointerSignalResolver
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerSignalEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerSignalEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) };
                     return true;
                 });
             FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "gesture library", context: new ErrorDescription("while resolving a PointerSignalEvent"), informationCollector: collector));

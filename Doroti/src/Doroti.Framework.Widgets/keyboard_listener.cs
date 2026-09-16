@@ -21,19 +21,19 @@ public class KeyboardListener : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new Focus(focusNode: this.focusNode, autofocus: this.autofocus, includeSemantics: this.includeSemantics, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        return new Focus(focusNode: focusNode, autofocus: autofocus, includeSemantics: includeSemantics, onKeyEvent: (node, @event) =>
         {
-            this.onKeyEvent?.Invoke(@event);
+            onKeyEvent?.Invoke(@event);
             return KeyEventResult.ignored;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: this.child));
+        }, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", this.focusNode));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", focusNode));
     }
 
 }

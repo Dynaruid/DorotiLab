@@ -46,13 +46,13 @@ public class CupertinoDesktopTextSelectionControls : global::Doroti.Framework.Wi
 
     public override global::Doroti.Framework.Widgets.Widget buildToolbar(global::Doroti.Framework.Widgets.BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<global::Doroti.Framework.Widgets.ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(clipboardStatus: clipboardStatus, endpoints: endpoints, globalEditableRegion: globalEditableRegion, handleCut: ((global::System.Action?)(canCut(@delegate) ? (() => { handleCut(@delegate); }) : null)), handleCopy: ((global::System.Action?)(canCopy(@delegate) ? (() => { handleCopy(@delegate); }) : null)), handlePaste: ((global::System.Action?)(canPaste(@delegate) ? (() => { _ = handlePaste(@delegate); }) : null)), handleSelectAll: ((global::System.Action?)(canSelectAll(@delegate) ? (() => { handleSelectAll(@delegate); }) : null)), selectionMidpoint: selectionMidpoint, lastSecondaryTapDownPosition: lastSecondaryTapDownPosition, textLineHeight: textLineHeight));
+        return new _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(clipboardStatus: clipboardStatus, endpoints: endpoints, globalEditableRegion: globalEditableRegion, handleCut: canCut(@delegate) ? (() => { handleCut(@delegate); }) : null, handleCopy: canCopy(@delegate) ? (() => { handleCopy(@delegate); }) : null, handlePaste: canPaste(@delegate) ? (() => { _ = handlePaste(@delegate); }) : null, handleSelectAll: canSelectAll(@delegate) ? (() => { handleSelectAll(@delegate); }) : null, selectionMidpoint: selectionMidpoint, lastSecondaryTapDownPosition: lastSecondaryTapDownPosition, textLineHeight: textLineHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget buildHandle(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.TextSelectionHandleType type, double textLineHeight, global::System.Action? onTap = null)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
+        return SizedBox.CreateShrink();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -72,12 +72,12 @@ public class CupertinoDesktopTextSelectionControls : global::Doroti.Framework.Wi
 
 public static partial class Desktop_text_selectionLibrary
 {
-    public static global::Doroti.Framework.Widgets.TextSelectionControls cupertinoDesktopTextSelectionHandleControls = ((global::Doroti.Framework.Widgets.TextSelectionControls)new _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection());
+    public static global::Doroti.Framework.Widgets.TextSelectionControls cupertinoDesktopTextSelectionHandleControls = new _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection();
 }
 
 public static partial class Desktop_text_selectionLibrary
 {
-    public static global::Doroti.Framework.Widgets.TextSelectionControls cupertinoDesktopTextSelectionControls = ((global::Doroti.Framework.Widgets.TextSelectionControls)new CupertinoDesktopTextSelectionControls());
+    public static global::Doroti.Framework.Widgets.TextSelectionControls cupertinoDesktopTextSelectionControls = new CupertinoDesktopTextSelectionControls();
 }
 
 public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection : global::Doroti.Framework.Widgets.StatefulWidget
@@ -114,45 +114,45 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
 {
     internal virtual void _onChangedClipboardStatus()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
     public override void initState()
     {
         base.initState();
-        ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
+        widget.clipboardStatus?.addListener(_onChangedClipboardStatus);
     }
 
     public override void didUpdateWidget(_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus)))
+        if (!Equals(oldWidget.clipboardStatus, widget.clipboardStatus))
         {
-            ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
-            ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
+            oldWidget.clipboardStatus?.removeListener(_onChangedClipboardStatus);
+            widget.clipboardStatus?.addListener(_onChangedClipboardStatus);
         }
     }
 
     public override void dispose()
     {
-        ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
+        widget.clipboardStatus?.removeListener(_onChangedClipboardStatus);
         base.dispose();
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if (((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste is not null) && (Equals(((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.value, ClipboardStatus.unknown))))
+        if ((widget.handlePaste is not null) && Equals(widget.clipboardStatus?.value, ClipboardStatus.unknown))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
+            return SizedBox.CreateShrink();
         }
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)MediaQuery.paddingOf(context));
-        var midpointAnchor = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dx - ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.left), ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).left, (MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).right)), (((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dy - ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.top));
+        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
+        var midpointAnchor = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(widget.selectionMidpoint.dx - widget.globalEditableRegion.left, mediaQueryPadding.left, MediaQuery.widthOf(context) - mediaQueryPadding.right), widget.selectionMidpoint.dy - widget.globalEditableRegion.top);
         var items = new List<global::Doroti.Framework.Widgets.Widget>();
         CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-        global::Doroti.Framework.Widgets.Widget onePhysicalPixelVerticalDivider = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: (1.0 / MediaQuery.devicePixelRatioOf(context))));
+        global::Doroti.Framework.Widgets.Widget onePhysicalPixelVerticalDivider = new global::Doroti.Framework.Widgets.SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
         void addToolbarButton(string text, global::System.Action onPressed)
         {
             if (Enumerable.Any(items))
@@ -161,27 +161,27 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
             }
             items.Add(CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: () => onPressed(), text: text));
         }
-        if ((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut is not null))
+        if (widget.handleCut is not null)
         {
-            addToolbarButton(localizations.cutButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut!);
+            addToolbarButton(localizations.cutButtonLabel, widget.handleCut!);
         }
-        if ((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy is not null))
+        if (widget.handleCopy is not null)
         {
-            addToolbarButton(localizations.copyButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy!);
+            addToolbarButton(localizations.copyButtonLabel, widget.handleCopy!);
         }
-        if (((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste is not null) && (Equals(((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.value, ClipboardStatus.pasteable))))
+        if ((widget.handlePaste is not null) && Equals(widget.clipboardStatus?.value, ClipboardStatus.pasteable))
         {
-            addToolbarButton(localizations.pasteButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste!);
+            addToolbarButton(localizations.pasteButtonLabel, widget.handlePaste!);
         }
-        if ((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll is not null))
+        if (widget.handleSelectAll is not null)
         {
-            addToolbarButton(localizations.selectAllButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll!);
+            addToolbarButton(localizations.selectAllButtonLabel, widget.handleSelectAll!);
         }
         if (!Enumerable.Any(items))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
+            return SizedBox.CreateShrink();
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new CupertinoDesktopTextSelectionToolbar(anchor: (((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).lastSecondaryTapDownPosition ?? midpointAnchor), children: items));
+        return new CupertinoDesktopTextSelectionToolbar(anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor, children: items);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

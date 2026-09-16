@@ -18,20 +18,20 @@ public class BrowserContextMenu
     public static Future disableContextMenu()
     {
         DartRuntimePrimitives.Assert(() => ConstantsLibrary.kIsWeb);
-        return _instance._channel.invokeMethod<object?>("disableContextMenu").then(((_) =>
+        return _instance._channel.invokeMethod<object?>("disableContextMenu").then((_) =>
         {
             _instance._enabled = false;
-        }));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Future enableContextMenu()
     {
         DartRuntimePrimitives.Assert(() => ConstantsLibrary.kIsWeb);
-        return _instance._channel.invokeMethod<object?>("enableContextMenu").then(((_) =>
+        return _instance._channel.invokeMethod<object?>("enableContextMenu").then((_) =>
         {
             _instance._enabled = true;
-        }));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -45,12 +45,12 @@ public class SliverMultiBoxAdaptorParentData : SliverLogicalParentData, Containe
     public virtual RenderBox? nextSibling { get; set; } = default;
     public virtual bool keepAlive { get; set; } = false;
 
-    public virtual bool keptAlive => this._keptAlive;
-    public override string ToString() => $"index={this.index}; {(keepAlive ? "keepAlive; " : "")}{base.ToString()}";
+    public virtual bool keptAlive => _keptAlive;
+    public override string ToString() => $"index={index}; {(keepAlive ? "keepAlive; " : "")}{base.ToString()}";
     public override void detach()
     {
-        DartRuntimePrimitives.Assert(() => (this.previousSibling is null));
-        DartRuntimePrimitives.Assert(() => (this.nextSibling is null));
+        DartRuntimePrimitives.Assert(() => previousSibling is null);
+        DartRuntimePrimitives.Assert(() => nextSibling is null);
         base.detach();
     }
 
@@ -68,54 +68,54 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     protected RenderSliverMultiBoxAdaptor(RenderSliverBoxChildManager childManager)
     {
-        this._childManager = childManager;
-        this._debugDanglingKeepAlives = new List<RenderBox>();
+        _childManager = childManager;
+        _debugDanglingKeepAlives = new List<RenderBox>();
     }
 
     public override void setupParentData(RenderObject child)
     {
-        if ((((RenderObject)child).parentData is not SliverMultiBoxAdaptorParentData))
+        if (child.parentData is not SliverMultiBoxAdaptorParentData)
         {
             child.parentData = new SliverMultiBoxAdaptorParentData();
         }
     }
 
-    public virtual RenderSliverBoxChildManager childManager => this._childManager;
+    public virtual RenderSliverBoxChildManager childManager => _childManager;
     public virtual bool debugChildIntegrityEnabled
     {
-        get => this._debugChildIntegrityEnabled;
+        get => _debugChildIntegrityEnabled;
         set
         {
             var enabled = value;
             DartRuntimePrimitives.Assert(() =>
                 {
                     _debugChildIntegrityEnabled = enabled;
-                    return (_debugVerifyChildOrder() && ((!this._debugChildIntegrityEnabled || (checked((long)(this._debugDanglingKeepAlives.Count)) == 0))));
+                    return _debugVerifyChildOrder() && (!_debugChildIntegrityEnabled || (checked((long)_debugDanglingKeepAlives.Count) == 0));
                 });
         }
     }
     public override void adoptChild(RenderObject child)
     {
         base.adoptChild(child);
-        var childParentData = ((SliverMultiBoxAdaptorParentData?)((RenderObject)child).parentData!)!;
-        if (!((SliverMultiBoxAdaptorParentData)childParentData)._keptAlive)
+        var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
+        if (!childParentData._keptAlive)
         {
-            this.childManager.didAdoptChild(((RenderBox?)child)!);
+            childManager.didAdoptChild(((RenderBox?)child)!);
         }
     }
 
-    internal virtual bool _debugAssertChildListLocked() => this.childManager.debugAssertChildListLocked();
+    internal virtual bool _debugAssertChildListLocked() => childManager.debugAssertChildListLocked();
     internal virtual bool _debugVerifyChildOrder()
     {
-        if (this._debugChildIntegrityEnabled)
+        if (_debugChildIntegrityEnabled)
         {
             RenderBox? child = firstChild;
             long index = default!;
-            while ((child is not null))
+            while (child is not null)
             {
                 index = indexOf(child);
                 child = childAfter(child);
-                DartRuntimePrimitives.Assert(() => ((child is null) || (indexOf(child) > index)));
+                DartRuntimePrimitives.Assert(() => (child is null) || (indexOf(child) > index));
             }
         }
         return true;
@@ -124,28 +124,28 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => !this._keepAliveBucket.containsValue(child));
+        DartRuntimePrimitives.Assert(() => !_keepAliveBucket.containsValue(child));
         DartRuntimePrimitives.Assert(() => !Equals(child, this));
         DartRuntimePrimitives.Assert(() => !Equals(after, this));
         DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, after));
-        DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, this._firstChild));
-        DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, this._lastChild));
+        DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is SliverMultiBoxAdaptorParentData));
+        DartRuntimePrimitives.Assert(() => child.parentData is SliverMultiBoxAdaptorParentData);
         _insertIntoChildList(child, after: after);
-        DartRuntimePrimitives.Assert(() => (firstChild is not null));
+        DartRuntimePrimitives.Assert(() => firstChild is not null);
         DartRuntimePrimitives.Assert(() => _debugVerifyChildOrder());
     }
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        if (!((SliverMultiBoxAdaptorParentData)childParentData).keptAlive)
+        if (!childParentData.keptAlive)
         {
             DartRuntimePrimitives.Assert(() => !Equals(child, this));
             DartRuntimePrimitives.Assert(() => !Equals(after, this));
             DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, after));
-            DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+            DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
             var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
             if (!EqualityComparer<RenderBox>.Default.Equals(childParentDataLocal.previousSibling, after))
             {
@@ -154,56 +154,56 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
             }
             // A keyed child can receive a new index while keeping the same
             // physical predecessor. Its child-manager slot still must update.
-            this.childManager.didAdoptChild(child);
+            childManager.didAdoptChild(child);
             markNeedsLayout();
         }
         else
         {
-            if ((Equals(this._keepAliveBucket.GetValueOrDefault(DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index)), child)))
+            if (Equals(_keepAliveBucket.GetValueOrDefault(DartRuntimePrimitives.RequireValue(childParentData.index)), child))
             {
-                this._keepAliveBucket.remove(DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index));
+                _keepAliveBucket.remove(DartRuntimePrimitives.RequireValue(childParentData.index));
             }
             DartRuntimePrimitives.Assert(() =>
                 {
-                    this._debugDanglingKeepAlives.Remove(child);
+                    _debugDanglingKeepAlives.Remove(child);
                     return true;
                 });
-            this.childManager.didAdoptChild(child);
+            childManager.didAdoptChild(child);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (this._keepAliveBucket.ContainsKey(DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index)))
+                    if (_keepAliveBucket.ContainsKey(DartRuntimePrimitives.RequireValue(childParentData.index)))
                     {
-                        this._debugDanglingKeepAlives.Add(this._keepAliveBucket.GetValueOrDefault(DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index))!);
+                        _debugDanglingKeepAlives.Add(_keepAliveBucket.GetValueOrDefault(DartRuntimePrimitives.RequireValue(childParentData.index))!);
                     }
                     return true;
                 });
-            this._keepAliveBucket[DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index)] = child;
+            _keepAliveBucket[DartRuntimePrimitives.RequireValue(childParentData.index)] = child;
         }
     }
 
     public virtual void remove(RenderBox child)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        if (!((SliverMultiBoxAdaptorParentData)childParentData)._keptAlive)
+        if (!childParentData._keptAlive)
         {
             _removeFromChildList(child);
             dropChild(child);
             return;
         }
-        DartRuntimePrimitives.Assert(() => (Equals(this._keepAliveBucket.GetValueOrDefault(DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index)), child)));
+        DartRuntimePrimitives.Assert(() => Equals(_keepAliveBucket.GetValueOrDefault(DartRuntimePrimitives.RequireValue(childParentData.index)), child));
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugDanglingKeepAlives.Remove(child);
+                _debugDanglingKeepAlives.Remove(child);
                 return true;
             });
-        this._keepAliveBucket.remove(DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index));
+        _keepAliveBucket.remove(DartRuntimePrimitives.RequireValue(childParentData.index));
         dropChild(child);
     }
 
     public virtual void removeAll()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
@@ -215,20 +215,20 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         _firstChild = null;
         _lastChild = null;
         _childCount = 0L;
-        this._keepAliveBucket.Values.forEach(dropChild);
-        this._keepAliveBucket.Clear();
+        _keepAliveBucket.Values.forEach(dropChild);
+        _keepAliveBucket.Clear();
     }
 
     internal virtual void _createOrObtainChild(long index, RenderBox? after)
     {
-        invokeLayoutCallback<SliverConstraints>(((Action<SliverConstraints>)((constraints) =>
+        invokeLayoutCallback<SliverConstraints>((constraints) =>
         {
-            DartRuntimePrimitives.Assert(() => (Equals(constraints, this.constraints)));
-            if (this._keepAliveBucket.ContainsKey(index))
+            DartRuntimePrimitives.Assert(() => Equals(constraints, this.constraints));
+            if (_keepAliveBucket.ContainsKey(index))
             {
-                RenderBox child = this._keepAliveBucket.remove(index)!;
+                RenderBox child = _keepAliveBucket.remove(index)!;
                 var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-                DartRuntimePrimitives.Assert(() => ((SliverMultiBoxAdaptorParentData)childParentData)._keptAlive);
+                DartRuntimePrimitives.Assert(() => childParentData._keptAlive);
                 dropChild(child);
                 child.parentData = childParentData;
                 insert(child, after: after);
@@ -236,9 +236,9 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
             }
             else
             {
-                this._childManager.createChild(index, after: after);
+                _childManager.createChild(index, after: after);
             }
-        })));
+        });
     }
 
     internal virtual void _destroyOrCacheChild(RenderBox child)
@@ -246,32 +246,32 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         if (childParentData.keepAlive)
         {
-            DartRuntimePrimitives.Assert(() => !((SliverMultiBoxAdaptorParentData)childParentData)._keptAlive);
+            DartRuntimePrimitives.Assert(() => !childParentData._keptAlive);
             remove(child);
-            this._keepAliveBucket[DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index)] = child;
+            _keepAliveBucket[DartRuntimePrimitives.RequireValue(childParentData.index)] = child;
             child.parentData = childParentData;
             base.adoptChild(child);
             childParentData._keptAlive = true;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
-            this._childManager.removeChild(child);
-            DartRuntimePrimitives.Assert(() => (child.parent is null));
+            DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
+            _childManager.removeChild(child);
+            DartRuntimePrimitives.Assert(() => child.parent is null);
         }
     }
 
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.attach(owner);
             var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
-        foreach (RenderBox childLocal in this._keepAliveBucket.Values)
+        foreach (RenderBox childLocal in _keepAliveBucket.Values)
         {
             childLocal.attach(owner);
         }
@@ -280,14 +280,14 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public override void detach()
     {
         base.detach();
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.detach();
             var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
-        foreach (RenderBox childLocal in this._keepAliveBucket.Values)
+        foreach (RenderBox childLocal in _keepAliveBucket.Values)
         {
             childLocal.detach();
         }
@@ -295,32 +295,32 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     public override void redepthChildren()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
-        this._keepAliveBucket.Values.forEach(redepthChild);
+        _keepAliveBucket.Values.forEach(redepthChild);
     }
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
-        this._keepAliveBucket.Values.forEach(visitor);
+        _keepAliveBucket.Values.forEach(visitor);
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
@@ -332,7 +332,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     {
         get
         {
-            if (((((geometry is not null) && !geometry!.visible) && (firstChild is not null)) && firstChild!.hasSize))
+            if ((geometry is not null) && !geometry!.visible && (firstChild is not null) && firstChild!.hasSize)
             {
                 return firstChild!.paintBounds;
             }
@@ -342,17 +342,17 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual bool addInitialChild(long index = 0, double layoutOffset = 0.0)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertChildListLocked());
-        DartRuntimePrimitives.Assert(() => (firstChild is null));
+        DartRuntimePrimitives.Assert(() => firstChild is null);
         _createOrObtainChild(index, after: null);
-        if ((firstChild is not null))
+        if (firstChild is not null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(firstChild, lastChild)));
-            DartRuntimePrimitives.Assert(() => (indexOf(firstChild!) == index));
+            DartRuntimePrimitives.Assert(() => Equals(firstChild, lastChild));
+            DartRuntimePrimitives.Assert(() => indexOf(firstChild!) == index);
             var firstChildParentData = ((SliverMultiBoxAdaptorParentData?)firstChild!.parentData!)!;
             firstChildParentData.layoutOffset = layoutOffset;
             return true;
         }
-        this.childManager.setDidUnderflow(true);
+        childManager.setDidUnderflow(true);
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -360,14 +360,14 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual RenderBox? insertAndLayoutLeadingChild(BoxConstraints childConstraints, bool parentUsesSize = false)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertChildListLocked());
-        long index = (indexOf(firstChild!) - 1L);
+        long index = indexOf(firstChild!) - 1L;
         _createOrObtainChild(index, after: null);
-        if ((indexOf(firstChild!) == index))
+        if (indexOf(firstChild!) == index)
         {
             firstChild!.layout(childConstraints, parentUsesSize: parentUsesSize);
             return firstChild;
         }
-        this.childManager.setDidUnderflow(true);
+        childManager.setDidUnderflow(true);
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -375,17 +375,17 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual RenderBox? insertAndLayoutChild(BoxConstraints childConstraints, RenderBox? after, bool parentUsesSize = false)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertChildListLocked());
-        DartRuntimePrimitives.Assert(() => (after is not null));
+        DartRuntimePrimitives.Assert(() => after is not null);
         var previous = DartRuntimePrimitives.RequireReference(after);
         long index = indexOf(previous) + 1L;
         _createOrObtainChild(index, after: previous);
         RenderBox? child = childAfter(previous);
-        if (((child is not null) && (indexOf(child) == index)))
+        if ((child is not null) && (indexOf(child) == index))
         {
             child.layout(childConstraints, parentUsesSize: parentUsesSize);
             return child;
         }
-        this.childManager.setDidUnderflow(true);
+        childManager.setDidUnderflow(true);
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -394,7 +394,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     {
         RenderBox? walker = firstChild;
         var leadingGarbage = 0L;
-        while (((walker is not null) && (indexOf(walker) < firstIndex)))
+        while ((walker is not null) && (indexOf(walker) < firstIndex))
         {
             leadingGarbage += 1L;
             walker = childAfter(walker);
@@ -407,7 +407,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     {
         RenderBox? walker = lastChild;
         var trailingGarbage = 0L;
-        while (((walker is not null) && (indexOf(walker) > lastIndex)))
+        while ((walker is not null) && (indexOf(walker) > lastIndex))
         {
             trailingGarbage += 1L;
             walker = childBefore(walker);
@@ -419,44 +419,44 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual void collectGarbage(long leadingGarbage, long trailingGarbage)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertChildListLocked());
-        DartRuntimePrimitives.Assert(() => (childCount >= (leadingGarbage + trailingGarbage)));
-        invokeLayoutCallback<SliverConstraints>(((Action<SliverConstraints>)((constraints) =>
+        DartRuntimePrimitives.Assert(() => childCount >= (leadingGarbage + trailingGarbage));
+        invokeLayoutCallback<SliverConstraints>((constraints) =>
         {
-            while ((leadingGarbage > 0L))
+            while (leadingGarbage > 0L)
             {
                 _destroyOrCacheChild(firstChild!);
                 leadingGarbage -= 1L;
             }
-            while ((trailingGarbage > 0L))
+            while (trailingGarbage > 0L)
             {
                 _destroyOrCacheChild(lastChild!);
                 trailingGarbage -= 1L;
             }
-            this._keepAliveBucket.Values.where(((child) =>
+            _keepAliveBucket.Values.where((child) =>
             {
                 var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
                 return !childParentData.keepAlive;
-            })).ToList().forEach(((RenderSliverBoxChildManager)this._childManager).removeChild);
-            DartRuntimePrimitives.Assert(() => (this._keepAliveBucket.Values.where(((child) =>
+            }).ToList().forEach(_childManager.removeChild);
+            DartRuntimePrimitives.Assert(() => _keepAliveBucket.Values.where((child) =>
             {
                 var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
                 return !childParentDataLocal.keepAlive;
-            })).Count() == 0));
-        })));
+            }).Count() == 0);
+        });
     }
 
     public virtual long indexOf(RenderBox child)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (((SliverMultiBoxAdaptorParentData)childParentData).index is not null));
-        return DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData).index);
+        DartRuntimePrimitives.Assert(() => childParentData.index is not null);
+        return DartRuntimePrimitives.RequireValue(childParentData.index);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double paintExtentOf(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => ((RenderBox)child).hasSize);
-        return (((SliverConstraints)constraints).axis switch { Axis.horizontal => ((RenderBox)child).size.width, Axis.vertical => ((RenderBox)child).size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Assert(() => child.hasSize);
+        return constraints.axis switch { Axis.horizontal => child.size.width, Axis.vertical => child.size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -464,7 +464,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     {
         RenderBox? child = lastChild;
         var boxResult = BoxHitTestResult.CreateWrap(result);
-        while ((child is not null))
+        while (child is not null)
         {
             if (hitTestBoxChild(boxResult, child, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition))
             {
@@ -479,14 +479,14 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public override double childMainAxisPosition(RenderObject child)
     {
         var __child = (RenderBox)child;
-        return (DartRuntimePrimitives.RequireValue(childScrollOffset(__child)) - ((SliverConstraints)constraints).scrollOffset);
+        return DartRuntimePrimitives.RequireValue(childScrollOffset(__child)) - constraints.scrollOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? childScrollOffset(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
-        var childParentData = ((SliverMultiBoxAdaptorParentData?)((RenderObject)child).parentData!)!;
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
+        var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         return childParentData.layoutOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -495,7 +495,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     {
         var __child = (RenderBox)child;
         var childParentData = ((SliverMultiBoxAdaptorParentData?)__child.parentData)!;
-        return ((childParentData.index is not null) && !this._keepAliveBucket.ContainsKey(DartRuntimePrimitives.RequireValue(childParentData.index)));
+        return (childParentData.index is not null) && !_keepAliveBucket.ContainsKey(DartRuntimePrimitives.RequireValue(childParentData.index));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -514,7 +514,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((firstChild is null))
+        if (firstChild is null)
         {
             return;
         }
@@ -522,13 +522,13 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         global::Doroti.Ui.Offset crossAxisUnit = default!;
         global::Doroti.Ui.Offset originOffset = default!;
         bool addExtent = default!;
-        switch (SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection))
+        switch (SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection))
         {
             case AxisDirection.up:
                 {
                     mainAxisUnit = new global::Doroti.Ui.Offset(0.0, -1.0);
                     crossAxisUnit = new global::Doroti.Ui.Offset(1.0, 0.0);
-                    originOffset = (offset + new global::Doroti.Ui.Offset(0.0, geometry!.paintExtent));
+                    originOffset = offset + new global::Doroti.Ui.Offset(0.0, geometry!.paintExtent);
                     addExtent = true;
                     break;
                 }
@@ -552,22 +552,22 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                 {
                     mainAxisUnit = new global::Doroti.Ui.Offset(-1.0, 0.0);
                     crossAxisUnit = new global::Doroti.Ui.Offset(0.0, 1.0);
-                    originOffset = (offset + new global::Doroti.Ui.Offset(geometry!.paintExtent, 0.0));
+                    originOffset = offset + new global::Doroti.Ui.Offset(geometry!.paintExtent, 0.0);
                     addExtent = true;
                     break;
                 }
         }
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             double mainAxisDelta = childMainAxisPosition(child);
             double crossAxisDelta = childCrossAxisPosition(child);
-            var childOffset = new global::Doroti.Ui.Offset(((originOffset.dx + (mainAxisUnit.dx * mainAxisDelta)) + (crossAxisUnit.dx * crossAxisDelta)), ((originOffset.dy + (mainAxisUnit.dy * mainAxisDelta)) + (crossAxisUnit.dy * crossAxisDelta)));
+            var childOffset = new global::Doroti.Ui.Offset(originOffset.dx + (mainAxisUnit.dx * mainAxisDelta) + (crossAxisUnit.dx * crossAxisDelta), originOffset.dy + (mainAxisUnit.dy * mainAxisDelta) + (crossAxisUnit.dy * crossAxisDelta));
             if (addExtent)
             {
-                childOffset += (mainAxisUnit * paintExtentOf(child));
+                childOffset += mainAxisUnit * paintExtentOf(child);
             }
-            if (((mainAxisDelta < ((SliverConstraints)constraints).remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L)))
+            if ((mainAxisDelta < constraints.remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L))
             {
                 context.paintChild(child, childOffset);
             }
@@ -578,20 +578,20 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsNode(((firstChild is not null) ? $"currently live children: {indexOf(firstChild!)} to {indexOf(lastChild!)}" : "no children current live")));
+        properties.add(new DiagnosticsNode((firstChild is not null) ? $"currently live children: {indexOf(firstChild!)} to {indexOf(lastChild!)}" : "no children current live"));
     }
 
     public virtual bool debugAssertChildListIsNonEmptyAndContiguous()
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                DartRuntimePrimitives.Assert(() => (firstChild is not null));
+                DartRuntimePrimitives.Assert(() => firstChild is not null);
                 long index = indexOf(firstChild!);
                 RenderBox? child = childAfter(firstChild!);
-                while ((child is not null))
+                while (child is not null)
                 {
                     index += 1L;
-                    DartRuntimePrimitives.Assert(() => (indexOf(child) == index));
+                    DartRuntimePrimitives.Assert(() => indexOf(child) == index);
                     child = childAfter(child);
                 }
                 return true;
@@ -603,31 +603,31 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((firstChild is not null))
+        if (firstChild is not null)
         {
             RenderBox? child = firstChild;
             while (true)
             {
                 var childParentData = ((SliverMultiBoxAdaptorParentData?)child!.parentData!)!;
-                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__29592 with index {((SliverMultiBoxAdaptorParentData)childParentData).index}"));
-                if ((Equals(child, lastChild)))
+                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__29592 with index {childParentData.index}"));
+                if (Equals(child, lastChild))
                 {
                     break;
                 }
                 child = childParentData.nextSibling;
             }
         }
-        if ((checked((long)(this._keepAliveBucket.Count)) != 0))
+        if (checked((long)_keepAliveBucket.Count) != 0)
         {
             List<long> indices = ((Func<List<long>>)(() =>
 {
-    var __cascade = this._keepAliveBucket.Keys.ToList();
+    var __cascade = _keepAliveBucket.Keys.ToList();
     __cascade.sort();
     return __cascade;
 }))();
             foreach (var indexLocal in indices)
             {
-                children.Add(((Diagnosticable)this._keepAliveBucket.GetValueOrDefault(indexLocal)!).toDiagnosticsNode(name: $"child with index {indexLocal} (kept alive but not laid out)", style: DiagnosticsTreeStyle.offstage));
+                children.Add(((Diagnosticable)_keepAliveBucket.GetValueOrDefault(indexLocal)!).toDiagnosticsNode(name: $"child with index {indexLocal} (kept alive but not laid out)", style: DiagnosticsTreeStyle.offstage));
             }
         }
         return children;
@@ -637,37 +637,37 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -678,34 +678,34 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((SliverMultiBoxAdaptorParentData?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((SliverMultiBoxAdaptorParentData?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((SliverMultiBoxAdaptorParentData?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -715,41 +715,41 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                 var childNextSiblingParentData = ((SliverMultiBoxAdaptorParentData?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void add(RenderBox child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach(this.add);
+        children?.forEach(add);
     }
 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((SliverMultiBoxAdaptorParentData?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -758,14 +758,14 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
-    public virtual RenderBox? firstChild => this._firstChild;
-    public virtual RenderBox? lastChild => this._lastChild;
+    public virtual RenderBox? firstChild => _firstChild;
+    public virtual RenderBox? lastChild => _lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -773,7 +773,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -781,8 +781,8 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     public virtual bool _getRightWayUp(SliverConstraints constraints)
     {
-        bool reversed = Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).axisDirection);
-        return (((SliverConstraints)constraints).growthDirection switch { GrowthDirection.forward => !reversed, GrowthDirection.reverse => reversed, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool reversed = Basic_typesLibrary.axisDirectionIsReversed(constraints.axisDirection);
+        return constraints.growthDirection switch { GrowthDirection.forward => !reversed, GrowthDirection.reverse => reversed, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -791,18 +791,18 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         bool rightWayUp = _getRightWayUp(constraints);
         double delta = childMainAxisPosition(child);
         double crossAxisDelta = childCrossAxisPosition(child);
-        double absolutePosition = (mainAxisPosition - delta);
-        double absoluteCrossAxisPosition = (crossAxisPosition - crossAxisDelta);
+        double absolutePosition = mainAxisPosition - delta;
+        double absoluteCrossAxisPosition = crossAxisPosition - crossAxisDelta;
         global::Doroti.Ui.Offset paintOffsetLocal = default!;
         global::Doroti.Ui.Offset transformedPosition = default!;
-        switch (((SliverConstraints)constraints).axis)
+        switch (constraints.axis)
         {
             case Axis.horizontal:
                 {
                     if (!rightWayUp)
                     {
-                        absolutePosition = (((RenderBox)child).size.width - absolutePosition);
-                        delta = ((geometry!.paintExtent - ((RenderBox)child).size.width) - delta);
+                        absolutePosition = child.size.width - absolutePosition;
+                        delta = geometry!.paintExtent - child.size.width - delta;
                     }
                     paintOffsetLocal = new global::Doroti.Ui.Offset(delta, crossAxisDelta);
                     transformedPosition = new global::Doroti.Ui.Offset(absolutePosition, absoluteCrossAxisPosition);
@@ -812,18 +812,18 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                 {
                     if (!rightWayUp)
                     {
-                        absolutePosition = (((RenderBox)child).size.height - absolutePosition);
-                        delta = ((geometry!.paintExtent - ((RenderBox)child).size.height) - delta);
+                        absolutePosition = child.size.height - absolutePosition;
+                        delta = geometry!.paintExtent - child.size.height - delta;
                     }
                     paintOffsetLocal = new global::Doroti.Ui.Offset(crossAxisDelta, delta);
                     transformedPosition = new global::Doroti.Ui.Offset(absoluteCrossAxisPosition, absolutePosition);
                     break;
                 }
         }
-        return result.addWithOutOfBandPosition(paintOffset: paintOffsetLocal, hitTest: ((Func<BoxHitTestResult, bool>)((result) =>
+        return result.addWithOutOfBandPosition(paintOffset: paintOffsetLocal, hitTest: (result) =>
         {
             return child.hitTest(result, position: transformedPosition);
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -832,13 +832,13 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         bool rightWayUp = _getRightWayUp(constraints);
         double delta = childMainAxisPosition(child);
         double crossAxisDelta = childCrossAxisPosition(child);
-        switch (((SliverConstraints)constraints).axis)
+        switch (constraints.axis)
         {
             case Axis.horizontal:
                 {
                     if (!rightWayUp)
                     {
-                        delta = ((geometry!.paintExtent - ((RenderBox)child).size.width) - delta);
+                        delta = geometry!.paintExtent - child.size.width - delta;
                     }
                     transform.translateByDouble(delta, crossAxisDelta, 0, 1);
                     break;
@@ -847,7 +847,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                 {
                     if (!rightWayUp)
                     {
-                        delta = ((geometry!.paintExtent - ((RenderBox)child).size.height) - delta);
+                        delta = geometry!.paintExtent - child.size.height - delta;
                     }
                     transform.translateByDouble(crossAxisDelta, delta, 0, 1);
                     break;

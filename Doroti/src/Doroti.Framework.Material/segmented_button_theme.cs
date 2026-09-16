@@ -18,21 +18,21 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
 
     public virtual SegmentedButtonThemeData copyWith(ButtonStyle? style = null, global::Doroti.Framework.Widgets.Widget? selectedIcon = null)
     {
-        return new SegmentedButtonThemeData(style: (style ?? this.style), selectedIcon: (selectedIcon ?? this.selectedIcon));
+        return new SegmentedButtonThemeData(style: style ?? this.style, selectedIcon: selectedIcon ?? this.selectedIcon);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static SegmentedButtonThemeData lerp(SegmentedButtonThemeData? a, SegmentedButtonThemeData? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
-        return new SegmentedButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t), selectedIcon: ((t < 0.5) ? a?.selectedIcon : b?.selectedIcon));
+        return new SegmentedButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t), selectedIcon: (t < 0.5) ? a?.selectedIcon : b?.selectedIcon);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.style, this.selectedIcon));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(style, selectedIcon));
     public override bool Equals(object? other)
     {
         var __other = other as SegmentedButtonThemeData;
@@ -41,16 +41,16 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is SegmentedButtonThemeData) && (Equals(((SegmentedButtonThemeData)((SegmentedButtonThemeData)__other)).style, this.style))) && (Equals(((SegmentedButtonThemeData)((SegmentedButtonThemeData)__other)).selectedIcon, this.selectedIcon)));
+        return (__other is SegmentedButtonThemeData) && Equals(__other.style, style) && Equals(__other.selectedIcon, selectedIcon);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", this.style, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -64,13 +64,13 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -87,7 +87,7 @@ public class SegmentedButtonTheme : global::Doroti.Framework.Widgets.InheritedTh
 
     public static SegmentedButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return (maybeOf(context) ?? Theme.of(context).segmentedButtonTheme);
+        return maybeOf(context) ?? Theme.of(context).segmentedButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,9 +99,9 @@ public class SegmentedButtonTheme : global::Doroti.Framework.Widgets.InheritedTh
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new SegmentedButtonTheme(data: this.data, child: child));
+        return new SegmentedButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((SegmentedButtonTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((SegmentedButtonTheme)oldWidget).data));
 }

@@ -78,7 +78,7 @@ public static partial class List_sectionLibrary
 
 public static partial class List_sectionLibrary
 {
-    internal static Color _kHeaderFooterColor = ((Color)new CupertinoDynamicColor(color: Color.fromRGBO(108L, 108L, 108L, 1.0), darkColor: Color.fromRGBO(142L, 142L, 146L, 1.0), highContrastColor: Color.fromRGBO(74L, 74L, 77L, 1.0), darkHighContrastColor: Color.fromRGBO(176L, 176L, 183L, 1.0), elevatedColor: Color.fromRGBO(108L, 108L, 108L, 1.0), darkElevatedColor: Color.fromRGBO(142L, 142L, 146L, 1.0), highContrastElevatedColor: Color.fromRGBO(108L, 108L, 108L, 1.0), darkHighContrastElevatedColor: Color.fromRGBO(142L, 142L, 146L, 1.0)));
+    internal static Color _kHeaderFooterColor = new CupertinoDynamicColor(color: Color.fromRGBO(108L, 108L, 108L, 1.0), darkColor: Color.fromRGBO(142L, 142L, 146L, 1.0), highContrastColor: Color.fromRGBO(74L, 74L, 77L, 1.0), darkHighContrastColor: Color.fromRGBO(176L, 176L, 183L, 1.0), elevatedColor: Color.fromRGBO(108L, 108L, 108L, 1.0), darkElevatedColor: Color.fromRGBO(142L, 142L, 146L, 1.0), highContrastElevatedColor: Color.fromRGBO(108L, 108L, 108L, 1.0), darkHighContrastElevatedColor: Color.fromRGBO(142L, 142L, 146L, 1.0));
 }
 
 public enum CupertinoListSectionType
@@ -118,9 +118,9 @@ public class CupertinoListSection : global::Doroti.Framework.Widgets.StatelessWi
         this.dividerMargin = __dividerMargin;
         this.topMargin = __topMargin;
         this.separatorColor = separatorColor;
-        this.type = CupertinoListSectionType.@base;
-        this.additionalDividerMargin = (additionalDividerMargin ?? ((hasLeading ? List_sectionLibrary._kBaseAdditionalDividerMargin : 0.0)));
-        System.Diagnostics.Debug.Assert(((((children is not null) && (checked((long)(children.Count)) > 0L))) || (header is not null)));
+        type = CupertinoListSectionType.@base;
+        this.additionalDividerMargin = additionalDividerMargin ?? (hasLeading ? List_sectionLibrary._kBaseAdditionalDividerMargin : 0.0);
+        System.Diagnostics.Debug.Assert((children is not null) && (checked(children.Count) > 0L) || (header is not null));
     }
 
     public static CupertinoListSection CreateInsetGrouped(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget>? children = null, global::Doroti.Framework.Widgets.Widget? header = null, global::Doroti.Framework.Widgets.Widget? footer = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, Color backgroundColor = default!, global::Doroti.Framework.Painting.BoxDecoration? decoration = null, Clip clipBehavior = Clip.hardEdge, double? dividerMargin = null, double? additionalDividerMargin = null, double? topMargin = null, bool hasLeading = true, Color? separatorColor = null)
@@ -138,71 +138,71 @@ public class CupertinoListSection : global::Doroti.Framework.Widgets.StatelessWi
         __instance.topMargin = topMargin;
         __instance.separatorColor = separatorColor;
         __instance.type = CupertinoListSectionType.insetGrouped;
-        __instance.additionalDividerMargin = (additionalDividerMargin ?? ((hasLeading ? List_sectionLibrary._kInsetAdditionalDividerMargin : List_sectionLibrary._kInsetAdditionalDividerMarginWithoutLeading)));
-        __instance.margin = (margin ?? (((header is null) ? List_sectionLibrary._kDefaultInsetGroupedRowsMargin : List_sectionLibrary._kDefaultInsetGroupedRowsMarginWithHeader)));
+        __instance.additionalDividerMargin = additionalDividerMargin ?? (hasLeading ? List_sectionLibrary._kInsetAdditionalDividerMargin : List_sectionLibrary._kInsetAdditionalDividerMarginWithoutLeading);
+        __instance.margin = margin ?? ((header is null) ? List_sectionLibrary._kDefaultInsetGroupedRowsMargin : List_sectionLibrary._kDefaultInsetGroupedRowsMarginWithHeader);
         return __instance;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color dividerColor = ((global::Doroti.Ui.Color)(this.separatorColor ?? CupertinoColors.separator.resolveFrom(context)));
-        double dividerHeight = (1.0 / MediaQuery.devicePixelRatioOf(context));
-        global::Doroti.Framework.Widgets.Widget longDivider = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(color: dividerColor, height: dividerHeight));
-        global::Doroti.Framework.Widgets.Widget shortDivider = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(margin: EdgeInsetsDirectional.CreateOnly(start: (this.dividerMargin + this.additionalDividerMargin)), color: dividerColor, height: dividerHeight));
+        global::Doroti.Ui.Color dividerColor = separatorColor ?? CupertinoColors.separator.resolveFrom(context);
+        double dividerHeight = 1.0 / MediaQuery.devicePixelRatioOf(context);
+        global::Doroti.Framework.Widgets.Widget longDivider = new global::Doroti.Framework.Widgets.Container(color: dividerColor, height: dividerHeight);
+        global::Doroti.Framework.Widgets.Widget shortDivider = new global::Doroti.Framework.Widgets.Container(margin: EdgeInsetsDirectional.CreateOnly(start: dividerMargin + additionalDividerMargin), color: dividerColor, height: dividerHeight);
         global::Doroti.Framework.Painting.TextStyle styleLocal = CupertinoTheme.of(context).textTheme.textStyle;
         global::Doroti.Framework.Widgets.Widget? headerWidget = default!;
         global::Doroti.Framework.Widgets.Widget? footerWidget = default!;
-        switch (this.type)
+        switch (type)
         {
             case CupertinoListSectionType.@base:
                 {
                     styleLocal = styleLocal.merge(new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoDynamicColor.resolve(List_sectionLibrary._kHeaderFooterColor, context)));
-                    if ((this.header is not null))
+                    if (header is not null)
                     {
-                        headerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal, child: this.header!));
+                        headerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal, child: header!));
                     }
-                    if ((this.footer is not null))
+                    if (footer is not null)
                     {
-                        footerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal, child: this.footer!));
+                        footerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal, child: footer!));
                     }
                     break;
                 }
             case CupertinoListSectionType.insetGrouped:
                 {
-                    if ((this.header is not null))
+                    if (header is not null)
                     {
-                        headerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal.merge(new global::Doroti.Framework.Painting.TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)), child: this.header!));
+                        headerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal.merge(new global::Doroti.Framework.Painting.TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)), child: header!));
                     }
-                    if ((this.footer is not null))
+                    if (footer is not null)
                     {
-                        footerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal, child: this.footer!));
+                        footerWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: styleLocal, child: footer!));
                     }
                     break;
                 }
         }
         global::Doroti.Framework.Widgets.Widget? decoratedChildrenGroup = default!;
-        if (((this.children is not null) && Enumerable.Any(this.children!)))
+        if ((children is not null) && Enumerable.Any(children!))
         {
             var childrenWithDividers = new List<global::Doroti.Framework.Widgets.Widget>();
-            if ((Equals(this.type, CupertinoListSectionType.@base)))
+            if (Equals(type, CupertinoListSectionType.@base))
             {
                 childrenWithDividers.Add(longDivider);
             }
-            this.children!.GetRange(0L, (checked((long)(this.children!.Count)) - 1L)).forEach(((global::System.Action<global::Doroti.Framework.Widgets.Widget>)((widget) =>
+            children!.GetRange(0L, checked(children!.Count) - 1L).forEach((widget) =>
             {
                 childrenWithDividers.Add(widget);
                 childrenWithDividers.Add(shortDivider);
-            })));
-            childrenWithDividers.Add(this.children!.Last());
-            if ((Equals(this.type, CupertinoListSectionType.@base)))
+            });
+            childrenWithDividers.Add(children!.Last());
+            if (Equals(type, CupertinoListSectionType.@base))
             {
                 childrenWithDividers.Add(longDivider);
             }
-            global::Doroti.Framework.Painting.BorderRadius childrenGroupBorderRadius = (this.type switch { CupertinoListSectionType.insetGrouped => List_sectionLibrary._kDefaultInsetGroupedBorderRadius, CupertinoListSectionType.@base => BorderRadius.zero, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            decoratedChildrenGroup = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DecoratedBox(decoration: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.Decoration>((object?)this.decoration ?? (object?)new global::Doroti.Framework.Painting.ShapeDecoration(color: CupertinoDynamicColor.resolve((this.decoration?.color ?? CupertinoColors.secondarySystemGroupedBackground), context), shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: childrenGroupBorderRadius))), child: new global::Doroti.Framework.Widgets.Column(children: childrenWithDividers)));
-            decoratedChildrenGroup = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: this.margin, child: ((Equals(this.clipBehavior, Clip.none)) ? decoratedChildrenGroup : new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: childrenGroupBorderRadius, clipBehavior: this.clipBehavior, child: decoratedChildrenGroup))));
+            global::Doroti.Framework.Painting.BorderRadius childrenGroupBorderRadius = type switch { CupertinoListSectionType.insetGrouped => List_sectionLibrary._kDefaultInsetGroupedBorderRadius, CupertinoListSectionType.@base => BorderRadius.zero, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            decoratedChildrenGroup = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DecoratedBox(decoration: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.Decoration>((object?)decoration ?? (object?)new global::Doroti.Framework.Painting.ShapeDecoration(color: CupertinoDynamicColor.resolve(decoration?.color ?? CupertinoColors.secondarySystemGroupedBackground, context), shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: childrenGroupBorderRadius))), child: new global::Doroti.Framework.Widgets.Column(children: childrenWithDividers)));
+            decoratedChildrenGroup = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: margin, child: Equals(clipBehavior, Clip.none) ? decoratedChildrenGroup : new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: childrenGroupBorderRadius, clipBehavior: clipBehavior, child: decoratedChildrenGroup)));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: CupertinoDynamicColor.resolve(this.backgroundColor, context)), child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19880 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((Equals(this.type, CupertinoListSectionType.@base))) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: DartRuntimePrimitives.RequireValue(this.topMargin)))); } if ((headerWidget is not null)) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.Padding(padding: ((Equals(this.type, CupertinoListSectionType.@base)) ? List_sectionLibrary._kDefaultHeaderMargin : List_sectionLibrary._kInsetGroupedDefaultHeaderMargin), child: headerWidget)))); } var __collectionElement20359 = decoratedChildrenGroup; if (__collectionElement20359 is { } __nonNullCollectionElement20359) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement20359)); } if ((footerWidget is not null)) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.Padding(padding: ((Equals(this.type, CupertinoListSectionType.@base)) ? List_sectionLibrary._kDefaultFooterMargin : List_sectionLibrary._kInsetGroupedDefaultFooterMargin), child: footerWidget)))); } return __collection19880; }))())));
+        return new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: CupertinoDynamicColor.resolve(backgroundColor, context)), child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19880 = new List<global::Doroti.Framework.Widgets.Widget>(); if (Equals(type, CupertinoListSectionType.@base)) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: DartRuntimePrimitives.RequireValue(topMargin)))); } if (headerWidget is not null) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.Padding(padding: Equals(type, CupertinoListSectionType.@base) ? List_sectionLibrary._kDefaultHeaderMargin : List_sectionLibrary._kInsetGroupedDefaultHeaderMargin, child: headerWidget)))); } var __collectionElement20359 = decoratedChildrenGroup; if (__collectionElement20359 is { } __nonNullCollectionElement20359) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement20359)); } if (footerWidget is not null) { __collection19880.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.Padding(padding: Equals(type, CupertinoListSectionType.@base) ? List_sectionLibrary._kDefaultFooterMargin : List_sectionLibrary._kInsetGroupedDefaultFooterMargin, child: footerWidget)))); } return __collection19880; }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

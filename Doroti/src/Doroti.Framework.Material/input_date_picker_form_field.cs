@@ -38,13 +38,13 @@ public class InputDatePickerFormField : global::Doroti.Framework.Widgets.Statefu
         this.acceptEmptyDate = acceptEmptyDate;
         this.focusNode = focusNode;
         this.calendarDelegate = __calendarDelegate;
-        this.initialDate = ((initialDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate))) : null);
+        this.initialDate = (initialDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate))) : null;
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
         this.lastDate = this.calendarDelegate.dateOnly(lastDate);
         DartRuntimePrimitives.Assert(() => !this.lastDate.isBefore(this.firstDate), () => (object?)$"lastDate {this.lastDate} must be on or after firstDate {this.firstDate}.");
-        DartRuntimePrimitives.Assert(() => ((initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate)), () => (object?)$"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}.");
-        DartRuntimePrimitives.Assert(() => ((initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate)), () => (object?)$"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}.");
-        DartRuntimePrimitives.Assert(() => (((this.selectableDayPredicate is null) || (initialDate is null)) || this.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(this.initialDate))), () => (object?)$"Provided initialDate {this.initialDate} must satisfy provided selectableDayPredicate.");
+        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate), () => (object?)$"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}.");
+        DartRuntimePrimitives.Assert(() => (initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate), () => (object?)$"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}.");
+        DartRuntimePrimitives.Assert(() => (this.selectableDayPredicate is null) || (initialDate is null) || this.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(this.initialDate)), () => (object?)$"Provided initialDate {this.initialDate} must satisfy provided selectableDayPredicate.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InputDatePickerFormFieldState__input_date_picker_form_field());
@@ -60,12 +60,12 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
     public override void initState()
     {
         base.initState();
-        _selectedDate = ((InputDatePickerFormField)this.widget).initialDate;
+        _selectedDate = widget.initialDate;
     }
 
     public override void dispose()
     {
-        this._controller.dispose();
+        _controller.dispose();
         base.dispose();
     }
 
@@ -78,69 +78,69 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
     public override void didUpdateWidget(InputDatePickerFormField oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((InputDatePickerFormField)this.widget).initialDate, ((InputDatePickerFormField)oldWidget).initialDate)))
+        if (!Equals(widget.initialDate, oldWidget.initialDate))
         {
-            WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
-                    _selectedDate = ((InputDatePickerFormField)this.widget).initialDate;
+                    _selectedDate = widget.initialDate;
                     _updateValueForSelectedDate();
-                })));
-            })), debugLabel: "InputDatePickerFormField.update");
+                });
+            }, debugLabel: "InputDatePickerFormField.update");
         }
     }
 
     internal virtual void _updateValueForSelectedDate()
     {
-        if ((this._selectedDate is not null))
+        if (_selectedDate is not null)
         {
-            MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(this.context));
-            _inputText = ((InputDatePickerFormField)this.widget).calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(this._selectedDate), localizations);
-            var textEditingValue = new global::Doroti.Framework.Services.TextEditingValue(text: this._inputText!);
-            if ((((InputDatePickerFormField)this.widget).autofocus && !this._autoSelected))
+            MaterialLocalizations localizations = MaterialLocalizations.of(context);
+            _inputText = widget.calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(_selectedDate), localizations);
+            var textEditingValue = new global::Doroti.Framework.Services.TextEditingValue(text: _inputText!);
+            if (widget.autofocus && !_autoSelected)
             {
-                textEditingValue = textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: this._inputText!.Length));
+                textEditingValue = textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: _inputText!.Length));
                 _autoSelected = true;
             }
-            this._controller.value = textEditingValue;
+            _controller.value = textEditingValue;
         }
         else
         {
             _inputText = "";
-            this._controller.value = new global::Doroti.Framework.Services.TextEditingValue(text: this._inputText!);
+            _controller.value = new global::Doroti.Framework.Services.TextEditingValue(text: _inputText!);
         }
     }
 
     internal virtual DateTime? _parseDate(string? text)
     {
-        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(this.context));
-        return ((InputDatePickerFormField)this.widget).calendarDelegate.parseCompactDate(text, localizations);
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        return widget.calendarDelegate.parseCompactDate(text, localizations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _isValidAcceptableDate(DateTime? date)
     {
-        return ((((date is not null) && !DartRuntimePrimitives.RequireValue(date).isBefore(((InputDatePickerFormField)this.widget).firstDate)) && !DartRuntimePrimitives.RequireValue(date).isAfter(((InputDatePickerFormField)this.widget).lastDate)) && (((((InputDatePickerFormField)this.widget).selectableDayPredicate is null) || ((InputDatePickerFormField)this.widget).selectableDayPredicate!(DartRuntimePrimitives.RequireValue(date)))));
+        return (date is not null) && !DartRuntimePrimitives.RequireValue(date).isBefore(widget.firstDate) && !DartRuntimePrimitives.RequireValue(date).isAfter(widget.lastDate) && ((widget.selectableDayPredicate is null) || widget.selectableDayPredicate!(DartRuntimePrimitives.RequireValue(date)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual string? _validateDate(string? text)
     {
-        if (((((text is null) || (text.Length == 0))) && ((InputDatePickerFormField)this.widget).acceptEmptyDate))
+        if (((text is null) || (text.Length == 0)) && widget.acceptEmptyDate)
         {
             return null;
         }
         DateTime? date = _parseDate(text);
-        if ((date is null))
+        if (date is null)
         {
-            return (((InputDatePickerFormField)this.widget).errorFormatText ?? MaterialLocalizations.of(this.context).invalidDateFormatLabel);
+            return widget.errorFormatText ?? MaterialLocalizations.of(context).invalidDateFormatLabel;
         }
         else
         {
             if (!_isValidAcceptableDate(DartRuntimePrimitives.RequireValue(date)))
             {
-                return (((InputDatePickerFormField)this.widget).errorInvalidText ?? MaterialLocalizations.of(this.context).dateOutOfRangeLabel);
+                return widget.errorInvalidText ?? MaterialLocalizations.of(context).dateOutOfRangeLabel;
             }
         }
         return null;
@@ -154,28 +154,28 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
         {
             _selectedDate = date;
             _inputText = text;
-            callback?.Invoke(DartRuntimePrimitives.RequireValue(this._selectedDate));
+            callback?.Invoke(DartRuntimePrimitives.RequireValue(_selectedDate));
         }
     }
 
     internal virtual void _handleSaved(string? text)
     {
-        _updateDate(text, (global::System.Action<DateTime>?)((InputDatePickerFormField)this.widget).onDateSaved);
+        _updateDate(text, widget.onDateSaved);
     }
 
     internal virtual void _handleSubmitted(string text)
     {
-        _updateDate(text, (global::System.Action<DateTime>?)((InputDatePickerFormField)this.widget).onDateSubmitted);
+        _updateDate(text, widget.onDateSubmitted);
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
         DatePickerThemeData datePickerThemeLocal = theme.datePickerTheme;
-        InputDecorationThemeData inputTheme = ((InputDecorationThemeData)InputDecorationTheme.of(context));
-        InputBorder effectiveInputBorder = ((datePickerThemeLocal.inputDecorationTheme?.border ?? ((InputDecorationThemeData)inputTheme).border) ?? (((new OutlineInputBorder()))));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: ((((InputDatePickerFormField)this.widget).fieldHintText ?? (string)((InputDatePickerFormField)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((InputDatePickerFormField)this.widget).fieldLabelText ?? (string)((MaterialLocalizations)localizations).dateInputLabel))).applyDefaults(inputTheme.merge(datePickerThemeLocal.inputDecorationTheme).copyWith(border: effectiveInputBorder)), validator: this._validateDate, keyboardType: (((InputDatePickerFormField)this.widget).keyboardType ?? TextInputType.datetime), onSaved: this._handleSaved, onFieldSubmitted: this._handleSubmitted, autofocus: ((InputDatePickerFormField)this.widget).autofocus, controller: this._controller, focusNode: ((InputDatePickerFormField)this.widget).focusNode)));
+        InputDecorationThemeData inputTheme = InputDecorationTheme.of(context);
+        InputBorder effectiveInputBorder = (datePickerThemeLocal.inputDecorationTheme?.border ?? inputTheme.border) ?? new OutlineInputBorder();
+        return new global::Doroti.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: widget.fieldHintText ?? widget.calendarDelegate.dateHelpText(localizations), labelText: widget.fieldLabelText ?? localizations.dateInputLabel).applyDefaults(inputTheme.merge(datePickerThemeLocal.inputDecorationTheme).copyWith(border: effectiveInputBorder)), validator: _validateDate, keyboardType: widget.keyboardType ?? TextInputType.datetime, onSaved: _handleSaved, onFieldSubmitted: _handleSubmitted, autofocus: widget.autofocus, controller: _controller, focusNode: widget.focusNode));
     }
 
 }

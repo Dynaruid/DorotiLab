@@ -15,19 +15,19 @@ public class ContinuousRectangleBorder : OutlinedBorder
         this.borderRadius = __borderRadius;
     }
 
-    public override EdgeInsetsGeometry dimensions => EdgeInsets.CreateAll(((BorderSide)side).width);
+    public override EdgeInsetsGeometry dimensions => EdgeInsets.CreateAll(side.width);
     public override ShapeBorder scale(double t)
     {
-        return new ContinuousRectangleBorder(side: side.scale(t), borderRadius: (this.borderRadius.op_Multiply(t)));
+        return new ContinuousRectangleBorder(side: side.scale(t), borderRadius: borderRadius.op_Multiply(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is ContinuousRectangleBorder))
+        if (a is ContinuousRectangleBorder)
         {
             ContinuousRectangleBorder a__as1701 = (ContinuousRectangleBorder)a;
-            return new ContinuousRectangleBorder(side: BorderSide.lerp(((ContinuousRectangleBorder)a__as1701).side, side, t), borderRadius: BorderRadiusGeometry.lerp(((ContinuousRectangleBorder)((ContinuousRectangleBorder)a__as1701)).borderRadius, this.borderRadius, t)!);
+            return new ContinuousRectangleBorder(side: BorderSide.lerp(a__as1701.side, side, t), borderRadius: BorderRadiusGeometry.lerp(a__as1701.borderRadius, borderRadius, t)!);
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -35,10 +35,10 @@ public class ContinuousRectangleBorder : OutlinedBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is ContinuousRectangleBorder))
+        if (b is ContinuousRectangleBorder)
         {
             ContinuousRectangleBorder b__as2029 = (ContinuousRectangleBorder)b;
-            return new ContinuousRectangleBorder(side: BorderSide.lerp(side, ((ContinuousRectangleBorder)b__as2029).side, t), borderRadius: BorderRadiusGeometry.lerp(this.borderRadius, ((ContinuousRectangleBorder)((ContinuousRectangleBorder)b__as2029)).borderRadius, t)!);
+            return new ContinuousRectangleBorder(side: BorderSide.lerp(side, b__as2029.side, t), borderRadius: BorderRadiusGeometry.lerp(borderRadius, b__as2029.borderRadius, t)!);
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -46,7 +46,7 @@ public class ContinuousRectangleBorder : OutlinedBorder
 
     internal virtual double _clampToShortest(RRect rrect, double value)
     {
-        return ((value > rrect.shortestSide) ? rrect.shortestSide : value);
+        return (value > rrect.shortestSide) ? rrect.shortestSide : value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -67,14 +67,14 @@ public class ContinuousRectangleBorder : OutlinedBorder
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.moveTo(leftLocal, (topLocal + tlRadiusXLocal));
-    __cascade.cubicTo(leftLocal, topLocal, leftLocal, topLocal, (leftLocal + tlRadiusYLocal), topLocal);
-    __cascade.lineTo((rightLocal - trRadiusXLocal), topLocal);
-    __cascade.cubicTo(rightLocal, topLocal, rightLocal, topLocal, rightLocal, (topLocal + trRadiusYLocal));
-    __cascade.lineTo(rightLocal, (bottomLocal - brRadiusXLocal));
-    __cascade.cubicTo(rightLocal, bottomLocal, rightLocal, bottomLocal, (rightLocal - brRadiusYLocal), bottomLocal);
-    __cascade.lineTo((leftLocal + blRadiusXLocal), bottomLocal);
-    __cascade.cubicTo(leftLocal, bottomLocal, leftLocal, bottomLocal, leftLocal, (bottomLocal - blRadiusYLocal));
+    __cascade.moveTo(leftLocal, topLocal + tlRadiusXLocal);
+    __cascade.cubicTo(leftLocal, topLocal, leftLocal, topLocal, leftLocal + tlRadiusYLocal, topLocal);
+    __cascade.lineTo(rightLocal - trRadiusXLocal, topLocal);
+    __cascade.cubicTo(rightLocal, topLocal, rightLocal, topLocal, rightLocal, topLocal + trRadiusYLocal);
+    __cascade.lineTo(rightLocal, bottomLocal - brRadiusXLocal);
+    __cascade.cubicTo(rightLocal, bottomLocal, rightLocal, bottomLocal, rightLocal - brRadiusYLocal, bottomLocal);
+    __cascade.lineTo(leftLocal + blRadiusXLocal, bottomLocal);
+    __cascade.cubicTo(leftLocal, bottomLocal, leftLocal, bottomLocal, leftLocal, bottomLocal - blRadiusYLocal);
     __cascade.close();
     return __cascade;
 }))();
@@ -83,19 +83,19 @@ public class ContinuousRectangleBorder : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        return _getPath(this.borderRadius.resolve(textDirection).toRRect(rect).deflate(((BorderSide)side).width));
+        return _getPath(borderRadius.resolve(textDirection).toRRect(rect).deflate(side.width));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        return _getPath(this.borderRadius.resolve(textDirection).toRRect(rect));
+        return _getPath(borderRadius.resolve(textDirection).toRRect(rect));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ContinuousRectangleBorder copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
     {
-        return new ContinuousRectangleBorder(side: (side ?? this.side), borderRadius: (borderRadius ?? this.borderRadius));
+        return new ContinuousRectangleBorder(side: side ?? this.side, borderRadius: borderRadius ?? this.borderRadius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -105,7 +105,7 @@ public class ContinuousRectangleBorder : OutlinedBorder
         {
             return;
         }
-        switch (((BorderSide)side).style)
+        switch (side.style)
         {
             case BorderStyle.none:
                 {
@@ -123,17 +123,17 @@ public class ContinuousRectangleBorder : OutlinedBorder
     {
         var __other = other as ContinuousRectangleBorder;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is ContinuousRectangleBorder) && (Equals(((ContinuousRectangleBorder)__other).side, side))) && (Equals(((ContinuousRectangleBorder)((ContinuousRectangleBorder)__other)).borderRadius, this.borderRadius)));
+        return (__other is ContinuousRectangleBorder) && Equals(__other.side, side) && Equals(__other.borderRadius, borderRadius);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, borderRadius);
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ContinuousRectangleBorder"))}({side}, {this.borderRadius})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ContinuousRectangleBorder")}({side}, {borderRadius})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -22,8 +22,8 @@ public abstract class SemanticsEvent
 
     public virtual DartMap<string, object> toMap(long? nodeId = null)
     {
-        var @event = new DartMap<string, object> { ["type"] = this.type, ["data"] = getDataMap() };
-        if ((nodeId is not null))
+        var @event = new DartMap<string, object> { ["type"] = type, ["data"] = getDataMap() };
+        if (nodeId is not null)
         {
             long nodeId__value2030 = DartRuntimePrimitives.RequireValue(nodeId);
             @event["nodeId"] = DartRuntimePrimitives.RequireValue(nodeId__value2030);
@@ -47,7 +47,7 @@ public abstract class SemanticsEvent
         {
             pairs.Add($"{key}: {dataMap.GetValueOrDefault(key)}");
         }
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs)})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent")}({string.Join(", ", pairs)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -70,7 +70,7 @@ public class AnnounceSemanticsEvent : SemanticsEvent
 
     public override DartMap<string, object> getDataMap()
     {
-        return new DartMap<string, object> { ["viewId"] = this.viewId, ["message"] = this.message, ["textDirection"] = FoundationRuntimePorts.EnumIndex(this.textDirection) };
+        return new DartMap<string, object> { ["viewId"] = viewId, ["message"] = message, ["textDirection"] = FoundationRuntimePorts.EnumIndex(textDirection) };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -87,7 +87,7 @@ public class TooltipSemanticsEvent : SemanticsEvent
 
     public override DartMap<string, object> getDataMap()
     {
-        return new DartMap<string, object> { ["message"] = this.message };
+        return new DartMap<string, object> { ["message"] = message };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

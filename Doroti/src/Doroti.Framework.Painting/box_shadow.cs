@@ -22,7 +22,7 @@ public class BoxShadow : Shadow
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = color;
-    __cascade.maskFilter = MaskFilter.blur(this.blurStyle, blurSigma);
+    __cascade.maskFilter = MaskFilter.blur(blurStyle, blurSigma);
     return __cascade;
 }))();
         DartRuntimePrimitives.Assert(() =>
@@ -39,13 +39,13 @@ public class BoxShadow : Shadow
 
     public virtual BoxShadow scale(double factor)
     {
-        return new BoxShadow(color: color, offset: (DartRuntimePrimitives.RequireValue(offset) * factor), blurRadius: (DartRuntimePrimitives.RequireValue(blurRadius) * factor), spreadRadius: (this.spreadRadius * factor), blurStyle: this.blurStyle);
+        return new BoxShadow(color: color, offset: DartRuntimePrimitives.RequireValue(offset) * factor, blurRadius: DartRuntimePrimitives.RequireValue(blurRadius) * factor, spreadRadius: spreadRadius * factor, blurStyle: blurStyle);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual BoxShadow copyWith(Color? color = null, Offset? offset = null, double? blurRadius = null, double? spreadRadius = null, BlurStyle? blurStyle = null)
     {
-        return new BoxShadow(color: (color ?? this.color), offset: (offset ?? this.offset), blurRadius: (blurRadius ?? this.blurRadius), spreadRadius: (spreadRadius ?? this.spreadRadius), blurStyle: (blurStyle ?? this.blurStyle));
+        return new BoxShadow(color: color ?? this.color, offset: offset ?? this.offset, blurRadius: blurRadius ?? this.blurRadius, spreadRadius: spreadRadius ?? this.spreadRadius, blurStyle: blurStyle ?? this.blurStyle);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -55,15 +55,15 @@ public class BoxShadow : Shadow
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
             return b!.scale(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return a.scale((1.0 - t));
+            return a.scale(1.0 - t);
         }
-        return new BoxShadow(color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!, offset: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(a.offset, b.offset, t)), blurRadius: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.blurRadius, b.blurRadius, t)), spreadRadius: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BoxShadow)a).spreadRadius, ((BoxShadow)b).spreadRadius, t)), blurStyle: ((Equals(((BoxShadow)a).blurStyle, BlurStyle.normal)) ? ((BoxShadow)b).blurStyle : ((BoxShadow)a).blurStyle));
+        return new BoxShadow(color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!, offset: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(a.offset, b.offset, t)), blurRadius: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.blurRadius, b.blurRadius, t)), spreadRadius: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.spreadRadius, b.spreadRadius, t)), blurStyle: Equals(a.blurStyle, BlurStyle.normal) ? b.blurStyle : a.blurStyle);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -75,7 +75,7 @@ public class BoxShadow : Shadow
         }
         a ??= new List<BoxShadow>();
         b ??= new List<BoxShadow>();
-        long commonLength = Math.Min(checked((long)(a.Count)), checked((long)(b.Count)));
+        long commonLength = Math.Min(checked(a.Count), checked((long)b.Count));
         return new List<BoxShadow>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -88,14 +88,14 @@ public class BoxShadow : Shadow
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((__other is BoxShadow) && (Equals(((BoxShadow)__other).color, color))) && (Equals(((BoxShadow)__other).offset, DartRuntimePrimitives.RequireValue(offset)))) && (((BoxShadow)__other).blurRadius == DartRuntimePrimitives.RequireValue(blurRadius))) && (((BoxShadow)((BoxShadow)__other)).spreadRadius == this.spreadRadius)) && (Equals(((BoxShadow)((BoxShadow)__other)).blurStyle, this.blurStyle)));
+        return (__other is BoxShadow) && Equals(__other.color, color) && Equals(__other.offset, DartRuntimePrimitives.RequireValue(offset)) && (__other.blurRadius == DartRuntimePrimitives.RequireValue(blurRadius)) && (__other.spreadRadius == spreadRadius) && Equals(__other.blurStyle, blurStyle);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, DartRuntimePrimitives.RequireValue(offset), DartRuntimePrimitives.RequireValue(blurRadius), this.spreadRadius, this.blurStyle);
-    public override string ToString() => $"BoxShadow({color}, {DartRuntimePrimitives.RequireValue(offset)}, {(Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(blurRadius)))}, {(Foundation.DebugLibrary.debugFormatDouble(this.spreadRadius))}, {this.blurStyle})";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, DartRuntimePrimitives.RequireValue(offset), DartRuntimePrimitives.RequireValue(blurRadius), spreadRadius, blurStyle);
+    public override string ToString() => $"BoxShadow({color}, {DartRuntimePrimitives.RequireValue(offset)}, {Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(blurRadius))}, {Foundation.DebugLibrary.debugFormatDouble(spreadRadius)}, {blurStyle})";
 }
 

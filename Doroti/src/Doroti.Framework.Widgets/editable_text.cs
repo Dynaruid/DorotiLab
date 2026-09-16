@@ -41,7 +41,7 @@ internal class _CompositionCallback__editable_text : SingleChildRenderObjectWidg
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderCompositionCallback__editable_text((global::System.Action<global::Doroti.Framework.Rendering.Layer>)this.compositeCallback, this.enabled));
+        return new _RenderCompositionCallback__editable_text(compositeCallback, enabled);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -49,8 +49,8 @@ internal class _CompositionCallback__editable_text : SingleChildRenderObjectWidg
     {
         var __renderObject = (_RenderCompositionCallback__editable_text)renderObject;
         base.updateRenderObject(context, __renderObject);
-        DartRuntimePrimitives.Assert(() => (Equals((global::System.Action<global::Doroti.Framework.Rendering.Layer>)((_RenderCompositionCallback__editable_text)__renderObject).compositeCallback, (global::System.Action<global::Doroti.Framework.Rendering.Layer>)this.compositeCallback)));
-        __renderObject.enabled = this.enabled;
+        DartRuntimePrimitives.Assert(() => Equals(__renderObject.compositeCallback, compositeCallback));
+        __renderObject.enabled = enabled;
     }
 
 }
@@ -69,19 +69,19 @@ public class _RenderCompositionCallback__editable_text : global::Doroti.Framewor
 
     public virtual bool enabled
     {
-        get => this._enabled;
+        get => _enabled;
         set
         {
             var newValue = value;
             _enabled = newValue;
             if (!newValue)
             {
-                this._cancelCallback?.Invoke();
+                _cancelCallback?.Invoke();
                 _cancelCallback = null;
             }
             else
             {
-                if ((this._cancelCallback is null))
+                if (_cancelCallback is null)
                 {
                     markNeedsPaint();
                 }
@@ -90,9 +90,9 @@ public class _RenderCompositionCallback__editable_text : global::Doroti.Framewor
     }
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if (this.enabled)
+        if (enabled)
         {
-            _cancelCallback ??= context.addCompositionCallback((global::System.Action<global::Doroti.Framework.Rendering.Layer>)this.compositeCallback);
+            _cancelCallback ??= context.addCompositionCallback(compositeCallback);
         }
         base.paint(context, offset);
     }
@@ -101,7 +101,7 @@ public class _RenderCompositionCallback__editable_text : global::Doroti.Framewor
 
 public class TextEditingController : global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Services.TextEditingValue>
 {
-    public TextEditingController(string? text = null) : base(((text is null) ? TextEditingValue.empty : new global::Doroti.Framework.Services.TextEditingValue(text: text)))
+    public TextEditingController(string? text = null) : base((text is null) ? TextEditingValue.empty : new global::Doroti.Framework.Services.TextEditingValue(text: text))
     {
     }
 
@@ -114,7 +114,7 @@ public class TextEditingController : global::Doroti.Framework.Foundation.ValueNo
 
     public virtual string text
     {
-        get => ((global::Doroti.Framework.Services.TextEditingValue)this.value).text;
+        get => value.text;
         set
         {
             var newText = value;
@@ -127,50 +127,50 @@ public class TextEditingController : global::Doroti.Framework.Foundation.ValueNo
         set
         {
             var newValue = value;
-            DartRuntimePrimitives.Assert(() => (!((global::Doroti.Framework.Services.TextEditingValue)newValue).composing.isValid || ((global::Doroti.Framework.Services.TextEditingValue)newValue).isComposingRangeValid), () => (object?)$"New TextEditingValue {newValue} has an invalid non-empty composing range " + $"{(((global::Doroti.Framework.Services.TextEditingValue)newValue).composing)}. It is recommended to use a valid composing range, " + "even for readonly text fields.");
+            DartRuntimePrimitives.Assert(() => !newValue.composing.isValid || newValue.isComposingRangeValid, () => (object?)$"New TextEditingValue {newValue} has an invalid non-empty composing range " + $"{newValue.composing}. It is recommended to use a valid composing range, " + "even for readonly text fields.");
             base.value = newValue;
         }
     }
     public virtual global::Doroti.Framework.Painting.TextSpan buildTextSpan(BuildContext context, global::Doroti.Framework.Painting.TextStyle? style = null, bool withComposing = default!)
     {
-        DartRuntimePrimitives.Assert(() => ((!((global::Doroti.Framework.Services.TextEditingValue)this.value).composing.isValid || !withComposing) || ((global::Doroti.Framework.Services.TextEditingValue)this.value).isComposingRangeValid));
-        bool composingRegionOutOfRange = (!((global::Doroti.Framework.Services.TextEditingValue)this.value).isComposingRangeValid || !withComposing);
+        DartRuntimePrimitives.Assert(() => !value.composing.isValid || !withComposing || value.isComposingRangeValid);
+        bool composingRegionOutOfRange = !value.isComposingRangeValid || !withComposing;
         if (composingRegionOutOfRange)
         {
-            return new global::Doroti.Framework.Painting.TextSpan(style: style, text: this.text);
+            return new global::Doroti.Framework.Painting.TextSpan(style: style, text: text);
         }
-        global::Doroti.Framework.Painting.TextStyle composingStyle = (style?.merge(new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline)) ?? new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline));
-        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: new List<global::Doroti.Framework.Painting.TextSpan> { new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Services.TextEditingValue)this.value).composing.textBefore(((global::Doroti.Framework.Services.TextEditingValue)this.value).text)), new global::Doroti.Framework.Painting.TextSpan(style: composingStyle, text: ((global::Doroti.Framework.Services.TextEditingValue)this.value).composing.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.value).text)), new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Services.TextEditingValue)this.value).composing.textAfter(((global::Doroti.Framework.Services.TextEditingValue)this.value).text)) }.Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+        global::Doroti.Framework.Painting.TextStyle composingStyle = style?.merge(new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline)) ?? new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline);
+        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: new List<global::Doroti.Framework.Painting.TextSpan> { new global::Doroti.Framework.Painting.TextSpan(text: value.composing.textBefore(value.text)), new global::Doroti.Framework.Painting.TextSpan(style: composingStyle, text: value.composing.textInside(value.text)), new global::Doroti.Framework.Painting.TextSpan(text: value.composing.textAfter(value.text)) }.Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Services.TextSelection selection
     {
-        get => ((global::Doroti.Framework.Services.TextEditingValue)this.value).selection;
+        get => value.selection;
         set
         {
             var newSelection = value;
-            if (((this.text.Length < newSelection.end) || (this.text.Length < newSelection.start)))
+            if ((text.Length < newSelection.end) || (text.Length < newSelection.start))
             {
                 throw DartRuntimePrimitives.AsException(FlutterError.Create($"invalid text selection: {newSelection}"));
             }
-            global::Doroti.Ui.TextRange newComposing = ((global::Doroti.Ui.TextRange)(_isSelectionWithinComposingRange(newSelection) ? ((global::Doroti.Framework.Services.TextEditingValue)this.value).composing : TextRange.empty));
+            global::Doroti.Ui.TextRange newComposing = _isSelectionWithinComposingRange(newSelection) ? this.value.composing : TextRange.empty;
             this.value = this.value.copyWith(selection: newSelection, composing: newComposing);
         }
     }
     public virtual void clear()
     {
-        this.value = new global::Doroti.Framework.Services.TextEditingValue(selection: TextSelection.CreateCollapsed(offset: 0L));
+        value = new global::Doroti.Framework.Services.TextEditingValue(selection: TextSelection.CreateCollapsed(offset: 0L));
     }
 
     public virtual void clearComposing()
     {
-        this.value = this.value.copyWith(composing: TextRange.empty);
+        value = value.copyWith(composing: TextRange.empty);
     }
 
     internal virtual bool _isSelectionWithinComposingRange(global::Doroti.Framework.Services.TextSelection selection)
     {
-        return ((selection.start >= ((global::Doroti.Framework.Services.TextEditingValue)this.value).composing.start) && (selection.end <= ((global::Doroti.Framework.Services.TextEditingValue)this.value).composing.end));
+        return (selection.start >= value.composing.start) && (selection.end <= value.composing.end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -239,12 +239,12 @@ internal class _DiscreteKeyFrameSimulation__editable_text : global::Doroti.Frame
         this._keyFrames = _keyFrames;
         this.maxDuration = maxDuration;
         System.Diagnostics.Debug.Assert(Enumerable.Any(_keyFrames));
-        System.Diagnostics.Debug.Assert((_keyFrames.Last().time <= maxDuration));
+        System.Diagnostics.Debug.Assert(_keyFrames.Last().time <= maxDuration);
         System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
         {
-            for (var i = 0L; (i < (checked((long)(_keyFrames.Count)) - 1L)); i += 1L)
+            for (var i = 0L; i < (checked(_keyFrames.Count) - 1L); i += 1L)
             {
-                if ((_keyFrames[(int)(i)].time > _keyFrames[(int)((i + 1L))].time))
+                if (_keyFrames[(int)i].time > _keyFrames[(int)(i + 1L)].time)
                 {
                     return false;
                 }
@@ -255,34 +255,34 @@ internal class _DiscreteKeyFrameSimulation__editable_text : global::Doroti.Frame
     }
 
     public override double dx(double time) => 0;
-    public override bool isDone(double time) => DartRuntimePrimitives.ConvertValue<bool>((time >= this.maxDuration));
+    public override bool isDone(double time) => DartRuntimePrimitives.ConvertValue<bool>(time >= maxDuration);
     public override double x(double time)
     {
-        long length = checked((long)(this._keyFrames.Count));
+        long length = checked(_keyFrames.Count);
         long searchIndex = default!;
         long endIndex = default!;
-        if ((this._keyFrames[(int)(this._lastKeyFrameIndex)].time > time))
+        if (_keyFrames[(int)_lastKeyFrameIndex].time > time)
         {
             searchIndex = 0L;
-            endIndex = this._lastKeyFrameIndex;
+            endIndex = _lastKeyFrameIndex;
         }
         else
         {
-            searchIndex = this._lastKeyFrameIndex;
+            searchIndex = _lastKeyFrameIndex;
             endIndex = length;
         }
-        while ((searchIndex < (endIndex - 1L)))
+        while (searchIndex < (endIndex - 1L))
         {
-            DartRuntimePrimitives.Assert(() => (this._keyFrames[(int)(searchIndex)].time <= time));
-            _KeyFrame__editable_text next = this._keyFrames[(int)((searchIndex + 1L))];
-            if ((time < ((_KeyFrame__editable_text)next).time))
+            DartRuntimePrimitives.Assert(() => _keyFrames[(int)searchIndex].time <= time);
+            _KeyFrame__editable_text next = _keyFrames[(int)(searchIndex + 1L)];
+            if (time < next.time)
             {
                 break;
             }
             searchIndex += 1L;
         }
         _lastKeyFrameIndex = searchIndex;
-        return this._keyFrames[(int)(this._lastKeyFrameIndex)].value;
+        return _keyFrames[(int)_lastKeyFrameIndex].value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -440,38 +440,38 @@ public class EditableText : StatefulWidget
         this.undoController = undoController;
         this.hintLocales = hintLocales;
         this.enableInlinePrediction = enableInlinePrediction;
-        this.autocorrect = ((autocorrect ?? (bool)_inferAutocorrect(autofillHints: autofillHints)));
-        this.smartDashesType = (smartDashesType ?? ((obscureText ? SmartDashesType.disabled : SmartDashesType.enabled)));
-        this.smartQuotesType = (smartQuotesType ?? ((obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled)));
-        this.enableInteractiveSelection = (enableInteractiveSelection ?? ((!readOnly || !obscureText)));
-        this.selectAllOnFocus = ((selectAllOnFocus ?? (bool)_defaultSelectAllOnFocus));
-        this.toolbarOptions = (((selectionControls is TextSelectionHandleControls) && (toolbarOptions is null)) ? ToolbarOptions.empty : (toolbarOptions ?? ((obscureText ? ((readOnly ? ToolbarOptions.empty : new ToolbarOptions(selectAll: true, paste: true))) : ((readOnly ? new ToolbarOptions(selectAll: true, copy: true) : new ToolbarOptions(copy: true, cut: true, selectAll: true, paste: true)))))));
-        this._strutStyle = strutStyle;
-        this.keyboardType = ((keyboardType ?? (global::Doroti.Framework.Services.TextInputType)_inferKeyboardType(autofillHints: autofillHints, maxLines: maxLines)));
-        this.inputFormatters = ((maxLines == 1L) ? new List<global::Doroti.Framework.Services.TextInputFormatter> { FilteringTextInputFormatter.singleLineFormatter } : inputFormatters);
-        this.showCursor = (showCursor ?? !readOnly);
-        this.selectionHeightStyle = ((selectionHeightStyle ?? (BoxHeightStyle)defaultSelectionHeightStyle));
-        this.selectionWidthStyle = ((selectionWidthStyle ?? (BoxWidthStyle)defaultSelectionWidthStyle));
-        System.Diagnostics.Debug.Assert((obscuringCharacter.Length == 1L));
-        System.Diagnostics.Debug.Assert(((minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)));
-        System.Diagnostics.Debug.Assert(((((maxLines is null)) || ((minLines is null))) || ((maxLines >= DartRuntimePrimitives.RequireValue(minLines)))));
-        System.Diagnostics.Debug.Assert((!expands || (((maxLines is null) && (minLines is null)))));
-        System.Diagnostics.Debug.Assert((!obscureText || (maxLines == 1L)));
-        System.Diagnostics.Debug.Assert((((spellCheckConfiguration is null) || (Equals(spellCheckConfiguration, SpellCheckConfiguration.CreateDisabled()))) || (((SpellCheckConfiguration)spellCheckConfiguration).misspelledTextStyle is not null)));
+        this.autocorrect = autocorrect ?? _inferAutocorrect(autofillHints: autofillHints);
+        this.smartDashesType = smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled);
+        this.smartQuotesType = smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled);
+        this.enableInteractiveSelection = enableInteractiveSelection ?? !readOnly || !obscureText;
+        this.selectAllOnFocus = selectAllOnFocus ?? _defaultSelectAllOnFocus;
+        this.toolbarOptions = ((selectionControls is TextSelectionHandleControls) && (toolbarOptions is null)) ? ToolbarOptions.empty : (toolbarOptions ?? (obscureText ? (readOnly ? ToolbarOptions.empty : new ToolbarOptions(selectAll: true, paste: true)) : (readOnly ? new ToolbarOptions(selectAll: true, copy: true) : new ToolbarOptions(copy: true, cut: true, selectAll: true, paste: true))));
+        _strutStyle = strutStyle;
+        this.keyboardType = keyboardType ?? _inferKeyboardType(autofillHints: autofillHints, maxLines: maxLines);
+        this.inputFormatters = (maxLines == 1L) ? new List<global::Doroti.Framework.Services.TextInputFormatter> { FilteringTextInputFormatter.singleLineFormatter } : inputFormatters;
+        this.showCursor = showCursor ?? !readOnly;
+        this.selectionHeightStyle = selectionHeightStyle ?? defaultSelectionHeightStyle;
+        this.selectionWidthStyle = selectionWidthStyle ?? defaultSelectionWidthStyle;
+        System.Diagnostics.Debug.Assert(obscuringCharacter.Length == 1L);
+        System.Diagnostics.Debug.Assert((minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L));
+        System.Diagnostics.Debug.Assert(maxLines is null || minLines is null || maxLines >= DartRuntimePrimitives.RequireValue(minLines));
+        System.Diagnostics.Debug.Assert(!expands || (maxLines is null) && (minLines is null));
+        System.Diagnostics.Debug.Assert(!obscureText || (maxLines == 1L));
+        System.Diagnostics.Debug.Assert((spellCheckConfiguration is null) || Equals(spellCheckConfiguration, SpellCheckConfiguration.CreateDisabled()) || (spellCheckConfiguration.misspelledTextStyle is not null));
     }
 
     public virtual global::Doroti.Framework.Painting.StrutStyle strutStyle
     {
         get
         {
-            if ((this._strutStyle is null))
+            if (_strutStyle is null)
             {
-                return Painting.StrutStyle.CreateFromTextStyle(this.style, forceStrutHeight: true);
+                return Painting.StrutStyle.CreateFromTextStyle(style, forceStrutHeight: true);
             }
-            return ((global::Doroti.Framework.Painting.StrutStyle)this._strutStyle.inheritFromTextStyle(this.style));
+            return _strutStyle.inheritFromTextStyle(style);
         }
     }
-    public virtual bool selectionEnabled => this.enableInteractiveSelection;
+    public virtual bool selectionEnabled => enableInteractiveSelection;
     public static global::Doroti.Ui.BoxHeightStyle defaultSelectionHeightStyle
     {
         get
@@ -489,7 +489,7 @@ public class EditableText : StatefulWidget
         {
             if (Foundation.ConstantsLibrary.kIsWeb)
             {
-                if (((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) || WebBrowserDetectionIo.isSafari))
+                if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS) || WebBrowserDetectionIo.isSafari)
                 {
                     return BoxWidthStyle.max;
                 }
@@ -498,7 +498,7 @@ public class EditableText : StatefulWidget
             return BoxWidthStyle.max;
         }
     }
-    internal virtual bool _userSelectionEnabled => DartRuntimePrimitives.ConvertValue<bool>((this.enableInteractiveSelection && ((!this.readOnly || !this.obscureText))));
+    internal virtual bool _userSelectionEnabled => DartRuntimePrimitives.ConvertValue<bool>(enableInteractiveSelection && (!readOnly || !obscureText));
     internal static bool _defaultSelectAllOnFocus
     {
         get
@@ -507,15 +507,15 @@ public class EditableText : StatefulWidget
             {
                 return true;
             }
-            return (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => false, TargetPlatform.iOS => false, TargetPlatform.fuchsia => false, TargetPlatform.linux => true, TargetPlatform.macOS => true, TargetPlatform.windows => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => false, TargetPlatform.iOS => false, TargetPlatform.fuchsia => false, TargetPlatform.linux => true, TargetPlatform.macOS => true, TargetPlatform.windows => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
     }
     public static List<ContextMenuButtonItem> getEditableButtonItems(ClipboardStatus? clipboardStatus, global::System.Action? onCopy, global::System.Action? onCut, global::System.Action? onPaste, global::System.Action? onSelectAll, global::System.Action? onLookUp, global::System.Action? onSearchWeb, global::System.Action? onShare, global::System.Action? onLiveTextInput)
     {
         var resultButtonItem = new List<ContextMenuButtonItem>();
-        if (((onPaste is null) || (!Equals(clipboardStatus, ClipboardStatus.unknown))))
+        if ((onPaste is null) || (!Equals(clipboardStatus, ClipboardStatus.unknown)))
         {
-            var showShareBeforeSelectAll = (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
+            var showShareBeforeSelectAll = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android);
             if (onCut is not null)
             {
                 resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onCut, type: ContextMenuButtonType.cut));
@@ -549,7 +549,7 @@ public class EditableText : StatefulWidget
                 resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onShare, type: ContextMenuButtonType.share));
             }
         }
-        if ((onLiveTextInput is not null))
+        if (onLiveTextInput is not null)
         {
             resultButtonItem.Add(new ContextMenuButtonItem(onPressed: () => onLiveTextInput(), type: ContextMenuButtonType.liveTextInput));
         }
@@ -559,7 +559,7 @@ public class EditableText : StatefulWidget
 
     internal static bool _inferAutocorrect(IEnumerable<string>? autofillHints)
     {
-        if ((((autofillHints is null) || !Enumerable.Any(autofillHints)) || Foundation.ConstantsLibrary.kIsWeb))
+        if ((autofillHints is null) || !Enumerable.Any(autofillHints) || Foundation.ConstantsLibrary.kIsWeb)
         {
             return true;
         }
@@ -567,7 +567,7 @@ public class EditableText : StatefulWidget
         {
             case TargetPlatform.iOS:
                 {
-                    bool passwordRelatedHint = autofillHints.any(((hint) => (((hint == AutofillHints.username) || (hint == AutofillHints.password)) || (hint == AutofillHints.newPassword))));
+                    bool passwordRelatedHint = autofillHints.any((hint) => (hint == AutofillHints.username) || (hint == AutofillHints.password) || (hint == AutofillHints.newPassword));
                     if (passwordRelatedHint)
                     {
                         return false;
@@ -589,9 +589,9 @@ public class EditableText : StatefulWidget
 
     internal static global::Doroti.Framework.Services.TextInputType _inferKeyboardType(IEnumerable<string>? autofillHints, long? maxLines)
     {
-        if (((autofillHints is null) || !Enumerable.Any(autofillHints)))
+        if ((autofillHints is null) || !Enumerable.Any(autofillHints))
         {
-            return ((maxLines == 1L) ? TextInputType.text : TextInputType.multiline);
+            return (maxLines == 1L) ? TextInputType.text : TextInputType.multiline;
         }
         string effectiveHint = autofillHints.First();
         if (!Foundation.ConstantsLibrary.kIsWeb)
@@ -603,7 +603,7 @@ public class EditableText : StatefulWidget
                     {
                         var iOSKeyboardType = new DartMap<string, global::Doroti.Framework.Services.TextInputType> { [AutofillHints.addressCity] = TextInputType.name, [AutofillHints.addressCityAndState] = TextInputType.name, [AutofillHints.addressState] = TextInputType.name, [AutofillHints.countryName] = TextInputType.name, [AutofillHints.creditCardNumber] = TextInputType.number, [AutofillHints.email] = TextInputType.emailAddress, [AutofillHints.emailOTPCode] = TextInputType.text, [AutofillHints.familyName] = TextInputType.name, [AutofillHints.fullStreetAddress] = TextInputType.name, [AutofillHints.givenName] = TextInputType.name, [AutofillHints.jobTitle] = TextInputType.name, [AutofillHints.location] = TextInputType.name, [AutofillHints.middleName] = TextInputType.name, [AutofillHints.name] = TextInputType.name, [AutofillHints.namePrefix] = TextInputType.name, [AutofillHints.nameSuffix] = TextInputType.name, [AutofillHints.newPassword] = TextInputType.text, [AutofillHints.newUsername] = TextInputType.text, [AutofillHints.nickname] = TextInputType.name, [AutofillHints.oneTimeCode] = TextInputType.number, [AutofillHints.organizationName] = TextInputType.text, [AutofillHints.password] = TextInputType.text, [AutofillHints.postalCode] = TextInputType.name, [AutofillHints.streetAddressLine1] = TextInputType.name, [AutofillHints.streetAddressLine2] = TextInputType.name, [AutofillHints.sublocality] = TextInputType.name, [AutofillHints.telephoneNumber] = TextInputType.name, [AutofillHints.url] = TextInputType.url, [AutofillHints.username] = TextInputType.text };
                         global::Doroti.Framework.Services.TextInputType? keyboardType = iOSKeyboardType.GetValueOrDefault(effectiveHint);
-                        if ((keyboardType is not null))
+                        if (keyboardType is not null)
                         {
                             return keyboardType;
                         }
@@ -618,12 +618,12 @@ public class EditableText : StatefulWidget
                     }
             }
         }
-        if ((maxLines != 1L))
+        if (maxLines != 1L)
         {
             return TextInputType.multiline;
         }
         var inferKeyboardType = new DartMap<string, global::Doroti.Framework.Services.TextInputType> { [AutofillHints.addressCity] = TextInputType.streetAddress, [AutofillHints.addressCityAndState] = TextInputType.streetAddress, [AutofillHints.addressState] = TextInputType.streetAddress, [AutofillHints.birthday] = TextInputType.datetime, [AutofillHints.birthdayDay] = TextInputType.datetime, [AutofillHints.birthdayMonth] = TextInputType.datetime, [AutofillHints.birthdayYear] = TextInputType.datetime, [AutofillHints.countryCode] = TextInputType.number, [AutofillHints.countryName] = TextInputType.text, [AutofillHints.creditCardExpirationDate] = TextInputType.datetime, [AutofillHints.creditCardExpirationDay] = TextInputType.datetime, [AutofillHints.creditCardExpirationMonth] = TextInputType.datetime, [AutofillHints.creditCardExpirationYear] = TextInputType.datetime, [AutofillHints.creditCardFamilyName] = TextInputType.name, [AutofillHints.creditCardGivenName] = TextInputType.name, [AutofillHints.creditCardMiddleName] = TextInputType.name, [AutofillHints.creditCardName] = TextInputType.name, [AutofillHints.creditCardNumber] = TextInputType.number, [AutofillHints.creditCardSecurityCode] = TextInputType.number, [AutofillHints.creditCardType] = TextInputType.text, [AutofillHints.email] = TextInputType.emailAddress, [AutofillHints.emailOTPCode] = TextInputType.text, [AutofillHints.familyName] = TextInputType.name, [AutofillHints.fullStreetAddress] = TextInputType.streetAddress, [AutofillHints.gender] = TextInputType.text, [AutofillHints.givenName] = TextInputType.name, [AutofillHints.impp] = TextInputType.url, [AutofillHints.jobTitle] = TextInputType.text, [AutofillHints.language] = TextInputType.text, [AutofillHints.location] = TextInputType.streetAddress, [AutofillHints.middleInitial] = TextInputType.name, [AutofillHints.middleName] = TextInputType.name, [AutofillHints.name] = TextInputType.name, [AutofillHints.namePrefix] = TextInputType.name, [AutofillHints.nameSuffix] = TextInputType.name, [AutofillHints.newPassword] = TextInputType.text, [AutofillHints.newUsername] = TextInputType.text, [AutofillHints.nickname] = TextInputType.text, [AutofillHints.oneTimeCode] = TextInputType.text, [AutofillHints.organizationName] = TextInputType.text, [AutofillHints.password] = TextInputType.text, [AutofillHints.photo] = TextInputType.text, [AutofillHints.postalAddress] = TextInputType.streetAddress, [AutofillHints.postalAddressExtended] = TextInputType.streetAddress, [AutofillHints.postalAddressExtendedPostalCode] = TextInputType.number, [AutofillHints.postalCode] = TextInputType.number, [AutofillHints.streetAddressLevel1] = TextInputType.streetAddress, [AutofillHints.streetAddressLevel2] = TextInputType.streetAddress, [AutofillHints.streetAddressLevel3] = TextInputType.streetAddress, [AutofillHints.streetAddressLevel4] = TextInputType.streetAddress, [AutofillHints.streetAddressLine1] = TextInputType.streetAddress, [AutofillHints.streetAddressLine2] = TextInputType.streetAddress, [AutofillHints.streetAddressLine3] = TextInputType.streetAddress, [AutofillHints.sublocality] = TextInputType.streetAddress, [AutofillHints.telephoneNumber] = TextInputType.phone, [AutofillHints.telephoneNumberAreaCode] = TextInputType.phone, [AutofillHints.telephoneNumberCountryCode] = TextInputType.phone, [AutofillHints.telephoneNumberDevice] = TextInputType.phone, [AutofillHints.telephoneNumberExtension] = TextInputType.phone, [AutofillHints.telephoneNumberLocal] = TextInputType.phone, [AutofillHints.telephoneNumberLocalPrefix] = TextInputType.phone, [AutofillHints.telephoneNumberLocalSuffix] = TextInputType.phone, [AutofillHints.telephoneNumberNational] = TextInputType.phone, [AutofillHints.transactionAmount] = TextInputType.CreateNumberWithOptions(@decimal: true), [AutofillHints.transactionCurrency] = TextInputType.text, [AutofillHints.url] = TextInputType.url, [AutofillHints.username] = TextInputType.text };
-        return (inferKeyboardType.GetValueOrDefault(effectiveHint) ?? TextInputType.text);
+        return inferKeyboardType.GetValueOrDefault(effectiveHint) ?? TextInputType.text;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -631,37 +631,37 @@ public class EditableText : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextEditingController>("controller", this.controller));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", this.focusNode));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("obscureText", this.obscureText, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("readOnly", this.readOnly, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("autocorrect", this.autocorrect, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.SmartDashesType>("smartDashesType", this.smartDashesType, defaultValue: (this.obscureText ? SmartDashesType.disabled : SmartDashesType.enabled)));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.SmartQuotesType>("smartQuotesType", this.smartQuotesType, defaultValue: (this.obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled)));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableSuggestions", this.enableSuggestions, defaultValue: true));
-        this.style.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", this.locale, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", this.maxLines, defaultValue: 1L));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("minLines", this.minLines, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("expands", this.expands, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("autofocus", this.autofocus, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.TextInputType>("keyboardType", this.keyboardType, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("scrollController", this.scrollController, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("scrollPhysics", this.scrollPhysics, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IEnumerable<string>>("autofillHints", this.autofillHints, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("scribbleEnabled", this.scribbleEnabled, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("stylusHandwritingEnabled", DartRuntimePrimitives.RequireValue(this.stylusHandwritingEnabled), defaultValue: defaultStylusHandwritingEnabled));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableIMEPersonalizedLearning", this.enableIMEPersonalizedLearning, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool?>("enableInlinePrediction", this.enableInlinePrediction, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableInteractiveSelection", this.enableInteractiveSelection, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<UndoHistoryController>("undoController", this.undoController, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SpellCheckConfiguration>("spellCheckConfiguration", this.spellCheckConfiguration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<List<string>>("contentCommitMimeTypes", (this.contentInsertionConfiguration?.allowedMimeTypes ?? new List<string>()), defaultValue: ((this.contentInsertionConfiguration is null) ? new List<string>() : Editable_textLibrary.kDefaultContentInsertionMimeTypes)));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<List<global::Doroti.Ui.Locale>?>("hintLocales", this.hintLocales, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextEditingController>("controller", controller));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", focusNode));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("obscureText", obscureText, defaultValue: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("readOnly", readOnly, defaultValue: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("autocorrect", autocorrect, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.SmartDashesType>("smartDashesType", smartDashesType, defaultValue: obscureText ? SmartDashesType.disabled : SmartDashesType.enabled));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.SmartQuotesType>("smartQuotesType", smartQuotesType, defaultValue: obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableSuggestions", enableSuggestions, defaultValue: true));
+        style.debugFillProperties(properties);
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", locale, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", textScaler, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", maxLines, defaultValue: 1L));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("minLines", minLines, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("expands", expands, defaultValue: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("autofocus", autofocus, defaultValue: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.TextInputType>("keyboardType", keyboardType, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("scrollController", scrollController, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("scrollPhysics", scrollPhysics, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IEnumerable<string>>("autofillHints", autofillHints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", textHeightBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("scribbleEnabled", scribbleEnabled, defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("stylusHandwritingEnabled", DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled), defaultValue: defaultStylusHandwritingEnabled));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableIMEPersonalizedLearning", enableIMEPersonalizedLearning, defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool?>("enableInlinePrediction", enableInlinePrediction, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableInteractiveSelection", enableInteractiveSelection, defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<UndoHistoryController>("undoController", undoController, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SpellCheckConfiguration>("spellCheckConfiguration", spellCheckConfiguration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<List<string>>("contentCommitMimeTypes", contentInsertionConfiguration?.allowedMimeTypes ?? new List<string>(), defaultValue: (contentInsertionConfiguration is null) ? new List<string>() : Editable_textLibrary.kDefaultContentInsertionMimeTypes));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<List<global::Doroti.Ui.Locale>?>("hintLocales", hintLocales, defaultValue: null));
     }
 
 }
@@ -678,7 +678,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late__iosBlinkCursorSimulation_initialized)
             {
-                __late__iosBlinkCursorSimulation = ((global::Doroti.Framework.Physics.Simulation)_DiscreteKeyFrameSimulation__editable_text.CreateIOSBlinkingCaret());
+                __late__iosBlinkCursorSimulation = _DiscreteKeyFrameSimulation__editable_text.CreateIOSBlinkingCaret();
                 __late__iosBlinkCursorSimulation_initialized = true;
             }
             return __late__iosBlinkCursorSimulation;
@@ -686,8 +686,8 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     }
     internal virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> _cursorVisibilityNotifier { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(true);
     internal virtual GlobalKey<IState> _editableKey { get; private set; } = GlobalKey<IState>.Create();
-    public virtual ClipboardStatusNotifier clipboardStatus { get; private set; } = (Foundation.ConstantsLibrary.kIsWeb ? new _WebClipboardStatusNotifier__editable_text() : new ClipboardStatusNotifier());
-    internal virtual LiveTextInputStatusNotifier? _liveTextInputStatus { get; private set; } = (Foundation.ConstantsLibrary.kIsWeb ? null : new LiveTextInputStatusNotifier());
+    public virtual ClipboardStatusNotifier clipboardStatus { get; private set; } = Foundation.ConstantsLibrary.kIsWeb ? new _WebClipboardStatusNotifier__editable_text() : new ClipboardStatusNotifier();
+    internal virtual LiveTextInputStatusNotifier? _liveTextInputStatus { get; private set; } = Foundation.ConstantsLibrary.kIsWeb ? null : new LiveTextInputStatusNotifier();
     internal virtual global::Doroti.Framework.Services.TextInputConnection? _textInputConnection { get; set; } = default;
     internal virtual TextSelectionOverlay? _selectionOverlay { get; set; } = default;
     internal virtual ScrollNotificationObserverState? _scrollNotificationObserver { get; set; } = default;
@@ -703,7 +703,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual SpellCheckConfiguration _spellCheckConfiguration { get; set; } = default!;
     internal virtual global::Doroti.Framework.Painting.TextStyle _style { get; set; } = default!;
     public virtual global::Doroti.Framework.Services.SpellCheckResults? spellCheckResults { get; set; } = default;
-    internal virtual global::Doroti.Framework.Services.ProcessTextService _processTextService { get; private set; } = ((global::Doroti.Framework.Services.ProcessTextService)new global::Doroti.Framework.Services.DefaultProcessTextService());
+    internal virtual global::Doroti.Framework.Services.ProcessTextService _processTextService { get; private set; } = new global::Doroti.Framework.Services.DefaultProcessTextService();
     internal virtual List<global::Doroti.Framework.Services.ProcessTextAction> _processTextActions { get; private set; } = new List<global::Doroti.Framework.Services.ProcessTextAction>();
     internal static Duration _floatingCursorResetTime = Duration.Create(milliseconds: 125L);
     internal virtual global::Doroti.Framework.Animation.AnimationController? _floatingCursorResetController { get; set; } = default;
@@ -720,10 +720,10 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual bool _hadFocusOnTapDown { get; set; } = false;
     internal virtual bool _restartConnectionScheduled { get; set; } = false;
     internal virtual bool _nextFocusChangeIsInternal { get; set; } = false;
-    internal virtual bool _platformSupportsFadeOnScroll { get; private set; } = (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => true, TargetPlatform.iOS => true, TargetPlatform.fuchsia or TargetPlatform.linux or TargetPlatform.macOS => false, TargetPlatform.windows => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _platformSupportsFadeOnScroll { get; private set; } = PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => true, TargetPlatform.iOS => true, TargetPlatform.fuchsia or TargetPlatform.linux or TargetPlatform.macOS => false, TargetPlatform.windows => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
     internal virtual bool _showToolbarOnScreenScheduled { get; set; } = false;
     internal static Duration _caretAnimationDuration = Duration.Create(milliseconds: 100L);
-    internal static global::Doroti.Framework.Animation.Curve _caretAnimationCurve = ((global::Doroti.Framework.Animation.Curve)Curves.fastOutSlowIn);
+    internal static global::Doroti.Framework.Animation.Curve _caretAnimationCurve = Curves.fastOutSlowIn;
     internal virtual bool _showCaretOnScreenScheduled { get; set; } = false;
     internal virtual double _lastBottomViewInset { get; set; } = default!;
     internal virtual long _obscureShowCharTicksPending { get; set; } = 0L;
@@ -737,7 +737,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late_renderEditable_initialized)
             {
-                __late_renderEditable = ((global::Doroti.Framework.Rendering.RenderEditable?)((GlobalKey<IState>)this._editableKey).currentContext!.findRenderObject()!)!;
+                __late_renderEditable = ((global::Doroti.Framework.Rendering.RenderEditable?)_editableKey.currentContext!.findRenderObject()!)!;
                 __late_renderEditable_initialized = true;
             }
             return __late_renderEditable;
@@ -754,7 +754,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late__transposeCharactersAction_initialized)
             {
-                __late__transposeCharactersAction = ((Action<TransposeCharactersIntent>)new CallbackAction<TransposeCharactersIntent>(onInvoke: (__arg0) => { ((global::System.Action<TransposeCharactersIntent>)this._transposeCharacters)(__arg0); return default!; }));
+                __late__transposeCharactersAction = new CallbackAction<TransposeCharactersIntent>(onInvoke: (__arg0) => { ((global::System.Action<TransposeCharactersIntent>)_transposeCharacters)(__arg0); return default!; });
                 __late__transposeCharactersAction_initialized = true;
             }
             return __late__transposeCharactersAction;
@@ -768,7 +768,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late__replaceTextAction_initialized)
             {
-                __late__replaceTextAction = ((Action<ReplaceTextIntent>)new CallbackAction<ReplaceTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<ReplaceTextIntent>)this._replaceText)(__arg0); return default!; }));
+                __late__replaceTextAction = new CallbackAction<ReplaceTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<ReplaceTextIntent>)_replaceText)(__arg0); return default!; });
                 __late__replaceTextAction_initialized = true;
             }
             return __late__replaceTextAction;
@@ -782,7 +782,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late__updateSelectionAction_initialized)
             {
-                __late__updateSelectionAction = ((Action<UpdateSelectionIntent>)new CallbackAction<UpdateSelectionIntent>(onInvoke: (__arg0) => { ((global::System.Action<UpdateSelectionIntent>)this._updateSelection)(__arg0); return default!; }));
+                __late__updateSelectionAction = new CallbackAction<UpdateSelectionIntent>(onInvoke: (__arg0) => { ((global::System.Action<UpdateSelectionIntent>)_updateSelection)(__arg0); return default!; });
                 __late__updateSelectionAction_initialized = true;
             }
             return __late__updateSelectionAction;
@@ -810,7 +810,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late__actions_initialized)
             {
-                __late__actions = new DartMap<Type, dynamic> { [typeof(DoNothingAndStopPropagationTextIntent)] = new DoNothingAction(consumesKey: false), [typeof(ReplaceTextIntent)] = this._replaceTextAction, [typeof(UpdateSelectionIntent)] = this._updateSelectionAction, [typeof(DirectionalFocusIntent)] = DirectionalFocusAction.CreateForTextField(), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: (global::System.Func<DismissIntent, object?>)this._hideToolbarIfVisible), [typeof(DeleteCharacterIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteCharacterIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._characterBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary)), [typeof(DeleteToNextWordBoundaryIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToNextWordBoundaryIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._nextWordBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary)), [typeof(DeleteToLineBreakIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToLineBreakIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._linebreak, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveToTextBoundary)), [typeof(ExtendSelectionByCharacterIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionByCharacterIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._characterBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary, ignoreNonCollapsedSelection: false)), [typeof(ExtendSelectionToNextWordBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._nextWordBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextParagraphBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._paragraphBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToLineBreakIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._linebreak, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveToTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionVerticallyToAdjacentLineIntent)] = _makeOverridable(this._verticalSelectionUpdateAction), [typeof(ExtendSelectionVerticallyToAdjacentPageIntent)] = _makeOverridable(this._verticalSelectionUpdateAction), [typeof(ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._paragraphBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToDocumentBoundaryIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._documentBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._nextWordBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ScrollToDocumentBoundaryIntent)] = _makeOverridable(new _WebComposingDisablingCallbackAction__editable_text<ScrollToDocumentBoundaryIntent>(this, onInvoke: (__arg0) => { ((global::System.Action<ScrollToDocumentBoundaryIntent>)this._scrollToDocumentBoundary)(__arg0); return default!; })), [typeof(ScrollIntent)] = new CallbackAction<ScrollIntent>(onInvoke: (__arg0) => { ((global::System.Action<ScrollIntent>)this._scroll)(__arg0); return default!; }), [typeof(ExpandSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToLineBreakIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._linebreak, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true)), [typeof(ExpandSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToDocumentBoundaryIntent>(this, (global::System.Func<global::Doroti.Framework.Services.TextBoundary>)this._documentBoundary, (global::System.Func<TextPosition, bool, global::Doroti.Framework.Services.TextBoundary, TextPosition>)this._moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true, extentAtIndex: true)), [typeof(SelectAllTextIntent)] = _makeOverridable(new _SelectAllAction__editable_text(this)), [typeof(CopySelectionTextIntent)] = _makeOverridable(new _CopySelectionAction__editable_text(this)), [typeof(PasteTextIntent)] = _makeOverridable(new _PasteSelectionAction__editable_text(this)), [typeof(TransposeCharactersIntent)] = _makeOverridable<TransposeCharactersIntent>(this._transposeCharactersAction), [typeof(EditableTextTapOutsideIntent)] = _makeOverridable(new _EditableTextTapOutsideAction__editable_text()), [typeof(EditableTextTapUpOutsideIntent)] = _makeOverridable(new _EditableTextTapUpOutsideAction__editable_text()) };
+                __late__actions = new DartMap<Type, dynamic> { [typeof(DoNothingAndStopPropagationTextIntent)] = new DoNothingAction(consumesKey: false), [typeof(ReplaceTextIntent)] = _replaceTextAction, [typeof(UpdateSelectionIntent)] = _updateSelectionAction, [typeof(DirectionalFocusIntent)] = DirectionalFocusAction.CreateForTextField(), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: _hideToolbarIfVisible), [typeof(DeleteCharacterIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteCharacterIntent>(this, _characterBoundary, _moveBeyondTextBoundary)), [typeof(DeleteToNextWordBoundaryIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToNextWordBoundaryIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary)), [typeof(DeleteToLineBreakIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToLineBreakIntent>(this, _linebreak, _moveToTextBoundary)), [typeof(ExtendSelectionByCharacterIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionByCharacterIntent>(this, _characterBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: false)), [typeof(ExtendSelectionToNextWordBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextParagraphBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryIntent>(this, _paragraphBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToLineBreakIntent>(this, _linebreak, _moveToTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionVerticallyToAdjacentLineIntent)] = _makeOverridable(_verticalSelectionUpdateAction), [typeof(ExtendSelectionVerticallyToAdjacentPageIntent)] = _makeOverridable(_verticalSelectionUpdateAction), [typeof(ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent>(this, _paragraphBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToDocumentBoundaryIntent>(this, _documentBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ScrollToDocumentBoundaryIntent)] = _makeOverridable(new _WebComposingDisablingCallbackAction__editable_text<ScrollToDocumentBoundaryIntent>(this, onInvoke: (__arg0) => { ((global::System.Action<ScrollToDocumentBoundaryIntent>)_scrollToDocumentBoundary)(__arg0); return default!; })), [typeof(ScrollIntent)] = new CallbackAction<ScrollIntent>(onInvoke: (__arg0) => { ((global::System.Action<ScrollIntent>)_scroll)(__arg0); return default!; }), [typeof(ExpandSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToLineBreakIntent>(this, _linebreak, _moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true)), [typeof(ExpandSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToDocumentBoundaryIntent>(this, _documentBoundary, _moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true, extentAtIndex: true)), [typeof(SelectAllTextIntent)] = _makeOverridable(new _SelectAllAction__editable_text(this)), [typeof(CopySelectionTextIntent)] = _makeOverridable(new _CopySelectionAction__editable_text(this)), [typeof(PasteTextIntent)] = _makeOverridable(new _PasteSelectionAction__editable_text(this)), [typeof(TransposeCharactersIntent)] = _makeOverridable<TransposeCharactersIntent>(_transposeCharactersAction), [typeof(EditableTextTapOutsideIntent)] = _makeOverridable(new _EditableTextTapOutsideAction__editable_text()), [typeof(EditableTextTapUpOutsideIntent)] = _makeOverridable(new _EditableTextTapUpOutsideAction__editable_text()) };
                 __late__actions_initialized = true;
             }
             return __late__actions;
@@ -827,82 +827,82 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             return _backingCursorBlinkOpacityController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
-    __cascade.addListener(this._onCursorColorTick);
+    __cascade.addListener(_onCursorColorTick);
     return __cascade;
 }))();
         }
     }
-    internal virtual bool _hasInputConnection => DartRuntimePrimitives.ConvertValue<bool>((this._textInputConnection?.attached ?? false));
-    internal virtual bool _webContextMenuEnabled => DartRuntimePrimitives.ConvertValue<bool>((Foundation.ConstantsLibrary.kIsWeb && BrowserContextMenu.enabled));
-    internal virtual ScrollController _scrollController => DartRuntimePrimitives.ConvertValue<ScrollController>((((EditableText)this.widget).scrollController ?? (_internalScrollController ??= new ScrollController())));
-    public virtual global::Doroti.Framework.Services.AutofillScope? currentAutofillScope => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.AutofillScope>(this._currentAutofillScope);
-    internal virtual global::Doroti.Framework.Services.AutofillClient _effectiveAutofillClient => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.AutofillClient>((((object?)((EditableText)this.widget).autofillClient ?? (object?)this)));
-    public virtual SpellCheckConfiguration spellCheckConfiguration => this._spellCheckConfiguration;
-    public virtual bool spellCheckEnabled => ((SpellCheckConfiguration)this._spellCheckConfiguration).spellCheckEnabled;
-    internal virtual bool _spellCheckResultsReceived => DartRuntimePrimitives.ConvertValue<bool>(((this.spellCheckEnabled && (this.spellCheckResults is not null)) && Enumerable.Any(this.spellCheckResults!.suggestionSpans)));
-    internal virtual bool _shouldCreateInputConnection => DartRuntimePrimitives.ConvertValue<bool>(((Foundation.ConstantsLibrary.kIsWeb || (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))) || !((EditableText)this.widget).readOnly));
+    internal virtual bool _hasInputConnection => DartRuntimePrimitives.ConvertValue<bool>(_textInputConnection?.attached ?? false);
+    internal virtual bool _webContextMenuEnabled => DartRuntimePrimitives.ConvertValue<bool>(Foundation.ConstantsLibrary.kIsWeb && BrowserContextMenu.enabled);
+    internal virtual ScrollController _scrollController => DartRuntimePrimitives.ConvertValue<ScrollController>(widget.scrollController ?? (_internalScrollController ??= new ScrollController()));
+    public virtual global::Doroti.Framework.Services.AutofillScope? currentAutofillScope => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.AutofillScope>(_currentAutofillScope);
+    internal virtual global::Doroti.Framework.Services.AutofillClient _effectiveAutofillClient => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.AutofillClient>((object?)widget.autofillClient ?? (object?)this);
+    public virtual SpellCheckConfiguration spellCheckConfiguration => _spellCheckConfiguration;
+    public virtual bool spellCheckEnabled => _spellCheckConfiguration.spellCheckEnabled;
+    internal virtual bool _spellCheckResultsReceived => DartRuntimePrimitives.ConvertValue<bool>(spellCheckEnabled && (spellCheckResults is not null) && Enumerable.Any(spellCheckResults!.suggestionSpans));
+    internal virtual bool _shouldCreateInputConnection => DartRuntimePrimitives.ConvertValue<bool>(Foundation.ConstantsLibrary.kIsWeb || Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS) || !widget.readOnly);
     internal virtual bool _stylusHandwritingEnabled
     {
         get
         {
-            if (!((EditableText)this.widget).scribbleEnabled)
+            if (!widget.scribbleEnabled)
             {
-                return ((EditableText)this.widget).scribbleEnabled;
+                return widget.scribbleEnabled;
             }
-            return ((EditableText)this.widget).stylusHandwritingEnabled;
+            return widget.stylusHandwritingEnabled;
         }
     }
-    public virtual bool wantKeepAlive => ((EditableText)this.widget).focusNode.hasFocus;
+    public virtual bool wantKeepAlive => widget.focusNode.hasFocus;
     internal virtual global::Doroti.Ui.Color _cursorColor
     {
         get
         {
-            double effectiveOpacity = Math.Min((((EditableText)this.widget).cursorColor.alpha / 255.0), ((global::Doroti.Framework.Animation.AnimationController)this._cursorBlinkOpacityController).value);
-            return ((EditableText)this.widget).cursorColor.withOpacity(effectiveOpacity);
+            double effectiveOpacity = Math.Min(widget.cursorColor.alpha / 255.0, _cursorBlinkOpacityController.value);
+            return widget.cursorColor.withOpacity(effectiveOpacity);
         }
     }
     public virtual bool cutEnabled
     {
         get
         {
-            if ((((EditableText)this.widget).selectionControls is not TextSelectionHandleControls))
+            if (widget.selectionControls is not TextSelectionHandleControls)
             {
-                return ((((EditableText)this.widget).toolbarOptions.cut && !((EditableText)this.widget).readOnly) && !((EditableText)this.widget).obscureText);
+                return widget.toolbarOptions.cut && !widget.readOnly && !widget.obscureText;
             }
-            return ((!((EditableText)this.widget).readOnly && !((EditableText)this.widget).obscureText) && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
+            return !widget.readOnly && !widget.obscureText && !textEditingValue.selection.isCollapsed;
         }
     }
     public virtual bool copyEnabled
     {
         get
         {
-            if ((((EditableText)this.widget).selectionControls is not TextSelectionHandleControls))
+            if (widget.selectionControls is not TextSelectionHandleControls)
             {
-                return (((EditableText)this.widget).toolbarOptions.copy && !((EditableText)this.widget).obscureText);
+                return widget.toolbarOptions.copy && !widget.obscureText;
             }
-            return (!((EditableText)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
+            return !widget.obscureText && !textEditingValue.selection.isCollapsed;
         }
     }
     public virtual bool pasteEnabled
     {
         get
         {
-            if ((((EditableText)this.widget).selectionControls is not TextSelectionHandleControls))
+            if (widget.selectionControls is not TextSelectionHandleControls)
             {
-                return (((EditableText)this.widget).toolbarOptions.paste && !((EditableText)this.widget).readOnly);
+                return widget.toolbarOptions.paste && !widget.readOnly;
             }
-            return (!((EditableText)this.widget).readOnly && ((Equals(this.clipboardStatus.value, ClipboardStatus.pasteable))));
+            return !widget.readOnly && Equals(clipboardStatus.value, ClipboardStatus.pasteable);
         }
     }
     public virtual bool selectAllEnabled
     {
         get
         {
-            if ((((EditableText)this.widget).selectionControls is not TextSelectionHandleControls))
+            if (widget.selectionControls is not TextSelectionHandleControls)
             {
-                return ((((EditableText)this.widget).toolbarOptions.selectAll && ((!((EditableText)this.widget).readOnly || !((EditableText)this.widget).obscureText))) && ((EditableText)this.widget).enableInteractiveSelection);
+                return widget.toolbarOptions.selectAll && (!widget.readOnly || !widget.obscureText) && widget.enableInteractiveSelection;
             }
-            if ((!((EditableText)this.widget).enableInteractiveSelection || ((((EditableText)this.widget).readOnly && ((EditableText)this.widget).obscureText))))
+            if (!widget.enableInteractiveSelection || widget.readOnly && widget.obscureText)
             {
                 return false;
             }
@@ -914,14 +914,14 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     }
                 case TargetPlatform.iOS:
                     {
-                        return ((((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text.Length != 0) && ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
+                        return (textEditingValue.text.Length != 0) && textEditingValue.selection.isCollapsed;
                     }
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
                     {
-                        return ((((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text.Length != 0) && !(((((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.start == 0L) && (((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.end == ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text.Length))));
+                        return (textEditingValue.text.Length != 0) && !((textEditingValue.selection.start == 0L) && (textEditingValue.selection.end == textEditingValue.text.Length));
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -932,22 +932,22 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         get
         {
-            if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)))
+            if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
             {
                 return false;
             }
-            return ((!((EditableText)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed) && (((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text).Trim() != ""));
+            return !widget.obscureText && !textEditingValue.selection.isCollapsed && (textEditingValue.selection.textInside(textEditingValue.text).Trim() != "");
         }
     }
     public virtual bool searchWebEnabled
     {
         get
         {
-            if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)))
+            if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
             {
                 return false;
             }
-            return ((!((EditableText)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed) && (((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text).Trim() != ""));
+            return !widget.obscureText && !textEditingValue.selection.isCollapsed && (textEditingValue.selection.textInside(textEditingValue.text).Trim() != "");
         }
     }
     public virtual bool shareEnabled
@@ -959,7 +959,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 case TargetPlatform.android:
                 case TargetPlatform.iOS:
                     {
-                        return ((!((EditableText)this.widget).obscureText && !((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed) && (((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text).Trim() != ""));
+                        return !widget.obscureText && !textEditingValue.selection.isCollapsed && (textEditingValue.selection.textInside(textEditingValue.text).Trim() != "");
                     }
                 case TargetPlatform.macOS:
                 case TargetPlatform.fuchsia:
@@ -977,48 +977,48 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         get
         {
-            return ((((Equals(this._liveTextInputStatus?.value, LiveTextInputStatus.enabled)) && !((EditableText)this.widget).obscureText) && !((EditableText)this.widget).readOnly) && ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isCollapsed);
+            return Equals(_liveTextInputStatus?.value, LiveTextInputStatus.enabled) && !widget.obscureText && !widget.readOnly && textEditingValue.selection.isCollapsed;
         }
     }
     internal virtual void _onChangedClipboardStatus()
     {
-        this._selectionOverlay?.markNeedsBuild();
-        setState(((global::System.Action)(() =>
+        _selectionOverlay?.markNeedsBuild();
+        setState(() =>
         {
-        })));
+        });
     }
 
     internal virtual void _onChangedLiveTextInputStatus()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
     internal virtual global::Doroti.Framework.Services.TextEditingValue _textEditingValueforTextLayoutMetrics
     {
         get
         {
-            Widget? editableWidget = ((GlobalKey<IState>)this._editableKey).currentContext?.widget;
-            if ((editableWidget is not _Editable__editable_text))
+            Widget? editableWidget = _editableKey.currentContext?.widget;
+            if (editableWidget is not _Editable__editable_text)
             {
                 throw new InvalidOperationException("_Editable must be mounted.");
             }
-            return ((_Editable__editable_text)((_Editable__editable_text)editableWidget)).value;
+            return ((_Editable__editable_text)editableWidget).value;
         }
     }
     public virtual void copySelection(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-        if ((selectionLocal.isCollapsed || ((EditableText)this.widget).obscureText))
+        global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
+        if (selectionLocal.isCollapsed || widget.obscureText)
         {
             return;
         }
-        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text;
+        string textLocal = textEditingValue.text;
         DartRuntimePrimitives.Ignore(Clipboard.setData(new global::Doroti.Framework.Services.ClipboardData(text: selectionLocal.textInside(textLocal))).catchError(_reportClipboardError("while copying selection to clipboard")));
-        if ((Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar)))
+        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
         {
-            bringIntoView(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.extent);
+            bringIntoView(textEditingValue.selection.extent);
             hideToolbar(false);
             switch (PlatformLibrary.defaultTargetPlatform)
             {
@@ -1032,48 +1032,48 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 case TargetPlatform.android:
                 case TargetPlatform.fuchsia:
                     {
-                        userUpdateTextEditingValue(new global::Doroti.Framework.Services.TextEditingValue(text: ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text, selection: TextSelection.CreateCollapsed(offset: ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.end)), SelectionChangedCause.toolbar);
+                        userUpdateTextEditingValue(new global::Doroti.Framework.Services.TextEditingValue(text: textEditingValue.text, selection: TextSelection.CreateCollapsed(offset: textEditingValue.selection.end)), SelectionChangedCause.toolbar);
                         break;
                     }
             }
         }
-        DartRuntimePrimitives.Ignore(this.clipboardStatus.update());
+        DartRuntimePrimitives.Ignore(clipboardStatus.update());
     }
 
     public virtual void cutSelection(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        if ((((EditableText)this.widget).readOnly || ((EditableText)this.widget).obscureText))
+        if (widget.readOnly || widget.obscureText)
         {
             return;
         }
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text;
+        global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
+        string textLocal = textEditingValue.text;
         if (selectionLocal.isCollapsed)
         {
             return;
         }
         DartRuntimePrimitives.Ignore(Clipboard.setData(new global::Doroti.Framework.Services.ClipboardData(text: selectionLocal.textInside(textLocal))).catchError(_reportClipboardError("while cutting selection to clipboard")));
-        _replaceText(new ReplaceTextIntent(this.textEditingValue, "", selectionLocal, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause))));
-        if ((Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar)))
+        _replaceText(new ReplaceTextIntent(textEditingValue, "", selectionLocal, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause))));
+        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
             {
-                if (this.mounted)
+                if (mounted)
                 {
-                    bringIntoView(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.extent);
+                    bringIntoView(textEditingValue.selection.extent);
                 }
-            })), debugLabel: "EditableText.bringSelectionIntoView");
+            }, debugLabel: "EditableText.bringSelectionIntoView");
             hideToolbar();
         }
-        DartRuntimePrimitives.Ignore(this.clipboardStatus.update());
+        DartRuntimePrimitives.Ignore(clipboardStatus.update());
     }
 
     internal virtual global::System.Action<object, global::System.Diagnostics.StackTrace?> _reportClipboardError(string context)
     {
-        return ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stack) =>
+        return (exception, stack) =>
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription(context)));
-        }));
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1081,42 +1081,42 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         get
         {
-            return (!((EditableText)this.widget).readOnly && ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.isValid);
+            return !widget.readOnly && textEditingValue.selection.isValid;
         }
     }
     public async virtual Future pasteText(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        if (!this._allowPaste)
+        if (!_allowPaste)
         {
             return;
         }
         global::Doroti.Framework.Services.ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-        if ((data is null))
+        if (data is null)
         {
             return;
         }
-        _pasteText(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause)), ((global::Doroti.Framework.Services.ClipboardData)data).text!);
+        _pasteText(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause)), data.text!);
     }
 
     internal virtual void _pasteText(global::Doroti.Framework.Services.SelectionChangedCause cause, string text)
     {
-        if (!this._allowPaste)
+        if (!_allowPaste)
         {
             return;
         }
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-        long lastSelectionIndex = Math.Max(((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset, ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset);
-        global::Doroti.Framework.Services.TextEditingValue collapsedTextEditingValue = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue.copyWith(selection: TextSelection.CreateCollapsed(offset: lastSelectionIndex)));
+        global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
+        long lastSelectionIndex = Math.Max(selectionLocal.baseOffset, selectionLocal.extentOffset);
+        global::Doroti.Framework.Services.TextEditingValue collapsedTextEditingValue = textEditingValue.copyWith(selection: TextSelection.CreateCollapsed(offset: lastSelectionIndex));
         userUpdateTextEditingValue(collapsedTextEditingValue.replaced(selectionLocal, text), DartRuntimePrimitives.RequireValue(cause));
-        if ((Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar)))
+        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
             {
-                if (this.mounted)
+                if (mounted)
                 {
-                    bringIntoView(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.extent);
+                    bringIntoView(textEditingValue.selection.extent);
                 }
-            })), debugLabel: "EditableText.bringSelectionIntoView");
+            }, debugLabel: "EditableText.bringSelectionIntoView");
             hideToolbar();
         }
     }
@@ -1136,12 +1136,12 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual void selectAll(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        if ((((EditableText)this.widget).readOnly && ((EditableText)this.widget).obscureText))
+        if (widget.readOnly && widget.obscureText)
         {
             return;
         }
-        userUpdateTextEditingValue(this.textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text.Length)), DartRuntimePrimitives.RequireValue(cause));
-        if ((Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar)))
+        userUpdateTextEditingValue(textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: textEditingValue.text.Length)), DartRuntimePrimitives.RequireValue(cause));
+        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
         {
             switch (PlatformLibrary.defaultTargetPlatform)
             {
@@ -1166,7 +1166,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 case TargetPlatform.linux:
                 case TargetPlatform.windows:
                     {
-                        bringIntoView(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.extent);
+                        bringIntoView(textEditingValue.selection.extent);
                         break;
                     }
                 case TargetPlatform.macOS:
@@ -1180,9 +1180,9 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public async virtual Future lookUpSelection(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        DartRuntimePrimitives.Assert(() => !((EditableText)this.widget).obscureText);
-        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text);
-        if ((((EditableText)this.widget).obscureText || (textLocal.Length == 0)))
+        DartRuntimePrimitives.Assert(() => !widget.obscureText);
+        string textLocal = textEditingValue.selection.textInside(textEditingValue.text);
+        if (widget.obscureText || (textLocal.Length == 0))
         {
             return;
         }
@@ -1191,13 +1191,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public async virtual Future searchWebForSelection(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        DartRuntimePrimitives.Assert(() => !((EditableText)this.widget).obscureText);
-        if (((EditableText)this.widget).obscureText)
+        DartRuntimePrimitives.Assert(() => !widget.obscureText);
+        if (widget.obscureText)
         {
             return;
         }
-        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text);
-        if ((textLocal.Length != 0))
+        string textLocal = textEditingValue.selection.textInside(textEditingValue.text);
+        if (textLocal.Length != 0)
         {
             await SystemChannels.platform.invokeMethod<object>("SearchWeb.invoke", textLocal);
         }
@@ -1205,13 +1205,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public async virtual Future shareSelection(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        DartRuntimePrimitives.Assert(() => !((EditableText)this.widget).obscureText);
-        if (((EditableText)this.widget).obscureText)
+        DartRuntimePrimitives.Assert(() => !widget.obscureText);
+        if (widget.obscureText)
         {
             return;
         }
-        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text);
-        if ((textLocal.Length != 0))
+        string textLocal = textEditingValue.selection.textInside(textEditingValue.text);
+        if (textLocal.Length != 0)
         {
             await SystemChannels.platform.invokeMethod<object>("Share.invoke", textLocal);
         }
@@ -1219,20 +1219,20 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _startLiveTextInput(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        if (!this.liveTextInputEnabled)
+        if (!liveTextInputEnabled)
         {
             return;
         }
-        if (this._hasInputConnection)
+        if (_hasInputConnection)
         {
-            DartRuntimePrimitives.Ignore(LiveText.startLiveTextInput().then(((_) =>
+            DartRuntimePrimitives.Ignore(LiveText.startLiveTextInput().then((_) =>
             {
-            }), onError: ((error, stack) =>
+            }, onError: (error, stack) =>
             {
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while starting Live Text input")));
-            })));
+            }));
         }
-        if ((Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar)))
+        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
         {
             hideToolbar();
         }
@@ -1240,49 +1240,49 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual global::Doroti.Framework.Services.SuggestionSpan? findSuggestionSpanAtCursorIndex(long cursorIndex)
     {
-        if ((!this._spellCheckResultsReceived || (this.spellCheckResults!.suggestionSpans.Last().range.end < cursorIndex)))
+        if (!_spellCheckResultsReceived || (spellCheckResults!.suggestionSpans.Last().range.end < cursorIndex))
         {
-            return ((global::Doroti.Framework.Services.SuggestionSpan?)null);
+            return null;
         }
-        List<global::Doroti.Framework.Services.SuggestionSpan> suggestionSpansLocal = this.spellCheckResults!.suggestionSpans.ToList();
+        List<global::Doroti.Framework.Services.SuggestionSpan> suggestionSpansLocal = spellCheckResults!.suggestionSpans.ToList();
         var leftIndex = 0L;
-        long rightIndex = (checked((long)(suggestionSpansLocal.Count)) - 1L);
+        long rightIndex = checked(suggestionSpansLocal.Count) - 1L;
         var midIndex = 0L;
-        while ((leftIndex <= rightIndex))
+        while (leftIndex <= rightIndex)
         {
-            midIndex = ((((leftIndex + rightIndex)) / 2L)).floor();
-            long currentSpanStart = suggestionSpansLocal[(int)(midIndex)].range.start;
-            long currentSpanEnd = suggestionSpansLocal[(int)(midIndex)].range.end;
-            if (((cursorIndex <= currentSpanEnd) && (cursorIndex >= currentSpanStart)))
+            midIndex = ((leftIndex + rightIndex) / 2L).floor();
+            long currentSpanStart = suggestionSpansLocal[(int)midIndex].range.start;
+            long currentSpanEnd = suggestionSpansLocal[(int)midIndex].range.end;
+            if ((cursorIndex <= currentSpanEnd) && (cursorIndex >= currentSpanStart))
             {
-                return suggestionSpansLocal[(int)(midIndex)];
+                return suggestionSpansLocal[(int)midIndex];
             }
             else
             {
-                if ((cursorIndex <= currentSpanStart))
+                if (cursorIndex <= currentSpanStart)
                 {
-                    rightIndex = (midIndex - 1L);
+                    rightIndex = midIndex - 1L;
                 }
                 else
                 {
-                    leftIndex = (midIndex + 1L);
+                    leftIndex = midIndex + 1L;
                 }
             }
         }
-        return ((global::Doroti.Framework.Services.SuggestionSpan?)null);
+        return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static SpellCheckConfiguration _inferSpellCheckConfiguration(SpellCheckConfiguration? configuration, bool obscureText, global::Doroti.Framework.Services.TextInputType keyboardType, IEnumerable<string>? autofillHints)
     {
         global::Doroti.Framework.Services.SpellCheckService? spellCheckServiceLocal = configuration?.spellCheckService;
-        bool spellCheckAutomaticallyDisabled = ((_isPasswordInput(obscureText: obscureText, keyboardType: keyboardType, autofillHints: autofillHints) || (configuration is null)) || (Equals(configuration, SpellCheckConfiguration.CreateDisabled())));
-        bool spellCheckServiceIsConfigured = ((spellCheckServiceLocal is not null) || WidgetsBinding.instance.platformDispatcher.nativeSpellCheckServiceDefined);
+        bool spellCheckAutomaticallyDisabled = _isPasswordInput(obscureText: obscureText, keyboardType: keyboardType, autofillHints: autofillHints) || (configuration is null) || Equals(configuration, SpellCheckConfiguration.CreateDisabled());
+        bool spellCheckServiceIsConfigured = (spellCheckServiceLocal is not null) || WidgetsBinding.instance.platformDispatcher.nativeSpellCheckServiceDefined;
         if (configuration is null || spellCheckAutomaticallyDisabled || !spellCheckServiceIsConfigured)
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((!spellCheckAutomaticallyDisabled && !spellCheckServiceIsConfigured))
+                    if (!spellCheckAutomaticallyDisabled && !spellCheckServiceIsConfigured)
                     {
                         FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create("Spell check was enabled with spellCheckConfiguration, but the " + "current platform does not have a supported spell check " + "service, and none was provided. Consider disabling spell " + "check for this platform or passing a SpellCheckConfiguration " + "with a specified spell check service."), library: "widget library", stack: new global::System.Diagnostics.StackTrace(true)));
                     }
@@ -1291,22 +1291,22 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 });
             return SpellCheckConfiguration.CreateDisabled();
         }
-        return ((SpellCheckConfiguration)configuration.copyWith(spellCheckService: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SpellCheckService>(spellCheckServiceLocal ?? new global::Doroti.Framework.Services.DefaultSpellCheckService())));
+        return configuration.copyWith(spellCheckService: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SpellCheckService>(spellCheckServiceLocal ?? new global::Doroti.Framework.Services.DefaultSpellCheckService()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static bool _isPasswordInput(bool obscureText, global::Doroti.Framework.Services.TextInputType keyboardType, IEnumerable<string>? autofillHints)
     {
-        return ((obscureText || (Equals(keyboardType, TextInputType.visiblePassword))) || ((autofillHints?.any(((hint) => ((hint == AutofillHints.password) || (hint == AutofillHints.newPassword)))) ?? false)));
+        return obscureText || Equals(keyboardType, TextInputType.visiblePassword) || (autofillHints?.any((hint) => (hint == AutofillHints.password) || (hint == AutofillHints.newPassword)) ?? false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual List<ContextMenuButtonItem>? buttonItemsForToolbarOptions(global::Doroti.Framework.Foundation.TargetPlatform? targetPlatform = null)
     {
-        ToolbarOptions toolbarOptionsLocal = ((EditableText)this.widget).toolbarOptions;
-        if ((Equals(toolbarOptionsLocal, ToolbarOptions.empty)))
+        ToolbarOptions toolbarOptionsLocal = widget.toolbarOptions;
+        if (Equals(toolbarOptionsLocal, ToolbarOptions.empty))
         {
-            return ((List<ContextMenuButtonItem>?)null);
+            return null;
         }
         var buttonItems = new List<ContextMenuButtonItem>();
         if (toolbarOptionsLocal.cut && cutEnabled)
@@ -1331,20 +1331,20 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual (double startGlyphHeight, double endGlyphHeight) getGlyphHeights()
     {
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-        global::Doroti.Framework.Painting.InlineSpan span = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).text!;
-        string prevText = ((string)span.toPlainText());
-        string currText = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text;
-        if ((((prevText != currText) || !selectionLocal.isValid) || selectionLocal.isCollapsed))
+        global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
+        global::Doroti.Framework.Painting.InlineSpan span = renderEditable.text!;
+        string prevText = span.toPlainText();
+        string currText = textEditingValue.text;
+        if ((prevText != currText) || !selectionLocal.isValid || selectionLocal.isCollapsed)
         {
-            return (startGlyphHeight: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight, endGlyphHeight: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight);
+            return (startGlyphHeight: renderEditable.preferredLineHeight, endGlyphHeight: renderEditable.preferredLineHeight);
         }
         string selectedGraphemes = selectionLocal.textInside(currText);
         long firstSelectedGraphemeExtent = selectedGraphemes.characters().first.Length;
-        global::Doroti.Ui.Rect? startCharacterRect = ((global::Doroti.Ui.Rect?)((Rect?)(this.renderEditable).getRectForComposingRange(new global::Doroti.Ui.TextRange(start: selectionLocal.start, end: (selectionLocal.start + firstSelectedGraphemeExtent)))));
+        global::Doroti.Ui.Rect? startCharacterRect = renderEditable.getRectForComposingRange(new global::Doroti.Ui.TextRange(start: selectionLocal.start, end: selectionLocal.start + firstSelectedGraphemeExtent));
         long lastSelectedGraphemeExtent = selectedGraphemes.characters().last.Length;
-        global::Doroti.Ui.Rect? endCharacterRect = ((global::Doroti.Ui.Rect?)((Rect?)(this.renderEditable).getRectForComposingRange(new global::Doroti.Ui.TextRange(start: (selectionLocal.end - lastSelectedGraphemeExtent), end: selectionLocal.end))));
-        return (startGlyphHeight: ((startCharacterRect?.height ?? (double)((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight)), endGlyphHeight: ((endCharacterRect?.height ?? (double)((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight)));
+        global::Doroti.Ui.Rect? endCharacterRect = renderEditable.getRectForComposingRange(new global::Doroti.Ui.TextRange(start: selectionLocal.end - lastSelectedGraphemeExtent, end: selectionLocal.end));
+        return (startGlyphHeight: startCharacterRect?.height ?? (double)renderEditable.preferredLineHeight, endGlyphHeight: endCharacterRect?.height ?? (double)renderEditable.preferredLineHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1352,14 +1352,14 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         get
         {
-            if ((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).lastSecondaryTapDownPosition is not null))
+            if (renderEditable.lastSecondaryTapDownPosition is not null)
             {
-                return new TextSelectionToolbarAnchors(primaryAnchor: DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).lastSecondaryTapDownPosition));
+                return new TextSelectionToolbarAnchors(primaryAnchor: DartRuntimePrimitives.RequireValue(renderEditable.lastSecondaryTapDownPosition));
             }
             var (startGlyphHeightLocal, endGlyphHeightLocal) = getGlyphHeights();
-            global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-            List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(this.renderEditable).getEndpointsForSelection(selectionLocal)));
-            return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: this.renderEditable, startGlyphHeight: startGlyphHeightLocal, endGlyphHeight: endGlyphHeightLocal, selectionEndpoints: points);
+            global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
+            List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = renderEditable.getEndpointsForSelection(selectionLocal);
+            return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: renderEditable, startGlyphHeight: startGlyphHeightLocal, endGlyphHeight: endGlyphHeightLocal, selectionEndpoints: points);
         }
     }
     public virtual List<ContextMenuButtonItem> contextMenuButtonItems
@@ -1368,14 +1368,14 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             return ((Func<List<ContextMenuButtonItem>>)(() =>
 {
-    var __cascade = ((buttonItemsForToolbarOptions() ?? (List<ContextMenuButtonItem>)EditableText.getEditableButtonItems(clipboardStatus: this.clipboardStatus.value, onCopy: ((global::System.Action?)(this.copyEnabled ? (() => { copySelection(SelectionChangedCause.toolbar); }) : null)), onCut: ((global::System.Action?)(this.cutEnabled ? (() => { cutSelection(SelectionChangedCause.toolbar); }) : null)), onPaste: ((global::System.Action?)(this.pasteEnabled ? (() => { _ = _pasteTextWithReporting(SelectionChangedCause.toolbar); }) : null)), onSelectAll: ((global::System.Action?)(this.selectAllEnabled ? (() => { selectAll(SelectionChangedCause.toolbar); }) : null)), onLookUp: ((global::System.Action?)(this.lookUpEnabled ? (() => { _ = lookUpSelection(SelectionChangedCause.toolbar); }) : null)), onSearchWeb: ((global::System.Action?)(this.searchWebEnabled ? (() => { _ = searchWebForSelection(SelectionChangedCause.toolbar); }) : null)), onShare: ((global::System.Action?)(this.shareEnabled ? (() => { _ = shareSelection(SelectionChangedCause.toolbar); }) : null)), onLiveTextInput: ((global::System.Action?)(this.liveTextInputEnabled ? (() => { _startLiveTextInput(SelectionChangedCause.toolbar); }) : null)))));
-    __cascade.AddRange(this._textProcessingActionButtonItems.Cast<ContextMenuButtonItem>());
+    var __cascade = buttonItemsForToolbarOptions() ?? EditableText.getEditableButtonItems(clipboardStatus: clipboardStatus.value, onCopy: copyEnabled ? (() => { copySelection(SelectionChangedCause.toolbar); }) : null, onCut: cutEnabled ? (() => { cutSelection(SelectionChangedCause.toolbar); }) : null, onPaste: pasteEnabled ? (() => { _ = _pasteTextWithReporting(SelectionChangedCause.toolbar); }) : null, onSelectAll: selectAllEnabled ? (() => { selectAll(SelectionChangedCause.toolbar); }) : null, onLookUp: lookUpEnabled ? (() => { _ = lookUpSelection(SelectionChangedCause.toolbar); }) : null, onSearchWeb: searchWebEnabled ? (() => { _ = searchWebForSelection(SelectionChangedCause.toolbar); }) : null, onShare: shareEnabled ? (() => { _ = shareSelection(SelectionChangedCause.toolbar); }) : null, onLiveTextInput: liveTextInputEnabled ? (() => { _startLiveTextInput(SelectionChangedCause.toolbar); }) : null);
+    __cascade.AddRange(_textProcessingActionButtonItems.Cast<ContextMenuButtonItem>());
     // An empty desktop field still has a context menu when the clipboard is
     // empty (or its asynchronous availability query is pending).
-    if (__cascade.Count == 0 && this.widget.selectionEnabled && !this.widget.readOnly &&
-        this.widget.selectionControls is TextSelectionHandleControls &&
-        Equals(this.widget.toolbarOptions, ToolbarOptions.empty) &&
-        this.textEditingValue.text.Length == 0 &&
+    if (__cascade.Count == 0 && widget.selectionEnabled && !widget.readOnly &&
+        widget.selectionControls is TextSelectionHandleControls &&
+        Equals(widget.toolbarOptions, ToolbarOptions.empty) &&
+        textEditingValue.text.Length == 0 &&
         PlatformLibrary.defaultTargetPlatform is
             TargetPlatform.windows or
             TargetPlatform.linux or
@@ -1392,20 +1392,20 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         get
         {
             var buttonItems = new List<ContextMenuButtonItem>();
-            global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
-            if (((((EditableText)this.widget).obscureText || !selectionLocal.isValid) || selectionLocal.isCollapsed))
+            global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
+            if (widget.obscureText || !selectionLocal.isValid || selectionLocal.isCollapsed)
             {
                 return buttonItems;
             }
-            foreach (global::Doroti.Framework.Services.ProcessTextAction action in this._processTextActions)
+            foreach (global::Doroti.Framework.Services.ProcessTextAction action in _processTextActions)
             {
-                buttonItems.Add(new ContextMenuButtonItem(label: ((global::Doroti.Framework.Services.ProcessTextAction)action).label, onPressed: ((global::System.Action)(async () =>
+                buttonItems.Add(new ContextMenuButtonItem(label: action.label, onPressed: async () =>
                 {
-                    string selectedText = selectionLocal.textInside(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text);
-                    if ((selectedText.Length != 0))
+                    string selectedText = selectionLocal.textInside(textEditingValue.text);
+                    if (selectedText.Length != 0)
                     {
-                        string? processedText = await this._processTextService.processTextAction(((global::Doroti.Framework.Services.ProcessTextAction)action).id, selectedText, ((EditableText)this.widget).readOnly);
-                        if (((processedText is not null) && this._allowPaste))
+                        string? processedText = await _processTextService.processTextAction(action.id, selectedText, widget.readOnly);
+                        if ((processedText is not null) && _allowPaste)
                         {
                             _pasteText(SelectionChangedCause.toolbar, processedText);
                         }
@@ -1414,7 +1414,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                             hideToolbar();
                         }
                     }
-                }))));
+                }));
             }
             return buttonItems;
         }
@@ -1422,226 +1422,226 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     public override void initState()
     {
         base.initState();
-        if (this.wantKeepAlive)
+        if (wantKeepAlive)
         {
             _ensureKeepAlive();
         }
-        this._liveTextInputStatus?.addListener(this._onChangedLiveTextInputStatus);
-        this.clipboardStatus.addListener(this._onChangedClipboardStatus);
-        ((EditableText)this.widget).controller.addListener(this._didChangeTextEditingValue);
-        ((EditableText)this.widget).focusNode.addListener(this._handleFocusChanged);
-        this._cursorVisibilityNotifier.value = ((EditableText)this.widget).showCursor;
-        _spellCheckConfiguration = _inferSpellCheckConfiguration(((EditableText)this.widget).spellCheckConfiguration, obscureText: ((EditableText)this.widget).obscureText, keyboardType: ((EditableText)this.widget).keyboardType, autofillHints: ((EditableText)this.widget).autofillHints);
-        _appLifecycleListener = new AppLifecycleListener(onResume: () => this._onResume());
+        _liveTextInputStatus?.addListener(_onChangedLiveTextInputStatus);
+        clipboardStatus.addListener(_onChangedClipboardStatus);
+        widget.controller.addListener(_didChangeTextEditingValue);
+        widget.focusNode.addListener(_handleFocusChanged);
+        _cursorVisibilityNotifier.value = widget.showCursor;
+        _spellCheckConfiguration = _inferSpellCheckConfiguration(widget.spellCheckConfiguration, obscureText: widget.obscureText, keyboardType: widget.keyboardType, autofillHints: widget.autofillHints);
+        _appLifecycleListener = new AppLifecycleListener(onResume: () => _onResume());
         DartRuntimePrimitives.Ignore(_initProcessTextActions());
     }
 
     internal virtual void _onResume()
     {
         _justResumed = true;
-        FocusManager.instance.removeListener(this._resetJustResumed);
-        FocusManager.instance.addListener(this._resetJustResumed);
+        FocusManager.instance.removeListener(_resetJustResumed);
+        FocusManager.instance.addListener(_resetJustResumed);
     }
 
     internal virtual void _resetJustResumed()
     {
         _justResumed = false;
-        FocusManager.instance.removeListener(this._resetJustResumed);
+        FocusManager.instance.removeListener(_resetJustResumed);
     }
 
     internal async virtual Future _initProcessTextActions()
     {
-        this._processTextActions.Clear();
-        this._processTextActions.AddRange((await this._processTextService.queryTextActions()).Cast<global::Doroti.Framework.Services.ProcessTextAction>());
+        _processTextActions.Clear();
+        _processTextActions.AddRange((await _processTextService.queryTextActions()).Cast<global::Doroti.Framework.Services.ProcessTextAction>());
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _style = (MediaQuery.boldTextOf(this.context) ? ((EditableText)this.widget).style.merge(new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold)) : ((EditableText)this.widget).style);
-        AutofillGroupState? newAutofillGroup = ((AutofillGroupState?)AutofillGroup.maybeOf(this.context));
-        if ((!Equals(this.currentAutofillScope, newAutofillGroup)))
+        _style = MediaQuery.boldTextOf(context) ? widget.style.merge(new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold)) : widget.style;
+        AutofillGroupState? newAutofillGroup = AutofillGroup.maybeOf(context);
+        if (!Equals(currentAutofillScope, newAutofillGroup))
         {
-            this._currentAutofillScope?.unregister(this.autofillId);
+            _currentAutofillScope?.unregister(autofillId);
             _currentAutofillScope = newAutofillGroup;
-            this._currentAutofillScope?.register(this._effectiveAutofillClient);
+            _currentAutofillScope?.register(_effectiveAutofillClient);
         }
-        if ((!this._didAutoFocus && ((EditableText)this.widget).autofocus))
+        if (!_didAutoFocus && widget.autofocus)
         {
             _didAutoFocus = true;
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
             {
-                if ((this.mounted && this.renderEditable.hasSize))
+                if (mounted && renderEditable.hasSize)
                 {
                     _flagInternalFocus();
-                    FocusScope.of(this.context).autofocus(((EditableText)this.widget).focusNode);
+                    FocusScope.of(context).autofocus(widget.focusNode);
                 }
-            })), debugLabel: "EditableText.autofocus");
+            }, debugLabel: "EditableText.autofocus");
         }
-        bool newTickerEnabled = TickerMode.of(this.context);
-        if ((this._tickersEnabled != newTickerEnabled))
+        bool newTickerEnabled = TickerMode.of(context);
+        if (_tickersEnabled != newTickerEnabled)
         {
             _tickersEnabled = newTickerEnabled;
-            if (this._showBlinkingCursor)
+            if (_showBlinkingCursor)
             {
                 _startCursorBlink();
             }
             else
             {
-                if ((!this._tickersEnabled && (this._cursorTimer is not null)))
+                if (!_tickersEnabled && (_cursorTimer is not null))
                 {
                     _stopCursorBlink();
                 }
             }
         }
-        if (this._hasInputConnection)
+        if (_hasInputConnection)
         {
-            long newViewId = checked((long)View.of(this.context).viewId);
-            if ((newViewId != this._viewId))
+            long newViewId = checked((long)View.of(context).viewId);
+            if (newViewId != _viewId)
             {
-                this._textInputConnection!.updateConfig(((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration);
+                _textInputConnection!.updateConfig(_effectiveAutofillClient.textInputConfiguration);
             }
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
             {
-                if ((!this.mounted || !this._hasInputConnection))
+                if (!mounted || !_hasInputConnection)
                 {
                     return;
                 }
-                this._textInputConnection!.updateStyle(_getTextInputStyle(this.context));
-            })), debugLabel: "EditableText.updateStyle");
+                _textInputConnection!.updateStyle(_getTextInputStyle(context));
+            }, debugLabel: "EditableText.updateStyle");
         }
-        if (((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))))
+        if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
         {
             return;
         }
-        Orientation orientation = MediaQuery.orientationOf(this.context);
-        if ((this._lastOrientation is null))
+        Orientation orientation = MediaQuery.orientationOf(context);
+        if (_lastOrientation is null)
         {
             _lastOrientation = orientation;
             return;
         }
-        if ((!Equals(orientation, this._lastOrientation)))
+        if (!Equals(orientation, _lastOrientation))
         {
             _lastOrientation = orientation;
-            if ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)))
+            if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
             {
                 hideToolbar(false);
             }
-            if ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+            if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
             {
                 hideToolbar();
             }
         }
-        if (this._listeningToScrollNotificationObserver)
+        if (_listeningToScrollNotificationObserver)
         {
-            this._scrollNotificationObserver?.removeListener((global::System.Action<ScrollNotification>)this._handleContextMenuOnParentScroll);
-            _scrollNotificationObserver = ScrollNotificationObserver.maybeOf(this.context);
-            this._scrollNotificationObserver?.addListener((global::System.Action<ScrollNotification>)this._handleContextMenuOnParentScroll);
+            _scrollNotificationObserver?.removeListener(_handleContextMenuOnParentScroll);
+            _scrollNotificationObserver = ScrollNotificationObserver.maybeOf(context);
+            _scrollNotificationObserver?.addListener(_handleContextMenuOnParentScroll);
         }
     }
 
     public override void didUpdateWidget(EditableText oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((EditableText)this.widget).controller, ((EditableText)oldWidget).controller)))
+        if (!Equals(widget.controller, oldWidget.controller))
         {
-            ((EditableText)oldWidget).controller.removeListener(this._didChangeTextEditingValue);
-            ((EditableText)this.widget).controller.addListener(this._didChangeTextEditingValue);
+            oldWidget.controller.removeListener(_didChangeTextEditingValue);
+            widget.controller.addListener(_didChangeTextEditingValue);
             _updateRemoteEditingValueIfNeeded();
         }
-        TextSelectionOverlay? selectionOverlay = this._selectionOverlay;
-        if (((((selectionOverlay is not null) && ((TextSelectionOverlay)selectionOverlay).toolbarIsVisible) && (!Equals((global::System.Func<BuildContext, EditableTextState, Widget>?)((EditableText)this.widget).contextMenuBuilder, (global::System.Func<BuildContext, EditableTextState, Widget>?)((EditableText)oldWidget).contextMenuBuilder))) && (((((EditableText)this.widget).contextMenuBuilder is null)) == ((((EditableText)oldWidget).contextMenuBuilder is null)))))
+        TextSelectionOverlay? selectionOverlay = _selectionOverlay;
+        if ((selectionOverlay is not null) && selectionOverlay.toolbarIsVisible && (!Equals(widget.contextMenuBuilder, oldWidget.contextMenuBuilder)) && (widget.contextMenuBuilder is null == oldWidget.contextMenuBuilder is null))
         {
-            WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            WidgetsBinding.instance.addPostFrameCallback((_) =>
             {
-                if ((this.mounted && ((this._selectionOverlay?.toolbarIsVisible ?? false))))
+                if (mounted && (_selectionOverlay?.toolbarIsVisible ?? false))
                 {
-                    this._selectionOverlay!.showToolbar();
+                    _selectionOverlay!.showToolbar();
                 }
-            })));
+            });
         }
-        if (((this._selectionOverlay is not null) && ((((((((((EditableText)this.widget).contextMenuBuilder is null)) != ((((EditableText)oldWidget).contextMenuBuilder is null))) || (!Equals(((EditableText)this.widget).selectionControls, ((EditableText)oldWidget).selectionControls))) || (!Equals((global::System.Action?)((EditableText)this.widget).onSelectionHandleTapped, (global::System.Action?)((EditableText)oldWidget).onSelectionHandleTapped))) || (!Equals(((EditableText)this.widget).dragStartBehavior, ((EditableText)oldWidget).dragStartBehavior))) || (!Equals(((EditableText)this.widget).magnifierConfiguration, ((EditableText)oldWidget).magnifierConfiguration))))))
+        if ((_selectionOverlay is not null) && ((widget.contextMenuBuilder is null != oldWidget.contextMenuBuilder is null) || (!Equals(widget.selectionControls, oldWidget.selectionControls)) || (!Equals(widget.onSelectionHandleTapped, oldWidget.onSelectionHandleTapped)) || (!Equals(widget.dragStartBehavior, oldWidget.dragStartBehavior)) || (!Equals(widget.magnifierConfiguration, oldWidget.magnifierConfiguration))))
         {
-            bool shouldShowToolbar = this._selectionOverlay!.toolbarIsVisible;
-            bool shouldShowHandles = this._selectionOverlay!.handlesVisible;
-            this._selectionOverlay!.dispose();
+            bool shouldShowToolbar = _selectionOverlay!.toolbarIsVisible;
+            bool shouldShowHandles = _selectionOverlay!.handlesVisible;
+            _selectionOverlay!.dispose();
             _selectionOverlay = _createSelectionOverlay();
-            if ((shouldShowToolbar || shouldShowHandles))
+            if (shouldShowToolbar || shouldShowHandles)
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
                 {
                     if (shouldShowToolbar)
                     {
-                        this._selectionOverlay!.showToolbar();
+                        _selectionOverlay!.showToolbar();
                     }
                     if (shouldShowHandles)
                     {
-                        this._selectionOverlay!.showHandles();
+                        _selectionOverlay!.showHandles();
                     }
-                })));
+                });
             }
         }
         else
         {
-            if ((!Equals(((EditableText)this.widget).controller.selection, ((EditableText)oldWidget).controller.selection)))
+            if (!Equals(widget.controller.selection, oldWidget.controller.selection))
             {
-                this._selectionOverlay?.update(this._value);
+                _selectionOverlay?.update(_value);
             }
         }
-        this._selectionOverlay?.handlesVisible = ((EditableText)this.widget).showSelectionHandles;
-        if ((!Equals(((EditableText)this.widget).autofillClient, ((EditableText)oldWidget).autofillClient)))
+        _selectionOverlay?.handlesVisible = widget.showSelectionHandles;
+        if (!Equals(widget.autofillClient, oldWidget.autofillClient))
         {
-            this._currentAutofillScope?.unregister(((((EditableText)oldWidget).autofillClient?.autofillId ?? (string)this.autofillId)));
-            this._currentAutofillScope?.register(this._effectiveAutofillClient);
+            _currentAutofillScope?.unregister(oldWidget.autofillClient?.autofillId ?? autofillId);
+            _currentAutofillScope?.register(_effectiveAutofillClient);
         }
-        if ((!Equals(((EditableText)this.widget).focusNode, ((EditableText)oldWidget).focusNode)))
+        if (!Equals(widget.focusNode, oldWidget.focusNode))
         {
-            ((EditableText)oldWidget).focusNode.removeListener(this._handleFocusChanged);
-            ((EditableText)this.widget).focusNode.addListener(this._handleFocusChanged);
+            oldWidget.focusNode.removeListener(_handleFocusChanged);
+            widget.focusNode.addListener(_handleFocusChanged);
             updateKeepAlive();
         }
-        if (!this._shouldCreateInputConnection)
+        if (!_shouldCreateInputConnection)
         {
             _closeInputConnectionIfNeeded();
         }
         else
         {
-            if ((((EditableText)oldWidget).readOnly && this._hasFocus))
+            if (oldWidget.readOnly && _hasFocus)
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
                 {
                     _openInputConnection();
-                })), debugLabel: "EditableText.openInputConnection");
+                }, debugLabel: "EditableText.openInputConnection");
             }
         }
-        if ((Foundation.ConstantsLibrary.kIsWeb && this._hasInputConnection))
+        if (Foundation.ConstantsLibrary.kIsWeb && _hasInputConnection)
         {
-            if ((((EditableText)oldWidget).readOnly != ((EditableText)this.widget).readOnly))
+            if (oldWidget.readOnly != widget.readOnly)
             {
-                this._textInputConnection!.updateConfig(((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration);
+                _textInputConnection!.updateConfig(_effectiveAutofillClient.textInputConfiguration);
             }
         }
-        if (this._hasInputConnection)
+        if (_hasInputConnection)
         {
-            var obscureTextChanged = (((EditableText)oldWidget).obscureText != ((EditableText)this.widget).obscureText);
-            if ((obscureTextChanged || (!Equals(((EditableText)oldWidget).keyboardType, ((EditableText)this.widget).keyboardType))))
+            var obscureTextChanged = oldWidget.obscureText != widget.obscureText;
+            if (obscureTextChanged || (!Equals(oldWidget.keyboardType, widget.keyboardType)))
             {
                 if (obscureTextChanged)
                 {
                     _obscureShowCharTicksPending = 0L;
                     _obscureLatestCharIndex = null;
                 }
-                this._textInputConnection!.updateConfig(((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration);
+                _textInputConnection!.updateConfig(_effectiveAutofillClient.textInputConfiguration);
             }
         }
-        if (((((!Equals(((EditableText)oldWidget).spellCheckConfiguration, ((EditableText)this.widget).spellCheckConfiguration)) || (((EditableText)oldWidget).obscureText != ((EditableText)this.widget).obscureText)) || (!Equals(((EditableText)oldWidget).keyboardType, ((EditableText)this.widget).keyboardType))) || !CollectionsLibrary.listEquals<string>(((EditableText)oldWidget).autofillHints?.ToList().Cast<string>().ToList(), ((EditableText)this.widget).autofillHints?.ToList().Cast<string>().ToList())))
+        if ((!Equals(oldWidget.spellCheckConfiguration, widget.spellCheckConfiguration)) || (oldWidget.obscureText != widget.obscureText) || (!Equals(oldWidget.keyboardType, widget.keyboardType)) || !CollectionsLibrary.listEquals<string>(oldWidget.autofillHints?.ToList().Cast<string>().ToList(), widget.autofillHints?.ToList().Cast<string>().ToList()))
         {
-            _spellCheckConfiguration = _inferSpellCheckConfiguration(((EditableText)this.widget).spellCheckConfiguration, obscureText: ((EditableText)this.widget).obscureText, keyboardType: ((EditableText)this.widget).keyboardType, autofillHints: ((EditableText)this.widget).autofillHints);
-            if (this.spellCheckEnabled)
+            _spellCheckConfiguration = _inferSpellCheckConfiguration(widget.spellCheckConfiguration, obscureText: widget.obscureText, keyboardType: widget.keyboardType, autofillHints: widget.autofillHints);
+            if (spellCheckEnabled)
             {
-                if ((((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text.Length != 0))
+                if (textEditingValue.text.Length != 0)
                 {
-                    DartRuntimePrimitives.Ignore(_performSpellCheck(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).text));
+                    DartRuntimePrimitives.Ignore(_performSpellCheck(textEditingValue.text));
                 }
             }
             else
@@ -1649,38 +1649,38 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 spellCheckResults = null;
             }
         }
-        if ((!Equals(((EditableText)this.widget).style, ((EditableText)oldWidget).style)))
+        if (!Equals(widget.style, oldWidget.style))
         {
-            _style = (MediaQuery.boldTextOf(this.context) ? ((EditableText)this.widget).style.merge(new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold)) : ((EditableText)this.widget).style);
-            if (this._hasInputConnection)
+            _style = MediaQuery.boldTextOf(context) ? widget.style.merge(new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold)) : widget.style;
+            if (_hasInputConnection)
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
                 {
-                    if ((!this.mounted || !this._hasInputConnection))
+                    if (!mounted || !_hasInputConnection)
                     {
                         return;
                     }
-                    this._textInputConnection!.updateStyle(_getTextInputStyle(this.context));
-                })), debugLabel: "EditableText.updateStyle");
+                    _textInputConnection!.updateStyle(_getTextInputStyle(context));
+                }, debugLabel: "EditableText.updateStyle");
             }
         }
-        if ((((EditableText)this.widget).showCursor != ((EditableText)oldWidget).showCursor))
+        if (widget.showCursor != oldWidget.showCursor)
         {
             _startOrStopCursorTimerIfNeeded();
         }
-        bool canPasteLocal = ((((EditableText)this.widget).selectionControls is TextSelectionHandleControls) ? this.pasteEnabled : (((EditableText)this.widget).selectionControls?.canPaste(this) ?? false));
-        if (((((EditableText)this.widget).selectionEnabled && this.pasteEnabled) && canPasteLocal))
+        bool canPasteLocal = (widget.selectionControls is TextSelectionHandleControls) ? pasteEnabled : (widget.selectionControls?.canPaste(this) ?? false);
+        if (widget.selectionEnabled && pasteEnabled && canPasteLocal)
         {
-            DartRuntimePrimitives.Ignore(this.clipboardStatus.update());
+            DartRuntimePrimitives.Ignore(clipboardStatus.update());
         }
     }
 
     internal virtual void _disposeScrollNotificationObserver()
     {
         _listeningToScrollNotificationObserver = false;
-        if ((this._scrollNotificationObserver is not null))
+        if (_scrollNotificationObserver is not null)
         {
-            this._scrollNotificationObserver!.removeListener((global::System.Action<ScrollNotification>)this._handleContextMenuOnParentScroll);
+            _scrollNotificationObserver!.removeListener(_handleContextMenuOnParentScroll);
             _scrollNotificationObserver = null;
         }
     }
@@ -1689,87 +1689,87 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         double? letterSpacingOverride = MediaQuery.maybeLetterSpacingOverrideOf(context);
         double? wordSpacingOverride = MediaQuery.maybeWordSpacingOverrideOf(context);
-        return new global::Doroti.Framework.Services.TextInputStyle(fontFamily: ((global::Doroti.Framework.Painting.TextStyle)this._style).fontFamily, fontSize: ((global::Doroti.Framework.Painting.TextStyle)this._style).fontSize, fontWeight: ((global::Doroti.Framework.Painting.TextStyle)this._style).fontWeight, textDirection: this._textDirection, textAlign: ((EditableText)this.widget).textAlign, letterSpacing: (letterSpacingOverride ?? ((global::Doroti.Framework.Painting.TextStyle)this._style).letterSpacing), wordSpacing: (wordSpacingOverride ?? ((global::Doroti.Framework.Painting.TextStyle)this._style).wordSpacing), lineHeight: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight);
+        return new global::Doroti.Framework.Services.TextInputStyle(fontFamily: _style.fontFamily, fontSize: _style.fontSize, fontWeight: _style.fontWeight, textDirection: _textDirection, textAlign: widget.textAlign, letterSpacing: letterSpacingOverride ?? _style.letterSpacing, wordSpacing: wordSpacingOverride ?? _style.wordSpacing, lineHeight: renderEditable.preferredLineHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()
     {
-        this._internalScrollController?.dispose();
-        this._currentAutofillScope?.unregister(this.autofillId);
-        ((EditableText)this.widget).controller.removeListener(this._didChangeTextEditingValue);
-        this._floatingCursorResetController?.dispose();
+        _internalScrollController?.dispose();
+        _currentAutofillScope?.unregister(autofillId);
+        widget.controller.removeListener(_didChangeTextEditingValue);
+        _floatingCursorResetController?.dispose();
         _floatingCursorResetController = null;
         _closeInputConnectionIfNeeded();
-        DartRuntimePrimitives.Assert(() => !this._hasInputConnection);
-        this._cursorTimer?.cancel();
+        DartRuntimePrimitives.Assert(() => !_hasInputConnection);
+        _cursorTimer?.cancel();
         _cursorTimer = null;
-        this._backingCursorBlinkOpacityController?.dispose();
+        _backingCursorBlinkOpacityController?.dispose();
         _backingCursorBlinkOpacityController = null;
-        this._selectionOverlay?.dispose();
+        _selectionOverlay?.dispose();
         _selectionOverlay = null;
-        ((EditableText)this.widget).focusNode.removeListener(this._handleFocusChanged);
+        widget.focusNode.removeListener(_handleFocusChanged);
         WidgetsBinding.instance.removeObserver(this);
-        this._liveTextInputStatus?.removeListener(this._onChangedLiveTextInputStatus);
-        this._liveTextInputStatus?.dispose();
-        this.clipboardStatus.removeListener(this._onChangedClipboardStatus);
-        this.clipboardStatus.dispose();
-        this._cursorVisibilityNotifier.dispose();
-        this._appLifecycleListener.dispose();
-        FocusManager.instance.removeListener(this._unflagInternalFocus);
-        FocusManager.instance.removeListener(this._resetJustResumed);
+        _liveTextInputStatus?.removeListener(_onChangedLiveTextInputStatus);
+        _liveTextInputStatus?.dispose();
+        clipboardStatus.removeListener(_onChangedClipboardStatus);
+        clipboardStatus.dispose();
+        _cursorVisibilityNotifier.dispose();
+        _appLifecycleListener.dispose();
+        FocusManager.instance.removeListener(_unflagInternalFocus);
+        FocusManager.instance.removeListener(_resetJustResumed);
         _disposeScrollNotificationObserver();
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._tickers is not null))
+                if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
+                        if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
-        DartRuntimePrimitives.Assert(() => (this._batchEditDepth <= 0L), () => (object?)$"unfinished batch edits: {this._batchEditDepth}");
+        DartRuntimePrimitives.Assert(() => _batchEditDepth <= 0L, () => (object?)$"unfinished batch edits: {_batchEditDepth}");
     }
 
-    public virtual global::Doroti.Framework.Services.TextEditingValue currentTextEditingValue => this._value;
+    public virtual global::Doroti.Framework.Services.TextEditingValue currentTextEditingValue => _value;
     public virtual void updateEditingValue(global::Doroti.Framework.Services.TextEditingValue value)
     {
-        if (!this._shouldCreateInputConnection)
+        if (!_shouldCreateInputConnection)
         {
             return;
         }
         if (_checkNeedsAdjustAffinity(value))
         {
-            value = value.copyWith(selection: ((global::Doroti.Framework.Services.TextEditingValue)value).selection.copyWith(affinity: ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.affinity));
+            value = value.copyWith(selection: value.selection.copyWith(affinity: _value.selection.affinity));
         }
-        if (((EditableText)this.widget).readOnly)
+        if (widget.readOnly)
         {
-            value = this._value.copyWith(selection: ((global::Doroti.Framework.Services.TextEditingValue)value).selection);
+            value = _value.copyWith(selection: value.selection);
         }
         _lastKnownRemoteTextEditingValue = value;
-        if ((Equals(value, this._value)))
+        if (Equals(value, _value))
         {
             return;
         }
-        if (((((global::Doroti.Framework.Services.TextEditingValue)value).text == ((global::Doroti.Framework.Services.TextEditingValue)this._value).text) && (Equals(((global::Doroti.Framework.Services.TextEditingValue)value).composing, ((global::Doroti.Framework.Services.TextEditingValue)this._value).composing))))
+        if ((value.text == _value.text) && Equals(value.composing, _value.composing))
         {
             global::Doroti.Framework.Services.SelectionChangedCause cause = default!;
-            if ((this._textInputConnection?.scribbleInProgress ?? false))
+            if (_textInputConnection?.scribbleInProgress ?? false)
             {
                 cause = SelectionChangedCause.stylusHandwriting;
             }
             else
             {
-                if ((this._pointOffsetOrigin is not null))
+                if (_pointOffsetOrigin is not null)
                 {
                     cause = SelectionChangedCause.forcePress;
                 }
@@ -1778,21 +1778,21 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     cause = SelectionChangedCause.keyboard;
                 }
             }
-            _handleSelectionChanged(((global::Doroti.Framework.Services.TextEditingValue)value).selection, DartRuntimePrimitives.RequireValue(cause));
+            _handleSelectionChanged(value.selection, DartRuntimePrimitives.RequireValue(cause));
         }
         else
         {
-            if ((((global::Doroti.Framework.Services.TextEditingValue)value).text != ((global::Doroti.Framework.Services.TextEditingValue)this._value).text))
+            if (value.text != _value.text)
             {
                 hideToolbar(false);
             }
             _currentPromptRectRange = null;
-            bool revealObscuredInput = (((this._hasInputConnection && ((EditableText)this.widget).obscureText) && WidgetsBinding.instance.platformDispatcher.brieflyShowPassword) && (((global::Doroti.Framework.Services.TextEditingValue)value).text.Length == (((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length + 1L)));
-            _obscureShowCharTicksPending = (revealObscuredInput ? Editable_textLibrary._kObscureShowLatestCharCursorTicks : 0L);
-            _obscureLatestCharIndex = (revealObscuredInput ? ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.baseOffset : null);
+            bool revealObscuredInput = _hasInputConnection && widget.obscureText && WidgetsBinding.instance.platformDispatcher.brieflyShowPassword && (value.text.Length == (_value.text.Length + 1L));
+            _obscureShowCharTicksPending = revealObscuredInput ? Editable_textLibrary._kObscureShowLatestCharCursorTicks : 0L;
+            _obscureLatestCharIndex = revealObscuredInput ? _value.selection.baseOffset : null;
             _formatAndSetValue(value, SelectionChangedCause.keyboard);
         }
-        if ((this._showBlinkingCursor && (this._cursorTimer is not null)))
+        if (_showBlinkingCursor && (_cursorTimer is not null))
         {
             _stopCursorBlink(resetCharTicks: false);
             _startCursorBlink();
@@ -1802,7 +1802,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual bool _checkNeedsAdjustAffinity(global::Doroti.Framework.Services.TextEditingValue value)
     {
-        return ((((((global::Doroti.Framework.Services.TextEditingValue)value).text == ((global::Doroti.Framework.Services.TextEditingValue)this._value).text) && (((global::Doroti.Framework.Services.TextEditingValue)value).selection.isCollapsed == ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isCollapsed)) && (((global::Doroti.Framework.Services.TextEditingValue)value).selection.start == ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.start)) && (!Equals(((global::Doroti.Framework.Services.TextEditingValue)value).selection.affinity, ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.affinity)));
+        return (value.text == _value.text) && (value.selection.isCollapsed == _value.selection.isCollapsed) && (value.selection.start == _value.selection.start) && (!Equals(value.selection.affinity, _value.selection.affinity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1812,7 +1812,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             case TextInputAction.newline:
                 {
-                    if (!this._isMultiline)
+                    if (!_isMultiline)
                     {
                         _finalizeEditing(action, shouldUnfocus: true);
                     }
@@ -1843,75 +1843,75 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual void performPrivateCommand(string action, DartMap<string, object?> data)
     {
-        ((EditableText)this.widget).onAppPrivateCommand?.Invoke(action, data);
+        widget.onAppPrivateCommand?.Invoke(action, data);
     }
 
     public virtual void insertContent(global::Doroti.Framework.Services.KeyboardInsertedContent content)
     {
-        DartRuntimePrimitives.Assert(() => (((EditableText)this.widget).contentInsertionConfiguration?.allowedMimeTypes.Contains(((global::Doroti.Framework.Services.KeyboardInsertedContent)content).mimeType) ?? false));
-        ((EditableText)this.widget).contentInsertionConfiguration?.onContentInserted?.Invoke(content);
+        DartRuntimePrimitives.Assert(() => widget.contentInsertionConfiguration?.allowedMimeTypes.Contains(content.mimeType) ?? false);
+        widget.contentInsertionConfiguration?.onContentInserted?.Invoke(content);
     }
 
-    internal virtual global::Doroti.Ui.Offset _floatingCursorOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(new global::Doroti.Ui.Offset(0, (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight / 2L)));
+    internal virtual global::Doroti.Ui.Offset _floatingCursorOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(new global::Doroti.Ui.Offset(0, renderEditable.preferredLineHeight / 2L));
     public virtual void updateFloatingCursor(global::Doroti.Framework.Services.RawFloatingCursorPoint point)
     {
         _floatingCursorResetController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
-    __cascade.addListener(this._onFloatingCursorResetTick);
+    __cascade.addListener(_onFloatingCursorResetTick);
     return __cascade;
 }))();
-        switch (((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).state)
+        switch (point.state)
         {
             case FloatingCursorDragState.Start:
                 {
-                    if (this._floatingCursorResetController!.isAnimating)
+                    if (_floatingCursorResetController!.isAnimating)
                     {
-                        this._floatingCursorResetController!.stop();
+                        _floatingCursorResetController!.stop();
                         _onFloatingCursorResetTick();
                     }
                     _stopCursorBlink(resetCharTicks: false);
-                    this._cursorBlinkOpacityController.value = 1.0;
-                    _pointOffsetOrigin = ((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).offset;
+                    _cursorBlinkOpacityController.value = 1.0;
+                    _pointOffsetOrigin = point.offset;
                     global::Doroti.Ui.Offset startCaretCenter = default!;
                     global::Doroti.Ui.TextPosition currentTextPosition = default!;
                     bool shouldResetOriginLocal = default!;
-                    if ((((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).startLocation is not null))
+                    if (point.startLocation is not null)
                     {
                         shouldResetOriginLocal = false;
-                        DartRuntimePrimitives.Ignore((startCaretCenter, currentTextPosition) = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).startLocation));
+                        DartRuntimePrimitives.Ignore((startCaretCenter, currentTextPosition) = DartRuntimePrimitives.RequireValue(point.startLocation));
                     }
                     else
                     {
                         shouldResetOriginLocal = true;
-                        currentTextPosition = new global::Doroti.Ui.TextPosition(offset: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.baseOffset, affinity: ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.affinity);
-                        startCaretCenter = ((Offset)(this.renderEditable.getLocalRectForCaret(currentTextPosition)).center);
+                        currentTextPosition = new global::Doroti.Ui.TextPosition(offset: renderEditable.selection!.baseOffset, affinity: renderEditable.selection!.affinity);
+                        startCaretCenter = renderEditable.getLocalRectForCaret(currentTextPosition).center;
                     }
                     _startCaretCenter = startCaretCenter;
-                    _lastBoundedOffset = this.renderEditable.calculateBoundedFloatingCursorOffset((DartRuntimePrimitives.RequireValue(this._startCaretCenter) - this._floatingCursorOffset), shouldResetOrigin: shouldResetOriginLocal);
+                    _lastBoundedOffset = renderEditable.calculateBoundedFloatingCursorOffset(DartRuntimePrimitives.RequireValue(_startCaretCenter) - _floatingCursorOffset, shouldResetOrigin: shouldResetOriginLocal);
                     _lastTextPosition = currentTextPosition;
-                    this.renderEditable.setFloatingCursor(((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).state, DartRuntimePrimitives.RequireValue(this._lastBoundedOffset), this._lastTextPosition!);
+                    renderEditable.setFloatingCursor(point.state, DartRuntimePrimitives.RequireValue(_lastBoundedOffset), _lastTextPosition!);
                     break;
                 }
             case FloatingCursorDragState.Update:
                 {
-                    global::Doroti.Ui.Offset centeredPoint = ((global::Doroti.Ui.Offset)(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).offset) - DartRuntimePrimitives.RequireValue(this._pointOffsetOrigin)));
-                    global::Doroti.Ui.Offset rawCursorOffset = ((global::Doroti.Ui.Offset)((DartRuntimePrimitives.RequireValue(this._startCaretCenter) + centeredPoint) - this._floatingCursorOffset));
-                    _lastBoundedOffset = this.renderEditable.calculateBoundedFloatingCursorOffset(rawCursorOffset);
-                    _lastTextPosition = ((TextPosition)(this.renderEditable).getPositionForPoint(((Offset)(this.renderEditable).localToGlobal((DartRuntimePrimitives.RequireValue(this._lastBoundedOffset) + this._floatingCursorOffset)))));
-                    this.renderEditable.setFloatingCursor(((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).state, DartRuntimePrimitives.RequireValue(this._lastBoundedOffset), this._lastTextPosition!);
+                    global::Doroti.Ui.Offset centeredPoint = DartRuntimePrimitives.RequireValue(point.offset) - DartRuntimePrimitives.RequireValue(_pointOffsetOrigin);
+                    global::Doroti.Ui.Offset rawCursorOffset = DartRuntimePrimitives.RequireValue(_startCaretCenter) + centeredPoint - _floatingCursorOffset;
+                    _lastBoundedOffset = renderEditable.calculateBoundedFloatingCursorOffset(rawCursorOffset);
+                    _lastTextPosition = renderEditable.getPositionForPoint(renderEditable.localToGlobal(DartRuntimePrimitives.RequireValue(_lastBoundedOffset) + _floatingCursorOffset));
+                    renderEditable.setFloatingCursor(point.state, DartRuntimePrimitives.RequireValue(_lastBoundedOffset), _lastTextPosition!);
                     break;
                 }
             case FloatingCursorDragState.End:
                 {
-                    if (this._hasFocus)
+                    if (_hasFocus)
                     {
                         _startCursorBlink();
                     }
-                    if (((this._lastTextPosition is not null) && (this._lastBoundedOffset is not null)))
+                    if ((_lastTextPosition is not null) && (_lastBoundedOffset is not null))
                     {
-                        this._floatingCursorResetController!.value = 0.0;
-                        this._floatingCursorResetController!.animateTo(1.0, duration: _floatingCursorResetTime, curve: Curves.decelerate);
+                        _floatingCursorResetController!.value = 0.0;
+                        _floatingCursorResetController!.animateTo(1.0, duration: _floatingCursorResetTime, curve: Curves.decelerate);
                     }
                     break;
                 }
@@ -1920,13 +1920,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _onFloatingCursorResetTick()
     {
-        global::Doroti.Ui.Offset finalPosition = ((global::Doroti.Ui.Offset)(this.renderEditable.getLocalRectForCaret(this._lastTextPosition!).centerLeft - this._floatingCursorOffset));
-        if (this._floatingCursorResetController!.isCompleted)
+        global::Doroti.Ui.Offset finalPosition = renderEditable.getLocalRectForCaret(_lastTextPosition!).centerLeft - _floatingCursorOffset;
+        if (_floatingCursorResetController!.isCompleted)
         {
-            this.renderEditable.setFloatingCursor(FloatingCursorDragState.End, finalPosition, this._lastTextPosition!);
-            if (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.isCollapsed)
+            renderEditable.setFloatingCursor(FloatingCursorDragState.End, finalPosition, _lastTextPosition!);
+            if (renderEditable.selection!.isCollapsed)
             {
-                _handleSelectionChanged(TextSelection.CreateFromPosition(this._lastTextPosition!), SelectionChangedCause.forcePress);
+                _handleSelectionChanged(TextSelection.CreateFromPosition(_lastTextPosition!), SelectionChangedCause.forcePress);
             }
             _startCaretCenter = null;
             _lastTextPosition = null;
@@ -1935,20 +1935,20 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         }
         else
         {
-            double lerpValue = this._floatingCursorResetController!.value;
-            double lerpX = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this._lastBoundedOffset).dx, finalPosition.dx, lerpValue));
-            double lerpY = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this._lastBoundedOffset).dy, finalPosition.dy, lerpValue));
-            this.renderEditable.setFloatingCursor(FloatingCursorDragState.Update, new global::Doroti.Ui.Offset(lerpX, lerpY), this._lastTextPosition!, resetLerpValue: lerpValue);
+            double lerpValue = _floatingCursorResetController!.value;
+            double lerpX = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(_lastBoundedOffset).dx, finalPosition.dx, lerpValue));
+            double lerpY = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(_lastBoundedOffset).dy, finalPosition.dy, lerpValue));
+            renderEditable.setFloatingCursor(FloatingCursorDragState.Update, new global::Doroti.Ui.Offset(lerpX, lerpY), _lastTextPosition!, resetLerpValue: lerpValue);
         }
     }
 
     internal virtual void _finalizeEditing(global::Doroti.Framework.Services.TextInputAction action, bool shouldUnfocus)
     {
-        if ((((EditableText)this.widget).onEditingComplete is not null))
+        if (widget.onEditingComplete is not null)
         {
             try
             {
-                ((EditableText)this.widget).onEditingComplete!();
+                widget.onEditingComplete!();
             }
             catch (Exception exceptionLocal)
             {
@@ -1958,7 +1958,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         }
         else
         {
-            ((EditableText)this.widget).controller.clearComposing();
+            widget.controller.clearComposing();
             if (shouldUnfocus)
             {
                 switch (action)
@@ -1975,30 +1975,30 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     case TextInputAction.emergencyCall:
                     case TextInputAction.newline:
                         {
-                            ((EditableText)this.widget).focusNode.unfocus();
+                            widget.focusNode.unfocus();
                             break;
                         }
                     case TextInputAction.next:
                         {
-                            ((EditableText)this.widget).focusNode.nextFocus();
+                            widget.focusNode.nextFocus();
                             break;
                         }
                     case TextInputAction.previous:
                         {
-                            ((EditableText)this.widget).focusNode.previousFocus();
+                            widget.focusNode.previousFocus();
                             break;
                         }
                 }
             }
         }
-        global::System.Action<string>? onSubmittedLocal = ((EditableText)this.widget).onSubmitted;
-        if ((onSubmittedLocal is null))
+        global::System.Action<string>? onSubmittedLocal = widget.onSubmitted;
+        if (onSubmittedLocal is null)
         {
             return;
         }
         try
         {
-            onSubmittedLocal(((global::Doroti.Framework.Services.TextEditingValue)this._value).text);
+            onSubmittedLocal(_value.text);
         }
         catch (Exception exceptionAlternate)
         {
@@ -2019,100 +2019,100 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     public virtual void endBatchEdit()
     {
         _batchEditDepth -= 1L;
-        DartRuntimePrimitives.Assert(() => (this._batchEditDepth >= 0L), () => (object?)"Unbalanced call to endBatchEdit: beginBatchEdit must be called first.");
+        DartRuntimePrimitives.Assert(() => _batchEditDepth >= 0L, () => (object?)"Unbalanced call to endBatchEdit: beginBatchEdit must be called first.");
         _updateRemoteEditingValueIfNeeded();
     }
 
     internal virtual void _updateRemoteEditingValueIfNeeded()
     {
-        if (((this._batchEditDepth > 0L) || !this._hasInputConnection))
+        if ((_batchEditDepth > 0L) || !_hasInputConnection)
         {
             return;
         }
-        global::Doroti.Framework.Services.TextEditingValue localValue = this._value;
-        if ((Equals(localValue, this._lastKnownRemoteTextEditingValue)))
+        global::Doroti.Framework.Services.TextEditingValue localValue = _value;
+        if (Equals(localValue, _lastKnownRemoteTextEditingValue))
         {
             return;
         }
-        this._textInputConnection!.setEditingState(localValue);
+        _textInputConnection!.setEditingState(localValue);
         _lastKnownRemoteTextEditingValue = localValue;
     }
 
     internal virtual global::Doroti.Framework.Services.TextEditingValue _value
     {
-        get => ((EditableText)this.widget).controller.value;
+        get => widget.controller.value;
         set
         {
             var __value = value;
-            ((EditableText)this.widget).controller.value = __value;
+            widget.controller.value = __value;
         }
     }
-    internal virtual bool _hasFocus => ((EditableText)this.widget).focusNode.hasFocus;
-    internal virtual bool _isMultiline => DartRuntimePrimitives.ConvertValue<bool>((((EditableText)this.widget).maxLines != 1L));
+    internal virtual bool _hasFocus => widget.focusNode.hasFocus;
+    internal virtual bool _isMultiline => DartRuntimePrimitives.ConvertValue<bool>(widget.maxLines != 1L);
     internal virtual global::Doroti.Framework.Rendering.RevealedOffset _getOffsetToRevealCaret(Rect rect)
     {
-        if (!((ScrollController)this._scrollController).position.allowImplicitScrolling)
+        if (!_scrollController.position.allowImplicitScrolling)
         {
-            return new global::Doroti.Framework.Rendering.RevealedOffset(offset: ((ScrollController)this._scrollController).offset, rect: rect);
+            return new global::Doroti.Framework.Rendering.RevealedOffset(offset: _scrollController.offset, rect: rect);
         }
-        global::Doroti.Ui.Size editableSize = ((global::Doroti.Ui.Size)this.renderEditable.size);
+        global::Doroti.Ui.Size editableSize = renderEditable.size;
         double additionalOffset = default!;
         global::Doroti.Ui.Offset unitOffset = default!;
-        if (!this._isMultiline)
+        if (!_isMultiline)
         {
-            additionalOffset = ((rect.width >= editableSize.width) ? ((editableSize.width / 2L) - ((Offset)(rect).center).dx) : Dart_uiLibrary.clampDouble(0.0, (rect.right - editableSize.width), rect.left));
+            additionalOffset = (rect.width >= editableSize.width) ? ((editableSize.width / 2L) - rect.center.dx) : Dart_uiLibrary.clampDouble(0.0, rect.right - editableSize.width, rect.left);
             unitOffset = new global::Doroti.Ui.Offset(1, 0);
         }
         else
         {
-            var expandedRect = Rect.fromCenter(center: ((Offset)(rect).center), width: rect.width, height: Math.Max(rect.height, ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).preferredLineHeight));
-            additionalOffset = ((expandedRect.height >= editableSize.height) ? ((editableSize.height / 2L) - ((Offset)(expandedRect).center).dy) : Dart_uiLibrary.clampDouble(0.0, (expandedRect.bottom - editableSize.height), expandedRect.top));
+            var expandedRect = Rect.fromCenter(center: rect.center, width: rect.width, height: Math.Max(rect.height, renderEditable.preferredLineHeight));
+            additionalOffset = (expandedRect.height >= editableSize.height) ? ((editableSize.height / 2L) - expandedRect.center.dy) : Dart_uiLibrary.clampDouble(0.0, expandedRect.bottom - editableSize.height, expandedRect.top);
             unitOffset = new global::Doroti.Ui.Offset(0, 1);
         }
-        double targetOffset = Dart_uiLibrary.clampDouble((additionalOffset + ((ScrollController)this._scrollController).offset), ((ScrollController)this._scrollController).position.minScrollExtent, ((ScrollController)this._scrollController).position.maxScrollExtent);
-        double offsetDelta = (((ScrollController)this._scrollController).offset - targetOffset);
-        return new global::Doroti.Framework.Rendering.RevealedOffset(rect: rect.shift((unitOffset * offsetDelta)), offset: targetOffset);
+        double targetOffset = Dart_uiLibrary.clampDouble(additionalOffset + _scrollController.offset, _scrollController.position.minScrollExtent, _scrollController.position.maxScrollExtent);
+        double offsetDelta = _scrollController.offset - targetOffset;
+        return new global::Doroti.Framework.Rendering.RevealedOffset(rect: rect.shift(unitOffset * offsetDelta), offset: targetOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _needsAutofill => ((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration.autofillConfiguration.enabled;
+    internal virtual bool _needsAutofill => _effectiveAutofillClient.textInputConfiguration.autofillConfiguration.enabled;
     internal virtual void _openInputConnection()
     {
-        if (!this._shouldCreateInputConnection)
+        if (!_shouldCreateInputConnection)
         {
             return;
         }
-        if (!this._hasInputConnection)
+        if (!_hasInputConnection)
         {
-            global::Doroti.Framework.Services.TextEditingValue localValue = this._value;
-            _textInputConnection = ((this._needsAutofill && (this.currentAutofillScope is not null)) ? this.currentAutofillScope!.attach(this, ((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration) : TextInput.attach(this, ((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration));
+            global::Doroti.Framework.Services.TextEditingValue localValue = _value;
+            _textInputConnection = (_needsAutofill && (currentAutofillScope is not null)) ? currentAutofillScope!.attach(this, _effectiveAutofillClient.textInputConfiguration) : TextInput.attach(this, _effectiveAutofillClient.textInputConfiguration);
             _updateSizeAndTransform();
             _schedulePeriodicPostFrameCallbacks();
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Services.TextInputConnection>)(() =>
 {
-    var __cascade = this._textInputConnection!;
-    __cascade.updateStyle(_getTextInputStyle(this.context));
+    var __cascade = _textInputConnection!;
+    __cascade.updateStyle(_getTextInputStyle(context));
     __cascade.setEditingState(localValue);
     __cascade.show();
     return __cascade;
 }))());
-            if (this._needsAutofill)
+            if (_needsAutofill)
             {
-                this._textInputConnection!.requestAutofill();
+                _textInputConnection!.requestAutofill();
             }
             _lastKnownRemoteTextEditingValue = localValue;
         }
         else
         {
-            this._textInputConnection!.show();
+            _textInputConnection!.show();
         }
     }
 
     internal virtual void _closeInputConnectionIfNeeded()
     {
-        if (this._hasInputConnection)
+        if (_hasInputConnection)
         {
-            this._textInputConnection!.close();
+            _textInputConnection!.close();
             _textInputConnection = null;
             _lastKnownRemoteTextEditingValue = null;
             _scribbleCacheKey = null;
@@ -2122,57 +2122,57 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _openOrCloseInputConnectionIfNeeded()
     {
-        if ((this._hasFocus && ((EditableText)this.widget).focusNode.consumeKeyboardToken()))
+        if (_hasFocus && widget.focusNode.consumeKeyboardToken())
         {
             _openInputConnection();
         }
         else
         {
-            if (!this._hasFocus)
+            if (!_hasFocus)
             {
                 _closeInputConnectionIfNeeded();
-                ((EditableText)this.widget).controller.clearComposing();
+                widget.controller.clearComposing();
             }
         }
     }
 
     internal virtual void _scheduleRestartConnection()
     {
-        if (this._restartConnectionScheduled)
+        if (_restartConnectionScheduled)
         {
             return;
         }
         _restartConnectionScheduled = true;
-        DartAsyncRuntime.scheduleMicrotask(this._restartConnectionIfNeeded);
+        DartAsyncRuntime.scheduleMicrotask(_restartConnectionIfNeeded);
     }
 
     internal virtual void _restartConnectionIfNeeded()
     {
         _restartConnectionScheduled = false;
-        if ((!this._hasInputConnection || !this._shouldCreateInputConnection))
+        if (!_hasInputConnection || !_shouldCreateInputConnection)
         {
             return;
         }
-        this._textInputConnection!.close();
+        _textInputConnection!.close();
         _textInputConnection = null;
         _lastKnownRemoteTextEditingValue = null;
-        global::Doroti.Framework.Services.AutofillScope? currentAutofillScopeLocal = (this._needsAutofill ? this.currentAutofillScope : null);
-        global::Doroti.Framework.Services.TextInputConnection newConnection = ((currentAutofillScopeLocal?.attach(this, this.textInputConfiguration) ?? (global::Doroti.Framework.Services.TextInputConnection)TextInput.attach(this, ((global::Doroti.Framework.Services.AutofillClient)this._effectiveAutofillClient).textInputConfiguration)));
+        global::Doroti.Framework.Services.AutofillScope? currentAutofillScopeLocal = _needsAutofill ? currentAutofillScope : null;
+        global::Doroti.Framework.Services.TextInputConnection newConnection = currentAutofillScopeLocal?.attach(this, textInputConfiguration) ?? TextInput.attach(this, _effectiveAutofillClient.textInputConfiguration);
         _textInputConnection = newConnection;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Services.TextInputConnection>)(() =>
 {
     var __cascade = newConnection;
     __cascade.show();
-    __cascade.updateStyle(_getTextInputStyle(this.context));
-    __cascade.setEditingState(this._value);
+    __cascade.updateStyle(_getTextInputStyle(context));
+    __cascade.setEditingState(_value);
     return __cascade;
 }))());
-        _lastKnownRemoteTextEditingValue = this._value;
+        _lastKnownRemoteTextEditingValue = _value;
     }
 
     public virtual void didChangeInputControl(global::Doroti.Framework.Services.TextInputControl? oldControl, global::Doroti.Framework.Services.TextInputControl? newControl)
     {
-        if ((this._hasFocus && this._hasInputConnection))
+        if (_hasFocus && _hasInputConnection)
         {
             oldControl?.hide();
             newControl?.show();
@@ -2181,9 +2181,9 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual bool onFocusReceived()
     {
-        if (((this.mounted && !this._hasFocus) && ((EditableText)this.widget).focusNode.canRequestFocus))
+        if (mounted && !_hasFocus && widget.focusNode.canRequestFocus)
         {
-            ((EditableText)this.widget).focusNode.requestFocus();
+            widget.focusNode.requestFocus();
             return true;
         }
         return false;
@@ -2192,51 +2192,51 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual void connectionClosed()
     {
-        if (this._hasInputConnection)
+        if (_hasInputConnection)
         {
-            this._textInputConnection!.connectionClosedReceived();
+            _textInputConnection!.connectionClosedReceived();
             _textInputConnection = null;
             _lastKnownRemoteTextEditingValue = null;
-            ((EditableText)this.widget).focusNode.unfocus();
+            widget.focusNode.unfocus();
         }
     }
 
     internal virtual void _flagInternalFocus()
     {
         _nextFocusChangeIsInternal = true;
-        FocusManager.instance.addListener(this._unflagInternalFocus);
+        FocusManager.instance.addListener(_unflagInternalFocus);
     }
 
     internal virtual void _unflagInternalFocus()
     {
         _nextFocusChangeIsInternal = false;
-        FocusManager.instance.removeListener(this._unflagInternalFocus);
+        FocusManager.instance.removeListener(_unflagInternalFocus);
     }
 
     public virtual void requestKeyboard()
     {
-        if (this._hasFocus)
+        if (_hasFocus)
         {
             _openInputConnection();
         }
         else
         {
             _flagInternalFocus();
-            ((EditableText)this.widget).focusNode.requestFocus();
+            widget.focusNode.requestFocus();
         }
     }
 
     internal virtual void _updateOrDisposeSelectionOverlayIfNeeded()
     {
-        if ((this._selectionOverlay is not null))
+        if (_selectionOverlay is not null)
         {
-            if (this._hasFocus)
+            if (_hasFocus)
             {
-                this._selectionOverlay!.update(this._value);
+                _selectionOverlay!.update(_value);
             }
             else
             {
-                this._selectionOverlay!.dispose();
+                _selectionOverlay!.dispose();
                 _selectionOverlay = null;
             }
         }
@@ -2244,27 +2244,27 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual bool _isInternalScrollableNotification(BuildContext? notificationContext)
     {
-        ScrollableState? scrollableState = ((ScrollableState?)notificationContext?.findAncestorStateOfType<ScrollableState>());
-        return (Equals(((GlobalKey<IState>)this._scrollableKey).currentContext, scrollableState?.context));
+        ScrollableState? scrollableState = notificationContext?.findAncestorStateOfType<ScrollableState>();
+        return Equals(_scrollableKey.currentContext, scrollableState?.context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _scrollableNotificationIsFromSameSubtree(BuildContext? notificationContext)
     {
-        if ((notificationContext is null))
+        if (notificationContext is null)
         {
             return false;
         }
-        BuildContext? currentContext = this.context;
-        ScrollableState? notificationScrollableState = ((ScrollableState?)notificationContext.findAncestorStateOfType<ScrollableState>());
-        if ((notificationScrollableState is null))
+        BuildContext? currentContext = context;
+        ScrollableState? notificationScrollableState = notificationContext.findAncestorStateOfType<ScrollableState>();
+        if (notificationScrollableState is null)
         {
             return false;
         }
-        while ((currentContext is not null))
+        while (currentContext is not null)
         {
-            ScrollableState? scrollableState = ((ScrollableState?)currentContext.findAncestorStateOfType<ScrollableState>());
-            if ((Equals(scrollableState, notificationScrollableState)))
+            ScrollableState? scrollableState = currentContext.findAncestorStateOfType<ScrollableState>();
+            if (Equals(scrollableState, notificationScrollableState))
             {
                 return true;
             }
@@ -2276,24 +2276,24 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _handleContextMenuOnParentScroll(ScrollNotification notification)
     {
-        if (((notification is not ScrollStartNotification) && (notification is not ScrollEndNotification)))
+        if ((notification is not ScrollStartNotification) && (notification is not ScrollEndNotification))
         {
             return;
         }
         switch (notification)
         {
-            case ScrollStartNotification __object177981 when ((this._dataWhenToolbarShowScheduled is not null)):
-            case ScrollEndNotification __object178062 when ((this._dataWhenToolbarShowScheduled is null)):
+            case ScrollStartNotification __object177981 when _dataWhenToolbarShowScheduled is not null:
+            case ScrollEndNotification __object178062 when _dataWhenToolbarShowScheduled is null:
                 {
                     break;
                 }
-            case ScrollEndNotification __object178156 when ((!Equals(DartRuntimePrimitives.RequireValue(this._dataWhenToolbarShowScheduled).value, this._value))):
+            case ScrollEndNotification __object178156 when !Equals(DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).value, _value):
                 {
                     _dataWhenToolbarShowScheduled = null;
                     _disposeScrollNotificationObserver();
                     break;
                 }
-            case ScrollNotification { context: BuildContext contextLocal } __object178336 when ((!_isInternalScrollableNotification(contextLocal) && _scrollableNotificationIsFromSameSubtree(contextLocal))):
+            case ScrollNotification { context: BuildContext contextLocal } __object178336 when !_isInternalScrollableNotification(contextLocal) && _scrollableNotificationIsFromSameSubtree(contextLocal):
                 {
                     _handleContextMenuOnScroll(notification);
                     break;
@@ -2303,59 +2303,59 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual global::Doroti.Ui.Rect _calculateDeviceRect()
     {
-        global::Doroti.Ui.Size screenSize = ((global::Doroti.Ui.Size)MediaQuery.sizeOf(this.context));
-        global::Doroti.Ui.DorotiView view = ((global::Doroti.Ui.DorotiView)View.of(this.context));
-        double obscuredVertical = ((((view.padding.top + view.padding.bottom) + view.viewInsets.bottom)) / view.devicePixelRatio);
-        double obscuredHorizontal = (((view.padding.left + view.padding.right)) / view.devicePixelRatio);
-        var visibleScreenSize = new global::Doroti.Ui.Size((screenSize.width - obscuredHorizontal), (screenSize.height - obscuredVertical));
-        return Rect.fromLTWH((view.padding.left / view.devicePixelRatio), (view.padding.top / view.devicePixelRatio), visibleScreenSize.width, visibleScreenSize.height);
+        global::Doroti.Ui.Size screenSize = MediaQuery.sizeOf(context);
+        global::Doroti.Ui.DorotiView view = View.of(context);
+        double obscuredVertical = (view.padding.top + view.padding.bottom + view.viewInsets.bottom) / view.devicePixelRatio;
+        double obscuredHorizontal = (view.padding.left + view.padding.right) / view.devicePixelRatio;
+        var visibleScreenSize = new global::Doroti.Ui.Size(screenSize.width - obscuredHorizontal, screenSize.height - obscuredVertical);
+        return Rect.fromLTWH(view.padding.left / view.devicePixelRatio, view.padding.top / view.devicePixelRatio, visibleScreenSize.width, visibleScreenSize.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleContextMenuOnScroll(ScrollNotification notification)
     {
-        if (this._webContextMenuEnabled)
+        if (_webContextMenuEnabled)
         {
             return;
         }
-        if (!this._platformSupportsFadeOnScroll)
+        if (!_platformSupportsFadeOnScroll)
         {
-            this._selectionOverlay?.updateForScroll();
+            _selectionOverlay?.updateForScroll();
             return;
         }
-        if ((notification is ScrollStartNotification))
+        if (notification is ScrollStartNotification)
         {
             ScrollStartNotification notification__as179959 = (ScrollStartNotification)notification;
-            if ((this._dataWhenToolbarShowScheduled is not null))
+            if (_dataWhenToolbarShowScheduled is not null)
             {
                 return;
             }
-            bool toolbarIsVisibleLocal = (((this._selectionOverlay is not null) && this._selectionOverlay!.toolbarIsVisible) && !this._selectionOverlay!.spellCheckToolbarIsVisible);
+            bool toolbarIsVisibleLocal = (_selectionOverlay is not null) && _selectionOverlay!.toolbarIsVisible && !_selectionOverlay!.spellCheckToolbarIsVisible;
             if (!toolbarIsVisibleLocal)
             {
                 return;
             }
-            List<global::Doroti.Ui.TextBox> selectionBoxes = ((List<global::Doroti.Ui.TextBox>)this.renderEditable.getBoxesForSelection(((global::Doroti.Framework.Services.TextEditingValue)this._value).selection));
-            global::Doroti.Ui.Rect selectionBoundsLocal = ((global::Doroti.Ui.Rect)((((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isCollapsed || !Enumerable.Any(selectionBoxes)) ? this.renderEditable.getLocalRectForCaret(((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.extent) : selectionBoxes.map<TextBox, Rect>(((box) => box.toRect())).reduce(((result, rect) => result.expandToInclude(rect)))));
-            _dataWhenToolbarShowScheduled = (selectionBounds: selectionBoundsLocal, value: this._value);
-            this._selectionOverlay?.hideToolbar();
+            List<global::Doroti.Ui.TextBox> selectionBoxes = renderEditable.getBoxesForSelection(_value.selection);
+            global::Doroti.Ui.Rect selectionBoundsLocal = (_value.selection.isCollapsed || !Enumerable.Any(selectionBoxes)) ? renderEditable.getLocalRectForCaret(_value.selection.extent) : selectionBoxes.map<TextBox, Rect>((box) => box.toRect()).reduce((result, rect) => result.expandToInclude(rect));
+            _dataWhenToolbarShowScheduled = (selectionBounds: selectionBoundsLocal, value: _value);
+            _selectionOverlay?.hideToolbar();
         }
         else
         {
-            if ((notification is ScrollEndNotification))
+            if (notification is ScrollEndNotification)
             {
                 ScrollEndNotification notification__as180881 = (ScrollEndNotification)notification;
-                if ((this._dataWhenToolbarShowScheduled is null))
+                if (_dataWhenToolbarShowScheduled is null)
                 {
                     return;
                 }
-                if ((!Equals(DartRuntimePrimitives.RequireValue(this._dataWhenToolbarShowScheduled).value, this._value)))
+                if (!Equals(DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).value, _value))
                 {
                     _dataWhenToolbarShowScheduled = null;
                     _disposeScrollNotificationObserver();
                     return;
                 }
-                if (this._showToolbarOnScreenScheduled)
+                if (_showToolbarOnScreenScheduled)
                 {
                     return;
                 }
@@ -2363,21 +2363,21 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 void scheduleToolbar(Duration _)
                 {
                     _showToolbarOnScreenScheduled = false;
-                    if ((!this.mounted || (this._dataWhenToolbarShowScheduled is null)))
+                    if (!mounted || (_dataWhenToolbarShowScheduled is null))
                     {
                         return;
                     }
-                    if ((!Equals(DartRuntimePrimitives.RequireValue(this._dataWhenToolbarShowScheduled).value, this._value)))
+                    if (!Equals(DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).value, _value))
                     {
                         _dataWhenToolbarShowScheduled = null;
                         _disposeScrollNotificationObserver();
                         return;
                     }
-                    global::Doroti.Ui.Rect deviceRect = ((global::Doroti.Ui.Rect)_calculateDeviceRect());
-                    bool selectionVisibleInEditable = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selectionStartInViewport.value || ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selectionEndInViewport.value);
-                    global::Doroti.Ui.Rect selectionBoundsAlternate = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(this.renderEditable.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), DartRuntimePrimitives.RequireValue(this._dataWhenToolbarShowScheduled).selectionBounds));
-                    bool selectionOverlapsWithDeviceRect = (!selectionBoundsAlternate.hasNaN && deviceRect.overlaps(selectionBoundsAlternate));
-                    if (((selectionVisibleInEditable && selectionOverlapsWithDeviceRect) && _selectionInViewport(DartRuntimePrimitives.RequireValue(this._dataWhenToolbarShowScheduled).selectionBounds)))
+                    global::Doroti.Ui.Rect deviceRect = _calculateDeviceRect();
+                    bool selectionVisibleInEditable = renderEditable.selectionStartInViewport.value || renderEditable.selectionEndInViewport.value;
+                    global::Doroti.Ui.Rect selectionBoundsAlternate = MatrixUtils.transformRect(renderEditable.getTransformTo(null), DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).selectionBounds);
+                    bool selectionOverlapsWithDeviceRect = !selectionBoundsAlternate.hasNaN && deviceRect.overlaps(selectionBoundsAlternate);
+                    if (selectionVisibleInEditable && selectionOverlapsWithDeviceRect && _selectionInViewport(DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).selectionBounds))
                     {
                         showToolbar();
                         _dataWhenToolbarShowScheduled = null;
@@ -2388,7 +2388,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     case Scheduler.SchedulerPhase.idle:
                     case Scheduler.SchedulerPhase.postFrameCallbacks:
                         {
-                            Scheduler.SchedulerBinding.instance.scheduleFrameCallback((global::System.Action<Duration>)scheduleToolbar);
+                            Scheduler.SchedulerBinding.instance.scheduleFrameCallback(scheduleToolbar);
                             break;
                         }
                     case Scheduler.SchedulerPhase.transientCallbacks:
@@ -2405,11 +2405,11 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual bool _selectionInViewport(Rect selectionBounds)
     {
-        global::Doroti.Framework.Rendering.RenderAbstractViewport? closestViewport = ((global::Doroti.Framework.Rendering.RenderAbstractViewport?)RenderAbstractViewport.maybeOf(this.renderEditable));
-        while ((closestViewport is not null))
+        global::Doroti.Framework.Rendering.RenderAbstractViewport? closestViewport = RenderAbstractViewport.maybeOf(renderEditable);
+        while (closestViewport is not null)
         {
-            global::Doroti.Ui.Rect selectionBoundsLocalToViewport = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(this.renderEditable.getTransformTo(closestViewport), selectionBounds));
-            if (((selectionBoundsLocalToViewport.hasNaN || closestViewport.paintBounds.hasNaN) || !closestViewport.paintBounds.overlaps(selectionBoundsLocalToViewport)))
+            global::Doroti.Ui.Rect selectionBoundsLocalToViewport = MatrixUtils.transformRect(renderEditable.getTransformTo(closestViewport), selectionBounds);
+            if (selectionBoundsLocalToViewport.hasNaN || closestViewport.paintBounds.hasNaN || !closestViewport.paintBounds.overlaps(selectionBoundsLocalToViewport))
             {
                 return false;
             }
@@ -2421,25 +2421,25 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual Widget _contextMenuBuilder(BuildContext context)
     {
-        return ((EditableText)this.widget).contextMenuBuilder!(context, this);
+        return widget.contextMenuBuilder!(context, this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual TextSelectionOverlay _createSelectionOverlay()
     {
-        var selectionOverlay = new TextSelectionOverlay(clipboardStatus: this.clipboardStatus, context: this.context, value: this._value, debugRequiredFor: this.widget, toolbarLayerLink: this._toolbarLayerLink, startHandleLayerLink: this._startHandleLayerLink, endHandleLayerLink: this._endHandleLayerLink, renderObject: this.renderEditable, selectionControls: ((EditableText)this.widget).selectionControls, selectionDelegate: this, dragStartBehavior: ((EditableText)this.widget).dragStartBehavior, onSelectionHandleTapped: ((EditableText)this.widget).onSelectionHandleTapped, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>?)(((((EditableText)this.widget).contextMenuBuilder is null) || this._webContextMenuEnabled) ? null : this._contextMenuBuilder)), magnifierConfiguration: ((EditableText)this.widget).magnifierConfiguration);
+        var selectionOverlay = new TextSelectionOverlay(clipboardStatus: clipboardStatus, context: context, value: _value, debugRequiredFor: widget, toolbarLayerLink: _toolbarLayerLink, startHandleLayerLink: _startHandleLayerLink, endHandleLayerLink: _endHandleLayerLink, renderObject: renderEditable, selectionControls: widget.selectionControls, selectionDelegate: this, dragStartBehavior: widget.dragStartBehavior, onSelectionHandleTapped: widget.onSelectionHandleTapped, contextMenuBuilder: ((widget.contextMenuBuilder is null) || _webContextMenuEnabled) ? null : _contextMenuBuilder, magnifierConfiguration: widget.magnifierConfiguration);
         return selectionOverlay;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleSelectionChanged(global::Doroti.Framework.Services.TextSelection selection, global::Doroti.Framework.Services.SelectionChangedCause? cause)
     {
-        string textLocal = ((EditableText)this.widget).controller.value.text;
-        if (((textLocal.Length < selection.end) || (textLocal.Length < selection.start)))
+        string textLocal = widget.controller.value.text;
+        if ((textLocal.Length < selection.end) || (textLocal.Length < selection.start))
         {
             return;
         }
-        ((EditableText)this.widget).controller.selection = selection;
+        widget.controller.selection = selection;
         switch (cause)
         {
             case null:
@@ -2457,34 +2457,34 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             case SelectionChangedCause.keyboard:
                 break;
         }
-        if (((((EditableText)this.widget).selectionControls is null) && (((EditableText)this.widget).contextMenuBuilder is null)))
+        if ((widget.selectionControls is null) && (widget.contextMenuBuilder is null))
         {
-            this._selectionOverlay?.dispose();
+            _selectionOverlay?.dispose();
             _selectionOverlay = null;
         }
         else
         {
-            if ((this._selectionOverlay is null))
+            if (_selectionOverlay is null)
             {
                 _selectionOverlay = _createSelectionOverlay();
             }
             else
             {
-                this._selectionOverlay!.update(this._value);
+                _selectionOverlay!.update(_value);
             }
-            this._selectionOverlay!.handlesVisible = ((EditableText)this.widget).showSelectionHandles;
-            this._selectionOverlay!.showHandles();
+            _selectionOverlay!.handlesVisible = widget.showSelectionHandles;
+            _selectionOverlay!.showHandles();
         }
         try
         {
-            ((EditableText)this.widget).onSelectionChanged?.Invoke(selection, cause);
+            widget.onSelectionChanged?.Invoke(selection, cause);
         }
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while calling onSelectionChanged for {cause}")));
         }
-        if ((this._showBlinkingCursor && (this._cursorTimer is not null)))
+        if (_showBlinkingCursor && (_cursorTimer is not null))
         {
             _stopCursorBlink(resetCharTicks: false);
             _startCursorBlink();
@@ -2493,77 +2493,77 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _scheduleShowCaretOnScreen(bool withAnimation)
     {
-        if (this._showCaretOnScreenScheduled)
+        if (_showCaretOnScreenScheduled)
         {
             return;
         }
         _showCaretOnScreenScheduled = true;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
         {
             _showCaretOnScreenScheduled = false;
-            var renderEditable = ((global::Doroti.Framework.Rendering.RenderEditable?)((GlobalKey<IState>)this._editableKey).currentContext?.findRenderObject())!;
-            if ((((renderEditable is null) || !((((global::Doroti.Framework.Rendering.RenderEditable)renderEditable).selection?.isValid ?? false))) || !((ScrollController)this._scrollController).hasClients))
+            var renderEditable = ((global::Doroti.Framework.Rendering.RenderEditable?)_editableKey.currentContext?.findRenderObject())!;
+            if ((renderEditable is null) || !(renderEditable.selection?.isValid ?? false) || !_scrollController.hasClients)
             {
                 return;
             }
-            double lineHeight = ((global::Doroti.Framework.Rendering.RenderEditable)renderEditable).preferredLineHeight;
-            double bottomSpacing = ((EditableText)this.widget).scrollPadding.bottom;
-            if ((this._selectionOverlay?.selectionControls is not null))
+            double lineHeight = renderEditable.preferredLineHeight;
+            double bottomSpacing = widget.scrollPadding.bottom;
+            if (_selectionOverlay?.selectionControls is not null)
             {
-                double handleHeight = this._selectionOverlay!.selectionControls!.getHandleSize(lineHeight).height;
+                double handleHeight = _selectionOverlay!.selectionControls!.getHandleSize(lineHeight).height;
                 double interactiveHandleHeight = Math.Max(handleHeight, ConstantsLibrary.kMinInteractiveDimension);
-                global::Doroti.Ui.Offset anchor = ((global::Doroti.Ui.Offset)this._selectionOverlay!.selectionControls!.getHandleAnchor(TextSelectionHandleType.collapsed, lineHeight));
-                double handleCenter = ((handleHeight / 2L) - anchor.dy);
-                bottomSpacing = Math.Max((handleCenter + (interactiveHandleHeight / 2L)), bottomSpacing);
+                global::Doroti.Ui.Offset anchor = _selectionOverlay!.selectionControls!.getHandleAnchor(TextSelectionHandleType.collapsed, lineHeight);
+                double handleCenter = (handleHeight / 2L) - anchor.dy;
+                bottomSpacing = Math.Max(handleCenter + (interactiveHandleHeight / 2L), bottomSpacing);
             }
-            global::Doroti.Framework.Painting.EdgeInsets caretPadding = ((global::Doroti.Framework.Painting.EdgeInsets)((EditableText)this.widget).scrollPadding.copyWith(bottom: bottomSpacing));
-            global::Doroti.Ui.Rect caretRect = ((global::Doroti.Ui.Rect)renderEditable.getLocalRectForCaret(((global::Doroti.Framework.Rendering.RenderEditable)renderEditable).selection!.extent));
-            global::Doroti.Framework.Rendering.RevealedOffset targetOffset = ((global::Doroti.Framework.Rendering.RevealedOffset)_getOffsetToRevealCaret(caretRect));
+            global::Doroti.Framework.Painting.EdgeInsets caretPadding = widget.scrollPadding.copyWith(bottom: bottomSpacing);
+            global::Doroti.Ui.Rect caretRect = renderEditable.getLocalRectForCaret(renderEditable.selection!.extent);
+            global::Doroti.Framework.Rendering.RevealedOffset targetOffset = _getOffsetToRevealCaret(caretRect);
             global::Doroti.Ui.Rect rectToReveal = default!;
-            global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
+            global::Doroti.Framework.Services.TextSelection selectionLocal = textEditingValue.selection;
             if (selectionLocal.isCollapsed)
             {
-                rectToReveal = ((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).rect;
+                rectToReveal = targetOffset.rect;
             }
             else
             {
-                List<global::Doroti.Ui.TextBox> selectionBoxes = ((List<global::Doroti.Ui.TextBox>)renderEditable.getBoxesForSelection(selectionLocal));
+                List<global::Doroti.Ui.TextBox> selectionBoxes = renderEditable.getBoxesForSelection(selectionLocal);
                 if (!Enumerable.Any(selectionBoxes))
                 {
-                    rectToReveal = ((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).rect;
+                    rectToReveal = targetOffset.rect;
                 }
                 else
                 {
-                    rectToReveal = ((((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset < ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset) ? selectionBoxes.Last().toRect() : selectionBoxes.First().toRect());
+                    rectToReveal = (selectionLocal.baseOffset < selectionLocal.extentOffset) ? selectionBoxes.Last().toRect() : selectionBoxes.First().toRect();
                 }
             }
             if (withAnimation)
             {
-                DartRuntimePrimitives.Ignore(this._scrollController.animateTo(((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).offset, duration: _caretAnimationDuration, curve: _caretAnimationCurve));
+                DartRuntimePrimitives.Ignore(_scrollController.animateTo(targetOffset.offset, duration: _caretAnimationDuration, curve: _caretAnimationCurve));
                 renderEditable.showOnScreen(rect: caretPadding.inflateRect(rectToReveal), duration: _caretAnimationDuration, curve: _caretAnimationCurve);
             }
             else
             {
-                this._scrollController.jumpTo(((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).offset);
+                _scrollController.jumpTo(targetOffset.offset);
                 renderEditable.showOnScreen(rect: caretPadding.inflateRect(rectToReveal));
             }
-        })), debugLabel: "EditableText.showCaret");
+        }, debugLabel: "EditableText.showCaret");
     }
 
     public virtual void didChangeMetrics()
     {
-        if (!this.mounted)
+        if (!mounted)
         {
             return;
         }
-        global::Doroti.Ui.DorotiView view = ((global::Doroti.Ui.DorotiView)View.of(this.context));
-        if ((this._lastBottomViewInset != view.viewInsets.bottom))
+        global::Doroti.Ui.DorotiView view = View.of(context);
+        if (_lastBottomViewInset != view.viewInsets.bottom)
         {
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
             {
-                this._selectionOverlay?.updateForScroll();
-            })), debugLabel: "EditableText.updateForScroll");
-            if ((this._lastBottomViewInset < view.viewInsets.bottom))
+                _selectionOverlay?.updateForScroll();
+            }, debugLabel: "EditableText.updateForScroll");
+            if (_lastBottomViewInset < view.viewInsets.bottom)
             {
                 _scheduleShowCaretOnScreen(withAnimation: false);
             }
@@ -2575,18 +2575,18 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         try
         {
-            global::Doroti.Ui.Locale? localeForSpellChecking = ((((EditableText)this.widget).locale ?? Localizations.maybeLocaleOf(this.context)));
-            DartRuntimePrimitives.Assert(() => (localeForSpellChecking is not null), () => (object?)"Locale must be specified in widget or Localization widget must be in scope");
-            List<global::Doroti.Framework.Services.SuggestionSpan>? suggestions = (await ((SpellCheckConfiguration)this._spellCheckConfiguration).spellCheckService!.fetchSpellCheckSuggestions(DartRuntimePrimitives.RequireValue(localeForSpellChecking), text))?.ToList();
-            if ((((suggestions is null) || !this.mounted) || !this.spellCheckEnabled))
+            global::Doroti.Ui.Locale? localeForSpellChecking = widget.locale ?? Localizations.maybeLocaleOf(context);
+            DartRuntimePrimitives.Assert(() => localeForSpellChecking is not null, () => (object?)"Locale must be specified in widget or Localization widget must be in scope");
+            List<global::Doroti.Framework.Services.SuggestionSpan>? suggestions = (await _spellCheckConfiguration.spellCheckService!.fetchSpellCheckSuggestions(DartRuntimePrimitives.RequireValue(localeForSpellChecking), text))?.ToList();
+            if ((suggestions is null) || !mounted || !spellCheckEnabled)
             {
                 return;
             }
             spellCheckResults = new global::Doroti.Framework.Services.SpellCheckResults(text, suggestions);
-            double? lineHeightScaleFactorLocal = MediaQuery.maybeLineHeightScaleFactorOverrideOf(this.context);
-            double? letterSpacingLocal = MediaQuery.maybeLetterSpacingOverrideOf(this.context);
-            double? wordSpacingLocal = MediaQuery.maybeWordSpacingOverrideOf(this.context);
-            this.renderEditable.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.InlineSpan>(_OverridingTextStyleTextSpanUtils__editable_text.applyTextSpacingOverrides(lineHeightScaleFactor: lineHeightScaleFactorLocal, letterSpacing: letterSpacingLocal, wordSpacing: wordSpacingLocal, textSpan: buildTextSpan()));
+            double? lineHeightScaleFactorLocal = MediaQuery.maybeLineHeightScaleFactorOverrideOf(context);
+            double? letterSpacingLocal = MediaQuery.maybeLetterSpacingOverrideOf(context);
+            double? wordSpacingLocal = MediaQuery.maybeWordSpacingOverrideOf(context);
+            renderEditable.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.InlineSpan>(_OverridingTextStyleTextSpanUtils__editable_text.applyTextSpacingOverrides(lineHeightScaleFactor: lineHeightScaleFactorLocal, letterSpacing: letterSpacingLocal, wordSpacing: wordSpacingLocal, textSpan: buildTextSpan()));
         }
         catch (Exception exceptionLocal)
         {
@@ -2597,19 +2597,19 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _formatAndSetValue(global::Doroti.Framework.Services.TextEditingValue value, global::Doroti.Framework.Services.SelectionChangedCause? cause, bool userInteraction = false)
     {
-        global::Doroti.Framework.Services.TextEditingValue oldValue = this._value;
-        var textChanged = (((global::Doroti.Framework.Services.TextEditingValue)oldValue).text != ((global::Doroti.Framework.Services.TextEditingValue)value).text);
-        bool textCommitted = (!((global::Doroti.Framework.Services.TextEditingValue)oldValue).composing.isCollapsed && ((global::Doroti.Framework.Services.TextEditingValue)value).composing.isCollapsed);
-        var selectionChanged = (!Equals(((global::Doroti.Framework.Services.TextEditingValue)oldValue).selection, ((global::Doroti.Framework.Services.TextEditingValue)value).selection));
-        if ((textChanged || textCommitted))
+        global::Doroti.Framework.Services.TextEditingValue oldValue = _value;
+        var textChanged = oldValue.text != value.text;
+        bool textCommitted = !oldValue.composing.isCollapsed && value.composing.isCollapsed;
+        var selectionChanged = !Equals(oldValue.selection, value.selection);
+        if (textChanged || textCommitted)
         {
             try
             {
-                foreach (var formatter in ((EditableText)this.widget).inputFormatters ?? Enumerable.Empty<global::Doroti.Framework.Services.TextInputFormatter>())
-                    value = formatter.formatEditUpdate(this._value, value);
-                if (((this.spellCheckEnabled && (((global::Doroti.Framework.Services.TextEditingValue)value).text.Length != 0)) && (((global::Doroti.Framework.Services.TextEditingValue)this._value).text != ((global::Doroti.Framework.Services.TextEditingValue)value).text)))
+                foreach (var formatter in widget.inputFormatters ?? Enumerable.Empty<global::Doroti.Framework.Services.TextInputFormatter>())
+                    value = formatter.formatEditUpdate(_value, value);
+                if (spellCheckEnabled && (value.text.Length != 0) && (_value.text != value.text))
                 {
-                    DartRuntimePrimitives.Ignore(_performSpellCheck(((global::Doroti.Framework.Services.TextEditingValue)value).text));
+                    DartRuntimePrimitives.Ignore(_performSpellCheck(value.text));
                 }
             }
             catch (Exception exceptionLocal)
@@ -2618,20 +2618,20 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets", context: new global::Doroti.Framework.Foundation.ErrorDescription("while applying input formatters")));
             }
         }
-        global::Doroti.Framework.Services.TextSelection oldTextSelection = ((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection;
+        global::Doroti.Framework.Services.TextSelection oldTextSelection = textEditingValue.selection;
         beginBatchEdit();
         _value = value;
-        if ((selectionChanged || ((userInteraction && (((Equals(cause, SelectionChangedCause.longPress)) || (Equals(cause, SelectionChangedCause.keyboard))))))))
+        if (selectionChanged || userInteraction && (Equals(cause, SelectionChangedCause.longPress) || Equals(cause, SelectionChangedCause.keyboard)))
         {
-            _handleSelectionChanged(((global::Doroti.Framework.Services.TextEditingValue)this._value).selection, cause);
-            _bringIntoViewBySelectionState(oldTextSelection, ((global::Doroti.Framework.Services.TextEditingValue)value).selection, cause);
+            _handleSelectionChanged(_value.selection, cause);
+            _bringIntoViewBySelectionState(oldTextSelection, value.selection, cause);
         }
-        string currentText = ((global::Doroti.Framework.Services.TextEditingValue)this._value).text;
-        if ((((global::Doroti.Framework.Services.TextEditingValue)oldValue).text != currentText))
+        string currentText = _value.text;
+        if (oldValue.text != currentText)
         {
             try
             {
-                ((EditableText)this.widget).onChanged?.Invoke(currentText);
+                widget.onChanged?.Invoke(currentText);
             }
             catch (Exception exceptionAlternate)
             {
@@ -2649,9 +2649,9 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
                 {
-                    if (((Equals(cause, SelectionChangedCause.longPress)) || (Equals(cause, SelectionChangedCause.drag))))
+                    if (Equals(cause, SelectionChangedCause.longPress) || Equals(cause, SelectionChangedCause.drag))
                     {
-                        bringIntoView(((global::Doroti.Framework.Services.TextSelection)newSelection).extent);
+                        bringIntoView(newSelection.extent);
                     }
                     break;
                 }
@@ -2660,17 +2660,17 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             case TargetPlatform.fuchsia:
             case TargetPlatform.android:
                 {
-                    if ((Equals(cause, SelectionChangedCause.drag)))
+                    if (Equals(cause, SelectionChangedCause.drag))
                     {
-                        if ((((global::Doroti.Framework.Services.TextSelection)oldSelection).baseOffset != ((global::Doroti.Framework.Services.TextSelection)newSelection).baseOffset))
+                        if (oldSelection.baseOffset != newSelection.baseOffset)
                         {
-                            bringIntoView(((global::Doroti.Framework.Services.TextSelection)newSelection).@base);
+                            bringIntoView(newSelection.@base);
                         }
                         else
                         {
-                            if ((((global::Doroti.Framework.Services.TextSelection)oldSelection).extentOffset != ((global::Doroti.Framework.Services.TextSelection)newSelection).extentOffset))
+                            if (oldSelection.extentOffset != newSelection.extentOffset)
                             {
-                                bringIntoView(((global::Doroti.Framework.Services.TextSelection)newSelection).extent);
+                                bringIntoView(newSelection.extent);
                             }
                         }
                     }
@@ -2681,79 +2681,79 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _onCursorColorTick()
     {
-        double effectiveOpacity = Math.Min((((EditableText)this.widget).cursorColor.alpha / 255.0), ((global::Doroti.Framework.Animation.AnimationController)this._cursorBlinkOpacityController).value);
-        this.renderEditable.cursorColor = ((EditableText)this.widget).cursorColor.withOpacity(effectiveOpacity);
-        this._cursorVisibilityNotifier.value = (((EditableText)this.widget).showCursor && ((EditableText.debugDeterministicCursor || (((global::Doroti.Framework.Animation.AnimationController)this._cursorBlinkOpacityController).value > 0L))));
+        double effectiveOpacity = Math.Min(widget.cursorColor.alpha / 255.0, _cursorBlinkOpacityController.value);
+        renderEditable.cursorColor = widget.cursorColor.withOpacity(effectiveOpacity);
+        _cursorVisibilityNotifier.value = widget.showCursor && (EditableText.debugDeterministicCursor || (_cursorBlinkOpacityController.value > 0L));
     }
 
-    internal virtual bool _showBlinkingCursor => DartRuntimePrimitives.ConvertValue<bool>(((((this._hasFocus && ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isCollapsed) && ((EditableText)this.widget).showCursor) && this._tickersEnabled) && !((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).floatingCursorOn));
-    public virtual bool cursorCurrentlyVisible => DartRuntimePrimitives.ConvertValue<bool>((((global::Doroti.Framework.Animation.AnimationController)this._cursorBlinkOpacityController).value > 0L));
+    internal virtual bool _showBlinkingCursor => DartRuntimePrimitives.ConvertValue<bool>(_hasFocus && _value.selection.isCollapsed && widget.showCursor && _tickersEnabled && !renderEditable.floatingCursorOn);
+    public virtual bool cursorCurrentlyVisible => DartRuntimePrimitives.ConvertValue<bool>(_cursorBlinkOpacityController.value > 0L);
     public virtual Duration cursorBlinkInterval => Editable_textLibrary._kCursorBlinkHalfPeriod;
-    public virtual TextSelectionOverlay? selectionOverlay => this._selectionOverlay;
+    public virtual TextSelectionOverlay? selectionOverlay => _selectionOverlay;
     internal virtual void _startCursorBlink()
     {
-        DartRuntimePrimitives.Assert(() => (!((this._cursorTimer?.isActive ?? false)) || !((this._backingCursorBlinkOpacityController?.isAnimating ?? false))));
-        if (!((EditableText)this.widget).showCursor)
+        DartRuntimePrimitives.Assert(() => !(_cursorTimer?.isActive ?? false) || !(_backingCursorBlinkOpacityController?.isAnimating ?? false));
+        if (!widget.showCursor)
         {
             return;
         }
-        if (!this._tickersEnabled)
+        if (!_tickersEnabled)
         {
             return;
         }
-        this._cursorTimer?.cancel();
-        this._cursorBlinkOpacityController.value = 1.0;
+        _cursorTimer?.cancel();
+        _cursorBlinkOpacityController.value = 1.0;
         if (EditableText.debugDeterministicCursor)
         {
             return;
         }
-        if (((EditableText)this.widget).cursorOpacityAnimates)
+        if (widget.cursorOpacityAnimates)
         {
-            DartRuntimePrimitives.Ignore(this._cursorBlinkOpacityController.animateWith(this._iosBlinkCursorSimulation).whenComplete(() => { ((Action)this._onCursorTick)(); return default!; }));
+            DartRuntimePrimitives.Ignore(_cursorBlinkOpacityController.animateWith(_iosBlinkCursorSimulation).whenComplete(() => { ((Action)_onCursorTick)(); return default!; }));
         }
         else
         {
-            _cursorTimer = new Timer(Editable_textLibrary._kCursorBlinkHalfPeriod, ((timer) =>
+            _cursorTimer = new Timer(Editable_textLibrary._kCursorBlinkHalfPeriod, (timer) =>
             {
                 _onCursorTick();
-            }));
+            });
         }
     }
 
     internal virtual void _onCursorTick()
     {
-        if ((this._obscureShowCharTicksPending > 0L))
+        if (_obscureShowCharTicksPending > 0L)
         {
-            _obscureShowCharTicksPending = (WidgetsBinding.instance.platformDispatcher.brieflyShowPassword ? (this._obscureShowCharTicksPending - 1L) : 0L);
-            if ((this._obscureShowCharTicksPending == 0L))
+            _obscureShowCharTicksPending = WidgetsBinding.instance.platformDispatcher.brieflyShowPassword ? (_obscureShowCharTicksPending - 1L) : 0L;
+            if (_obscureShowCharTicksPending == 0L)
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
-                })));
+                });
             }
         }
-        if (((EditableText)this.widget).cursorOpacityAnimates)
+        if (widget.cursorOpacityAnimates)
         {
-            this._cursorTimer?.cancel();
-            _cursorTimer = new Timer(Duration.zero, (() => { _ = this._cursorBlinkOpacityController.animateWith(this._iosBlinkCursorSimulation).whenComplete(() => { ((Action)this._onCursorTick)(); return default!; }); }));
+            _cursorTimer?.cancel();
+            _cursorTimer = new Timer(Duration.zero, () => { _ = _cursorBlinkOpacityController.animateWith(_iosBlinkCursorSimulation).whenComplete(() => { ((Action)_onCursorTick)(); return default!; }); });
         }
         else
         {
-            if ((!((this._cursorTimer?.isActive ?? false)) && this._tickersEnabled))
+            if (!(_cursorTimer?.isActive ?? false) && _tickersEnabled)
             {
-                _cursorTimer = new Timer(Editable_textLibrary._kCursorBlinkHalfPeriod, ((timer) =>
+                _cursorTimer = new Timer(Editable_textLibrary._kCursorBlinkHalfPeriod, (timer) =>
                 {
                     _onCursorTick();
-                }));
+                });
             }
-            this._cursorBlinkOpacityController.value = ((((global::Doroti.Framework.Animation.AnimationController)this._cursorBlinkOpacityController).value == 0L) ? 1 : 0);
+            _cursorBlinkOpacityController.value = (_cursorBlinkOpacityController.value == 0L) ? 1 : 0;
         }
     }
 
     internal virtual void _stopCursorBlink(bool resetCharTicks = true)
     {
-        this._cursorBlinkOpacityController.value = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).floatingCursorOn ? 1.0 : 0.0);
-        this._cursorTimer?.cancel();
+        _cursorBlinkOpacityController.value = renderEditable.floatingCursorOn ? 1.0 : 0.0;
+        _cursorTimer?.cancel();
         _cursorTimer = null;
         if (resetCharTicks)
         {
@@ -2763,13 +2763,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _startOrStopCursorTimerIfNeeded()
     {
-        if (!this._showBlinkingCursor)
+        if (!_showBlinkingCursor)
         {
             _stopCursorBlink();
         }
         else
         {
-            if ((this._cursorTimer is null))
+            if (_cursorTimer is null)
             {
                 _startCursorBlink();
             }
@@ -2778,19 +2778,19 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _didChangeTextEditingValue()
     {
-        if ((this._hasFocus && !((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isValid))
+        if (_hasFocus && !_value.selection.isValid)
         {
-            ((EditableText)this.widget).controller.removeListener(this._didChangeTextEditingValue);
-            ((EditableText)this.widget).controller.selection = _adjustedSelectionWhenFocused()!;
-            ((EditableText)this.widget).controller.addListener(this._didChangeTextEditingValue);
+            widget.controller.removeListener(_didChangeTextEditingValue);
+            widget.controller.selection = _adjustedSelectionWhenFocused()!;
+            widget.controller.addListener(_didChangeTextEditingValue);
         }
         _updateRemoteEditingValueIfNeeded();
         _startOrStopCursorTimerIfNeeded();
         _updateOrDisposeSelectionOverlayIfNeeded();
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
-        this._verticalSelectionUpdateAction.stopCurrentVerticalRunIfSelectionChanges();
+        });
+        _verticalSelectionUpdateAction.stopCurrentVerticalRunIfSelectionChanges();
     }
 
     internal virtual void _handleFocusChanged()
@@ -2798,16 +2798,16 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         _openOrCloseInputConnectionIfNeeded();
         _startOrStopCursorTimerIfNeeded();
         _updateOrDisposeSelectionOverlayIfNeeded();
-        if (this._hasFocus)
+        if (_hasFocus)
         {
             WidgetsBinding.instance.addObserver(this);
-            _lastBottomViewInset = View.of(this.context).viewInsets.bottom;
-            if (!((EditableText)this.widget).readOnly)
+            _lastBottomViewInset = View.of(context).viewInsets.bottom;
+            if (!widget.readOnly)
             {
                 _scheduleShowCaretOnScreen(withAnimation: true);
             }
-            global::Doroti.Framework.Services.TextSelection? updatedSelection = ((global::Doroti.Framework.Services.TextSelection?)_adjustedSelectionWhenFocused());
-            if ((updatedSelection is not null))
+            global::Doroti.Framework.Services.TextSelection? updatedSelection = _adjustedSelectionWhenFocused();
+            if (updatedSelection is not null)
             {
                 _handleSelectionChanged(updatedSelection, null);
             }
@@ -2815,10 +2815,10 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         else
         {
             WidgetsBinding.instance.removeObserver(this);
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
                 _currentPromptRectRange = null;
-            })));
+            });
         }
         updateKeepAlive();
     }
@@ -2826,17 +2826,17 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual global::Doroti.Framework.Services.TextSelection? _adjustedSelectionWhenFocused()
     {
         global::Doroti.Framework.Services.TextSelection? selectionLocal = default!;
-        bool shouldSelectAll = ((((((EditableText)this.widget).selectAllOnFocus && ((EditableText)this.widget).selectionEnabled) && !this._isMultiline) && !this._nextFocusChangeIsInternal) && !this._justResumed);
+        bool shouldSelectAll = widget.selectAllOnFocus && widget.selectionEnabled && !_isMultiline && !_nextFocusChangeIsInternal && !_justResumed;
         _justResumed = false;
         if (shouldSelectAll)
         {
-            selectionLocal = new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length);
+            selectionLocal = new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: _value.text.Length);
         }
         else
         {
-            if (!((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isValid)
+            if (!_value.selection.isValid)
             {
-                selectionLocal = TextSelection.CreateCollapsed(offset: ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length);
+                selectionLocal = TextSelection.CreateCollapsed(offset: _value.text.Length);
             }
         }
         return selectionLocal;
@@ -2845,122 +2845,122 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _compositeCallback(global::Doroti.Framework.Rendering.Layer layer)
     {
-        if ((!this.renderEditable.attached || !this._hasInputConnection))
+        if (!renderEditable.attached || !_hasInputConnection)
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => this.mounted);
-        DartRuntimePrimitives.Assert(() => (((Element?)this.context)!).debugIsActive);
+        DartRuntimePrimitives.Assert(() => mounted);
+        DartRuntimePrimitives.Assert(() => ((Element?)context)!.debugIsActive);
         _updateSizeAndTransform();
     }
 
     internal virtual void _updateSizeAndTransform()
     {
-        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)this.renderEditable.size);
-        Matrix4 transform = ((Matrix4)this.renderEditable.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
-        this._textInputConnection!.setEditableSizeAndTransform(sizeLocal, transform);
+        global::Doroti.Ui.Size sizeLocal = renderEditable.size;
+        Matrix4 transform = renderEditable.getTransformTo(null);
+        _textInputConnection!.setEditableSizeAndTransform(sizeLocal, transform);
     }
 
     internal virtual void _schedulePeriodicPostFrameCallbacks(Duration? duration = null)
     {
-        if (!this._hasInputConnection)
+        if (!_hasInputConnection)
         {
             return;
         }
         _updateSelectionRects();
         _updateComposingRectIfNeeded();
         _updateCaretRectIfNeeded();
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((global::System.Action<Duration?>)this._schedulePeriodicPostFrameCallbacks)(DartRuntimePrimitives.ConvertValue<Duration>(__arg0)), debugLabel: "EditableText.postFrameCallbacks");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((global::System.Action<Duration?>)_schedulePeriodicPostFrameCallbacks)(DartRuntimePrimitives.ConvertValue<Duration>(__arg0)), debugLabel: "EditableText.postFrameCallbacks");
     }
 
     internal virtual void _updateSelectionRects(bool force = false)
     {
-        if ((!this._stylusHandwritingEnabled || (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))))
+        if (!_stylusHandwritingEnabled || (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)))
         {
             return;
         }
-        global::Doroti.Framework.Rendering.ScrollDirection scrollDirection = ((ScrollController)this._scrollController).position.userScrollDirection;
-        if ((!Equals(scrollDirection, ScrollDirection.idle)))
+        global::Doroti.Framework.Rendering.ScrollDirection scrollDirection = _scrollController.position.userScrollDirection;
+        if (!Equals(scrollDirection, ScrollDirection.idle))
         {
             return;
         }
-        global::Doroti.Framework.Painting.InlineSpan inlineSpanLocal = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).text!;
-        double? lineHeightScaleFactor = MediaQuery.maybeLineHeightScaleFactorOverrideOf(this.context);
-        global::Doroti.Framework.Painting.TextScaler effectiveTextScaler = ((((EditableText)this.widget).textScaler, ((EditableText)this.widget).textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler textScalerLocal, _) => textScalerLocal, (null, double textScaleFactorLocal) => TextScaler.CreateLinear(textScaleFactorLocal), (null, null) => MediaQuery.textScalerOf(this.context) });
-        var newCacheKey = new _ScribbleCacheKey__editable_text(inlineSpan: inlineSpanLocal, textAlign: ((EditableText)this.widget).textAlign, textDirection: this._textDirection, textScaler: effectiveTextScaler, textHeightBehavior: ((((EditableText)this.widget).textHeightBehavior ?? (TextHeightBehavior?)DefaultTextHeightBehavior.maybeOf(this.context))), locale: ((EditableText)this.widget).locale, structStyle: ((EditableText)this.widget).strutStyle.merge(new global::Doroti.Framework.Painting.StrutStyle(height: lineHeightScaleFactor)), placeholder: this._placeholderLocation, size: this.renderEditable.size);
-        global::Doroti.Framework.Painting.RenderComparison comparison = (force ? RenderComparison.layout : (this._scribbleCacheKey?.compare(newCacheKey) ?? RenderComparison.layout));
-        if ((FoundationRuntimePorts.EnumIndex(comparison) < FoundationRuntimePorts.EnumIndex(RenderComparison.layout)))
+        global::Doroti.Framework.Painting.InlineSpan inlineSpanLocal = renderEditable.text!;
+        double? lineHeightScaleFactor = MediaQuery.maybeLineHeightScaleFactorOverrideOf(context);
+        global::Doroti.Framework.Painting.TextScaler effectiveTextScaler = (widget.textScaler, widget.textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler textScalerLocal, _) => textScalerLocal, (null, double textScaleFactorLocal) => TextScaler.CreateLinear(textScaleFactorLocal), (null, null) => MediaQuery.textScalerOf(context) };
+        var newCacheKey = new _ScribbleCacheKey__editable_text(inlineSpan: inlineSpanLocal, textAlign: widget.textAlign, textDirection: _textDirection, textScaler: effectiveTextScaler, textHeightBehavior: widget.textHeightBehavior ?? DefaultTextHeightBehavior.maybeOf(context), locale: widget.locale, structStyle: widget.strutStyle.merge(new global::Doroti.Framework.Painting.StrutStyle(height: lineHeightScaleFactor)), placeholder: _placeholderLocation, size: renderEditable.size);
+        global::Doroti.Framework.Painting.RenderComparison comparison = force ? RenderComparison.layout : (_scribbleCacheKey?.compare(newCacheKey) ?? RenderComparison.layout);
+        if (FoundationRuntimePorts.EnumIndex(comparison) < FoundationRuntimePorts.EnumIndex(RenderComparison.layout))
         {
             return;
         }
         _scribbleCacheKey = newCacheKey;
         var rects = new List<global::Doroti.Framework.Services.SelectionRect>();
         var graphemeStart = 0L;
-        string plainText = ((string)inlineSpanLocal.toPlainText(includeSemanticsLabels: false));
+        string plainText = inlineSpanLocal.toPlainText(includeSemanticsLabels: false);
         var characterRange = new CharacterRange(plainText);
         while (characterRange.MoveNext())
         {
-            long graphemeEnd = (graphemeStart + characterRange.Current.Length);
-            List<global::Doroti.Ui.TextBox> boxes = ((List<global::Doroti.Ui.TextBox>)this.renderEditable.getBoxesForSelection(new global::Doroti.Framework.Services.TextSelection(baseOffset: graphemeStart, extentOffset: graphemeEnd)));
-            global::Doroti.Ui.TextBox? box = ((global::Doroti.Ui.TextBox?)(!Enumerable.Any(boxes) ? null : boxes.First()));
-            if ((box is not null))
+            long graphemeEnd = graphemeStart + characterRange.Current.Length;
+            List<global::Doroti.Ui.TextBox> boxes = renderEditable.getBoxesForSelection(new global::Doroti.Framework.Services.TextSelection(baseOffset: graphemeStart, extentOffset: graphemeEnd));
+            global::Doroti.Ui.TextBox? box = !Enumerable.Any(boxes) ? null : boxes.First();
+            if (box is not null)
             {
-                global::Doroti.Ui.Rect paintBoundsLocal = ((global::Doroti.Ui.Rect)this.renderEditable.paintBounds);
-                if ((paintBoundsLocal.bottom <= box.top))
+                global::Doroti.Ui.Rect paintBoundsLocal = renderEditable.paintBounds;
+                if (paintBoundsLocal.bottom <= box.top)
                 {
                     break;
                 }
-                if ((((paintBoundsLocal.left <= box.right) && (box.left <= paintBoundsLocal.right)) && (paintBoundsLocal.top <= box.bottom)))
+                if ((paintBoundsLocal.left <= box.right) && (box.left <= paintBoundsLocal.right) && (paintBoundsLocal.top <= box.bottom))
                 {
                     rects.Add(new global::Doroti.Framework.Services.SelectionRect(position: graphemeStart, bounds: box.toRect(), direction: box.direction));
                 }
             }
             graphemeStart = graphemeEnd;
         }
-        this._textInputConnection!.setSelectionRects(rects);
+        _textInputConnection!.setSelectionRects(rects);
     }
 
     internal virtual void _updateComposingRectIfNeeded()
     {
-        global::Doroti.Ui.TextRange composingRange = ((global::Doroti.Ui.TextRange)((global::Doroti.Framework.Services.TextEditingValue)this._value).composing);
-        DartRuntimePrimitives.Assert(() => this.mounted);
-        global::Doroti.Ui.Rect? composingRect = ((global::Doroti.Ui.Rect?)((Rect?)(this.renderEditable).getRectForComposingRange(composingRange)));
-        if ((composingRect is null))
+        global::Doroti.Ui.TextRange composingRange = _value.composing;
+        DartRuntimePrimitives.Assert(() => mounted);
+        global::Doroti.Ui.Rect? composingRect = renderEditable.getRectForComposingRange(composingRange);
+        if (composingRect is null)
         {
-            long offsetLocal = (composingRange.isValid ? composingRange.start : 0L);
-            composingRect = this.renderEditable.getLocalRectForCaret(new global::Doroti.Ui.TextPosition(offset: offsetLocal));
+            long offsetLocal = composingRange.isValid ? composingRange.start : 0L;
+            composingRect = renderEditable.getLocalRectForCaret(new global::Doroti.Ui.TextPosition(offset: offsetLocal));
         }
-        this._textInputConnection!.setComposingRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(composingRect)));
+        _textInputConnection!.setComposingRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(composingRect)));
     }
 
     internal virtual void _updateCaretRectIfNeeded()
     {
-        global::Doroti.Framework.Services.TextSelection? selectionLocal = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection;
-        if (((selectionLocal is null) || !selectionLocal.isValid))
+        global::Doroti.Framework.Services.TextSelection? selectionLocal = renderEditable.selection;
+        if ((selectionLocal is null) || !selectionLocal.isValid)
         {
             return;
         }
         var currentTextPosition = new global::Doroti.Ui.TextPosition(offset: selectionLocal.start);
-        global::Doroti.Ui.Rect caretRect = ((global::Doroti.Ui.Rect)this.renderEditable.getLocalRectForCaret(currentTextPosition));
-        this._textInputConnection!.setCaretRect(caretRect);
+        global::Doroti.Ui.Rect caretRect = renderEditable.getLocalRectForCaret(currentTextPosition);
+        _textInputConnection!.setCaretRect(caretRect);
     }
 
-    internal virtual global::Doroti.Ui.TextDirection _textDirection => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextDirection>(((((EditableText)this.widget).textDirection ?? (TextDirection)Directionality.of(this.context))));
-    public virtual global::Doroti.Framework.Services.TextEditingValue textEditingValue => this._value;
-    internal virtual double _devicePixelRatio => MediaQuery.devicePixelRatioOf(this.context);
+    internal virtual global::Doroti.Ui.TextDirection _textDirection => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextDirection>(widget.textDirection ?? Directionality.of(context));
+    public virtual global::Doroti.Framework.Services.TextEditingValue textEditingValue => _value;
+    internal virtual double _devicePixelRatio => MediaQuery.devicePixelRatioOf(context);
     public virtual void userUpdateTextEditingValue(global::Doroti.Framework.Services.TextEditingValue value, global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
-        var shouldShowCaret = (((EditableText)this.widget).readOnly ? (!Equals(((global::Doroti.Framework.Services.TextEditingValue)this._value).selection, ((global::Doroti.Framework.Services.TextEditingValue)value).selection)) : (!Equals(this._value, value)));
+        var shouldShowCaret = widget.readOnly ? (!Equals(_value.selection, value.selection)) : (!Equals(_value, value));
         if (shouldShowCaret)
         {
             _scheduleShowCaretOnScreen(withAnimation: true);
         }
-        if ((Equals(value, this.textEditingValue)))
+        if (Equals(value, textEditingValue))
         {
-            if (!((EditableText)this.widget).focusNode.hasFocus)
+            if (!widget.focusNode.hasFocus)
             {
                 _flagInternalFocus();
-                ((EditableText)this.widget).focusNode.requestFocus();
+                widget.focusNode.requestFocus();
                 _selectionOverlay ??= _createSelectionOverlay();
             }
             return;
@@ -2970,38 +2970,38 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual void bringIntoView(TextPosition position)
     {
-        global::Doroti.Ui.Rect localRect = ((global::Doroti.Ui.Rect)this.renderEditable.getLocalRectForCaret(position));
-        global::Doroti.Framework.Rendering.RevealedOffset targetOffset = ((global::Doroti.Framework.Rendering.RevealedOffset)_getOffsetToRevealCaret(localRect));
-        this._scrollController.jumpTo(((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).offset);
-        this.renderEditable.showOnScreen(rect: ((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).rect);
+        global::Doroti.Ui.Rect localRect = renderEditable.getLocalRectForCaret(position);
+        global::Doroti.Framework.Rendering.RevealedOffset targetOffset = _getOffsetToRevealCaret(localRect);
+        _scrollController.jumpTo(targetOffset.offset);
+        renderEditable.showOnScreen(rect: targetOffset.rect);
     }
 
     public virtual void showToolbar()
     {
-        if (this._webContextMenuEnabled)
+        if (_webContextMenuEnabled)
         {
             _ = false;
             return;
         }
-        if ((this._selectionOverlay is null))
+        if (_selectionOverlay is null)
         {
             _ = false;
             return;
         }
-        if (this._selectionOverlay!.toolbarIsVisible)
+        if (_selectionOverlay!.toolbarIsVisible)
         {
             _ = false;
             return;
         }
-        DartRuntimePrimitives.Ignore(this._liveTextInputStatus?.update());
-        DartRuntimePrimitives.Ignore(this.clipboardStatus.update());
-        this._selectionOverlay!.showToolbar();
-        if (this._platformSupportsFadeOnScroll)
+        DartRuntimePrimitives.Ignore(_liveTextInputStatus?.update());
+        DartRuntimePrimitives.Ignore(clipboardStatus.update());
+        _selectionOverlay!.showToolbar();
+        if (_platformSupportsFadeOnScroll)
         {
             _listeningToScrollNotificationObserver = true;
-            this._scrollNotificationObserver?.removeListener((global::System.Action<ScrollNotification>)this._handleContextMenuOnParentScroll);
-            _scrollNotificationObserver = ScrollNotificationObserver.maybeOf(this.context);
-            this._scrollNotificationObserver?.addListener((global::System.Action<ScrollNotification>)this._handleContextMenuOnParentScroll);
+            _scrollNotificationObserver?.removeListener(_handleContextMenuOnParentScroll);
+            _scrollNotificationObserver = ScrollNotificationObserver.maybeOf(context);
+            _scrollNotificationObserver?.addListener(_handleContextMenuOnParentScroll);
         }
         _ = true;
         return;
@@ -3012,13 +3012,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         _disposeScrollNotificationObserver();
         if (hideHandles)
         {
-            this._selectionOverlay?.hide();
+            _selectionOverlay?.hide();
         }
         else
         {
-            if ((this._selectionOverlay?.toolbarIsVisible ?? false))
+            if (_selectionOverlay?.toolbarIsVisible ?? false)
             {
-                this._selectionOverlay?.hideToolbar();
+                _selectionOverlay?.hideToolbar();
             }
         }
     }
@@ -3026,7 +3026,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     public virtual void toggleToolbar(bool hideHandles = true)
     {
         TextSelectionOverlay selectionOverlay = _selectionOverlay ??= _createSelectionOverlay();
-        if (((TextSelectionOverlay)selectionOverlay).toolbarIsVisible)
+        if (selectionOverlay.toolbarIsVisible)
         {
             hideToolbar(hideHandles);
         }
@@ -3038,80 +3038,80 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual bool showSpellCheckSuggestionsToolbar()
     {
-        if ((((((!this.spellCheckEnabled || this._webContextMenuEnabled) || ((EditableText)this.widget).readOnly) || (this._selectionOverlay is null)) || !this._spellCheckResultsReceived) || (findSuggestionSpanAtCursorIndex(((global::Doroti.Framework.Services.TextEditingValue)this.textEditingValue).selection.extentOffset) is null)))
+        if (!spellCheckEnabled || _webContextMenuEnabled || widget.readOnly || (_selectionOverlay is null) || !_spellCheckResultsReceived || (findSuggestionSpanAtCursorIndex(textEditingValue.selection.extentOffset) is null))
         {
             return false;
         }
-        DartRuntimePrimitives.Assert(() => (((SpellCheckConfiguration)this._spellCheckConfiguration).spellCheckSuggestionsToolbarBuilder is not null), () => (object?)"spellCheckSuggestionsToolbarBuilder must be defined in " + "SpellCheckConfiguration to show a toolbar with spell check " + "suggestions");
-        this._selectionOverlay!.showSpellCheckSuggestionsToolbar(((global::System.Func<BuildContext, Widget>)((context) =>
+        DartRuntimePrimitives.Assert(() => _spellCheckConfiguration.spellCheckSuggestionsToolbarBuilder is not null, () => (object?)"spellCheckSuggestionsToolbarBuilder must be defined in " + "SpellCheckConfiguration to show a toolbar with spell check " + "suggestions");
+        _selectionOverlay!.showSpellCheckSuggestionsToolbar((context) =>
         {
-            return ((SpellCheckConfiguration)this._spellCheckConfiguration).spellCheckSuggestionsToolbarBuilder!(context, this);
+            return _spellCheckConfiguration.spellCheckSuggestionsToolbarBuilder!(context, this);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void showMagnifier(Offset positionToShow)
     {
-        if ((this._selectionOverlay is null))
+        if (_selectionOverlay is null)
         {
             return;
         }
-        if (this._selectionOverlay!.magnifierExists)
+        if (_selectionOverlay!.magnifierExists)
         {
-            this._selectionOverlay!.updateMagnifier(positionToShow);
+            _selectionOverlay!.updateMagnifier(positionToShow);
         }
         else
         {
-            this._selectionOverlay!.showMagnifier(positionToShow);
+            _selectionOverlay!.showMagnifier(positionToShow);
         }
     }
 
     public virtual void hideMagnifier()
     {
-        if ((this._selectionOverlay is null))
+        if (_selectionOverlay is null)
         {
             return;
         }
-        this._selectionOverlay!.hideMagnifier();
+        _selectionOverlay!.hideMagnifier();
     }
 
     public virtual void insertTextPlaceholder(Size size)
     {
-        if (!this._stylusHandwritingEnabled)
+        if (!_stylusHandwritingEnabled)
         {
             return;
         }
-        if (!((EditableText)this.widget).controller.selection.isValid)
+        if (!widget.controller.selection.isValid)
         {
             return;
         }
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-            _placeholderLocation = (((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length - ((EditableText)this.widget).controller.selection.end);
-        })));
+            _placeholderLocation = _value.text.Length - widget.controller.selection.end;
+        });
     }
 
     public virtual void removeTextPlaceholder()
     {
-        if ((!this._stylusHandwritingEnabled || (this._placeholderLocation == -1L)))
+        if (!_stylusHandwritingEnabled || (_placeholderLocation == -1L))
         {
             return;
         }
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _placeholderLocation = -1L;
-        })));
+        });
     }
 
     public virtual void performSelector(string selectorName)
     {
         Intent? intent = Default_text_editing_shortcutsLibrary.intentForMacOSSelector(selectorName);
-        if ((intent is not null))
+        if (intent is not null)
         {
             BuildContext? primaryContext = Focus_managerLibrary.primaryFocus?.context;
-            if ((primaryContext is not null))
+            if (primaryContext is not null)
             {
                 Actions.invoke(primaryContext, intent);
             }
@@ -3123,74 +3123,74 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         get
         {
-            List<string>? autofillHintsLocal = ((EditableText)this.widget).autofillHints?.ToList().ToList();
-            global::Doroti.Framework.Services.AutofillConfiguration autofillConfigurationLocal = ((autofillHintsLocal is not null) ? new global::Doroti.Framework.Services.AutofillConfiguration(uniqueIdentifier: this.autofillId, autofillHints: autofillHintsLocal, currentEditingValue: this.currentTextEditingValue) : AutofillConfiguration.disabled);
-            _viewId = checked((long)View.of(this.context).viewId);
-            return new global::Doroti.Framework.Services.TextInputConfiguration(viewId: this._viewId, inputType: ((EditableText)this.widget).keyboardType, readOnly: ((EditableText)this.widget).readOnly, obscureText: ((EditableText)this.widget).obscureText, autocorrect: ((EditableText)this.widget).autocorrect, smartDashesType: ((EditableText)this.widget).smartDashesType, smartQuotesType: ((EditableText)this.widget).smartQuotesType, enableSuggestions: ((EditableText)this.widget).enableSuggestions, enableInteractiveSelection: ((EditableText)this.widget)._userSelectionEnabled, inputAction: (((EditableText)this.widget).textInputAction ?? (((Equals(((EditableText)this.widget).keyboardType, TextInputType.multiline)) ? TextInputAction.newline : TextInputAction.done))), textCapitalization: ((EditableText)this.widget).textCapitalization, keyboardAppearance: ((EditableText)this.widget).keyboardAppearance, autofillConfiguration: autofillConfigurationLocal, enableIMEPersonalizedLearning: ((EditableText)this.widget).enableIMEPersonalizedLearning, allowedMimeTypes: ((((EditableText)this.widget).contentInsertionConfiguration is null) ? new List<string>() : ((EditableText)this.widget).contentInsertionConfiguration!.allowedMimeTypes), hintLocales: ((EditableText)this.widget).hintLocales, enableInlinePrediction: ((EditableText)this.widget).enableInlinePrediction);
+            List<string>? autofillHintsLocal = widget.autofillHints?.ToList().ToList();
+            global::Doroti.Framework.Services.AutofillConfiguration autofillConfigurationLocal = (autofillHintsLocal is not null) ? new global::Doroti.Framework.Services.AutofillConfiguration(uniqueIdentifier: autofillId, autofillHints: autofillHintsLocal, currentEditingValue: currentTextEditingValue) : AutofillConfiguration.disabled;
+            _viewId = checked((long)View.of(context).viewId);
+            return new global::Doroti.Framework.Services.TextInputConfiguration(viewId: _viewId, inputType: widget.keyboardType, readOnly: widget.readOnly, obscureText: widget.obscureText, autocorrect: widget.autocorrect, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType, enableSuggestions: widget.enableSuggestions, enableInteractiveSelection: widget._userSelectionEnabled, inputAction: widget.textInputAction ?? (Equals(widget.keyboardType, TextInputType.multiline) ? TextInputAction.newline : TextInputAction.done), textCapitalization: widget.textCapitalization, keyboardAppearance: widget.keyboardAppearance, autofillConfiguration: autofillConfigurationLocal, enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning, allowedMimeTypes: (widget.contentInsertionConfiguration is null) ? new List<string>() : widget.contentInsertionConfiguration!.allowedMimeTypes, hintLocales: widget.hintLocales, enableInlinePrediction: widget.enableInlinePrediction);
         }
     }
     public virtual void autofill(global::Doroti.Framework.Services.TextEditingValue newEditingValue) => updateEditingValue(newEditingValue);
     public virtual void showAutocorrectionPromptRect(long start, long end)
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _currentPromptRectRange = new global::Doroti.Ui.TextRange(start: start, end: end);
-        })));
+        });
     }
 
     internal virtual global::System.Action? _semanticsOnCopy(TextSelectionControls? controls)
     {
-        return ((global::System.Action?)((global::System.Action?)(((((EditableText)this.widget).selectionEnabled && this._hasFocus) && (((((EditableText)this.widget).selectionControls is TextSelectionHandleControls) ? this.copyEnabled : (this.copyEnabled && ((((EditableText)this.widget).selectionControls?.canCopy(this) ?? false)))))) ? (() =>
+        return (widget.selectionEnabled && _hasFocus && ((widget.selectionControls is TextSelectionHandleControls) ? copyEnabled : (copyEnabled && (widget.selectionControls?.canCopy(this) ?? false)))) ? (() =>
         {
             controls?.handleCopy(this);
             copySelection(SelectionChangedCause.toolbar);
-        }) : null)));
+        }) : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::System.Action? _semanticsOnCut(TextSelectionControls? controls)
     {
-        return ((global::System.Action?)((global::System.Action?)(((((EditableText)this.widget).selectionEnabled && this._hasFocus) && (((((EditableText)this.widget).selectionControls is TextSelectionHandleControls) ? this.cutEnabled : (this.cutEnabled && ((((EditableText)this.widget).selectionControls?.canCut(this) ?? false)))))) ? (() =>
+        return (widget.selectionEnabled && _hasFocus && ((widget.selectionControls is TextSelectionHandleControls) ? cutEnabled : (cutEnabled && (widget.selectionControls?.canCut(this) ?? false)))) ? (() =>
         {
             controls?.handleCut(this);
             cutSelection(SelectionChangedCause.toolbar);
-        }) : null)));
+        }) : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::System.Action? _semanticsOnPaste(TextSelectionControls? controls)
     {
-        return DartRuntimePrimitives.AdaptAsyncCallback((global::System.Func<Future>?)((((((EditableText)this.widget).selectionEnabled && this._hasFocus) && (((((EditableText)this.widget).selectionControls is TextSelectionHandleControls) ? this.pasteEnabled : (this.pasteEnabled && ((((EditableText)this.widget).selectionControls?.canPaste(this) ?? false)))))) && ((Equals(this.clipboardStatus.value, ClipboardStatus.pasteable)))) ? (async () =>
+        return DartRuntimePrimitives.AdaptAsyncCallback((widget.selectionEnabled && _hasFocus && ((widget.selectionControls is TextSelectionHandleControls) ? pasteEnabled : (pasteEnabled && (widget.selectionControls?.canPaste(this) ?? false))) && Equals(clipboardStatus.value, ClipboardStatus.pasteable)) ? (async () =>
         {
             if (controls is not null) await controls.handlePaste(this);
             await _pasteTextWithReporting(SelectionChangedCause.toolbar);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }) : null));
+        }) : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _moveBeyondTextBoundary(TextPosition extent, bool forward, global::Doroti.Framework.Services.TextBoundary textBoundary)
     {
-        DartRuntimePrimitives.Assert(() => (extent.offset >= 0L));
-        long newOffset = (forward ? (textBoundary.getTrailingTextBoundaryAt(extent.offset) ?? ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length) : (textBoundary.getLeadingTextBoundaryAt((extent.offset - 1L)) ?? 0L));
-        return ((global::Doroti.Ui.TextPosition)new global::Doroti.Ui.TextPosition(offset: newOffset));
+        DartRuntimePrimitives.Assert(() => extent.offset >= 0L);
+        long newOffset = forward ? (textBoundary.getTrailingTextBoundaryAt(extent.offset) ?? _value.text.Length) : (textBoundary.getLeadingTextBoundaryAt(extent.offset - 1L) ?? 0L);
+        return new global::Doroti.Ui.TextPosition(offset: newOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _moveToTextBoundary(TextPosition extent, bool forward, global::Doroti.Framework.Services.TextBoundary textBoundary)
     {
-        DartRuntimePrimitives.Assert(() => (extent.offset >= 0L));
+        DartRuntimePrimitives.Assert(() => extent.offset >= 0L);
         long caretOffset = default!;
         switch (extent.affinity)
         {
             case TextAffinity.upstream:
                 {
-                    if (((extent.offset < 1L) && !forward))
+                    if ((extent.offset < 1L) && !forward)
                     {
-                        DartRuntimePrimitives.Assert(() => (extent.offset == 0L));
-                        return ((global::Doroti.Ui.TextPosition)new global::Doroti.Ui.TextPosition(offset: 0L));
+                        DartRuntimePrimitives.Assert(() => extent.offset == 0L);
+                        return new global::Doroti.Ui.TextPosition(offset: 0L);
                     }
-                    caretOffset = Math.Max(0L, (extent.offset - 1L));
+                    caretOffset = Math.Max(0L, extent.offset - 1L);
                     break;
                 }
             case TextAffinity.downstream:
@@ -3199,31 +3199,31 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     break;
                 }
         }
-        return ((global::Doroti.Ui.TextPosition)(forward ? new global::Doroti.Ui.TextPosition(offset: (textBoundary.getTrailingTextBoundaryAt(caretOffset) ?? ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length), affinity: TextAffinity.upstream) : new global::Doroti.Ui.TextPosition(offset: (textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? 0L))));
+        return forward ? new global::Doroti.Ui.TextPosition(offset: textBoundary.getTrailingTextBoundaryAt(caretOffset) ?? _value.text.Length, affinity: TextAffinity.upstream) : new global::Doroti.Ui.TextPosition(offset: textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Services.TextBoundary _characterBoundary() => (((EditableText)this.widget).obscureText ? new _CodePointBoundary__editable_text(((global::Doroti.Framework.Services.TextEditingValue)this._value).text) : new global::Doroti.Framework.Services.CharacterBoundary(((global::Doroti.Framework.Services.TextEditingValue)this._value).text));
-    internal virtual global::Doroti.Framework.Services.TextBoundary _nextWordBoundary() => (((EditableText)this.widget).obscureText ? _documentBoundary() : ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).wordBoundaries.moveByWordBoundary);
-    internal virtual global::Doroti.Framework.Services.TextBoundary _linebreak() => (((EditableText)this.widget).obscureText ? _documentBoundary() : new global::Doroti.Framework.Services.LineBoundary(this.renderEditable));
-    internal virtual global::Doroti.Framework.Services.TextBoundary _paragraphBoundary() => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.TextBoundary>(new global::Doroti.Framework.Services.ParagraphBoundary(((global::Doroti.Framework.Services.TextEditingValue)this._value).text));
-    internal virtual global::Doroti.Framework.Services.TextBoundary _documentBoundary() => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.TextBoundary>(new global::Doroti.Framework.Services.DocumentBoundary(((global::Doroti.Framework.Services.TextEditingValue)this._value).text));
+    internal virtual global::Doroti.Framework.Services.TextBoundary _characterBoundary() => widget.obscureText ? new _CodePointBoundary__editable_text(_value.text) : new global::Doroti.Framework.Services.CharacterBoundary(_value.text);
+    internal virtual global::Doroti.Framework.Services.TextBoundary _nextWordBoundary() => widget.obscureText ? _documentBoundary() : renderEditable.wordBoundaries.moveByWordBoundary;
+    internal virtual global::Doroti.Framework.Services.TextBoundary _linebreak() => widget.obscureText ? _documentBoundary() : new global::Doroti.Framework.Services.LineBoundary(renderEditable);
+    internal virtual global::Doroti.Framework.Services.TextBoundary _paragraphBoundary() => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.TextBoundary>(new global::Doroti.Framework.Services.ParagraphBoundary(_value.text));
+    internal virtual global::Doroti.Framework.Services.TextBoundary _documentBoundary() => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.TextBoundary>(new global::Doroti.Framework.Services.DocumentBoundary(_value.text));
     internal virtual Action<T> _makeOverridable<T>(Action<T> defaultAction) where T : Intent
     {
-        return Action<T>.CreateOverridable(context: this.context, defaultAction: defaultAction);
+        return Action<T>.CreateOverridable(context: context, defaultAction: defaultAction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _transposeCharacters(TransposeCharactersIntent intent)
     {
-        if ((((((global::Doroti.Framework.Services.TextEditingValue)this._value).text.characters().Count <= 1L) || !((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isCollapsed) || (((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.baseOffset == 0L)))
+        if ((_value.text.characters().Count <= 1L) || !_value.selection.isCollapsed || (_value.selection.baseOffset == 0L))
         {
             return;
         }
-        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this._value).text;
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Services.TextEditingValue)this._value).selection;
-        var atEnd = (((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset == textLocal.Length);
-        var transposing = new CharacterRange(textLocal, ((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset);
+        string textLocal = _value.text;
+        global::Doroti.Framework.Services.TextSelection selectionLocal = _value.selection;
+        var atEnd = selectionLocal.baseOffset == textLocal.Length;
+        var transposing = new CharacterRange(textLocal, selectionLocal.baseOffset);
         if (atEnd)
         {
             transposing.moveBack(2L);
@@ -3238,16 +3238,16 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     return __cascade;
 }))());
         }
-        DartRuntimePrimitives.Assert(() => (transposing.currentCharacters.Count == 2L));
-        userUpdateTextEditingValue(new global::Doroti.Framework.Services.TextEditingValue(text: (((transposing.stringBefore + transposing.currentCharacters.last) + transposing.currentCharacters.first) + transposing.stringAfter), selection: TextSelection.CreateCollapsed(offset: (transposing.stringBeforeLength + transposing.Current.Length))), SelectionChangedCause.keyboard);
+        DartRuntimePrimitives.Assert(() => transposing.currentCharacters.Count == 2L);
+        userUpdateTextEditingValue(new global::Doroti.Framework.Services.TextEditingValue(text: transposing.stringBefore + transposing.currentCharacters.last + transposing.currentCharacters.first + transposing.stringAfter, selection: TextSelection.CreateCollapsed(offset: transposing.stringBeforeLength + transposing.Current.Length)), SelectionChangedCause.keyboard);
     }
 
     internal virtual void _replaceText(ReplaceTextIntent intent)
     {
-        global::Doroti.Framework.Services.TextEditingValue oldValue = this._value;
-        global::Doroti.Framework.Services.TextEditingValue newValue = ((global::Doroti.Framework.Services.TextEditingValue)((ReplaceTextIntent)intent).currentTextEditingValue.replaced(((ReplaceTextIntent)intent).replacementRange, ((ReplaceTextIntent)intent).replacementText));
-        userUpdateTextEditingValue(newValue, ((ReplaceTextIntent)intent).cause);
-        if ((Equals(newValue, oldValue)))
+        global::Doroti.Framework.Services.TextEditingValue oldValue = _value;
+        global::Doroti.Framework.Services.TextEditingValue newValue = intent.currentTextEditingValue.replaced(intent.replacementRange, intent.replacementText);
+        userUpdateTextEditingValue(newValue, intent.cause);
+        if (Equals(newValue, oldValue))
         {
             _didChangeTextEditingValue();
         }
@@ -3257,7 +3257,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         if (intent.forward)
         {
-            bringIntoView(new global::Doroti.Ui.TextPosition(offset: ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length));
+            bringIntoView(new global::Doroti.Ui.TextPosition(offset: _value.text.Length));
         }
         else
         {
@@ -3267,55 +3267,55 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _scroll(ScrollIntent intent)
     {
-        if ((!Equals(((ScrollIntent)intent).type, ScrollIncrementType.page)))
+        if (!Equals(intent.type, ScrollIncrementType.page))
         {
             return;
         }
-        ScrollPosition positionLocal = ((ScrollController)this._scrollController).position;
-        if ((((EditableText)this.widget).maxLines == 1L))
+        ScrollPosition positionLocal = _scrollController.position;
+        if (widget.maxLines == 1L)
         {
-            this._scrollController.jumpTo(((ScrollPosition)positionLocal).maxScrollExtent);
+            _scrollController.jumpTo(positionLocal.maxScrollExtent);
             return;
         }
-        if (((((ScrollPosition)positionLocal).maxScrollExtent == 0.0) && (((ScrollPosition)positionLocal).minScrollExtent == 0.0)))
+        if ((positionLocal.maxScrollExtent == 0.0) && (positionLocal.minScrollExtent == 0.0))
         {
             return;
         }
-        var state = ((ScrollableState?)((GlobalKey<IState>)this._scrollableKey).currentState)!;
+        var state = ((ScrollableState?)_scrollableKey.currentState)!;
         double increment = ScrollAction.getDirectionalIncrement(DartRuntimePrimitives.RequireValue(state), intent);
-        double destination = Dart_uiLibrary.clampDouble((((ScrollPosition)positionLocal).pixels + increment), ((ScrollPosition)positionLocal).minScrollExtent, ((ScrollPosition)positionLocal).maxScrollExtent);
-        if ((destination == ((ScrollPosition)positionLocal).pixels))
+        double destination = Dart_uiLibrary.clampDouble(positionLocal.pixels + increment, positionLocal.minScrollExtent, positionLocal.maxScrollExtent);
+        if (destination == positionLocal.pixels)
         {
             return;
         }
-        this._scrollController.jumpTo(destination);
+        _scrollController.jumpTo(destination);
     }
 
     internal virtual void _updateSelection(UpdateSelectionIntent intent)
     {
-        DartRuntimePrimitives.Assert(() => (((UpdateSelectionIntent)intent).newSelection.start <= ((UpdateSelectionIntent)intent).currentTextEditingValue.text.Length), () => (object?)$"invalid selection: {((UpdateSelectionIntent)intent).newSelection}: it must not exceed the current text length {((UpdateSelectionIntent)intent).currentTextEditingValue.text.Length}");
-        DartRuntimePrimitives.Assert(() => (((UpdateSelectionIntent)intent).newSelection.end <= ((UpdateSelectionIntent)intent).currentTextEditingValue.text.Length), () => (object?)$"invalid selection: {((UpdateSelectionIntent)intent).newSelection}: it must not exceed the current text length {((UpdateSelectionIntent)intent).currentTextEditingValue.text.Length}");
-        bringIntoView(((UpdateSelectionIntent)intent).newSelection.extent);
-        userUpdateTextEditingValue(((UpdateSelectionIntent)intent).currentTextEditingValue.copyWith(selection: ((UpdateSelectionIntent)intent).newSelection), ((UpdateSelectionIntent)intent).cause);
+        DartRuntimePrimitives.Assert(() => intent.newSelection.start <= intent.currentTextEditingValue.text.Length, () => (object?)$"invalid selection: {intent.newSelection}: it must not exceed the current text length {intent.currentTextEditingValue.text.Length}");
+        DartRuntimePrimitives.Assert(() => intent.newSelection.end <= intent.currentTextEditingValue.text.Length, () => (object?)$"invalid selection: {intent.newSelection}: it must not exceed the current text length {intent.currentTextEditingValue.text.Length}");
+        bringIntoView(intent.newSelection.extent);
+        userUpdateTextEditingValue(intent.currentTextEditingValue.copyWith(selection: intent.newSelection), intent.cause);
     }
 
     internal virtual object? _hideToolbarIfVisible(DismissIntent intent)
     {
-        if ((this._selectionOverlay?.toolbarIsVisible ?? false))
+        if (_selectionOverlay?.toolbarIsVisible ?? false)
         {
             hideToolbar(false);
             return null;
         }
-        return Actions.invoke(this.context, intent);
+        return Actions.invoke(context, intent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _onTapOutside(BuildContext context, global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
         _hadFocusOnTapDown = true;
-        if ((((EditableText)this.widget).onTapOutside is not null))
+        if (widget.onTapOutside is not null)
         {
-            ((EditableText)this.widget).onTapOutside!(@event);
+            widget.onTapOutside!(@event);
         }
         else
         {
@@ -3325,14 +3325,14 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _onTapUpOutside(BuildContext context, global::Doroti.Framework.Gestures.PointerUpEvent @event)
     {
-        if (!this._hadFocusOnTapDown)
+        if (!_hadFocusOnTapDown)
         {
             return;
         }
         _hadFocusOnTapDown = false;
-        if ((((EditableText)this.widget).onTapUpOutside is not null))
+        if (widget.onTapUpOutside is not null)
         {
-            ((EditableText)this.widget).onTapUpOutside!(@event);
+            widget.onTapUpOutside!(@event);
         }
         else
         {
@@ -3342,40 +3342,40 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     internal virtual void _defaultOnTapOutside(BuildContext context, global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
-        Actions.invoke(context, new EditableTextTapOutsideIntent(focusNode: ((EditableText)this.widget).focusNode, pointerDownEvent: @event));
+        Actions.invoke(context, new EditableTextTapOutsideIntent(focusNode: widget.focusNode, pointerDownEvent: @event));
     }
 
     internal virtual void _defaultOnTapUpOutside(BuildContext context, global::Doroti.Framework.Gestures.PointerUpEvent @event)
     {
-        Actions.invoke(context, new EditableTextTapUpOutsideIntent(focusNode: ((EditableText)this.widget).focusNode, pointerUpEvent: @event));
+        Actions.invoke(context, new EditableTextTapUpOutsideIntent(focusNode: widget.focusNode, pointerUpEvent: @event));
     }
 
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMediaQuery(context));
-        if ((this.wantKeepAlive && (this._keepAliveHandle is null)))
+        if (wantKeepAlive && (_keepAliveHandle is null))
         {
             _ensureKeepAlive();
         }
-        TextSelectionControls? controls = ((EditableText)this.widget).selectionControls;
-        global::Doroti.Framework.Painting.TextScaler effectiveTextScaler = ((((EditableText)this.widget).textScaler, ((EditableText)this.widget).textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler textScalerLocal, _) => textScalerLocal, (null, double textScaleFactorLocal) => TextScaler.CreateLinear(textScaleFactorLocal), (null, null) => MediaQuery.textScalerOf(context) });
+        TextSelectionControls? controls = widget.selectionControls;
+        global::Doroti.Framework.Painting.TextScaler effectiveTextScaler = (widget.textScaler, widget.textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler textScalerLocal, _) => textScalerLocal, (null, double textScaleFactorLocal) => TextScaler.CreateLinear(textScaleFactorLocal), (null, null) => MediaQuery.textScalerOf(context) };
         double? lineHeightScaleFactorLocal = MediaQuery.maybeLineHeightScaleFactorOverrideOf(context);
         double? letterSpacingLocal = MediaQuery.maybeLetterSpacingOverrideOf(context);
         double? wordSpacingLocal = MediaQuery.maybeWordSpacingOverrideOf(context);
         global::Doroti.Ui.SemanticsInputType inputTypeLocal = default!;
-        switch (((EditableText)this.widget).keyboardType)
+        switch (widget.keyboardType)
         {
-            case var __constant235617 when (Equals(__constant235617, TextInputType.phone)):
+            case var __constant235617 when Equals(__constant235617, TextInputType.phone):
                 {
                     inputTypeLocal = SemanticsInputType.phone;
                     break;
                 }
-            case var __constant235698 when (Equals(__constant235698, TextInputType.url)):
+            case var __constant235698 when Equals(__constant235698, TextInputType.url):
                 {
                     inputTypeLocal = SemanticsInputType.url;
                     break;
                 }
-            case var __constant235775 when (Equals(__constant235775, TextInputType.emailAddress)):
+            case var __constant235775 when Equals(__constant235775, TextInputType.emailAddress):
                 {
                     inputTypeLocal = SemanticsInputType.email;
                     break;
@@ -3386,18 +3386,18 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     break;
                 }
         }
-        return ((Widget)new _CompositionCallback__editable_text(compositeCallback: (global::System.Action<global::Doroti.Framework.Rendering.Layer>)this._compositeCallback, enabled: this._hasInputConnection, child: new Actions(actions: this._actions, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        return new _CompositionCallback__editable_text(compositeCallback: _compositeCallback, enabled: _hasInputConnection, child: new Actions(actions: _actions, child: new Builder(builder: (context) =>
         {
-            return ((Widget)new TextFieldTapRegion(groupId: ((EditableText)this.widget).groupId, onTapOutside: ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>?)(this._hasFocus ? ((@event) => { _onTapOutside(context, @event); }) : null)), onTapUpOutside: ((global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>)((@event) => { _onTapUpOutside(context, @event); })), debugLabel: (Foundation.ConstantsLibrary.kReleaseMode ? null : "EditableText"), child: new MouseRegion(cursor: (((EditableText)this.widget).mouseCursor ?? SystemMouseCursors.text), child: new UndoHistory<global::Doroti.Framework.Services.TextEditingValue>(value: ((EditableText)this.widget).controller, onTriggered: ((global::System.Action<global::Doroti.Framework.Services.TextEditingValue>)((value) =>
+            return new TextFieldTapRegion(groupId: widget.groupId, onTapOutside: _hasFocus ? ((@event) => { _onTapOutside(context, @event); }) : null, onTapUpOutside: (@event) => { _onTapUpOutside(context, @event); }, debugLabel: Foundation.ConstantsLibrary.kReleaseMode ? null : "EditableText", child: new MouseRegion(cursor: widget.mouseCursor ?? SystemMouseCursors.text, child: new UndoHistory<global::Doroti.Framework.Services.TextEditingValue>(value: widget.controller, onTriggered: (value) =>
             {
                 userUpdateTextEditingValue(value, SelectionChangedCause.keyboard);
-            })), shouldChangeUndoStack: ((global::System.Func<global::Doroti.Framework.Services.TextEditingValue?, global::Doroti.Framework.Services.TextEditingValue, bool>)((oldValue, newValue) =>
+            }, shouldChangeUndoStack: (oldValue, newValue) =>
             {
-                if (!((global::Doroti.Framework.Services.TextEditingValue)newValue).selection.isValid)
+                if (!newValue.selection.isValid)
                 {
                     return false;
                 }
-                if ((oldValue is null))
+                if (oldValue is null)
                 {
                     return true;
                 }
@@ -3409,7 +3409,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     case TargetPlatform.linux:
                     case TargetPlatform.windows:
                         {
-                            if (!((EditableText)this.widget).controller.value.composing.isCollapsed)
+                            if (!widget.controller.value.composing.isCollapsed)
                             {
                                 return false;
                             }
@@ -3420,102 +3420,102 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                             break;
                         }
                 }
-                return ((((global::Doroti.Framework.Services.TextEditingValue)oldValue).text != ((global::Doroti.Framework.Services.TextEditingValue)newValue).text) || (!Equals(((global::Doroti.Framework.Services.TextEditingValue)oldValue).composing, ((global::Doroti.Framework.Services.TextEditingValue)newValue).composing)));
+                return (oldValue.text != newValue.text) || (!Equals(oldValue.composing, newValue.composing));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })), undoStackModifier: ((global::System.Func<global::Doroti.Framework.Services.TextEditingValue, global::Doroti.Framework.Services.TextEditingValue>)((value) =>
+            }, undoStackModifier: (value) =>
             {
-                return ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)) ? value.copyWith(composing: TextRange.empty) : value);
+                return Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android) ? value.copyWith(composing: TextRange.empty) : value;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })), focusNode: ((EditableText)this.widget).focusNode, controller: ((EditableText)this.widget).undoController, child: new Focus(focusNode: ((EditableText)this.widget).focusNode, includeSemantics: false, debugLabel: (Foundation.ConstantsLibrary.kReleaseMode ? null : "EditableText"), child: new NotificationListener<ScrollNotification>(onNotification: ((global::System.Func<ScrollNotification, bool>?)((notification) =>
+            }, focusNode: widget.focusNode, controller: widget.undoController, child: new Focus(focusNode: widget.focusNode, includeSemantics: false, debugLabel: Foundation.ConstantsLibrary.kReleaseMode ? null : "EditableText", child: new NotificationListener<ScrollNotification>(onNotification: (notification) =>
             {
                 _handleContextMenuOnScroll(notification);
                 _scribbleCacheKey = null;
                 return false;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })), child: new Scrollable(key: this._scrollableKey, excludeFromSemantics: true, axisDirection: (this._isMultiline ? AxisDirection.down : AxisDirection.right), controller: this._scrollController, physics: (((EditableText)this.widget).scrollPhysics ?? (((!this._isMultiline && (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))) ? new _NeverUserScrollableScrollPhysics__editable_text() : null))), dragStartBehavior: ((EditableText)this.widget).dragStartBehavior, restorationId: ((EditableText)this.widget).restorationId, scrollBehavior: ((((EditableText)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: this._isMultiline, overscroll: false))), viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+            }, child: new Scrollable(key: _scrollableKey, excludeFromSemantics: true, axisDirection: _isMultiline ? AxisDirection.down : AxisDirection.right, controller: _scrollController, physics: widget.scrollPhysics ?? ((!_isMultiline && Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) ? new _NeverUserScrollableScrollPhysics__editable_text() : null), dragStartBehavior: widget.dragStartBehavior, restorationId: widget.restorationId, scrollBehavior: widget.scrollBehavior ?? ScrollConfiguration.of(context).copyWith(scrollbars: _isMultiline, overscroll: false), viewportBuilder: (context, offset) =>
             {
-                return ((Widget)new CompositedTransformTarget(link: this._toolbarLayerLink, child: new Semantics(inputType: inputTypeLocal, onCopy: _semanticsOnCopy(controls), onCut: _semanticsOnCut(controls), onPaste: _semanticsOnPaste(controls), child: new _ScribbleFocusable__editable_text(editableKey: this._editableKey, enabled: this._stylusHandwritingEnabled, focusNode: ((EditableText)this.widget).focusNode, updateSelectionRects: ((global::System.Action)(() =>
+                return new CompositedTransformTarget(link: _toolbarLayerLink, child: new Semantics(inputType: inputTypeLocal, onCopy: _semanticsOnCopy(controls), onCut: _semanticsOnCut(controls), onPaste: _semanticsOnPaste(controls), child: new _ScribbleFocusable__editable_text(editableKey: _editableKey, enabled: _stylusHandwritingEnabled, focusNode: widget.focusNode, updateSelectionRects: () =>
                 {
                     _openInputConnection();
                     _updateSelectionRects(force: true);
-                })), child: new SizeChangedLayoutNotifier(child: new _Editable__editable_text(key: this._editableKey, startHandleLayerLink: this._startHandleLayerLink, endHandleLayerLink: this._endHandleLayerLink, inlineSpan: _OverridingTextStyleTextSpanUtils__editable_text.applyTextSpacingOverrides(lineHeightScaleFactor: lineHeightScaleFactorLocal, letterSpacing: letterSpacingLocal, wordSpacing: wordSpacingLocal, textSpan: buildTextSpan()), value: this._value, cursorColor: this._cursorColor, backgroundCursorColor: ((EditableText)this.widget).backgroundCursorColor, showCursor: this._cursorVisibilityNotifier, forceLine: ((EditableText)this.widget).forceLine, readOnly: ((EditableText)this.widget).readOnly, hasFocus: this._hasFocus, maxLines: ((EditableText)this.widget).maxLines, minLines: ((EditableText)this.widget).minLines, expands: ((EditableText)this.widget).expands, strutStyle: ((EditableText)this.widget).strutStyle.merge(new global::Doroti.Framework.Painting.StrutStyle(height: lineHeightScaleFactorLocal)), selectionColor: ((this._selectionOverlay?.spellCheckToolbarIsVisible ?? false) ? (((SpellCheckConfiguration)this._spellCheckConfiguration).misspelledSelectionColor ?? ((EditableText)this.widget).selectionColor) : ((EditableText)this.widget).selectionColor), textScaler: effectiveTextScaler, textAlign: ((EditableText)this.widget).textAlign, textDirection: this._textDirection, locale: ((EditableText)this.widget).locale, textHeightBehavior: ((((EditableText)this.widget).textHeightBehavior ?? (TextHeightBehavior?)DefaultTextHeightBehavior.maybeOf(context))), textWidthBasis: ((EditableText)this.widget).textWidthBasis, obscuringCharacter: ((EditableText)this.widget).obscuringCharacter, obscureText: ((EditableText)this.widget).obscureText, offset: offset, rendererIgnoresPointer: ((EditableText)this.widget).rendererIgnoresPointer, cursorWidth: ((EditableText)this.widget).cursorWidth, cursorHeight: ((EditableText)this.widget).cursorHeight, cursorRadius: ((EditableText)this.widget).cursorRadius, cursorOffset: (((EditableText)this.widget).cursorOffset ?? Offset.zero), selectionHeightStyle: ((EditableText)this.widget).selectionHeightStyle, selectionWidthStyle: ((EditableText)this.widget).selectionWidthStyle, paintCursorAboveText: ((EditableText)this.widget).paintCursorAboveText, enableInteractiveSelection: ((EditableText)this.widget)._userSelectionEnabled, textSelectionDelegate: this, devicePixelRatio: this._devicePixelRatio, promptRectRange: this._currentPromptRectRange, promptRectColor: ((EditableText)this.widget).autocorrectionTextRectColor, clipBehavior: ((EditableText)this.widget).clipBehavior))))));
+                }, child: new SizeChangedLayoutNotifier(child: new _Editable__editable_text(key: _editableKey, startHandleLayerLink: _startHandleLayerLink, endHandleLayerLink: _endHandleLayerLink, inlineSpan: _OverridingTextStyleTextSpanUtils__editable_text.applyTextSpacingOverrides(lineHeightScaleFactor: lineHeightScaleFactorLocal, letterSpacing: letterSpacingLocal, wordSpacing: wordSpacingLocal, textSpan: buildTextSpan()), value: _value, cursorColor: _cursorColor, backgroundCursorColor: widget.backgroundCursorColor, showCursor: _cursorVisibilityNotifier, forceLine: widget.forceLine, readOnly: widget.readOnly, hasFocus: _hasFocus, maxLines: widget.maxLines, minLines: widget.minLines, expands: widget.expands, strutStyle: widget.strutStyle.merge(new global::Doroti.Framework.Painting.StrutStyle(height: lineHeightScaleFactorLocal)), selectionColor: (_selectionOverlay?.spellCheckToolbarIsVisible ?? false) ? (_spellCheckConfiguration.misspelledSelectionColor ?? widget.selectionColor) : widget.selectionColor, textScaler: effectiveTextScaler, textAlign: widget.textAlign, textDirection: _textDirection, locale: widget.locale, textHeightBehavior: widget.textHeightBehavior ?? DefaultTextHeightBehavior.maybeOf(context), textWidthBasis: widget.textWidthBasis, obscuringCharacter: widget.obscuringCharacter, obscureText: widget.obscureText, offset: offset, rendererIgnoresPointer: widget.rendererIgnoresPointer, cursorWidth: widget.cursorWidth, cursorHeight: widget.cursorHeight, cursorRadius: widget.cursorRadius, cursorOffset: widget.cursorOffset ?? Offset.zero, selectionHeightStyle: widget.selectionHeightStyle, selectionWidthStyle: widget.selectionWidthStyle, paintCursorAboveText: widget.paintCursorAboveText, enableInteractiveSelection: widget._userSelectionEnabled, textSelectionDelegate: this, devicePixelRatio: _devicePixelRatio, promptRectRange: _currentPromptRectRange, promptRectColor: widget.autocorrectionTextRectColor, clipBehavior: widget.clipBehavior)))));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })))))))));
+            }))))));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))))));
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Painting.TextSpan buildTextSpan()
     {
-        if (((EditableText)this.widget).obscureText)
+        if (widget.obscureText)
         {
-            string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)this._value).text;
-            textLocal = DartCoreExtensions.repeat(((EditableText)this.widget).obscuringCharacter, textLocal.Length);
+            string textLocal = _value.text;
+            textLocal = DartCoreExtensions.repeat(widget.obscuringCharacter, textLocal.Length);
             var mobilePlatforms = new HashSet<global::Doroti.Framework.Foundation.TargetPlatform> { TargetPlatform.android, TargetPlatform.fuchsia, TargetPlatform.iOS };
-            bool brieflyShowPasswordLocal = (WidgetsBinding.instance.platformDispatcher.brieflyShowPassword && mobilePlatforms.Contains(PlatformLibrary.defaultTargetPlatform));
+            bool brieflyShowPasswordLocal = WidgetsBinding.instance.platformDispatcher.brieflyShowPassword && mobilePlatforms.Contains(PlatformLibrary.defaultTargetPlatform);
             if (brieflyShowPasswordLocal)
             {
-                long? o = ((this._obscureShowCharTicksPending > 0L) ? this._obscureLatestCharIndex : null);
-                if ((((o is not null) && (o >= 0L)) && (DartRuntimePrimitives.RequireValue(o) < textLocal.Length)))
+                long? o = (_obscureShowCharTicksPending > 0L) ? _obscureLatestCharIndex : null;
+                if ((o is not null) && (o >= 0L) && (DartRuntimePrimitives.RequireValue(o) < textLocal.Length))
                 {
                     long o__246733__value246816 = DartRuntimePrimitives.RequireValue(o);
-                    textLocal = textLocal.replaceRange(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(o__246733__value246816)), (DartRuntimePrimitives.RequireValue(o__246733__value246816) + 1L), ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.substring(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(o__246733__value246816)), (DartRuntimePrimitives.RequireValue(o__246733__value246816) + 1L)));
+                    textLocal = textLocal.replaceRange(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(o__246733__value246816)), DartRuntimePrimitives.RequireValue(o__246733__value246816) + 1L, _value.text.substring(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(o__246733__value246816)), DartRuntimePrimitives.RequireValue(o__246733__value246816) + 1L));
                 }
             }
-            return new global::Doroti.Framework.Painting.TextSpan(style: this._style, text: textLocal);
+            return new global::Doroti.Framework.Painting.TextSpan(style: _style, text: textLocal);
         }
-        if (((this._placeholderLocation >= 0L) && (this._placeholderLocation <= ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length)))
+        if ((_placeholderLocation >= 0L) && (_placeholderLocation <= _value.text.Length))
         {
             var placeholders = new List<_ScribblePlaceholder__editable_text>();
-            long placeholderLocation = (((global::Doroti.Framework.Services.TextEditingValue)this._value).text.Length - this._placeholderLocation);
-            if (this._isMultiline)
+            long placeholderLocation = _value.text.Length - _placeholderLocation;
+            if (_isMultiline)
             {
                 placeholders.Add(new _ScribblePlaceholder__editable_text(child: SizedBox.CreateShrink(), size: Size.zero));
-                placeholders.Add(new _ScribblePlaceholder__editable_text(child: SizedBox.CreateShrink(), size: new global::Doroti.Ui.Size(this.renderEditable.size.width, 0.0)));
+                placeholders.Add(new _ScribblePlaceholder__editable_text(child: SizedBox.CreateShrink(), size: new global::Doroti.Ui.Size(renderEditable.size.width, 0.0)));
             }
             else
             {
                 placeholders.Add(new _ScribblePlaceholder__editable_text(child: SizedBox.CreateShrink(), size: new global::Doroti.Ui.Size(100.0, 0.0)));
             }
-            return new global::Doroti.Framework.Painting.TextSpan(style: this._style, children: new List<global::Doroti.Framework.Painting.InlineSpan> { new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.substring(0L, placeholderLocation)), new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Services.TextEditingValue)this._value).text.substring(placeholderLocation)) });
+            return new global::Doroti.Framework.Painting.TextSpan(style: _style, children: new List<global::Doroti.Framework.Painting.InlineSpan> { new global::Doroti.Framework.Painting.TextSpan(text: _value.text.substring(0L, placeholderLocation)), new global::Doroti.Framework.Painting.TextSpan(text: _value.text.substring(placeholderLocation)) });
         }
-        bool withComposingLocal = (!((EditableText)this.widget).readOnly && this._hasFocus);
-        if (this._spellCheckResultsReceived)
+        bool withComposingLocal = !widget.readOnly && _hasFocus;
+        if (_spellCheckResultsReceived)
         {
-            DartRuntimePrimitives.Assert(() => ((!((global::Doroti.Framework.Services.TextEditingValue)this._value).composing.isValid || !withComposingLocal) || ((global::Doroti.Framework.Services.TextEditingValue)this._value).isComposingRangeValid));
-            bool composingRegionOutOfRange = (!((global::Doroti.Framework.Services.TextEditingValue)this._value).isComposingRangeValid || !withComposingLocal);
-            return Spell_checkLibrary.buildTextSpanWithSpellCheckSuggestions(this._value, composingRegionOutOfRange, this._style, ((SpellCheckConfiguration)this._spellCheckConfiguration).misspelledTextStyle!, this.spellCheckResults!);
+            DartRuntimePrimitives.Assert(() => !_value.composing.isValid || !withComposingLocal || _value.isComposingRangeValid);
+            bool composingRegionOutOfRange = !_value.isComposingRangeValid || !withComposingLocal;
+            return Spell_checkLibrary.buildTextSpanWithSpellCheckSuggestions(_value, composingRegionOutOfRange, _style, _spellCheckConfiguration.misspelledTextStyle!, spellCheckResults!);
         }
-        return ((global::Doroti.Framework.Painting.TextSpan)((EditableText)this.widget).controller.buildTextSpan(context: this.context, style: this._style, withComposing: withComposingLocal));
+        return widget.controller.buildTextSpan(context: context, style: _style, withComposing: withComposingLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _ensureKeepAlive()
     {
-        DartRuntimePrimitives.Assert(() => (this._keepAliveHandle is null));
-        this._keepAliveHandle = new KeepAliveHandle();
-        new KeepAliveNotification(this._keepAliveHandle!).dispatch(this.context);
+        DartRuntimePrimitives.Assert(() => _keepAliveHandle is null);
+        _keepAliveHandle = new KeepAliveHandle();
+        new KeepAliveNotification(_keepAliveHandle!).dispatch(context);
     }
 
     public virtual void _releaseKeepAlive()
     {
-        this._keepAliveHandle!.dispose();
-        this._keepAliveHandle = null;
+        _keepAliveHandle!.dispose();
+        _keepAliveHandle = null;
     }
 
     public virtual void updateKeepAlive()
     {
-        if (this.wantKeepAlive)
+        if (wantKeepAlive)
         {
-            if ((this._keepAliveHandle is null))
+            if (_keepAliveHandle is null)
             {
                 _ensureKeepAlive();
             }
         }
         else
         {
-            if ((this._keepAliveHandle is not null))
+            if (_keepAliveHandle is not null)
             {
                 _releaseKeepAlive();
             }
@@ -3524,7 +3524,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public override void deactivate()
     {
-        if ((this._keepAliveHandle is not null))
+        if (_keepAliveHandle is not null)
         {
             _releaseKeepAlive();
         }
@@ -3533,30 +3533,30 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -3568,34 +3568,34 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -3679,13 +3679,13 @@ internal class _Editable__editable_text : MultiChildRenderObjectWidget
         this.promptRectRange = promptRectRange;
         this.promptRectColor = promptRectColor;
         this.clipBehavior = clipBehavior;
-        this.selectionHeightStyle = ((selectionHeightStyle ?? (BoxHeightStyle)EditableText.defaultSelectionHeightStyle));
-        this.selectionWidthStyle = ((selectionWidthStyle ?? (BoxWidthStyle)EditableText.defaultSelectionWidthStyle));
+        this.selectionHeightStyle = selectionHeightStyle ?? EditableText.defaultSelectionHeightStyle;
+        this.selectionWidthStyle = selectionWidthStyle ?? EditableText.defaultSelectionWidthStyle;
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderEditable(text: this.inlineSpan, cursorColor: this.cursorColor, startHandleLayerLink: this.startHandleLayerLink, endHandleLayerLink: this.endHandleLayerLink, backgroundCursorColor: this.backgroundCursorColor, showCursor: this.showCursor, forceLine: this.forceLine, readOnly: this.readOnly, hasFocus: this.hasFocus, maxLines: this.maxLines, minLines: this.minLines, expands: this.expands, strutStyle: this.strutStyle, selectionColor: this.selectionColor, textScaler: this.textScaler, textAlign: this.textAlign, textDirection: this.textDirection, locale: (this.locale ?? Localizations.maybeLocaleOf(context)), selection: ((global::Doroti.Framework.Services.TextEditingValue)this.value).selection, offset: this.offset, ignorePointer: this.rendererIgnoresPointer, obscuringCharacter: this.obscuringCharacter, obscureText: this.obscureText, textHeightBehavior: this.textHeightBehavior, textWidthBasis: this.textWidthBasis, cursorWidth: this.cursorWidth, cursorHeight: this.cursorHeight, cursorRadius: this.cursorRadius, cursorOffset: this.cursorOffset, paintCursorAboveText: this.paintCursorAboveText, selectionHeightStyle: DartRuntimePrimitives.RequireValue(this.selectionHeightStyle), selectionWidthStyle: DartRuntimePrimitives.RequireValue(this.selectionWidthStyle), enableInteractiveSelection: this.enableInteractiveSelection, textSelectionDelegate: this.textSelectionDelegate, devicePixelRatio: this.devicePixelRatio, promptRectRange: this.promptRectRange, promptRectColor: this.promptRectColor, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderEditable(text: inlineSpan, cursorColor: cursorColor, startHandleLayerLink: startHandleLayerLink, endHandleLayerLink: endHandleLayerLink, backgroundCursorColor: backgroundCursorColor, showCursor: showCursor, forceLine: forceLine, readOnly: readOnly, hasFocus: hasFocus, maxLines: maxLines, minLines: minLines, expands: expands, strutStyle: strutStyle, selectionColor: selectionColor, textScaler: textScaler, textAlign: textAlign, textDirection: textDirection, locale: locale ?? Localizations.maybeLocaleOf(context), selection: value.selection, offset: offset, ignorePointer: rendererIgnoresPointer, obscuringCharacter: obscuringCharacter, obscureText: obscureText, textHeightBehavior: textHeightBehavior, textWidthBasis: textWidthBasis, cursorWidth: cursorWidth, cursorHeight: cursorHeight, cursorRadius: cursorRadius, cursorOffset: cursorOffset, paintCursorAboveText: paintCursorAboveText, selectionHeightStyle: DartRuntimePrimitives.RequireValue(selectionHeightStyle), selectionWidthStyle: DartRuntimePrimitives.RequireValue(selectionWidthStyle), enableInteractiveSelection: enableInteractiveSelection, textSelectionDelegate: textSelectionDelegate, devicePixelRatio: devicePixelRatio, promptRectRange: promptRectRange, promptRectColor: promptRectColor, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3695,44 +3695,44 @@ internal class _Editable__editable_text : MultiChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderEditable>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.text = this.inlineSpan;
-    __cascade.cursorColor = this.cursorColor;
-    __cascade.startHandleLayerLink = this.startHandleLayerLink;
-    __cascade.endHandleLayerLink = this.endHandleLayerLink;
-    __cascade.backgroundCursorColor = this.backgroundCursorColor;
-    __cascade.showCursor = this.showCursor;
-    __cascade.forceLine = this.forceLine;
-    __cascade.readOnly = this.readOnly;
-    __cascade.hasFocus = this.hasFocus;
-    __cascade.maxLines = this.maxLines;
-    __cascade.minLines = this.minLines;
-    __cascade.expands = this.expands;
-    __cascade.strutStyle = this.strutStyle;
-    __cascade.selectionColor = this.selectionColor;
-    __cascade.textScaler = this.textScaler;
-    __cascade.textAlign = this.textAlign;
-    __cascade.textDirection = this.textDirection;
-    __cascade.locale = (this.locale ?? Localizations.maybeLocaleOf(context));
-    __cascade.selection = ((global::Doroti.Framework.Services.TextEditingValue)this.value).selection;
-    __cascade.offset = this.offset;
-    __cascade.ignorePointer = this.rendererIgnoresPointer;
-    __cascade.textHeightBehavior = this.textHeightBehavior;
-    __cascade.textWidthBasis = this.textWidthBasis;
-    __cascade.obscuringCharacter = this.obscuringCharacter;
-    __cascade.obscureText = this.obscureText;
-    __cascade.cursorWidth = this.cursorWidth;
-    __cascade.setCursorHeight(this.cursorHeight);
-    __cascade.cursorRadius = this.cursorRadius;
-    __cascade.cursorOffset = this.cursorOffset;
-    __cascade.selectionHeightStyle = this.selectionHeightStyle;
-    __cascade.selectionWidthStyle = this.selectionWidthStyle;
-    __cascade.enableInteractiveSelection = this.enableInteractiveSelection;
-    __cascade.textSelectionDelegate = this.textSelectionDelegate;
-    __cascade.devicePixelRatio = this.devicePixelRatio;
-    __cascade.paintCursorAboveText = this.paintCursorAboveText;
-    __cascade.promptRectColor = this.promptRectColor;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.setPromptRectRange(this.promptRectRange);
+    __cascade.text = inlineSpan;
+    __cascade.cursorColor = cursorColor;
+    __cascade.startHandleLayerLink = startHandleLayerLink;
+    __cascade.endHandleLayerLink = endHandleLayerLink;
+    __cascade.backgroundCursorColor = backgroundCursorColor;
+    __cascade.showCursor = showCursor;
+    __cascade.forceLine = forceLine;
+    __cascade.readOnly = readOnly;
+    __cascade.hasFocus = hasFocus;
+    __cascade.maxLines = maxLines;
+    __cascade.minLines = minLines;
+    __cascade.expands = expands;
+    __cascade.strutStyle = strutStyle;
+    __cascade.selectionColor = selectionColor;
+    __cascade.textScaler = textScaler;
+    __cascade.textAlign = textAlign;
+    __cascade.textDirection = textDirection;
+    __cascade.locale = locale ?? Localizations.maybeLocaleOf(context);
+    __cascade.selection = value.selection;
+    __cascade.offset = offset;
+    __cascade.ignorePointer = rendererIgnoresPointer;
+    __cascade.textHeightBehavior = textHeightBehavior;
+    __cascade.textWidthBasis = textWidthBasis;
+    __cascade.obscuringCharacter = obscuringCharacter;
+    __cascade.obscureText = obscureText;
+    __cascade.cursorWidth = cursorWidth;
+    __cascade.setCursorHeight(cursorHeight);
+    __cascade.cursorRadius = cursorRadius;
+    __cascade.cursorOffset = cursorOffset;
+    __cascade.selectionHeightStyle = selectionHeightStyle;
+    __cascade.selectionWidthStyle = selectionWidthStyle;
+    __cascade.enableInteractiveSelection = enableInteractiveSelection;
+    __cascade.textSelectionDelegate = textSelectionDelegate;
+    __cascade.devicePixelRatio = devicePixelRatio;
+    __cascade.paintCursorAboveText = paintCursorAboveText;
+    __cascade.promptRectColor = promptRectColor;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.setPromptRectRange(promptRectRange);
     return __cascade;
 }))());
     }
@@ -3785,8 +3785,8 @@ internal class _ScribbleCacheKey__editable_text
         {
             return RenderComparison.identical;
         }
-        bool needsLayout = ((((((((!Equals(this.textAlign, ((_ScribbleCacheKey__editable_text)other).textAlign)) || (!Equals(this.textDirection, ((_ScribbleCacheKey__editable_text)other).textDirection))) || (!Equals(this.textScaler, ((_ScribbleCacheKey__editable_text)other).textScaler))) || (!Equals(((this.textHeightBehavior ?? new global::Doroti.Ui.TextHeightBehavior())), ((((_ScribbleCacheKey__editable_text)other).textHeightBehavior ?? new global::Doroti.Ui.TextHeightBehavior()))))) || (!Equals(this.locale, ((_ScribbleCacheKey__editable_text)other).locale))) || (!Equals(this.structStyle, ((_ScribbleCacheKey__editable_text)other).structStyle))) || (this.placeholder != ((_ScribbleCacheKey__editable_text)other).placeholder)) || (!Equals(this.size, ((_ScribbleCacheKey__editable_text)other).size)));
-        return (needsLayout ? RenderComparison.layout : this.inlineSpan.compareTo(((_ScribbleCacheKey__editable_text)other).inlineSpan));
+        bool needsLayout = (!Equals(textAlign, other.textAlign)) || (!Equals(textDirection, other.textDirection)) || (!Equals(textScaler, other.textScaler)) || (!Equals(textHeightBehavior ?? new global::Doroti.Ui.TextHeightBehavior(), other.textHeightBehavior ?? new global::Doroti.Ui.TextHeightBehavior())) || (!Equals(locale, other.locale)) || (!Equals(structStyle, other.structStyle)) || (placeholder != other.placeholder) || (!Equals(size, other.size));
+        return needsLayout ? RenderComparison.layout : inlineSpan.compareTo(other.inlineSpan);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3819,54 +3819,54 @@ public class _ScribbleFocusableState__editable_text : State<_ScribbleFocusable__
 
     internal _ScribbleFocusableState__editable_text()
     {
-        this._elementIdentifier = (_nextElementIdentifier++).ToString();
+        _elementIdentifier = _nextElementIdentifier++.ToString();
     }
 
     public override void initState()
     {
         base.initState();
-        if (((_ScribbleFocusable__editable_text)this.widget).enabled)
+        if (widget.enabled)
         {
-            TextInput.registerScribbleElement(this.elementIdentifier, this);
+            TextInput.registerScribbleElement(elementIdentifier, this);
         }
     }
 
     public override void didUpdateWidget(_ScribbleFocusable__editable_text oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!((_ScribbleFocusable__editable_text)oldWidget).enabled && ((_ScribbleFocusable__editable_text)this.widget).enabled))
+        if (!oldWidget.enabled && widget.enabled)
         {
-            TextInput.registerScribbleElement(this.elementIdentifier, this);
+            TextInput.registerScribbleElement(elementIdentifier, this);
         }
-        if ((((_ScribbleFocusable__editable_text)oldWidget).enabled && !((_ScribbleFocusable__editable_text)this.widget).enabled))
+        if (oldWidget.enabled && !widget.enabled)
         {
-            TextInput.unregisterScribbleElement(this.elementIdentifier);
+            TextInput.unregisterScribbleElement(elementIdentifier);
         }
     }
 
     public override void dispose()
     {
-        TextInput.unregisterScribbleElement(this.elementIdentifier);
+        TextInput.unregisterScribbleElement(elementIdentifier);
         base.dispose();
     }
 
-    public virtual global::Doroti.Framework.Rendering.RenderEditable? renderEditable => ((global::Doroti.Framework.Rendering.RenderEditable?)((_ScribbleFocusable__editable_text)this.widget).editableKey.currentContext?.findRenderObject())!;
-    public virtual string elementIdentifier => this._elementIdentifier;
+    public virtual global::Doroti.Framework.Rendering.RenderEditable? renderEditable => ((global::Doroti.Framework.Rendering.RenderEditable?)widget.editableKey.currentContext?.findRenderObject())!;
+    public virtual string elementIdentifier => _elementIdentifier;
     public virtual void onScribbleFocus(Offset offset)
     {
-        ((_ScribbleFocusable__editable_text)this.widget).focusNode.requestFocus();
-        this.renderEditable?.selectPositionAt(from: offset, cause: SelectionChangedCause.stylusHandwriting);
-        this.widget.updateSelectionRects();
+        widget.focusNode.requestFocus();
+        renderEditable?.selectPositionAt(from: offset, cause: SelectionChangedCause.stylusHandwriting);
+        widget.updateSelectionRects();
     }
 
     public virtual bool isInScribbleRect(Rect rect)
     {
-        global::Doroti.Ui.Rect calculatedBounds = ((global::Doroti.Ui.Rect)this.bounds);
-        if ((this.renderEditable?.readOnly ?? false))
+        global::Doroti.Ui.Rect calculatedBounds = bounds;
+        if (renderEditable?.readOnly ?? false)
         {
             return false;
         }
-        if ((Equals(calculatedBounds, Rect.zero)))
+        if (Equals(calculatedBounds, Rect.zero))
         {
             return false;
         }
@@ -3874,10 +3874,10 @@ public class _ScribbleFocusableState__editable_text : State<_ScribbleFocusable__
         {
             return false;
         }
-        global::Doroti.Ui.Rect intersection = ((global::Doroti.Ui.Rect)calculatedBounds.intersect(rect));
+        global::Doroti.Ui.Rect intersection = calculatedBounds.intersect(rect);
         var result = new global::Doroti.Framework.Gestures.HitTestResult();
-        WidgetsBinding.instance.hitTestInView(result, ((Offset)(intersection).center), checked((long)View.of(this.context).viewId));
-        return ((global::Doroti.Framework.Gestures.HitTestResult)result).path.any(((entry) => (Equals(((global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>)entry).target, this.renderEditable))));
+        WidgetsBinding.instance.hitTestInView(result, intersection.center, checked((long)View.of(context).viewId));
+        return result.path.any((entry) => Equals(entry.target, renderEditable));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3885,18 +3885,18 @@ public class _ScribbleFocusableState__editable_text : State<_ScribbleFocusable__
     {
         get
         {
-            var box = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject())!;
-            if ((((box is null) || !this.mounted) || !box.attached))
+            var box = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject())!;
+            if ((box is null) || !mounted || !box.attached)
             {
                 return Rect.zero;
             }
-            Matrix4 transform = ((Matrix4)box.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
-            return MatrixUtils.transformRect(transform, Rect.fromLTWH(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)box).size.width, ((global::Doroti.Framework.Rendering.RenderBox)box).size.height));
+            Matrix4 transform = box.getTransformTo(null);
+            return MatrixUtils.transformRect(transform, Rect.fromLTWH(0, 0, box.size.width, box.size.height));
         }
     }
     public override Widget build(BuildContext context)
     {
-        return ((_ScribbleFocusable__editable_text)this.widget).child;
+        return widget.child;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3914,12 +3914,12 @@ internal class _ScribblePlaceholder__editable_text : WidgetSpan
     public override void build(ParagraphBuilder builder, global::Doroti.Framework.Painting.TextScaler textScaler = default!, List<global::Doroti.Framework.Painting.PlaceholderDimensions>? dimensions = null)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        var hasStyle = (this.style is not null);
+        var hasStyle = style is not null;
         if (hasStyle)
         {
-            builder.pushStyle(this.style!.getTextStyle(textScaler: textScaler));
+            builder.pushStyle(style!.getTextStyle(textScaler: textScaler));
         }
-        builder.addPlaceholder(this.size.width, this.size.height, this.alignment);
+        builder.addPlaceholder(size.width, size.height, alignment);
         if (hasStyle)
         {
             builder.pop();
@@ -3939,52 +3939,52 @@ internal class _CodePointBoundary__editable_text : global::Doroti.Framework.Serv
 
     internal virtual bool _breaksSurrogatePair(long position)
     {
-        DartRuntimePrimitives.Assert(() => (((position > 0L) && (position < this._text.Length)) && (this._text.Length > 1L)));
-        return (TextPainter.isHighSurrogate(this._text.codeUnitAt((position - 1L))) && TextPainter.isLowSurrogate(this._text.codeUnitAt(position)));
+        DartRuntimePrimitives.Assert(() => (position > 0L) && (position < _text.Length) && (_text.Length > 1L));
+        return TextPainter.isHighSurrogate(_text.codeUnitAt(position - 1L)) && TextPainter.isLowSurrogate(_text.codeUnitAt(position));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? getLeadingTextBoundaryAt(long position)
     {
-        if (((this._text.Length == 0) || (position < 0L)))
+        if ((_text.Length == 0) || (position < 0L))
         {
             return null;
         }
-        if ((position == 0L))
+        if (position == 0L)
         {
             return 0L;
         }
-        if ((position >= this._text.Length))
+        if (position >= _text.Length)
         {
-            return this._text.Length;
+            return _text.Length;
         }
-        if ((this._text.Length <= 1L))
+        if (_text.Length <= 1L)
         {
             return position;
         }
-        return (_breaksSurrogatePair(position) ? (position - 1L) : position);
+        return _breaksSurrogatePair(position) ? (position - 1L) : position;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
     {
-        if (((this._text.Length == 0) || (position >= this._text.Length)))
+        if ((_text.Length == 0) || (position >= _text.Length))
         {
             return null;
         }
-        if ((position < 0L))
+        if (position < 0L)
         {
             return 0L;
         }
-        if ((position == (this._text.Length - 1L)))
+        if (position == (_text.Length - 1L))
         {
-            return this._text.Length;
+            return _text.Length;
         }
-        if ((this._text.Length <= 1L))
+        if (_text.Length <= 1L)
         {
             return position;
         }
-        return (_breaksSurrogatePair((position + 1L)) ? (position + 2L) : (position + 1L));
+        return _breaksSurrogatePair(position + 1L) ? (position + 2L) : (position + 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4005,43 +4005,43 @@ internal class _DeleteTextAction__editable_text<T> : ContextAction<T> where T : 
 
     internal virtual void _hideToolbarIfTextChanged(ReplaceTextIntent intent)
     {
-        if (((((EditableTextState)this.state)._selectionOverlay is null) || !((EditableTextState)this.state).selectionOverlay!.toolbarIsVisible))
+        if ((state._selectionOverlay is null) || !state.selectionOverlay!.toolbarIsVisible)
         {
             return;
         }
-        global::Doroti.Framework.Services.TextEditingValue oldValue = ((ReplaceTextIntent)intent).currentTextEditingValue;
-        global::Doroti.Framework.Services.TextEditingValue newValue = ((global::Doroti.Framework.Services.TextEditingValue)((ReplaceTextIntent)intent).currentTextEditingValue.replaced(((ReplaceTextIntent)intent).replacementRange, ((ReplaceTextIntent)intent).replacementText));
-        if ((((global::Doroti.Framework.Services.TextEditingValue)oldValue).text != ((global::Doroti.Framework.Services.TextEditingValue)newValue).text))
+        global::Doroti.Framework.Services.TextEditingValue oldValue = intent.currentTextEditingValue;
+        global::Doroti.Framework.Services.TextEditingValue newValue = intent.currentTextEditingValue.replaced(intent.replacementRange, intent.replacementText);
+        if (oldValue.text != newValue.text)
         {
-            this.state.hideToolbar(false);
+            state.hideToolbar(false);
         }
     }
 
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((EditableTextState)this.state)._value.selection;
+        global::Doroti.Framework.Services.TextSelection selectionLocal = state._value.selection;
         if (!selectionLocal.isValid)
         {
             return null;
         }
         DartRuntimePrimitives.Assert(() => selectionLocal.isValid);
-        global::Doroti.Framework.Services.TextBoundary atomicBoundary = ((global::Doroti.Framework.Services.TextBoundary)this.state._characterBoundary());
+        global::Doroti.Framework.Services.TextBoundary atomicBoundary = state._characterBoundary();
         if (!selectionLocal.isCollapsed)
         {
-            var range = new global::Doroti.Ui.TextRange(start: (atomicBoundary.getLeadingTextBoundaryAt(selectionLocal.start) ?? ((EditableTextState)this.state)._value.text.Length), end: (atomicBoundary.getTrailingTextBoundaryAt((selectionLocal.end - 1L)) ?? 0L));
-            var replaceTextIntent = new ReplaceTextIntent(((EditableTextState)this.state)._value, "", range, SelectionChangedCause.keyboard);
+            var range = new global::Doroti.Ui.TextRange(start: atomicBoundary.getLeadingTextBoundaryAt(selectionLocal.start) ?? state._value.text.Length, end: atomicBoundary.getTrailingTextBoundaryAt(selectionLocal.end - 1L) ?? 0L);
+            var replaceTextIntent = new ReplaceTextIntent(state._value, "", range, SelectionChangedCause.keyboard);
             _hideToolbarIfTextChanged(replaceTextIntent);
             return Actions.invoke(context!, replaceTextIntent);
         }
-        long target = this._applyTextBoundary(((global::Doroti.Framework.Services.TextSelection)selectionLocal).@base, ((DirectionalTextEditingIntent)intent).forward, this.getTextBoundary()).offset;
-        global::Doroti.Ui.TextRange rangeToDelete = ((global::Doroti.Ui.TextRange)new global::Doroti.Framework.Services.TextSelection(baseOffset: (((DirectionalTextEditingIntent)intent).forward ? (atomicBoundary.getLeadingTextBoundaryAt(((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset) ?? ((EditableTextState)this.state)._value.text.Length) : (atomicBoundary.getTrailingTextBoundaryAt((((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset - 1L)) ?? 0L)), extentOffset: target));
-        var replaceTextIntentLocal = new ReplaceTextIntent(((EditableTextState)this.state)._value, "", rangeToDelete, SelectionChangedCause.keyboard);
+        long target = _applyTextBoundary(selectionLocal.@base, intent.forward, getTextBoundary()).offset;
+        global::Doroti.Ui.TextRange rangeToDelete = new global::Doroti.Framework.Services.TextSelection(baseOffset: intent.forward ? (atomicBoundary.getLeadingTextBoundaryAt(selectionLocal.baseOffset) ?? state._value.text.Length) : (atomicBoundary.getTrailingTextBoundaryAt(selectionLocal.baseOffset - 1L) ?? 0L), extentOffset: target);
+        var replaceTextIntentLocal = new ReplaceTextIntent(state._value, "", rangeToDelete, SelectionChangedCause.keyboard);
         _hideToolbarIfTextChanged(replaceTextIntentLocal);
         return Actions.invoke(context!, replaceTextIntentLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool isActionEnabled => DartRuntimePrimitives.ConvertValue<bool>((!this.state.widget.readOnly && ((EditableTextState)this.state)._value.selection.isValid));
+    public override bool isActionEnabled => DartRuntimePrimitives.ConvertValue<bool>(!state.widget.readOnly && state._value.selection.isValid);
 }
 
 internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T> where T : DirectionalCaretMovementIntent
@@ -4066,48 +4066,48 @@ internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T> w
 
     internal virtual bool _isAtWordwrapUpstream(TextPosition position)
     {
-        var endLocal = new global::Doroti.Ui.TextPosition(offset: ((EditableTextState)this.state).renderEditable.getLineAtOffset(position).end, affinity: TextAffinity.upstream);
-        return (((Equals(endLocal, position)) && (endLocal.offset != ((EditableTextState)this.state).textEditingValue.text.Length)) && (((EditableTextState)this.state).textEditingValue.text.codeUnitAt(position.offset) != NEWLINE_CODE_UNIT));
+        var endLocal = new global::Doroti.Ui.TextPosition(offset: state.renderEditable.getLineAtOffset(position).end, affinity: TextAffinity.upstream);
+        return Equals(endLocal, position) && (endLocal.offset != state.textEditingValue.text.Length) && (state.textEditingValue.text.codeUnitAt(position.offset) != NEWLINE_CODE_UNIT);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _isAtWordwrapDownstream(TextPosition position)
     {
-        var startLocal = new global::Doroti.Ui.TextPosition(offset: ((EditableTextState)this.state).renderEditable.getLineAtOffset(position).start);
-        return (((Equals(startLocal, position)) && (startLocal.offset != 0L)) && (((EditableTextState)this.state).textEditingValue.text.codeUnitAt((position.offset - 1L)) != NEWLINE_CODE_UNIT));
+        var startLocal = new global::Doroti.Ui.TextPosition(offset: state.renderEditable.getLineAtOffset(position).start);
+        return Equals(startLocal, position) && (startLocal.offset != 0L) && (state.textEditingValue.text.codeUnitAt(position.offset - 1L) != NEWLINE_CODE_UNIT);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        global::Doroti.Framework.Services.TextSelection selectionLocal = ((EditableTextState)this.state)._value.selection;
+        global::Doroti.Framework.Services.TextSelection selectionLocal = state._value.selection;
         DartRuntimePrimitives.Assert(() => selectionLocal.isValid);
-        bool collapseSelectionLocal = (((DirectionalCaretMovementIntent)intent).collapseSelection || !this.state.widget.selectionEnabled);
-        if (((!selectionLocal.isCollapsed && !this.ignoreNonCollapsedSelection) && collapseSelectionLocal))
+        bool collapseSelectionLocal = intent.collapseSelection || !state.widget.selectionEnabled;
+        if (!selectionLocal.isCollapsed && !ignoreNonCollapsedSelection && collapseSelectionLocal)
         {
-            return Actions.invoke(context!, new UpdateSelectionIntent(((EditableTextState)this.state)._value, TextSelection.CreateCollapsed(offset: (((DirectionalTextEditingIntent)intent).forward ? selectionLocal.end : selectionLocal.start)), SelectionChangedCause.keyboard));
+            return Actions.invoke(context!, new UpdateSelectionIntent(state._value, TextSelection.CreateCollapsed(offset: intent.forward ? selectionLocal.end : selectionLocal.start), SelectionChangedCause.keyboard));
         }
-        global::Doroti.Ui.TextPosition extentLocal = ((global::Doroti.Ui.TextPosition)((global::Doroti.Framework.Services.TextSelection)selectionLocal).extent);
-        if (((DirectionalCaretMovementIntent)intent).continuesAtWrap)
+        global::Doroti.Ui.TextPosition extentLocal = selectionLocal.extent;
+        if (intent.continuesAtWrap)
         {
-            if ((((DirectionalTextEditingIntent)intent).forward && _isAtWordwrapUpstream(extentLocal)))
+            if (intent.forward && _isAtWordwrapUpstream(extentLocal))
             {
                 extentLocal = new global::Doroti.Ui.TextPosition(offset: extentLocal.offset);
             }
             else
             {
-                if ((!((DirectionalTextEditingIntent)intent).forward && _isAtWordwrapDownstream(extentLocal)))
+                if (!intent.forward && _isAtWordwrapDownstream(extentLocal))
                 {
                     extentLocal = new global::Doroti.Ui.TextPosition(offset: extentLocal.offset, affinity: TextAffinity.upstream);
                 }
             }
         }
-        bool shouldTargetBase = (this.isExpand && ((((DirectionalTextEditingIntent)intent).forward ? (((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset > ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset) : (((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset < ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset))));
-        global::Doroti.Ui.TextPosition newExtent = ((global::Doroti.Ui.TextPosition)this.applyTextBoundary((shouldTargetBase ? ((global::Doroti.Framework.Services.TextSelection)selectionLocal).@base : extentLocal), ((DirectionalTextEditingIntent)intent).forward, this.getTextBoundary()));
-        global::Doroti.Framework.Services.TextSelection newSelection = ((collapseSelectionLocal || ((!this.isExpand && (newExtent.offset == ((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset)))) ? TextSelection.CreateFromPosition(newExtent) : (this.isExpand ? selectionLocal.expandTo(newExtent, (this.extentAtIndex || selectionLocal.isCollapsed)) : selectionLocal.extendTo(newExtent)));
-        bool shouldCollapseToBase = (((DirectionalCaretMovementIntent)intent).collapseAtReversal && ((((((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset - ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset)) * ((((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset - ((global::Doroti.Framework.Services.TextSelection)newSelection).extentOffset))) < 0L));
-        var newRange = (shouldCollapseToBase ? TextSelection.CreateFromPosition(((global::Doroti.Framework.Services.TextSelection)selectionLocal).@base) : newSelection);
-        return Actions.invoke(context!, new UpdateSelectionIntent(((EditableTextState)this.state)._value, newRange, SelectionChangedCause.keyboard));
+        bool shouldTargetBase = isExpand && (intent.forward ? (selectionLocal.baseOffset > selectionLocal.extentOffset) : (selectionLocal.baseOffset < selectionLocal.extentOffset));
+        global::Doroti.Ui.TextPosition newExtent = applyTextBoundary(shouldTargetBase ? selectionLocal.@base : extentLocal, intent.forward, getTextBoundary());
+        global::Doroti.Framework.Services.TextSelection newSelection = (collapseSelectionLocal || !isExpand && (newExtent.offset == selectionLocal.baseOffset)) ? TextSelection.CreateFromPosition(newExtent) : (isExpand ? selectionLocal.expandTo(newExtent, extentAtIndex || selectionLocal.isCollapsed) : selectionLocal.extendTo(newExtent));
+        bool shouldCollapseToBase = intent.collapseAtReversal && (((selectionLocal.baseOffset - selectionLocal.extentOffset) * (selectionLocal.baseOffset - newSelection.extentOffset)) < 0L);
+        var newRange = shouldCollapseToBase ? TextSelection.CreateFromPosition(selectionLocal.@base) : newSelection;
+        return Actions.invoke(context!, new UpdateSelectionIntent(state._value, newRange, SelectionChangedCause.keyboard));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4115,11 +4115,11 @@ internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T> w
     {
         get
         {
-            if (((Foundation.ConstantsLibrary.kIsWeb && this.state.widget.selectionEnabled) && ((EditableTextState)this.state)._value.composing.isValid))
+            if (Foundation.ConstantsLibrary.kIsWeb && state.widget.selectionEnabled && state._value.composing.isValid)
             {
                 return false;
             }
-            return ((EditableTextState)this.state)._value.selection.isValid;
+            return state._value.selection.isValid;
         }
     }
 }
@@ -4137,15 +4137,15 @@ internal class _UpdateTextSelectionVerticallyAction__editable_text<T> : ContextA
 
     public virtual void stopCurrentVerticalRunIfSelectionChanges()
     {
-        global::Doroti.Framework.Services.TextSelection? runSelection = this._runSelection;
-        if ((runSelection is null))
+        global::Doroti.Framework.Services.TextSelection? runSelection = _runSelection;
+        if (runSelection is null)
         {
-            DartRuntimePrimitives.Assert(() => (this._verticalMovementRun is null));
+            DartRuntimePrimitives.Assert(() => _verticalMovementRun is null);
             return;
         }
-        _runSelection = ((EditableTextState)this.state)._value.selection;
-        global::Doroti.Framework.Services.TextSelection currentSelection = this.state.widget.controller.selection;
-        bool continueCurrentRun = (((currentSelection.isValid && currentSelection.isCollapsed) && (((global::Doroti.Framework.Services.TextSelection)currentSelection).baseOffset == ((global::Doroti.Framework.Services.TextSelection)runSelection).baseOffset)) && (((global::Doroti.Framework.Services.TextSelection)currentSelection).extentOffset == ((global::Doroti.Framework.Services.TextSelection)runSelection).extentOffset));
+        _runSelection = state._value.selection;
+        global::Doroti.Framework.Services.TextSelection currentSelection = state.widget.controller.selection;
+        bool continueCurrentRun = currentSelection.isValid && currentSelection.isCollapsed && (currentSelection.baseOffset == runSelection.baseOffset) && (currentSelection.extentOffset == runSelection.extentOffset);
         if (!continueCurrentRun)
         {
             _verticalMovementRun = null;
@@ -4155,24 +4155,24 @@ internal class _UpdateTextSelectionVerticallyAction__editable_text<T> : ContextA
 
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        DartRuntimePrimitives.Assert(() => ((EditableTextState)this.state)._value.selection.isValid);
-        bool collapseSelectionLocal = (((DirectionalCaretMovementIntent)intent).collapseSelection || !this.state.widget.selectionEnabled);
-        global::Doroti.Framework.Services.TextEditingValue value = ((EditableTextState)this.state)._textEditingValueforTextLayoutMetrics;
-        if (!((global::Doroti.Framework.Services.TextEditingValue)value).selection.isValid)
+        DartRuntimePrimitives.Assert(() => state._value.selection.isValid);
+        bool collapseSelectionLocal = intent.collapseSelection || !state.widget.selectionEnabled;
+        global::Doroti.Framework.Services.TextEditingValue value = state._textEditingValueforTextLayoutMetrics;
+        if (!value.selection.isValid)
         {
             return default!;
         }
-        if ((this._verticalMovementRun?.isValid == false))
+        if (_verticalMovementRun?.isValid == false)
         {
             _verticalMovementRun = null;
             _runSelection = null;
         }
-        global::Doroti.Framework.Rendering.VerticalCaretMovementRun currentRun = ((this._verticalMovementRun ?? (global::Doroti.Framework.Rendering.VerticalCaretMovementRun)((EditableTextState)this.state).renderEditable.startVerticalCaretMovement(((EditableTextState)this.state).renderEditable.selection!.extent)));
-        bool shouldMove = ((intent is ExtendSelectionVerticallyToAdjacentPageIntent) ? currentRun.moveByOffset((((intent.forward ? 1.0 : -1.0)) * ((EditableTextState)this.state).renderEditable.size.height)) : (((DirectionalTextEditingIntent)intent).forward ? currentRun.moveNext() : currentRun.movePrevious()));
-        global::Doroti.Ui.TextPosition newExtent = ((global::Doroti.Ui.TextPosition)(shouldMove ? ((global::Doroti.Framework.Rendering.VerticalCaretMovementRun)currentRun).current : (((DirectionalTextEditingIntent)intent).forward ? new global::Doroti.Ui.TextPosition(offset: ((global::Doroti.Framework.Services.TextEditingValue)value).text.Length) : new global::Doroti.Ui.TextPosition(offset: 0L))));
-        global::Doroti.Framework.Services.TextSelection newSelection = (collapseSelectionLocal ? TextSelection.CreateFromPosition(newExtent) : ((global::Doroti.Framework.Services.TextEditingValue)value).selection.extendTo(newExtent));
+        global::Doroti.Framework.Rendering.VerticalCaretMovementRun currentRun = _verticalMovementRun ?? state.renderEditable.startVerticalCaretMovement(state.renderEditable.selection!.extent);
+        bool shouldMove = (intent is ExtendSelectionVerticallyToAdjacentPageIntent) ? currentRun.moveByOffset((intent.forward ? 1.0 : -1.0) * state.renderEditable.size.height) : (intent.forward ? currentRun.moveNext() : currentRun.movePrevious());
+        global::Doroti.Ui.TextPosition newExtent = shouldMove ? currentRun.current : (intent.forward ? new global::Doroti.Ui.TextPosition(offset: value.text.Length) : new global::Doroti.Ui.TextPosition(offset: 0L));
+        global::Doroti.Framework.Services.TextSelection newSelection = collapseSelectionLocal ? TextSelection.CreateFromPosition(newExtent) : value.selection.extendTo(newExtent);
         Actions.invoke(context!, new UpdateSelectionIntent(value, newSelection, SelectionChangedCause.keyboard));
-        if ((Equals(((EditableTextState)this.state)._value.selection, newSelection)))
+        if (Equals(state._value.selection, newSelection))
         {
             _verticalMovementRun = currentRun;
             _runSelection = newSelection;
@@ -4184,11 +4184,11 @@ internal class _UpdateTextSelectionVerticallyAction__editable_text<T> : ContextA
     {
         get
         {
-            if (((Foundation.ConstantsLibrary.kIsWeb && this.state.widget.selectionEnabled) && ((EditableTextState)this.state)._value.composing.isValid))
+            if (Foundation.ConstantsLibrary.kIsWeb && state.widget.selectionEnabled && state._value.composing.isValid)
             {
                 return false;
             }
-            return ((EditableTextState)this.state)._value.selection.isValid;
+            return state._value.selection.isValid;
         }
     }
 }
@@ -4206,7 +4206,7 @@ internal class _WebComposingDisablingCallbackAction__editable_text<T> : Callback
     {
         get
         {
-            if (((Foundation.ConstantsLibrary.kIsWeb && this.state.widget.selectionEnabled) && ((EditableTextState)this.state)._value.composing.isValid))
+            if (Foundation.ConstantsLibrary.kIsWeb && state.widget.selectionEnabled && state._value.composing.isValid)
             {
                 return false;
             }
@@ -4226,11 +4226,11 @@ internal class _SelectAllAction__editable_text : ContextAction<SelectAllTextInte
 
     public override object? invoke(SelectAllTextIntent intent, BuildContext? context = null)
     {
-        if (!this.state.widget.selectionEnabled)
+        if (!state.widget.selectionEnabled)
         {
             return null;
         }
-        return Actions.invoke(context!, new UpdateSelectionIntent(((EditableTextState)this.state)._value, new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: ((EditableTextState)this.state)._value.text.Length), ((SelectAllTextIntent)intent).cause));
+        return Actions.invoke(context!, new UpdateSelectionIntent(state._value, new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: state._value.text.Length), intent.cause));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4247,21 +4247,21 @@ internal class _CopySelectionAction__editable_text : ContextAction<CopySelection
 
     public override object? invoke(CopySelectionTextIntent intent, BuildContext? context = null)
     {
-        if ((!((EditableTextState)this.state)._value.selection.isValid || ((EditableTextState)this.state)._value.selection.isCollapsed))
+        if (!state._value.selection.isValid || state._value.selection.isCollapsed)
         {
             return default!;
         }
-        if (!this.state.widget.selectionEnabled)
+        if (!state.widget.selectionEnabled)
         {
             return default!;
         }
-        if (((CopySelectionTextIntent)intent).collapseSelection)
+        if (intent.collapseSelection)
         {
-            this.state.cutSelection(((CopySelectionTextIntent)intent).cause);
+            state.cutSelection(intent.cause);
         }
         else
         {
-            this.state.copySelection(((CopySelectionTextIntent)intent).cause);
+            state.copySelection(intent.cause);
         }
         return null;
     }
@@ -4279,11 +4279,11 @@ internal class _PasteSelectionAction__editable_text : ContextAction<PasteTextInt
 
     public override object? invoke(PasteTextIntent intent, BuildContext? context = null)
     {
-        if (!this.state.widget.selectionEnabled)
+        if (!state.widget.selectionEnabled)
         {
             return default!;
         }
-        DartRuntimePrimitives.Ignore(this.state._pasteTextWithReporting(((PasteTextIntent)intent).cause));
+        DartRuntimePrimitives.Ignore(state._pasteTextWithReporting(intent.cause));
         return null;
     }
 
@@ -4315,13 +4315,13 @@ internal class _EditableTextTapOutsideAction__editable_text : ContextAction<Edit
             case TargetPlatform.iOS:
             case TargetPlatform.fuchsia:
                 {
-                    switch (((EditableTextTapOutsideIntent)intent).pointerDownEvent.kind)
+                    switch (intent.pointerDownEvent.kind)
                     {
                         case PointerDeviceKind.touch:
                             {
                                 if (Foundation.ConstantsLibrary.kIsWeb)
                                 {
-                                    ((EditableTextTapOutsideIntent)intent).focusNode.unfocus();
+                                    intent.focusNode.unfocus();
                                 }
                                 break;
                             }
@@ -4330,7 +4330,7 @@ internal class _EditableTextTapOutsideAction__editable_text : ContextAction<Edit
                         case PointerDeviceKind.invertedStylus:
                         case PointerDeviceKind.unknown:
                             {
-                                ((EditableTextTapOutsideIntent)intent).focusNode.unfocus();
+                                intent.focusNode.unfocus();
                                 break;
                             }
                         case PointerDeviceKind.trackpad:
@@ -4344,7 +4344,7 @@ internal class _EditableTextTapOutsideAction__editable_text : ContextAction<Edit
             case TargetPlatform.macOS:
             case TargetPlatform.windows:
                 {
-                    ((EditableTextTapOutsideIntent)intent).focusNode.unfocus();
+                    intent.focusNode.unfocus();
                     break;
                 }
         }
@@ -4370,25 +4370,25 @@ internal class _OverridingTextStyleTextSpanUtils__editable_text
 {
     public static global::Doroti.Framework.Painting.TextSpan applyTextSpacingOverrides(double? lineHeightScaleFactor = null, double? letterSpacing = null, double? wordSpacing = null, global::Doroti.Framework.Painting.TextSpan textSpan = default!)
     {
-        if ((((lineHeightScaleFactor is null) && (letterSpacing is null)) && (wordSpacing is null)))
+        if ((lineHeightScaleFactor is null) && (letterSpacing is null) && (wordSpacing is null))
         {
             return textSpan;
         }
-        return ((global::Doroti.Framework.Painting.TextSpan)_applyTextStyleOverrides(new global::Doroti.Framework.Painting.TextStyle(height: lineHeightScaleFactor, letterSpacing: letterSpacing, wordSpacing: wordSpacing), textSpan));
+        return _applyTextStyleOverrides(new global::Doroti.Framework.Painting.TextStyle(height: lineHeightScaleFactor, letterSpacing: letterSpacing, wordSpacing: wordSpacing), textSpan);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Framework.Painting.TextSpan _applyTextStyleOverrides(global::Doroti.Framework.Painting.TextStyle overrideTextStyle, global::Doroti.Framework.Painting.TextSpan textSpan)
     {
-        return new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Painting.TextSpan)textSpan).text, children: ((global::Doroti.Framework.Painting.TextSpan)textSpan).children?.map<global::Doroti.Framework.Painting.InlineSpan, global::Doroti.Framework.Painting.InlineSpan>(((child) =>
+        return new global::Doroti.Framework.Painting.TextSpan(text: textSpan.text, children: textSpan.children?.map<global::Doroti.Framework.Painting.InlineSpan, global::Doroti.Framework.Painting.InlineSpan>((child) =>
         {
-            if (((child is global::Doroti.Framework.Painting.TextSpan) && (Equals(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Painting.TextSpan)child)), typeof(global::Doroti.Framework.Painting.TextSpan)))))
+            if ((child is global::Doroti.Framework.Painting.TextSpan) && Equals(DartRuntimePrimitives.RuntimeType((global::Doroti.Framework.Painting.TextSpan)child), typeof(global::Doroti.Framework.Painting.TextSpan)))
             {
-                return ((global::Doroti.Framework.Painting.InlineSpan)_applyTextStyleOverrides(overrideTextStyle, ((global::Doroti.Framework.Painting.TextSpan)child)));
+                return _applyTextStyleOverrides(overrideTextStyle, (global::Doroti.Framework.Painting.TextSpan)child);
             }
             return child;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })).ToList(), style: (textSpan.style?.merge(overrideTextStyle) ?? overrideTextStyle), recognizer: ((global::Doroti.Framework.Painting.TextSpan)textSpan).recognizer, mouseCursor: ((global::Doroti.Framework.Painting.TextSpan)textSpan).mouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onExit, semanticsLabel: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsLabel, semanticsIdentifier: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsIdentifier, locale: ((global::Doroti.Framework.Painting.TextSpan)textSpan).locale, spellOut: ((global::Doroti.Framework.Painting.TextSpan)textSpan).spellOut);
+        }).ToList(), style: textSpan.style?.merge(overrideTextStyle) ?? overrideTextStyle, recognizer: textSpan.recognizer, mouseCursor: textSpan.mouseCursor, onEnter: textSpan.onEnter, onExit: textSpan.onExit, semanticsLabel: textSpan.semanticsLabel, semanticsIdentifier: textSpan.semanticsIdentifier, locale: textSpan.locale, spellOut: textSpan.spellOut);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

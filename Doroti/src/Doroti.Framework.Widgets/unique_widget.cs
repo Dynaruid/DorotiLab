@@ -13,8 +13,8 @@ public abstract class UniqueWidget<T> : StatefulWidget where T : IState
     {
         get
         {
-            var globalKey = ((GlobalKey<T>?)this.key!)!;
-            return ((GlobalKey<T>)globalKey).currentState;
+            var globalKey = ((GlobalKey<T>?)key!)!;
+            return globalKey.currentState;
         }
     }
 }

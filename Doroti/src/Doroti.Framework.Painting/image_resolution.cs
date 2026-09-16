@@ -23,18 +23,18 @@ public class AssetImage : AssetBundleImageProvider
         this.package = package;
     }
 
-    public virtual string keyName => ((this.package is null) ? this.assetName : $"packages/{this.package}/{this.assetName}");
+    public virtual string keyName => (package is null) ? assetName : $"packages/{package}/{assetName}";
     public override Future<AssetBundleImageKey> obtainKey(ImageConfiguration configuration)
     {
-        AssetBundle chosenBundle = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? Asset_bundleLibrary.rootBundle);
+        AssetBundle chosenBundle = (bundle ?? configuration.bundle) ?? Asset_bundleLibrary.rootBundle;
         Completer<AssetBundleImageKey>? completer = default!;
         Future<AssetBundleImageKey>? result = default!;
-        _ = AssetManifest.loadFromAssetBundle(chosenBundle).then((Action<AssetManifest>)((manifest) =>
+        _ = AssetManifest.loadFromAssetBundle(chosenBundle).then((manifest) =>
         {
-            IEnumerable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(this.keyName);
-            AssetMetadata chosenVariant = _chooseVariant(this.keyName, configuration, candidateVariants);
-            var keyLocal = new AssetBundleImageKey(bundle: chosenBundle, name: chosenVariant.key, scale: (chosenVariant.targetDevicePixelRatio ?? _naturalResolution));
-            if ((completer is not null))
+            IEnumerable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(keyName);
+            AssetMetadata chosenVariant = _chooseVariant(keyName, configuration, candidateVariants);
+            var keyLocal = new AssetBundleImageKey(bundle: chosenBundle, name: chosenVariant.key, scale: chosenVariant.targetDevicePixelRatio ?? _naturalResolution);
+            if (completer is not null)
             {
                 completer.complete(keyLocal);
             }
@@ -42,13 +42,13 @@ public class AssetImage : AssetBundleImageProvider
             {
                 result = new SynchronousFuture<AssetBundleImageKey>(keyLocal);
             }
-        })).onError(((error, stack) =>
+        }).onError((error, stack) =>
         {
-            DartRuntimePrimitives.Assert(() => (completer is not null));
-            DartRuntimePrimitives.Assert(() => (result is null));
+            DartRuntimePrimitives.Assert(() => completer is not null);
+            DartRuntimePrimitives.Assert(() => result is null);
             completer!.completeError(error, stack);
-        }));
-        if ((result is not null))
+        });
+        if (result is not null)
         {
             return result!;
         }
@@ -59,16 +59,16 @@ public class AssetImage : AssetBundleImageProvider
 
     internal virtual AssetMetadata _chooseVariant(string mainAssetKey, ImageConfiguration config, IEnumerable<AssetMetadata>? candidateVariants)
     {
-        if ((((candidateVariants is null) || (candidateVariants.Count() == 0)) || (((ImageConfiguration)config).devicePixelRatio is null)))
+        if ((candidateVariants is null) || (candidateVariants.Count() == 0) || (config.devicePixelRatio is null))
         {
             return new AssetMetadata(key: mainAssetKey, targetDevicePixelRatio: null, main: true);
         }
         var candidatesByDevicePixelRatio = new SortedDictionary<double, AssetMetadata>();
         foreach (AssetMetadata candidate in candidateVariants)
         {
-            candidatesByDevicePixelRatio[(candidate.targetDevicePixelRatio ?? _naturalResolution)] = candidate;
+            candidatesByDevicePixelRatio[candidate.targetDevicePixelRatio ?? _naturalResolution] = candidate;
         }
-        return _findBestVariant(candidatesByDevicePixelRatio, DartRuntimePrimitives.RequireValue(((ImageConfiguration)config).devicePixelRatio));
+        return _findBestVariant(candidatesByDevicePixelRatio, DartRuntimePrimitives.RequireValue(config.devicePixelRatio));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -80,15 +80,15 @@ public class AssetImage : AssetBundleImageProvider
         }
         double? lower = candidatesByDpr.lastKeyBefore(value);
         double? upper = candidatesByDpr.firstKeyAfter(value);
-        if ((lower is null))
+        if (lower is null)
         {
             return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
         }
-        if ((upper is null))
+        if (upper is null)
         {
             return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower))!;
         }
-        if (((value < Image_resolutionLibrary._kLowDprLimit) || (value > (((DartRuntimePrimitives.RequireValue(lower) + DartRuntimePrimitives.RequireValue(upper))) / 2L))))
+        if ((value < Image_resolutionLibrary._kLowDprLimit) || (value > ((DartRuntimePrimitives.RequireValue(lower) + DartRuntimePrimitives.RequireValue(upper)) / 2L)))
         {
             return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
         }
@@ -103,14 +103,14 @@ public class AssetImage : AssetBundleImageProvider
     {
         var __other = other as AssetImage;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is AssetImage) && (((AssetImage)((AssetImage)__other)).keyName == this.keyName)) && (Equals(((AssetImage)((AssetImage)__other)).bundle, this.bundle)));
+        return (__other is AssetImage) && (__other.keyName == keyName) && Equals(__other.bundle, bundle);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.keyName, this.bundle);
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage"))}(bundle: {this.bundle}, name: \"{this.keyName}\")";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(keyName, bundle);
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage")}(bundle: {bundle}, name: \"{keyName}\")";
 }
 

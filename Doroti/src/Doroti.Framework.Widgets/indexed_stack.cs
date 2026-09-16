@@ -28,13 +28,13 @@ public class IndexedStack : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        var wrappedChildren = new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) =>
+        var wrappedChildren = new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)children.Count))), (i) =>
         {
-            var isSelected = (i == this.index);
-            return new _VisibilityScope__indexed_stack(isVisible: isSelected, child: new ExcludeFocus(excluding: !isSelected, child: this.children[(int)(i)]));
+            var isSelected = i == index;
+            return new _VisibilityScope__indexed_stack(isVisible: isSelected, child: new ExcludeFocus(excluding: !isSelected, child: children[i]));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
-        return ((Widget)new _RawIndexedStack__indexed_stack(alignment: this.alignment, textDirection: this.textDirection, clipBehavior: this.clipBehavior, sizing: this.sizing, index: this.index, children: wrappedChildren));
+        }));
+        return new _RawIndexedStack__indexed_stack(alignment: alignment, textDirection: textDirection, clipBehavior: clipBehavior, sizing: sizing, index: index, children: wrappedChildren);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -47,16 +47,16 @@ public class _RawIndexedStack__indexed_stack : Stack
     internal _RawIndexedStack__indexed_stack(global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.StackFit sizing = StackFit.loose, long? index = 0, List<Widget> children = default!) : base(alignment: alignment ?? AlignmentDirectional.topStart, textDirection: textDirection, clipBehavior: clipBehavior, children: children ?? new List<Widget>(), fit: sizing)
     {
         this.index = index;
-        System.Diagnostics.Debug.Assert((((index is null) || (((DartRuntimePrimitives.RequireValue(index) == 0L) && (checked((long)(this.children.Count)) == 0L)))) || (((index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked((long)(this.children.Count)))))));
+        System.Diagnostics.Debug.Assert((index is null) || (DartRuntimePrimitives.RequireValue(index) == 0L) && (checked(this.children.Count) == 0L) || (index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked(this.children.Count)));
     }
 
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual bool _debugCheckHasDirectionality(BuildContext context)
     {
-        if (((this.alignment is global::Doroti.Framework.Painting.AlignmentDirectional) && (this.textDirection is null)))
+        if ((alignment is global::Doroti.Framework.Painting.AlignmentDirectional) && (textDirection is null))
         {
             global::Doroti.Framework.Painting.AlignmentDirectional alignment__as4557 = (global::Doroti.Framework.Painting.AlignmentDirectional)alignment;
-            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: ((Equals(this.alignment, AlignmentDirectional.topStart)) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null), alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as4557', or an explicit 'textDirection', to the {this.GetType()}."));
+            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: Equals(alignment, AlignmentDirectional.topStart) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null, alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as4557', or an explicit 'textDirection', to the {GetType()}."));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -65,7 +65,7 @@ public class _RawIndexedStack__indexed_stack : Stack
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderIndexedStack(index: this.index, fit: this.fit, clipBehavior: this.clipBehavior, alignment: this.alignment, textDirection: ((this.textDirection ?? Directionality.maybeOf(context)))));
+        return new global::Doroti.Framework.Rendering.RenderIndexedStack(index: index, fit: fit, clipBehavior: clipBehavior, alignment: alignment, textDirection: textDirection ?? Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,18 +76,18 @@ public class _RawIndexedStack__indexed_stack : Stack
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderIndexedStack>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.index = this.index;
-    __cascade.fit = this.fit;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.alignment = this.alignment;
-    __cascade.textDirection = ((this.textDirection ?? Directionality.maybeOf(context)));
+    __cascade.index = index;
+    __cascade.fit = fit;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.alignment = alignment;
+    __cascade.textDirection = textDirection ?? Directionality.maybeOf(context);
     return __cascade;
 }))());
     }
 
     public override MultiChildRenderObjectElement createElement()
     {
-        return ((MultiChildRenderObjectElement)new _IndexedStackElement__indexed_stack(this));
+        return new _IndexedStackElement__indexed_stack(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,11 +102,11 @@ internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectEleme
     public override _RawIndexedStack__indexed_stack widget => ((_RawIndexedStack__indexed_stack?)base.widget)!;
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
-        long? indexLocal = ((_RawIndexedStack__indexed_stack)this.widget).index;
-        if (((indexLocal is not null) && Enumerable.Any(this.children)))
+        long? indexLocal = widget.index;
+        if ((indexLocal is not null) && Enumerable.Any(children))
         {
             long index__6279__value6418 = DartRuntimePrimitives.RequireValue(indexLocal);
-            visitor(this.children.elementAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__6279__value6418))));
+            visitor(children.elementAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__6279__value6418))));
         }
     }
 
@@ -136,11 +136,11 @@ public class Visibility : StatelessWidget
         this.maintainSemantics = maintainSemantics;
         this.maintainInteractivity = maintainInteractivity;
         this.maintainFocusability = maintainFocusability;
-        System.Diagnostics.Debug.Assert((maintainState || !maintainAnimation));
-        System.Diagnostics.Debug.Assert((maintainAnimation || !maintainSize));
-        System.Diagnostics.Debug.Assert((maintainSize || !maintainSemantics));
-        System.Diagnostics.Debug.Assert((maintainSize || !maintainInteractivity));
-        System.Diagnostics.Debug.Assert((maintainState || !maintainFocusability));
+        System.Diagnostics.Debug.Assert(maintainState || !maintainAnimation);
+        System.Diagnostics.Debug.Assert(maintainAnimation || !maintainSize);
+        System.Diagnostics.Debug.Assert(maintainSize || !maintainSemantics);
+        System.Diagnostics.Debug.Assert(maintainSize || !maintainInteractivity);
+        System.Diagnostics.Debug.Assert(maintainState || !maintainFocusability);
     }
 
     public static Visibility CreateMaintain(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool visible = true)
@@ -162,17 +162,17 @@ public class Visibility : StatelessWidget
     {
         var isVisibleLocal = true;
         var ancestorContext = context;
-        InheritedElement? ancestor = ((InheritedElement?)ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>());
-        while ((isVisibleLocal && (ancestor is not null)))
+        InheritedElement? ancestor = ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
+        while (isVisibleLocal && (ancestor is not null))
         {
             var scope = ((_VisibilityScope__indexed_stack?)context.dependOnInheritedElement(ancestor))!;
-            isVisibleLocal = ((_VisibilityScope__indexed_stack)scope).isVisible;
-            ancestor.visitAncestorElements(((global::System.Func<Element, bool>)((parent) =>
+            isVisibleLocal = scope.isVisible;
+            ancestor.visitAncestorElements((parent) =>
             {
                 ancestorContext = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
                 return false;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            });
             ancestor = ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
         }
         return isVisibleLocal;
@@ -181,44 +181,44 @@ public class Visibility : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget result = ((Widget)new ExcludeFocus(excluding: (!this.visible && !this.maintainFocusability), child: this.child));
-        if (this.maintainSize)
+        Widget result = new ExcludeFocus(excluding: !visible && !maintainFocusability, child: child);
+        if (maintainSize)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new _Visibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, child: new IgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), child: result)));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new _Visibility__indexed_stack(visible: visible, maintainSemantics: maintainSemantics, child: new IgnorePointer(ignoring: !visible && !maintainInteractivity, child: result)));
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => !this.maintainInteractivity);
-            DartRuntimePrimitives.Assert(() => !this.maintainSemantics);
-            DartRuntimePrimitives.Assert(() => !this.maintainSize);
-            if (this.maintainState)
+            DartRuntimePrimitives.Assert(() => !maintainInteractivity);
+            DartRuntimePrimitives.Assert(() => !maintainSemantics);
+            DartRuntimePrimitives.Assert(() => !maintainSize);
+            if (maintainState)
             {
-                if (!this.maintainAnimation)
+                if (!maintainAnimation)
                 {
-                    result = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: result));
+                    result = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: visible, child: result));
                 }
-                result = DartRuntimePrimitives.ConvertValue<Widget>(new Offstage(offstage: !this.visible, child: result));
+                result = DartRuntimePrimitives.ConvertValue<Widget>(new Offstage(offstage: !visible, child: result));
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => !this.maintainAnimation);
-                DartRuntimePrimitives.Assert(() => !this.maintainState);
-                result = (this.visible ? this.child : this.replacement);
+                DartRuntimePrimitives.Assert(() => !maintainAnimation);
+                DartRuntimePrimitives.Assert(() => !maintainState);
+                result = visible ? child : replacement;
             }
         }
-        return ((Widget)new _VisibilityScope__indexed_stack(isVisible: this.visible, child: result));
+        return new _VisibilityScope__indexed_stack(isVisible: visible, child: result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("visible", value: this.visible, ifFalse: "hidden", ifTrue: "visible"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainState", value: this.maintainState, ifFalse: "maintainState"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainAnimation", value: this.maintainAnimation, ifFalse: "maintainAnimation"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSize", value: this.maintainSize, ifFalse: "maintainSize"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSemantics", value: this.maintainSemantics, ifFalse: "maintainSemantics"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainInteractivity", value: this.maintainInteractivity, ifFalse: "maintainInteractivity"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("visible", value: visible, ifFalse: "hidden", ifTrue: "visible"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainState", value: maintainState, ifFalse: "maintainState"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainAnimation", value: maintainAnimation, ifFalse: "maintainAnimation"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSize", value: maintainSize, ifFalse: "maintainSize"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSemantics", value: maintainSemantics, ifFalse: "maintainSemantics"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainInteractivity", value: maintainInteractivity, ifFalse: "maintainInteractivity"));
     }
 
 }
@@ -235,7 +235,7 @@ internal class _VisibilityScope__indexed_stack : InheritedWidget
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __old = (_VisibilityScope__indexed_stack)oldWidget;
-        return (this.isVisible != ((_VisibilityScope__indexed_stack)__old).isVisible);
+        return isVisible != __old.isVisible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -263,10 +263,10 @@ public class SliverVisibility : StatelessWidget
         this.maintainSize = maintainSize;
         this.maintainSemantics = maintainSemantics;
         this.maintainInteractivity = maintainInteractivity;
-        System.Diagnostics.Debug.Assert((maintainState || !maintainAnimation));
-        System.Diagnostics.Debug.Assert((maintainAnimation || !maintainSize));
-        System.Diagnostics.Debug.Assert((maintainSize || !maintainSemantics));
-        System.Diagnostics.Debug.Assert((maintainSize || !maintainInteractivity));
+        System.Diagnostics.Debug.Assert(maintainState || !maintainAnimation);
+        System.Diagnostics.Debug.Assert(maintainAnimation || !maintainSize);
+        System.Diagnostics.Debug.Assert(maintainSize || !maintainSemantics);
+        System.Diagnostics.Debug.Assert(maintainSize || !maintainInteractivity);
     }
 
     public static SliverVisibility CreateMaintain(global::Doroti.Framework.Foundation.Key? key = null, Widget sliver = default!, Widget replacementSliver = default!, bool visible = true)
@@ -286,39 +286,39 @@ public class SliverVisibility : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        if (this.maintainSize)
+        if (maintainSize)
         {
-            Widget result = this.sliver;
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new SliverIgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), sliver: result));
-            return ((Widget)new _SliverVisibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, sliver: result));
+            Widget result = sliver;
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new SliverIgnorePointer(ignoring: !visible && !maintainInteractivity, sliver: result));
+            return new _SliverVisibility__indexed_stack(visible: visible, maintainSemantics: maintainSemantics, sliver: result);
         }
-        DartRuntimePrimitives.Assert(() => !this.maintainInteractivity);
-        DartRuntimePrimitives.Assert(() => !this.maintainSemantics);
-        DartRuntimePrimitives.Assert(() => !this.maintainSize);
-        if (this.maintainState)
+        DartRuntimePrimitives.Assert(() => !maintainInteractivity);
+        DartRuntimePrimitives.Assert(() => !maintainSemantics);
+        DartRuntimePrimitives.Assert(() => !maintainSize);
+        if (maintainState)
         {
-            Widget resultLocal = this.sliver;
-            if (!this.maintainAnimation)
+            Widget resultLocal = sliver;
+            if (!maintainAnimation)
             {
-                resultLocal = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: this.sliver));
+                resultLocal = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: visible, child: sliver));
             }
-            return ((Widget)new SliverOffstage(sliver: resultLocal, offstage: !this.visible));
+            return new SliverOffstage(sliver: resultLocal, offstage: !visible);
         }
-        DartRuntimePrimitives.Assert(() => !this.maintainAnimation);
-        DartRuntimePrimitives.Assert(() => !this.maintainState);
-        return (this.visible ? this.sliver : this.replacementSliver);
+        DartRuntimePrimitives.Assert(() => !maintainAnimation);
+        DartRuntimePrimitives.Assert(() => !maintainState);
+        return visible ? sliver : replacementSliver;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("visible", value: this.visible, ifFalse: "hidden", ifTrue: "visible"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainState", value: this.maintainState, ifFalse: "maintainState"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainAnimation", value: this.maintainAnimation, ifFalse: "maintainAnimation"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSize", value: this.maintainSize, ifFalse: "maintainSize"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSemantics", value: this.maintainSemantics, ifFalse: "maintainSemantics"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainInteractivity", value: this.maintainInteractivity, ifFalse: "maintainInteractivity"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("visible", value: visible, ifFalse: "hidden", ifTrue: "visible"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainState", value: maintainState, ifFalse: "maintainState"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainAnimation", value: maintainAnimation, ifFalse: "maintainAnimation"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSize", value: maintainSize, ifFalse: "maintainSize"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainSemantics", value: maintainSemantics, ifFalse: "maintainSemantics"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("maintainInteractivity", value: maintainInteractivity, ifFalse: "maintainInteractivity"));
     }
 
 }
@@ -336,7 +336,7 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderVisibility__indexed_stack(this.visible, this.maintainSemantics));
+        return new _RenderVisibility__indexed_stack(visible, maintainSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -346,8 +346,8 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<_RenderVisibility__indexed_stack>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.visible = this.visible;
-    __cascade.maintainSemantics = this.maintainSemantics;
+    __cascade.visible = visible;
+    __cascade.maintainSemantics = maintainSemantics;
     return __cascade;
 }))());
     }
@@ -367,11 +367,11 @@ public class _RenderVisibility__indexed_stack : global::Doroti.Framework.Renderi
 
     public virtual bool visible
     {
-        get => this._visible;
+        get => _visible;
         set
         {
             var __value = value;
-            if ((__value == this.visible))
+            if (__value == visible)
             {
                 return;
             }
@@ -381,11 +381,11 @@ public class _RenderVisibility__indexed_stack : global::Doroti.Framework.Renderi
     }
     public virtual bool maintainSemantics
     {
-        get => this._maintainSemantics;
+        get => _maintainSemantics;
         set
         {
             var __value = value;
-            if ((__value == this.maintainSemantics))
+            if (__value == maintainSemantics)
             {
                 return;
             }
@@ -395,15 +395,15 @@ public class _RenderVisibility__indexed_stack : global::Doroti.Framework.Renderi
     }
     public override void visitChildrenForSemantics(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        if ((this.maintainSemantics || this.visible))
+        if (maintainSemantics || visible)
         {
-            base.visitChildrenForSemantics((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
+            base.visitChildrenForSemantics(visitor);
         }
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if (!this.visible)
+        if (!visible)
         {
             return;
         }
@@ -425,7 +425,7 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverVisibility__indexed_stack(this.visible, this.maintainSemantics));
+        return new _RenderSliverVisibility__indexed_stack(visible, maintainSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -435,8 +435,8 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverVisibility__indexed_stack>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.visible = this.visible;
-    __cascade.maintainSemantics = this.maintainSemantics;
+    __cascade.visible = visible;
+    __cascade.maintainSemantics = maintainSemantics;
     return __cascade;
 }))());
     }
@@ -456,11 +456,11 @@ public class _RenderSliverVisibility__indexed_stack : global::Doroti.Framework.R
 
     public virtual bool visible
     {
-        get => this._visible;
+        get => _visible;
         set
         {
             var __value = value;
-            if ((__value == this.visible))
+            if (__value == visible)
             {
                 return;
             }
@@ -470,11 +470,11 @@ public class _RenderSliverVisibility__indexed_stack : global::Doroti.Framework.R
     }
     public virtual bool maintainSemantics
     {
-        get => this._maintainSemantics;
+        get => _maintainSemantics;
         set
         {
             var __value = value;
-            if ((__value == this.maintainSemantics))
+            if (__value == maintainSemantics)
             {
                 return;
             }
@@ -484,15 +484,15 @@ public class _RenderSliverVisibility__indexed_stack : global::Doroti.Framework.R
     }
     public override void visitChildrenForSemantics(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        if ((this.maintainSemantics || this.visible))
+        if (maintainSemantics || visible)
         {
-            base.visitChildrenForSemantics((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
+            base.visitChildrenForSemantics(visitor);
         }
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if (!this.visible)
+        if (!visible)
         {
             return;
         }

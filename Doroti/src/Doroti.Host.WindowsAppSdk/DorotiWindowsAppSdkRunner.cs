@@ -1,6 +1,6 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Doroti.Hosting;
@@ -488,8 +488,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                         kind,
                         theme,
                         tintColor = 0xff204060u + (uint)(index & 0x1f),
-                        tintOpacity = (index % 11) / 10d,
-                        luminosityOpacity = (index % 6) / 5d,
+                        tintOpacity = index % 11 / 10d,
+                        luminosityOpacity = index % 6 / 5d,
                     }));
                 requests[index] = acrylic.HandleRuntimeMessageAsync(payload, CancellationToken.None).AsTask();
             }

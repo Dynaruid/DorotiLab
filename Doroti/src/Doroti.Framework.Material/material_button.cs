@@ -73,41 +73,41 @@ public class MaterialButton : global::Doroti.Framework.Widgets.StatelessWidget
         this.height = height;
         this.enableFeedback = enableFeedback;
         this.child = child;
-        System.Diagnostics.Debug.Assert(((elevation is null) || (elevation >= 0.0)));
-        System.Diagnostics.Debug.Assert(((focusElevation is null) || (focusElevation >= 0.0)));
-        System.Diagnostics.Debug.Assert(((hoverElevation is null) || (hoverElevation >= 0.0)));
-        System.Diagnostics.Debug.Assert(((highlightElevation is null) || (highlightElevation >= 0.0)));
-        System.Diagnostics.Debug.Assert(((disabledElevation is null) || (disabledElevation >= 0.0)));
+        System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
+        System.Diagnostics.Debug.Assert((focusElevation is null) || (focusElevation >= 0.0));
+        System.Diagnostics.Debug.Assert((hoverElevation is null) || (hoverElevation >= 0.0));
+        System.Diagnostics.Debug.Assert((highlightElevation is null) || (highlightElevation >= 0.0));
+        System.Diagnostics.Debug.Assert((disabledElevation is null) || (disabledElevation >= 0.0));
     }
 
-    public virtual bool enabled => DartRuntimePrimitives.ConvertValue<bool>(((this.onPressed is not null) || (this.onLongPress is not null)));
+    public virtual bool enabled => DartRuntimePrimitives.ConvertValue<bool>((onPressed is not null) || (onLongPress is not null));
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         ButtonThemeData buttonTheme = ButtonTheme.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)new RawMaterialButton(onPressed: this.onPressed, onLongPress: this.onLongPress, enableFeedback: this.enableFeedback, onHighlightChanged: (global::System.Action<bool>?)this.onHighlightChanged, mouseCursor: this.mouseCursor, fillColor: buttonTheme.getFillColor(this), textStyle: theme.textTheme.labelLarge!.copyWith(color: buttonTheme.getTextColor(this)), focusColor: (this.focusColor ?? buttonTheme.getFocusColor(this)), hoverColor: (this.hoverColor ?? buttonTheme.getHoverColor(this)), highlightColor: (this.highlightColor ?? theme.highlightColor), splashColor: (this.splashColor ?? theme.splashColor), elevation: buttonTheme.getElevation(this), focusElevation: buttonTheme.getFocusElevation(this), hoverElevation: buttonTheme.getHoverElevation(this), highlightElevation: buttonTheme.getHighlightElevation(this), padding: buttonTheme.getPadding(this), visualDensity: (this.visualDensity ?? theme.visualDensity), constraints: buttonTheme.getConstraints(this).copyWith(minWidth: this.minWidth, minHeight: this.height), shape: buttonTheme.getShape(this), clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, animationDuration: buttonTheme.getAnimationDuration(this), materialTapTargetSize: (this.materialTapTargetSize ?? theme.materialTapTargetSize), disabledElevation: (this.disabledElevation ?? 0.0), child: this.child));
+        return new RawMaterialButton(onPressed: onPressed, onLongPress: onLongPress, enableFeedback: enableFeedback, onHighlightChanged: onHighlightChanged, mouseCursor: mouseCursor, fillColor: buttonTheme.getFillColor(this), textStyle: theme.textTheme.labelLarge!.copyWith(color: buttonTheme.getTextColor(this)), focusColor: focusColor ?? buttonTheme.getFocusColor(this), hoverColor: hoverColor ?? buttonTheme.getHoverColor(this), highlightColor: highlightColor ?? theme.highlightColor, splashColor: splashColor ?? theme.splashColor, elevation: buttonTheme.getElevation(this), focusElevation: buttonTheme.getFocusElevation(this), hoverElevation: buttonTheme.getHoverElevation(this), highlightElevation: buttonTheme.getHighlightElevation(this), padding: buttonTheme.getPadding(this), visualDensity: visualDensity ?? theme.visualDensity, constraints: buttonTheme.getConstraints(this).copyWith(minWidth: minWidth, minHeight: height), shape: buttonTheme.getShape(this), clipBehavior: clipBehavior, focusNode: focusNode, autofocus: autofocus, animationDuration: buttonTheme.getAnimationDuration(this), materialTapTargetSize: materialTapTargetSize ?? theme.materialTapTargetSize, disabledElevation: disabledElevation ?? 0.0, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: this.enabled, ifFalse: "disabled"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonTextTheme>("textTheme", this.textTheme, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("textColor", this.textColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledTextColor", this.disabledTextColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", this.focusColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", this.hoverColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", this.highlightColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", this.splashColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Brightness>("colorBrightness", this.colorBrightness, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", this.visualDensity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.FocusNode>("focusNode", this.focusNode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", this.materialTapTargetSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: enabled, ifFalse: "disabled"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonTextTheme>("textTheme", textTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("textColor", textColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledTextColor", disabledTextColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", disabledColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", focusColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", hoverColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", highlightColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", splashColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Brightness>("colorBrightness", colorBrightness, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.FocusNode>("focusNode", focusNode, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", materialTapTargetSize, defaultValue: null));
     }
 
 }

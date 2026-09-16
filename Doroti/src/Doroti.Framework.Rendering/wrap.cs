@@ -29,7 +29,7 @@ public class _AxisSize__wrap
 
     internal _AxisSize__wrap(double mainAxisExtent, double crossAxisExtent)
     {
-        this._size = new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent);
+        _size = new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent);
     }
 
     internal static _AxisSize__wrap CreateFromSize(Size size, global::Doroti.Framework.Painting.Axis direction)
@@ -39,7 +39,7 @@ public class _AxisSize__wrap
 
     internal static global::Doroti.Ui.Size _convert(Size size, global::Doroti.Framework.Painting.Axis direction)
     {
-        return (direction switch { Axis.horizontal => size, Axis.vertical => size.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return direction switch { Axis.horizontal => size, Axis.vertical => size.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -48,14 +48,14 @@ public class _AxisSize__wrap
     public virtual global::Doroti.Ui.Size toSize(global::Doroti.Framework.Painting.Axis direction) => _convert(_size, direction);
     public virtual _AxisSize__wrap applyConstraints(BoxConstraints constraints, global::Doroti.Framework.Painting.Axis direction)
     {
-        BoxConstraints effectiveConstraints = (direction switch { Axis.horizontal => constraints, Axis.vertical => ((BoxConstraints)constraints).flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        BoxConstraints effectiveConstraints = direction switch { Axis.horizontal => constraints, Axis.vertical => constraints.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         return Create_(effectiveConstraints.constrain(_size));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual _AxisSize__wrap flipped => Create_(_size.flipped);
-    public virtual _AxisSize__wrap op_Add(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size((_size.width + other._size.width), Math.Max(_size.height, other._size.height)));
-    public virtual _AxisSize__wrap op_Subtract(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size((_size.width - other._size.width), (_size.height - other._size.height)));
+    public virtual _AxisSize__wrap op_Add(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size(_size.width + other._size.width, Math.Max(_size.height, other._size.height)));
+    public virtual _AxisSize__wrap op_Subtract(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size(_size.width - other._size.width, _size.height - other._size.height));
 }
 
 public enum WrapAlignment
@@ -72,8 +72,8 @@ public static class WrapAlignmentMembers
 {
     internal static (double, double) _distributeSpace(this WrapAlignment value, double freeSpace, double itemSpacing, long itemCount, bool flipped)
     {
-        DartRuntimePrimitives.Assert(() => (itemCount > 0L));
-        return (value switch { WrapAlignment.start => (((double, double))(((flipped ? freeSpace : 0.0), itemSpacing))), WrapAlignment.end => (((double, double))(WrapAlignment.start._distributeSpace(freeSpace, itemSpacing, itemCount, !flipped))), WrapAlignment.spaceBetween when (itemCount < 2L) => (((double, double))(WrapAlignment.start._distributeSpace(freeSpace, itemSpacing, itemCount, flipped))), WrapAlignment.center => (((double, double))(((freeSpace / 2.0), itemSpacing))), WrapAlignment.spaceBetween => (((double, double))((0, ((freeSpace / ((itemCount - 1L))) + itemSpacing)))), WrapAlignment.spaceAround => (((double, double))((((freeSpace / itemCount) / 2L), ((freeSpace / itemCount) + itemSpacing)))), WrapAlignment.spaceEvenly => (((double, double))(((freeSpace / ((itemCount + 1L))), ((freeSpace / ((itemCount + 1L))) + itemSpacing)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Assert(() => itemCount > 0L);
+        return value switch { WrapAlignment.start => (flipped ? freeSpace : 0.0, itemSpacing), WrapAlignment.end => WrapAlignment.start._distributeSpace(freeSpace, itemSpacing, itemCount, !flipped), WrapAlignment.spaceBetween when itemCount < 2L => WrapAlignment.start._distributeSpace(freeSpace, itemSpacing, itemCount, flipped), WrapAlignment.center => (freeSpace / 2.0, itemSpacing), WrapAlignment.spaceBetween => (0, (freeSpace / (itemCount - 1L)) + itemSpacing), WrapAlignment.spaceAround => (freeSpace / itemCount / 2L, (freeSpace / itemCount) + itemSpacing), WrapAlignment.spaceEvenly => (freeSpace / (itemCount + 1L), (freeSpace / (itemCount + 1L)) + itemSpacing), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -87,8 +87,8 @@ public enum WrapCrossAlignment
 
 public static class WrapCrossAlignmentMembers
 {
-    internal static WrapCrossAlignment _flipped(this WrapCrossAlignment value) => (value switch { WrapCrossAlignment.start => WrapCrossAlignment.end, WrapCrossAlignment.end => WrapCrossAlignment.start, WrapCrossAlignment.center => WrapCrossAlignment.center, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-    internal static double _alignment(this WrapCrossAlignment value) => (value switch { WrapCrossAlignment.start => 0, WrapCrossAlignment.end => 1, WrapCrossAlignment.center => 0.5, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal static WrapCrossAlignment _flipped(this WrapCrossAlignment value) => value switch { WrapCrossAlignment.start => WrapCrossAlignment.end, WrapCrossAlignment.end => WrapCrossAlignment.start, WrapCrossAlignment.center => WrapCrossAlignment.center, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    internal static double _alignment(this WrapCrossAlignment value) => value switch { WrapCrossAlignment.start => 0, WrapCrossAlignment.end => 1, WrapCrossAlignment.center => 0.5, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
 }
 
 internal class _RunMetrics__wrap
@@ -105,14 +105,14 @@ internal class _RunMetrics__wrap
 
     public virtual _RunMetrics__wrap? tryAddingNewChild(RenderBox child, _AxisSize__wrap childSize, bool flipMainAxis, double spacing, double maxMainExtent)
     {
-        bool needsNewRun = ((((((_AxisSize__wrap)this.axisSize).mainAxisExtent + ((_AxisSize__wrap)childSize).mainAxisExtent) + spacing) - maxMainExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance);
+        bool needsNewRun = (axisSize.mainAxisExtent + childSize.mainAxisExtent + spacing - maxMainExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance;
         if (needsNewRun)
         {
             return new _RunMetrics__wrap(child, childSize);
         }
         else
         {
-            axisSize = axisSize.op_Add((childSize.op_Add(new _AxisSize__wrap(mainAxisExtent: spacing, crossAxisExtent: 0.0))));
+            axisSize = axisSize.op_Add(childSize.op_Add(new _AxisSize__wrap(mainAxisExtent: spacing, crossAxisExtent: 0.0)));
             childCount += 1L;
             if (flipMainAxis)
             {
@@ -148,24 +148,24 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public RenderWrap(List<RenderBox>? children = null, global::Doroti.Framework.Painting.Axis direction = Axis.horizontal, WrapAlignment alignment = WrapAlignment.start, double spacing = 0.0, WrapAlignment runAlignment = WrapAlignment.start, double runSpacing = 0.0, WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.start, TextDirection? textDirection = null, global::Doroti.Framework.Painting.VerticalDirection verticalDirection = VerticalDirection.down, Clip clipBehavior = Clip.none)
     {
-        this._direction = direction;
-        this._alignment = alignment;
-        this._spacing = spacing;
-        this._runAlignment = runAlignment;
-        this._runSpacing = runSpacing;
-        this._crossAxisAlignment = crossAxisAlignment;
-        this._textDirection = textDirection;
-        this._verticalDirection = verticalDirection;
-        this._clipBehavior = clipBehavior;
+        _direction = direction;
+        _alignment = alignment;
+        _spacing = spacing;
+        _runAlignment = runAlignment;
+        _runSpacing = runSpacing;
+        _crossAxisAlignment = crossAxisAlignment;
+        _textDirection = textDirection;
+        _verticalDirection = verticalDirection;
+        _clipBehavior = clipBehavior;
     }
 
     public virtual global::Doroti.Framework.Painting.Axis direction
     {
-        get => this._direction;
+        get => _direction;
         set
         {
             var __value = value;
-            if ((Equals(this._direction, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_direction, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -175,11 +175,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual WrapAlignment alignment
     {
-        get => this._alignment;
+        get => _alignment;
         set
         {
             var __value = value;
-            if ((Equals(this._alignment, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_alignment, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -189,11 +189,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual double spacing
     {
-        get => this._spacing;
+        get => _spacing;
         set
         {
             var __value = value;
-            if ((this._spacing == DartRuntimePrimitives.RequireValue(__value)))
+            if (_spacing == DartRuntimePrimitives.RequireValue(__value))
             {
                 return;
             }
@@ -203,11 +203,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual WrapAlignment runAlignment
     {
-        get => this._runAlignment;
+        get => _runAlignment;
         set
         {
             var __value = value;
-            if ((Equals(this._runAlignment, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_runAlignment, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -217,11 +217,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual double runSpacing
     {
-        get => this._runSpacing;
+        get => _runSpacing;
         set
         {
             var __value = value;
-            if ((this._runSpacing == DartRuntimePrimitives.RequireValue(__value)))
+            if (_runSpacing == DartRuntimePrimitives.RequireValue(__value))
             {
                 return;
             }
@@ -231,11 +231,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual WrapCrossAlignment crossAxisAlignment
     {
-        get => this._crossAxisAlignment;
+        get => _crossAxisAlignment;
         set
         {
             var __value = value;
-            if ((Equals(this._crossAxisAlignment, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_crossAxisAlignment, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -245,11 +245,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual global::Doroti.Ui.TextDirection? textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((!Equals(this._textDirection, __value)))
+            if (!Equals(_textDirection, __value))
             {
                 _textDirection = __value;
                 markNeedsLayout();
@@ -258,11 +258,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual global::Doroti.Framework.Painting.VerticalDirection verticalDirection
     {
-        get => this._verticalDirection;
+        get => _verticalDirection;
         set
         {
             var __value = value;
-            if ((!Equals(this._verticalDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if (!Equals(_verticalDirection, DartRuntimePrimitives.RequireValue(__value)))
             {
                 _verticalDirection = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsLayout();
@@ -271,11 +271,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -287,13 +287,13 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         get
         {
-            if (((firstChild is not null) && (!Equals(lastChild, firstChild))))
+            if ((firstChild is not null) && (!Equals(lastChild, firstChild)))
             {
-                switch (this.direction)
+                switch (direction)
                 {
                     case Axis.horizontal:
                         {
-                            DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
+                            DartRuntimePrimitives.Assert(() => textDirection is not null);
                             break;
                         }
                     case Axis.vertical:
@@ -302,13 +302,13 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                         }
                 }
             }
-            if (((Equals(this.alignment, WrapAlignment.start)) || (Equals(this.alignment, WrapAlignment.end))))
+            if (Equals(alignment, WrapAlignment.start) || Equals(alignment, WrapAlignment.end))
             {
-                switch (this.direction)
+                switch (direction)
                 {
                     case Axis.horizontal:
                         {
-                            DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
+                            DartRuntimePrimitives.Assert(() => textDirection is not null);
                             break;
                         }
                     case Axis.vertical:
@@ -317,9 +317,9 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                         }
                 }
             }
-            if (((Equals(this.runAlignment, WrapAlignment.start)) || (Equals(this.runAlignment, WrapAlignment.end))))
+            if (Equals(runAlignment, WrapAlignment.start) || Equals(runAlignment, WrapAlignment.end))
             {
-                switch (this.direction)
+                switch (direction)
                 {
                     case Axis.horizontal:
                         {
@@ -327,14 +327,14 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                         }
                     case Axis.vertical:
                         {
-                            DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
+                            DartRuntimePrimitives.Assert(() => textDirection is not null);
                             break;
                         }
                 }
             }
-            if (((Equals(this.crossAxisAlignment, WrapCrossAlignment.start)) || (Equals(this.crossAxisAlignment, WrapCrossAlignment.end))))
+            if (Equals(crossAxisAlignment, WrapCrossAlignment.start) || Equals(crossAxisAlignment, WrapCrossAlignment.end))
             {
-                switch (this.direction)
+                switch (direction)
                 {
                     case Axis.horizontal:
                         {
@@ -342,7 +342,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                         }
                     case Axis.vertical:
                         {
-                            DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
+                            DartRuntimePrimitives.Assert(() => textDirection is not null);
                             break;
                         }
                 }
@@ -353,7 +353,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public override void setupParentData(RenderObject child)
     {
         var __child = (RenderBox)(object)child;
-        if ((__child.parentData is not WrapParentData))
+        if (__child.parentData is not WrapParentData)
         {
             __child.parentData = new WrapParentData();
         }
@@ -361,13 +361,13 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        switch (this.direction)
+        switch (direction)
         {
             case Axis.horizontal:
                 {
                     var widthLocal = 0.0;
                     RenderBox? child = firstChild;
-                    while ((child is not null))
+                    while (child is not null)
                     {
                         widthLocal = Math.Max(widthLocal, child.getMinIntrinsicWidth(double.PositiveInfinity));
                         child = childAfter(child);
@@ -384,13 +384,13 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        switch (this.direction)
+        switch (direction)
         {
             case Axis.horizontal:
                 {
                     var widthLocal = 0.0;
                     RenderBox? child = firstChild;
-                    while ((child is not null))
+                    while (child is not null)
                     {
                         widthLocal += child.getMaxIntrinsicWidth(double.PositiveInfinity);
                         child = childAfter(child);
@@ -407,7 +407,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        switch (this.direction)
+        switch (direction)
         {
             case Axis.horizontal:
                 {
@@ -417,7 +417,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                 {
                     var heightLocal = 0.0;
                     RenderBox? child = firstChild;
-                    while ((child is not null))
+                    while (child is not null)
                     {
                         heightLocal = Math.Max(heightLocal, child.getMinIntrinsicHeight(double.PositiveInfinity));
                         child = childAfter(child);
@@ -430,7 +430,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        switch (this.direction)
+        switch (direction)
         {
             case Axis.horizontal:
                 {
@@ -440,7 +440,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                 {
                     var heightLocal = 0.0;
                     RenderBox? child = firstChild;
-                    while ((child is not null))
+                    while (child is not null)
                     {
                         heightLocal += child.getMaxIntrinsicHeight(double.PositiveInfinity);
                         child = childAfter(child);
@@ -459,19 +459,19 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     internal virtual double _getMainAxisExtent(Size childSize)
     {
-        return (this.direction switch { Axis.horizontal => childSize.width, Axis.vertical => childSize.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return direction switch { Axis.horizontal => childSize.width, Axis.vertical => childSize.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _getCrossAxisExtent(Size childSize)
     {
-        return (this.direction switch { Axis.horizontal => childSize.height, Axis.vertical => childSize.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return direction switch { Axis.horizontal => childSize.height, Axis.vertical => childSize.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Offset _getOffset(double mainAxisOffset, double crossAxisOffset)
     {
-        return (this.direction switch { Axis.horizontal => new global::Doroti.Ui.Offset(mainAxisOffset, crossAxisOffset), Axis.vertical => new global::Doroti.Ui.Offset(crossAxisOffset, mainAxisOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return direction switch { Axis.horizontal => new global::Doroti.Ui.Offset(mainAxisOffset, crossAxisOffset), Axis.vertical => new global::Doroti.Ui.Offset(crossAxisOffset, mainAxisOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -479,31 +479,31 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         get
         {
-            bool flipHorizontal = ((this.textDirection ?? TextDirection.ltr) switch { TextDirection.ltr => false, TextDirection.rtl => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            bool flipVertical = (this.verticalDirection switch { VerticalDirection.down => false, VerticalDirection.up => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return (this.direction switch { Axis.horizontal => (((bool, bool))((flipHorizontal, flipVertical))), Axis.vertical => (((bool, bool))((flipVertical, flipHorizontal))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            bool flipHorizontal = (textDirection ?? TextDirection.ltr) switch { TextDirection.ltr => false, TextDirection.rtl => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            bool flipVertical = verticalDirection switch { VerticalDirection.down => false, VerticalDirection.up => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            return direction switch { Axis.horizontal => (flipHorizontal, flipVertical), Axis.vertical => (flipVertical, flipHorizontal), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
     }
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        if ((firstChild is null))
+        if (firstChild is null)
         {
             return null;
         }
-        BoxConstraints childConstraints = (this.direction switch { Axis.horizontal => new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), Axis.vertical => new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        var (childrenAxisSize, runMetrics) = _computeRuns(constraints, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild);
-        _AxisSize__wrap containerAxisSize = childrenAxisSize.applyConstraints(constraints, this.direction);
+        BoxConstraints childConstraints = direction switch { Axis.horizontal => new BoxConstraints(maxWidth: constraints.maxWidth), Axis.vertical => new BoxConstraints(maxHeight: constraints.maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var (childrenAxisSize, runMetrics) = _computeRuns(constraints, ChildLayoutHelper.dryLayoutChild);
+        _AxisSize__wrap containerAxisSize = childrenAxisSize.applyConstraints(constraints, direction);
         BaselineOffset baselineOffset = BaselineOffset.noBaseline;
         void findHighestBaseline(Offset offset, RenderBox child)
         {
-            baselineOffset = baselineOffset.minOf((new BaselineOffset(child.getDryBaseline(childConstraints, baseline)).op_Add(offset.dy)));
+            baselineOffset = baselineOffset.minOf(new BaselineOffset(child.getDryBaseline(childConstraints, baseline)).op_Add(offset.dy));
         }
         Size getChildSize(RenderBox child)
         {
             return child.getDryLayout(childConstraints);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        _positionChildren(runMetrics, childrenAxisSize, containerAxisSize, (Action<Offset, RenderBox>)findHighestBaseline, (Func<RenderBox, Size>)getChildSize);
+        _positionChildren(runMetrics, childrenAxisSize, containerAxisSize, findHighestBaseline, getChildSize);
         return baselineOffset.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -517,121 +517,121 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual global::Doroti.Ui.Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
     {
-        var (childConstraints, mainAxisLimit) = (this.direction switch { Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (childConstraints, mainAxisLimit) = direction switch { Axis.horizontal => ((BoxConstraints, double))(new BoxConstraints(maxWidth: constraints.maxWidth), constraints.maxWidth), Axis.vertical => ((BoxConstraints, double))(new BoxConstraints(maxHeight: constraints.maxHeight), constraints.maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var mainAxisExtent = 0.0;
         var crossAxisExtent = 0.0;
         var runMainAxisExtent = 0.0;
         var runCrossAxisExtent = 0.0;
         var childCount = 0L;
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             global::Doroti.Ui.Size childSize = layoutChild(child, childConstraints);
             double childMainAxisExtent = _getMainAxisExtent(childSize);
             double childCrossAxisExtent = _getCrossAxisExtent(childSize);
-            if (((childCount > 0L) && (((runMainAxisExtent + childMainAxisExtent) + this.spacing) > mainAxisLimit)))
+            if ((childCount > 0L) && ((runMainAxisExtent + childMainAxisExtent + spacing) > mainAxisLimit))
             {
                 mainAxisExtent = Math.Max(mainAxisExtent, runMainAxisExtent);
-                crossAxisExtent += (runCrossAxisExtent + this.runSpacing);
+                crossAxisExtent += runCrossAxisExtent + runSpacing;
                 runMainAxisExtent = 0.0;
                 runCrossAxisExtent = 0.0;
                 childCount = 0L;
             }
             runMainAxisExtent += childMainAxisExtent;
             runCrossAxisExtent = Math.Max(runCrossAxisExtent, childCrossAxisExtent);
-            if ((childCount > 0L))
+            if (childCount > 0L)
             {
-                runMainAxisExtent += this.spacing;
+                runMainAxisExtent += spacing;
             }
             childCount += 1L;
             child = childAfter(child);
         }
         crossAxisExtent += runCrossAxisExtent;
         mainAxisExtent = Math.Max(mainAxisExtent, runMainAxisExtent);
-        return constraints.constrain((this.direction switch { Axis.horizontal => new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent), Axis.vertical => new global::Doroti.Ui.Size(crossAxisExtent, mainAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return constraints.constrain(direction switch { Axis.horizontal => new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent), Axis.vertical => new global::Doroti.Ui.Size(crossAxisExtent, mainAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Size _getChildSize(RenderBox child) => ((RenderBox)child).size;
+    internal static global::Doroti.Ui.Size _getChildSize(RenderBox child) => child.size;
     internal static void _setChildPosition(Offset offset, RenderBox child)
     {
-        (((WrapParentData?)(object?)child.parentData!)!).offset = offset;
+        ((WrapParentData?)(object?)child.parentData!)!.offset = offset;
     }
 
     public override void performLayout()
     {
-        BoxConstraints constraintsLocal = this.constraints;
-        DartRuntimePrimitives.Assert(() => this._debugHasNecessaryDirections);
-        if ((firstChild is null))
+        BoxConstraints constraintsLocal = constraints;
+        DartRuntimePrimitives.Assert(() => _debugHasNecessaryDirections);
+        if (firstChild is null)
         {
-            size = ((BoxConstraints)constraintsLocal).smallest;
+            size = constraintsLocal.smallest;
             _hasVisualOverflow = false;
             return;
         }
-        var (childrenAxisSize, runMetrics) = _computeRuns(constraintsLocal, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild);
-        _AxisSize__wrap containerAxisSize = childrenAxisSize.applyConstraints(constraintsLocal, this.direction);
-        size = containerAxisSize.toSize(this.direction);
-        _AxisSize__wrap freeAxisSize = (containerAxisSize.op_Subtract(childrenAxisSize));
-        _hasVisualOverflow = ((((_AxisSize__wrap)freeAxisSize).mainAxisExtent < 0.0) || (((_AxisSize__wrap)freeAxisSize).crossAxisExtent < 0.0));
-        _positionChildren(runMetrics, freeAxisSize, containerAxisSize, (Action<Offset, RenderBox>)_setChildPosition, (Func<RenderBox, Size>)_getChildSize);
+        var (childrenAxisSize, runMetrics) = _computeRuns(constraintsLocal, ChildLayoutHelper.layoutChild);
+        _AxisSize__wrap containerAxisSize = childrenAxisSize.applyConstraints(constraintsLocal, direction);
+        size = containerAxisSize.toSize(direction);
+        _AxisSize__wrap freeAxisSize = containerAxisSize.op_Subtract(childrenAxisSize);
+        _hasVisualOverflow = (freeAxisSize.mainAxisExtent < 0.0) || (freeAxisSize.crossAxisExtent < 0.0);
+        _positionChildren(runMetrics, freeAxisSize, containerAxisSize, _setChildPosition, _getChildSize);
     }
 
     internal virtual (_AxisSize__wrap, List<_RunMetrics__wrap>) _computeRuns(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
     {
-        DartRuntimePrimitives.Assert(() => (firstChild is not null));
-        var (childConstraints, mainAxisLimit) = (this.direction switch { Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        var (flipMainAxis, _) = this._areAxesFlipped;
-        double spacingLocal = this.spacing;
+        DartRuntimePrimitives.Assert(() => firstChild is not null);
+        var (childConstraints, mainAxisLimit) = direction switch { Axis.horizontal => ((BoxConstraints, double))(new BoxConstraints(maxWidth: constraints.maxWidth), constraints.maxWidth), Axis.vertical => ((BoxConstraints, double))(new BoxConstraints(maxHeight: constraints.maxHeight), constraints.maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var (flipMainAxis, _) = _areAxesFlipped;
+        double spacingLocal = spacing;
         var runMetrics = new List<_RunMetrics__wrap>();
         _RunMetrics__wrap? currentRun = default!;
         _AxisSize__wrap childrenAxisSize = _AxisSize__wrap.empty;
-        for (RenderBox? child = firstChild; (child is not null); child = childAfter(child))
+        for (RenderBox? child = firstChild; child is not null; child = childAfter(child))
         {
-            var childSize = _AxisSize__wrap.CreateFromSize(size: layoutChild(child, childConstraints), direction: this.direction);
-            _RunMetrics__wrap? newRun = ((currentRun is null) ? new _RunMetrics__wrap(child, childSize) : currentRun.tryAddingNewChild(child, childSize, flipMainAxis, spacingLocal, mainAxisLimit));
-            if ((newRun is not null))
+            var childSize = _AxisSize__wrap.CreateFromSize(size: layoutChild(child, childConstraints), direction: direction);
+            _RunMetrics__wrap? newRun = (currentRun is null) ? new _RunMetrics__wrap(child, childSize) : currentRun.tryAddingNewChild(child, childSize, flipMainAxis, spacingLocal, mainAxisLimit);
+            if (newRun is not null)
             {
                 runMetrics.Add(newRun);
-                childrenAxisSize = childrenAxisSize.op_Add((currentRun?.axisSize.flipped ?? _AxisSize__wrap.empty));
+                childrenAxisSize = childrenAxisSize.op_Add(currentRun?.axisSize.flipped ?? _AxisSize__wrap.empty);
                 currentRun = newRun;
             }
         }
-        DartRuntimePrimitives.Assert(() => (checked((long)(runMetrics.Count)) != 0));
-        double totalRunSpacing = (this.runSpacing * ((checked((long)(runMetrics.Count)) - 1L)));
-        childrenAxisSize = childrenAxisSize.op_Add((new _AxisSize__wrap(mainAxisExtent: totalRunSpacing, crossAxisExtent: 0.0).op_Add(currentRun!.axisSize.flipped)));
-        return (((_AxisSize__wrap)childrenAxisSize).flipped, runMetrics);
+        DartRuntimePrimitives.Assert(() => checked((long)runMetrics.Count) != 0);
+        double totalRunSpacing = runSpacing * (checked(runMetrics.Count) - 1L);
+        childrenAxisSize = childrenAxisSize.op_Add(new _AxisSize__wrap(mainAxisExtent: totalRunSpacing, crossAxisExtent: 0.0).op_Add(currentRun!.axisSize.flipped));
+        return (childrenAxisSize.flipped, runMetrics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _positionChildren(List<_RunMetrics__wrap> runMetrics, _AxisSize__wrap freeAxisSize, _AxisSize__wrap containerAxisSize, Action<Offset, RenderBox> positionChild, Func<RenderBox, Size> getChildSize)
     {
-        DartRuntimePrimitives.Assert(() => (checked((long)(runMetrics.Count)) != 0));
-        double spacingLocal = this.spacing;
-        double crossAxisFreeSpace = Math.Max(0.0, ((_AxisSize__wrap)freeAxisSize).crossAxisExtent);
-        var (flipMainAxis, flipCrossAxis) = this._areAxesFlipped;
-        WrapCrossAlignment effectiveCrossAlignment = (flipCrossAxis ? WrapCrossAlignmentMembers._flipped(this.crossAxisAlignment) : this.crossAxisAlignment);
-        var (runLeadingSpace, runBetweenSpace) = this.runAlignment._distributeSpace(crossAxisFreeSpace, this.runSpacing, checked((long)(runMetrics.Count)), flipCrossAxis);
-        Func<RenderBox, RenderBox?> nextChild = (flipMainAxis ? childBefore : childAfter);
+        DartRuntimePrimitives.Assert(() => checked((long)runMetrics.Count) != 0);
+        double spacingLocal = spacing;
+        double crossAxisFreeSpace = Math.Max(0.0, freeAxisSize.crossAxisExtent);
+        var (flipMainAxis, flipCrossAxis) = _areAxesFlipped;
+        WrapCrossAlignment effectiveCrossAlignment = flipCrossAxis ? WrapCrossAlignmentMembers._flipped(crossAxisAlignment) : crossAxisAlignment;
+        var (runLeadingSpace, runBetweenSpace) = runAlignment._distributeSpace(crossAxisFreeSpace, runSpacing, checked(runMetrics.Count), flipCrossAxis);
+        Func<RenderBox, RenderBox?> nextChild = flipMainAxis ? childBefore : childAfter;
         var runCrossAxisOffset = runLeadingSpace;
-        IEnumerable<_RunMetrics__wrap> runs = (flipCrossAxis ? Enumerable.Reverse(runMetrics) : runMetrics);
+        IEnumerable<_RunMetrics__wrap> runs = flipCrossAxis ? Enumerable.Reverse(runMetrics) : runMetrics;
         foreach (var run in runs)
         {
-            double runCrossAxisExtent = ((_RunMetrics__wrap)run).axisSize.crossAxisExtent;
-            long childCountLocal = ((_RunMetrics__wrap)run).childCount;
-            double mainAxisFreeSpace = Math.Max(0.0, (((_AxisSize__wrap)containerAxisSize).mainAxisExtent - ((_RunMetrics__wrap)run).axisSize.mainAxisExtent));
-            var (childLeadingSpace, childBetweenSpace) = this.alignment._distributeSpace(mainAxisFreeSpace, spacingLocal, childCountLocal, flipMainAxis);
+            double runCrossAxisExtent = run.axisSize.crossAxisExtent;
+            long childCountLocal = run.childCount;
+            double mainAxisFreeSpace = Math.Max(0.0, containerAxisSize.mainAxisExtent - run.axisSize.mainAxisExtent);
+            var (childLeadingSpace, childBetweenSpace) = alignment._distributeSpace(mainAxisFreeSpace, spacingLocal, childCountLocal, flipMainAxis);
             var childMainAxisOffset = childLeadingSpace;
-            long remainingChildCount = ((_RunMetrics__wrap)run).childCount;
-            for (RenderBox? child = ((_RunMetrics__wrap)run).leadingChild; ((child is not null) && (remainingChildCount > 0L)); child = nextChild(child), remainingChildCount -= 1L)
+            long remainingChildCount = run.childCount;
+            for (RenderBox? child = run.leadingChild; (child is not null) && (remainingChildCount > 0L); child = nextChild(child), remainingChildCount -= 1L)
             {
-                var __pattern28999 = _AxisSize__wrap.CreateFromSize(size: getChildSize(child), direction: this.direction);
+                var __pattern28999 = _AxisSize__wrap.CreateFromSize(size: getChildSize(child), direction: direction);
                 double childMainAxisExtent = __pattern28999.mainAxisExtent;
                 double childCrossAxisExtent = __pattern28999.crossAxisExtent;
-                double childCrossAxisOffset = (WrapCrossAlignmentMembers._alignment(effectiveCrossAlignment) * ((runCrossAxisExtent - childCrossAxisExtent)));
-                positionChild(_getOffset(childMainAxisOffset, (runCrossAxisOffset + childCrossAxisOffset)), child);
-                childMainAxisOffset += (childMainAxisExtent + childBetweenSpace);
+                double childCrossAxisOffset = WrapCrossAlignmentMembers._alignment(effectiveCrossAlignment) * (runCrossAxisExtent - childCrossAxisExtent);
+                positionChild(_getOffset(childMainAxisOffset, runCrossAxisOffset + childCrossAxisOffset), child);
+                childMainAxisOffset += childMainAxisExtent + childBetweenSpace;
             }
-            runCrossAxisOffset += (runCrossAxisExtent + runBetweenSpace);
+            runCrossAxisOffset += runCrossAxisExtent + runBetweenSpace;
         }
     }
 
@@ -643,70 +643,70 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((this._hasVisualOverflow && (!Equals(this.clipBehavior, Clip.none))))
+        if (_hasVisualOverflow && (!Equals(clipBehavior, Clip.none)))
         {
-            this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, (Offset.zero & size), (Action<PaintingContext, Offset>)defaultPaint, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
+            _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, defaultPaint, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
         }
         else
         {
-            this._clipRectLayer.layer = null;
+            _clipRectLayer.layer = null;
             defaultPaint(context, offset);
         }
     }
 
     public override void dispose()
     {
-        this._clipRectLayer.layer = null;
+        _clipRectLayer.layer = null;
         base.dispose();
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", this.direction));
-        properties.add(new EnumProperty<WrapAlignment>("alignment", this.alignment));
-        properties.add(new DoubleProperty("spacing", this.spacing));
-        properties.add(new EnumProperty<WrapAlignment>("runAlignment", this.runAlignment));
-        properties.add(new DoubleProperty("runSpacing", this.runSpacing));
-        properties.add(new DoubleProperty("crossAxisAlignment", this.runSpacing));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", this.verticalDirection, defaultValue: VerticalDirection.down));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", direction));
+        properties.add(new EnumProperty<WrapAlignment>("alignment", alignment));
+        properties.add(new DoubleProperty("spacing", spacing));
+        properties.add(new EnumProperty<WrapAlignment>("runAlignment", runAlignment));
+        properties.add(new DoubleProperty("runSpacing", runSpacing));
+        properties.add(new DoubleProperty("crossAxisAlignment", runSpacing));
+        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", verticalDirection, defaultValue: VerticalDirection.down));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -717,34 +717,34 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((WrapParentData?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((WrapParentData?)(object?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((WrapParentData?)(object?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -754,53 +754,53 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                 var childNextSiblingParentData = ((WrapParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is WrapParentData));
+        DartRuntimePrimitives.Assert(() => child.parentData is WrapParentData);
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderBox child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach(this.add);
+        children?.forEach(add);
     }
 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((WrapParentData?)(object?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -809,7 +809,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderBox child)
@@ -820,8 +820,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public virtual void removeAll()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
@@ -830,19 +830,19 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -854,8 +854,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.attach(owner);
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
@@ -866,8 +866,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public override void detach()
     {
         base.detach();
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.detach();
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
@@ -877,8 +877,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override void redepthChildren()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
@@ -888,8 +888,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
@@ -897,11 +897,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         }
     }
 
-    public virtual RenderBox? firstChild => this._firstChild;
-    public virtual RenderBox? lastChild => this._lastChild;
+    public virtual RenderBox? firstChild => _firstChild;
+    public virtual RenderBox? lastChild => _lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -909,7 +909,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -918,14 +918,14 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderBox child = this.firstChild!;
+            RenderBox child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }
@@ -942,14 +942,14 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
             double? result = child.getDistanceToActualBaseline(baseline);
-            if ((result is not null))
+            if (result is not null)
             {
                 double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy);
+                return DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -962,10 +962,10 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         BaselineOffset minBaseline = BaselineOffset.noBaseline;
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-            BaselineOffset candidate = (new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy));
+            BaselineOffset candidate = new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy);
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
         }
@@ -976,14 +976,14 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
     {
         RenderBox? child = lastChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
                 return child!.hitTest(result, position: transformed);
-            })));
+            });
             if (isHit)
             {
                 return true;
@@ -997,10 +997,10 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public virtual void defaultPaint(PaintingContext context, Offset offset)
     {
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-            context.paintChild(child, (childParentData.offset + offset));
+            context.paintChild(child, childParentData.offset + offset);
             child = childParentData.nextSibling;
         }
     }
@@ -1009,7 +1009,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         var result = new List<RenderBox>();
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
             result.Add(((RenderBox?)(object?)child)!);

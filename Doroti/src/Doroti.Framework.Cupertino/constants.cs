@@ -42,7 +42,7 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.EdgeInsetsGeometry> kCupertinoButtonPadding = new DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.EdgeInsetsGeometry> { [CupertinoButtonSize.small] = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateSymmetric(vertical: 6, horizontal: 12)), [CupertinoButtonSize.medium] = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateSymmetric(vertical: 10, horizontal: 15)), [CupertinoButtonSize.large] = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateSymmetric(vertical: 16, horizontal: 20)) };
+    public static DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.EdgeInsetsGeometry> kCupertinoButtonPadding = new DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.EdgeInsetsGeometry> { [CupertinoButtonSize.small] = EdgeInsets.CreateSymmetric(vertical: 6, horizontal: 12), [CupertinoButtonSize.medium] = EdgeInsets.CreateSymmetric(vertical: 10, horizontal: 15), [CupertinoButtonSize.large] = EdgeInsets.CreateSymmetric(vertical: 16, horizontal: 20) };
 }
 
 public static partial class ConstantsLibrary

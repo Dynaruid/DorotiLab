@@ -18,15 +18,15 @@ public class SharedAppData : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SharedAppDataState__shared_app_data());
     public static V getValue<K, V>(BuildContext context, K key, global::System.Func<V> init) where K : notnull
     {
-        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)InheritedModel<object>.inheritFrom<_SharedAppModel__shared_app_data>(context, aspect: key));
+        _SharedAppModel__shared_app_data? model = InheritedModel<object>.inheritFrom<_SharedAppModel__shared_app_data>(context, aspect: key);
         DartRuntimePrimitives.Assert(() => _debugHasSharedAppData(model, context, "getValue"));
-        return ((V)model!.sharedAppDataState.getValue<K, V>(key, (global::System.Func<V>)init));
+        return model!.sharedAppDataState.getValue<K, V>(key, init);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static void setValue<K, V>(BuildContext context, K key, V value) where K : notnull
     {
-        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)context.getInheritedWidgetOfExactType<_SharedAppModel__shared_app_data>());
+        _SharedAppModel__shared_app_data? model = context.getInheritedWidgetOfExactType<_SharedAppModel__shared_app_data>();
         DartRuntimePrimitives.Assert(() => _debugHasSharedAppData(model, context, "setValue"));
         model!.sharedAppDataState.setValue<K, V>(key, value);
     }
@@ -35,7 +35,7 @@ public class SharedAppData : StatefulWidget
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((model is null))
+                if (model is null)
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("No SharedAppData widget found."), new global::Doroti.Framework.Foundation.ErrorDescription($"SharedAppData.{methodName} requires an SharedAppData widget ancestor.\n"), context.describeWidget("The specific widget that could not find an SharedAppData ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Framework.Foundation.ErrorHint("Typically, the SharedAppData widget is introduced by the MaterialApp " + "or WidgetsApp widget at the top of your application widget tree. It " + "provides a key/value map of data that is shared with the entire " + "application.") }));
                 }
@@ -68,26 +68,26 @@ internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new _SharedAppModel__shared_app_data(sharedAppDataState: this, child: ((SharedAppData)this.widget).child));
+        return new _SharedAppModel__shared_app_data(sharedAppDataState: this, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual V getValue<K, V>(K key, global::System.Func<V> init) where K : notnull
     {
-        this.data.putIfAbsent(key, () => init());
-        return ((V?)(object?)this.data.GetValueOrDefault(key))!;
+        data.putIfAbsent(key, () => init());
+        return ((V?)data.GetValueOrDefault(key))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void setValue<K, V>(K key, V value) where K : notnull
     {
-        if ((!Equals(this.data.GetValueOrDefault(key), value)))
+        if (!Equals(data.GetValueOrDefault(key), value))
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                data = new DartMap<object, object?>(this.data);
-                this.data[key] = value;
-            })));
+                data = new DartMap<object, object?>(data);
+                data[key] = value;
+            });
         }
     }
 
@@ -101,13 +101,13 @@ internal class _SharedAppModel__shared_app_data : InheritedModel<object>
     internal _SharedAppModel__shared_app_data(_SharedAppDataState__shared_app_data sharedAppDataState, Widget child) : base(child: child)
     {
         this.sharedAppDataState = sharedAppDataState;
-        this.data = ((_SharedAppDataState__shared_app_data)sharedAppDataState).data;
+        data = sharedAppDataState.data;
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __old = (_SharedAppModel__shared_app_data)oldWidget;
-        return (!Equals(this.data, ((_SharedAppModel__shared_app_data)__old).data));
+        return !Equals(data, __old.data);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -116,7 +116,7 @@ internal class _SharedAppModel__shared_app_data : InheritedModel<object>
         var __old = (_SharedAppModel__shared_app_data)old;
         foreach (var key in keys)
         {
-            if ((!Equals(this.data.GetValueOrDefault(key), ((_SharedAppModel__shared_app_data)__old).data.GetValueOrDefault(key))))
+            if (!Equals(data.GetValueOrDefault(key), __old.data.GetValueOrDefault(key)))
             {
                 return true;
             }

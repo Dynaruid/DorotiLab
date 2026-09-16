@@ -14,8 +14,8 @@ public class CupertinoFocusHalo : global::Doroti.Framework.Widgets.StatefulWidge
     public CupertinoFocusHalo(global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
         this.child = child;
-        this._borderRadius = BorderRadius.zero;
-        this._shapeBuilder = ((global::System.Func<global::Doroti.Framework.Painting.BorderRadiusGeometry, global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.RoundedRectangleBorder>)((borderRadius, side) => new global::Doroti.Framework.Painting.RoundedRectangleBorder(side: side, borderRadius: borderRadius)));
+        _borderRadius = BorderRadius.zero;
+        _shapeBuilder = (global::System.Func<global::Doroti.Framework.Painting.BorderRadiusGeometry, global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.RoundedRectangleBorder>)((borderRadius, side) => new global::Doroti.Framework.Painting.RoundedRectangleBorder(side: side, borderRadius: borderRadius));
     }
 
     public static CupertinoFocusHalo CreateWithRRect(global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Painting.BorderRadiusGeometry borderRadius, global::Doroti.Framework.Foundation.Key? key = null)
@@ -23,7 +23,7 @@ public class CupertinoFocusHalo : global::Doroti.Framework.Widgets.StatefulWidge
         var __instance = new CupertinoFocusHalo(child: child, key: key);
         __instance.child = child;
         __instance._borderRadius = borderRadius;
-        __instance._shapeBuilder = ((global::System.Func<global::Doroti.Framework.Painting.BorderRadiusGeometry, global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.RoundedRectangleBorder>)((borderRadius, side) => new global::Doroti.Framework.Painting.RoundedRectangleBorder(side: side, borderRadius: borderRadius)));
+        __instance._shapeBuilder = (global::System.Func<global::Doroti.Framework.Painting.BorderRadiusGeometry, global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.RoundedRectangleBorder>)((borderRadius, side) => new global::Doroti.Framework.Painting.RoundedRectangleBorder(side: side, borderRadius: borderRadius));
         return __instance;
     }
 
@@ -32,7 +32,7 @@ public class CupertinoFocusHalo : global::Doroti.Framework.Widgets.StatefulWidge
         var __instance = new CupertinoFocusHalo(child: child, key: key);
         __instance.child = child;
         __instance._borderRadius = borderRadius;
-        __instance._shapeBuilder = ((global::System.Func<global::Doroti.Framework.Painting.BorderRadiusGeometry?, global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.RoundedSuperellipseBorder>)((borderRadius, side) => new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: side, borderRadius: borderRadius)));
+        __instance._shapeBuilder = (global::System.Func<global::Doroti.Framework.Painting.BorderRadiusGeometry?, global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.RoundedSuperellipseBorder>)((borderRadius, side) => new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: side, borderRadius: borderRadius));
         return __instance;
     }
 
@@ -46,13 +46,13 @@ internal class _CupertinoFocusHaloState__cupertino_focus_halo : global::Doroti.F
     internal virtual global::Doroti.Ui.Color _effectiveFocusOutlineColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(HSLColor.CreateFromColor(CupertinoColors.activeBlue.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor());
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Focus(canRequestFocus: false, skipTraversal: true, includeSemantics: false, onFocusChange: ((global::System.Action<bool>)((hasFocus) =>
+        return new global::Doroti.Framework.Widgets.Focus(canRequestFocus: false, skipTraversal: true, includeSemantics: false, onFocusChange: (hasFocus) =>
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
                 _childHasFocus = hasFocus;
-            })));
-        })), child: new global::Doroti.Framework.Widgets.DecoratedBox(position: DecorationPosition.foreground, decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: this.widget._shapeBuilder(((CupertinoFocusHalo)this.widget)._borderRadius, (this._childHasFocus ? new global::Doroti.Framework.Painting.BorderSide(color: this._effectiveFocusOutlineColor, width: 3.5) : BorderSide.none))), child: ((CupertinoFocusHalo)this.widget).child)));
+            });
+        }, child: new global::Doroti.Framework.Widgets.DecoratedBox(position: DecorationPosition.foreground, decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: widget._shapeBuilder(widget._borderRadius, _childHasFocus ? new global::Doroti.Framework.Painting.BorderSide(color: _effectiveFocusOutlineColor, width: 3.5) : BorderSide.none)), child: widget.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

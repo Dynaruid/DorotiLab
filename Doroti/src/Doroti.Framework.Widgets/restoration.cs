@@ -23,10 +23,10 @@ public class RestorationScope : StatefulWidget
 
     public static global::Doroti.Framework.Services.RestorationBucket of(BuildContext context)
     {
-        global::Doroti.Framework.Services.RestorationBucket? bucket = ((global::Doroti.Framework.Services.RestorationBucket?)maybeOf(context));
+        global::Doroti.Framework.Services.RestorationBucket? bucket = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((bucket is null))
+                if (bucket is null)
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("RestorationScope.of() was called with a context that does not " + "contain a RestorationScope widget. "), new global::Doroti.Framework.Foundation.ErrorDescription("No RestorationScope widget ancestor could be found starting from " + "the context that was passed to RestorationScope.of(). This can " + "happen because you are using a widget that looks for a " + "RestorationScope ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"), new global::Doroti.Framework.Foundation.ErrorHint("State restoration must be enabled for a RestorationScope to exist. " + "This can be done by passing a restorationScopeId to MaterialApp, " + "CupertinoApp, or WidgetsApp at the root of the widget tree or by " + "wrapping the widget tree in a RootRestorationScope.") }));
                 }
@@ -48,52 +48,52 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
-    public virtual string? restorationId => ((RestorationScope)this.widget).restorationId;
+    public virtual string? restorationId => widget.restorationId;
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new UnmanagedRestorationScope(bucket: this.bucket, child: ((RestorationScope)this.widget).child));
+        return new UnmanagedRestorationScope(bucket: bucket, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => this._bucket;
+    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => _bucket;
     public virtual void didToggleBucket(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
     {
-        DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
+        DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
     }
 
     public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
     {
-        DartRuntimePrimitives.Assert(() => ((property._restorationId is null) || ((this._debugDoingRestore && (property._restorationId == restorationId)))), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>(((r) => r._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue = (hasSerializedValue ? property.fromPrimitivesObject(this.bucket!.read<object>(restorationId)) : property.createDefaultValueObject());
+        DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
+        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
+        object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
         if (!property.isRegistered)
         {
             property._register(restorationId, this);
             void listener()
             {
-                if ((this.bucket is null))
+                if (bucket is null)
                 {
                     return;
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)listener);
-            this._properties[property] = (global::System.Action)listener;
+            property.addListener(listener);
+            _properties[property] = listener;
         }
-        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        DartRuntimePrimitives.Assert(() => (property._restorationId == restorationId) && Equals(property._owner, this) && _properties.ContainsKey(property));
         property.initWithValueObject(initialValue);
-        if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
+        if (!hasSerializedValue && property.enabled && (bucket is not null))
         {
             _updateProperty(property);
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugPropertiesWaitingForReregistration?.Remove(property);
+                _debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -101,24 +101,24 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
 
     public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(property._owner, this)));
-        this._bucket?.remove<object?>(property._restorationId!);
+        DartRuntimePrimitives.Assert(() => Equals(property._owner, this));
+        _bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
 
     public virtual void didUpdateRestorationId()
     {
-        if ((((this._currentParent is null) || (this._bucket?.restorationId == this.restorationId)) || this.restorePending))
+        if ((_currentParent is null) || (_bucket?.restorationId == restorationId) || restorePending)
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
-        DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        DartRuntimePrimitives.Assert(() => !restorePending);
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
+            DartRuntimePrimitives.Assert(() => (_bucket is null) || (oldBucket is null));
             oldBucket?.dispose();
         }
     }
@@ -133,33 +133,33 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
     {
         get
         {
-            if (this._firstRestorePending)
+            if (_firstRestorePending)
             {
                 return true;
             }
-            if ((this.restorationId is null))
+            if (restorationId is null)
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)RestorationScope.maybeOf(this.context));
-            return ((!Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
+            return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
         }
     }
-    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
+    public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
-        bool needsRestore = this.restorePending;
-        this._currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        bool needsRestore = restorePending;
+        _currentParent = RestorationScope.maybeOf(context);
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
         if (needsRestore)
         {
             _doRestore(oldBucket);
         }
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => !Equals(oldBucket, _bucket));
             oldBucket?.dispose();
         }
     }
@@ -168,19 +168,19 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugPropertiesWaitingForReregistration = this._properties.Keys.ToList();
+                _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        restoreState(oldBucket, this._firstRestorePending);
-        this._firstRestorePending = false;
+        restoreState(oldBucket, _firstRestorePending);
+        _firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                if (Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
+                if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
                 }
-                this._debugPropertiesWaitingForReregistration = null;
+                _debugPropertiesWaitingForReregistration = null;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -188,41 +188,41 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
 
     public virtual bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending)
     {
-        if (((this.restorationId is null) || (parent is null)))
+        if ((restorationId is null) || (parent is null))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket?)null), restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (this._bucket is null));
+            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => _bucket is null);
             return didReplace;
         }
-        DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
-        if ((restorePending || (this._bucket is null)))
+        DartRuntimePrimitives.Assert(() => restorationId is not null);
+        if (restorePending || (_bucket is null))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (Equals(this._bucket, newBucketLocal)));
+            DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
         }
-        DartRuntimePrimitives.Assert(() => (this._bucket is not null));
+        DartRuntimePrimitives.Assert(() => _bucket is not null);
         DartRuntimePrimitives.Assert(() => !restorePending);
-        this._bucket!.rename(this.restorationId!);
-        parent.adoptChild(this._bucket!);
+        _bucket!.rename(restorationId!);
+        parent.adoptChild(_bucket!);
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
-        if ((Equals(newBucket, this._bucket)))
+        if (Equals(newBucket, _bucket))
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
-        this._bucket = newBucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        _bucket = newBucket;
         if (!restorePending)
         {
-            if ((this._bucket is not null))
+            if (_bucket is not null)
             {
-                this._properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)this._updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -234,20 +234,20 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
     {
         if (property.enabled)
         {
-            this._bucket?.write(property._restorationId!, property.toPrimitives());
+            _bucket?.write(property._restorationId!, property.toPrimitives());
         }
         else
         {
-            this._bucket?.remove<object>(property._restorationId!);
+            _bucket?.remove<object>(property._restorationId!);
         }
     }
 
     public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        global::System.Action listener = this._properties.remove(property)!;
+        global::System.Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugPropertiesWaitingForReregistration?.Remove(property);
+                _debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -257,15 +257,15 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
 
     public override void dispose()
     {
-        this._properties.forEach(((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>)((property, listener) =>
+        _properties.forEach((property, listener) =>
         {
             if (!property._disposed)
             {
                 property.removeListener(listener);
             }
-        })));
-        this._bucket?.dispose();
-        this._bucket = null;
+        });
+        _bucket?.dispose();
+        _bucket = null;
         base.dispose();
     }
 
@@ -283,7 +283,7 @@ public class UnmanagedRestorationScope : InheritedWidget
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (UnmanagedRestorationScope)oldWidget;
-        return (!Equals(((UnmanagedRestorationScope)__oldWidget).bucket, this.bucket));
+        return !Equals(__oldWidget.bucket, bucket);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -314,9 +314,9 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _ancestorBucket = RestorationScope.maybeOf(this.context);
+        _ancestorBucket = RestorationScope.maybeOf(context);
         _loadRootBucketIfNecessary();
-        _okToRenderBlankContainer ??= ((((RootRestorationScope)this.widget).restorationId is not null) && this._needsRootBucketInserted);
+        _okToRenderBlankContainer ??= ((widget.restorationId is not null) && _needsRootBucketInserted);
     }
 
     public override void didUpdateWidget(RootRestorationScope oldWidget)
@@ -325,35 +325,35 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
         _loadRootBucketIfNecessary();
     }
 
-    internal virtual bool _needsRootBucketInserted => DartRuntimePrimitives.ConvertValue<bool>((this._ancestorBucket is null));
+    internal virtual bool _needsRootBucketInserted => DartRuntimePrimitives.ConvertValue<bool>(_ancestorBucket is null);
     internal virtual bool _isWaitingForRootBucket
     {
         get
         {
-            return (((((RootRestorationScope)this.widget).restorationId is not null) && this._needsRootBucketInserted) && !this._rootBucketValid);
+            return (widget.restorationId is not null) && _needsRootBucketInserted && !_rootBucketValid;
         }
     }
     internal virtual void _loadRootBucketIfNecessary()
     {
-        if ((this._isWaitingForRootBucket && !this._isLoadingRootBucket))
+        if (_isWaitingForRootBucket && !_isLoadingRootBucket)
         {
             _isLoadingRootBucket = true;
             RendererBinding.instance.deferFirstFrame();
-            DartRuntimePrimitives.Ignore(ServicesBinding.instance.restorationManager.rootBucket.then((global::System.Action<global::Doroti.Framework.Services.RestorationBucket?>)((bucket) =>
+            DartRuntimePrimitives.Ignore(ServicesBinding.instance.restorationManager.rootBucket.then((bucket) =>
             {
                 _isLoadingRootBucket = false;
-                if (this.mounted)
+                if (mounted)
                 {
-                    ServicesBinding.instance.restorationManager.addListener(this._replaceRootBucket);
-                    setState(((global::System.Action)(() =>
+                    ServicesBinding.instance.restorationManager.addListener(_replaceRootBucket);
+                    setState(() =>
                     {
                         _rootBucket = bucket;
                         _rootBucketValid = true;
                         _okToRenderBlankContainer = false;
-                    })));
+                    });
                 }
                 RendererBinding.instance.allowFirstFrame();
-            })));
+            }));
         }
     }
 
@@ -361,27 +361,27 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
     {
         _rootBucketValid = false;
         _rootBucket = null;
-        ServicesBinding.instance.restorationManager.removeListener(this._replaceRootBucket);
+        ServicesBinding.instance.restorationManager.removeListener(_replaceRootBucket);
         _loadRootBucketIfNecessary();
-        DartRuntimePrimitives.Assert(() => !this._isWaitingForRootBucket);
+        DartRuntimePrimitives.Assert(() => !_isWaitingForRootBucket);
     }
 
     public override void dispose()
     {
-        if (this._rootBucketValid)
+        if (_rootBucketValid)
         {
-            ServicesBinding.instance.restorationManager.removeListener(this._replaceRootBucket);
+            ServicesBinding.instance.restorationManager.removeListener(_replaceRootBucket);
         }
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        if ((DartRuntimePrimitives.RequireValue(this._okToRenderBlankContainer) && this._isWaitingForRootBucket))
+        if (DartRuntimePrimitives.RequireValue(_okToRenderBlankContainer) && _isWaitingForRootBucket)
         {
-            return ((Widget)SizedBox.CreateShrink());
+            return SizedBox.CreateShrink();
         }
-        return ((Widget)new UnmanagedRestorationScope(bucket: (this._ancestorBucket ?? this._rootBucket), child: new RestorationScope(restorationId: ((RootRestorationScope)this.widget).restorationId, child: ((RootRestorationScope)this.widget).child)));
+        return new UnmanagedRestorationScope(bucket: _ancestorBucket ?? _rootBucket, child: new RestorationScope(restorationId: widget.restorationId, child: widget.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -424,7 +424,7 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-        this._owner?._unregister(this);
+        _owner?._unregister(this);
         base.dispose();
         _disposed = true;
     }
@@ -439,8 +439,8 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
     public virtual void _unregister()
     {
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-        DartRuntimePrimitives.Assert(() => (this._restorationId is not null));
-        DartRuntimePrimitives.Assert(() => (this._owner is not null));
+        DartRuntimePrimitives.Assert(() => _restorationId is not null);
+        DartRuntimePrimitives.Assert(() => _owner is not null);
         _restorationId = null;
         _owner = null;
     }
@@ -449,9 +449,9 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => this.isRegistered);
+            DartRuntimePrimitives.Assert(() => isRegistered);
             DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-            return ((IState)this._owner!);
+            return (IState)_owner!;
         }
     }
     public virtual bool isRegistered
@@ -459,7 +459,7 @@ public abstract class RestorableProperty<T> : global::Doroti.Framework.Foundatio
         get
         {
             DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-            return (this._restorationId is not null);
+            return _restorationId is not null;
         }
     }
 }

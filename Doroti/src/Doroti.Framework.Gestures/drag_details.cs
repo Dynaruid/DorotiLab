@@ -14,15 +14,15 @@ public class DragDownDetails : PositionedGestureDetails, Diagnosticable
 
     public DragDownDetails(Offset globalPosition = default, Offset? localPosition = null)
     {
-        this.__field_globalPosition = globalPosition;
-        this.__field_localPosition = (localPosition ?? globalPosition);
+        __field_globalPosition = globalPosition;
+        __field_localPosition = localPosition ?? globalPosition;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
     }
 
 }
@@ -40,19 +40,19 @@ public class DragStartDetails : PositionedGestureDetails, Diagnosticable
 
     public DragStartDetails(Offset globalPosition = default, Offset? localPosition = null, Duration? sourceTimeStamp = null, PointerDeviceKind? kind = null)
     {
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.sourceTimeStamp = sourceTimeStamp;
         this.kind = kind;
-        this.__field_localPosition = (localPosition ?? globalPosition);
+        __field_localPosition = localPosition ?? globalPosition;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", this.sourceTimeStamp));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
     }
 
 }
@@ -72,23 +72,23 @@ public class DragUpdateDetails : PositionedGestureDetails, Diagnosticable
 
     public DragUpdateDetails(Offset globalPosition, Offset? localPosition = null, Duration? sourceTimeStamp = null, Offset delta = default, double? primaryDelta = null, PointerDeviceKind? kind = null)
     {
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.sourceTimeStamp = sourceTimeStamp;
         this.delta = delta;
         this.primaryDelta = primaryDelta;
         this.kind = kind;
-        this.__field_localPosition = (localPosition ?? globalPosition);
-        System.Diagnostics.Debug.Assert((((primaryDelta is null) || (((DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dx) && (delta.dy == 0.0)))) || (((DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dy) && (delta.dx == 0.0)))));
+        __field_localPosition = localPosition ?? globalPosition;
+        System.Diagnostics.Debug.Assert((primaryDelta is null) || (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dx) && (delta.dy == 0.0) || (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dy) && (delta.dx == 0.0));
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", this.sourceTimeStamp));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", this.delta));
-        properties.add(new DoubleProperty("primaryDelta", this.primaryDelta));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta));
+        properties.add(new DoubleProperty("primaryDelta", primaryDelta));
     }
 
 }
@@ -107,20 +107,20 @@ public class DragEndDetails : PositionedGestureDetails, Diagnosticable
     public DragEndDetails(Offset globalPosition = default, Offset? localPosition = null, Velocity velocity = default!, double? primaryVelocity = null)
     {
         Velocity __velocity = velocity ?? Velocity.zero;
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.velocity = __velocity;
         this.primaryVelocity = primaryVelocity;
-        this.__field_localPosition = (localPosition ?? globalPosition);
-        System.Diagnostics.Debug.Assert((((primaryVelocity is null) || (((DartRuntimePrimitives.RequireValue(primaryVelocity) == ((Velocity)__velocity).pixelsPerSecond.dx) && (((Velocity)__velocity).pixelsPerSecond.dy == 0L)))) || (((DartRuntimePrimitives.RequireValue(primaryVelocity) == ((Velocity)__velocity).pixelsPerSecond.dy) && (((Velocity)__velocity).pixelsPerSecond.dx == 0L)))));
+        __field_localPosition = localPosition ?? globalPosition;
+        System.Diagnostics.Debug.Assert((primaryVelocity is null) || (DartRuntimePrimitives.RequireValue(primaryVelocity) == __velocity.pixelsPerSecond.dx) && (__velocity.pixelsPerSecond.dy == 0L) || (DartRuntimePrimitives.RequireValue(primaryVelocity) == __velocity.pixelsPerSecond.dy) && (__velocity.pixelsPerSecond.dx == 0L));
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Velocity>("velocity", this.velocity));
-        properties.add(new DoubleProperty("primaryVelocity", this.primaryVelocity));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Velocity>("velocity", velocity));
+        properties.add(new DoubleProperty("primaryVelocity", primaryVelocity));
     }
 
 }

@@ -20,7 +20,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((debugKeyEventSimulatorTransitModeOverride is not null))
+                if (debugKeyEventSimulatorTransitModeOverride is not null)
                 {
                     throw new FlutterError(reason);
                 }

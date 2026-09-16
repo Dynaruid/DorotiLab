@@ -133,22 +133,22 @@ public class CupertinoSwitch : global::Doroti.Framework.Widgets.StatefulWidget
         this.onFocusChange = onFocusChange;
         this.autofocus = autofocus;
         this.dragStartBehavior = dragStartBehavior;
-        this.activeTrackColor = (activeTrackColor ?? activeColor);
-        this.inactiveTrackColor = (inactiveTrackColor ?? trackColor);
-        System.Diagnostics.Debug.Assert(((activeThumbImage is not null) || (onActiveThumbImageError is null)));
-        System.Diagnostics.Debug.Assert(((inactiveThumbImage is not null) || (onInactiveThumbImageError is null)));
-        System.Diagnostics.Debug.Assert(((activeTrackColor is null) || (activeColor is null)));
-        System.Diagnostics.Debug.Assert(((inactiveTrackColor is null) || (trackColor is null)));
+        this.activeTrackColor = activeTrackColor ?? activeColor;
+        this.inactiveTrackColor = inactiveTrackColor ?? trackColor;
+        System.Diagnostics.Debug.Assert((activeThumbImage is not null) || (onActiveThumbImageError is null));
+        System.Diagnostics.Debug.Assert((inactiveThumbImage is not null) || (onInactiveThumbImageError is null));
+        System.Diagnostics.Debug.Assert((activeTrackColor is null) || (activeColor is null));
+        System.Diagnostics.Debug.Assert((inactiveTrackColor is null) || (trackColor is null));
     }
 
-    public virtual global::Doroti.Ui.Color? activeColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this.activeTrackColor);
-    public virtual global::Doroti.Ui.Color? trackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this.inactiveTrackColor);
+    public virtual global::Doroti.Ui.Color? activeColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(activeTrackColor);
+    public virtual global::Doroti.Ui.Color? trackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(inactiveTrackColor);
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoSwitchState__switch());
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("value", value: this.value, ifTrue: "on", ifFalse: "off", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<global::System.Action<bool>>("onChanged", (global::System.Action<bool>?)this.onChanged, ifNull: "disabled"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("value", value: value, ifTrue: "on", ifFalse: "off", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<global::System.Action<bool>>("onChanged", onChanged, ifNull: "disabled"));
     }
 
 }
@@ -179,7 +179,7 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((global::System.Action<Intent?>)this._handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((global::System.Action<Intent?>)_handleTap)(__arg0); return default!; }) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -192,19 +192,19 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
     public override void initState()
     {
         base.initState();
-        _positionController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kToggleDuration, value: ((this.value == false) ? 0.0 : 1.0), vsync: this);
-        _position = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._positionController, curve: Curves.easeIn, reverseCurve: Curves.easeOut);
-        _reactionController = new global::Doroti.Framework.Animation.AnimationController(duration: this._reactionAnimationDuration, vsync: this);
-        _reaction = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionController, curve: Curves.fastOutSlowIn);
-        _reactionHoverFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
-        _reactionHoverFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionHoverFadeController, curve: Curves.fastOutSlowIn);
-        _reactionFocusFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
-        _reactionFocusFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionFocusFadeController, curve: Curves.fastOutSlowIn);
-        this.positionController.duration = Duration.Create(milliseconds: 200L);
-        this.reactionController.duration = Duration.Create(milliseconds: 300L);
+        _positionController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kToggleDuration, value: (value == false) ? 0.0 : 1.0, vsync: this);
+        _position = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _positionController, curve: Curves.easeIn, reverseCurve: Curves.easeOut);
+        _reactionController = new global::Doroti.Framework.Animation.AnimationController(duration: _reactionAnimationDuration, vsync: this);
+        _reaction = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _reactionController, curve: Curves.fastOutSlowIn);
+        _reactionHoverFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: (_hovering || _focused) ? 1.0 : 0.0, vsync: this);
+        _reactionHoverFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _reactionHoverFadeController, curve: Curves.fastOutSlowIn);
+        _reactionFocusFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: (_hovering || _focused) ? 1.0 : 0.0, vsync: this);
+        _reactionFocusFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _reactionFocusFadeController, curve: Curves.fastOutSlowIn);
+        positionController.duration = Duration.Create(milliseconds: 200L);
+        reactionController.duration = Duration.Create(milliseconds: 300L);
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
 {
-    var __cascade = this.position;
+    var __cascade = position;
     __cascade.curve = Curves.ease;
     __cascade.reverseCurve = Curves.ease.flipped;
     return __cascade;
@@ -214,7 +214,7 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
     public override void didUpdateWidget(CupertinoSwitch oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((((CupertinoSwitch)oldWidget).value != ((CupertinoSwitch)this.widget).value))
+        if (oldWidget.value != widget.value)
         {
             animateToValue();
         }
@@ -222,21 +222,21 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
 
     public override void dispose()
     {
-        this._painter.dispose();
-        this._positionController.dispose();
-        this._position.dispose();
-        this._reactionController.dispose();
-        this._reaction.dispose();
-        this._reactionHoverFadeController.dispose();
-        this._reactionHoverFade.dispose();
-        this._reactionFocusFadeController.dispose();
-        this._reactionFocusFade.dispose();
+        _painter.dispose();
+        _positionController.dispose();
+        _position.dispose();
+        _reactionController.dispose();
+        _reaction.dispose();
+        _reactionHoverFadeController.dispose();
+        _reactionHoverFade.dispose();
+        _reactionFocusFadeController.dispose();
+        _reactionFocusFade.dispose();
         base.dispose();
     }
 
-    public virtual global::System.Action<bool?>? onChanged => ((global::System.Action<bool?>?)((((CupertinoSwitch)this.widget).onChanged is not null) ? this._handleChanged : null));
+    public virtual global::System.Action<bool?>? onChanged => (widget.onChanged is not null) ? _handleChanged : null;
     public virtual bool tristate => false;
-    public virtual bool? value => ((CupertinoSwitch)this.widget).value;
+    public virtual bool? value => widget.value;
     internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> _widgetThumbColor
     {
         get
@@ -245,9 +245,9 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
             {
                 if (states.Contains(WidgetState.selected))
                 {
-                    return ((CupertinoSwitch)this.widget).thumbColor;
+                    return widget.thumbColor;
                 }
-                return ((CupertinoSwitch)this.widget).inactiveThumbColor;
+                return widget.inactiveThumbColor;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         }
@@ -260,41 +260,41 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
             {
                 if (states.Contains(WidgetState.selected))
                 {
-                    return ((CupertinoSwitch)this.widget).activeTrackColor;
+                    return widget.activeTrackColor;
                 }
-                return ((CupertinoSwitch)this.widget).inactiveTrackColor;
+                return widget.inactiveTrackColor;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         }
     }
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> _defaultMouseCursor => WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>)((states) =>
+    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> _defaultMouseCursor => WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
             return MouseCursor.defer;
         }
-        return ((global::Doroti.Framework.Services.MouseCursor)(Foundation.ConstantsLibrary.kIsWeb ? SystemMouseCursors.click : MouseCursor.defer));
+        return Foundation.ConstantsLibrary.kIsWeb ? SystemMouseCursors.click : MouseCursor.defer;
         throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
+    });
     internal virtual global::Doroti.Ui.Color? _resolveTrackColor(Color? trackColor, HashSet<global::Doroti.Framework.Widgets.WidgetState> states)
     {
-        if ((trackColor is global::Doroti.Framework.Widgets.WidgetStateColor))
+        if (trackColor is global::Doroti.Framework.Widgets.WidgetStateColor)
         {
             global::Doroti.Framework.Widgets.WidgetStateColor trackColor__as19180 = (global::Doroti.Framework.Widgets.WidgetStateColor)trackColor;
-            return ((global::Doroti.Ui.Color?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(((global::Doroti.Framework.Widgets.WidgetStateColor)trackColor__as19180), states));
+            return WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(trackColor__as19180, states);
         }
-        return ((global::Doroti.Ui.Color?)trackColor);
+        return trackColor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Color? _resolveThumbColor(Color? thumbColor, HashSet<global::Doroti.Framework.Widgets.WidgetState> states)
     {
-        if ((thumbColor is global::Doroti.Framework.Widgets.WidgetStateColor))
+        if (thumbColor is global::Doroti.Framework.Widgets.WidgetStateColor)
         {
             global::Doroti.Framework.Widgets.WidgetStateColor thumbColor__as19402 = (global::Doroti.Framework.Widgets.WidgetStateColor)thumbColor;
-            return ((global::Doroti.Ui.Color?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(((global::Doroti.Framework.Widgets.WidgetStateColor)thumbColor__as19402), states));
+            return WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(thumbColor__as19402, states);
         }
-        return ((global::Doroti.Ui.Color?)thumbColor);
+        return thumbColor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -302,54 +302,54 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
     {
         get
         {
-            double trackInnerStart = (SwitchLibrary._kTrackHeight / 2.0);
-            double trackInnerEnd = (SwitchLibrary._kTrackWidth - trackInnerStart);
-            double trackInnerLength = (trackInnerEnd - trackInnerStart);
+            double trackInnerStart = SwitchLibrary._kTrackHeight / 2.0;
+            double trackInnerEnd = SwitchLibrary._kTrackWidth - trackInnerStart;
+            double trackInnerLength = trackInnerEnd - trackInnerStart;
             return trackInnerLength;
         }
     }
     internal virtual void _handleOnTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        if (this.isInteractive)
+        if (isInteractive)
         {
-            _dragStartPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition;
+            _dragStartPosition = details.globalPosition;
         }
     }
 
     internal virtual void _handleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
-        if (this.isInteractive)
+        if (isInteractive)
         {
-            this.reactionController.forward();
-            if ((!Equals(this._dragStartPosition, Offset.zero)))
+            reactionController.forward();
+            if (!Equals(_dragStartPosition, Offset.zero))
             {
-                double delta = (((((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition - this._dragStartPosition)).dx / SwitchLibrary._kTrackWidth);
-                _dragDelta = (Directionality.of(this.context) switch { TextDirection.rtl => -delta, TextDirection.ltr => delta, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                double delta = (details.globalPosition - _dragStartPosition).dx / SwitchLibrary._kTrackWidth;
+                _dragDelta = Directionality.of(context) switch { TextDirection.rtl => -delta, TextDirection.ltr => delta, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             }
-            _dragValue = this.value;
+            _dragValue = value;
         }
     }
 
     internal virtual void _handleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
     {
-        if (this.isInteractive)
+        if (isInteractive)
         {
-            double delta = (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / SwitchLibrary._kTrackWidth);
-            _dragDelta += (Directionality.of(this.context) switch { TextDirection.rtl => -delta, TextDirection.ltr => delta, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            var valueChangedWhileDragging = (((CupertinoSwitch)this.widget).value != this._dragValue);
-            double threshold = (valueChangedWhileDragging ? SwitchLibrary._kDragReverseThreshold : SwitchLibrary._kDragCommitThreshold);
-            double effectiveThreshold = (((CupertinoSwitch)this.widget).value ? -threshold : threshold);
-            bool newDragValue = (this._dragDelta >= effectiveThreshold);
-            if ((this._dragValue != newDragValue))
+            double delta = DartRuntimePrimitives.RequireValue(details.primaryDelta) / SwitchLibrary._kTrackWidth;
+            _dragDelta += Directionality.of(context) switch { TextDirection.rtl => -delta, TextDirection.ltr => delta, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            var valueChangedWhileDragging = widget.value != _dragValue;
+            double threshold = valueChangedWhileDragging ? SwitchLibrary._kDragReverseThreshold : SwitchLibrary._kDragCommitThreshold;
+            double effectiveThreshold = widget.value ? -threshold : threshold;
+            bool newDragValue = _dragDelta >= effectiveThreshold;
+            if (_dragValue != newDragValue)
             {
                 _emitVibration();
                 if (newDragValue)
                 {
-                    this.positionController.forward();
+                    positionController.forward();
                 }
                 else
                 {
-                    this.positionController.reverse();
+                    positionController.reverse();
                 }
                 _dragValue = newDragValue;
             }
@@ -358,25 +358,25 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
 
     internal virtual void _handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
-        if ((this._dragValue != ((CupertinoSwitch)this.widget).value))
+        if (_dragValue != widget.value)
         {
-            ((CupertinoSwitch)this.widget).onChanged?.Invoke(!((CupertinoSwitch)this.widget).value);
-            setState(((global::System.Action)(() =>
+            widget.onChanged?.Invoke(!widget.value);
+            setState(() =>
             {
                 _needsPositionAnimation = true;
-            })));
+            });
         }
         _dragStartPosition = Offset.zero;
         _dragDelta = 0;
         _dragValue = null;
-        this.reactionController.reverse();
+        reactionController.reverse();
     }
 
     internal virtual void _handleChanged(bool? value)
     {
-        DartRuntimePrimitives.Assert(() => (value is not null));
-        DartRuntimePrimitives.Assert(() => (((CupertinoSwitch)this.widget).onChanged is not null));
-        ((CupertinoSwitch)this.widget).onChanged?.Invoke(DartRuntimePrimitives.RequireValue(value));
+        DartRuntimePrimitives.Assert(() => value is not null);
+        DartRuntimePrimitives.Assert(() => widget.onChanged is not null);
+        widget.onChanged?.Invoke(DartRuntimePrimitives.RequireValue(value));
         _emitVibration();
     }
 
@@ -402,73 +402,73 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if (this._needsPositionAnimation)
+        if (_needsPositionAnimation)
         {
             _needsPositionAnimation = false;
             animateToValue();
         }
         CupertinoThemeData theme = CupertinoTheme.of(context);
-        global::Doroti.Ui.Color activeColorLocal = ((global::Doroti.Ui.Color)CupertinoDynamicColor.resolve(((((CupertinoSwitch)this.widget).activeTrackColor ?? ((((((CupertinoSwitch)this.widget).applyTheme ?? theme.applyThemeToAll) == true) ? theme.primaryColor : null))) ?? CupertinoColors.systemGreen), context));
-        (global::Doroti.Ui.Color, global::Doroti.Ui.Color)? onOffLabelColorsLocal = (MediaQuery.onOffSwitchLabelsOf(context) ? (CupertinoDynamicColor.resolve((((CupertinoSwitch)this.widget).onLabelColor ?? CupertinoColors.white), context), CupertinoDynamicColor.resolve((((CupertinoSwitch)this.widget).offLabelColor ?? SwitchLibrary._kOffLabelColor), context)) : null);
+        global::Doroti.Ui.Color activeColorLocal = CupertinoDynamicColor.resolve((widget.activeTrackColor ?? (((widget.applyTheme ?? theme.applyThemeToAll) == true) ? theme.primaryColor : null)) ?? CupertinoColors.systemGreen, context);
+        (global::Doroti.Ui.Color, global::Doroti.Ui.Color)? onOffLabelColorsLocal = MediaQuery.onOffSwitchLabelsOf(context) ? (CupertinoDynamicColor.resolve(widget.onLabelColor ?? CupertinoColors.white, context), CupertinoDynamicColor.resolve(widget.offLabelColor ?? SwitchLibrary._kOffLabelColor, context)) : null;
         HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = this.states;
+    var __cascade = states;
     __cascade.Add(WidgetState.selected);
     return __cascade;
 }))();
         HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = this.states;
+    var __cascade = states;
     __cascade.Remove(WidgetState.selected);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveActiveThumbColor = ((global::Doroti.Ui.Color)(((_resolveThumbColor(((CupertinoSwitch)this.widget).thumbColor, activeStates) ?? (Color?)this._widgetThumbColor.resolve(activeStates))) ?? CupertinoColors.white));
-        global::Doroti.Ui.Color effectiveInactiveThumbColor = ((global::Doroti.Ui.Color)(((_resolveThumbColor(((CupertinoSwitch)this.widget).inactiveThumbColor, inactiveStates) ?? (Color?)this._widgetThumbColor.resolve(inactiveStates))) ?? effectiveActiveThumbColor));
-        global::Doroti.Ui.Color effectiveActiveTrackColor = ((global::Doroti.Ui.Color)(this._widgetTrackColor.resolve(activeStates) ?? activeColorLocal));
-        global::Doroti.Ui.Color? effectiveActiveTrackOutlineColor = ((global::Doroti.Ui.Color?)((CupertinoSwitch)this.widget).trackOutlineColor?.resolve(activeStates));
-        double? effectiveActiveTrackOutlineWidth = ((CupertinoSwitch)this.widget).trackOutlineWidth?.resolve(activeStates);
-        global::Doroti.Ui.Color effectiveInactiveTrackColor = ((global::Doroti.Ui.Color)(_resolveTrackColor(((CupertinoSwitch)this.widget).trackColor, inactiveStates) ?? CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context)));
-        global::Doroti.Ui.Color? effectiveInactiveTrackOutlineColor = ((global::Doroti.Ui.Color?)((CupertinoSwitch)this.widget).trackOutlineColor?.resolve(inactiveStates));
-        double? effectiveInactiveTrackOutlineWidth = ((CupertinoSwitch)this.widget).trackOutlineWidth?.resolve(inactiveStates);
-        global::Doroti.Framework.Widgets.Icon? effectiveActiveIcon = ((global::Doroti.Framework.Widgets.Icon?)((CupertinoSwitch)this.widget).thumbIcon?.resolve(activeStates));
-        global::Doroti.Framework.Widgets.Icon? effectiveInactiveIcon = ((global::Doroti.Framework.Widgets.Icon?)((CupertinoSwitch)this.widget).thumbIcon?.resolve(inactiveStates));
-        global::Doroti.Ui.Color effectiveActiveIconColor = ((global::Doroti.Ui.Color)(effectiveActiveIcon?.color ?? CupertinoColors.black));
-        global::Doroti.Ui.Color effectiveInactiveIconColor = ((global::Doroti.Ui.Color)(effectiveInactiveIcon?.color ?? CupertinoColors.black));
+        global::Doroti.Ui.Color effectiveActiveThumbColor = (_resolveThumbColor(widget.thumbColor, activeStates) ?? _widgetThumbColor.resolve(activeStates)) ?? CupertinoColors.white;
+        global::Doroti.Ui.Color effectiveInactiveThumbColor = (_resolveThumbColor(widget.inactiveThumbColor, inactiveStates) ?? _widgetThumbColor.resolve(inactiveStates)) ?? effectiveActiveThumbColor;
+        global::Doroti.Ui.Color effectiveActiveTrackColor = _widgetTrackColor.resolve(activeStates) ?? activeColorLocal;
+        global::Doroti.Ui.Color? effectiveActiveTrackOutlineColor = widget.trackOutlineColor?.resolve(activeStates);
+        double? effectiveActiveTrackOutlineWidth = widget.trackOutlineWidth?.resolve(activeStates);
+        global::Doroti.Ui.Color effectiveInactiveTrackColor = _resolveTrackColor(widget.trackColor, inactiveStates) ?? CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context);
+        global::Doroti.Ui.Color? effectiveInactiveTrackOutlineColor = widget.trackOutlineColor?.resolve(inactiveStates);
+        double? effectiveInactiveTrackOutlineWidth = widget.trackOutlineWidth?.resolve(inactiveStates);
+        global::Doroti.Framework.Widgets.Icon? effectiveActiveIcon = widget.thumbIcon?.resolve(activeStates);
+        global::Doroti.Framework.Widgets.Icon? effectiveInactiveIcon = widget.thumbIcon?.resolve(inactiveStates);
+        global::Doroti.Ui.Color effectiveActiveIconColor = effectiveActiveIcon?.color ?? CupertinoColors.black;
+        global::Doroti.Ui.Color effectiveInactiveIconColor = effectiveInactiveIcon?.color ?? CupertinoColors.black;
         var activePressedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = activeStates;
     __cascade.Add(WidgetState.pressed);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveActivePressedThumbColor = ((global::Doroti.Ui.Color)(((_resolveThumbColor(((CupertinoSwitch)this.widget).thumbColor, activePressedStates) ?? (Color?)this._widgetThumbColor.resolve(activePressedStates))) ?? CupertinoColors.white));
+        global::Doroti.Ui.Color effectiveActivePressedThumbColor = (_resolveThumbColor(widget.thumbColor, activePressedStates) ?? _widgetThumbColor.resolve(activePressedStates)) ?? CupertinoColors.white;
         var inactivePressedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = inactiveStates;
     __cascade.Add(WidgetState.pressed);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveInactivePressedThumbColor = ((global::Doroti.Ui.Color)(((_resolveThumbColor(((CupertinoSwitch)this.widget).thumbColor, inactivePressedStates) ?? (Color?)this._widgetThumbColor.resolve(inactivePressedStates))) ?? CupertinoColors.white));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor = ((((CupertinoSwitch)this.widget).mouseCursor ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)this._defaultMouseCursor));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(toggled: ((CupertinoSwitch)this.widget).value, child: new global::Doroti.Framework.Widgets.GestureDetector(excludeFromSemantics: true, onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)this._handleOnTapDown, onHorizontalDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleDragStart, onHorizontalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleDragUpdate, onHorizontalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleDragEnd, dragStartBehavior: ((CupertinoSwitch)this.widget).dragStartBehavior, child: new global::Doroti.Framework.Widgets.Opacity(opacity: ((this.onChanged is null) ? SwitchLibrary._kDisabledOpacity : 1), child: buildToggleable(mouseCursor: effectiveMouseCursor, focusNode: ((CupertinoSwitch)this.widget).focusNode, onFocusChange: (global::System.Action<bool>?)((CupertinoSwitch)this.widget).onFocusChange, autofocus: ((CupertinoSwitch)this.widget).autofocus, size: SwitchLibrary._kSwitchSize, painter: ((Func<_SwitchPainter__switch>)(() =>
+        global::Doroti.Ui.Color effectiveInactivePressedThumbColor = (_resolveThumbColor(widget.thumbColor, inactivePressedStates) ?? _widgetThumbColor.resolve(inactivePressedStates)) ?? CupertinoColors.white;
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor = widget.mouseCursor ?? _defaultMouseCursor;
+        return new global::Doroti.Framework.Widgets.Semantics(toggled: widget.value, child: new global::Doroti.Framework.Widgets.GestureDetector(excludeFromSemantics: true, onTapDown: _handleOnTapDown, onHorizontalDragStart: _handleDragStart, onHorizontalDragUpdate: _handleDragUpdate, onHorizontalDragEnd: _handleDragEnd, dragStartBehavior: widget.dragStartBehavior, child: new global::Doroti.Framework.Widgets.Opacity(opacity: (onChanged is null) ? SwitchLibrary._kDisabledOpacity : 1, child: buildToggleable(mouseCursor: effectiveMouseCursor, focusNode: widget.focusNode, onFocusChange: widget.onFocusChange, autofocus: widget.autofocus, size: SwitchLibrary._kSwitchSize, painter: ((Func<_SwitchPainter__switch>)(() =>
 {
-    var __cascade = this._painter;
-    __cascade.position = this.position;
-    __cascade.reaction = this.reaction;
-    __cascade.reactionFocusFade = this.reactionFocusFade;
-    __cascade.reactionHoverFade = this.reactionHoverFade;
-    __cascade.focusColor = CupertinoDynamicColor.resolve(((((CupertinoSwitch)this.widget).focusColor ?? (Color)HSLColor.CreateFromColor(activeColorLocal.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())), context);
-    __cascade.downPosition = this.downPosition;
-    __cascade.isFocused = this.states.Contains(WidgetState.focused);
-    __cascade.isHovered = this.states.Contains(WidgetState.hovered);
+    var __cascade = _painter;
+    __cascade.position = position;
+    __cascade.reaction = reaction;
+    __cascade.reactionFocusFade = reactionFocusFade;
+    __cascade.reactionHoverFade = reactionHoverFade;
+    __cascade.focusColor = CupertinoDynamicColor.resolve(widget.focusColor ?? HSLColor.CreateFromColor(activeColorLocal.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor(), context);
+    __cascade.downPosition = downPosition;
+    __cascade.isFocused = states.Contains(WidgetState.focused);
+    __cascade.isHovered = states.Contains(WidgetState.hovered);
     __cascade.activeColor = effectiveActiveThumbColor;
     __cascade.inactiveColor = effectiveInactiveThumbColor;
     __cascade.activePressedColor = effectiveActivePressedThumbColor;
     __cascade.onOffLabelColors = onOffLabelColorsLocal;
     __cascade.inactivePressedColor = effectiveInactivePressedThumbColor;
-    __cascade.activeThumbImage = ((CupertinoSwitch)this.widget).activeThumbImage;
-    __cascade.onActiveThumbImageError = ((CupertinoSwitch)this.widget).onActiveThumbImageError;
-    __cascade.inactiveThumbImage = ((CupertinoSwitch)this.widget).inactiveThumbImage;
-    __cascade.onInactiveThumbImageError = ((CupertinoSwitch)this.widget).onInactiveThumbImageError;
+    __cascade.activeThumbImage = widget.activeThumbImage;
+    __cascade.onActiveThumbImageError = widget.onActiveThumbImageError;
+    __cascade.inactiveThumbImage = widget.inactiveThumbImage;
+    __cascade.onInactiveThumbImageError = widget.onInactiveThumbImageError;
     __cascade.activeTrackColor = effectiveActiveTrackColor;
     __cascade.activeTrackOutlineColor = effectiveActiveTrackOutlineColor;
     __cascade.activeTrackOutlineWidth = effectiveActiveTrackOutlineWidth;
@@ -476,8 +476,8 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
     __cascade.inactiveTrackOutlineColor = effectiveInactiveTrackOutlineColor;
     __cascade.inactiveTrackOutlineWidth = effectiveInactiveTrackOutlineWidth;
     __cascade.configuration = ImageLibrary.createLocalImageConfiguration(context);
-    __cascade.isInteractive = this.isInteractive;
-    __cascade.trackInnerLength = this._trackInnerLength;
+    __cascade.isInteractive = isInteractive;
+    __cascade.trackInnerLength = _trackInnerLength;
     __cascade.textDirection = Directionality.of(context);
     __cascade.activeIconColor = effectiveActiveIconColor;
     __cascade.inactiveIconColor = effectiveInactiveIconColor;
@@ -485,38 +485,38 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
     __cascade.inactiveIcon = effectiveInactiveIcon;
     __cascade.iconTheme = IconTheme.of(context);
     __cascade.surfaceColor = theme.scaffoldBackgroundColor;
-    __cascade.positionController = this.positionController;
+    __cascade.positionController = positionController;
     return __cascade;
-}))())))));
+}))()))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -528,174 +528,174 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Framework.Widgets.
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
-    public virtual global::Doroti.Framework.Animation.AnimationController positionController => this._positionController;
-    public virtual global::Doroti.Framework.Animation.CurvedAnimation position => this._position;
-    public virtual global::Doroti.Framework.Animation.AnimationController reactionController => this._reactionController;
-    public virtual global::Doroti.Framework.Animation.CurvedAnimation reaction => this._reaction;
-    public virtual global::Doroti.Framework.Animation.CurvedAnimation reactionHoverFade => this._reactionHoverFade;
-    public virtual global::Doroti.Framework.Animation.CurvedAnimation reactionFocusFade => this._reactionFocusFade;
-    public virtual Duration? reactionAnimationDuration => this._reactionAnimationDuration;
-    public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>((this.onChanged is not null));
+    public virtual global::Doroti.Framework.Animation.AnimationController positionController => _positionController;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation position => _position;
+    public virtual global::Doroti.Framework.Animation.AnimationController reactionController => _reactionController;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation reaction => _reaction;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation reactionHoverFade => _reactionHoverFade;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation reactionFocusFade => _reactionFocusFade;
+    public virtual Duration? reactionAnimationDuration => _reactionAnimationDuration;
+    public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
     public virtual void animateToValue()
     {
-        if (this.tristate)
+        if (tristate)
         {
-            if ((this.value is null))
+            if (value is null)
             {
-                this._positionController.value = 0.0;
+                _positionController.value = 0.0;
             }
-            if ((this.value ?? true))
+            if (value ?? true)
             {
-                this._positionController.forward();
+                _positionController.forward();
             }
             else
             {
-                this._positionController.reverse();
+                _positionController.reverse();
             }
         }
         else
         {
-            if ((this.value ?? false))
+            if (value ?? false)
             {
-                this._positionController.forward();
+                _positionController.forward();
             }
             else
             {
-                this._positionController.reverse();
+                _positionController.reverse();
             }
         }
     }
 
-    public virtual Offset? downPosition => this._downPosition;
+    public virtual Offset? downPosition => _downPosition;
     public virtual void _handleTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        if (this.isInteractive)
+        if (isInteractive)
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
-            })));
-            this._reactionController.forward();
+                _downPosition = details.localPosition;
+            });
+            _reactionController.forward();
         }
     }
 
     public virtual void _handleTap(Intent? __unused0 = null)
     {
-        if (!this.isInteractive)
+        if (!isInteractive)
         {
             return;
         }
-        switch (this.value)
+        switch (value)
         {
             case false:
                 {
-                    this.onChanged!(true);
+                    onChanged!(true);
                     break;
                 }
             case true:
                 {
-                    this.onChanged!((this.tristate ? null : false));
+                    onChanged!(tristate ? null : false);
                     break;
                 }
             case null:
                 {
-                    this.onChanged!(false);
+                    onChanged!(false);
                     break;
                 }
         }
-        (this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        context.findRenderObject()!.sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
     }
 
     public virtual void _handleTapEnd(global::Doroti.Framework.Gestures.TapUpDetails? __unused0 = null)
     {
-        if ((this._downPosition is not null))
+        if (_downPosition is not null)
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                this._downPosition = null;
-            })));
+                _downPosition = null;
+            });
         }
-        this._reactionController.reverse();
+        _reactionController.reverse();
     }
 
     public virtual void _handleFocusHighlightChanged(bool focused)
     {
-        if ((focused != this._focused))
+        if (focused != _focused)
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                this._focused = focused;
-            })));
+                _focused = focused;
+            });
             if (focused)
             {
-                this._reactionFocusFadeController.forward();
+                _reactionFocusFadeController.forward();
             }
             else
             {
-                this._reactionFocusFadeController.reverse();
+                _reactionFocusFadeController.reverse();
             }
         }
     }
 
     public virtual void _handleHoverChanged(bool hovering)
     {
-        if ((hovering != this._hovering))
+        if (hovering != _hovering)
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                this._hovering = hovering;
-            })));
+                _hovering = hovering;
+            });
             if (hovering)
             {
-                this._reactionHoverFadeController.forward();
+                _reactionHoverFadeController.forward();
             }
             else
             {
-                this._reactionHoverFadeController.reverse();
+                _reactionHoverFadeController.reverse();
             }
         }
     }
 
-    public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!this.isInteractive) { __collection10795.Add(WidgetState.disabled); } if (this._hovering) { __collection10795.Add(WidgetState.hovered); } if (this._focused) { __collection10795.Add(WidgetState.focused); } if ((this.value ?? true)) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
+    public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
     public virtual Widget buildToggleable(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Size size = default!, object? painter = default!)
     {
-        return ((Widget)buildToggleableWithChild(focusNode: focusNode, onFocusChange: (global::System.Action<bool>?)onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter)));
+        return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Widget child = default!)
     {
-        return ((Widget)new FocusableActionDetector(actions: this._actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: (global::System.Action<bool>?)onFocusChange, enabled: this.isInteractive, onShowFocusHighlight: (global::System.Action<bool>)this._handleFocusHighlightChanged, onShowHoverHighlight: (global::System.Action<bool>)this._handleHoverChanged, mouseCursor: (mouseCursor?.resolve(this.states) ?? SystemMouseCursors.basic), child: new GestureDetector(excludeFromSemantics: !this.isInteractive, onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)(this.isInteractive ? this._handleTapDown : null)), onTap: this.isInteractive ? () => this._handleTap(null) : null, onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails?>?)(this.isInteractive ? this._handleTapEnd : null)), onTapCancel: this.isInteractive ? () => this._handleTapEnd(null) : null, child: new global::Doroti.Framework.Widgets.Semantics(enabled: this.isInteractive, child: child))));
+        return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap(null) : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd(null) : null, child: new global::Doroti.Framework.Widgets.Semantics(enabled: isInteractive, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -739,27 +739,27 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
 
     public virtual global::Doroti.Framework.Animation.AnimationController positionController
     {
-        get => this._positionController!;
+        get => _positionController!;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._positionController)))
+            if (Equals(__value, _positionController))
             {
                 return;
             }
             _positionController = __value;
-            this._colorAnimation?.dispose();
-            _colorAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.positionController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
+            _colorAnimation?.dispose();
+            _colorAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: positionController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
             notifyListeners();
         }
     }
     public virtual global::Doroti.Framework.Widgets.Icon? activeIcon
     {
-        get => this._activeIcon;
+        get => _activeIcon;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._activeIcon)))
+            if (Equals(__value, _activeIcon))
             {
                 return;
             }
@@ -769,11 +769,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Framework.Widgets.Icon? inactiveIcon
     {
-        get => this._inactiveIcon;
+        get => _inactiveIcon;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._inactiveIcon)))
+            if (Equals(__value, _inactiveIcon))
             {
                 return;
             }
@@ -783,11 +783,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Framework.Widgets.IconThemeData? iconTheme
     {
-        get => this._iconTheme;
+        get => _iconTheme;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._iconTheme)))
+            if (Equals(__value, _iconTheme))
             {
                 return;
             }
@@ -797,11 +797,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color activeIconColor
     {
-        get => this._activeIconColor!;
+        get => _activeIconColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._activeIconColor)))
+            var __value = value;
+            if (Equals(__value, _activeIconColor))
             {
                 return;
             }
@@ -811,11 +811,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color inactiveIconColor
     {
-        get => this._inactiveIconColor!;
+        get => _inactiveIconColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._inactiveIconColor)))
+            var __value = value;
+            if (Equals(__value, _inactiveIconColor))
             {
                 return;
             }
@@ -825,11 +825,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color activePressedColor
     {
-        get => this._activePressedColor!;
+        get => _activePressedColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._activePressedColor)))
+            var __value = value;
+            if (Equals(__value, _activePressedColor))
             {
                 return;
             }
@@ -839,11 +839,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color inactivePressedColor
     {
-        get => this._inactivePressedColor!;
+        get => _inactivePressedColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._inactivePressedColor)))
+            var __value = value;
+            if (Equals(__value, _inactivePressedColor))
             {
                 return;
             }
@@ -853,11 +853,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Framework.Painting.IImageProvider? activeThumbImage
     {
-        get => this._activeThumbImage;
+        get => _activeThumbImage;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._activeThumbImage)))
+            if (Equals(__value, _activeThumbImage))
             {
                 return;
             }
@@ -867,25 +867,25 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onActiveThumbImageError
     {
-        get => this._onActiveThumbImageError;
+        get => _onActiveThumbImageError;
         set
         {
             var __value = value;
-            if ((Equals((global::System.Action<object, global::System.Diagnostics.StackTrace?>?)__value, (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this._onActiveThumbImageError)))
+            if (Equals(__value, _onActiveThumbImageError))
             {
                 return;
             }
-            _onActiveThumbImageError = (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)__value;
+            _onActiveThumbImageError = __value;
             notifyListeners();
         }
     }
     public virtual global::Doroti.Framework.Painting.IImageProvider? inactiveThumbImage
     {
-        get => this._inactiveThumbImage;
+        get => _inactiveThumbImage;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._inactiveThumbImage)))
+            if (Equals(__value, _inactiveThumbImage))
             {
                 return;
             }
@@ -895,25 +895,25 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onInactiveThumbImageError
     {
-        get => this._onInactiveThumbImageError;
+        get => _onInactiveThumbImageError;
         set
         {
             var __value = value;
-            if ((Equals((global::System.Action<object, global::System.Diagnostics.StackTrace?>?)__value, (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this._onInactiveThumbImageError)))
+            if (Equals(__value, _onInactiveThumbImageError))
             {
                 return;
             }
-            _onInactiveThumbImageError = (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)__value;
+            _onInactiveThumbImageError = __value;
             notifyListeners();
         }
     }
     public virtual global::Doroti.Ui.Color activeTrackColor
     {
-        get => this._activeTrackColor!;
+        get => _activeTrackColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._activeTrackColor)))
+            var __value = value;
+            if (Equals(__value, _activeTrackColor))
             {
                 return;
             }
@@ -923,11 +923,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color? activeTrackOutlineColor
     {
-        get => this._activeTrackOutlineColor;
+        get => _activeTrackOutlineColor;
         set
         {
-            var __value = value is null ? null : (Color)value;
-            if ((Equals(__value, this._activeTrackOutlineColor)))
+            var __value = value is null ? null : value;
+            if (Equals(__value, _activeTrackOutlineColor))
             {
                 return;
             }
@@ -937,11 +937,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color? inactiveTrackOutlineColor
     {
-        get => this._inactiveTrackOutlineColor;
+        get => _inactiveTrackOutlineColor;
         set
         {
-            var __value = value is null ? null : (Color)value;
-            if ((Equals(__value, this._inactiveTrackOutlineColor)))
+            var __value = value is null ? null : value;
+            if (Equals(__value, _inactiveTrackOutlineColor))
             {
                 return;
             }
@@ -951,11 +951,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual double? activeTrackOutlineWidth
     {
-        get => this._activeTrackOutlineWidth;
+        get => _activeTrackOutlineWidth;
         set
         {
             var __value = value;
-            if ((__value == this._activeTrackOutlineWidth))
+            if (__value == _activeTrackOutlineWidth)
             {
                 return;
             }
@@ -965,11 +965,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual double? inactiveTrackOutlineWidth
     {
-        get => this._inactiveTrackOutlineWidth;
+        get => _inactiveTrackOutlineWidth;
         set
         {
             var __value = value;
-            if ((__value == this._inactiveTrackOutlineWidth))
+            if (__value == _inactiveTrackOutlineWidth)
             {
                 return;
             }
@@ -979,11 +979,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color inactiveTrackColor
     {
-        get => this._inactiveTrackColor!;
+        get => _inactiveTrackColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._inactiveTrackColor)))
+            var __value = value;
+            if (Equals(__value, _inactiveTrackColor))
             {
                 return;
             }
@@ -993,11 +993,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
     {
-        get => this._configuration!;
+        get => _configuration!;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._configuration)))
+            if (Equals(__value, _configuration))
             {
                 return;
             }
@@ -1007,11 +1007,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.TextDirection textDirection
     {
-        get => DartRuntimePrimitives.RequireValue(this._textDirection);
+        get => DartRuntimePrimitives.RequireValue(_textDirection);
         set
         {
             var __value = value;
-            if ((Equals(this._textDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -1021,11 +1021,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual global::Doroti.Ui.Color surfaceColor
     {
-        get => this._surfaceColor!;
+        get => _surfaceColor!;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._surfaceColor)))
+            var __value = value;
+            if (Equals(__value, _surfaceColor))
             {
                 return;
             }
@@ -1035,11 +1035,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual bool isInteractive
     {
-        get => DartRuntimePrimitives.RequireValue(this._isInteractive);
+        get => DartRuntimePrimitives.RequireValue(_isInteractive);
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._isInteractive))
+            if (DartRuntimePrimitives.RequireValue(__value) == _isInteractive)
             {
                 return;
             }
@@ -1049,11 +1049,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual double trackInnerLength
     {
-        get => DartRuntimePrimitives.RequireValue(this._trackInnerLength);
+        get => DartRuntimePrimitives.RequireValue(_trackInnerLength);
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._trackInnerLength))
+            if (DartRuntimePrimitives.RequireValue(__value) == _trackInnerLength)
             {
                 return;
             }
@@ -1063,11 +1063,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     public virtual (global::Doroti.Ui.Color, global::Doroti.Ui.Color)? onOffLabelColors
     {
-        get => this._onOffLabelColors;
+        get => _onOffLabelColors;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._onOffLabelColors)))
+            if (Equals(__value, _onOffLabelColors))
             {
                 return;
             }
@@ -1077,13 +1077,13 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
     }
     internal virtual global::Doroti.Framework.Painting.ShapeDecoration _createDefaultThumbDecoration(Color color, global::Doroti.Framework.Painting.IImageProvider? image, global::System.Action<object, global::System.Diagnostics.StackTrace?>? errorListener)
     {
-        return new global::Doroti.Framework.Painting.ShapeDecoration(color: color, image: ((image is null) ? null : new global::Doroti.Framework.Painting.DecorationImage(image: image, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)errorListener)), shape: new global::Doroti.Framework.Painting.StadiumBorder());
+        return new global::Doroti.Framework.Painting.ShapeDecoration(color: color, image: (image is null) ? null : new global::Doroti.Framework.Painting.DecorationImage(image: image, onError: errorListener), shape: new global::Doroti.Framework.Painting.StadiumBorder());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleDecorationChanged()
     {
-        if (!this._isPainting)
+        if (!_isPainting)
         {
             notifyListeners();
         }
@@ -1091,9 +1091,9 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
 
     public override void paint(Canvas canvas, Size size)
     {
-        double currentValue = ((global::Doroti.Framework.Animation.Animation<double>)this.position).value;
-        double visualPosition = (this.textDirection switch { TextDirection.rtl => (1.0 - currentValue), TextDirection.ltr => currentValue, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if (((Equals(((global::Doroti.Framework.Animation.Animation<double>)this.reaction).status, AnimationStatus.reverse)) && !this._stopPressAnimation))
+        double currentValue = position.value;
+        double visualPosition = textDirection switch { TextDirection.rtl => 1.0 - currentValue, TextDirection.ltr => currentValue, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        if (Equals(reaction.status, AnimationStatus.reverse) && !_stopPressAnimation)
         {
             _stopPressAnimation = true;
         }
@@ -1101,57 +1101,57 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         {
             _stopPressAnimation = false;
         }
-        _pressedThumbExtension = (((global::Doroti.Framework.Animation.Animation<double>)this.reaction).value * SwitchLibrary._kThumbExtensionFactor);
-        var thumbSize = new global::Doroti.Ui.Size(((SwitchLibrary._kThumbRadius * 2L) + DartRuntimePrimitives.RequireValue(this._pressedThumbExtension)), (SwitchLibrary._kThumbRadius * 2L));
-        double colorValue = this._colorAnimation!.value;
-        global::Doroti.Ui.Color trackColor = ((global::Doroti.Ui.Color)Dart_uiLibrary.Color.lerp(this.inactiveTrackColor, this.activeTrackColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value)!);
-        global::Doroti.Ui.Color? trackOutlineColor = ((global::Doroti.Ui.Color?)(((this.inactiveTrackOutlineColor is null) || (this.activeTrackOutlineColor is null)) ? null : Dart_uiLibrary.Color.lerp(this.inactiveTrackOutlineColor, this.activeTrackOutlineColor, colorValue)));
-        double? trackOutlineWidth = Dart_uiLibrary.lerpDouble(this.inactiveTrackOutlineWidth, this.activeTrackOutlineWidth, colorValue);
+        _pressedThumbExtension = reaction.value * SwitchLibrary._kThumbExtensionFactor;
+        var thumbSize = new global::Doroti.Ui.Size((SwitchLibrary._kThumbRadius * 2L) + DartRuntimePrimitives.RequireValue(_pressedThumbExtension), SwitchLibrary._kThumbRadius * 2L);
+        double colorValue = _colorAnimation!.value;
+        global::Doroti.Ui.Color trackColor = Dart_uiLibrary.Color.lerp(inactiveTrackColor, activeTrackColor, position.value)!;
+        global::Doroti.Ui.Color? trackOutlineColor = ((inactiveTrackOutlineColor is null) || (activeTrackOutlineColor is null)) ? null : Dart_uiLibrary.Color.lerp(inactiveTrackOutlineColor, activeTrackOutlineColor, colorValue);
+        double? trackOutlineWidth = Dart_uiLibrary.lerpDouble(inactiveTrackOutlineWidth, activeTrackOutlineWidth, colorValue);
         global::Doroti.Ui.Color lerpedThumbColor = default!;
-        if (!((global::Doroti.Framework.Animation.Animation<double>)this.reaction).isDismissed)
+        if (!reaction.isDismissed)
         {
-            lerpedThumbColor = Dart_uiLibrary.Color.lerp(this.inactivePressedColor, this.activePressedColor, colorValue)!;
+            lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactivePressedColor, activePressedColor, colorValue)!;
         }
         else
         {
-            if ((Equals(((global::Doroti.Framework.Animation.AnimationController)this.positionController).status, AnimationStatus.forward)))
+            if (Equals(positionController.status, AnimationStatus.forward))
             {
-                lerpedThumbColor = Dart_uiLibrary.Color.lerp(this.inactivePressedColor, this.activeColor, colorValue)!;
+                lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactivePressedColor, activeColor, colorValue)!;
             }
             else
             {
-                if ((Equals(((global::Doroti.Framework.Animation.AnimationController)this.positionController).status, AnimationStatus.reverse)))
+                if (Equals(positionController.status, AnimationStatus.reverse))
                 {
-                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(this.inactiveColor, this.activePressedColor, colorValue)!;
+                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactiveColor, activePressedColor, colorValue)!;
                 }
                 else
                 {
-                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(this.inactiveColor, this.activeColor, colorValue)!;
+                    lerpedThumbColor = Dart_uiLibrary.Color.lerp(inactiveColor, activeColor, colorValue)!;
                 }
             }
         }
-        global::Doroti.Ui.Color thumbColor = ((global::Doroti.Ui.Color)Dart_uiLibrary.Color.alphaBlend(lerpedThumbColor, this.surfaceColor));
-        global::Doroti.Framework.Widgets.Icon? thumbIcon = ((currentValue < 0.5) ? this.inactiveIcon : this.activeIcon);
-        global::Doroti.Framework.Painting.IImageProvider? thumbImage = ((currentValue < 0.5) ? this.inactiveThumbImage : this.activeThumbImage);
-        global::System.Action<object, global::System.Diagnostics.StackTrace?>? thumbErrorListener = ((global::System.Action<object, global::System.Diagnostics.StackTrace?>?)((currentValue < 0.5) ? this.onInactiveThumbImageError : this.onActiveThumbImageError));
+        global::Doroti.Ui.Color thumbColor = Dart_uiLibrary.Color.alphaBlend(lerpedThumbColor, surfaceColor);
+        global::Doroti.Framework.Widgets.Icon? thumbIcon = (currentValue < 0.5) ? inactiveIcon : activeIcon;
+        global::Doroti.Framework.Painting.IImageProvider? thumbImage = (currentValue < 0.5) ? inactiveThumbImage : activeThumbImage;
+        global::System.Action<object, global::System.Diagnostics.StackTrace?>? thumbErrorListener = (currentValue < 0.5) ? onInactiveThumbImageError : onActiveThumbImageError;
         var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = trackColor;
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset trackPaintOffset = ((global::Doroti.Ui.Offset)_computeTrackPaintOffset(size));
-        global::Doroti.Ui.Offset thumbPaintOffset = ((global::Doroti.Ui.Offset)_computeThumbPaintOffset(trackPaintOffset, thumbSize, visualPosition));
+        global::Doroti.Ui.Offset trackPaintOffset = _computeTrackPaintOffset(size);
+        global::Doroti.Ui.Offset thumbPaintOffset = _computeThumbPaintOffset(trackPaintOffset, thumbSize, visualPosition);
         var trackRect = Rect.fromLTWH(trackPaintOffset.dx, trackPaintOffset.dy, SwitchLibrary._kTrackWidth, SwitchLibrary._kTrackHeight);
         _paintTrackWith(canvas, paintLocal, trackPaintOffset, trackOutlineColor, trackOutlineWidth, trackRect);
-        double currentReactionValue = ((global::Doroti.Framework.Animation.Animation<double>)this.reaction).value;
-        if ((this._onOffLabelColors is not null))
+        double currentReactionValue = reaction.value;
+        if (_onOffLabelColors is not null)
         {
-            var (onLabelColor, offLabelColor) = DartRuntimePrimitives.RequireValue(this.onOffLabelColors);
-            double leftLabelOpacity = (visualPosition * ((1.0 - currentReactionValue)));
-            double rightLabelOpacity = (((1.0 - visualPosition)) * ((1.0 - currentReactionValue)));
-            var (onLabelOpacity, offLabelOpacity) = (this.textDirection switch { TextDirection.ltr => (((double, double))((leftLabelOpacity, rightLabelOpacity))), TextDirection.rtl => (((double, double))((rightLabelOpacity, leftLabelOpacity))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            var (onLabelOffset, offLabelOffset) = (this.textDirection switch { TextDirection.ltr => (((Offset, Offset))((trackRect.centerLeft.translate(SwitchLibrary._kOnLabelPaddingHorizontal, 0), trackRect.centerRight.translate(-SwitchLibrary._kOffLabelPaddingHorizontal, 0)))), TextDirection.rtl => (((Offset, Offset))((trackRect.centerRight.translate(-SwitchLibrary._kOnLabelPaddingHorizontal, 0), trackRect.centerLeft.translate(SwitchLibrary._kOffLabelPaddingHorizontal, 0)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            var (onLabelColor, offLabelColor) = DartRuntimePrimitives.RequireValue(onOffLabelColors);
+            double leftLabelOpacity = visualPosition * (1.0 - currentReactionValue);
+            double rightLabelOpacity = (1.0 - visualPosition) * (1.0 - currentReactionValue);
+            var (onLabelOpacity, offLabelOpacity) = textDirection switch { TextDirection.ltr => (leftLabelOpacity, rightLabelOpacity), TextDirection.rtl => (rightLabelOpacity, leftLabelOpacity), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            var (onLabelOffset, offLabelOffset) = textDirection switch { TextDirection.ltr => (trackRect.centerLeft.translate(SwitchLibrary._kOnLabelPaddingHorizontal, 0), trackRect.centerRight.translate(-SwitchLibrary._kOffLabelPaddingHorizontal, 0)), TextDirection.rtl => (trackRect.centerRight.translate(-SwitchLibrary._kOnLabelPaddingHorizontal, 0), trackRect.centerLeft.translate(SwitchLibrary._kOffLabelPaddingHorizontal, 0)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             var onLabelRect = Rect.fromCenter(center: onLabelOffset, width: SwitchLibrary._kOnLabelWidth, height: SwitchLibrary._kOnLabelHeight);
             var onLabelPaint = ((Func<Paint>)(() =>
 {
@@ -1171,55 +1171,55 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
 }))();
             canvas.drawCircle(offLabelOffset, SwitchLibrary._kOffLabelRadius, offLabelPaint);
         }
-        _paintThumbWith(thumbPaintOffset, canvas, colorValue, thumbColor, thumbImage, (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)thumbErrorListener, thumbIcon, thumbSize);
+        _paintThumbWith(thumbPaintOffset, canvas, colorValue, thumbColor, thumbImage, thumbErrorListener, thumbIcon, thumbSize);
     }
 
     internal static global::Doroti.Ui.Offset _computeTrackPaintOffset(Size canvasSize)
     {
-        double horizontalOffset = (((canvasSize.width - SwitchLibrary._kTrackWidth)) / 2.0);
-        double verticalOffset = (((canvasSize.height - SwitchLibrary._kTrackHeight)) / 2.0);
+        double horizontalOffset = (canvasSize.width - SwitchLibrary._kTrackWidth) / 2.0;
+        double verticalOffset = (canvasSize.height - SwitchLibrary._kTrackHeight) / 2.0;
         return new global::Doroti.Ui.Offset(horizontalOffset, verticalOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Offset _computeThumbPaintOffset(Offset trackPaintOffset, Size thumbSize, double visualPosition)
     {
-        double trackRadius = (SwitchLibrary._kTrackHeight / 2L);
-        double additionalThumbRadius = ((thumbSize.height / 2L) - trackRadius);
-        double horizontalProgress = (visualPosition * ((this.trackInnerLength - DartRuntimePrimitives.RequireValue(this._pressedThumbExtension))));
-        double thumbHorizontalOffset = ((((trackPaintOffset.dx + trackRadius) + ((DartRuntimePrimitives.RequireValue(this._pressedThumbExtension) / 2L))) - (thumbSize.width / 2L)) + horizontalProgress);
-        double thumbVerticalOffset = (trackPaintOffset.dy - additionalThumbRadius);
+        double trackRadius = SwitchLibrary._kTrackHeight / 2L;
+        double additionalThumbRadius = (thumbSize.height / 2L) - trackRadius;
+        double horizontalProgress = visualPosition * (trackInnerLength - DartRuntimePrimitives.RequireValue(_pressedThumbExtension));
+        double thumbHorizontalOffset = trackPaintOffset.dx + trackRadius + DartRuntimePrimitives.RequireValue(_pressedThumbExtension) / 2L - (thumbSize.width / 2L) + horizontalProgress;
+        double thumbVerticalOffset = trackPaintOffset.dy - additionalThumbRadius;
         return new global::Doroti.Ui.Offset(thumbHorizontalOffset, thumbVerticalOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _paintTrackWith(Canvas canvas, Paint paint, Offset trackPaintOffset, Color? trackOutlineColor, double? trackOutlineWidth, Rect trackRect)
     {
-        double trackRadius = (SwitchLibrary._kTrackHeight / 2L);
+        double trackRadius = SwitchLibrary._kTrackHeight / 2L;
         var trackRRect = RRect.fromRectAndRadius(trackRect, Radius.circular(trackRadius));
         canvas.drawRRect(trackRRect, paint);
-        if ((trackOutlineColor is not null))
+        if (trackOutlineColor is not null)
         {
-            var outlineTrackRect = Rect.fromLTWH((trackPaintOffset.dx + 1L), (trackPaintOffset.dy + 1L), (SwitchLibrary._kTrackWidth - 2L), (SwitchLibrary._kTrackHeight - 2L));
+            var outlineTrackRect = Rect.fromLTWH(trackPaintOffset.dx + 1L, trackPaintOffset.dy + 1L, SwitchLibrary._kTrackWidth - 2L, SwitchLibrary._kTrackHeight - 2L);
             var outlineTrackRRect = RRect.fromRectAndRadius(outlineTrackRect, Radius.circular(trackRadius));
             var outlinePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = (trackOutlineWidth ?? 2.0);
+    __cascade.strokeWidth = trackOutlineWidth ?? 2.0;
     __cascade.color = trackOutlineColor;
     return __cascade;
 }))();
             canvas.drawRRect(outlineTrackRRect, outlinePaint);
         }
-        if (this.isFocused)
+        if (isFocused)
         {
-            global::Doroti.Ui.RRect focusedOutline = ((global::Doroti.Ui.RRect)trackRRect.inflate(1.75));
+            global::Doroti.Ui.RRect focusedOutline = trackRRect.inflate(1.75);
             var focusedPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
-    __cascade.color = this.focusColor;
+    __cascade.color = focusColor;
     __cascade.strokeWidth = 3.5;
     return __cascade;
 }))();
@@ -1233,40 +1233,40 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         try
         {
             _isPainting = true;
-            if (((((this._cachedThumbPainter is null) || (!Equals(thumbColor, this._cachedThumbColor))) || (!Equals(thumbImage, this._cachedThumbImage))) || (!Equals((global::System.Action<object, global::System.Diagnostics.StackTrace?>?)thumbErrorListener, (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this._cachedThumbErrorListener))))
+            if ((_cachedThumbPainter is null) || (!Equals(thumbColor, _cachedThumbColor)) || (!Equals(thumbImage, _cachedThumbImage)) || (!Equals(thumbErrorListener, _cachedThumbErrorListener)))
             {
                 _cachedThumbColor = thumbColor;
                 _cachedThumbImage = thumbImage;
-                _cachedThumbErrorListener = (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)thumbErrorListener;
-                this._cachedThumbPainter?.dispose();
-                _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage, (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)thumbErrorListener).createBoxPainter((global::System.Action)(() => this._handleDecorationChanged()));
+                _cachedThumbErrorListener = thumbErrorListener;
+                _cachedThumbPainter?.dispose();
+                _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage, thumbErrorListener).createBoxPainter(() => _handleDecorationChanged());
             }
-            global::Doroti.Framework.Painting.BoxPainter thumbPainter = this._cachedThumbPainter!;
+            global::Doroti.Framework.Painting.BoxPainter thumbPainter = _cachedThumbPainter!;
             _paintCupertinoThumbShadowAndBorder(canvas, thumbPaintOffset, thumbSize);
-            thumbPainter.paint(canvas, thumbPaintOffset, this.configuration.copyWith(size: thumbSize));
-            if (((thumbIcon is not null) && (((global::Doroti.Framework.Widgets.Icon)thumbIcon).icon is not null)))
+            thumbPainter.paint(canvas, thumbPaintOffset, configuration.copyWith(size: thumbSize));
+            if ((thumbIcon is not null) && (thumbIcon.icon is not null))
             {
-                global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)Dart_uiLibrary.Color.lerp(this.inactiveIconColor, this.activeIconColor, currentValue)!);
-                double iconSize = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).size ?? 16.0);
-                global::Doroti.Framework.Widgets.IconData iconData = ((global::Doroti.Framework.Widgets.Icon)thumbIcon).icon!;
-                double? iconWeight = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).weight ?? this.iconTheme?.weight);
-                double? iconFill = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).fill ?? this.iconTheme?.fill);
-                double? iconGrade = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).grade ?? this.iconTheme?.grade);
-                double? iconOpticalSize = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).opticalSize ?? this.iconTheme?.opticalSize);
-                List<global::Doroti.Ui.Shadow>? iconShadows = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).shadows ?? this.iconTheme?.shadows)?.ToList();
-                var textSpan = new global::Doroti.Framework.Painting.TextSpan(text: char.ConvertFromUtf32(checked((int)((global::Doroti.Framework.Widgets.IconData)iconData).codePoint)), style: new global::Doroti.Framework.Painting.TextStyle(fontVariations: ((Func<List<global::Doroti.Ui.FontVariation>>)(() => { var __collection45150 = new List<global::Doroti.Ui.FontVariation>(); if ((iconFill is not null)) { __collection45150.Add(new global::Doroti.Ui.FontVariation("FILL", DartRuntimePrimitives.RequireValue(iconFill))); } if ((iconWeight is not null)) { __collection45150.Add(new global::Doroti.Ui.FontVariation("wght", DartRuntimePrimitives.RequireValue(iconWeight))); } if ((iconGrade is not null)) { __collection45150.Add(new global::Doroti.Ui.FontVariation("GRAD", DartRuntimePrimitives.RequireValue(iconGrade))); } if ((iconOpticalSize is not null)) { __collection45150.Add(new global::Doroti.Ui.FontVariation("opsz", DartRuntimePrimitives.RequireValue(iconOpticalSize))); } return __collection45150; }))(), color: iconColor, fontSize: iconSize, inherit: false, fontFamily: ((global::Doroti.Framework.Widgets.IconData)iconData).fontFamily, package: ((global::Doroti.Framework.Widgets.IconData)iconData).fontPackage, shadows: iconShadows));
+                global::Doroti.Ui.Color iconColor = Dart_uiLibrary.Color.lerp(inactiveIconColor, activeIconColor, currentValue)!;
+                double iconSize = thumbIcon.size ?? 16.0;
+                global::Doroti.Framework.Widgets.IconData iconData = thumbIcon.icon!;
+                double? iconWeight = thumbIcon.weight ?? iconTheme?.weight;
+                double? iconFill = thumbIcon.fill ?? iconTheme?.fill;
+                double? iconGrade = thumbIcon.grade ?? iconTheme?.grade;
+                double? iconOpticalSize = thumbIcon.opticalSize ?? iconTheme?.opticalSize;
+                List<global::Doroti.Ui.Shadow>? iconShadows = (thumbIcon.shadows ?? iconTheme?.shadows)?.ToList();
+                var textSpan = new global::Doroti.Framework.Painting.TextSpan(text: char.ConvertFromUtf32(checked((int)iconData.codePoint)), style: new global::Doroti.Framework.Painting.TextStyle(fontVariations: ((Func<List<global::Doroti.Ui.FontVariation>>)(() => { var __collection45150 = new List<global::Doroti.Ui.FontVariation>(); if (iconFill is not null) { __collection45150.Add(new global::Doroti.Ui.FontVariation("FILL", DartRuntimePrimitives.RequireValue(iconFill))); } if (iconWeight is not null) { __collection45150.Add(new global::Doroti.Ui.FontVariation("wght", DartRuntimePrimitives.RequireValue(iconWeight))); } if (iconGrade is not null) { __collection45150.Add(new global::Doroti.Ui.FontVariation("GRAD", DartRuntimePrimitives.RequireValue(iconGrade))); } if (iconOpticalSize is not null) { __collection45150.Add(new global::Doroti.Ui.FontVariation("opsz", DartRuntimePrimitives.RequireValue(iconOpticalSize))); } return __collection45150; }))(), color: iconColor, fontSize: iconSize, inherit: false, fontFamily: iconData.fontFamily, package: iconData.fontPackage, shadows: iconShadows));
                 DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
-    var __cascade = this._textPainter;
-    __cascade.textDirection = this.textDirection;
+    var __cascade = _textPainter;
+    __cascade.textDirection = textDirection;
     __cascade.text = textSpan;
     return __cascade;
 }))());
-                this._textPainter.layout();
-                double additionalHorizontalOffset = (((thumbSize.width - iconSize)) / 2L);
-                double additionalVerticalOffset = (((thumbSize.height - iconSize)) / 2L);
-                global::Doroti.Ui.Offset offset = ((global::Doroti.Ui.Offset)(thumbPaintOffset + new global::Doroti.Ui.Offset(additionalHorizontalOffset, additionalVerticalOffset)));
-                this._textPainter.paint(canvas, offset);
+                _textPainter.layout();
+                double additionalHorizontalOffset = (thumbSize.width - iconSize) / 2L;
+                double additionalVerticalOffset = (thumbSize.height - iconSize) / 2L;
+                global::Doroti.Ui.Offset offset = thumbPaintOffset + new global::Doroti.Ui.Offset(additionalHorizontalOffset, additionalVerticalOffset);
+                _textPainter.paint(canvas, offset);
             }
         }
         finally
@@ -1277,7 +1277,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
 
     internal virtual void _paintCupertinoThumbShadowAndBorder(Canvas canvas, Offset thumbPaintOffset, Size thumbSize)
     {
-        var thumbBounds = RRect.fromLTRBR(thumbPaintOffset.dx, thumbPaintOffset.dy, (thumbPaintOffset.dx + thumbSize.width), (thumbPaintOffset.dy + thumbSize.height), Radius.circular((thumbSize.height / 2.0)));
+        var thumbBounds = RRect.fromLTRBR(thumbPaintOffset.dx, thumbPaintOffset.dy, thumbPaintOffset.dx + thumbSize.width, thumbPaintOffset.dy + thumbSize.height, Radius.circular(thumbSize.height / 2.0));
         foreach (global::Doroti.Framework.Painting.BoxShadow shadow in SwitchLibrary._kSwitchBoxShadows)
         {
             canvas.drawRRect(thumbBounds.shift(shadow.offset), shadow.toPaint());
@@ -1292,13 +1292,13 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
 
     public override void dispose()
     {
-        this._textPainter.dispose();
-        this._cachedThumbPainter?.dispose();
+        _textPainter.dispose();
+        _cachedThumbPainter?.dispose();
         _cachedThumbPainter = null;
         _cachedThumbColor = null;
         _cachedThumbImage = null;
         _cachedThumbErrorListener = null;
-        this._colorAnimation?.dispose();
+        _colorAnimation?.dispose();
         base.dispose();
     }
 

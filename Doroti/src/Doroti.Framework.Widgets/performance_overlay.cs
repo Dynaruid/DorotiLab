@@ -16,15 +16,15 @@ public class PerformanceOverlay : LeafRenderObjectWidget
     public static PerformanceOverlay CreateAllEnabled(global::Doroti.Framework.Foundation.Key? key = null)
     {
         var __instance = new PerformanceOverlay(key, default!);
-        __instance.optionsMask = ((((1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayRasterizerStatistics))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeRasterizerStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayEngineStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeEngineStatistics))));
+        __instance.optionsMask = (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayRasterizerStatistics)) | (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeRasterizerStatistics)) | (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayEngineStatistics)) | (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeEngineStatistics));
         return __instance;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderPerformanceOverlay(optionsMask: this.optionsMask));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderPerformanceOverlay(optionsMask: optionsMask));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderPerformanceOverlay)renderObject;
-        __renderObject.optionsMask = this.optionsMask;
+        __renderObject.optionsMask = optionsMask;
     }
 
 }

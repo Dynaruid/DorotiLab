@@ -36,7 +36,7 @@ public abstract class ImageFilterConfig
     public abstract global::Doroti.Ui.ImageFilter resolve(ImageFilterContext context);
     public virtual global::Doroti.Ui.ImageFilter? filter => null;
     public abstract string debugShortDescription { get; }
-    public override string ToString() => $"ImageFilterConfig.{this.debugShortDescription}";
+    public override string ToString() => $"ImageFilterConfig.{debugShortDescription}";
 }
 
 internal class _DirectImageFilterConfig__image_filter_config : ImageFilterConfig
@@ -46,12 +46,12 @@ internal class _DirectImageFilterConfig__image_filter_config : ImageFilterConfig
 
     internal _DirectImageFilterConfig__image_filter_config(ImageFilter filter)
     {
-        this.__field_filter = filter;
+        __field_filter = filter;
     }
 
     public override ImageFilter resolve(ImageFilterContext context)
     {
-        return this.filter;
+        return filter;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -63,16 +63,16 @@ internal class _DirectImageFilterConfig__image_filter_config : ImageFilterConfig
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is _DirectImageFilterConfig__image_filter_config) && (Equals(((_DirectImageFilterConfig__image_filter_config)((_DirectImageFilterConfig__image_filter_config)__other)).filter, this.filter)));
+        return (__other is _DirectImageFilterConfig__image_filter_config) && Equals(__other.filter, filter);
     }
 
-    public override int GetHashCode() => this.filter.GetHashCode();
-    public override string debugShortDescription => this.filter.debugShortDescription;
-    public override string ToString() => $"ImageFilterConfig({this.filter.debugShortDescription})";
+    public override int GetHashCode() => filter.GetHashCode();
+    public override string debugShortDescription => filter.debugShortDescription;
+    public override string ToString() => $"ImageFilterConfig({filter.debugShortDescription})";
 }
 
 internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
@@ -92,7 +92,7 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
 
     public override ImageFilter resolve(ImageFilterContext context)
     {
-        return new global::Doroti.Ui.ImageFilter(sigmaX: this.sigmaX, sigmaY: this.sigmaY, tileMode: this.tileMode, bounds: (this.bounded ? ((ImageFilterContext)context).bounds : null));
+        return new global::Doroti.Ui.ImageFilter(sigmaX: sigmaX, sigmaY: sigmaY, tileMode: tileMode, bounds: bounded ? context.bounds : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -104,19 +104,19 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((__other is _BlurImageFilterConfig__image_filter_config) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).sigmaX == this.sigmaX)) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).sigmaY == this.sigmaY)) && (Equals(((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).tileMode, this.tileMode))) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).bounded == this.bounded));
+        return (__other is _BlurImageFilterConfig__image_filter_config) && (__other.sigmaX == sigmaX) && (__other.sigmaY == sigmaY) && Equals(__other.tileMode, tileMode) && (__other.bounded == bounded);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.sigmaX, this.sigmaY, this.tileMode, this.bounded);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(sigmaX, sigmaY, tileMode, bounded);
     internal virtual string _modeString
     {
         get
         {
-            switch (this.tileMode)
+            switch (tileMode)
             {
                 case Dart_uiLibrary.TileMode.clamp:
                     {
@@ -138,8 +138,8 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
             return default!;
         }
     }
-    internal virtual string _boundedString => (this.bounded ? "bounded" : "unbounded");
-    public override string debugShortDescription => $"blur({this.sigmaX}, {this.sigmaY}, {this._modeString}, {this._boundedString})";
+    internal virtual string _boundedString => bounded ? "bounded" : "unbounded";
+    public override string debugShortDescription => $"blur({sigmaX}, {sigmaY}, {_modeString}, {_boundedString})";
 }
 
 internal class _ComposeImageFilterConfig__image_filter_config : ImageFilterConfig
@@ -155,7 +155,7 @@ internal class _ComposeImageFilterConfig__image_filter_config : ImageFilterConfi
 
     public override ImageFilter resolve(ImageFilterContext context)
     {
-        return new global::Doroti.Ui.ImageFilter(outer: this.outer.resolve(context), inner: this.inner.resolve(context));
+        return new global::Doroti.Ui.ImageFilter(outer: outer.resolve(context), inner: inner.resolve(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -167,14 +167,14 @@ internal class _ComposeImageFilterConfig__image_filter_config : ImageFilterConfi
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is _ComposeImageFilterConfig__image_filter_config) && (Equals(((_ComposeImageFilterConfig__image_filter_config)((_ComposeImageFilterConfig__image_filter_config)__other)).outer, this.outer))) && (Equals(((_ComposeImageFilterConfig__image_filter_config)((_ComposeImageFilterConfig__image_filter_config)__other)).inner, this.inner)));
+        return (__other is _ComposeImageFilterConfig__image_filter_config) && Equals(__other.outer, outer) && Equals(__other.inner, inner);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.outer, this.inner);
-    public override string debugShortDescription => $"{((ImageFilterConfig)this.inner).debugShortDescription} -> {((ImageFilterConfig)this.outer).debugShortDescription}";
-    public override string ToString() => $"ImageFilterConfig.compose(source -> {this.debugShortDescription} -> result)";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(outer, inner);
+    public override string debugShortDescription => $"{inner.debugShortDescription} -> {outer.debugShortDescription}";
+    public override string ToString() => $"ImageFilterConfig.compose(source -> {debugShortDescription} -> result)";
 }

@@ -1271,7 +1271,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
 
         if (constructor == "fromEnvironment" &&
-            typeName is ("bool" or "string" or "int") &&
+            typeName is "bool" or "string" or "int" &&
             TryEmitFromEnvironmentLiteral(builder, argumentList, typeName))
         {
             return;
@@ -2010,7 +2010,7 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             else if (mapValueType.Length > 0 &&
                 mapValueType.TrimEnd('?') is not ("object" or "dynamic" or "void") &&
-                actualValueType is not ("void") &&
+                actualValueType is not "void" &&
                 !IsValueType(mapValueType.TrimEnd('?')) &&
                 !string.Equals(mapValueType.TrimEnd('?'), actualValueType, StringComparison.Ordinal))
             {

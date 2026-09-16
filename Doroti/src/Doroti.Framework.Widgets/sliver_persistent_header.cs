@@ -35,26 +35,26 @@ public class SliverPersistentHeader : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        if ((this.floating && this.pinned))
+        if (floating && pinned)
         {
-            return ((Widget)new _SliverFloatingPinnedPersistentHeader__sliver_persistent_header(@delegate: this.@delegate));
+            return new _SliverFloatingPinnedPersistentHeader__sliver_persistent_header(@delegate: @delegate);
         }
-        if (this.pinned)
+        if (pinned)
         {
-            return ((Widget)new _SliverPinnedPersistentHeader__sliver_persistent_header(@delegate: this.@delegate));
+            return new _SliverPinnedPersistentHeader__sliver_persistent_header(@delegate: @delegate);
         }
-        if (this.floating)
+        if (floating)
         {
-            return ((Widget)new _SliverFloatingPersistentHeader__sliver_persistent_header(@delegate: this.@delegate));
+            return new _SliverFloatingPersistentHeader__sliver_persistent_header(@delegate: @delegate);
         }
-        return ((Widget)new _SliverScrollingPersistentHeader__sliver_persistent_header(@delegate: this.@delegate));
+        return new _SliverScrollingPersistentHeader__sliver_persistent_header(@delegate: @delegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliverPersistentHeaderDelegate>("delegate", this.@delegate));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliverPersistentHeaderDelegate>("delegate", @delegate));
         var flags = new List<string>();
         if (!Enumerable.Any(flags))
         {
@@ -84,48 +84,48 @@ internal class _FloatingHeaderState__sliver_persistent_header : State<_FloatingH
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        if ((this._position is not null))
+        if (_position is not null)
         {
-            this._position!.isScrollingNotifier.removeListener(this._isScrollingListener);
+            _position!.isScrollingNotifier.removeListener(_isScrollingListener);
         }
-        _position = Scrollable.maybeOf(this.context)?.position;
-        if ((this._position is not null))
+        _position = Scrollable.maybeOf(context)?.position;
+        if (_position is not null)
         {
-            this._position!.isScrollingNotifier.addListener(this._isScrollingListener);
+            _position!.isScrollingNotifier.addListener(_isScrollingListener);
         }
     }
 
     public override void dispose()
     {
-        if ((this._position is not null))
+        if (_position is not null)
         {
-            this._position!.isScrollingNotifier.removeListener(this._isScrollingListener);
+            _position!.isScrollingNotifier.removeListener(_isScrollingListener);
         }
         base.dispose();
     }
 
     internal virtual global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader? _headerRenderer()
     {
-        return ((global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader?)this.context.findAncestorRenderObjectOfType<global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader>());
+        return context.findAncestorRenderObjectOfType<global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _isScrollingListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._position is not null));
-        global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader? header = ((global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader?)_headerRenderer());
-        if (this._position!.isScrollingNotifier.value)
+        DartRuntimePrimitives.Assert(() => _position is not null);
+        global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader? header = _headerRenderer();
+        if (_position!.isScrollingNotifier.value)
         {
-            header?.updateScrollStartDirection(this._position!.userScrollDirection);
-            header?.maybeStopSnapAnimation(this._position!.userScrollDirection);
+            header?.updateScrollStartDirection(_position!.userScrollDirection);
+            header?.maybeStopSnapAnimation(_position!.userScrollDirection);
         }
         else
         {
-            header?.maybeStartSnapAnimation(this._position!.userScrollDirection);
+            header?.maybeStartSnapAnimation(_position!.userScrollDirection);
         }
     }
 
-    public override Widget build(BuildContext context) => ((_FloatingHeader__sliver_persistent_header)this.widget).child;
+    public override Widget build(BuildContext context) => widget.child;
 }
 
 public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderObjectElement
@@ -143,26 +143,26 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        this.header._element = this;
+        header._element = this;
     }
 
     public override void unmount()
     {
-        this.header._element = null;
+        header._element = null;
         base.unmount();
     }
 
     public override void update(Widget newWidget)
     {
         var __newWidget = (_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)newWidget;
-        var oldWidget = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this.widget)!;
+        var oldWidget = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)widget)!;
         base.update(__newWidget);
-        SliverPersistentHeaderDelegate newDelegate = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)__newWidget).@delegate;
-        SliverPersistentHeaderDelegate oldDelegate = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)oldWidget).@delegate;
-        if (((!Equals(newDelegate, oldDelegate)) && (((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
+        SliverPersistentHeaderDelegate newDelegate = __newWidget.@delegate;
+        SliverPersistentHeaderDelegate oldDelegate = oldWidget.@delegate;
+        if ((!Equals(newDelegate, oldDelegate)) && ((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))
         {
-            _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header renderObjectLocal = DartRuntimePrimitives.ConvertValue<_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header>(this.renderObject);
-            _updateChild(newDelegate, ((double)renderObjectLocal.lastShrinkOffset), ((bool)renderObjectLocal.lastOverlapsContent));
+            _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header renderObjectLocal = DartRuntimePrimitives.ConvertValue<_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header>(renderObject);
+            _updateChild(newDelegate, (double)renderObjectLocal.lastShrinkOffset, renderObjectLocal.lastOverlapsContent);
             renderObjectLocal.triggerRebuild();
         }
     }
@@ -170,36 +170,36 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
     public override void performRebuild()
     {
         base.performRebuild();
-        this.header.triggerRebuild();
+        header.triggerRebuild();
     }
 
     internal virtual void _updateChild(SliverPersistentHeaderDelegate @delegate, double shrinkOffset, bool overlapsContent)
     {
-        Widget newWidget = ((Widget)@delegate.build(this, shrinkOffset, overlapsContent));
-        child = updateChild(this.child, (this.floating ? new _FloatingHeader__sliver_persistent_header(child: newWidget) : newWidget), null);
+        Widget newWidget = @delegate.build(this, shrinkOffset, overlapsContent);
+        child = updateChild(child, floating ? new _FloatingHeader__sliver_persistent_header(child: newWidget) : newWidget, null);
     }
 
     internal virtual void _build(double shrinkOffset, bool overlapsContent)
     {
-        this.owner!.buildScope(this, ((global::System.Action)(() =>
+        owner!.buildScope(this, () =>
         {
-            var sliverPersistentHeaderRenderObjectWidget = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this.widget)!;
-            _updateChild(((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)sliverPersistentHeaderRenderObjectWidget).@delegate, shrinkOffset, overlapsContent);
-        })));
+            var sliverPersistentHeaderRenderObjectWidget = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)widget)!;
+            _updateChild(sliverPersistentHeaderRenderObjectWidget.@delegate, shrinkOffset, overlapsContent);
+        });
     }
 
     public override void forgetChild(Element child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child, ((Element?)(this).child))));
-        (this).child = null;
+        DartRuntimePrimitives.Assert(() => Equals(child, this.child));
+        this.child = null;
         base.forgetChild(child);
     }
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        DartRuntimePrimitives.Assert(() => ((bool)this.renderObject.debugValidateChild(__child)));
-        this.renderObject.child = __child;
+        DartRuntimePrimitives.Assert(() => renderObject.debugValidateChild(__child));
+        renderObject.child = __child;
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -209,14 +209,14 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        this.renderObject.child = null;
+        renderObject.child = null;
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        if ((this.child is not null))
+        if (child is not null)
         {
-            visitor(this.child!);
+            visitor(child!);
         }
     }
 
@@ -233,12 +233,12 @@ public abstract class _SliverPersistentHeaderRenderObjectWidget__sliver_persiste
         this.floating = floating;
     }
 
-    public override _SliverPersistentHeaderElement__sliver_persistent_header createElement() => new _SliverPersistentHeaderElement__sliver_persistent_header(this, floating: this.floating);
+    public override _SliverPersistentHeaderElement__sliver_persistent_header createElement() => new _SliverPersistentHeaderElement__sliver_persistent_header(this, floating: floating);
     public abstract override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context);
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliverPersistentHeaderDelegate>("delegate", this.@delegate));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliverPersistentHeaderDelegate>("delegate", @delegate));
     }
 
 }
@@ -263,14 +263,14 @@ internal class _SliverScrollingPersistentHeader__sliver_persistent_header : _Sli
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverScrollingPersistentHeaderForWidgets__sliver_persistent_header(stretchConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration));
+        return new _RenderSliverScrollingPersistentHeaderForWidgets__sliver_persistent_header(stretchConfiguration: @delegate.stretchConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverScrollingPersistentHeaderForWidgets__sliver_persistent_header)renderObject;
-        __renderObject.stretchConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration;
+        __renderObject.stretchConfiguration = @delegate.stretchConfiguration;
     }
 
 }
@@ -283,12 +283,12 @@ public class _RenderSliverScrollingPersistentHeaderForWidgets__sliver_persistent
     {
     }
 
-    public override double minExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.minExtent;
-    public override double maxExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.maxExtent;
+    public override double minExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.minExtent;
+    public override double maxExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.maxExtent;
     public override void updateChild(double shrinkOffset, bool overlapsContent)
     {
-        DartRuntimePrimitives.Assert(() => (this._element is not null));
-        this._element!._build(shrinkOffset, overlapsContent);
+        DartRuntimePrimitives.Assert(() => _element is not null);
+        _element!._build(shrinkOffset, overlapsContent);
     }
 
     public virtual void triggerRebuild()
@@ -306,7 +306,7 @@ internal class _SliverPinnedPersistentHeader__sliver_persistent_header : _Sliver
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverPinnedPersistentHeaderForWidgets__sliver_persistent_header(stretchConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration, showOnScreenConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration));
+        return new _RenderSliverPinnedPersistentHeaderForWidgets__sliver_persistent_header(stretchConfiguration: @delegate.stretchConfiguration, showOnScreenConfiguration: @delegate.showOnScreenConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -316,8 +316,8 @@ internal class _SliverPinnedPersistentHeader__sliver_persistent_header : _Sliver
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverPinnedPersistentHeaderForWidgets__sliver_persistent_header>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.stretchConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration;
-    __cascade.showOnScreenConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration;
+    __cascade.stretchConfiguration = @delegate.stretchConfiguration;
+    __cascade.showOnScreenConfiguration = @delegate.showOnScreenConfiguration;
     return __cascade;
 }))());
     }
@@ -332,12 +332,12 @@ public class _RenderSliverPinnedPersistentHeaderForWidgets__sliver_persistent_he
     {
     }
 
-    public override double minExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.minExtent;
-    public override double maxExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.maxExtent;
+    public override double minExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.minExtent;
+    public override double maxExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.maxExtent;
     public override void updateChild(double shrinkOffset, bool overlapsContent)
     {
-        DartRuntimePrimitives.Assert(() => (this._element is not null));
-        this._element!._build(shrinkOffset, overlapsContent);
+        DartRuntimePrimitives.Assert(() => _element is not null);
+        _element!._build(shrinkOffset, overlapsContent);
     }
 
     public virtual void triggerRebuild()
@@ -355,17 +355,17 @@ internal class _SliverFloatingPersistentHeader__sliver_persistent_header : _Sliv
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverFloatingPersistentHeaderForWidgets__sliver_persistent_header(vsync: ((SliverPersistentHeaderDelegate)this.@delegate).vsync, snapConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).snapConfiguration, stretchConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration, showOnScreenConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration));
+        return new _RenderSliverFloatingPersistentHeaderForWidgets__sliver_persistent_header(vsync: @delegate.vsync, snapConfiguration: @delegate.snapConfiguration, stretchConfiguration: @delegate.stretchConfiguration, showOnScreenConfiguration: @delegate.showOnScreenConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverFloatingPersistentHeaderForWidgets__sliver_persistent_header)renderObject;
-        __renderObject.vsync = ((SliverPersistentHeaderDelegate)this.@delegate).vsync;
-        __renderObject.snapConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).snapConfiguration;
-        __renderObject.stretchConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration;
-        __renderObject.showOnScreenConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration;
+        __renderObject.vsync = @delegate.vsync;
+        __renderObject.snapConfiguration = @delegate.snapConfiguration;
+        __renderObject.stretchConfiguration = @delegate.stretchConfiguration;
+        __renderObject.showOnScreenConfiguration = @delegate.showOnScreenConfiguration;
     }
 
 }
@@ -378,12 +378,12 @@ public class _RenderSliverFloatingPinnedPersistentHeaderForWidgets__sliver_persi
     {
     }
 
-    public override double minExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.minExtent;
-    public override double maxExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.maxExtent;
+    public override double minExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.minExtent;
+    public override double maxExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.maxExtent;
     public override void updateChild(double shrinkOffset, bool overlapsContent)
     {
-        DartRuntimePrimitives.Assert(() => (this._element is not null));
-        this._element!._build(shrinkOffset, overlapsContent);
+        DartRuntimePrimitives.Assert(() => _element is not null);
+        _element!._build(shrinkOffset, overlapsContent);
     }
 
     public virtual void triggerRebuild()
@@ -401,17 +401,17 @@ internal class _SliverFloatingPinnedPersistentHeader__sliver_persistent_header :
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverFloatingPinnedPersistentHeaderForWidgets__sliver_persistent_header(vsync: ((SliverPersistentHeaderDelegate)this.@delegate).vsync, snapConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).snapConfiguration, stretchConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration, showOnScreenConfiguration: ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration));
+        return new _RenderSliverFloatingPinnedPersistentHeaderForWidgets__sliver_persistent_header(vsync: @delegate.vsync, snapConfiguration: @delegate.snapConfiguration, stretchConfiguration: @delegate.stretchConfiguration, showOnScreenConfiguration: @delegate.showOnScreenConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverFloatingPinnedPersistentHeaderForWidgets__sliver_persistent_header)renderObject;
-        __renderObject.vsync = ((SliverPersistentHeaderDelegate)this.@delegate).vsync;
-        __renderObject.snapConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).snapConfiguration;
-        __renderObject.stretchConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration;
-        __renderObject.showOnScreenConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration;
+        __renderObject.vsync = @delegate.vsync;
+        __renderObject.snapConfiguration = @delegate.snapConfiguration;
+        __renderObject.stretchConfiguration = @delegate.stretchConfiguration;
+        __renderObject.showOnScreenConfiguration = @delegate.showOnScreenConfiguration;
     }
 
 }
@@ -424,12 +424,12 @@ public class _RenderSliverFloatingPersistentHeaderForWidgets__sliver_persistent_
     {
     }
 
-    public override double minExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.minExtent;
-    public override double maxExtent => (((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)this._element!.widget)!).@delegate.maxExtent;
+    public override double minExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.minExtent;
+    public override double maxExtent => ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)_element!.widget)!.@delegate.maxExtent;
     public override void updateChild(double shrinkOffset, bool overlapsContent)
     {
-        DartRuntimePrimitives.Assert(() => (this._element is not null));
-        this._element!._build(shrinkOffset, overlapsContent);
+        DartRuntimePrimitives.Assert(() => _element is not null);
+        _element!._build(shrinkOffset, overlapsContent);
     }
 
     public virtual void triggerRebuild()

@@ -37,119 +37,119 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Rendering.PipelineOwner newOwner = ((global::Doroti.Framework.Rendering.PipelineOwner)View.pipelineOwnerOf(this.context));
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.PipelineOwner)newOwner).semanticsOwner is not null));
-        if ((!Equals(newOwner, this._pipelineOwner)))
+        global::Doroti.Framework.Rendering.PipelineOwner newOwner = View.pipelineOwnerOf(context);
+        DartRuntimePrimitives.Assert(() => newOwner.semanticsOwner is not null);
+        if (!Equals(newOwner, _pipelineOwner))
         {
-            this._pipelineOwner?.semanticsOwner?.removeListener(this._update);
-            ((global::Doroti.Framework.Rendering.PipelineOwner)newOwner).semanticsOwner!.addListener(this._update);
+            _pipelineOwner?.semanticsOwner?.removeListener(_update);
+            newOwner.semanticsOwner!.addListener(_update);
             _pipelineOwner = newOwner;
         }
     }
 
     public override void dispose()
     {
-        this._pipelineOwner?.semanticsOwner?.removeListener(this._update);
-        this._semanticsHandle?.dispose();
+        _pipelineOwner?.semanticsOwner?.removeListener(_update);
+        _semanticsHandle?.dispose();
         WidgetsBinding.instance.removeObserver(this);
         base.dispose();
     }
 
     public virtual void didChangeMetrics()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
     internal virtual void _update()
     {
         _generation++;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
         {
-            if (this.mounted)
+            if (mounted)
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
-                })));
+                });
             }
-        })), debugLabel: "SemanticsDebugger.update");
+        }, debugLabel: "SemanticsDebugger.update");
     }
 
     internal virtual void _handlePointerDown(global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-            _lastPointerDownLocation = (@event.position * View.of(this.context).devicePixelRatio);
-        })));
+            _lastPointerDownLocation = @event.position * View.of(context).devicePixelRatio;
+        });
     }
 
     internal virtual void _handleTap()
     {
-        DartRuntimePrimitives.Assert(() => (this._lastPointerDownLocation is not null));
-        _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.tap);
-        setState(((global::System.Action)(() =>
+        DartRuntimePrimitives.Assert(() => _lastPointerDownLocation is not null);
+        _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.tap);
+        setState(() =>
         {
             _lastPointerDownLocation = null;
-        })));
+        });
     }
 
     internal virtual void _handleLongPress()
     {
-        DartRuntimePrimitives.Assert(() => (this._lastPointerDownLocation is not null));
-        _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.longPress);
-        setState(((global::System.Action)(() =>
+        DartRuntimePrimitives.Assert(() => _lastPointerDownLocation is not null);
+        _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.longPress);
+        setState(() =>
         {
             _lastPointerDownLocation = null;
-        })));
+        });
     }
 
     internal virtual void _handlePanEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
-        double vx = ((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dx;
-        double vy = ((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy;
-        if ((vx.abs() == vy.abs()))
+        double vx = details.velocity.pixelsPerSecond.dx;
+        double vy = details.velocity.pixelsPerSecond.dy;
+        if (vx.abs() == vy.abs())
         {
             return;
         }
-        if ((vx.abs() > vy.abs()))
+        if (vx.abs() > vy.abs())
         {
-            if ((Math.Sign(vx) < 0L))
+            if (Math.Sign(vx) < 0L)
             {
-                _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.decrease);
-                _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.scrollLeft);
+                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.decrease);
+                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollLeft);
             }
             else
             {
-                _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.increase);
-                _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.scrollRight);
+                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.increase);
+                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollRight);
             }
         }
         else
         {
-            if ((Math.Sign(vy) < 0L))
+            if (Math.Sign(vy) < 0L)
             {
-                _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.scrollUp);
+                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollUp);
             }
             else
             {
-                _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.scrollDown);
+                _performAction(DartRuntimePrimitives.RequireValue(_lastPointerDownLocation), SemanticsAction.scrollDown);
             }
         }
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
             _lastPointerDownLocation = null;
-        })));
+        });
     }
 
     internal virtual void _performAction(Offset position, SemanticsAction action)
     {
-        this._pipelineOwner?.semanticsOwner?.performActionAt(position, action);
+        _pipelineOwner?.semanticsOwner?.performActionAt(position, action);
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new CustomPaint(foregroundPainter: new _SemanticsDebuggerPainter__semantics_debugger(this._pipelineOwner!, this._generation, this._lastPointerDownLocation, View.of(context).devicePixelRatio, ((SemanticsDebugger)this.widget).labelStyle), child: new GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => this._handleTap(), onLongPress: () => this._handleLongPress(), onPanEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handlePanEnd, excludeFromSemantics: true, child: new Listener(onPointerDown: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this._handlePointerDown, behavior: HitTestBehavior.opaque, child: new _IgnorePointerWithSemantics__semantics_debugger(child: ((SemanticsDebugger)this.widget).child)))));
+        return new CustomPaint(foregroundPainter: new _SemanticsDebuggerPainter__semantics_debugger(_pipelineOwner!, _generation, _lastPointerDownLocation, View.of(context).devicePixelRatio, widget.labelStyle), child: new GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _handleTap(), onLongPress: () => _handleLongPress(), onPanEnd: _handlePanEnd, excludeFromSemantics: true, child: new Listener(onPointerDown: _handlePointerDown, behavior: HitTestBehavior.opaque, child: new _IgnorePointerWithSemantics__semantics_debugger(child: widget.child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -176,24 +176,24 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
     {
         get
         {
-            return ((global::Doroti.Framework.Rendering.PipelineOwner)this.owner).semanticsOwner?.rootSemanticsNode;
+            return owner.semanticsOwner?.rootSemanticsNode;
         }
     }
     public override void paint(Canvas canvas, Size size)
     {
-        global::Doroti.Framework.Semantics.SemanticsNode? rootNode = this._rootSemanticsNode;
+        global::Doroti.Framework.Semantics.SemanticsNode? rootNode = _rootSemanticsNode;
         canvas.save();
-        canvas.scale((1.0 / this.devicePixelRatio), (1.0 / this.devicePixelRatio));
-        if ((rootNode is not null))
+        canvas.scale(1.0 / devicePixelRatio, 1.0 / devicePixelRatio);
+        if (rootNode is not null)
         {
             _paint(canvas, rootNode, _findDepth(rootNode), 0L, 0L);
         }
-        if ((this.pointerPosition is not null))
+        if (pointerPosition is not null)
         {
             Offset pointerPosition__value6557 = DartRuntimePrimitives.RequireValue(pointerPosition);
             var paintLocal = new global::Doroti.Ui.Paint();
             paintLocal.color = new global::Doroti.Ui.Color(2130743551L);
-            canvas.drawCircle(DartRuntimePrimitives.RequireValue(this.pointerPosition), (10.0 * this.devicePixelRatio), paintLocal);
+            canvas.drawCircle(DartRuntimePrimitives.RequireValue(pointerPosition), 10.0 * devicePixelRatio, paintLocal);
         }
         canvas.restore();
     }
@@ -201,21 +201,21 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (_SemanticsDebuggerPainter__semantics_debugger)oldDelegate;
-        return (((!Equals(this.owner, ((_SemanticsDebuggerPainter__semantics_debugger)__oldDelegate).owner)) || (this.generation != ((_SemanticsDebuggerPainter__semantics_debugger)__oldDelegate).generation)) || (!Equals(this.pointerPosition, ((_SemanticsDebuggerPainter__semantics_debugger)__oldDelegate).pointerPosition)));
+        return (!Equals(owner, __oldDelegate.owner)) || (generation != __oldDelegate.generation) || (!Equals(pointerPosition, __oldDelegate.pointerPosition));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string getMessage(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        global::Doroti.Framework.Semantics.SemanticsData data = ((global::Doroti.Framework.Semantics.SemanticsData)node.getSemanticsData());
+        global::Doroti.Framework.Semantics.SemanticsData data = node.getSemanticsData();
         var annotations = new List<string>();
         var wantsTap = false;
-        if ((!Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isChecked, CheckedState.none)))
+        if (!Equals(data.flagsCollection.isChecked, CheckedState.none))
         {
-            annotations.Add(((Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isChecked, CheckedState.isTrue)) ? "checked" : "unchecked"));
+            annotations.Add(Equals(data.flagsCollection.isChecked, CheckedState.isTrue) ? "checked" : "unchecked");
             wantsTap = true;
         }
-        if (((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isTextField)
+        if (data.flagsCollection.isTextField)
         {
             annotations.Add("textfield");
             wantsTap = true;
@@ -238,8 +238,8 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
         {
             annotations.Add("long-pressable");
         }
-        bool isScrollable = (((data.hasAction(SemanticsAction.scrollLeft) || data.hasAction(SemanticsAction.scrollRight)) || data.hasAction(SemanticsAction.scrollUp)) || data.hasAction(SemanticsAction.scrollDown));
-        bool isAdjustable = (data.hasAction(SemanticsAction.increase) || data.hasAction(SemanticsAction.decrease));
+        bool isScrollable = data.hasAction(SemanticsAction.scrollLeft) || data.hasAction(SemanticsAction.scrollRight) || data.hasAction(SemanticsAction.scrollUp) || data.hasAction(SemanticsAction.scrollDown);
+        bool isAdjustable = data.hasAction(SemanticsAction.increase) || data.hasAction(SemanticsAction.decrease);
         if (isScrollable)
         {
             annotations.Add("scrollable");
@@ -249,23 +249,23 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
             annotations.Add("adjustable");
         }
         string message = default!;
-        bool shouldIgnoreDuplicatedLabel = ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)) && (((global::Doroti.Framework.Semantics.SemanticsData)data).attributedLabel.@string == ((global::Doroti.Framework.Semantics.SemanticsData)data).tooltip));
+        bool shouldIgnoreDuplicatedLabel = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android) && (data.attributedLabel.@string == data.tooltip);
         string tooltipAndLabel = string.Join("\n", new List<string>());
-        if ((tooltipAndLabel.Length == 0))
+        if (tooltipAndLabel.Length == 0)
         {
             message = string.Join("; ", annotations);
         }
         else
         {
             string effectiveLabel = default!;
-            if ((((global::Doroti.Framework.Semantics.SemanticsData)data).textDirection is null))
+            if (data.textDirection is null)
             {
-                effectiveLabel = $"{(Unicode.FSI)}{tooltipAndLabel}{(Unicode.PDI)}";
+                effectiveLabel = $"{Unicode.FSI}{tooltipAndLabel}{Unicode.PDI}";
                 annotations.Insert(checked((int)0L), "MISSING TEXT DIRECTION");
             }
             else
             {
-                effectiveLabel = (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsData)data).textDirection) switch { TextDirection.rtl => $"{(Unicode.RLI)}{tooltipAndLabel}{(Unicode.PDI)}", TextDirection.ltr => tooltipAndLabel, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                effectiveLabel = DartRuntimePrimitives.RequireValue(data.textDirection) switch { TextDirection.rtl => $"{Unicode.RLI}{tooltipAndLabel}{Unicode.PDI}", TextDirection.ltr => tooltipAndLabel, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             }
             if (!Enumerable.Any(annotations))
             {
@@ -282,61 +282,61 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
 
     internal virtual void _paintMessage(Canvas canvas, global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        string message = ((string)getMessage(node));
-        if ((message.Length == 0))
+        string message = getMessage(node);
+        if (message.Length == 0)
         {
             return;
         }
-        global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
+        global::Doroti.Ui.Rect rectLocal = node.rect;
         canvas.save();
         canvas.clipRect(rectLocal);
         var textPainter = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Painting.TextPainter();
-    __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: this.labelStyle, text: message);
+    __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: labelStyle, text: message);
     __cascade.textDirection = TextDirection.ltr;
     __cascade.textAlign = TextAlign.center;
     __cascade.layout(maxWidth: rectLocal.width);
     return __cascade;
 }))();
-        textPainter.paint(canvas, Alignment.center.inscribe(((global::Doroti.Framework.Painting.TextPainter)textPainter).size, rectLocal).topLeft);
+        textPainter.paint(canvas, Alignment.center.inscribe(textPainter.size, rectLocal).topLeft);
         textPainter.dispose();
         canvas.restore();
     }
 
     internal virtual long _findDepth(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        if ((!((global::Doroti.Framework.Semantics.SemanticsNode)node).hasChildren || ((global::Doroti.Framework.Semantics.SemanticsNode)node).mergeAllDescendantsIntoThisNode))
+        if (!node.hasChildren || node.mergeAllDescendantsIntoThisNode)
         {
             return 1L;
         }
         var childrenDepth = 0L;
-        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        node.visitChildren((child) =>
         {
             childrenDepth = Math.Max(childrenDepth, _findDepth(child));
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
-        return (childrenDepth + 1L);
+        });
+        return childrenDepth + 1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _paint(Canvas canvas, global::Doroti.Framework.Semantics.SemanticsNode node, long rank, long indexInParent, long level)
     {
-        if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).traversalChildIdentifier is not null))
+        if (node.traversalChildIdentifier is not null)
         {
             return;
         }
         canvas.save();
-        if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).transform is not null))
+        if (node.transform is not null)
         {
-            canvas.transform(((global::Doroti.Framework.Semantics.SemanticsNode)node).transform!.storage);
+            canvas.transform(node.transform!.storage);
         }
-        global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
+        global::Doroti.Ui.Rect rectLocal = node.rect;
         if (!rectLocal.isEmpty)
         {
-            global::Doroti.Ui.Color lineColor = ((global::Doroti.Ui.Color)_colorForNode(indexInParent, level));
-            global::Doroti.Ui.Rect innerRect = ((global::Doroti.Ui.Rect)rectLocal.deflate((rank * 1.0)));
+            global::Doroti.Ui.Color lineColor = _colorForNode(indexInParent, level);
+            global::Doroti.Ui.Rect innerRect = rectLocal.deflate(rank * 1.0);
             if (innerRect.isEmpty)
             {
                 var fillLocal = ((Func<Paint>)(() =>
@@ -361,7 +361,7 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
                 var line = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.strokeWidth = (rank * 2.0);
+    __cascade.strokeWidth = rank * 2.0;
     __cascade.color = lineColor;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
@@ -370,31 +370,31 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
             }
             _paintMessage(canvas, node);
         }
-        if (!((global::Doroti.Framework.Semantics.SemanticsNode)node).mergeAllDescendantsIntoThisNode)
+        if (!node.mergeAllDescendantsIntoThisNode)
         {
-            long childRank = (rank - 1L);
-            long childLevel = (level + 1L);
+            long childRank = rank - 1L;
+            long childLevel = level + 1L;
             var childIndex = 0L;
-            node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+            node.visitChildren((child) =>
             {
                 _paint(canvas, child, childRank, childIndex, childLevel);
                 childIndex += 1L;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            });
         }
         canvas.restore();
     }
 
     internal static global::Doroti.Ui.Color _colorForNode(long index, long level)
     {
-        return ((global::Doroti.Ui.Color)new global::Doroti.Framework.Painting.HSLColor(1.0, (360.0 * new DartRandom(_getColorSeed(index, level)).nextDouble()), 1.0, 0.7).toColor());
+        return new global::Doroti.Framework.Painting.HSLColor(1.0, 360.0 * new DartRandom(_getColorSeed(index, level)).nextDouble(), 1.0, 0.7).toColor();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static long _getColorSeed(long level, long index)
     {
-        return ((level * 10000L) + index);
+        return (level * 10000L) + index;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -408,7 +408,7 @@ internal class _IgnorePointerWithSemantics__semantics_debugger : SingleChildRend
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderIgnorePointerWithSemantics__semantics_debugger());
+        return new _RenderIgnorePointerWithSemantics__semantics_debugger();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

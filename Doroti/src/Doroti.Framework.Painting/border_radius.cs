@@ -21,12 +21,12 @@ public abstract class BorderRadiusGeometry
 
     public static BorderRadiusGeometry CreateHorizontal(Radius? left = null, Radius? right = null, Radius? start = null, Radius? end = null)
     {
-        DartRuntimePrimitives.Assert(() => ((((left is null) && (right is null))) || (((start is null) && (end is null)))));
-        if (((start is not null) || (end is not null)))
+        DartRuntimePrimitives.Assert(() => (left is null) && (right is null) || (start is null) && (end is null));
+        if ((start is not null) || (end is not null))
         {
-            return BorderRadiusDirectional.CreateHorizontal(start: (start ?? Radius.zero), end: (end ?? Radius.zero));
+            return BorderRadiusDirectional.CreateHorizontal(start: start ?? Radius.zero, end: end ?? Radius.zero);
         }
-        return BorderRadius.CreateHorizontal(left: (left ?? Radius.zero), right: (right ?? Radius.zero));
+        return BorderRadius.CreateHorizontal(left: left ?? Radius.zero, right: right ?? Radius.zero);
     }
 
     public static BorderRadiusGeometry CreateOnly(Radius topLeft = default!, Radius topRight = default!, Radius bottomLeft = default!, Radius bottomRight = default!)
@@ -48,13 +48,13 @@ public abstract class BorderRadiusGeometry
     internal abstract global::Doroti.Ui.Radius _bottomEnd { get; }
     public virtual BorderRadiusGeometry subtract(BorderRadiusGeometry other)
     {
-        return new _MixedBorderRadius__border_radius((this._topLeft - ((BorderRadiusGeometry)other)._topLeft), (this._topRight - ((BorderRadiusGeometry)other)._topRight), (this._bottomLeft - ((BorderRadiusGeometry)other)._bottomLeft), (this._bottomRight - ((BorderRadiusGeometry)other)._bottomRight), (this._topStart - ((BorderRadiusGeometry)other)._topStart), (this._topEnd - ((BorderRadiusGeometry)other)._topEnd), (this._bottomStart - ((BorderRadiusGeometry)other)._bottomStart), (this._bottomEnd - ((BorderRadiusGeometry)other)._bottomEnd));
+        return new _MixedBorderRadius__border_radius(_topLeft - other._topLeft, _topRight - other._topRight, _bottomLeft - other._bottomLeft, _bottomRight - other._bottomRight, _topStart - other._topStart, _topEnd - other._topEnd, _bottomStart - other._bottomStart, _bottomEnd - other._bottomEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual BorderRadiusGeometry add(BorderRadiusGeometry other)
     {
-        return new _MixedBorderRadius__border_radius((this._topLeft + ((BorderRadiusGeometry)other)._topLeft), (this._topRight + ((BorderRadiusGeometry)other)._topRight), (this._bottomLeft + ((BorderRadiusGeometry)other)._bottomLeft), (this._bottomRight + ((BorderRadiusGeometry)other)._bottomRight), (this._topStart + ((BorderRadiusGeometry)other)._topStart), (this._topEnd + ((BorderRadiusGeometry)other)._topEnd), (this._bottomStart + ((BorderRadiusGeometry)other)._bottomStart), (this._bottomEnd + ((BorderRadiusGeometry)other)._bottomEnd));
+        return new _MixedBorderRadius__border_radius(_topLeft + other._topLeft, _topRight + other._topRight, _bottomLeft + other._bottomLeft, _bottomRight + other._bottomRight, _topStart + other._topStart, _topEnd + other._topEnd, _bottomStart + other._bottomStart, _bottomEnd + other._bottomEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -71,7 +71,7 @@ public abstract class BorderRadiusGeometry
         }
         a ??= BorderRadius.zero;
         b ??= BorderRadius.zero;
-        return a.add(((b.subtract(a)).op_Multiply(t)));
+        return a.add(b.subtract(a).op_Multiply(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -80,17 +80,17 @@ public abstract class BorderRadiusGeometry
     {
         string? visual = default!;
         string? logical = default!;
-        if ((((Equals(this._topLeft, this._topRight)) && (Equals(this._topRight, this._bottomLeft))) && (Equals(this._bottomLeft, this._bottomRight))))
+        if (Equals(_topLeft, _topRight) && Equals(_topRight, _bottomLeft) && Equals(_bottomLeft, _bottomRight))
         {
-            if ((!Equals(this._topLeft, Radius.zero)))
+            if (!Equals(_topLeft, Radius.zero))
             {
-                if ((this._topLeft.x == this._topLeft.y))
+                if (_topLeft.x == _topLeft.y)
                 {
-                    visual = $"BorderRadius.circular({this._topLeft.x.toStringAsFixed(1L)})";
+                    visual = $"BorderRadius.circular({_topLeft.x.toStringAsFixed(1L)})";
                 }
                 else
                 {
-                    visual = $"BorderRadius.all({this._topLeft})";
+                    visual = $"BorderRadius.all({_topLeft})";
                 }
             }
         }
@@ -99,51 +99,51 @@ public abstract class BorderRadiusGeometry
             var result = new StringBuffer();
             result.write("BorderRadius.only(");
             var comma = false;
-            if ((!Equals(this._topLeft, Radius.zero)))
+            if (!Equals(_topLeft, Radius.zero))
             {
-                result.write($"topLeft: {this._topLeft}");
+                result.write($"topLeft: {_topLeft}");
                 comma = true;
             }
-            if ((!Equals(this._topRight, Radius.zero)))
+            if (!Equals(_topRight, Radius.zero))
             {
                 if (comma)
                 {
                     result.write(", ");
                 }
-                result.write($"topRight: {this._topRight}");
+                result.write($"topRight: {_topRight}");
                 comma = true;
             }
-            if ((!Equals(this._bottomLeft, Radius.zero)))
+            if (!Equals(_bottomLeft, Radius.zero))
             {
                 if (comma)
                 {
                     result.write(", ");
                 }
-                result.write($"bottomLeft: {this._bottomLeft}");
+                result.write($"bottomLeft: {_bottomLeft}");
                 comma = true;
             }
-            if ((!Equals(this._bottomRight, Radius.zero)))
+            if (!Equals(_bottomRight, Radius.zero))
             {
                 if (comma)
                 {
                     result.write(", ");
                 }
-                result.write($"bottomRight: {this._bottomRight}");
+                result.write($"bottomRight: {_bottomRight}");
             }
             result.write(")");
             visual = result.ToString();
         }
-        if ((((Equals(this._topStart, this._topEnd)) && (Equals(this._topEnd, this._bottomEnd))) && (Equals(this._bottomEnd, this._bottomStart))))
+        if (Equals(_topStart, _topEnd) && Equals(_topEnd, _bottomEnd) && Equals(_bottomEnd, _bottomStart))
         {
-            if ((!Equals(this._topStart, Radius.zero)))
+            if (!Equals(_topStart, Radius.zero))
             {
-                if ((this._topStart.x == this._topStart.y))
+                if (_topStart.x == _topStart.y)
                 {
-                    logical = $"BorderRadiusDirectional.circular({this._topStart.x.toStringAsFixed(1L)})";
+                    logical = $"BorderRadiusDirectional.circular({_topStart.x.toStringAsFixed(1L)})";
                 }
                 else
                 {
-                    logical = $"BorderRadiusDirectional.all({this._topStart})";
+                    logical = $"BorderRadiusDirectional.all({_topStart})";
                 }
             }
         }
@@ -152,45 +152,45 @@ public abstract class BorderRadiusGeometry
             var resultLocal = new StringBuffer();
             resultLocal.write("BorderRadiusDirectional.only(");
             var commaLocal = false;
-            if ((!Equals(this._topStart, Radius.zero)))
+            if (!Equals(_topStart, Radius.zero))
             {
-                resultLocal.write($"topStart: {this._topStart}");
+                resultLocal.write($"topStart: {_topStart}");
                 commaLocal = true;
             }
-            if ((!Equals(this._topEnd, Radius.zero)))
+            if (!Equals(_topEnd, Radius.zero))
             {
                 if (commaLocal)
                 {
                     resultLocal.write(", ");
                 }
-                resultLocal.write($"topEnd: {this._topEnd}");
+                resultLocal.write($"topEnd: {_topEnd}");
                 commaLocal = true;
             }
-            if ((!Equals(this._bottomStart, Radius.zero)))
+            if (!Equals(_bottomStart, Radius.zero))
             {
                 if (commaLocal)
                 {
                     resultLocal.write(", ");
                 }
-                resultLocal.write($"bottomStart: {this._bottomStart}");
+                resultLocal.write($"bottomStart: {_bottomStart}");
                 commaLocal = true;
             }
-            if ((!Equals(this._bottomEnd, Radius.zero)))
+            if (!Equals(_bottomEnd, Radius.zero))
             {
                 if (commaLocal)
                 {
                     resultLocal.write(", ");
                 }
-                resultLocal.write($"bottomEnd: {this._bottomEnd}");
+                resultLocal.write($"bottomEnd: {_bottomEnd}");
             }
             resultLocal.write(")");
             logical = resultLocal.ToString();
         }
-        if (((visual is not null) && (logical is not null)))
+        if ((visual is not null) && (logical is not null))
         {
             return $"{visual} + {logical}";
         }
-        return ((visual ?? logical) ?? "BorderRadius.zero");
+        return (visual ?? logical) ?? "BorderRadius.zero";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -202,14 +202,14 @@ public abstract class BorderRadiusGeometry
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((((__other is BorderRadiusGeometry) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topLeft, this._topLeft))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topRight, this._topRight))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomLeft, this._bottomLeft))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomRight, this._bottomRight))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topStart, this._topStart))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topEnd, this._topEnd))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomStart, this._bottomStart))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomEnd, this._bottomEnd)));
+        return (__other is BorderRadiusGeometry) && Equals(__other._topLeft, _topLeft) && Equals(__other._topRight, _topRight) && Equals(__other._bottomLeft, _bottomLeft) && Equals(__other._bottomRight, _bottomRight) && Equals(__other._topStart, _topStart) && Equals(__other._topEnd, _topEnd) && Equals(__other._bottomStart, _bottomStart) && Equals(__other._bottomEnd, _bottomEnd);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this._topLeft, this._topRight, this._bottomLeft, this._bottomRight, this._topStart, this._topEnd, this._bottomStart, this._bottomEnd);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(_topLeft, _topRight, _bottomLeft, _bottomRight, _topStart, _topEnd, _bottomStart, _bottomEnd);
 }
 
 public class BorderRadius : BorderRadiusGeometry
@@ -250,36 +250,36 @@ public class BorderRadius : BorderRadiusGeometry
 
     public virtual BorderRadius copyWith(Radius? topLeft = null, Radius? topRight = null, Radius? bottomLeft = null, Radius? bottomRight = null)
     {
-        return new BorderRadius(topLeft: (topLeft ?? this.topLeft), topRight: (topRight ?? this.topRight), bottomLeft: (bottomLeft ?? this.bottomLeft), bottomRight: (bottomRight ?? this.bottomRight));
+        return new BorderRadius(topLeft: topLeft ?? this.topLeft, topRight: topRight ?? this.topRight, bottomLeft: bottomLeft ?? this.bottomLeft, bottomRight: bottomRight ?? this.bottomRight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal override Radius _topLeft => this.topLeft;
-    internal override Radius _topRight => this.topRight;
-    internal override Radius _bottomLeft => this.bottomLeft;
-    internal override Radius _bottomRight => this.bottomRight;
+    internal override Radius _topLeft => topLeft;
+    internal override Radius _topRight => topRight;
+    internal override Radius _bottomLeft => bottomLeft;
+    internal override Radius _bottomRight => bottomRight;
     internal override Radius _topStart => Radius.zero;
     internal override Radius _topEnd => Radius.zero;
     internal override Radius _bottomStart => Radius.zero;
     internal override Radius _bottomEnd => Radius.zero;
     public virtual global::Doroti.Ui.RRect toRRect(Rect rect)
     {
-        return RRect.fromRectAndCorners(rect, topLeft: this.topLeft.clamp(minimum: Radius.zero), topRight: this.topRight.clamp(minimum: Radius.zero), bottomLeft: this.bottomLeft.clamp(minimum: Radius.zero), bottomRight: this.bottomRight.clamp(minimum: Radius.zero));
+        return RRect.fromRectAndCorners(rect, topLeft: topLeft.clamp(minimum: Radius.zero), topRight: topRight.clamp(minimum: Radius.zero), bottomLeft: bottomLeft.clamp(minimum: Radius.zero), bottomRight: bottomRight.clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.RSuperellipse toRSuperellipse(Rect rect)
     {
-        return RSuperellipse.fromRectAndCorners(rect, topLeft: this.topLeft.clamp(minimum: Radius.zero), topRight: this.topRight.clamp(minimum: Radius.zero), bottomLeft: this.bottomLeft.clamp(minimum: Radius.zero), bottomRight: this.bottomRight.clamp(minimum: Radius.zero));
+        return RSuperellipse.fromRectAndCorners(rect, topLeft: topLeft.clamp(minimum: Radius.zero), topRight: topRight.clamp(minimum: Radius.zero), bottomLeft: bottomLeft.clamp(minimum: Radius.zero), bottomRight: bottomRight.clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadiusGeometry subtract(BorderRadiusGeometry other)
     {
-        if ((other is BorderRadius))
+        if (other is BorderRadius)
         {
             BorderRadius other__as16879 = (BorderRadius)other;
-            return (this.op_Subtract(((BorderRadius)other__as16879)));
+            return op_Subtract(other__as16879);
         }
         return base.subtract(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -287,10 +287,10 @@ public class BorderRadius : BorderRadiusGeometry
 
     public override BorderRadiusGeometry add(BorderRadiusGeometry other)
     {
-        if ((other is BorderRadius))
+        if (other is BorderRadius)
         {
             BorderRadius other__as17053 = (BorderRadius)other;
-            return (this.op_Add(((BorderRadius)other__as17053)));
+            return op_Add(other__as17053);
         }
         return base.add(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -298,43 +298,43 @@ public class BorderRadius : BorderRadiusGeometry
 
     public virtual BorderRadius op_Subtract(BorderRadius other)
     {
-        return new BorderRadius(topLeft: (this.topLeft - ((BorderRadius)other).topLeft), topRight: (this.topRight - ((BorderRadius)other).topRight), bottomLeft: (this.bottomLeft - ((BorderRadius)other).bottomLeft), bottomRight: (this.bottomRight - ((BorderRadius)other).bottomRight));
+        return new BorderRadius(topLeft: topLeft - other.topLeft, topRight: topRight - other.topRight, bottomLeft: bottomLeft - other.bottomLeft, bottomRight: bottomRight - other.bottomRight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual BorderRadius op_Add(BorderRadius other)
     {
-        return new BorderRadius(topLeft: (this.topLeft + ((BorderRadius)other).topLeft), topRight: (this.topRight + ((BorderRadius)other).topRight), bottomLeft: (this.bottomLeft + ((BorderRadius)other).bottomLeft), bottomRight: (this.bottomRight + ((BorderRadius)other).bottomRight));
+        return new BorderRadius(topLeft: topLeft + other.topLeft, topRight: topRight + other.topRight, bottomLeft: bottomLeft + other.bottomLeft, bottomRight: bottomRight + other.bottomRight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadius op_Subtract()
     {
-        return new BorderRadius(topLeft: -this.topLeft, topRight: -this.topRight, bottomLeft: -this.bottomLeft, bottomRight: -this.bottomRight);
+        return new BorderRadius(topLeft: -topLeft, topRight: -topRight, bottomLeft: -bottomLeft, bottomRight: -bottomRight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadius op_Multiply(double other)
     {
-        return new BorderRadius(topLeft: (this.topLeft * other), topRight: (this.topRight * other), bottomLeft: (this.bottomLeft * other), bottomRight: (this.bottomRight * other));
+        return new BorderRadius(topLeft: topLeft * other, topRight: topRight * other, bottomLeft: bottomLeft * other, bottomRight: bottomRight * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadius op_Divide(double other)
     {
-        return new BorderRadius(topLeft: (this.topLeft / other), topRight: (this.topRight / other), bottomLeft: (this.bottomLeft / other), bottomRight: (this.bottomRight / other));
+        return new BorderRadius(topLeft: topLeft / other, topRight: topRight / other, bottomLeft: bottomLeft / other, bottomRight: bottomRight / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadius ___(double other)
     {
-        return new BorderRadius(topLeft: (this.topLeft.___(other)), topRight: (this.topRight.___(other)), bottomLeft: (this.bottomLeft.___(other)), bottomRight: (this.bottomRight.___(other)));
+        return new BorderRadius(topLeft: topLeft.___(other), topRight: topRight.___(other), bottomLeft: bottomLeft.___(other), bottomRight: bottomRight.___(other));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadius __(double other)
     {
-        return new BorderRadius(topLeft: (this.topLeft % other), topRight: (this.topRight % other), bottomLeft: (this.bottomLeft % other), bottomRight: (this.bottomRight % other));
+        return new BorderRadius(topLeft: topLeft % other, topRight: topRight % other, bottomLeft: bottomLeft % other, bottomRight: bottomRight % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -344,15 +344,15 @@ public class BorderRadius : BorderRadiusGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.op_Multiply(t));
+            return b!.op_Multiply(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.op_Multiply(((1.0 - t))));
+            return a.op_Multiply(1.0 - t);
         }
-        return new BorderRadius(topLeft: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadius)a).topLeft, ((BorderRadius)b).topLeft, t)), topRight: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadius)a).topRight, ((BorderRadius)b).topRight, t)), bottomLeft: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadius)a).bottomLeft, ((BorderRadius)b).bottomLeft, t)), bottomRight: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadius)a).bottomRight, ((BorderRadius)b).bottomRight, t)));
+        return new BorderRadius(topLeft: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.topLeft, b.topLeft, t)), topRight: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.topRight, b.topRight, t)), bottomLeft: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.bottomLeft, b.bottomLeft, t)), bottomRight: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.bottomRight, b.bottomRight, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -395,20 +395,20 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
         this.bottomEnd = bottomEnd;
     }
 
-    internal override Radius _topStart => this.topStart;
-    internal override Radius _topEnd => this.topEnd;
-    internal override Radius _bottomStart => this.bottomStart;
-    internal override Radius _bottomEnd => this.bottomEnd;
+    internal override Radius _topStart => topStart;
+    internal override Radius _topEnd => topEnd;
+    internal override Radius _bottomStart => bottomStart;
+    internal override Radius _bottomEnd => bottomEnd;
     internal override Radius _topLeft => Radius.zero;
     internal override Radius _topRight => Radius.zero;
     internal override Radius _bottomLeft => Radius.zero;
     internal override Radius _bottomRight => Radius.zero;
     public override BorderRadiusGeometry subtract(BorderRadiusGeometry other)
     {
-        if ((other is BorderRadiusDirectional))
+        if (other is BorderRadiusDirectional)
         {
             BorderRadiusDirectional other__as23144 = (BorderRadiusDirectional)other;
-            return (this.op_Subtract(((BorderRadiusDirectional)other__as23144)));
+            return op_Subtract(other__as23144);
         }
         return base.subtract(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -416,10 +416,10 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
 
     public override BorderRadiusGeometry add(BorderRadiusGeometry other)
     {
-        if ((other is BorderRadiusDirectional))
+        if (other is BorderRadiusDirectional)
         {
             BorderRadiusDirectional other__as23329 = (BorderRadiusDirectional)other;
-            return (this.op_Add(((BorderRadiusDirectional)other__as23329)));
+            return op_Add(other__as23329);
         }
         return base.add(other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -427,43 +427,43 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
 
     public virtual BorderRadiusDirectional op_Subtract(BorderRadiusDirectional other)
     {
-        return new BorderRadiusDirectional(topStart: (this.topStart - ((BorderRadiusDirectional)other).topStart), topEnd: (this.topEnd - ((BorderRadiusDirectional)other).topEnd), bottomStart: (this.bottomStart - ((BorderRadiusDirectional)other).bottomStart), bottomEnd: (this.bottomEnd - ((BorderRadiusDirectional)other).bottomEnd));
+        return new BorderRadiusDirectional(topStart: topStart - other.topStart, topEnd: topEnd - other.topEnd, bottomStart: bottomStart - other.bottomStart, bottomEnd: bottomEnd - other.bottomEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual BorderRadiusDirectional op_Add(BorderRadiusDirectional other)
     {
-        return new BorderRadiusDirectional(topStart: (this.topStart + ((BorderRadiusDirectional)other).topStart), topEnd: (this.topEnd + ((BorderRadiusDirectional)other).topEnd), bottomStart: (this.bottomStart + ((BorderRadiusDirectional)other).bottomStart), bottomEnd: (this.bottomEnd + ((BorderRadiusDirectional)other).bottomEnd));
+        return new BorderRadiusDirectional(topStart: topStart + other.topStart, topEnd: topEnd + other.topEnd, bottomStart: bottomStart + other.bottomStart, bottomEnd: bottomEnd + other.bottomEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadiusDirectional op_Subtract()
     {
-        return new BorderRadiusDirectional(topStart: -this.topStart, topEnd: -this.topEnd, bottomStart: -this.bottomStart, bottomEnd: -this.bottomEnd);
+        return new BorderRadiusDirectional(topStart: -topStart, topEnd: -topEnd, bottomStart: -bottomStart, bottomEnd: -bottomEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadiusDirectional op_Multiply(double other)
     {
-        return new BorderRadiusDirectional(topStart: (this.topStart * other), topEnd: (this.topEnd * other), bottomStart: (this.bottomStart * other), bottomEnd: (this.bottomEnd * other));
+        return new BorderRadiusDirectional(topStart: topStart * other, topEnd: topEnd * other, bottomStart: bottomStart * other, bottomEnd: bottomEnd * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadiusDirectional op_Divide(double other)
     {
-        return new BorderRadiusDirectional(topStart: (this.topStart / other), topEnd: (this.topEnd / other), bottomStart: (this.bottomStart / other), bottomEnd: (this.bottomEnd / other));
+        return new BorderRadiusDirectional(topStart: topStart / other, topEnd: topEnd / other, bottomStart: bottomStart / other, bottomEnd: bottomEnd / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadiusDirectional ___(double other)
     {
-        return new BorderRadiusDirectional(topStart: (this.topStart.___(other)), topEnd: (this.topEnd.___(other)), bottomStart: (this.bottomStart.___(other)), bottomEnd: (this.bottomEnd.___(other)));
+        return new BorderRadiusDirectional(topStart: topStart.___(other), topEnd: topEnd.___(other), bottomStart: bottomStart.___(other), bottomEnd: bottomEnd.___(other));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BorderRadiusDirectional __(double other)
     {
-        return new BorderRadiusDirectional(topStart: (this.topStart % other), topEnd: (this.topEnd % other), bottomStart: (this.bottomStart % other), bottomEnd: (this.bottomEnd % other));
+        return new BorderRadiusDirectional(topStart: topStart % other, topEnd: topEnd % other, bottomStart: bottomStart % other, bottomEnd: bottomEnd % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -473,15 +473,15 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.op_Multiply(t));
+            return b!.op_Multiply(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.op_Multiply(((1.0 - t))));
+            return a.op_Multiply(1.0 - t);
         }
-        return new BorderRadiusDirectional(topStart: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadiusDirectional)a).topStart, ((BorderRadiusDirectional)b).topStart, t)), topEnd: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadiusDirectional)a).topEnd, ((BorderRadiusDirectional)b).topEnd, t)), bottomStart: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadiusDirectional)a).bottomStart, ((BorderRadiusDirectional)b).bottomStart, t)), bottomEnd: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(((BorderRadiusDirectional)a).bottomEnd, ((BorderRadiusDirectional)b).bottomEnd, t)));
+        return new BorderRadiusDirectional(topStart: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.topStart, b.topStart, t)), topEnd: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.topEnd, b.topEnd, t)), bottomStart: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.bottomStart, b.bottomStart, t)), bottomEnd: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(a.bottomEnd, b.bottomEnd, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -492,11 +492,11 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
         {
             case TextDirection.rtl:
                 {
-                    return new BorderRadius(topLeft: this.topEnd, topRight: this.topStart, bottomLeft: this.bottomEnd, bottomRight: this.bottomStart);
+                    return new BorderRadius(topLeft: topEnd, topRight: topStart, bottomLeft: bottomEnd, bottomRight: bottomStart);
                 }
             case TextDirection.ltr:
                 {
-                    return new BorderRadius(topLeft: this.topStart, topRight: this.topEnd, bottomLeft: this.bottomStart, bottomRight: this.bottomEnd);
+                    return new BorderRadius(topLeft: topStart, topRight: topEnd, bottomLeft: bottomStart, bottomRight: bottomEnd);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -525,43 +525,43 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
 
     internal _MixedBorderRadius__border_radius(Radius _topLeft, Radius _topRight, Radius _bottomLeft, Radius _bottomRight, Radius _topStart, Radius _topEnd, Radius _bottomStart, Radius _bottomEnd)
     {
-        this.__field__topLeft = _topLeft;
-        this.__field__topRight = _topRight;
-        this.__field__bottomLeft = _bottomLeft;
-        this.__field__bottomRight = _bottomRight;
-        this.__field__topStart = _topStart;
-        this.__field__topEnd = _topEnd;
-        this.__field__bottomStart = _bottomStart;
-        this.__field__bottomEnd = _bottomEnd;
+        __field__topLeft = _topLeft;
+        __field__topRight = _topRight;
+        __field__bottomLeft = _bottomLeft;
+        __field__bottomRight = _bottomRight;
+        __field__topStart = _topStart;
+        __field__topEnd = _topEnd;
+        __field__bottomStart = _bottomStart;
+        __field__bottomEnd = _bottomEnd;
     }
 
     public override _MixedBorderRadius__border_radius op_Subtract()
     {
-        return new _MixedBorderRadius__border_radius(-this._topLeft, -this._topRight, -this._bottomLeft, -this._bottomRight, -this._topStart, -this._topEnd, -this._bottomStart, -this._bottomEnd);
+        return new _MixedBorderRadius__border_radius(-_topLeft, -_topRight, -_bottomLeft, -_bottomRight, -_topStart, -_topEnd, -_bottomStart, -_bottomEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedBorderRadius__border_radius op_Multiply(double other)
     {
-        return new _MixedBorderRadius__border_radius((this._topLeft * other), (this._topRight * other), (this._bottomLeft * other), (this._bottomRight * other), (this._topStart * other), (this._topEnd * other), (this._bottomStart * other), (this._bottomEnd * other));
+        return new _MixedBorderRadius__border_radius(_topLeft * other, _topRight * other, _bottomLeft * other, _bottomRight * other, _topStart * other, _topEnd * other, _bottomStart * other, _bottomEnd * other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedBorderRadius__border_radius op_Divide(double other)
     {
-        return new _MixedBorderRadius__border_radius((this._topLeft / other), (this._topRight / other), (this._bottomLeft / other), (this._bottomRight / other), (this._topStart / other), (this._topEnd / other), (this._bottomStart / other), (this._bottomEnd / other));
+        return new _MixedBorderRadius__border_radius(_topLeft / other, _topRight / other, _bottomLeft / other, _bottomRight / other, _topStart / other, _topEnd / other, _bottomStart / other, _bottomEnd / other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedBorderRadius__border_radius ___(double other)
     {
-        return new _MixedBorderRadius__border_radius((this._topLeft.___(other)), (this._topRight.___(other)), (this._bottomLeft.___(other)), (this._bottomRight.___(other)), (this._topStart.___(other)), (this._topEnd.___(other)), (this._bottomStart.___(other)), (this._bottomEnd.___(other)));
+        return new _MixedBorderRadius__border_radius(_topLeft.___(other), _topRight.___(other), _bottomLeft.___(other), _bottomRight.___(other), _topStart.___(other), _topEnd.___(other), _bottomStart.___(other), _bottomEnd.___(other));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override _MixedBorderRadius__border_radius __(double other)
     {
-        return new _MixedBorderRadius__border_radius((this._topLeft % other), (this._topRight % other), (this._bottomLeft % other), (this._bottomRight % other), (this._topStart % other), (this._topEnd % other), (this._bottomStart % other), (this._bottomEnd % other));
+        return new _MixedBorderRadius__border_radius(_topLeft % other, _topRight % other, _bottomLeft % other, _bottomRight % other, _topStart % other, _topEnd % other, _bottomStart % other, _bottomEnd % other);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -572,11 +572,11 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
         {
             case TextDirection.rtl:
                 {
-                    return new BorderRadius(topLeft: (this._topLeft + this._topEnd), topRight: (this._topRight + this._topStart), bottomLeft: (this._bottomLeft + this._bottomEnd), bottomRight: (this._bottomRight + this._bottomStart));
+                    return new BorderRadius(topLeft: _topLeft + _topEnd, topRight: _topRight + _topStart, bottomLeft: _bottomLeft + _bottomEnd, bottomRight: _bottomRight + _bottomStart);
                 }
             case TextDirection.ltr:
                 {
-                    return new BorderRadius(topLeft: (this._topLeft + this._topStart), topRight: (this._topRight + this._topEnd), bottomLeft: (this._bottomLeft + this._bottomStart), bottomRight: (this._bottomRight + this._bottomEnd));
+                    return new BorderRadius(topLeft: _topLeft + _topStart, topRight: _topRight + _topEnd, bottomLeft: _bottomLeft + _bottomStart, bottomRight: _bottomRight + _bottomEnd);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");

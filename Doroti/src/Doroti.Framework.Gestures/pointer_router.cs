@@ -14,33 +14,33 @@ public class PointerRouter
 
     public virtual void addRoute(long pointer, Action<PointerEvent> route, Matrix4? transform = null)
     {
-        DartMap<Action<PointerEvent>, Matrix4?> routes = this._routeMap.putIfAbsent(pointer, (() => new DartMap<Action<PointerEvent>, Matrix4?>()));
+        DartMap<Action<PointerEvent>, Matrix4?> routes = _routeMap.putIfAbsent(pointer, () => new DartMap<Action<PointerEvent>, Matrix4?>());
         DartRuntimePrimitives.Assert(() => !routes.ContainsKey(route));
         routes[route] = transform;
     }
 
     public virtual void removeRoute(long pointer, Action<PointerEvent> route)
     {
-        DartRuntimePrimitives.Assert(() => this._routeMap.ContainsKey(pointer));
-        DartMap<Action<PointerEvent>, Matrix4?> routes = this._routeMap.GetValueOrDefault(pointer)!;
+        DartRuntimePrimitives.Assert(() => _routeMap.ContainsKey(pointer));
+        DartMap<Action<PointerEvent>, Matrix4?> routes = _routeMap.GetValueOrDefault(pointer)!;
         DartRuntimePrimitives.Assert(() => routes.ContainsKey(route));
         routes.remove(route);
-        if ((checked((long)(routes.Count)) == 0))
+        if (checked((long)routes.Count) == 0)
         {
-            this._routeMap.remove(pointer);
+            _routeMap.remove(pointer);
         }
     }
 
     public virtual void addGlobalRoute(Action<PointerEvent> route, Matrix4? transform = null)
     {
-        DartRuntimePrimitives.Assert(() => !this._globalRoutes.ContainsKey(route));
-        this._globalRoutes[route] = transform;
+        DartRuntimePrimitives.Assert(() => !_globalRoutes.ContainsKey(route));
+        _globalRoutes[route] = transform;
     }
 
     public virtual void removeGlobalRoute(Action<PointerEvent> route)
     {
-        DartRuntimePrimitives.Assert(() => this._globalRoutes.ContainsKey(route));
-        this._globalRoutes.remove(route);
+        DartRuntimePrimitives.Assert(() => _globalRoutes.ContainsKey(route));
+        _globalRoutes.remove(route);
     }
 
     public virtual long debugGlobalRouteCount
@@ -50,10 +50,10 @@ public class PointerRouter
             long? count = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    count = checked((long)(this._globalRoutes.Count));
+                    count = checked(_globalRoutes.Count);
                     return true;
                 });
-            if ((count is not null))
+            if (count is not null)
             {
                 long count__2895__value2991 = DartRuntimePrimitives.RequireValue(count);
                 return DartRuntimePrimitives.RequireValue(count__2895__value2991);
@@ -74,7 +74,7 @@ public class PointerRouter
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerRouter>("router", this, level: DiagnosticLevel.debug), new DiagnosticsProperty<Action<PointerEvent>>("route", route, level: DiagnosticLevel.debug), new DiagnosticsProperty<PointerEvent>("event", @event, level: DiagnosticLevel.debug) });
+                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerRouter>("router", this, level: DiagnosticLevel.debug), new DiagnosticsProperty<Action<PointerEvent>>("route", route, level: DiagnosticLevel.debug), new DiagnosticsProperty<PointerEvent>("event", @event, level: DiagnosticLevel.debug) };
                     return true;
                 });
             FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "gesture library", context: new ErrorDescription("while routing a pointer event"), informationCollector: collector));
@@ -83,24 +83,24 @@ public class PointerRouter
 
     public virtual void route(PointerEvent @event)
     {
-        DartMap<Action<PointerEvent>, Matrix4?>? routes = this._routeMap.GetValueOrDefault(((PointerEvent)@event).pointer);
-        var copiedGlobalRoutes = new DartMap<Action<PointerEvent>, Matrix4?>(this._globalRoutes);
-        if ((routes is not null))
+        DartMap<Action<PointerEvent>, Matrix4?>? routes = _routeMap.GetValueOrDefault(@event.pointer);
+        var copiedGlobalRoutes = new DartMap<Action<PointerEvent>, Matrix4?>(_globalRoutes);
+        if (routes is not null)
         {
-            _dispatchEventToRoutes(@event, (DartMap<Action<PointerEvent>, Matrix4?>)routes, new DartMap<Action<PointerEvent>, Matrix4?>(routes));
+            _dispatchEventToRoutes(@event, routes, new DartMap<Action<PointerEvent>, Matrix4?>(routes));
         }
-        _dispatchEventToRoutes(@event, (DartMap<Action<PointerEvent>, Matrix4?>)this._globalRoutes, (DartMap<Action<PointerEvent>, Matrix4?>)copiedGlobalRoutes);
+        _dispatchEventToRoutes(@event, _globalRoutes, copiedGlobalRoutes);
     }
 
     internal virtual void _dispatchEventToRoutes(PointerEvent @event, DartMap<Action<PointerEvent>, Matrix4?> referenceRoutes, DartMap<Action<PointerEvent>, Matrix4?> copiedRoutes)
     {
-        copiedRoutes.forEach(((route, transform) =>
+        copiedRoutes.forEach((route, transform) =>
         {
             if (referenceRoutes.ContainsKey(route))
             {
-                _dispatch(@event, (Action<PointerEvent>)route, transform);
+                _dispatch(@event, route, transform);
             }
-        }));
+        });
     }
 
 }

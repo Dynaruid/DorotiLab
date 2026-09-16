@@ -20,9 +20,9 @@ public enum ThemeMode
 
 public static class ThemeModeMembers
 {
-    public static bool isSystem(this ThemeMode value) => (Equals(value, ThemeMode.system));
-    public static bool isLight(this ThemeMode value) => (Equals(value, ThemeMode.light));
-    public static bool isDark(this ThemeMode value) => (Equals(value, ThemeMode.dark));
+    public static bool isSystem(this ThemeMode value) => Equals(value, ThemeMode.system);
+    public static bool isLight(this ThemeMode value) => Equals(value, ThemeMode.light);
+    public static bool isDark(this ThemeMode value) => Equals(value, ThemeMode.dark);
 }
 
 public class MaterialApp : global::Doroti.Framework.Widgets.StatefulWidget
@@ -128,11 +128,11 @@ public class MaterialApp : global::Doroti.Framework.Widgets.StatefulWidget
         this.scrollBehavior = scrollBehavior;
         this.useInheritedMediaQuery = useInheritedMediaQuery;
         this.themeAnimationStyle = themeAnimationStyle;
-        this.routeInformationProvider = null;
-        this.routeInformationParser = null;
-        this.routerDelegate = null;
-        this.backButtonDispatcher = null;
-        this.routerConfig = null;
+        routeInformationProvider = null;
+        routeInformationParser = null;
+        routerDelegate = null;
+        backButtonDispatcher = null;
+        routerConfig = null;
     }
 
     public ThemeData? resolveTheme() => theme ?? _themeFactory?.Value;
@@ -195,11 +195,11 @@ public class MaterialApp : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialAppState__app());
     public static global::Doroti.Framework.Widgets.HeroController createMaterialHeroController()
     {
-        return new global::Doroti.Framework.Widgets.HeroController(createRectTween: ((global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>?)((begin, end) =>
+        return new global::Doroti.Framework.Widgets.HeroController(createRectTween: (begin, end) =>
         {
-            return ((global::Doroti.Framework.Animation.Tween<Rect?>)new MaterialRectArcTween(begin: begin, end: end));
+            return new MaterialRectArcTween(begin: begin, end: end);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -214,7 +214,7 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
     public override global::Doroti.Framework.Foundation.TargetPlatform getPlatform(global::Doroti.Framework.Widgets.BuildContext context) => Theme.of(context).platform;
     public override global::Doroti.Framework.Widgets.Widget buildScrollbar(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollableDetails details)
     {
-        switch (Basic_typesLibrary.axisDirectionToAxis(((global::Doroti.Framework.Widgets.ScrollableDetails)details).direction))
+        switch (Basic_typesLibrary.axisDirectionToAxis(details.direction))
         {
             case Axis.horizontal:
                 {
@@ -228,8 +228,8 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
                         case TargetPlatform.macOS:
                         case TargetPlatform.windows:
                             {
-                                DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.ScrollableDetails)details).controller is not null));
-                                return ((global::Doroti.Framework.Widgets.Widget)new Scrollbar(controller: ((global::Doroti.Framework.Widgets.ScrollableDetails)details).controller, child: child));
+                                DartRuntimePrimitives.Assert(() => details.controller is not null);
+                                return new Scrollbar(controller: details.controller, child: child);
                             }
                         case TargetPlatform.android:
                         case TargetPlatform.fuchsia:
@@ -247,7 +247,7 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
 
     public override global::Doroti.Framework.Widgets.Widget buildOverscrollIndicator(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollableDetails details)
     {
-        global::Doroti.Framework.Widgets.AndroidOverscrollIndicator indicator = ((AndroidOverscrollIndicator.stretch));
+        global::Doroti.Framework.Widgets.AndroidOverscrollIndicator indicator = AndroidOverscrollIndicator.stretch;
         switch (getPlatform(context))
         {
             case TargetPlatform.iOS:
@@ -263,7 +263,7 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
                     {
                         case AndroidOverscrollIndicator.stretch:
                             {
-                                return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.StretchingOverscrollIndicator(axisDirection: ((global::Doroti.Framework.Widgets.ScrollableDetails)details).direction, clipBehavior: (((global::Doroti.Framework.Widgets.ScrollableDetails)details).clipBehavior ?? Clip.hardEdge), child: child));
+                                return new global::Doroti.Framework.Widgets.StretchingOverscrollIndicator(axisDirection: details.direction, clipBehavior: details.clipBehavior ?? Clip.hardEdge, child: child);
                             }
                         case AndroidOverscrollIndicator.glow:
                             {
@@ -279,7 +279,7 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.GlowingOverscrollIndicator(axisDirection: ((global::Doroti.Framework.Widgets.ScrollableDetails)details).direction, color: Theme.of(context).colorScheme.secondary, child: child));
+        return new global::Doroti.Framework.Widgets.GlowingOverscrollIndicator(axisDirection: details.direction, color: Theme.of(context).colorScheme.secondary, child: child);
     }
 
 }
@@ -288,7 +288,7 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
 {
     internal virtual global::Doroti.Framework.Widgets.HeroController _heroController { get; set; } = default!;
 
-    internal virtual bool _usesRouter => DartRuntimePrimitives.ConvertValue<bool>(((((MaterialApp)this.widget).routerDelegate is not null) || (((MaterialApp)this.widget).routerConfig is not null)));
+    internal virtual bool _usesRouter => DartRuntimePrimitives.ConvertValue<bool>((widget.routerDelegate is not null) || (widget.routerConfig is not null));
     public override void initState()
     {
         base.initState();
@@ -297,7 +297,7 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
 
     public override void dispose()
     {
-        this._heroController.dispose();
+        _heroController.dispose();
         base.dispose();
     }
 
@@ -305,40 +305,40 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
     {
         get
         {
-            return ((IEnumerable<object>)((Func<List<object>>)(() => { var __collection34671 = new List<object>(); var __collectionSpread34711 = ((MaterialApp)this.widget).localizationsDelegates; if (__collectionSpread34711 is not null) { __collection34671.AddRange(__collectionSpread34711); } __collection34671.Add(DefaultMaterialLocalizations.@delegate); __collection34671.Add(DefaultCupertinoLocalizations.@delegate); return __collection34671; }))());
+            return ((Func<List<object>>)(() => { var __collection34671 = new List<object>(); var __collectionSpread34711 = widget.localizationsDelegates; if (__collectionSpread34711 is not null) { __collection34671.AddRange(__collectionSpread34711); } __collection34671.Add(DefaultMaterialLocalizations.@delegate); __collection34671.Add(DefaultCupertinoLocalizations.@delegate); return __collection34671; }))();
         }
     }
     internal virtual global::Doroti.Framework.Widgets.Widget _exitWidgetSelectionButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _MaterialInspectorButton__app(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: Icons.close, isDarkTheme: _isDarkTheme(context), buttonKey: key));
+        return new _MaterialInspectorButton__app(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: Icons.close, isDarkTheme: _isDarkTheme(context), buttonKey: key);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _moveExitWidgetSelectionButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool usesDefaultAlignment = true)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)_MaterialInspectorButton__app.CreateIconOnly(onPressed: onPressed, semanticsLabel: semanticsLabel, icon: (usesDefaultAlignment ? Icons.arrow_right : Icons.arrow_left), isDarkTheme: _isDarkTheme(context)));
+        return _MaterialInspectorButton__app.CreateIconOnly(onPressed: onPressed, semanticsLabel: semanticsLabel, icon: usesDefaultAlignment ? Icons.arrow_right : Icons.arrow_left, isDarkTheme: _isDarkTheme(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _tapBehaviorButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)_MaterialInspectorButton__app.CreateToggle(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: new global::Doroti.Framework.Widgets.IconData(128842L), isDarkTheme: _isDarkTheme(context), toggledOn: selectionOnTapEnabled));
+        return _MaterialInspectorButton__app.CreateToggle(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: new global::Doroti.Framework.Widgets.IconData(128842L), isDarkTheme: _isDarkTheme(context), toggledOn: selectionOnTapEnabled);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _isDarkTheme(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((Equals(((MaterialApp)this.widget).themeMode, ThemeMode.dark)) || ((Equals(((MaterialApp)this.widget).themeMode, ThemeMode.system)) && (Equals(MediaQuery.platformBrightnessOf(context), Brightness.dark))));
+        return Equals(widget.themeMode, ThemeMode.dark) || (Equals(widget.themeMode, ThemeMode.system) && Equals(MediaQuery.platformBrightnessOf(context), Brightness.dark));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual ThemeData _themeBuilder(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var app = (MaterialApp)this.widget;
+        var app = widget;
         ThemeData? themeLocal = null;
-        ThemeMode mode = (app.themeMode ?? ThemeMode.system);
+        ThemeMode mode = app.themeMode ?? ThemeMode.system;
         global::Doroti.Ui.Brightness platformBrightness = MediaQuery.platformBrightnessOf(context);
-        bool useDarkTheme = ((Equals(mode, ThemeMode.dark)) || (((Equals(mode, ThemeMode.system)) && (Equals(platformBrightness, Brightness.dark)))));
+        bool useDarkTheme = Equals(mode, ThemeMode.dark) || Equals(mode, ThemeMode.system) && Equals(platformBrightness, Brightness.dark);
         bool highContrast = MediaQuery.highContrastOf(context);
         if (useDarkTheme && highContrast)
         {
@@ -353,26 +353,26 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
             themeLocal = app.resolveHighContrastTheme();
         }
         themeLocal ??= (app.resolveTheme() ?? ThemeData.Create());
-        SystemChrome.setSystemUIOverlayStyle(((Equals(themeLocal.brightness, Brightness.dark)) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark));
+        SystemChrome.setSystemUIOverlayStyle(Equals(themeLocal.brightness, Brightness.dark) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
         return themeLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _materialBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        ThemeData theme = ((ThemeData)_themeBuilder(context));
-        global::Doroti.Ui.Color effectiveSelectionColor = ((global::Doroti.Ui.Color)(theme.textSelectionTheme.selectionColor ?? theme.colorScheme.primary.withOpacity(0.4)));
-        global::Doroti.Ui.Color effectiveCursorColor = ((global::Doroti.Ui.Color)(theme.textSelectionTheme.cursorColor ?? theme.colorScheme.primary));
-        global::Doroti.Framework.Widgets.Widget childWidget = (child ?? SizedBox.CreateShrink());
-        if ((((MaterialApp)this.widget).builder is not null))
+        ThemeData theme = _themeBuilder(context);
+        global::Doroti.Ui.Color effectiveSelectionColor = theme.textSelectionTheme.selectionColor ?? theme.colorScheme.primary.withOpacity(0.4);
+        global::Doroti.Ui.Color effectiveCursorColor = theme.textSelectionTheme.cursorColor ?? theme.colorScheme.primary;
+        global::Doroti.Framework.Widgets.Widget childWidget = child ?? SizedBox.CreateShrink();
+        if (widget.builder is not null)
         {
-            childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+            childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Builder(builder: (context) =>
             {
-                return ((MaterialApp)this.widget).builder!(context, child);
+                return widget.builder!(context, child);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))));
+            }));
         }
-        childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new ScaffoldMessenger(key: ((MaterialApp)this.widget).scaffoldMessengerKey, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: effectiveSelectionColor, cursorColor: effectiveCursorColor, child: childWidget)));
+        childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new ScaffoldMessenger(key: widget.scaffoldMessengerKey, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: effectiveSelectionColor, cursorColor: effectiveCursorColor, child: childWidget)));
         var view = View.maybeOf(context);
         if (view?.registeredCapabilityIds.Contains(DorotiCapabilityIds.WindowTitlebar) == true)
         {
@@ -387,9 +387,9 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
                 return themedChild;
             });
         }
-        if ((!Equals(((MaterialApp)this.widget).themeAnimationStyle, AnimationStyle.noAnimation)))
+        if (!Equals(widget.themeAnimationStyle, AnimationStyle.noAnimation))
         {
-            childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new AnimatedTheme(data: theme, duration: (((MaterialApp)this.widget).themeAnimationStyle?.duration ?? ((MaterialApp)this.widget).themeAnimationDuration), curve: (((MaterialApp)this.widget).themeAnimationStyle?.curve ?? ((MaterialApp)this.widget).themeAnimationCurve), child: childWidget));
+            childWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new AnimatedTheme(data: theme, duration: widget.themeAnimationStyle?.duration ?? widget.themeAnimationDuration, curve: widget.themeAnimationStyle?.curve ?? widget.themeAnimationCurve, child: childWidget));
         }
         else
         {
@@ -401,31 +401,31 @@ internal class _MaterialAppState__app : global::Doroti.Framework.Widgets.State<M
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildWidgetApp(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color materialColor = ((global::Doroti.Ui.Color)((((MaterialApp)this.widget).color ?? ((MaterialApp)this.widget).theme?.primaryColor) ?? Colors.blue));
-        if (this._usesRouter)
+        global::Doroti.Ui.Color materialColor = (widget.color ?? widget.theme?.primaryColor) ?? Colors.blue;
+        if (_usesRouter)
         {
-            return ((global::Doroti.Framework.Widgets.Widget)WidgetsApp.CreateRouter(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(this), routeInformationProvider: ((MaterialApp)this.widget).routeInformationProvider, routeInformationParser: ((MaterialApp)this.widget).routeInformationParser, routerDelegate: ((MaterialApp)this.widget).routerDelegate, routerConfig: ((MaterialApp)this.widget).routerConfig, backButtonDispatcher: ((MaterialApp)this.widget).backButtonDispatcher, onNavigationNotification: (global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>?)((MaterialApp)this.widget).onNavigationNotification, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._materialBuilder, title: ((MaterialApp)this.widget).title, onGenerateTitle: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>?)((MaterialApp)this.widget).onGenerateTitle, textStyle: AppLibrary._errorTextStyle, color: materialColor, locale: ((MaterialApp)this.widget).locale, localizationsDelegates: this._localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((MaterialApp)this.widget).localeResolutionCallback, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((MaterialApp)this.widget).localeListResolutionCallback, supportedLocales: ((MaterialApp)this.widget).supportedLocales.Cast<Locale>(), showPerformanceOverlay: ((MaterialApp)this.widget).showPerformanceOverlay, showSemanticsDebugger: ((MaterialApp)this.widget).showSemanticsDebugger, debugShowCheckedModeBanner: ((MaterialApp)this.widget).debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder)this._exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder)this._moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder)this._tapBehaviorButtonBuilder, shortcuts: ((MaterialApp)this.widget).shortcuts, actions: ((MaterialApp)this.widget).actions, restorationScopeId: ((MaterialApp)this.widget).restorationScopeId));
+            return WidgetsApp.CreateRouter(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(this), routeInformationProvider: widget.routeInformationProvider, routeInformationParser: widget.routeInformationParser, routerDelegate: widget.routerDelegate, routerConfig: widget.routerConfig, backButtonDispatcher: widget.backButtonDispatcher, onNavigationNotification: widget.onNavigationNotification, builder: _materialBuilder, title: widget.title, onGenerateTitle: widget.onGenerateTitle, textStyle: AppLibrary._errorTextStyle, color: materialColor, locale: widget.locale, localizationsDelegates: _localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: widget.localeResolutionCallback, localeListResolutionCallback: widget.localeListResolutionCallback, supportedLocales: widget.supportedLocales.Cast<Locale>(), showPerformanceOverlay: widget.showPerformanceOverlay, showSemanticsDebugger: widget.showSemanticsDebugger, debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: _exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: _moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: _tapBehaviorButtonBuilder, shortcuts: widget.shortcuts, actions: widget.actions, restorationScopeId: widget.restorationScopeId);
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.WidgetsApp(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(this), navigatorKey: ((MaterialApp)this.widget).navigatorKey, navigatorObservers: ((MaterialApp)this.widget).navigatorObservers!, pageRouteBuilder: ((PageRouteFactory)((settings, builder) =>
+        return new global::Doroti.Framework.Widgets.WidgetsApp(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(this), navigatorKey: widget.navigatorKey, navigatorObservers: widget.navigatorObservers!, pageRouteBuilder: (settings, builder) =>
         {
             return new MaterialPageRoute<object>(settings: settings, builder: builder);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), home: ((MaterialApp)this.widget).home, routes: ((MaterialApp)this.widget).routes!, initialRoute: ((MaterialApp)this.widget).initialRoute, onGenerateRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((MaterialApp)this.widget).onGenerateRoute, onGenerateInitialRoutes: (global::System.Func<string, List<dynamic>>?)((MaterialApp)this.widget).onGenerateInitialRoutes, onUnknownRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((MaterialApp)this.widget).onUnknownRoute, onNavigationNotification: (global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>?)((MaterialApp)this.widget).onNavigationNotification, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._materialBuilder, title: ((MaterialApp)this.widget).title, onGenerateTitle: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>?)((MaterialApp)this.widget).onGenerateTitle, textStyle: AppLibrary._errorTextStyle, color: materialColor, locale: ((MaterialApp)this.widget).locale, localizationsDelegates: this._localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((MaterialApp)this.widget).localeResolutionCallback, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((MaterialApp)this.widget).localeListResolutionCallback, supportedLocales: ((MaterialApp)this.widget).supportedLocales.Cast<Locale>(), showPerformanceOverlay: ((MaterialApp)this.widget).showPerformanceOverlay, showSemanticsDebugger: ((MaterialApp)this.widget).showSemanticsDebugger, debugShowCheckedModeBanner: ((MaterialApp)this.widget).debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder)this._exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder)this._moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder)this._tapBehaviorButtonBuilder, shortcuts: ((MaterialApp)this.widget).shortcuts, actions: ((MaterialApp)this.widget).actions, restorationScopeId: ((MaterialApp)this.widget).restorationScopeId));
+        }, home: widget.home, routes: widget.routes!, initialRoute: widget.initialRoute, onGenerateRoute: widget.onGenerateRoute, onGenerateInitialRoutes: widget.onGenerateInitialRoutes, onUnknownRoute: widget.onUnknownRoute, onNavigationNotification: widget.onNavigationNotification, builder: _materialBuilder, title: widget.title, onGenerateTitle: widget.onGenerateTitle, textStyle: AppLibrary._errorTextStyle, color: materialColor, locale: widget.locale, localizationsDelegates: _localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: widget.localeResolutionCallback, localeListResolutionCallback: widget.localeListResolutionCallback, supportedLocales: widget.supportedLocales.Cast<Locale>(), showPerformanceOverlay: widget.showPerformanceOverlay, showSemanticsDebugger: widget.showSemanticsDebugger, debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: _exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: _moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: _tapBehaviorButtonBuilder, shortcuts: widget.shortcuts, actions: widget.actions, restorationScopeId: widget.restorationScopeId);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)_buildWidgetApp(context));
+        global::Doroti.Framework.Widgets.Widget result = _buildWidgetApp(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((MaterialApp)this.widget).debugShowMaterialGrid)
+                if (widget.debugShowMaterialGrid)
                 {
                     result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.GridPaper(color: new global::Doroti.Ui.Color(3774462944L), interval: 8.0, subdivisions: 1L, child: result));
                 }
                 return true;
             });
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: (((MaterialApp)this.widget).scrollBehavior ?? new MaterialScrollBehavior()), child: new global::Doroti.Framework.Widgets.HeroControllerScope(controller: this._heroController, child: result)));
+        return new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: widget.scrollBehavior ?? new MaterialScrollBehavior(), child: new global::Doroti.Framework.Widgets.HeroControllerScope(controller: _heroController, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -458,21 +458,21 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new IconButton(key: this.buttonKey, onPressed: this.onPressed, iconSize: this.iconSizeForVariant, padding: _buttonPadding, constraints: _buttonConstraints, style: _selectionButtonsIconStyle(context), icon: new global::Doroti.Framework.Widgets.Icon(this.icon, semanticLabel: this.semanticsLabel)));
+        return new IconButton(key: buttonKey, onPressed: onPressed, iconSize: iconSizeForVariant, padding: _buttonPadding, constraints: _buttonConstraints, style: _selectionButtonsIconStyle(context), icon: new global::Doroti.Framework.Widgets.Icon(icon, semanticLabel: semanticsLabel));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual ButtonStyle _selectionButtonsIconStyle(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color foreground = ((global::Doroti.Ui.Color)foregroundColor(context));
-        global::Doroti.Ui.Color background = ((global::Doroti.Ui.Color)backgroundColor(context));
-        return ((ButtonStyle)IconButton.styleFrom(foregroundColor: foreground, backgroundColor: background, side: _borderSide(color: foreground), tapTargetSize: MaterialTapTargetSize.padded));
+        global::Doroti.Ui.Color foreground = foregroundColor(context);
+        global::Doroti.Ui.Color background = backgroundColor(context);
+        return IconButton.styleFrom(foregroundColor: foreground, backgroundColor: background, side: _borderSide(color: foreground), tapTargetSize: MaterialTapTargetSize.padded);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Painting.BorderSide? _borderSide(Color color)
     {
-        switch (this.variant)
+        switch (variant)
         {
             case InspectorButtonVariant.filled:
             case InspectorButtonVariant.iconOnly:
@@ -481,7 +481,7 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
                 }
             case InspectorButtonVariant.toggle:
                 {
-                    return ((this.toggledOn == false) ? new global::Doroti.Framework.Painting.BorderSide(color: color) : null);
+                    return (toggledOn == false) ? new global::Doroti.Framework.Painting.BorderSide(color: color) : null;
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -491,9 +491,9 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
 
     public override Color foregroundColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color primaryColor = ((global::Doroti.Ui.Color)_primaryColor(context));
-        global::Doroti.Ui.Color secondaryColor = ((global::Doroti.Ui.Color)_secondaryColor(context));
-        switch (this.variant)
+        global::Doroti.Ui.Color primaryColor = _primaryColor(context);
+        global::Doroti.Ui.Color secondaryColor = _secondaryColor(context);
+        switch (variant)
         {
             case InspectorButtonVariant.filled:
                 {
@@ -505,7 +505,7 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
                 }
             case InspectorButtonVariant.toggle:
                 {
-                    return (!DartRuntimePrimitives.RequireValue(this.toggledOn) ? secondaryColor : primaryColor);
+                    return !DartRuntimePrimitives.RequireValue(toggledOn) ? secondaryColor : primaryColor;
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -515,8 +515,8 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
 
     public override Color backgroundColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color secondaryColor = ((global::Doroti.Ui.Color)_secondaryColor(context));
-        switch (this.variant)
+        global::Doroti.Ui.Color secondaryColor = _secondaryColor(context);
+        switch (variant)
         {
             case InspectorButtonVariant.filled:
                 {
@@ -528,7 +528,7 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
                 }
             case InspectorButtonVariant.toggle:
                 {
-                    return (!DartRuntimePrimitives.RequireValue(this.toggledOn) ? Colors.transparent : secondaryColor);
+                    return !DartRuntimePrimitives.RequireValue(toggledOn) ? Colors.transparent : secondaryColor;
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -539,14 +539,14 @@ internal class _MaterialInspectorButton__app : global::Doroti.Framework.Widgets.
     internal virtual global::Doroti.Ui.Color _primaryColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        return ((global::Doroti.Ui.Color)(this.isDarkTheme ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.primaryContainer));
+        return isDarkTheme ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.primaryContainer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Color _secondaryColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        return ((global::Doroti.Ui.Color)(this.isDarkTheme ? theme.colorScheme.primaryContainer : theme.colorScheme.onPrimaryContainer));
+        return isDarkTheme ? theme.colorScheme.primaryContainer : theme.colorScheme.onPrimaryContainer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

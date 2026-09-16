@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -7,7 +8,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.XamlTypeInfo;
-using System.Runtime.InteropServices;
 using DRect = Doroti.Ui.Rect;
 
 namespace Doroti.Host.WindowsAppSdk;
@@ -195,7 +195,7 @@ internal sealed class WindowsWinUiControls : IDisposable
                         _ => message,
                     };
                 args.Handled = true;
-                Native.SendMessageW(_parent, message, keys, (nint)((uint)(ushort)position.X | ((uint)(ushort)position.Y << 16)));
+                Native.SendMessageW(_parent, message, keys, (nint)((ushort)position.X | ((uint)(ushort)position.Y << 16)));
             }
             catch (Exception error) { System.Diagnostics.Trace.TraceError(error.ToString()); }
         }
@@ -206,7 +206,7 @@ internal sealed class WindowsWinUiControls : IDisposable
             try
             {
                 var status = args.KeyStatus;
-                var flags = (uint)status.RepeatCount | (status.ScanCode << 16) |
+                var flags = status.RepeatCount | (status.ScanCode << 16) |
                     (status.IsExtendedKey ? 1u << 24 : 0) | (status.WasKeyDown ? 1u << 30 : 0) |
                     (status.IsKeyReleased ? 1u << 31 : 0);
                 ModifierKey?.Invoke(status.IsKeyReleased ? 0x101u : 0x100u, (nuint)args.Key, unchecked((nint)flags));

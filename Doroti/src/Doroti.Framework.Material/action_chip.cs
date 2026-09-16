@@ -68,9 +68,9 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
         this.avatarBoxConstraints = avatarBoxConstraints;
         this.chipAnimationStyle = chipAnimationStyle;
         this.mouseCursor = mouseCursor;
-        this._chipVariant = _ChipVariant__action_chip.flat;
-        System.Diagnostics.Debug.Assert(((pressElevation is null) || (pressElevation >= 0.0)));
-        System.Diagnostics.Debug.Assert(((elevation is null) || (elevation >= 0.0)));
+        _chipVariant = _ChipVariant__action_chip.flat;
+        System.Diagnostics.Debug.Assert((pressElevation is null) || (pressElevation >= 0.0));
+        System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
     }
 
     public static ActionChip CreateElevated(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? avatar = null, global::Doroti.Framework.Widgets.Widget label = default!, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action? onPressed = null, double? pressElevation = null, string? tooltip = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, Color? disabledColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null)
@@ -105,12 +105,12 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
         return __instance;
     }
 
-    public virtual bool isEnabled => DartRuntimePrimitives.ConvertValue<bool>((this.onPressed is not null));
+    public virtual bool isEnabled => DartRuntimePrimitives.ConvertValue<bool>(onPressed is not null);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        ChipThemeData? defaults = ((ChipThemeData?)((new _ActionChipDefaultsM3__action_chip(context, this.isEnabled, this._chipVariant))));
-        return ((global::Doroti.Framework.Widgets.Widget)new RawChip(defaultProperties: defaults, avatar: this.avatar, label: this.label, onPressed: this.onPressed, pressElevation: this.pressElevation, tooltip: this.tooltip, labelStyle: this.labelStyle, color: this.color, backgroundColor: this.backgroundColor, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, labelPadding: this.labelPadding, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
+        ChipThemeData? defaults = (ChipThemeData?)new _ActionChipDefaultsM3__action_chip(context, isEnabled, _chipVariant);
+        return new RawChip(defaultProperties: defaults, avatar: avatar, label: label, onPressed: onPressed, pressElevation: pressElevation, tooltip: tooltip, labelStyle: labelStyle, color: color, backgroundColor: backgroundColor, side: side, shape: shape, clipBehavior: clipBehavior, focusNode: focusNode, autofocus: autofocus, disabledColor: disabledColor, padding: padding, visualDensity: visualDensity, isEnabled: isEnabled, labelPadding: labelPadding, materialTapTargetSize: materialTapTargetSize, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, iconTheme: iconTheme, avatarBoxConstraints: avatarBoxConstraints, chipAnimationStyle: chipAnimationStyle, mouseCursor: mouseCursor);
     }
 
 }
@@ -128,7 +128,7 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
         {
             if (!__late__colors_initialized)
             {
-                __late__colors = Theme.of(this.context).colorScheme;
+                __late__colors = Theme.of(context).colorScheme;
                 __late__colors_initialized = true;
             }
             return __late__colors;
@@ -142,7 +142,7 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
         {
             if (!__late__textTheme_initialized)
             {
-                __late__textTheme = Theme.of(this.context).textTheme;
+                __late__textTheme = Theme.of(context).textTheme;
                 __late__textTheme_initialized = true;
             }
             return __late__textTheme;
@@ -156,32 +156,32 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
         this._chipVariant = _chipVariant;
     }
 
-    public override double? elevation => ((Equals(this._chipVariant, _ChipVariant__action_chip.flat)) ? 0.0 : (this.isEnabled ? 1.0 : 0.0));
+    public override double? elevation => Equals(_chipVariant, _ChipVariant__action_chip.flat) ? 0.0 : (isEnabled ? 1.0 : 0.0);
     public override double? pressElevation => 1.0;
-    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => this._textTheme.labelLarge?.copyWith(color: (this.isEnabled ? this._colors.onSurface : this._colors.onSurface));
+    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => _textTheme.labelLarge?.copyWith(color: isEnabled ? _colors.onSurface : _colors.onSurface);
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
-            return (((Equals(this._chipVariant, _ChipVariant__action_chip.flat)) ? null : this._colors.onSurface.withOpacity(0.12)));
+            return Equals(_chipVariant, _ChipVariant__action_chip.flat) ? null : _colors.onSurface.withOpacity(0.12);
         }
-        return (((Equals(this._chipVariant, _ChipVariant__action_chip.flat)) ? null : this._colors.surfaceContainerLow));
+        return Equals(_chipVariant, _ChipVariant__action_chip.flat) ? null : _colors.surfaceContainerLow;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((Equals(this._chipVariant, _ChipVariant__action_chip.flat)) ? Colors.transparent : this._colors.shadow));
+    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Equals(_chipVariant, _ChipVariant__action_chip.flat) ? Colors.transparent : _colors.shadow);
     public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public override global::Doroti.Ui.Color? checkmarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(null);
     public override global::Doroti.Ui.Color? deleteIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(null);
-    public override global::Doroti.Framework.Painting.BorderSide? side => ((Equals(this._chipVariant, _ChipVariant__action_chip.flat)) ? (this.isEnabled ? new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outlineVariant) : new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12))) : new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent));
-    public override global::Doroti.Framework.Widgets.IconThemeData? iconTheme => new global::Doroti.Framework.Widgets.IconThemeData(color: (this.isEnabled ? this._colors.primary : this._colors.onSurface), size: 18.0);
+    public override global::Doroti.Framework.Painting.BorderSide? side => Equals(_chipVariant, _ChipVariant__action_chip.flat) ? (isEnabled ? new global::Doroti.Framework.Painting.BorderSide(color: _colors.outlineVariant) : new global::Doroti.Framework.Painting.BorderSide(color: _colors.onSurface.withOpacity(0.12))) : new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent);
+    public override global::Doroti.Framework.Widgets.IconThemeData? iconTheme => new global::Doroti.Framework.Widgets.IconThemeData(color: isEnabled ? _colors.primary : _colors.onSurface, size: 18.0);
     public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0));
     public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding
     {
         get
         {
-            double fontSizeLocal = (this.labelStyle?.fontSize ?? 14.0);
-            double fontSizeRatio = (MediaQuery.textScalerOf(this.context).scale(fontSizeLocal) / 14.0);
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)EdgeInsets.lerp(EdgeInsets.CreateSymmetric(horizontal: 8.0), EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio - 1.0), 0.0, 1.0))!);
+            double fontSizeLocal = labelStyle?.fontSize ?? 14.0;
+            double fontSizeRatio = MediaQuery.textScalerOf(context).scale(fontSizeLocal) / 14.0;
+            return EdgeInsets.lerp(EdgeInsets.CreateSymmetric(horizontal: 8.0), EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble(fontSizeRatio - 1.0, 0.0, 1.0))!;
         }
     }
 }

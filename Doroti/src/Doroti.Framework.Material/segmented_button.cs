@@ -21,7 +21,7 @@ public class ButtonSegment<T>
         this.label = label;
         this.tooltip = tooltip;
         this.enabled = enabled;
-        System.Diagnostics.Debug.Assert(((icon is not null) || (label is not null)));
+        System.Diagnostics.Debug.Assert((icon is not null) || (label is not null));
     }
 
 }
@@ -51,25 +51,25 @@ public class SegmentedButton<T> : global::Doroti.Framework.Widgets.StatefulWidge
         this.showSelectedIcon = showSelectedIcon;
         this.selectedIcon = selectedIcon;
         this.direction = direction;
-        System.Diagnostics.Debug.Assert((checked((long)(segments.Count)) > 0L));
-        System.Diagnostics.Debug.Assert(((checked((long)(selected.Count)) > 0L) || emptySelectionAllowed));
-        System.Diagnostics.Debug.Assert(((checked((long)(selected.Count)) < 2L) || multiSelectionEnabled));
+        System.Diagnostics.Debug.Assert(checked(segments.Count) > 0L);
+        System.Diagnostics.Debug.Assert((checked(selected.Count) > 0L) || emptySelectionAllowed);
+        System.Diagnostics.Debug.Assert((checked(selected.Count) < 2L) || multiSelectionEnabled);
     }
 
     public static ButtonStyle styleFrom(Color? foregroundColor = null, Color? backgroundColor = null, Color? selectedForegroundColor = null, Color? selectedBackgroundColor = null, Color? disabledForegroundColor = null, Color? disabledBackgroundColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? iconColor = null, double? iconSize = null, Color? disabledIconColor = null, Color? overlayColor = null, double? elevation = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Size? minimumSize = null, Size? fixedSize = null, Size? maximumSize = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, global::Doroti.Framework.Services.MouseCursor? enabledMouseCursor = null, global::Doroti.Framework.Services.MouseCursor? disabledMouseCursor = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? tapTargetSize = null, Duration? animationDuration = null, bool? enableFeedback = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, InteractiveInkFeatureFactory? splashFactory = null)
     {
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColorProp = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(((((foregroundColor is null) && (selectedForegroundColor is null)) && (overlayColor is null))) ? null : (overlayColor switch { (global::Doroti.Ui.Color overlayColorLocal) when ((overlayColorLocal.value == 0L)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(Colors.transparent)), _ => _SegmentedButtonDefaultsM3__segmented_button.resolveStateColor(foregroundColor, selectedForegroundColor, overlayColor) })));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColorProp = ((foregroundColor is null) && (selectedForegroundColor is null) && (overlayColor is null)) ? null : (overlayColor switch { global::Doroti.Ui.Color overlayColorLocal when overlayColorLocal.value == 0L => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(Colors.transparent)), _ => _SegmentedButtonDefaultsM3__segmented_button.resolveStateColor(foregroundColor, selectedForegroundColor, overlayColor) });
         return TextButton.styleFrom(textStyle: textStyle, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, iconColor: iconColor, iconSize: iconSize, disabledIconColor: disabledIconColor, elevation: elevation, padding: padding, minimumSize: minimumSize, fixedSize: fixedSize, maximumSize: maximumSize, side: side, shape: shape, enabledMouseCursor: enabledMouseCursor, disabledMouseCursor: disabledMouseCursor, visualDensity: visualDensity, tapTargetSize: tapTargetSize, animationDuration: animationDuration, enableFeedback: enableFeedback, alignment: alignment, splashFactory: splashFactory).copyWith(foregroundColor: SegmentedButton<T>._defaultColor(foregroundColor, disabledForegroundColor, selectedForegroundColor), backgroundColor: SegmentedButton<T>._defaultColor(backgroundColor, disabledBackgroundColor, selectedBackgroundColor), overlayColor: overlayColorProp);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? _defaultColor(Color? enabled, Color? disabled, Color? selected)
     {
-        if (((((selected ?? enabled) ?? disabled)) is null))
+        if (((selected ?? enabled) ?? disabled) is null)
         {
             return null;
         }
-        return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.disabled.asConstraint()] = disabled, [WidgetState.selected.asConstraint()] = selected, [WidgetStateMembers.any] = enabled }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>()));
+        return (global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.disabled.asConstraint()] = disabled, [WidgetState.selected.asConstraint()] = selected, [WidgetStateMembers.any] = enabled }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -82,17 +82,17 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
     internal virtual bool _focused { get; set; } = false;
     public virtual DartMap<ButtonSegment<T>, global::Doroti.Framework.Widgets.WidgetStatesController> statesControllers { get; private set; } = new DartMap<ButtonSegment<T>, global::Doroti.Framework.Widgets.WidgetStatesController>();
 
-    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>((((SegmentedButton<T>)this.widget).onSelectionChanged is not null));
-    internal virtual bool _selected => Enumerable.Any(((SegmentedButton<T>)this.widget).selected);
-    internal virtual HashSet<global::Doroti.Framework.Widgets.WidgetState> _states => ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection16615 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection16615.Add(WidgetState.disabled); } if (this._hovering) { __collection16615.Add(WidgetState.hovered); } if (this._focused) { __collection16615.Add(WidgetState.focused); } if (this._selected) { __collection16615.Add(WidgetState.selected); } return __collection16615; }))();
+    internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>(widget.onSelectionChanged is not null);
+    internal virtual bool _selected => Enumerable.Any(widget.selected);
+    internal virtual HashSet<global::Doroti.Framework.Widgets.WidgetState> _states => ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection16615 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!_enabled) { __collection16615.Add(WidgetState.disabled); } if (_hovering) { __collection16615.Add(WidgetState.hovered); } if (_focused) { __collection16615.Add(WidgetState.focused); } if (_selected) { __collection16615.Add(WidgetState.selected); } return __collection16615; }))();
     public override void didUpdateWidget(SegmentedButton<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(oldWidget, this.widget)))
+        if (!Equals(oldWidget, widget))
         {
-            this.statesControllers.removeWhere(((segment, controller) =>
+            statesControllers.removeWhere((segment, controller) =>
             {
-                if (((SegmentedButton<T>)this.widget).segments.Contains(segment))
+                if (widget.segments.Contains(segment))
                 {
                     return false;
                 }
@@ -102,34 +102,34 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
                     return true;
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
+            });
         }
     }
 
     internal virtual void _handleOnPressed(T segmentValue)
     {
-        if (!this._enabled)
+        if (!_enabled)
         {
             return;
         }
-        bool onlySelectedSegment = ((checked((long)(((SegmentedButton<T>)this.widget).selected.Count)) == 1L) && ((SegmentedButton<T>)this.widget).selected.Contains(segmentValue));
-        bool validChange = (((SegmentedButton<T>)this.widget).emptySelectionAllowed || !onlySelectedSegment);
+        bool onlySelectedSegment = (checked(widget.selected.Count) == 1L) && widget.selected.Contains(segmentValue);
+        bool validChange = widget.emptySelectionAllowed || !onlySelectedSegment;
         if (validChange)
         {
-            bool toggle = (((SegmentedButton<T>)this.widget).multiSelectionEnabled || ((((SegmentedButton<T>)this.widget).emptySelectionAllowed && onlySelectedSegment)));
+            bool toggle = widget.multiSelectionEnabled || widget.emptySelectionAllowed && onlySelectedSegment;
             var pressedSegment = new HashSet<T> { segmentValue };
             HashSet<T> updatedSelection = default!;
             if (toggle)
             {
-                updatedSelection = (((SegmentedButton<T>)this.widget).selected.Contains(segmentValue) ? ((SegmentedButton<T>)this.widget).selected.difference<T>(pressedSegment) : ((SegmentedButton<T>)this.widget).selected.Union(pressedSegment).ToHashSet());
+                updatedSelection = widget.selected.Contains(segmentValue) ? widget.selected.difference<T>(pressedSegment) : widget.selected.Union(pressedSegment).ToHashSet();
             }
             else
             {
                 updatedSelection = pressedSegment;
             }
-            if (!CollectionsLibrary.setEquals(updatedSelection, ((SegmentedButton<T>)this.widget).selected))
+            if (!CollectionsLibrary.setEquals(updatedSelection, widget.selected))
             {
-                ((SegmentedButton<T>)this.widget).onSelectionChanged!(updatedSelection);
+                widget.onSelectionChanged!(updatedSelection);
             }
         }
     }
@@ -137,20 +137,20 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         SegmentedButtonThemeData theme = SegmentedButtonTheme.of(context);
-        SegmentedButtonThemeData defaults = ((SegmentedButtonThemeData)new _SegmentedButtonDefaultsM3__segmented_button(context));
+        SegmentedButtonThemeData defaults = new _SegmentedButtonDefaultsM3__segmented_button(context);
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
         var disabledState = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { WidgetState.disabled };
         P? effectiveValue<P>(global::System.Func<ButtonStyle?, P?> getProperty)
         {
-            P? widgetValue = getProperty(((SegmentedButton<T>)this.widget).style);
+            P? widgetValue = getProperty(((SegmentedButton<T>)widget).style);
             P? themeValue = getProperty(theme.style);
             P? defaultValue = getProperty(defaults.style);
-            return ((widgetValue ?? themeValue) ?? defaultValue);
+            return (widgetValue ?? themeValue) ?? defaultValue;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         P? resolve<P>(global::System.Func<ButtonStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty, HashSet<global::Doroti.Framework.Widgets.WidgetState>? states = null)
         {
-            return effectiveValue(((style) => DartRuntimePrimitives.NullAware(getProperty(style), __target => __target.resolve(((states ?? (HashSet<global::Doroti.Framework.Widgets.WidgetState>)this._states))))));
+            return effectiveValue((style) => DartRuntimePrimitives.NullAware(getProperty(style), __target => __target.resolve(states ?? (HashSet<global::Doroti.Framework.Widgets.WidgetState>)_states)));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         ButtonStyle segmentStyleFor(ButtonStyle? style)
@@ -158,68 +158,68 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
             return new ButtonStyle(textStyle: style?.textStyle, backgroundColor: style?.backgroundColor, foregroundColor: style?.foregroundColor, overlayColor: style?.overlayColor, surfaceTintColor: style?.surfaceTintColor, elevation: style?.elevation, padding: style?.padding, iconColor: style?.iconColor, iconSize: style?.iconSize, shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), mouseCursor: style?.mouseCursor, visualDensity: style?.visualDensity, tapTargetSize: style?.tapTargetSize, animationDuration: style?.animationDuration, enableFeedback: style?.enableFeedback, alignment: style?.alignment, splashFactory: style?.splashFactory);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ButtonStyle segmentStyle = segmentStyleFor(((SegmentedButton<T>)this.widget).style);
+        ButtonStyle segmentStyle = segmentStyleFor(widget.style);
         ButtonStyle segmentThemeStyle = segmentStyleFor(theme.style).merge(segmentStyleFor(defaults.style));
-        global::Doroti.Framework.Widgets.Widget? selectedIconLocal = (((SegmentedButton<T>)this.widget).showSelectedIcon ? ((((SegmentedButton<T>)this.widget).selectedIcon ?? theme.selectedIcon) ?? defaults.selectedIcon) : null);
+        global::Doroti.Framework.Widgets.Widget? selectedIconLocal = widget.showSelectedIcon ? ((widget.selectedIcon ?? theme.selectedIcon) ?? defaults.selectedIcon) : null;
         global::Doroti.Framework.Widgets.Widget buttonFor(ButtonSegment<T> segment)
         {
-            global::Doroti.Framework.Widgets.Widget labelLocal = ((((ButtonSegment<T>)segment).label ?? ((ButtonSegment<T>)segment).icon) ?? SizedBox.CreateShrink());
-            bool segmentSelected = ((SegmentedButton<T>)this.widget).selected.Contains(((ButtonSegment<T>)segment).value);
-            global::Doroti.Framework.Widgets.Widget? iconLocal = (((segmentSelected && ((SegmentedButton<T>)this.widget).showSelectedIcon)) ? selectedIconLocal : ((((ButtonSegment<T>)segment).label is not null) ? ((ButtonSegment<T>)segment).icon : null));
-            global::Doroti.Framework.Widgets.WidgetStatesController controller = ((global::Doroti.Framework.Widgets.WidgetStatesController)this.statesControllers.putIfAbsent(segment, (() => new global::Doroti.Framework.Widgets.WidgetStatesController())));
+            global::Doroti.Framework.Widgets.Widget labelLocal = (segment.label ?? segment.icon) ?? SizedBox.CreateShrink();
+            bool segmentSelected = widget.selected.Contains(segment.value);
+            global::Doroti.Framework.Widgets.Widget? iconLocal = (segmentSelected && widget.showSelectedIcon) ? selectedIconLocal : ((segment.label is not null) ? segment.icon : null);
+            global::Doroti.Framework.Widgets.WidgetStatesController controller = statesControllers.putIfAbsent(segment, () => new global::Doroti.Framework.Widgets.WidgetStatesController());
             controller.update(WidgetState.selected, segmentSelected);
             var content = labelLocal;
             var effectiveSegmentStyle = segmentStyle;
-            if ((iconLocal is not null))
+            if (iconLocal is not null)
             {
-                double defaultFontSize = (segmentStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0);
-                double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-                global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ButtonStyleButton.scaledPadding(((new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 8, 16, 8))), EdgeInsets.CreateSymmetric(horizontal: 4), EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
+                double defaultFontSize = segmentStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0;
+                double effectiveTextScale = MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0;
+                global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 8, 16, 8), EdgeInsets.CreateSymmetric(horizontal: 4), EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
                 effectiveSegmentStyle = segmentStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
-                double scaleLocal = (Dart_uiLibrary.clampDouble(effectiveTextScale, 1.0, 2.0) - 1.0);
+                double scaleLocal = Dart_uiLibrary.clampDouble(effectiveTextScale, 1.0, 2.0) - 1.0;
                 TextButtonThemeData textButtonTheme = TextButtonTheme.of(context);
-                IconAlignment effectiveIconAlignment = ((textButtonTheme.style?.iconAlignment ?? segmentStyle.iconAlignment) ?? IconAlignment.start);
-                content = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, spacing: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)), children: ((Equals(effectiveIconAlignment, IconAlignment.start)) ? new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(iconLocal), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: labelLocal)) } : new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: labelLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(iconLocal) })));
+                IconAlignment effectiveIconAlignment = (textButtonTheme.style?.iconAlignment ?? segmentStyle.iconAlignment) ?? IconAlignment.start;
+                content = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, spacing: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)), children: Equals(effectiveIconAlignment, IconAlignment.start) ? new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(iconLocal), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: labelLocal)) } : new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: labelLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(iconLocal) }));
             }
-            global::Doroti.Framework.Widgets.Widget button = ((global::Doroti.Framework.Widgets.Widget)new TextButton(style: effectiveSegmentStyle, statesController: controller, onHover: ((global::System.Action<bool>)((hovering) =>
+            global::Doroti.Framework.Widgets.Widget button = new TextButton(style: effectiveSegmentStyle, statesController: controller, onHover: (hovering) =>
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
                     _hovering = hovering;
-                })));
-            })), onFocusChange: ((global::System.Action<bool>)((focused) =>
+                });
+            }, onFocusChange: (focused) =>
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
                     _focused = focused;
-                })));
-            })), onPressed: ((global::System.Action?)(((this._enabled && ((ButtonSegment<T>)segment).enabled)) ? (() => { _handleOnPressed(((ButtonSegment<T>)segment).value); }) : null)), child: content));
-            global::Doroti.Framework.Widgets.Widget buttonWithTooltip = ((((ButtonSegment<T>)segment).tooltip is not null) ? new Tooltip(message: ((ButtonSegment<T>)segment).tooltip, child: button) : button);
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(selected: segmentSelected, inMutuallyExclusiveGroup: (((SegmentedButton<T>)this.widget).multiSelectionEnabled ? null : true), child: buttonWithTooltip)));
+                });
+            }, onPressed: (_enabled && segment.enabled) ? (() => { _handleOnPressed(segment.value); }) : null, child: content);
+            global::Doroti.Framework.Widgets.Widget buttonWithTooltip = (segment.tooltip is not null) ? new Tooltip(message: segment.tooltip, child: button) : button;
+            return new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(selected: segmentSelected, inMutuallyExclusiveGroup: widget.multiSelectionEnabled ? null : true, child: buttonWithTooltip));
         }
-        global::Doroti.Framework.Painting.OutlinedBorder effectiveBorder = (resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((style) => style?.shape)) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder());
-        global::Doroti.Framework.Painting.OutlinedBorder resolvedDisabledBorder = (resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((style) => style?.shape), disabledState) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder());
-        global::Doroti.Framework.Painting.BorderSide effectiveSide = (resolve<global::Doroti.Framework.Painting.BorderSide?>(((style) => style?.side)) ?? BorderSide.none);
-        global::Doroti.Framework.Painting.BorderSide disabledSide = (resolve<global::Doroti.Framework.Painting.BorderSide?>(((style) => style?.side), disabledState) ?? BorderSide.none);
-        global::Doroti.Framework.Painting.OutlinedBorder enabledBorderLocal = ((global::Doroti.Framework.Painting.OutlinedBorder)effectiveBorder.copyWith(side: effectiveSide));
-        global::Doroti.Framework.Painting.OutlinedBorder disabledBorderLocal = ((global::Doroti.Framework.Painting.OutlinedBorder)resolvedDisabledBorder.copyWith(side: disabledSide));
-        VisualDensity resolvedVisualDensity = ((segmentStyle.visualDensity ?? segmentThemeStyle.visualDensity) ?? Theme.of(context).visualDensity);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry resolvedPadding = (resolve<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding)) ?? EdgeInsets.zero);
-        MaterialTapTargetSize resolvedTapTargetSize = ((segmentStyle.tapTargetSize ?? segmentThemeStyle.tapTargetSize) ?? Theme.of(context).materialTapTargetSize);
-        double fontSizeLocal = (resolve<global::Doroti.Framework.Painting.TextStyle?>(((style) => style?.textStyle))?.fontSize ?? 20.0);
-        List<global::Doroti.Framework.Widgets.Widget> buttons = ((SegmentedButton<T>)this.widget).segments.map<ButtonSegment<T>, global::Doroti.Framework.Widgets.Widget>(buttonFor).ToList().ToList();
-        global::Doroti.Ui.Offset densityAdjustment = ((global::Doroti.Ui.Offset)resolvedVisualDensity.baseSizeAdjustment);
+        global::Doroti.Framework.Painting.OutlinedBorder effectiveBorder = resolve<global::Doroti.Framework.Painting.OutlinedBorder?>((style) => style?.shape) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder();
+        global::Doroti.Framework.Painting.OutlinedBorder resolvedDisabledBorder = resolve<global::Doroti.Framework.Painting.OutlinedBorder?>((style) => style?.shape, disabledState) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder();
+        global::Doroti.Framework.Painting.BorderSide effectiveSide = resolve<global::Doroti.Framework.Painting.BorderSide?>((style) => style?.side) ?? BorderSide.none;
+        global::Doroti.Framework.Painting.BorderSide disabledSide = resolve<global::Doroti.Framework.Painting.BorderSide?>((style) => style?.side, disabledState) ?? BorderSide.none;
+        global::Doroti.Framework.Painting.OutlinedBorder enabledBorderLocal = effectiveBorder.copyWith(side: effectiveSide);
+        global::Doroti.Framework.Painting.OutlinedBorder disabledBorderLocal = resolvedDisabledBorder.copyWith(side: disabledSide);
+        VisualDensity resolvedVisualDensity = (segmentStyle.visualDensity ?? segmentThemeStyle.visualDensity) ?? Theme.of(context).visualDensity;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry resolvedPadding = resolve<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>((style) => style?.padding) ?? EdgeInsets.zero;
+        MaterialTapTargetSize resolvedTapTargetSize = (segmentStyle.tapTargetSize ?? segmentThemeStyle.tapTargetSize) ?? Theme.of(context).materialTapTargetSize;
+        double fontSizeLocal = resolve<global::Doroti.Framework.Painting.TextStyle?>((style) => style?.textStyle)?.fontSize ?? 20.0;
+        List<global::Doroti.Framework.Widgets.Widget> buttons = widget.segments.map<ButtonSegment<T>, global::Doroti.Framework.Widgets.Widget>(buttonFor).ToList().ToList();
+        global::Doroti.Ui.Offset densityAdjustment = resolvedVisualDensity.baseSizeAdjustment;
         var textButtonMinHeight = 40.0;
-        double adjustButtonMinHeight = (textButtonMinHeight + densityAdjustment.dy);
-        double effectiveVerticalPadding = (((global::Doroti.Framework.Painting.EdgeInsetsGeometry)resolvedPadding).vertical + (densityAdjustment.dy * 2L));
-        double effectedButtonHeight = Math.Max((fontSizeLocal + effectiveVerticalPadding), adjustButtonMinHeight);
-        double tapTargetVerticalPaddingLocal = (resolvedTapTargetSize switch { var __constant25770 when (Equals(__constant25770, MaterialTapTargetSize.shrinkWrap)) => 0.0, var __constant25817 when (Equals(__constant25817, MaterialTapTargetSize.padded)) => Math.Max(0, ((Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy) - effectedButtonHeight)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return ((global::Doroti.Framework.Widgets.Widget)new Material(type: MaterialType.transparency, elevation: DartRuntimePrimitives.RequireValue(resolve<double?>(((style) => style?.elevation))), shadowColor: resolve<global::Doroti.Ui.Color?>(((style) => style?.shadowColor)), surfaceTintColor: resolve<global::Doroti.Ui.Color?>(((style) => style?.surfaceTintColor)), child: new TextButtonTheme(data: new TextButtonThemeData(style: segmentThemeStyle), child: new global::Doroti.Framework.Widgets.Padding(padding: (((SegmentedButton<T>)this.widget).expandedInsets ?? EdgeInsets.zero), child: new _SegmentedButtonRenderWidget__segmented_button<T>(tapTargetVerticalPadding: tapTargetVerticalPaddingLocal, segments: ((SegmentedButton<T>)this.widget).segments, enabledBorder: (this._enabled ? enabledBorderLocal : disabledBorderLocal), disabledBorder: disabledBorderLocal, direction: ((SegmentedButton<T>)this.widget).direction, textDirection: textDirectionLocal, isExpanded: (((SegmentedButton<T>)this.widget).expandedInsets is not null), children: buttons)))));
+        double adjustButtonMinHeight = textButtonMinHeight + densityAdjustment.dy;
+        double effectiveVerticalPadding = resolvedPadding.vertical + (densityAdjustment.dy * 2L);
+        double effectedButtonHeight = Math.Max(fontSizeLocal + effectiveVerticalPadding, adjustButtonMinHeight);
+        double tapTargetVerticalPaddingLocal = resolvedTapTargetSize switch { var __constant25770 when Equals(__constant25770, MaterialTapTargetSize.shrinkWrap) => 0.0, var __constant25817 when Equals(__constant25817, MaterialTapTargetSize.padded) => Math.Max(0, Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy - effectedButtonHeight), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return new Material(type: MaterialType.transparency, elevation: DartRuntimePrimitives.RequireValue(resolve<double?>((style) => style?.elevation)), shadowColor: resolve<global::Doroti.Ui.Color?>((style) => style?.shadowColor), surfaceTintColor: resolve<global::Doroti.Ui.Color?>((style) => style?.surfaceTintColor), child: new TextButtonTheme(data: new TextButtonThemeData(style: segmentThemeStyle), child: new global::Doroti.Framework.Widgets.Padding(padding: widget.expandedInsets ?? EdgeInsets.zero, child: new _SegmentedButtonRenderWidget__segmented_button<T>(tapTargetVerticalPadding: tapTargetVerticalPaddingLocal, segments: widget.segments, enabledBorder: _enabled ? enabledBorderLocal : disabledBorderLocal, disabledBorder: disabledBorderLocal, direction: widget.direction, textDirection: textDirectionLocal, isExpanded: widget.expandedInsets is not null, children: buttons))));
     }
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Widgets.WidgetStatesController controller in this.statesControllers.Values)
+        foreach (global::Doroti.Framework.Widgets.WidgetStatesController controller in statesControllers.Values)
         {
             controller.dispose();
         }
@@ -247,12 +247,12 @@ internal class _SegmentedButtonRenderWidget__segmented_button<T> : global::Dorot
         this.textDirection = textDirection;
         this.tapTargetVerticalPadding = tapTargetVerticalPadding;
         this.isExpanded = isExpanded;
-        System.Diagnostics.Debug.Assert((checked((long)(children.Count)) == checked((long)(segments.Count))));
+        System.Diagnostics.Debug.Assert(checked(children.Count) == checked((long)segments.Count));
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSegmentedButton__segmented_button<T>(segments: this.segments, enabledBorder: this.enabledBorder, disabledBorder: this.disabledBorder, textDirection: this.textDirection, direction: this.direction, tapTargetVerticalPadding: this.tapTargetVerticalPadding, isExpanded: this.isExpanded));
+        return new _RenderSegmentedButton__segmented_button<T>(segments: segments, enabledBorder: enabledBorder, disabledBorder: disabledBorder, textDirection: textDirection, direction: direction, tapTargetVerticalPadding: tapTargetVerticalPadding, isExpanded: isExpanded);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -262,11 +262,11 @@ internal class _SegmentedButtonRenderWidget__segmented_button<T> : global::Dorot
         DartRuntimePrimitives.Ignore(((Func<_RenderSegmentedButton__segmented_button<T>>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.segments = this.segments;
-    __cascade.enabledBorder = this.enabledBorder;
-    __cascade.disabledBorder = this.disabledBorder;
-    __cascade.direction = this.direction;
-    __cascade.textDirection = this.textDirection;
+    __cascade.segments = segments;
+    __cascade.enabledBorder = enabledBorder;
+    __cascade.disabledBorder = disabledBorder;
+    __cascade.direction = direction;
+    __cascade.textDirection = textDirection;
     return __cascade;
 }))());
     }
@@ -296,22 +296,22 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     internal _RenderSegmentedButton__segmented_button(List<ButtonSegment<T>> segments, global::Doroti.Framework.Painting.OutlinedBorder enabledBorder, global::Doroti.Framework.Painting.OutlinedBorder disabledBorder, TextDirection textDirection, double tapTargetVerticalPadding, bool isExpanded, global::Doroti.Framework.Painting.Axis direction)
     {
-        this._segments = segments;
-        this._enabledBorder = enabledBorder;
-        this._disabledBorder = disabledBorder;
-        this._textDirection = textDirection;
-        this._direction = direction;
-        this._tapTargetVerticalPadding = tapTargetVerticalPadding;
-        this._isExpanded = isExpanded;
+        _segments = segments;
+        _enabledBorder = enabledBorder;
+        _disabledBorder = disabledBorder;
+        _textDirection = textDirection;
+        _direction = direction;
+        _tapTargetVerticalPadding = tapTargetVerticalPadding;
+        _isExpanded = isExpanded;
     }
 
     public virtual List<ButtonSegment<T>> segments
     {
-        get => this._segments;
+        get => _segments;
         set
         {
             var __value = value;
-            if (CollectionsLibrary.listEquals(this.segments, __value))
+            if (CollectionsLibrary.listEquals(segments, __value))
             {
                 return;
             }
@@ -321,11 +321,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public virtual global::Doroti.Framework.Painting.OutlinedBorder enabledBorder
     {
-        get => this._enabledBorder;
+        get => _enabledBorder;
         set
         {
             var __value = value;
-            if ((Equals(this._enabledBorder, __value)))
+            if (Equals(_enabledBorder, __value))
             {
                 return;
             }
@@ -335,11 +335,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public virtual global::Doroti.Framework.Painting.OutlinedBorder disabledBorder
     {
-        get => this._disabledBorder;
+        get => _disabledBorder;
         set
         {
             var __value = value;
-            if ((Equals(this._disabledBorder, __value)))
+            if (Equals(_disabledBorder, __value))
             {
                 return;
             }
@@ -349,11 +349,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public virtual global::Doroti.Ui.TextDirection textDirection
     {
-        get => this._textDirection;
+        get => _textDirection;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._textDirection)))
+            if (Equals(__value, _textDirection))
             {
                 return;
             }
@@ -363,11 +363,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public virtual global::Doroti.Framework.Painting.Axis direction
     {
-        get => this._direction;
+        get => _direction;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._direction)))
+            if (Equals(__value, _direction))
             {
                 return;
             }
@@ -377,11 +377,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public virtual double tapTargetVerticalPadding
     {
-        get => this._tapTargetVerticalPadding;
+        get => _tapTargetVerticalPadding;
         set
         {
             var __value = value;
-            if ((__value == this._tapTargetVerticalPadding))
+            if (__value == _tapTargetVerticalPadding)
             {
                 return;
             }
@@ -391,11 +391,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public virtual bool isExpanded
     {
-        get => this._isExpanded;
+        get => _isExpanded;
         set
         {
             var __value = value;
-            if ((__value == this._isExpanded))
+            if (__value == _isExpanded)
             {
                 return;
             }
@@ -405,39 +405,39 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     }
     public override double computeMinIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         var minWidth = 0.0;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
             double childWidth = child.getMinIntrinsicWidth(height);
             minWidth = Math.Max(minWidth, childWidth);
             child = childParentData.nextSibling;
         }
-        return (minWidth * this.childCount);
+        return minWidth * childCount;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         var maxWidth = 0.0;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
             double childWidth = child.getMaxIntrinsicWidth(height);
             maxWidth = Math.Max(maxWidth, childWidth);
             child = childParentData.nextSibling;
         }
-        return (maxWidth * this.childCount);
+        return maxWidth * childCount;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         var minHeight = 0.0;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
             double childHeight = child.getMinIntrinsicHeight(width);
@@ -450,9 +450,9 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         var maxHeight = 0.0;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
             double childHeight = child.getMaxIntrinsicHeight(width);
@@ -472,7 +472,7 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        if ((__child.parentData is not _SegmentedButtonContainerBoxParentData__segmented_button))
+        if (__child.parentData is not _SegmentedButtonContainerBoxParentData__segmented_button)
         {
             __child.parentData = new _SegmentedButtonContainerBoxParentData__segmented_button();
         }
@@ -482,23 +482,23 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     {
         var child = leftChild;
         var start = 0.0;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
             global::Doroti.Ui.RRect rChildRect = default!;
-            if ((Equals(this.direction, Axis.vertical)))
+            if (Equals(direction, Axis.vertical))
             {
                 childParentData.offset = new global::Doroti.Ui.Offset(0.0, start);
-                var childRect = Rect.fromLTWH(0.0, childParentData.offset.dy, ((global::Doroti.Framework.Rendering.RenderBox)child).size.width, ((global::Doroti.Framework.Rendering.RenderBox)child).size.height);
+                var childRect = Rect.fromLTWH(0.0, childParentData.offset.dy, child.size.width, child.size.height);
                 rChildRect = RRect.fromRectAndCorners(childRect);
-                start += ((global::Doroti.Framework.Rendering.RenderBox)child).size.height;
+                start += child.size.height;
             }
             else
             {
                 childParentData.offset = new global::Doroti.Ui.Offset(start, 0.0);
-                var childRectLocal = Rect.fromLTWH(start, 0.0, ((global::Doroti.Framework.Rendering.RenderBox)child).size.width, ((global::Doroti.Framework.Rendering.RenderBox)child).size.height);
+                var childRectLocal = Rect.fromLTWH(start, 0.0, child.size.width, child.size.height);
                 rChildRect = RRect.fromRectAndCorners(childRectLocal);
-                start += ((global::Doroti.Framework.Rendering.RenderBox)child).size.width;
+                start += child.size.width;
             }
             childParentData.surroundingRect = rChildRect;
             child = nextChild(child);
@@ -507,31 +507,31 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     internal virtual global::Doroti.Ui.Size _calculateChildSize(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((Equals(this.direction, Axis.horizontal)) ? _calculateHorizontalChildSize(constraints) : _calculateVerticalChildSize(constraints));
+        return Equals(direction, Axis.horizontal) ? _calculateHorizontalChildSize(constraints) : _calculateVerticalChildSize(constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _calculateHorizontalChildSize(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         double maxHeight = 0;
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         double childWidth = default!;
-        if (this._isExpanded)
+        if (_isExpanded)
         {
-            childWidth = (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth / this.childCount);
+            childWidth = constraints.maxWidth / childCount;
         }
         else
         {
-            childWidth = (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth / this.childCount);
-            while ((child is not null))
+            childWidth = constraints.minWidth / childCount;
+            while (child is not null)
             {
                 childWidth = Math.Max(childWidth, child.getMaxIntrinsicWidth(double.PositiveInfinity));
                 child = childAfter(child);
             }
-            childWidth = Math.Min(childWidth, (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth / this.childCount));
+            childWidth = Math.Min(childWidth, constraints.maxWidth / childCount);
         }
-        child = this.firstChild;
-        while ((child is not null))
+        child = firstChild;
+        while (child is not null)
         {
             double boxHeight = child.getMaxIntrinsicHeight(childWidth);
             maxHeight = Math.Max(maxHeight, boxHeight);
@@ -544,33 +544,33 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     internal virtual global::Doroti.Ui.Size _calculateVerticalChildSize(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         double maxWidthLocal = 0;
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         double childHeight = default!;
-        if (this._isExpanded)
+        if (_isExpanded)
         {
-            childHeight = (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight / this.childCount);
+            childHeight = constraints.maxHeight / childCount;
         }
         else
         {
-            childHeight = (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight / this.childCount);
-            while ((child is not null))
+            childHeight = constraints.minHeight / childCount;
+            while (child is not null)
             {
                 childHeight = Math.Max(childHeight, child.getMaxIntrinsicHeight(double.PositiveInfinity));
                 child = childAfter(child);
             }
-            childHeight = Math.Min(childHeight, (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight / this.childCount));
+            childHeight = Math.Min(childHeight, constraints.maxHeight / childCount);
         }
-        child = this.firstChild;
-        while ((child is not null))
+        child = firstChild;
+        while (child is not null)
         {
             double boxWidth = child.getMaxIntrinsicWidth(maxWidthLocal);
             maxWidthLocal = Math.Max(maxWidthLocal, boxWidth);
             child = childAfter(child);
         }
         var childSize = new global::Doroti.Ui.Size(maxWidthLocal, childHeight);
-        if ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).hasTightWidth && (childSize.width < ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth)))
+        if (constraints.hasTightWidth && (childSize.width < constraints.maxWidth))
         {
-            childSize = new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, childSize.height);
+            childSize = new global::Doroti.Ui.Size(constraints.maxWidth, childSize.height);
         }
         return childSize;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -578,27 +578,27 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     internal virtual global::Doroti.Ui.Size _computeOverallSizeFromChildSize(Size childSize)
     {
-        if ((Equals(this.direction, Axis.vertical)))
+        if (Equals(direction, Axis.vertical))
         {
-            return ((global::Doroti.Ui.Size)this.constraints.constrain(new global::Doroti.Ui.Size(childSize.width, (childSize.height * this.childCount))));
+            return constraints.constrain(new global::Doroti.Ui.Size(childSize.width, childSize.height * childCount));
         }
-        return ((global::Doroti.Ui.Size)this.constraints.constrain(new global::Doroti.Ui.Size((childSize.width * this.childCount), childSize.height)));
+        return constraints.constrain(new global::Doroti.Ui.Size(childSize.width * childCount, childSize.height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)_calculateChildSize(constraints));
+        global::Doroti.Ui.Size childSize = _calculateChildSize(constraints);
         return _computeOverallSizeFromChildSize(childSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)_calculateChildSize(constraints));
+        global::Doroti.Ui.Size childSize = _calculateChildSize(constraints);
         var childConstraints = BoxConstraints.CreateTight(childSize);
         global::Doroti.Framework.Rendering.BaselineOffset baselineOffset = BaselineOffset.noBaseline;
-        for (global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild; (child is not null); child = childAfter(child))
+        for (global::Doroti.Framework.Rendering.RenderBox? child = firstChild; child is not null; child = childAfter(child))
         {
             baselineOffset = baselineOffset.minOf(new global::Doroti.Framework.Rendering.BaselineOffset(child.getDryBaseline(childConstraints, baseline)));
         }
@@ -608,25 +608,25 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = this.constraints;
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)_calculateChildSize(constraintsLocal));
+        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = constraints;
+        global::Doroti.Ui.Size childSize = _calculateChildSize(constraintsLocal);
         var childConstraints = BoxConstraints.CreateTightFor(width: childSize.width, height: childSize.height);
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        while (child is not null)
         {
             child.layout(childConstraints, parentUsesSize: true);
             child = childAfter(child);
         }
-        switch (this.textDirection)
+        switch (textDirection)
         {
             case TextDirection.rtl:
                 {
-                    _layoutRects((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>)this.childBefore, this.lastChild, this.firstChild);
+                    _layoutRects(childBefore, lastChild, firstChild);
                     break;
                 }
             case TextDirection.ltr:
                 {
-                    _layoutRects((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>)this.childAfter, this.firstChild, this.lastChild);
+                    _layoutRects(childAfter, firstChild, lastChild);
                     break;
                 }
         }
@@ -635,53 +635,53 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Ui.Rect borderRect = ((global::Doroti.Ui.Rect)(((offset + new global::Doroti.Ui.Offset(0, (this.tapTargetVerticalPadding / 2L)))) & (new global::Doroti.Ui.Size(this.size.width, (this.size.height - this.tapTargetVerticalPadding)))));
-        global::Doroti.Ui.Path borderClipPath = ((global::Doroti.Ui.Path)this.enabledBorder.getInnerPath(borderRect, textDirection: this.textDirection));
-        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Ui.Rect borderRect = offset + new global::Doroti.Ui.Offset(0, tapTargetVerticalPadding / 2L) & new global::Doroti.Ui.Size(size.width, size.height - tapTargetVerticalPadding);
+        global::Doroti.Ui.Path borderClipPath = enabledBorder.getInnerPath(borderRect, textDirection: textDirection);
+        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
         global::Doroti.Framework.Rendering.RenderBox? previousChild = default!;
         var index = 0L;
         global::Doroti.Ui.Path? enabledClipPath = default!;
         global::Doroti.Ui.Path? disabledClipPath = default!;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
-            global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)((_SegmentedButtonContainerBoxParentData__segmented_button)childParentData).surroundingRect!.outerRect.shift(offset));
+            global::Doroti.Ui.Rect childRect = childParentData.surroundingRect!.outerRect.shift(offset);
             DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
 {
-    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    var __cascade = context.canvas;
     __cascade.save();
     __cascade.clipPath(borderClipPath);
     return __cascade;
 }))());
-            context.paintChild(child, (childParentData.offset + offset));
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
+            context.paintChild(child, childParentData.offset + offset);
+            context.canvas.restore();
             double segmentLeft = default!;
             double segmentRight = default!;
             double dividerPos = default!;
-            double borderOutset = Math.Max(((global::Doroti.Framework.Painting.OutlinedBorder)this.enabledBorder).side.strokeOutset, ((global::Doroti.Framework.Painting.OutlinedBorder)this.disabledBorder).side.strokeOutset);
-            switch (this.textDirection)
+            double borderOutset = Math.Max(enabledBorder.side.strokeOutset, disabledBorder.side.strokeOutset);
+            switch (textDirection)
             {
                 case TextDirection.rtl:
                     {
-                        segmentLeft = ((Equals(child, this.lastChild)) ? (borderRect.left - borderOutset) : childRect.left);
-                        segmentRight = ((Equals(child, this.firstChild)) ? (borderRect.right + borderOutset) : childRect.right);
+                        segmentLeft = Equals(child, lastChild) ? (borderRect.left - borderOutset) : childRect.left;
+                        segmentRight = Equals(child, firstChild) ? (borderRect.right + borderOutset) : childRect.right;
                         dividerPos = segmentRight;
                         break;
                     }
                 case TextDirection.ltr:
                     {
-                        segmentLeft = ((Equals(child, this.firstChild)) ? (borderRect.left - borderOutset) : childRect.left);
-                        segmentRight = ((Equals(child, this.lastChild)) ? (borderRect.right + borderOutset) : childRect.right);
+                        segmentLeft = Equals(child, firstChild) ? (borderRect.left - borderOutset) : childRect.left;
+                        segmentRight = Equals(child, lastChild) ? (borderRect.right + borderOutset) : childRect.right;
                         dividerPos = segmentLeft;
                         break;
                     }
             }
-            var segmentClipRect = Rect.fromLTRB(segmentLeft, (borderRect.top - borderOutset), segmentRight, (borderRect.bottom + borderOutset));
-            if (this.segments[(int)(index)].enabled)
+            var segmentClipRect = Rect.fromLTRB(segmentLeft, borderRect.top - borderOutset, segmentRight, borderRect.bottom + borderOutset);
+            if (segments[(int)index].enabled)
             {
                 enabledClipPath = ((Func<Path>)(() =>
 {
-    var __cascade = ((enabledClipPath ?? new global::Doroti.Ui.Path()));
+    var __cascade = enabledClipPath ?? new global::Doroti.Ui.Path();
     __cascade.addRect(segmentClipRect);
     return __cascade;
 }))();
@@ -690,35 +690,35 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             {
                 disabledClipPath = ((Func<Path>)(() =>
 {
-    var __cascade = ((disabledClipPath ?? new global::Doroti.Ui.Path()));
+    var __cascade = disabledClipPath ?? new global::Doroti.Ui.Path();
     __cascade.addRect(segmentClipRect);
     return __cascade;
 }))();
             }
-            if ((previousChild is not null))
+            if (previousChild is not null)
             {
-                global::Doroti.Framework.Painting.BorderSide divider = ((this.segments[(int)((index - 1L))].enabled || this.segments[(int)(index)].enabled) ? ((global::Doroti.Framework.Painting.OutlinedBorder)this.enabledBorder).side.copyWith(strokeAlign: 0.0) : ((global::Doroti.Framework.Painting.OutlinedBorder)this.disabledBorder).side.copyWith(strokeAlign: 0.0));
-                if ((Equals(this.direction, Axis.horizontal)))
+                global::Doroti.Framework.Painting.BorderSide divider = (segments[(int)(index - 1L)].enabled || segments[(int)index].enabled) ? enabledBorder.side.copyWith(strokeAlign: 0.0) : disabledBorder.side.copyWith(strokeAlign: 0.0);
+                if (Equals(direction, Axis.horizontal))
                 {
                     var topLocal = new global::Doroti.Ui.Offset(dividerPos, borderRect.top);
                     var bottomLocal = new global::Doroti.Ui.Offset(dividerPos, borderRect.bottom);
-                    ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawLine(topLocal, bottomLocal, divider.toPaint());
+                    context.canvas.drawLine(topLocal, bottomLocal, divider.toPaint());
                 }
                 else
                 {
-                    if ((Equals(this.direction, Axis.vertical)))
+                    if (Equals(direction, Axis.vertical))
                     {
                         var start = new global::Doroti.Ui.Offset(borderRect.left, childRect.top);
                         var end = new global::Doroti.Ui.Offset(borderRect.right, childRect.top);
                         DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
 {
-    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    var __cascade = context.canvas;
     __cascade.save();
     __cascade.clipPath(borderClipPath);
     return __cascade;
 }))());
-                        ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawLine(start, end, divider.toPaint());
-                        ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
+                        context.canvas.drawLine(start, end, divider.toPaint());
+                        context.canvas.restore();
                     }
                 }
             }
@@ -726,54 +726,54 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             child = childAfter(child);
             index += 1L;
         }
-        if ((disabledClipPath is null))
+        if (disabledClipPath is null)
         {
-            this.enabledBorder.paint(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, borderRect, textDirection: this.textDirection);
+            enabledBorder.paint(context.canvas, borderRect, textDirection: textDirection);
         }
         else
         {
-            if ((enabledClipPath is null))
+            if (enabledClipPath is null)
             {
-                this.disabledBorder.paint(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, borderRect, textDirection: this.textDirection);
+                disabledBorder.paint(context.canvas, borderRect, textDirection: textDirection);
             }
             else
             {
                 DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
 {
-    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    var __cascade = context.canvas;
     __cascade.save();
     __cascade.clipPath(enabledClipPath);
     return __cascade;
 }))());
-                this.enabledBorder.paint(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, borderRect, textDirection: this.textDirection);
+                enabledBorder.paint(context.canvas, borderRect, textDirection: textDirection);
                 DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
 {
-    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    var __cascade = context.canvas;
     __cascade.restore();
     __cascade.save();
     __cascade.clipPath(disabledClipPath);
     return __cascade;
 }))());
-                this.disabledBorder.paint(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, borderRect, textDirection: this.textDirection);
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
+                disabledBorder.paint(context.canvas, borderRect, textDirection: textDirection);
+                context.canvas.restore();
             }
         }
     }
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this.lastChild;
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = lastChild;
+        while (child is not null)
         {
             var childParentData = ((_SegmentedButtonContainerBoxParentData__segmented_button?)child.parentData!)!;
-            if (((_SegmentedButtonContainerBoxParentData__segmented_button)childParentData).surroundingRect!.contains(position))
+            if (childParentData.surroundingRect!.contains(position))
             {
-                return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, localOffset) =>
+                return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, localOffset) =>
                 {
-                    DartRuntimePrimitives.Assert(() => (Equals(localOffset, (position - childParentData.offset))));
+                    DartRuntimePrimitives.Assert(() => Equals(localOffset, position - childParentData.offset));
                     return child!.hitTest(result, position: localOffset);
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                })));
+                });
             }
             child = childParentData.previousSibling;
         }
@@ -784,37 +784,37 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
             });
@@ -825,34 +825,34 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((ContainerBoxParentData<RenderBox>?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((ContainerBoxParentData<RenderBox>?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((ContainerBoxParentData<RenderBox>?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -862,53 +862,53 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
                 var childNextSiblingParentData = ((ContainerBoxParentData<RenderBox>?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)), () => (object?)"A RenderObject cannot be inserted into itself.");
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)), () => (object?)"A RenderObject cannot be inserted after itself.");
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this), () => (object?)"A RenderObject cannot be inserted into itself.");
+        DartRuntimePrimitives.Assert(() => !Equals(after, this), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
+        DartRuntimePrimitives.Assert(() => !Equals(child, after), () => (object?)"A RenderObject cannot be inserted after itself.");
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is ContainerBoxParentData<RenderBox>), () => (object?)$"A child of {this.GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {typeof(ContainerBoxParentData<RenderBox>)}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {typeof(ContainerBoxParentData<RenderBox>)}.");
+        DartRuntimePrimitives.Assert(() => child.parentData is ContainerBoxParentData<RenderBox>, () => (object?)$"A child of {GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {typeof(ContainerBoxParentData<RenderBox>)}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {typeof(ContainerBoxParentData<RenderBox>)}.");
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderBox child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((global::System.Action<RenderBox>)this.add)(__arg0));
+        children?.forEach((__arg0) => ((global::System.Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((ContainerBoxParentData<RenderBox>?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -917,7 +917,7 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderBox child)
@@ -928,8 +928,8 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public virtual void removeAll()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
@@ -938,19 +938,19 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -962,10 +962,10 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
-            (child).attach(owner);
+            child.attach(owner);
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -974,10 +974,10 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public override void detach()
     {
         base.detach();
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
-            (child).detach();
+            child.detach();
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
@@ -985,8 +985,8 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public override void redepthChildren()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
@@ -996,8 +996,8 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public override void visitChildren(global::System.Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
@@ -1005,11 +1005,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
         }
     }
 
-    public virtual RenderBox? firstChild => this._firstChild;
-    public virtual RenderBox? lastChild => this._lastChild;
+    public virtual RenderBox? firstChild => _firstChild;
+    public virtual RenderBox? lastChild => _lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1017,7 +1017,7 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1026,14 +1026,14 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderBox child = this.firstChild!;
+            RenderBox child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }
@@ -1048,16 +1048,16 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
     {
-        DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        RenderBox? child = this.firstChild;
-        while ((child is not null))
+        DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
+        RenderBox? child = firstChild;
+        while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
             double? result = child.getDistanceToActualBaseline(baseline);
-            if ((result is not null))
+            if (result is not null)
             {
                 double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy);
+                return DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -1067,13 +1067,13 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
     {
-        DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
+        DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         BaselineOffset minBaseline = BaselineOffset.noBaseline;
-        RenderBox? child = this.firstChild;
-        while ((child is not null))
+        RenderBox? child = firstChild;
+        while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-            BaselineOffset candidate = (new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy));
+            BaselineOffset candidate = new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy);
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
         }
@@ -1083,16 +1083,16 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
     {
-        RenderBox? child = this.lastChild;
-        while ((child is not null))
+        RenderBox? child = lastChild;
+        while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
                 return child!.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            });
             if (isHit)
             {
                 return true;
@@ -1105,11 +1105,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
     {
-        RenderBox? child = this.firstChild;
-        while ((child is not null))
+        RenderBox? child = firstChild;
+        while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-            context.paintChild(child, (childParentData.offset + offset));
+            context.paintChild(child, childParentData.offset + offset);
             child = childParentData.nextSibling;
         }
     }
@@ -1117,11 +1117,11 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
     public virtual List<RenderBox> getChildrenAsList()
     {
         var result = new List<RenderBox>();
-        RenderBox? child = this.firstChild;
-        while ((child is not null))
+        RenderBox? child = firstChild;
+        while (child is not null)
         {
             var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
-            result.Add(((RenderBox?)child)!);
+            result.Add(child!);
             child = childParentData.nextSibling;
         }
         return result;
@@ -1141,7 +1141,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
         {
             if (!__late__theme_initialized)
             {
-                __late__theme = Theme.of(this.context);
+                __late__theme = Theme.of(context);
                 __late__theme_initialized = true;
             }
             return __late__theme;
@@ -1155,7 +1155,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
         {
             if (!__late__colors_initialized)
             {
-                __late__colors = this._theme.colorScheme;
+                __late__colors = _theme.colorScheme;
                 __late__colors_initialized = true;
             }
             return __late__colors;
@@ -1171,7 +1171,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
     {
         get
         {
-            return new ButtonStyle(textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(Theme.of(this.context).textTheme.labelLarge), backgroundColor: WidgetStateProperty.resolveWith((states) =>
+            return new ButtonStyle(textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(Theme.of(context).textTheme.labelLarge), backgroundColor: WidgetStateProperty.resolveWith((states) =>
             {
                 if (states.Contains(WidgetState.disabled))
                 {
@@ -1179,7 +1179,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                 }
                 if (states.Contains(WidgetState.selected))
                 {
-                    return (this._colors.secondaryContainer);
+                    return _colors.secondaryContainer;
                 }
                 return null;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1187,39 +1187,39 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
             {
                 if (states.Contains(WidgetState.disabled))
                 {
-                    return (this._colors.onSurface.withOpacity(0.38));
+                    return _colors.onSurface.withOpacity(0.38);
                 }
                 if (states.Contains(WidgetState.selected))
                 {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return (this._colors.onSecondaryContainer);
+                        return _colors.onSecondaryContainer;
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return (this._colors.onSecondaryContainer);
+                        return _colors.onSecondaryContainer;
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return (this._colors.onSecondaryContainer);
+                        return _colors.onSecondaryContainer;
                     }
-                    return (this._colors.onSecondaryContainer);
+                    return _colors.onSecondaryContainer;
                 }
                 else
                 {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return (this._colors.onSurface);
+                        return _colors.onSurface;
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return (this._colors.onSurface);
+                        return _colors.onSurface;
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return (this._colors.onSurface);
+                        return _colors.onSurface;
                     }
-                    return (this._colors.onSurface);
+                    return _colors.onSurface;
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }), overlayColor: WidgetStateProperty.resolveWith((states) =>
@@ -1228,30 +1228,30 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                 {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return (this._colors.onSecondaryContainer.withOpacity(0.1));
+                        return _colors.onSecondaryContainer.withOpacity(0.1);
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return (this._colors.onSecondaryContainer.withOpacity(0.08));
+                        return _colors.onSecondaryContainer.withOpacity(0.08);
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return (this._colors.onSecondaryContainer.withOpacity(0.1));
+                        return _colors.onSecondaryContainer.withOpacity(0.1);
                     }
                 }
                 else
                 {
                     if (states.Contains(WidgetState.pressed))
                     {
-                        return (this._colors.onSurface.withOpacity(0.1));
+                        return _colors.onSurface.withOpacity(0.1);
                     }
                     if (states.Contains(WidgetState.hovered))
                     {
-                        return (this._colors.onSurface.withOpacity(0.08));
+                        return _colors.onSurface.withOpacity(0.08);
                     }
                     if (states.Contains(WidgetState.focused))
                     {
-                        return (this._colors.onSurface.withOpacity(0.1));
+                        return _colors.onSurface.withOpacity(0.1);
                     }
                 }
                 return null;
@@ -1260,9 +1260,9 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
             {
                 if (states.Contains(WidgetState.disabled))
                 {
-                    return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12)));
+                    return new global::Doroti.Framework.Painting.BorderSide(color: _colors.onSurface.withOpacity(0.12));
                 }
-                return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outline));
+                return new global::Doroti.Framework.Painting.BorderSide(color: _colors.outline);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }), shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()), minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(40.0)));
         }
@@ -1270,9 +1270,9 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
     public override global::Doroti.Framework.Widgets.Widget? selectedIcon => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Icon(Icons.check));
     public static global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> resolveStateColor(Color? unselectedColor, Color? selectedColor, Color? overlayColor)
     {
-        global::Doroti.Ui.Color? selectedLocal = ((global::Doroti.Ui.Color?)(overlayColor ?? selectedColor));
-        global::Doroti.Ui.Color? unselected = ((global::Doroti.Ui.Color?)(overlayColor ?? unselectedColor));
-        return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.selected.asConstraint().op_BitwiseAnd(WidgetState.pressed.asConstraint())] = selectedLocal?.withOpacity(0.1), [WidgetState.selected.asConstraint().op_BitwiseAnd(WidgetState.hovered.asConstraint())] = selectedLocal?.withOpacity(0.08), [WidgetState.selected.asConstraint().op_BitwiseAnd(WidgetState.focused.asConstraint())] = selectedLocal?.withOpacity(0.1), [WidgetState.pressed.asConstraint()] = unselected?.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = unselected?.withOpacity(0.08), [WidgetState.focused.asConstraint()] = unselected?.withOpacity(0.1), [WidgetStateMembers.any] = Colors.transparent }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>()));
+        global::Doroti.Ui.Color? selectedLocal = overlayColor ?? selectedColor;
+        global::Doroti.Ui.Color? unselected = overlayColor ?? unselectedColor;
+        return WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.selected.asConstraint().op_BitwiseAnd(WidgetState.pressed.asConstraint())] = selectedLocal?.withOpacity(0.1), [WidgetState.selected.asConstraint().op_BitwiseAnd(WidgetState.hovered.asConstraint())] = selectedLocal?.withOpacity(0.08), [WidgetState.selected.asConstraint().op_BitwiseAnd(WidgetState.focused.asConstraint())] = selectedLocal?.withOpacity(0.1), [WidgetState.pressed.asConstraint()] = unselected?.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = unselected?.withOpacity(0.08), [WidgetState.focused.asConstraint()] = unselected?.withOpacity(0.1), [WidgetStateMembers.any] = Colors.transparent }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

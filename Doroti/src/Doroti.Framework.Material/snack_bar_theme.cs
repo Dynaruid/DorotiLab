@@ -47,29 +47,29 @@ public class SnackBarThemeData : global::Doroti.Framework.Foundation.Diagnostica
         this.actionBackgroundColor = actionBackgroundColor;
         this.disabledActionBackgroundColor = disabledActionBackgroundColor;
         this.dismissDirection = dismissDirection;
-        System.Diagnostics.Debug.Assert(((elevation is null) || (elevation >= 0.0)));
-        System.Diagnostics.Debug.Assert(((width is null) || DartRuntimePrimitives.Identical(behavior, SnackBarBehavior.floating)));
-        System.Diagnostics.Debug.Assert(((actionOverflowThreshold is null) || (((actionOverflowThreshold >= 0L) && (actionOverflowThreshold <= 1L)))));
-        System.Diagnostics.Debug.Assert(((actionBackgroundColor is not WidgetStateColor) || (disabledActionBackgroundColor is null)));
+        System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
+        System.Diagnostics.Debug.Assert((width is null) || DartRuntimePrimitives.Identical(behavior, SnackBarBehavior.floating));
+        System.Diagnostics.Debug.Assert((actionOverflowThreshold is null) || (actionOverflowThreshold >= 0L) && (actionOverflowThreshold <= 1L));
+        System.Diagnostics.Debug.Assert((actionBackgroundColor is not WidgetStateColor) || (disabledActionBackgroundColor is null));
     }
 
     public virtual SnackBarThemeData copyWith(Color? backgroundColor = null, Color? actionTextColor = null, Color? disabledActionTextColor = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, double? elevation = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, SnackBarBehavior? behavior = null, double? width = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, bool? showCloseIcon = null, Color? closeIconColor = null, double? actionOverflowThreshold = null, Color? actionBackgroundColor = null, Color? disabledActionBackgroundColor = null, global::Doroti.Framework.Widgets.DismissDirection? dismissDirection = null)
     {
-        return new SnackBarThemeData(backgroundColor: (backgroundColor ?? this.backgroundColor), actionTextColor: (actionTextColor ?? this.actionTextColor), disabledActionTextColor: (disabledActionTextColor ?? this.disabledActionTextColor), contentTextStyle: (contentTextStyle ?? this.contentTextStyle), elevation: (elevation ?? this.elevation), shape: (shape ?? this.shape), behavior: (behavior ?? this.behavior), width: (width ?? this.width), insetPadding: (insetPadding ?? this.insetPadding), showCloseIcon: (showCloseIcon ?? this.showCloseIcon), closeIconColor: (closeIconColor ?? this.closeIconColor), actionOverflowThreshold: (actionOverflowThreshold ?? this.actionOverflowThreshold), actionBackgroundColor: (actionBackgroundColor ?? this.actionBackgroundColor), disabledActionBackgroundColor: (disabledActionBackgroundColor ?? this.disabledActionBackgroundColor), dismissDirection: (dismissDirection ?? this.dismissDirection));
+        return new SnackBarThemeData(backgroundColor: backgroundColor ?? this.backgroundColor, actionTextColor: actionTextColor ?? this.actionTextColor, disabledActionTextColor: disabledActionTextColor ?? this.disabledActionTextColor, contentTextStyle: contentTextStyle ?? this.contentTextStyle, elevation: elevation ?? this.elevation, shape: shape ?? this.shape, behavior: behavior ?? this.behavior, width: width ?? this.width, insetPadding: insetPadding ?? this.insetPadding, showCloseIcon: showCloseIcon ?? this.showCloseIcon, closeIconColor: closeIconColor ?? this.closeIconColor, actionOverflowThreshold: actionOverflowThreshold ?? this.actionOverflowThreshold, actionBackgroundColor: actionBackgroundColor ?? this.actionBackgroundColor, disabledActionBackgroundColor: disabledActionBackgroundColor ?? this.disabledActionBackgroundColor, dismissDirection: dismissDirection ?? this.dismissDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static SnackBarThemeData lerp(SnackBarThemeData? a, SnackBarThemeData? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
-        return new SnackBarThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), actionTextColor: Dart_uiLibrary.Color.lerp(a?.actionTextColor, b?.actionTextColor, t), disabledActionTextColor: Dart_uiLibrary.Color.lerp(a?.disabledActionTextColor, b?.disabledActionTextColor, t), contentTextStyle: TextStyle.lerp(a?.contentTextStyle, b?.contentTextStyle, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), behavior: ((t < 0.5) ? a?.behavior : b?.behavior), width: Dart_uiLibrary.lerpDouble(a?.width, b?.width, t), insetPadding: EdgeInsets.lerp(a?.insetPadding, b?.insetPadding, t), closeIconColor: Dart_uiLibrary.Color.lerp(a?.closeIconColor, b?.closeIconColor, t), actionOverflowThreshold: Dart_uiLibrary.lerpDouble(a?.actionOverflowThreshold, b?.actionOverflowThreshold, t), actionBackgroundColor: Dart_uiLibrary.Color.lerp(a?.actionBackgroundColor, b?.actionBackgroundColor, t), disabledActionBackgroundColor: Dart_uiLibrary.Color.lerp(a?.disabledActionBackgroundColor, b?.disabledActionBackgroundColor, t), dismissDirection: ((t < 0.5) ? a?.dismissDirection : b?.dismissDirection));
+        return new SnackBarThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), actionTextColor: Dart_uiLibrary.Color.lerp(a?.actionTextColor, b?.actionTextColor, t), disabledActionTextColor: Dart_uiLibrary.Color.lerp(a?.disabledActionTextColor, b?.disabledActionTextColor, t), contentTextStyle: TextStyle.lerp(a?.contentTextStyle, b?.contentTextStyle, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), behavior: (t < 0.5) ? a?.behavior : b?.behavior, width: Dart_uiLibrary.lerpDouble(a?.width, b?.width, t), insetPadding: EdgeInsets.lerp(a?.insetPadding, b?.insetPadding, t), closeIconColor: Dart_uiLibrary.Color.lerp(a?.closeIconColor, b?.closeIconColor, t), actionOverflowThreshold: Dart_uiLibrary.lerpDouble(a?.actionOverflowThreshold, b?.actionOverflowThreshold, t), actionBackgroundColor: Dart_uiLibrary.Color.lerp(a?.actionBackgroundColor, b?.actionBackgroundColor, t), disabledActionBackgroundColor: Dart_uiLibrary.Color.lerp(a?.disabledActionBackgroundColor, b?.disabledActionBackgroundColor, t), dismissDirection: (t < 0.5) ? a?.dismissDirection : b?.dismissDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.backgroundColor, this.actionTextColor, this.disabledActionTextColor, this.contentTextStyle, this.elevation, this.shape, this.behavior, this.width, this.insetPadding, this.showCloseIcon, this.closeIconColor, this.actionOverflowThreshold, this.actionBackgroundColor, this.disabledActionBackgroundColor, this.dismissDirection));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(backgroundColor, actionTextColor, disabledActionTextColor, contentTextStyle, elevation, shape, behavior, width, insetPadding, showCloseIcon, closeIconColor, actionOverflowThreshold, actionBackgroundColor, disabledActionBackgroundColor, dismissDirection));
     public override bool Equals(object? other)
     {
         var __other = other as SnackBarThemeData;
@@ -78,30 +78,30 @@ public class SnackBarThemeData : global::Doroti.Framework.Foundation.Diagnostica
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((((((((__other is SnackBarThemeData) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).actionTextColor, this.actionTextColor))) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).disabledActionTextColor, this.disabledActionTextColor))) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (((SnackBarThemeData)((SnackBarThemeData)__other)).elevation == this.elevation)) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).shape, this.shape))) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).behavior, this.behavior))) && (((SnackBarThemeData)((SnackBarThemeData)__other)).width == this.width)) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).insetPadding, this.insetPadding))) && (((SnackBarThemeData)((SnackBarThemeData)__other)).showCloseIcon == this.showCloseIcon)) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).closeIconColor, this.closeIconColor))) && (((SnackBarThemeData)((SnackBarThemeData)__other)).actionOverflowThreshold == this.actionOverflowThreshold)) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).actionBackgroundColor, this.actionBackgroundColor))) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).disabledActionBackgroundColor, this.disabledActionBackgroundColor))) && (Equals(((SnackBarThemeData)((SnackBarThemeData)__other)).dismissDirection, this.dismissDirection)));
+        return (__other is SnackBarThemeData) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.actionTextColor, actionTextColor) && Equals(__other.disabledActionTextColor, disabledActionTextColor) && Equals(__other.contentTextStyle, contentTextStyle) && (__other.elevation == elevation) && Equals(__other.shape, shape) && Equals(__other.behavior, behavior) && (__other.width == width) && Equals(__other.insetPadding, insetPadding) && (__other.showCloseIcon == showCloseIcon) && Equals(__other.closeIconColor, closeIconColor) && (__other.actionOverflowThreshold == actionOverflowThreshold) && Equals(__other.actionBackgroundColor, actionBackgroundColor) && Equals(__other.disabledActionBackgroundColor, disabledActionBackgroundColor) && Equals(__other.dismissDirection, dismissDirection);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("actionTextColor", this.actionTextColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActionTextColor", this.disabledActionTextColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SnackBarBehavior>("behavior", this.behavior, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsets>("insetPadding", this.insetPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("showCloseIcon", this.showCloseIcon, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("closeIconColor", this.closeIconColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("actionOverflowThreshold", this.actionOverflowThreshold, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("actionBackgroundColor", this.actionBackgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActionBackgroundColor", this.disabledActionBackgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.DismissDirection>("dismissDirection", this.dismissDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("actionTextColor", actionTextColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActionTextColor", disabledActionTextColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("contentTextStyle", contentTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SnackBarBehavior>("behavior", behavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsets>("insetPadding", insetPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("showCloseIcon", showCloseIcon, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("closeIconColor", closeIconColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("actionOverflowThreshold", actionOverflowThreshold, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("actionBackgroundColor", actionBackgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActionBackgroundColor", disabledActionBackgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.DismissDirection>("dismissDirection", dismissDirection, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -115,13 +115,13 @@ public class SnackBarThemeData : global::Doroti.Framework.Foundation.Diagnostica
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -138,16 +138,16 @@ public class SnackBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static SnackBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SnackBarTheme? snackBarThemeLocal = ((SnackBarTheme?)context.dependOnInheritedWidgetOfExactType<SnackBarTheme>());
-        return (snackBarThemeLocal?.data ?? Theme.of(context).snackBarTheme);
+        SnackBarTheme? snackBarThemeLocal = context.dependOnInheritedWidgetOfExactType<SnackBarTheme>();
+        return snackBarThemeLocal?.data ?? Theme.of(context).snackBarTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new SnackBarTheme(data: this.data, child: child));
+        return new SnackBarTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((SnackBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((SnackBarTheme)oldWidget).data));
 }

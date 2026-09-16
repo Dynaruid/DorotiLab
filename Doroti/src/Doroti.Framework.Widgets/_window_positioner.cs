@@ -22,22 +22,22 @@ public static class WindowPositionerAnchorIoMembers
 {
     internal static WindowPositionerAnchorIo _flipX(this WindowPositionerAnchorIo value)
     {
-        return (value switch { WindowPositionerAnchorIo.center => WindowPositionerAnchorIo.center, WindowPositionerAnchorIo.top => WindowPositionerAnchorIo.top, WindowPositionerAnchorIo.bottom => WindowPositionerAnchorIo.bottom, WindowPositionerAnchorIo.left => WindowPositionerAnchorIo.right, WindowPositionerAnchorIo.right => WindowPositionerAnchorIo.left, WindowPositionerAnchorIo.topLeft => WindowPositionerAnchorIo.topRight, WindowPositionerAnchorIo.bottomLeft => WindowPositionerAnchorIo.bottomRight, WindowPositionerAnchorIo.topRight => WindowPositionerAnchorIo.topLeft, WindowPositionerAnchorIo.bottomRight => WindowPositionerAnchorIo.bottomLeft, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return value switch { WindowPositionerAnchorIo.center => WindowPositionerAnchorIo.center, WindowPositionerAnchorIo.top => WindowPositionerAnchorIo.top, WindowPositionerAnchorIo.bottom => WindowPositionerAnchorIo.bottom, WindowPositionerAnchorIo.left => WindowPositionerAnchorIo.right, WindowPositionerAnchorIo.right => WindowPositionerAnchorIo.left, WindowPositionerAnchorIo.topLeft => WindowPositionerAnchorIo.topRight, WindowPositionerAnchorIo.bottomLeft => WindowPositionerAnchorIo.bottomRight, WindowPositionerAnchorIo.topRight => WindowPositionerAnchorIo.topLeft, WindowPositionerAnchorIo.bottomRight => WindowPositionerAnchorIo.bottomLeft, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
     internal static WindowPositionerAnchorIo _flipY(this WindowPositionerAnchorIo value)
     {
-        return (value switch { WindowPositionerAnchorIo.center => WindowPositionerAnchorIo.center, WindowPositionerAnchorIo.top => WindowPositionerAnchorIo.bottom, WindowPositionerAnchorIo.bottom => WindowPositionerAnchorIo.top, WindowPositionerAnchorIo.left => WindowPositionerAnchorIo.left, WindowPositionerAnchorIo.right => WindowPositionerAnchorIo.right, WindowPositionerAnchorIo.topLeft => WindowPositionerAnchorIo.bottomLeft, WindowPositionerAnchorIo.bottomLeft => WindowPositionerAnchorIo.topLeft, WindowPositionerAnchorIo.topRight => WindowPositionerAnchorIo.bottomRight, WindowPositionerAnchorIo.bottomRight => WindowPositionerAnchorIo.topRight, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return value switch { WindowPositionerAnchorIo.center => WindowPositionerAnchorIo.center, WindowPositionerAnchorIo.top => WindowPositionerAnchorIo.bottom, WindowPositionerAnchorIo.bottom => WindowPositionerAnchorIo.top, WindowPositionerAnchorIo.left => WindowPositionerAnchorIo.left, WindowPositionerAnchorIo.right => WindowPositionerAnchorIo.right, WindowPositionerAnchorIo.topLeft => WindowPositionerAnchorIo.bottomLeft, WindowPositionerAnchorIo.bottomLeft => WindowPositionerAnchorIo.topLeft, WindowPositionerAnchorIo.topRight => WindowPositionerAnchorIo.bottomRight, WindowPositionerAnchorIo.bottomRight => WindowPositionerAnchorIo.topRight, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
     internal static Offset _offsetFor(this WindowPositionerAnchorIo value, Size size)
     {
-        return (value switch { WindowPositionerAnchorIo.center => new global::Doroti.Ui.Offset((-size.width / 2.0), (-size.height / 2.0)), WindowPositionerAnchorIo.top => new global::Doroti.Ui.Offset((-size.width / 2.0), 0.0), WindowPositionerAnchorIo.bottom => new global::Doroti.Ui.Offset((-size.width / 2.0), -size.height), WindowPositionerAnchorIo.left => new global::Doroti.Ui.Offset(0.0, (-size.height / 2.0)), WindowPositionerAnchorIo.right => new global::Doroti.Ui.Offset(-size.width, (-size.height / 2.0)), WindowPositionerAnchorIo.topLeft => Offset.zero, WindowPositionerAnchorIo.bottomLeft => new global::Doroti.Ui.Offset(0.0, -size.height), WindowPositionerAnchorIo.topRight => new global::Doroti.Ui.Offset(-size.width, 0.0), WindowPositionerAnchorIo.bottomRight => new global::Doroti.Ui.Offset(-size.width, -size.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return value switch { WindowPositionerAnchorIo.center => new global::Doroti.Ui.Offset(-size.width / 2.0, -size.height / 2.0), WindowPositionerAnchorIo.top => new global::Doroti.Ui.Offset(-size.width / 2.0, 0.0), WindowPositionerAnchorIo.bottom => new global::Doroti.Ui.Offset(-size.width / 2.0, -size.height), WindowPositionerAnchorIo.left => new global::Doroti.Ui.Offset(0.0, -size.height / 2.0), WindowPositionerAnchorIo.right => new global::Doroti.Ui.Offset(-size.width, -size.height / 2.0), WindowPositionerAnchorIo.topLeft => Offset.zero, WindowPositionerAnchorIo.bottomLeft => new global::Doroti.Ui.Offset(0.0, -size.height), WindowPositionerAnchorIo.topRight => new global::Doroti.Ui.Offset(-size.width, 0.0), WindowPositionerAnchorIo.bottomRight => new global::Doroti.Ui.Offset(-size.width, -size.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
     internal static Offset _anchorPositionFor(this WindowPositionerAnchorIo value, Rect rect)
     {
-        return (value switch { WindowPositionerAnchorIo.center => ((Offset)(rect).center), WindowPositionerAnchorIo.top => rect.topCenter, WindowPositionerAnchorIo.bottom => rect.bottomCenter, WindowPositionerAnchorIo.left => rect.centerLeft, WindowPositionerAnchorIo.right => rect.centerRight, WindowPositionerAnchorIo.topLeft => rect.topLeft, WindowPositionerAnchorIo.bottomLeft => rect.bottomLeft, WindowPositionerAnchorIo.topRight => rect.topRight, WindowPositionerAnchorIo.bottomRight => rect.bottomRight, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return value switch { WindowPositionerAnchorIo.center => rect.center, WindowPositionerAnchorIo.top => rect.topCenter, WindowPositionerAnchorIo.bottom => rect.bottomCenter, WindowPositionerAnchorIo.left => rect.centerLeft, WindowPositionerAnchorIo.right => rect.centerRight, WindowPositionerAnchorIo.topLeft => rect.topLeft, WindowPositionerAnchorIo.bottomLeft => rect.bottomLeft, WindowPositionerAnchorIo.topRight => rect.topRight, WindowPositionerAnchorIo.bottomRight => rect.bottomRight, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -61,7 +61,7 @@ public class WindowPositionerConstraintAdjustmentIo
         this.resizeY = resizeY;
     }
 
-    public override string ToString() => $"WindowPositionerConstraintAdjustment(flipX: {this.flipX}, flipY: {this.flipY}, slideX: {this.slideX}, slideY: {this.slideY}, resizeX: {this.resizeX}, resizeY: {this.resizeY})";
+    public override string ToString() => $"WindowPositionerConstraintAdjustment(flipX: {flipX}, flipY: {flipY}, slideX: {slideX}, slideY: {slideY}, resizeX: {resizeX}, resizeY: {resizeY})";
 }
 
 public class WindowPositionerIo
@@ -82,112 +82,112 @@ public class WindowPositionerIo
 
     public virtual WindowPositionerIo copyWith(WindowPositionerAnchorIo? parentAnchor = null, WindowPositionerAnchorIo? childAnchor = null, Offset? offset = null, WindowPositionerConstraintAdjustmentIo? constraintAdjustment = null)
     {
-        return new WindowPositionerIo(parentAnchor: (parentAnchor ?? this.parentAnchor), childAnchor: (childAnchor ?? this.childAnchor), offset: (offset ?? this.offset), constraintAdjustment: (constraintAdjustment ?? this.constraintAdjustment));
+        return new WindowPositionerIo(parentAnchor: parentAnchor ?? this.parentAnchor, childAnchor: childAnchor ?? this.childAnchor, offset: offset ?? this.offset, constraintAdjustment: constraintAdjustment ?? this.constraintAdjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Rect placeWindow(Size childSize, Rect anchorRect, Rect parentRect, Rect displayRect)
     {
         global::Doroti.Ui.Rect defaultResult = default!;
-        global::Doroti.Ui.Offset result = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
-        defaultResult = (result & childSize);
+        global::Doroti.Ui.Offset result = _window_positionerLibrary._constrainTo(parentRect, parentAnchor._anchorPositionFor(anchorRect) + offset) + childAnchor._offsetFor(childSize);
+        defaultResult = result & childSize;
         if (_window_positionerLibrary._rectContains(displayRect, defaultResult))
         {
             return defaultResult;
         }
-        if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipX)
+        if (constraintAdjustment.flipX)
         {
-            global::Doroti.Ui.Offset resultLocal = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipX()._offsetFor(childSize)));
-            if (_window_positionerLibrary._rectContains(displayRect, (resultLocal & childSize)))
+            global::Doroti.Ui.Offset resultLocal = _window_positionerLibrary._constrainTo(parentRect, parentAnchor._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(DartRuntimePrimitives.RequireValue(offset))) + childAnchor._flipX()._offsetFor(childSize);
+            if (_window_positionerLibrary._rectContains(displayRect, resultLocal & childSize))
             {
-                return (resultLocal & childSize);
+                return resultLocal & childSize;
             }
         }
-        if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipY)
+        if (constraintAdjustment.flipY)
         {
-            global::Doroti.Ui.Offset resultAlternate = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipY()._offsetFor(childSize)));
-            if (_window_positionerLibrary._rectContains(displayRect, (resultAlternate & childSize)))
+            global::Doroti.Ui.Offset resultAlternate = _window_positionerLibrary._constrainTo(parentRect, parentAnchor._flipY()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(offset))) + childAnchor._flipY()._offsetFor(childSize);
+            if (_window_positionerLibrary._rectContains(displayRect, resultAlternate & childSize))
             {
-                return (resultAlternate & childSize);
+                return resultAlternate & childSize;
             }
         }
-        if ((((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipX && ((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipY))
+        if (constraintAdjustment.flipX && constraintAdjustment.flipY)
         {
-            global::Doroti.Ui.Offset resultNested = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(_window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset))))) + this.childAnchor._flipY()._flipX()._offsetFor(childSize)));
-            if (_window_positionerLibrary._rectContains(displayRect, (resultNested & childSize)))
+            global::Doroti.Ui.Offset resultNested = _window_positionerLibrary._constrainTo(parentRect, parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(_window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(offset)))) + childAnchor._flipY()._flipX()._offsetFor(childSize);
+            if (_window_positionerLibrary._rectContains(displayRect, resultNested & childSize))
             {
-                return (resultNested & childSize);
+                return resultNested & childSize;
             }
         }
-        global::Doroti.Ui.Offset resultCurrent = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
-        if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).slideX)
+        global::Doroti.Ui.Offset resultCurrent = _window_positionerLibrary._constrainTo(parentRect, parentAnchor._anchorPositionFor(anchorRect) + offset) + childAnchor._offsetFor(childSize);
+        if (constraintAdjustment.slideX)
         {
-            double leftOverhang = (resultCurrent.dx - displayRect.left);
-            double rightOverhang = ((resultCurrent.dx + childSize.width) - displayRect.right);
-            if ((leftOverhang < 0.0))
+            double leftOverhang = resultCurrent.dx - displayRect.left;
+            double rightOverhang = resultCurrent.dx + childSize.width - displayRect.right;
+            if (leftOverhang < 0.0)
             {
                 resultCurrent = resultCurrent.translate(-leftOverhang, 0.0);
             }
             else
             {
-                if ((rightOverhang > 0.0))
+                if (rightOverhang > 0.0)
                 {
                     resultCurrent = resultCurrent.translate(-rightOverhang, 0.0);
                 }
             }
         }
-        if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).slideY)
+        if (constraintAdjustment.slideY)
         {
-            double topOverhang = (resultCurrent.dy - displayRect.top);
-            double bottomOverhang = ((resultCurrent.dy + childSize.height) - displayRect.bottom);
-            if ((topOverhang < 0.0))
+            double topOverhang = resultCurrent.dy - displayRect.top;
+            double bottomOverhang = resultCurrent.dy + childSize.height - displayRect.bottom;
+            if (topOverhang < 0.0)
             {
                 resultCurrent = resultCurrent.translate(0.0, -topOverhang);
             }
             else
             {
-                if ((bottomOverhang > 0.0))
+                if (bottomOverhang > 0.0)
                 {
                     resultCurrent = resultCurrent.translate(0.0, -bottomOverhang);
                 }
             }
         }
-        if (_window_positionerLibrary._rectContains(displayRect, (resultCurrent & childSize)))
+        if (_window_positionerLibrary._rectContains(displayRect, resultCurrent & childSize))
         {
-            return (resultCurrent & childSize);
+            return resultCurrent & childSize;
         }
-        global::Doroti.Ui.Offset resultNext = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
-        if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).resizeX)
+        global::Doroti.Ui.Offset resultNext = _window_positionerLibrary._constrainTo(parentRect, parentAnchor._anchorPositionFor(anchorRect) + offset) + childAnchor._offsetFor(childSize);
+        if (constraintAdjustment.resizeX)
         {
-            double leftOverhangLocal = (resultNext.dx - displayRect.left);
-            double rightOverhangLocal = ((resultNext.dx + childSize.width) - displayRect.right);
-            if ((leftOverhangLocal < 0.0))
+            double leftOverhangLocal = resultNext.dx - displayRect.left;
+            double rightOverhangLocal = resultNext.dx + childSize.width - displayRect.right;
+            if (leftOverhangLocal < 0.0)
             {
                 resultNext = resultNext.translate(-leftOverhangLocal, 0.0);
-                childSize = new global::Doroti.Ui.Size((childSize.width + leftOverhangLocal), childSize.height);
+                childSize = new global::Doroti.Ui.Size(childSize.width + leftOverhangLocal, childSize.height);
             }
-            if ((rightOverhangLocal > 0.0))
+            if (rightOverhangLocal > 0.0)
             {
-                childSize = new global::Doroti.Ui.Size((childSize.width - rightOverhangLocal), childSize.height);
+                childSize = new global::Doroti.Ui.Size(childSize.width - rightOverhangLocal, childSize.height);
             }
         }
-        if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).resizeY)
+        if (constraintAdjustment.resizeY)
         {
-            double topOverhangLocal = (resultNext.dy - displayRect.top);
-            double bottomOverhangLocal = ((resultNext.dy + childSize.height) - displayRect.bottom);
-            if ((topOverhangLocal < 0.0))
+            double topOverhangLocal = resultNext.dy - displayRect.top;
+            double bottomOverhangLocal = resultNext.dy + childSize.height - displayRect.bottom;
+            if (topOverhangLocal < 0.0)
             {
                 resultNext = resultNext.translate(0.0, -topOverhangLocal);
-                childSize = new global::Doroti.Ui.Size(childSize.width, (childSize.height + topOverhangLocal));
+                childSize = new global::Doroti.Ui.Size(childSize.width, childSize.height + topOverhangLocal);
             }
-            if ((bottomOverhangLocal > 0.0))
+            if (bottomOverhangLocal > 0.0)
             {
-                childSize = new global::Doroti.Ui.Size(childSize.width, (childSize.height - bottomOverhangLocal));
+                childSize = new global::Doroti.Ui.Size(childSize.width, childSize.height - bottomOverhangLocal);
             }
         }
-        if (_window_positionerLibrary._rectContains(displayRect, (resultNext & childSize)))
+        if (_window_positionerLibrary._rectContains(displayRect, resultNext & childSize))
         {
-            return (resultNext & childSize);
+            return resultNext & childSize;
         }
         return defaultResult;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -195,7 +195,7 @@ public class WindowPositionerIo
 
     public override string ToString()
     {
-        return $"WindowPositioner(parentAnchor: {this.parentAnchor}, childAnchor: {this.childAnchor}, offset: {this.offset}, constraintAdjustment: {this.constraintAdjustment})";
+        return $"WindowPositioner(parentAnchor: {parentAnchor}, childAnchor: {childAnchor}, offset: {offset}, constraintAdjustment: {constraintAdjustment})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -205,7 +205,7 @@ public static partial class _window_positionerLibrary
 {
     internal static bool _rectContains(Rect r1, Rect r2)
     {
-        return ((((r1.left <= r2.left) && (r1.right >= r2.right)) && (r1.top <= r2.top)) && (r1.bottom >= r2.bottom));
+        return (r1.left <= r2.left) && (r1.right >= r2.right) && (r1.top <= r2.top) && (r1.bottom >= r2.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

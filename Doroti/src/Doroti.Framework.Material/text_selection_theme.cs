@@ -21,7 +21,7 @@ public class TextSelectionThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public virtual TextSelectionThemeData copyWith(Color? cursorColor = null, Color? selectionColor = null, Color? selectionHandleColor = null)
     {
-        return new TextSelectionThemeData(cursorColor: (cursorColor ?? this.cursorColor), selectionColor: (selectionColor ?? this.selectionColor), selectionHandleColor: (selectionHandleColor ?? this.selectionHandleColor));
+        return new TextSelectionThemeData(cursorColor: cursorColor ?? this.cursorColor, selectionColor: selectionColor ?? this.selectionColor, selectionHandleColor: selectionHandleColor ?? this.selectionHandleColor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -35,7 +35,7 @@ public class TextSelectionThemeData : global::Doroti.Framework.Foundation.Diagno
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.cursorColor, this.selectionColor, this.selectionHandleColor));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(cursorColor, selectionColor, selectionHandleColor));
     public override bool Equals(object? other)
     {
         var __other = other as TextSelectionThemeData;
@@ -44,18 +44,18 @@ public class TextSelectionThemeData : global::Doroti.Framework.Foundation.Diagno
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is TextSelectionThemeData) && (Equals(((TextSelectionThemeData)((TextSelectionThemeData)__other)).cursorColor, this.cursorColor))) && (Equals(((TextSelectionThemeData)((TextSelectionThemeData)__other)).selectionColor, this.selectionColor))) && (Equals(((TextSelectionThemeData)((TextSelectionThemeData)__other)).selectionHandleColor, this.selectionHandleColor)));
+        return (__other is TextSelectionThemeData) && Equals(__other.cursorColor, cursorColor) && Equals(__other.selectionColor, selectionColor) && Equals(__other.selectionHandleColor, selectionHandleColor);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cursorColor", this.cursorColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionColor", this.selectionColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionHandleColor", this.selectionHandleColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cursorColor", cursorColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionColor", selectionColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionHandleColor", selectionHandleColor, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -69,13 +69,13 @@ public class TextSelectionThemeData : global::Doroti.Framework.Foundation.Diagno
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -89,30 +89,30 @@ public class TextSelectionTheme : global::Doroti.Framework.Widgets.InheritedThem
     public TextSelectionTheme(global::Doroti.Framework.Foundation.Key? key = null, TextSelectionThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: new _NullWidget__text_selection_theme())
     {
         this.data = data;
-        this._child = child;
+        _child = child;
     }
 
     public override global::Doroti.Framework.Widgets.Widget child
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: ((TextSelectionThemeData)this.data).selectionColor, cursorColor: ((TextSelectionThemeData)this.data).cursorColor, child: this._child));
+            return new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: data.selectionColor, cursorColor: data.cursorColor, child: _child);
         }
     }
     public static TextSelectionThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TextSelectionTheme? selectionTheme = ((TextSelectionTheme?)context.dependOnInheritedWidgetOfExactType<TextSelectionTheme>());
-        return (selectionTheme?.data ?? Theme.of(context).textSelectionTheme);
+        TextSelectionTheme? selectionTheme = context.dependOnInheritedWidgetOfExactType<TextSelectionTheme>();
+        return selectionTheme?.data ?? Theme.of(context).textSelectionTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new TextSelectionTheme(data: this.data, child: child));
+        return new TextSelectionTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((TextSelectionTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((TextSelectionTheme)oldWidget).data));
 }
 
 internal class _NullWidget__text_selection_theme : global::Doroti.Framework.Widgets.Widget

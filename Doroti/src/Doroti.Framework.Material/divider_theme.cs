@@ -27,13 +27,13 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual DividerThemeData copyWith(Color? color = null, double? space = null, double? thickness = null, double? indent = null, double? endIndent = null, global::Doroti.Framework.Painting.BorderRadiusGeometry? radius = null)
     {
-        return new DividerThemeData(color: (color ?? this.color), space: (space ?? this.space), thickness: (thickness ?? this.thickness), indent: (indent ?? this.indent), endIndent: (endIndent ?? this.endIndent), radius: (radius ?? this.radius));
+        return new DividerThemeData(color: color ?? this.color, space: space ?? this.space, thickness: thickness ?? this.thickness, indent: indent ?? this.indent, endIndent: endIndent ?? this.endIndent, radius: radius ?? this.radius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static DividerThemeData lerp(DividerThemeData? a, DividerThemeData? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
@@ -41,7 +41,7 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.color, this.space, this.thickness, this.indent, this.endIndent, this.radius));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(color, space, thickness, indent, endIndent, radius));
     public override bool Equals(object? other)
     {
         var __other = other as DividerThemeData;
@@ -50,21 +50,21 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((__other is DividerThemeData) && (Equals(((DividerThemeData)((DividerThemeData)__other)).color, this.color))) && (((DividerThemeData)((DividerThemeData)__other)).space == this.space)) && (((DividerThemeData)((DividerThemeData)__other)).thickness == this.thickness)) && (((DividerThemeData)((DividerThemeData)__other)).indent == this.indent)) && (((DividerThemeData)((DividerThemeData)__other)).endIndent == this.endIndent)) && (Equals(((DividerThemeData)((DividerThemeData)__other)).radius, this.radius)));
+        return (__other is DividerThemeData) && Equals(__other.color, color) && (__other.space == space) && (__other.thickness == thickness) && (__other.indent == indent) && (__other.endIndent == endIndent) && Equals(__other.radius, radius);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("space", this.space, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("thickness", this.thickness, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("indent", this.indent, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("endIndent", this.endIndent, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("radius", this.radius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("space", space, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("thickness", thickness, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("indent", indent, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("endIndent", endIndent, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("radius", radius, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -78,13 +78,13 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -101,16 +101,16 @@ public class DividerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static DividerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DividerTheme? dividerThemeLocal = ((DividerTheme?)context.dependOnInheritedWidgetOfExactType<DividerTheme>());
-        return (dividerThemeLocal?.data ?? Theme.of(context).dividerTheme);
+        DividerTheme? dividerThemeLocal = context.dependOnInheritedWidgetOfExactType<DividerTheme>();
+        return dividerThemeLocal?.data ?? Theme.of(context).dividerTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new DividerTheme(data: this.data, child: child));
+        return new DividerTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DividerTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((DividerTheme)oldWidget).data));
 }

@@ -28,8 +28,8 @@ public class SensitiveContentService
     public async virtual Future<ContentSensitivity> getContentSensitivity()
     {
         long? result = await sensitiveContentChannel.invokeMethod<long>("SensitiveContent.getContentSensitivity");
-        ContentSensitivity contentSensitivity = Enum.GetValues<ContentSensitivity>().ToList()[(int)(DartRuntimePrimitives.RequireValue(result))];
-        if ((Equals(contentSensitivity, ContentSensitivity._unknown)))
+        ContentSensitivity contentSensitivity = Enum.GetValues<ContentSensitivity>().ToList()[(int)DartRuntimePrimitives.RequireValue(result)];
+        if (Equals(contentSensitivity, ContentSensitivity._unknown))
         {
             throw new NotSupportedException("Android Flutter View has a content sensitivity mode " + "that is not recognized by Flutter. If you see this error, it " + "is possible that the View uses a new mode that Flutter needs to " + "support; please file an issue.");
         }
@@ -39,11 +39,11 @@ public class SensitiveContentService
 
     public async virtual Future<bool> isSupported()
     {
-        if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+        if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
         {
             return false;
         }
-        return DartRuntimePrimitives.RequireValue((await sensitiveContentChannel.invokeMethod<bool>("SensitiveContent.isSupported")));
+        return DartRuntimePrimitives.RequireValue(await sensitiveContentChannel.invokeMethod<bool>("SensitiveContent.isSupported"));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

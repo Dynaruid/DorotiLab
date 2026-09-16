@@ -20,10 +20,10 @@ public class SizeChangedLayoutNotifier : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: ((global::System.Action)(() =>
+        return new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: () =>
         {
             new SizeChangedLayoutNotification().dispatch(context);
-        }))));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -42,11 +42,11 @@ internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : gl
     public override void performLayout()
     {
         base.performLayout();
-        if (((this._oldSize is not null) && (!Equals(this.size, this._oldSize))))
+        if ((_oldSize is not null) && (!Equals(size, _oldSize)))
         {
-            this.onLayoutChangedCallback();
+            onLayoutChangedCallback();
         }
-        _oldSize = this.size;
+        _oldSize = size;
     }
 
 }

@@ -25,53 +25,53 @@ public class Theme : global::Doroti.Framework.Widgets.StatelessWidget
 
     public static ThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _InheritedTheme__theme? inheritedTheme = ((_InheritedTheme__theme?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
-        MaterialLocalizations? localizations = ((MaterialLocalizations?)Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations)));
-        ScriptCategory category = (localizations?.scriptCategory ?? ScriptCategory.englishLike);
-        InheritedCupertinoTheme? inheritedCupertinoTheme = ((InheritedCupertinoTheme?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        ThemeData themeLocal = (inheritedTheme?.theme.data ?? (((inheritedCupertinoTheme is not null) ? new CupertinoBasedMaterialThemeData(themeData: inheritedCupertinoTheme.theme.data).materialTheme : _kFallbackTheme)));
-        return ((ThemeData)ThemeData.localize(themeLocal, ((ThemeData)themeLocal).typography.geometryThemeFor(category)));
+        _InheritedTheme__theme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>();
+        MaterialLocalizations? localizations = Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations));
+        ScriptCategory category = localizations?.scriptCategory ?? ScriptCategory.englishLike;
+        InheritedCupertinoTheme? inheritedCupertinoTheme = context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>();
+        ThemeData themeLocal = inheritedTheme?.theme.data ?? ((inheritedCupertinoTheme is not null) ? new CupertinoBasedMaterialThemeData(themeData: inheritedCupertinoTheme.theme.data).materialTheme : _kFallbackTheme);
+        return ThemeData.localize(themeLocal, themeLocal.typography.geometryThemeFor(category));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _wrapsWidgetThemes(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle = ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)DefaultSelectionStyle.of(context));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.IconTheme(data: ((ThemeData)this.data).iconTheme, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: (((ThemeData)this.data).textSelectionTheme.selectionColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).selectionColor), cursorColor: (((ThemeData)this.data).textSelectionTheme.cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).cursorColor), child: child)));
+        global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle = DefaultSelectionStyle.of(context);
+        return new global::Doroti.Framework.Widgets.IconTheme(data: data.iconTheme, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: data.textSelectionTheme.selectionColor ?? selectionStyle.selectionColor, cursorColor: data.textSelectionTheme.cursorColor ?? selectionStyle.cursorColor, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual CupertinoThemeData _inheritedCupertinoThemeData(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((inheritedTheme?.theme.data ?? new MaterialBasedCupertinoThemeData(materialTheme: this.data))).resolveFrom(context);
+        InheritedCupertinoTheme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>();
+        return (inheritedTheme?.theme.data ?? new MaterialBasedCupertinoThemeData(materialTheme: data)).resolveFrom(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness brightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _InheritedTheme__theme? inheritedTheme = ((_InheritedTheme__theme?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
-        return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
+        _InheritedTheme__theme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>();
+        return inheritedTheme?.theme.data.brightness ?? MediaQuery.platformBrightnessOf(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness? maybeBrightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _InheritedTheme__theme? inheritedTheme = ((_InheritedTheme__theme?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
-        return ((inheritedTheme?.theme.data.brightness ?? MediaQuery.maybePlatformBrightnessOf(context)));
+        _InheritedTheme__theme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>();
+        return inheritedTheme?.theme.data.brightness ?? MediaQuery.maybePlatformBrightnessOf(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _InheritedTheme__theme(theme: this, child: new CupertinoTheme(data: _inheritedCupertinoThemeData(context), child: _wrapsWidgetThemes(context, this.child))));
+        return new _InheritedTheme__theme(theme: this, child: new CupertinoTheme(data: _inheritedCupertinoThemeData(context), child: _wrapsWidgetThemes(context, child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ThemeData>("data", this.data, showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ThemeData>("data", data, showName: false));
     }
 
 }
@@ -87,11 +87,11 @@ internal class _InheritedTheme__theme : global::Doroti.Framework.Widgets.Inherit
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new Theme(data: ((Theme)this.theme).data, child: child));
+        return new Theme(data: theme.data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => (!Equals(((Theme)this.theme).data, ((_InheritedTheme__theme)oldWidget).theme.data));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => !Equals(theme.data, ((_InheritedTheme__theme)oldWidget).theme.data);
 }
 
 public class ThemeDataTween : global::Doroti.Framework.Animation.Tween<ThemeData>
@@ -100,7 +100,7 @@ public class ThemeDataTween : global::Doroti.Framework.Animation.Tween<ThemeData
     {
     }
 
-    public override ThemeData lerp(double t) => ThemeData.lerp(this.begin!, this.end!, t);
+    public override ThemeData lerp(double t) => ThemeData.lerp(begin!, end!, t);
 }
 
 public class AnimatedTheme : global::Doroti.Framework.Widgets.ImplicitlyAnimatedWidget
@@ -123,19 +123,19 @@ internal class _AnimatedThemeState__theme : global::Doroti.Framework.Widgets.Ani
 
     public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object?, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _data = ((ThemeDataTween?)visitor(this._data, ((AnimatedTheme)this.widget).data, ((value) => new ThemeDataTween(begin: ((ThemeData?)value)!)))!)!;
+        _data = ((ThemeDataTween?)visitor(_data, widget.data, (value) => new ThemeDataTween(begin: ((ThemeData?)value)!))!)!;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new Theme(data: this._data!.evaluate(this.animation), child: ((AnimatedTheme)this.widget).child));
+        return new Theme(data: _data!.evaluate(animation), child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ThemeDataTween>("data", this._data, showName: false, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ThemeDataTween>("data", _data, showName: false, defaultValue: null));
     }
 
 }

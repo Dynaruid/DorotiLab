@@ -52,57 +52,57 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         double __diameterRatio = diameterRatio ?? defaultDiameterRatio;
         double __perspective = perspective ?? defaultPerspective;
         this.childManager = childManager;
-        this._offset = offset;
-        this._diameterRatio = __diameterRatio;
-        this._perspective = __perspective;
-        this._offAxisFraction = offAxisFraction;
-        this._useMagnifier = useMagnifier;
-        this._magnification = magnification;
-        this._overAndUnderCenterOpacity = overAndUnderCenterOpacity;
-        this._itemExtent = itemExtent;
-        this._squeeze = squeeze;
-        this._renderChildrenOutsideViewport = renderChildrenOutsideViewport;
-        this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((__diameterRatio > 0L));
-        System.Diagnostics.Debug.Assert((__perspective > 0L));
-        System.Diagnostics.Debug.Assert((__perspective <= 0.01));
-        System.Diagnostics.Debug.Assert((magnification > 0L));
-        System.Diagnostics.Debug.Assert(((overAndUnderCenterOpacity >= 0L) && (overAndUnderCenterOpacity <= 1L)));
-        System.Diagnostics.Debug.Assert((squeeze > 0L));
-        System.Diagnostics.Debug.Assert((itemExtent > 0L));
-        System.Diagnostics.Debug.Assert((!renderChildrenOutsideViewport || (Equals(clipBehavior, Clip.none))));
+        _offset = offset;
+        _diameterRatio = __diameterRatio;
+        _perspective = __perspective;
+        _offAxisFraction = offAxisFraction;
+        _useMagnifier = useMagnifier;
+        _magnification = magnification;
+        _overAndUnderCenterOpacity = overAndUnderCenterOpacity;
+        _itemExtent = itemExtent;
+        _squeeze = squeeze;
+        _renderChildrenOutsideViewport = renderChildrenOutsideViewport;
+        _clipBehavior = clipBehavior;
+        System.Diagnostics.Debug.Assert(__diameterRatio > 0L);
+        System.Diagnostics.Debug.Assert(__perspective > 0L);
+        System.Diagnostics.Debug.Assert(__perspective <= 0.01);
+        System.Diagnostics.Debug.Assert(magnification > 0L);
+        System.Diagnostics.Debug.Assert((overAndUnderCenterOpacity >= 0L) && (overAndUnderCenterOpacity <= 1L));
+        System.Diagnostics.Debug.Assert(squeeze > 0L);
+        System.Diagnostics.Debug.Assert(itemExtent > 0L);
+        System.Diagnostics.Debug.Assert(!renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none));
     }
 
     public virtual ViewportOffset offset
     {
-        get => this._offset;
+        get => _offset;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._offset)))
+            if (Equals(__value, _offset))
             {
                 return;
             }
             if (attached)
             {
-                this._offset.removeListener(this._hasScrolled);
+                _offset.removeListener(_hasScrolled);
             }
             _offset = __value;
             if (attached)
             {
-                this._offset.addListener(this._hasScrolled);
+                _offset.addListener(_hasScrolled);
             }
             markNeedsLayout();
         }
     }
     public virtual double diameterRatio
     {
-        get => this._diameterRatio;
+        get => _diameterRatio;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value > 0L));
-            if ((__value == this._diameterRatio))
+            DartRuntimePrimitives.Assert(() => __value > 0L);
+            if (__value == _diameterRatio)
             {
                 return;
             }
@@ -113,13 +113,13 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual double perspective
     {
-        get => this._perspective;
+        get => _perspective;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value > 0L));
-            DartRuntimePrimitives.Assert(() => (__value <= 0.01));
-            if ((__value == this._perspective))
+            DartRuntimePrimitives.Assert(() => __value > 0L);
+            DartRuntimePrimitives.Assert(() => __value <= 0.01);
+            if (__value == _perspective)
             {
                 return;
             }
@@ -130,11 +130,11 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual double offAxisFraction
     {
-        get => this._offAxisFraction;
+        get => _offAxisFraction;
         set
         {
             var __value = value;
-            if ((__value == this._offAxisFraction))
+            if (__value == _offAxisFraction)
             {
                 return;
             }
@@ -144,11 +144,11 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual bool useMagnifier
     {
-        get => this._useMagnifier;
+        get => _useMagnifier;
         set
         {
             var __value = value;
-            if ((__value == this._useMagnifier))
+            if (__value == _useMagnifier)
             {
                 return;
             }
@@ -158,12 +158,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual double magnification
     {
-        get => this._magnification;
+        get => _magnification;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value > 0L));
-            if ((__value == this._magnification))
+            DartRuntimePrimitives.Assert(() => __value > 0L);
+            if (__value == _magnification)
             {
                 return;
             }
@@ -173,12 +173,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual double overAndUnderCenterOpacity
     {
-        get => this._overAndUnderCenterOpacity;
+        get => _overAndUnderCenterOpacity;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => ((__value >= 0L) && (__value <= 1L)));
-            if ((__value == this._overAndUnderCenterOpacity))
+            DartRuntimePrimitives.Assert(() => (__value >= 0L) && (__value <= 1L));
+            if (__value == _overAndUnderCenterOpacity)
             {
                 return;
             }
@@ -188,12 +188,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual double itemExtent
     {
-        get => this._itemExtent;
+        get => _itemExtent;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value > 0L));
-            if ((__value == this._itemExtent))
+            DartRuntimePrimitives.Assert(() => __value > 0L);
+            if (__value == _itemExtent)
             {
                 return;
             }
@@ -203,12 +203,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual double squeeze
     {
-        get => this._squeeze;
+        get => _squeeze;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value > 0L));
-            if ((__value == this._squeeze))
+            DartRuntimePrimitives.Assert(() => __value > 0L);
+            if (__value == _squeeze)
             {
                 return;
             }
@@ -219,12 +219,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual bool renderChildrenOutsideViewport
     {
-        get => this._renderChildrenOutsideViewport;
+        get => _renderChildrenOutsideViewport;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (!this.renderChildrenOutsideViewport || (Equals(this.clipBehavior, Clip.none))));
-            if ((__value == this._renderChildrenOutsideViewport))
+            DartRuntimePrimitives.Assert(() => !renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none));
+            if (__value == _renderChildrenOutsideViewport)
             {
                 return;
             }
@@ -235,11 +235,11 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._clipBehavior)))
+            if (!Equals(__value, _clipBehavior))
             {
                 _clipBehavior = __value;
                 markNeedsPaint();
@@ -255,7 +255,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override void setupParentData(RenderObject child)
     {
-        if ((((RenderObject)child).parentData is not ListWheelParentData))
+        if (child.parentData is not ListWheelParentData)
         {
             child.parentData = new ListWheelParentData();
         }
@@ -264,22 +264,22 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.attach(owner);
             var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
-        this._offset.addListener(this._hasScrolled);
+        _offset.addListener(_hasScrolled);
     }
 
     public override void detach()
     {
-        this._offset.removeListener(this._hasScrolled);
+        _offset.removeListener(_hasScrolled);
         base.detach();
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.detach();
             var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
@@ -301,7 +301,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            if ((((ListWheelChildManager)this.childManager).childCount is null))
+            if (childManager.childCount is null)
             {
                 return double.NegativeInfinity;
             }
@@ -313,11 +313,11 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            if ((((ListWheelChildManager)this.childManager).childCount is null))
+            if (childManager.childCount is null)
             {
                 return double.PositiveInfinity;
             }
-            return Math.Max(0.0, (((DartRuntimePrimitives.RequireValue(((ListWheelChildManager)this.childManager).childCount) - 1L)) * this._itemExtent));
+            return Math.Max(0.0, (DartRuntimePrimitives.RequireValue(childManager.childCount) - 1L) * _itemExtent);
         }
     }
     internal virtual double _topScrollMarginExtent
@@ -325,12 +325,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            return ((-size.height / 2.0) + (this._itemExtent / 2.0));
+            return (-size.height / 2.0) + (_itemExtent / 2.0);
         }
     }
     internal virtual double _getUntransformedPaintingCoordinateY(double layoutCoordinateY)
     {
-        return ((layoutCoordinateY - this._topScrollMarginExtent) - ((ViewportOffset)this.offset).pixels);
+        return layoutCoordinateY - _topScrollMarginExtent - offset.pixels;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -338,18 +338,18 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     {
         get
         {
-            if ((this._diameterRatio < 1.0))
+            if (_diameterRatio < 1.0)
             {
-                return (Dart_mathLibrary.pi / 2.0);
+                return Dart_mathLibrary.pi / 2.0;
             }
-            return Dart_mathLibrary.asin((1.0 / this._diameterRatio));
+            return Dart_mathLibrary.asin(1.0 / _diameterRatio);
         }
     }
     internal virtual double _getIntrinsicCrossAxis(Func<RenderBox, double> childSize)
     {
         var extent = 0.0;
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             extent = Math.Max(extent, childSize(child));
             child = childAfter(child);
@@ -360,180 +360,180 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        return _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height))));
+        return _getIntrinsicCrossAxis((child) => child.getMinIntrinsicWidth(height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height))));
+        return _getIntrinsicCrossAxis((child) => child.getMaxIntrinsicWidth(height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        if ((((ListWheelChildManager)this.childManager).childCount is null))
+        if (childManager.childCount is null)
         {
             return 0.0;
         }
-        return (DartRuntimePrimitives.RequireValue(((ListWheelChildManager)this.childManager).childCount) * this._itemExtent);
+        return DartRuntimePrimitives.RequireValue(childManager.childCount) * _itemExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        if ((((ListWheelChildManager)this.childManager).childCount is null))
+        if (childManager.childCount is null)
         {
             return 0.0;
         }
-        return (DartRuntimePrimitives.RequireValue(((ListWheelChildManager)this.childManager).childCount) * this._itemExtent);
+        return DartRuntimePrimitives.RequireValue(childManager.childCount) * _itemExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool sizedByParent => true;
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return ((BoxConstraints)constraints).biggest;
+        return constraints.biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual long indexOf(RenderBox child)
     {
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (((ListWheelParentData)childParentData).index is not null));
-        return DartRuntimePrimitives.RequireValue(((ListWheelParentData)childParentData).index);
+        DartRuntimePrimitives.Assert(() => childParentData.index is not null);
+        return DartRuntimePrimitives.RequireValue(childParentData.index);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long scrollOffsetToIndex(double scrollOffset) => ((scrollOffset / this.itemExtent)).floor();
-    public virtual double indexToScrollOffset(long index) => (index * this.itemExtent);
+    public virtual long scrollOffsetToIndex(double scrollOffset) => (scrollOffset / itemExtent).floor();
+    public virtual double indexToScrollOffset(long index) => index * itemExtent;
     internal virtual void _createChild(long index, RenderBox? after = null)
     {
-        invokeLayoutCallback<BoxConstraints>(((Action<BoxConstraints>)((constraints) =>
+        invokeLayoutCallback<BoxConstraints>((constraints) =>
         {
-            DartRuntimePrimitives.Assert(() => (Equals(constraints, this.constraints)));
-            this.childManager.createChild(index, after: after);
-        })));
+            DartRuntimePrimitives.Assert(() => Equals(constraints, this.constraints));
+            childManager.createChild(index, after: after);
+        });
     }
 
     internal virtual void _destroyChild(RenderBox child)
     {
-        invokeLayoutCallback<BoxConstraints>(((Action<BoxConstraints>)((constraints) =>
+        invokeLayoutCallback<BoxConstraints>((constraints) =>
         {
-            DartRuntimePrimitives.Assert(() => (Equals(constraints, this.constraints)));
-            this.childManager.removeChild(child);
-        })));
+            DartRuntimePrimitives.Assert(() => Equals(constraints, this.constraints));
+            childManager.removeChild(child);
+        });
     }
 
     internal virtual void _layoutChild(RenderBox child, BoxConstraints constraints, long index)
     {
         child.layout(constraints, parentUsesSize: true);
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        double crossPosition = ((size.width / 2.0) - (((RenderBox)child).size.width / 2.0));
+        double crossPosition = (size.width / 2.0) - (child.size.width / 2.0);
         childParentData.offset = new global::Doroti.Ui.Offset(crossPosition, indexToScrollOffset(index));
     }
 
     public override void performLayout()
     {
-        this.offset.applyViewportDimension(this._viewportExtent);
-        if ((((ListWheelChildManager)this.childManager).childCount is not null))
+        offset.applyViewportDimension(_viewportExtent);
+        if (childManager.childCount is not null)
         {
-            this.offset.applyContentDimensions(this._minEstimatedScrollExtent, this._maxEstimatedScrollExtent);
+            offset.applyContentDimensions(_minEstimatedScrollExtent, _maxEstimatedScrollExtent);
         }
-        double visibleHeight = (size.height * this._squeeze);
-        if (this.renderChildrenOutsideViewport)
+        double visibleHeight = size.height * _squeeze;
+        if (renderChildrenOutsideViewport)
         {
             visibleHeight *= 2L;
         }
-        double firstVisibleOffset = ((((ViewportOffset)this.offset).pixels + (this._itemExtent / 2L)) - (visibleHeight / 2L));
-        double lastVisibleOffset = (firstVisibleOffset + visibleHeight);
+        double firstVisibleOffset = offset.pixels + (_itemExtent / 2L) - (visibleHeight / 2L);
+        double lastVisibleOffset = firstVisibleOffset + visibleHeight;
         long targetFirstIndex = scrollOffsetToIndex(firstVisibleOffset);
         long targetLastIndex = scrollOffsetToIndex(lastVisibleOffset);
-        if (((targetLastIndex * this._itemExtent) == lastVisibleOffset))
+        if ((targetLastIndex * _itemExtent) == lastVisibleOffset)
         {
             targetLastIndex--;
         }
-        while ((!this.childManager.childExistsAt(targetFirstIndex) && (targetFirstIndex <= targetLastIndex)))
+        while (!childManager.childExistsAt(targetFirstIndex) && (targetFirstIndex <= targetLastIndex))
         {
             targetFirstIndex++;
         }
-        while ((!this.childManager.childExistsAt(targetLastIndex) && (targetFirstIndex <= targetLastIndex)))
+        while (!childManager.childExistsAt(targetLastIndex) && (targetFirstIndex <= targetLastIndex))
         {
             targetLastIndex--;
         }
-        if ((targetFirstIndex > targetLastIndex))
+        if (targetFirstIndex > targetLastIndex)
         {
-            while ((firstChild is not null))
+            while (firstChild is not null)
             {
                 _destroyChild(firstChild!);
             }
             return;
         }
-        if (((childCount > 0L) && (((indexOf(firstChild!) > targetLastIndex) || (indexOf(lastChild!) < targetFirstIndex)))))
+        if ((childCount > 0L) && ((indexOf(firstChild!) > targetLastIndex) || (indexOf(lastChild!) < targetFirstIndex)))
         {
-            while ((firstChild is not null))
+            while (firstChild is not null)
             {
                 _destroyChild(firstChild!);
             }
         }
-        BoxConstraints childConstraints = constraints.copyWith(minHeight: this._itemExtent, maxHeight: this._itemExtent, minWidth: 0.0);
-        if ((childCount == 0L))
+        BoxConstraints childConstraints = constraints.copyWith(minHeight: _itemExtent, maxHeight: _itemExtent, minWidth: 0.0);
+        if (childCount == 0L)
         {
             _createChild(targetFirstIndex);
             _layoutChild(firstChild!, childConstraints, targetFirstIndex);
         }
         long currentFirstIndex = indexOf(firstChild!);
         long currentLastIndex = indexOf(lastChild!);
-        while ((currentFirstIndex < targetFirstIndex))
+        while (currentFirstIndex < targetFirstIndex)
         {
             _destroyChild(firstChild!);
             currentFirstIndex++;
         }
-        while ((currentLastIndex > targetLastIndex))
+        while (currentLastIndex > targetLastIndex)
         {
             _destroyChild(lastChild!);
             currentLastIndex--;
         }
         RenderBox? child = firstChild;
         var index = currentFirstIndex;
-        while ((child is not null))
+        while (child is not null)
         {
             _layoutChild(child, childConstraints, index++);
             child = childAfter(child);
         }
-        while ((currentFirstIndex > targetFirstIndex))
+        while (currentFirstIndex > targetFirstIndex)
         {
-            _createChild((currentFirstIndex - 1L));
+            _createChild(currentFirstIndex - 1L);
             _layoutChild(firstChild!, childConstraints, --currentFirstIndex);
         }
-        while ((currentLastIndex < targetLastIndex))
+        while (currentLastIndex < targetLastIndex)
         {
-            _createChild((currentLastIndex + 1L), after: lastChild);
+            _createChild(currentLastIndex + 1L, after: lastChild);
             _layoutChild(lastChild!, childConstraints, ++currentLastIndex);
         }
-        double minScrollExtent = (this.childManager.childExistsAt((targetFirstIndex - 1L)) ? this._minEstimatedScrollExtent : indexToScrollOffset(targetFirstIndex));
-        double maxScrollExtent = (this.childManager.childExistsAt((targetLastIndex + 1L)) ? this._maxEstimatedScrollExtent : indexToScrollOffset(targetLastIndex));
-        this.offset.applyContentDimensions(minScrollExtent, maxScrollExtent);
+        double minScrollExtent = childManager.childExistsAt(targetFirstIndex - 1L) ? _minEstimatedScrollExtent : indexToScrollOffset(targetFirstIndex);
+        double maxScrollExtent = childManager.childExistsAt(targetLastIndex + 1L) ? _maxEstimatedScrollExtent : indexToScrollOffset(targetLastIndex);
+        offset.applyContentDimensions(minScrollExtent, maxScrollExtent);
     }
 
     internal virtual bool _shouldClipAtCurrentOffset()
     {
         double highestUntransformedPaintY = _getUntransformedPaintingCoordinateY(0.0);
-        return ((highestUntransformedPaintY < 0.0) || (size.height < ((highestUntransformedPaintY + this._maxEstimatedScrollExtent) + this._itemExtent)));
+        return (highestUntransformedPaintY < 0.0) || (size.height < (highestUntransformedPaintY + _maxEstimatedScrollExtent + _itemExtent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((childCount > 0L))
+        if (childCount > 0L)
         {
-            if ((_shouldClipAtCurrentOffset() && (!Equals(this.clipBehavior, Clip.none))))
+            if (_shouldClipAtCurrentOffset() && (!Equals(clipBehavior, Clip.none)))
             {
-                this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, (Offset.zero & size), (Action<PaintingContext, Offset>)this._paintVisibleChildren, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
+                _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, Offset.zero & size, _paintVisibleChildren, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
             }
             else
             {
-                this._clipRectLayer.layer = null;
+                _clipRectLayer.layer = null;
                 _paintVisibleChildren(context, offset);
             }
         }
@@ -541,29 +541,29 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override void dispose()
     {
-        this._clipRectLayer.layer = null;
-        this._childOpacityLayerHandler.layer = null;
+        _clipRectLayer.layer = null;
+        _childOpacityLayerHandler.layer = null;
         base.dispose();
     }
 
     internal virtual void _paintVisibleChildren(PaintingContext context, Offset offset)
     {
-        if ((this.overAndUnderCenterOpacity >= 1L))
+        if (overAndUnderCenterOpacity >= 1L)
         {
             _paintAllChildren(context, offset);
             return;
         }
-        this._childOpacityLayerHandler.layer = context.pushOpacity(offset, ((this.overAndUnderCenterOpacity * 255L)).round(), ((Action<PaintingContext, Offset>)((context, offset) =>
+        _childOpacityLayerHandler.layer = context.pushOpacity(offset, (overAndUnderCenterOpacity * 255L).round(), (context, offset) =>
         {
             _paintAllChildren(context, offset, center: false);
-        })));
+        });
         _paintAllChildren(context, offset, center: true);
     }
 
     internal virtual void _paintAllChildren(PaintingContext context, Offset offset, bool? center = null)
     {
         RenderBox? childToPaint = firstChild;
-        while ((childToPaint is not null))
+        while (childToPaint is not null)
         {
             var childParentData = ((ListWheelParentData?)(object?)childToPaint.parentData!)!;
             _paintTransformedChild(childToPaint, context, offset, childParentData.offset, center: center);
@@ -573,55 +573,55 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual void _paintTransformedChild(RenderBox child, PaintingContext context, Offset offset, Offset layoutOffset, bool? center)
     {
-        global::Doroti.Ui.Offset untransformedPaintingCoordinates = (offset + new global::Doroti.Ui.Offset(layoutOffset.dx, _getUntransformedPaintingCoordinateY(layoutOffset.dy)));
-        double fractionalY = (((untransformedPaintingCoordinates.dy + (this._itemExtent / 2.0))) / size.height);
-        double angleLocal = (((-((fractionalY - 0.5)) * 2.0) * this._maxVisibleRadian) / this.squeeze);
-        if ((((angleLocal > (Dart_mathLibrary.pi / 2.0)) || (angleLocal < (-Dart_mathLibrary.pi / 2.0))) || double.IsNaN(angleLocal)))
+        global::Doroti.Ui.Offset untransformedPaintingCoordinates = offset + new global::Doroti.Ui.Offset(layoutOffset.dx, _getUntransformedPaintingCoordinateY(layoutOffset.dy));
+        double fractionalY = (untransformedPaintingCoordinates.dy + (_itemExtent / 2.0)) / size.height;
+        double angleLocal = -(fractionalY - 0.5) * 2.0 * _maxVisibleRadian / squeeze;
+        if ((angleLocal > (Dart_mathLibrary.pi / 2.0)) || (angleLocal < (-Dart_mathLibrary.pi / 2.0)) || double.IsNaN(angleLocal))
         {
             return;
         }
-        Matrix4 transform = MatrixUtils.createCylindricalProjectionTransform(radius: ((size.height * this._diameterRatio) / 2.0), angle: angleLocal, perspective: this._perspective);
-        var offsetToCenter = new global::Doroti.Ui.Offset(untransformedPaintingCoordinates.dx, -this._topScrollMarginExtent);
-        bool shouldApplyOffCenterDim = (this.overAndUnderCenterOpacity < 1L);
-        if ((this.useMagnifier || shouldApplyOffCenterDim))
+        Matrix4 transform = MatrixUtils.createCylindricalProjectionTransform(radius: size.height * _diameterRatio / 2.0, angle: angleLocal, perspective: _perspective);
+        var offsetToCenter = new global::Doroti.Ui.Offset(untransformedPaintingCoordinates.dx, -_topScrollMarginExtent);
+        bool shouldApplyOffCenterDim = overAndUnderCenterOpacity < 1L;
+        if (useMagnifier || shouldApplyOffCenterDim)
         {
             _paintChildWithMagnifier(context, offset, child, transform, offsetToCenter, untransformedPaintingCoordinates, center: center);
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (center is null));
+            DartRuntimePrimitives.Assert(() => center is null);
             _paintChildCylindrically(context, offset, child, transform, offsetToCenter);
         }
     }
 
     internal virtual void _paintChildWithMagnifier(PaintingContext context, Offset offset, RenderBox child, Matrix4 cylindricalTransform, Offset offsetToCenter, Offset untransformedPaintingCoordinates, bool? center)
     {
-        double magnifierTopLinePosition = ((size.height / 2L) - ((this._itemExtent * this._magnification) / 2L));
-        double magnifierBottomLinePosition = ((size.height / 2L) + ((this._itemExtent * this._magnification) / 2L));
-        bool isAfterMagnifierTopLine = (untransformedPaintingCoordinates.dy >= (magnifierTopLinePosition - (this._itemExtent * this._magnification)));
-        bool isBeforeMagnifierBottomLine = (untransformedPaintingCoordinates.dy <= magnifierBottomLinePosition);
-        var centerRect = Rect.fromLTWH(0.0, magnifierTopLinePosition, size.width, (this._itemExtent * this._magnification));
+        double magnifierTopLinePosition = (size.height / 2L) - (_itemExtent * _magnification / 2L);
+        double magnifierBottomLinePosition = (size.height / 2L) + (_itemExtent * _magnification / 2L);
+        bool isAfterMagnifierTopLine = untransformedPaintingCoordinates.dy >= (magnifierTopLinePosition - (_itemExtent * _magnification));
+        bool isBeforeMagnifierBottomLine = untransformedPaintingCoordinates.dy <= magnifierBottomLinePosition;
+        var centerRect = Rect.fromLTWH(0.0, magnifierTopLinePosition, size.width, _itemExtent * _magnification);
         var topHalfRect = Rect.fromLTWH(0.0, 0.0, size.width, magnifierTopLinePosition);
         var bottomHalfRect = Rect.fromLTWH(0.0, magnifierBottomLinePosition, size.width, magnifierTopLinePosition);
-        bool inCenter = (isAfterMagnifierTopLine && isBeforeMagnifierBottomLine);
-        if (((((center is null) || DartRuntimePrimitives.RequireValue(center))) && inCenter))
+        bool inCenter = isAfterMagnifierTopLine && isBeforeMagnifierBottomLine;
+        if (((center is null) || DartRuntimePrimitives.RequireValue(center)) && inCenter)
         {
-            context.pushClipRect(needsCompositing, offset, centerRect, ((Action<PaintingContext, Offset>)((context, offset) =>
+            context.pushClipRect(needsCompositing, offset, centerRect, (context, offset) =>
             {
-                context.pushTransform(needsCompositing, offset, _magnifyTransform(), ((Action<PaintingContext, Offset>)((context, offset) =>
+                context.pushTransform(needsCompositing, offset, _magnifyTransform(), (context, offset) =>
                 {
-                    context.paintChild(child, (offset + untransformedPaintingCoordinates));
-                })));
-            })));
+                    context.paintChild(child, offset + untransformedPaintingCoordinates);
+                });
+            });
         }
-        if (((((center is null) || !DartRuntimePrimitives.RequireValue(center))) && inCenter))
+        if (((center is null) || !DartRuntimePrimitives.RequireValue(center)) && inCenter)
         {
-            context.pushClipRect(needsCompositing, offset, ((untransformedPaintingCoordinates.dy <= magnifierTopLinePosition) ? topHalfRect : bottomHalfRect), ((Action<PaintingContext, Offset>)((context, offset) =>
+            context.pushClipRect(needsCompositing, offset, (untransformedPaintingCoordinates.dy <= magnifierTopLinePosition) ? topHalfRect : bottomHalfRect, (context, offset) =>
             {
                 _paintChildCylindrically(context, offset, child, cylindricalTransform, offsetToCenter);
-            })));
+            });
         }
-        if (((((center is null) || !DartRuntimePrimitives.RequireValue(center))) && !inCenter))
+        if (((center is null) || !DartRuntimePrimitives.RequireValue(center)) && !inCenter)
         {
             _paintChildCylindrically(context, offset, child, cylindricalTransform, offsetToCenter);
         }
@@ -629,12 +629,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual void _paintChildCylindrically(PaintingContext context, Offset offset, RenderBox child, Matrix4 cylindricalTransform, Offset offsetToCenter)
     {
-        global::Doroti.Ui.Offset paintOriginOffset = (offset + offsetToCenter);
+        global::Doroti.Ui.Offset paintOriginOffset = offset + offsetToCenter;
         void painter(PaintingContext context, Offset offset)
         {
             context.paintChild(child, paintOriginOffset);
         }
-        context.pushTransform(needsCompositing, offset, _centerOriginTransform(cylindricalTransform), (Action<PaintingContext, Offset>)painter);
+        context.pushTransform(needsCompositing, offset, _centerOriginTransform(cylindricalTransform), painter);
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         Matrix4 transformLocal = ((Func<Matrix4>)(() =>
 {
@@ -650,9 +650,9 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
-    __cascade.translateByDouble((size.width * ((-this._offAxisFraction + 0.5))), (size.height / 2L), 0, 1);
-    __cascade.scaleByDouble(this._magnification, this._magnification, this._magnification, 1.0);
-    __cascade.translateByDouble((-size.width * ((-this._offAxisFraction + 0.5))), (-size.height / 2L), 0, 1);
+    __cascade.translateByDouble(size.width * (-_offAxisFraction + 0.5), size.height / 2L, 0, 1);
+    __cascade.scaleByDouble(_magnification, _magnification, _magnification, 1.0);
+    __cascade.translateByDouble(-size.width * (-_offAxisFraction + 0.5), -size.height / 2L, 0, 1);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -662,16 +662,16 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     {
         var result = Matrix4.identity();
         global::Doroti.Ui.Offset centerOriginTranslation = Alignment.center.alongSize(size);
-        result.translateByDouble((centerOriginTranslation.dx * (((-this._offAxisFraction * 2L) + 1L))), centerOriginTranslation.dy, 0, 1);
+        result.translateByDouble(centerOriginTranslation.dx * ((-_offAxisFraction * 2L) + 1L), centerOriginTranslation.dy, 0, 1);
         result.multiply(originalMatrix);
-        result.translateByDouble((-centerOriginTranslation.dx * (((-this._offAxisFraction * 2L) + 1L))), -centerOriginTranslation.dy, 0, 1);
+        result.translateByDouble(-centerOriginTranslation.dx * ((-_offAxisFraction * 2L) + 1L), -centerOriginTranslation.dy, 0, 1);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static bool _debugAssertValidHitTestOffsets(string context, Offset offset1, Offset offset2)
     {
-        if ((!Equals(offset1, offset2)))
+        if (!Equals(offset1, offset2))
         {
             throw new FlutterError($"{context} - hit test expected values didn't match: {offset1} != {offset2}");
         }
@@ -683,8 +683,8 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     {
         var __child = (RenderBox)(object)child;
         var parentDataLocal = ((ListWheelParentData?)(object?)__child.parentData!)!;
-        Matrix4? paintTransform = ((ListWheelParentData)parentDataLocal).transform;
-        if ((paintTransform is not null))
+        Matrix4? paintTransform = parentDataLocal.transform;
+        if (paintTransform is not null)
         {
             transform.multiply(paintTransform);
         }
@@ -694,7 +694,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     {
         if (_shouldClipAtCurrentOffset())
         {
-            return (Offset.zero & size);
+            return Offset.zero & size;
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -703,25 +703,25 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         RenderBox? child = lastChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-            Matrix4? transformLocal = ((ListWheelParentData)childParentData).transform;
-            if ((transformLocal is not null))
+            Matrix4? transformLocal = childParentData.transform;
+            if (transformLocal is not null)
             {
-                bool isHit = result.addWithPaintTransform(transform: transformLocal, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+                bool isHit = result.addWithPaintTransform(transform: transformLocal, position: position, hitTest: (result, transformed) =>
                 {
                     DartRuntimePrimitives.Assert(() =>
                         {
                             Matrix4? inverted = Matrix4.tryInvert(PointerEvent.removePerspectiveTransform(transformLocal));
-                            if ((inverted is null))
+                            if (inverted is null)
                             {
                                 return _debugAssertValidHitTestOffsets("Null inverted transform", transformed, position);
                             }
                             return _debugAssertValidHitTestOffsets("MatrixUtils.transformPoint", transformed, MatrixUtils.transformPoint(inverted, position));
                         });
                     return child!.hitTest(result, position: transformed);
-                })));
+                });
                 if (isHit)
                 {
                     return true;
@@ -735,35 +735,35 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null)
     {
-        rect ??= ((RenderObject)target).paintBounds;
+        rect ??= target.paintBounds;
         var child = target;
-        while ((!Equals(((RenderObject)child).parent, this)))
+        while (!Equals(child.parent, this))
         {
-            child = ((RenderObject)child).parent!;
+            child = child.parent!;
         }
-        var parentDataLocal = ((ListWheelParentData?)(object?)((RenderObject)child).parentData!)!;
+        var parentDataLocal = ((ListWheelParentData?)(object?)child.parentData!)!;
         double targetOffset = parentDataLocal.offset.dy;
         Matrix4 transform = target.getTransformTo(child);
         global::Doroti.Ui.Rect bounds = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
-        global::Doroti.Ui.Rect targetRect = bounds.translate(0.0, (((size.height - this.itemExtent)) / 2L));
+        global::Doroti.Ui.Rect targetRect = bounds.translate(0.0, (size.height - itemExtent) / 2L);
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void showOnScreen(RenderObject? descendant = null, Rect? rect = null, Duration duration = default, Curve curve = default!)
     {
-        if ((descendant is not null))
+        if (descendant is not null)
         {
             RevealedOffset revealedOffset = getOffsetToReveal(descendant, 0.5, rect: rect);
-            if ((Equals(duration, Duration.zero)))
+            if (Equals(duration, Duration.zero))
             {
-                this.offset.jumpTo(((RevealedOffset)revealedOffset).offset);
+                offset.jumpTo(revealedOffset.offset);
             }
             else
             {
-                _ = this.offset.animateTo(((RevealedOffset)revealedOffset).offset, duration: duration, curve: curve);
+                _ = offset.animateTo(revealedOffset.offset, duration: duration, curve: curve);
             }
-            rect = ((RevealedOffset)revealedOffset).rect;
+            rect = revealedOffset.rect;
         }
         base.showOnScreen(rect: rect, duration: duration, curve: curve);
     }
@@ -771,37 +771,37 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -812,34 +812,34 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((ListWheelParentData?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((ListWheelParentData?)(object?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((ListWheelParentData?)(object?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -849,53 +849,53 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
                 var childNextSiblingParentData = ((ListWheelParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is ListWheelParentData));
+        DartRuntimePrimitives.Assert(() => child.parentData is ListWheelParentData);
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderBox child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach(this.add);
+        children?.forEach(add);
     }
 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((ListWheelParentData?)(object?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -904,7 +904,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderBox child)
@@ -915,8 +915,8 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual void removeAll()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
@@ -925,19 +925,19 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -948,8 +948,8 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override void redepthChildren()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
@@ -959,8 +959,8 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
@@ -968,11 +968,11 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         }
     }
 
-    public virtual RenderBox? firstChild => this._firstChild;
-    public virtual RenderBox? lastChild => this._lastChild;
+    public virtual RenderBox? firstChild => _firstChild;
+    public virtual RenderBox? lastChild => _lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -980,7 +980,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -989,14 +989,14 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderBox child = this.firstChild!;
+            RenderBox child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }

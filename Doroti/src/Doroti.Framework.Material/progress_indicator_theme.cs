@@ -47,7 +47,7 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
 
     public virtual ProgressIndicatorThemeData copyWith(Color? color = null, Color? linearTrackColor = null, double? linearMinHeight = null, Color? circularTrackColor = null, Color? refreshBackgroundColor = null, global::Doroti.Framework.Painting.BorderRadiusGeometry? borderRadius = null, Color? stopIndicatorColor = null, double? stopIndicatorRadius = null, double? strokeWidth = null, double? strokeAlign = null, StrokeCap? strokeCap = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, double? trackGap = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? circularTrackPadding = null, bool? year2023 = null, global::Doroti.Framework.Animation.AnimationController? controller = null)
     {
-        return new ProgressIndicatorThemeData(color: (color ?? this.color), linearTrackColor: (linearTrackColor ?? this.linearTrackColor), linearMinHeight: (linearMinHeight ?? this.linearMinHeight), circularTrackColor: (circularTrackColor ?? this.circularTrackColor), refreshBackgroundColor: (refreshBackgroundColor ?? this.refreshBackgroundColor), borderRadius: (borderRadius ?? this.borderRadius), stopIndicatorColor: (stopIndicatorColor ?? this.stopIndicatorColor), stopIndicatorRadius: (stopIndicatorRadius ?? this.stopIndicatorRadius), strokeWidth: (strokeWidth ?? this.strokeWidth), strokeAlign: (strokeAlign ?? this.strokeAlign), strokeCap: (strokeCap ?? this.strokeCap), constraints: (constraints ?? this.constraints), trackGap: (trackGap ?? this.trackGap), circularTrackPadding: (circularTrackPadding ?? this.circularTrackPadding), year2023: (year2023 ?? this.year2023), controller: (controller ?? this.controller));
+        return new ProgressIndicatorThemeData(color: color ?? this.color, linearTrackColor: linearTrackColor ?? this.linearTrackColor, linearMinHeight: linearMinHeight ?? this.linearMinHeight, circularTrackColor: circularTrackColor ?? this.circularTrackColor, refreshBackgroundColor: refreshBackgroundColor ?? this.refreshBackgroundColor, borderRadius: borderRadius ?? this.borderRadius, stopIndicatorColor: stopIndicatorColor ?? this.stopIndicatorColor, stopIndicatorRadius: stopIndicatorRadius ?? this.stopIndicatorRadius, strokeWidth: strokeWidth ?? this.strokeWidth, strokeAlign: strokeAlign ?? this.strokeAlign, strokeCap: strokeCap ?? this.strokeCap, constraints: constraints ?? this.constraints, trackGap: trackGap ?? this.trackGap, circularTrackPadding: circularTrackPadding ?? this.circularTrackPadding, year2023: year2023 ?? this.year2023, controller: controller ?? this.controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -57,11 +57,11 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
         {
             return a;
         }
-        return new ProgressIndicatorThemeData(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), linearTrackColor: Dart_uiLibrary.Color.lerp(a?.linearTrackColor, b?.linearTrackColor, t), linearMinHeight: Dart_uiLibrary.lerpDouble(a?.linearMinHeight, b?.linearMinHeight, t), circularTrackColor: Dart_uiLibrary.Color.lerp(a?.circularTrackColor, b?.circularTrackColor, t), refreshBackgroundColor: Dart_uiLibrary.Color.lerp(a?.refreshBackgroundColor, b?.refreshBackgroundColor, t), borderRadius: BorderRadiusGeometry.lerp(a?.borderRadius, b?.borderRadius, t), stopIndicatorColor: Dart_uiLibrary.Color.lerp(a?.stopIndicatorColor, b?.stopIndicatorColor, t), stopIndicatorRadius: Dart_uiLibrary.lerpDouble(a?.stopIndicatorRadius, b?.stopIndicatorRadius, t), strokeWidth: Dart_uiLibrary.lerpDouble(a?.strokeWidth, b?.strokeWidth, t), strokeAlign: Dart_uiLibrary.lerpDouble(a?.strokeAlign, b?.strokeAlign, t), strokeCap: ((t < 0.5) ? a?.strokeCap : b?.strokeCap), constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t), trackGap: Dart_uiLibrary.lerpDouble(a?.trackGap, b?.trackGap, t), circularTrackPadding: EdgeInsetsGeometry.lerp(a?.circularTrackPadding, b?.circularTrackPadding, t), year2023: ((t < 0.5) ? a?.year2023 : b?.year2023), controller: ((t < 0.5) ? a?.controller : b?.controller));
+        return new ProgressIndicatorThemeData(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), linearTrackColor: Dart_uiLibrary.Color.lerp(a?.linearTrackColor, b?.linearTrackColor, t), linearMinHeight: Dart_uiLibrary.lerpDouble(a?.linearMinHeight, b?.linearMinHeight, t), circularTrackColor: Dart_uiLibrary.Color.lerp(a?.circularTrackColor, b?.circularTrackColor, t), refreshBackgroundColor: Dart_uiLibrary.Color.lerp(a?.refreshBackgroundColor, b?.refreshBackgroundColor, t), borderRadius: BorderRadiusGeometry.lerp(a?.borderRadius, b?.borderRadius, t), stopIndicatorColor: Dart_uiLibrary.Color.lerp(a?.stopIndicatorColor, b?.stopIndicatorColor, t), stopIndicatorRadius: Dart_uiLibrary.lerpDouble(a?.stopIndicatorRadius, b?.stopIndicatorRadius, t), strokeWidth: Dart_uiLibrary.lerpDouble(a?.strokeWidth, b?.strokeWidth, t), strokeAlign: Dart_uiLibrary.lerpDouble(a?.strokeAlign, b?.strokeAlign, t), strokeCap: (t < 0.5) ? a?.strokeCap : b?.strokeCap, constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t), trackGap: Dart_uiLibrary.lerpDouble(a?.trackGap, b?.trackGap, t), circularTrackPadding: EdgeInsetsGeometry.lerp(a?.circularTrackPadding, b?.circularTrackPadding, t), year2023: (t < 0.5) ? a?.year2023 : b?.year2023, controller: (t < 0.5) ? a?.controller : b?.controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.color, this.linearTrackColor, this.linearMinHeight, this.circularTrackColor, this.refreshBackgroundColor, this.borderRadius, this.stopIndicatorColor, this.stopIndicatorRadius, this.strokeAlign, this.strokeWidth, this.strokeCap, this.constraints, this.trackGap, this.circularTrackPadding, this.year2023, this.controller));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(color, linearTrackColor, linearMinHeight, circularTrackColor, refreshBackgroundColor, borderRadius, stopIndicatorColor, stopIndicatorRadius, strokeAlign, strokeWidth, strokeCap, constraints, trackGap, circularTrackPadding, year2023, controller));
     public override bool Equals(object? other)
     {
         var __other = other as ProgressIndicatorThemeData;
@@ -70,31 +70,31 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((((((((((((__other is ProgressIndicatorThemeData) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).color, this.color))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).linearTrackColor, this.linearTrackColor))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).linearMinHeight == this.linearMinHeight)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).circularTrackColor, this.circularTrackColor))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).refreshBackgroundColor, this.refreshBackgroundColor))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).borderRadius, this.borderRadius))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).stopIndicatorColor, this.stopIndicatorColor))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).stopIndicatorRadius == this.stopIndicatorRadius)) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeAlign == this.strokeAlign)) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeWidth == this.strokeWidth)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeCap, this.strokeCap))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).constraints, this.constraints))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).trackGap == this.trackGap)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).circularTrackPadding, this.circularTrackPadding))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).year2023 == this.year2023)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).controller, this.controller)));
+        return (__other is ProgressIndicatorThemeData) && Equals(__other.color, color) && Equals(__other.linearTrackColor, linearTrackColor) && (__other.linearMinHeight == linearMinHeight) && Equals(__other.circularTrackColor, circularTrackColor) && Equals(__other.refreshBackgroundColor, refreshBackgroundColor) && Equals(__other.borderRadius, borderRadius) && Equals(__other.stopIndicatorColor, stopIndicatorColor) && (__other.stopIndicatorRadius == stopIndicatorRadius) && (__other.strokeAlign == strokeAlign) && (__other.strokeWidth == strokeWidth) && Equals(__other.strokeCap, strokeCap) && Equals(__other.constraints, constraints) && (__other.trackGap == trackGap) && Equals(__other.circularTrackPadding, circularTrackPadding) && (__other.year2023 == year2023) && Equals(__other.controller, controller);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("linearTrackColor", this.linearTrackColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("linearMinHeight", this.linearMinHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("circularTrackColor", this.circularTrackColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("refreshBackgroundColor", this.refreshBackgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", this.borderRadius, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("stopIndicatorColor", this.stopIndicatorColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("stopIndicatorRadius", this.stopIndicatorRadius, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeWidth", this.strokeWidth, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeAlign", this.strokeAlign, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.StrokeCap>("strokeCap", this.strokeCap, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("trackGap", this.trackGap, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("circularTrackPadding", this.circularTrackPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("year2023", this.year2023, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationController>("controller", this.controller, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("linearTrackColor", linearTrackColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("linearMinHeight", linearMinHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("circularTrackColor", circularTrackColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("refreshBackgroundColor", refreshBackgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", borderRadius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("stopIndicatorColor", stopIndicatorColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("stopIndicatorRadius", stopIndicatorRadius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeWidth", strokeWidth, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeAlign", strokeAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.StrokeCap>("strokeCap", strokeCap, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", constraints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("trackGap", trackGap, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("circularTrackPadding", circularTrackPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("year2023", year2023, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationController>("controller", controller, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -108,13 +108,13 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -131,16 +131,16 @@ public class ProgressIndicatorTheme : global::Doroti.Framework.Widgets.Inherited
 
     public static ProgressIndicatorThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ProgressIndicatorTheme? progressIndicatorThemeLocal = ((ProgressIndicatorTheme?)context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>());
-        return (progressIndicatorThemeLocal?.data ?? Theme.of(context).progressIndicatorTheme);
+        ProgressIndicatorTheme? progressIndicatorThemeLocal = context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>();
+        return progressIndicatorThemeLocal?.data ?? Theme.of(context).progressIndicatorTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new ProgressIndicatorTheme(data: this.data, child: child));
+        return new ProgressIndicatorTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ProgressIndicatorTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ProgressIndicatorTheme)oldWidget).data));
 }

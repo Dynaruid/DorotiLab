@@ -23,17 +23,17 @@ public class AutofillGroup : StatefulWidget
 
     public static AutofillGroupState? maybeOf(BuildContext context)
     {
-        _AutofillScope__autofill? scope = ((_AutofillScope__autofill?)context.dependOnInheritedWidgetOfExactType<_AutofillScope__autofill>());
+        _AutofillScope__autofill? scope = context.dependOnInheritedWidgetOfExactType<_AutofillScope__autofill>();
         return scope?._scope;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static AutofillGroupState of(BuildContext context)
     {
-        AutofillGroupState? groupState = ((AutofillGroupState?)maybeOf(context));
+        AutofillGroupState? groupState = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((groupState is null))
+                if (groupState is null)
                 {
                     throw DartRuntimePrimitives.AsException(FlutterError.Create("AutofillGroup.of() was called with a context that does not contain an " + "AutofillGroup widget.\n" + "No AutofillGroup widget ancestor could be found starting from the " + "context that was passed to AutofillGroup.of(). This can happen " + "because you are using a widget that looks for an AutofillGroup " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
@@ -52,45 +52,45 @@ public class AutofillGroupState : State<AutofillGroup>, global::Doroti.Framework
     internal virtual DartMap<string, global::Doroti.Framework.Services.AutofillClient> _clients { get; private set; } = new DartMap<string, global::Doroti.Framework.Services.AutofillClient>();
     internal virtual bool _isTopmostAutofillGroup { get; set; } = false;
 
-    public virtual global::Doroti.Framework.Services.AutofillClient? getAutofillClient(string autofillId) => this._clients.GetValueOrDefault(autofillId);
+    public virtual global::Doroti.Framework.Services.AutofillClient? getAutofillClient(string autofillId) => _clients.GetValueOrDefault(autofillId);
     public virtual IEnumerable<global::Doroti.Framework.Services.AutofillClient> autofillClients
     {
         get
         {
-            return this._clients.Values.where(((client) => ((global::Doroti.Framework.Services.AutofillClient)client).textInputConfiguration.autofillConfiguration.enabled));
+            return _clients.Values.where((client) => client.textInputConfiguration.autofillConfiguration.enabled);
         }
     }
     public virtual void register(global::Doroti.Framework.Services.AutofillClient client)
     {
-        this._clients.putIfAbsent(((global::Doroti.Framework.Services.AutofillClient)client).autofillId, (() => client));
+        _clients.putIfAbsent(client.autofillId, () => client);
     }
 
     public virtual void unregister(string autofillId)
     {
-        DartRuntimePrimitives.Assert(() => this._clients.ContainsKey(autofillId));
-        this._clients.remove(autofillId);
+        DartRuntimePrimitives.Assert(() => _clients.ContainsKey(autofillId));
+        _clients.remove(autofillId);
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _isTopmostAutofillGroup = (AutofillGroup.maybeOf(this.context) is null);
+        _isTopmostAutofillGroup = AutofillGroup.maybeOf(context) is null;
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new _AutofillScope__autofill(autofillScopeState: this, child: ((AutofillGroup)this.widget).child));
+        return new _AutofillScope__autofill(autofillScopeState: this, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()
     {
         base.dispose();
-        if (!this._isTopmostAutofillGroup)
+        if (!_isTopmostAutofillGroup)
         {
             return;
         }
-        switch (((AutofillGroup)this.widget).onDisposeAction)
+        switch (widget.onDisposeAction)
         {
             case AutofillContextAction.cancel:
                 {
@@ -107,9 +107,9 @@ public class AutofillGroupState : State<AutofillGroup>, global::Doroti.Framework
 
     public virtual TextInputConnection attach(TextInputClient trigger, TextInputConfiguration configuration)
     {
-        DartRuntimePrimitives.Assert(() => !this.autofillClients.any(((client) => !((AutofillClient)client).textInputConfiguration.autofillConfiguration.enabled)), () => (object?)"Every client in AutofillScope.autofillClients must enable autofill");
-        TextInputConfiguration inputConfiguration = ((TextInputConfiguration)new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: this.autofillClients.map<AutofillClient, TextInputConfiguration>(((client) => ((AutofillClient)client).textInputConfiguration)).Cast<TextInputConfiguration>(), currentClientConfiguration: configuration));
-        return ((TextInputConnection)TextInput.attach(trigger, inputConfiguration));
+        DartRuntimePrimitives.Assert(() => !autofillClients.any((client) => !client.textInputConfiguration.autofillConfiguration.enabled), () => (object?)"Every client in AutofillScope.autofillClients must enable autofill");
+        TextInputConfiguration inputConfiguration = new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: autofillClients.map<AutofillClient, TextInputConfiguration>((client) => client.textInputConfiguration).Cast<TextInputConfiguration>(), currentClientConfiguration: configuration);
+        return TextInput.attach(trigger, inputConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -121,10 +121,10 @@ internal class _AutofillScope__autofill : InheritedWidget
 
     internal _AutofillScope__autofill(Widget child, AutofillGroupState? autofillScopeState = null) : base(child: child)
     {
-        this._scope = autofillScopeState;
+        _scope = autofillScopeState;
     }
 
-    public virtual AutofillGroup client => this._scope!.widget;
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => (!Equals(this._scope, ((_AutofillScope__autofill)oldWidget)._scope));
+    public virtual AutofillGroup client => _scope!.widget;
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => !Equals(_scope, ((_AutofillScope__autofill)oldWidget)._scope);
 }
 

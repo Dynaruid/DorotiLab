@@ -48,8 +48,8 @@ internal class _CupertinoPageScaffoldState__page_scaffold : global::Doroti.Frame
 
     public virtual void handleStatusBarTap()
     {
-        global::Doroti.Framework.Widgets.ScrollController? primaryScrollController = ((global::Doroti.Framework.Widgets.ScrollController?)PrimaryScrollController.maybeOf(this.context));
-        if ((((primaryScrollController is not null) && ((global::Doroti.Framework.Widgets.ScrollController)primaryScrollController).hasClients) && _HitTestableAtOrigin__page_scaffold.hitTestableAtOrigin(this._statusBarKey)))
+        global::Doroti.Framework.Widgets.ScrollController? primaryScrollController = PrimaryScrollController.maybeOf(context);
+        if ((primaryScrollController is not null) && primaryScrollController.hasClients && _HitTestableAtOrigin__page_scaffold.hitTestableAtOrigin(_statusBarKey))
         {
             DartRuntimePrimitives.Ignore(primaryScrollController.animateTo(0.0, duration: Duration.Create(milliseconds: 500L), curve: Curves.linearToEaseOut));
         }
@@ -57,32 +57,32 @@ internal class _CupertinoPageScaffoldState__page_scaffold : global::Doroti.Frame
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget paddedContent = ((CupertinoPageScaffold)this.widget).child;
-        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(CupertinoDynamicColor.maybeResolve(((CupertinoPageScaffold)this.widget).backgroundColor, context) ?? CupertinoTheme.of(context).scaffoldBackgroundColor));
-        global::Doroti.Framework.Widgets.MediaQueryData existingMediaQuery = ((global::Doroti.Framework.Widgets.MediaQueryData)MediaQuery.of(context));
-        if ((((CupertinoPageScaffold)this.widget).navigationBar is not null))
+        global::Doroti.Framework.Widgets.Widget paddedContent = widget.child;
+        global::Doroti.Ui.Color backgroundColorLocal = CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).scaffoldBackgroundColor;
+        global::Doroti.Framework.Widgets.MediaQueryData existingMediaQuery = MediaQuery.of(context);
+        if (widget.navigationBar is not null)
         {
-            double topPadding = (((CupertinoPageScaffold)this.widget).navigationBar!.preferredSize.height + ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).padding.top);
-            double bottomPadding = (((CupertinoPageScaffold)this.widget).resizeToAvoidBottomInset ? ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).viewInsets.bottom : 0.0);
-            global::Doroti.Framework.Painting.EdgeInsets newViewInsets = (((CupertinoPageScaffold)this.widget).resizeToAvoidBottomInset ? ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).viewInsets.copyWith(bottom: 0.0) : ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).viewInsets);
-            bool fullObstruction = ((CupertinoPageScaffold)this.widget).navigationBar!.shouldFullyObstruct(context);
+            double topPadding = widget.navigationBar!.preferredSize.height + existingMediaQuery.padding.top;
+            double bottomPadding = widget.resizeToAvoidBottomInset ? existingMediaQuery.viewInsets.bottom : 0.0;
+            global::Doroti.Framework.Painting.EdgeInsets newViewInsets = widget.resizeToAvoidBottomInset ? existingMediaQuery.viewInsets.copyWith(bottom: 0.0) : existingMediaQuery.viewInsets;
+            bool fullObstruction = widget.navigationBar!.shouldFullyObstruct(context);
             if (fullObstruction)
             {
                 paddedContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: existingMediaQuery.removePadding(removeTop: true).copyWith(viewInsets: newViewInsets), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(top: topPadding, bottom: bottomPadding), child: paddedContent)));
             }
             else
             {
-                paddedContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: existingMediaQuery.copyWith(padding: ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).padding.copyWith(top: topPadding), viewInsets: newViewInsets), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(bottom: bottomPadding), child: paddedContent)));
+                paddedContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: existingMediaQuery.copyWith(padding: existingMediaQuery.padding.copyWith(top: topPadding), viewInsets: newViewInsets), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(bottom: bottomPadding), child: paddedContent)));
             }
         }
         else
         {
-            if (((CupertinoPageScaffold)this.widget).resizeToAvoidBottomInset)
+            if (widget.resizeToAvoidBottomInset)
             {
-                paddedContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: existingMediaQuery.copyWith(viewInsets: ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).viewInsets.copyWith(bottom: 0)), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(bottom: ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).viewInsets.bottom), child: paddedContent)));
+                paddedContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: existingMediaQuery.copyWith(viewInsets: existingMediaQuery.viewInsets.copyWith(bottom: 0)), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(bottom: existingMediaQuery.viewInsets.bottom), child: paddedContent)));
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ScrollNotificationObserver(child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: backgroundColorLocal), child: new CupertinoPageScaffoldBackgroundColor(color: backgroundColorLocal, child: new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection8262 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection8262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(paddedContent)); if ((((CupertinoPageScaffold)this.widget).navigationBar is not null)) { __collection8262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: 0.0, left: 0.0, right: 0.0, child: MediaQuery.withNoTextScaling(child: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((CupertinoPageScaffold)this.widget).navigationBar!))))); } __collection8262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: 0.0, left: 0.0, right: 0.0, height: ((global::Doroti.Framework.Widgets.MediaQueryData)existingMediaQuery).padding.top, child: new _HitTestableAtOrigin__page_scaffold(this._statusBarKey)))); return __collection8262; }))())))));
+        return new global::Doroti.Framework.Widgets.ScrollNotificationObserver(child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: backgroundColorLocal), child: new CupertinoPageScaffoldBackgroundColor(color: backgroundColorLocal, child: new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection8262 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection8262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(paddedContent)); if (widget.navigationBar is not null) { __collection8262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: 0.0, left: 0.0, right: 0.0, child: MediaQuery.withNoTextScaling(child: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(widget.navigationBar!))))); } __collection8262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: 0.0, left: 0.0, right: 0.0, height: existingMediaQuery.padding.top, child: new _HitTestableAtOrigin__page_scaffold(_statusBarKey)))); return __collection8262; }))()))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -100,21 +100,21 @@ public class CupertinoPageScaffoldBackgroundColor : global::Doroti.Framework.Wid
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
         var __oldWidget = (CupertinoPageScaffoldBackgroundColor)oldWidget;
-        return (!Equals(this.color, ((CupertinoPageScaffoldBackgroundColor)__oldWidget).color));
+        return !Equals(color, __oldWidget.color);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Color? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CupertinoPageScaffoldBackgroundColor? scaffoldBackgroundColor = ((CupertinoPageScaffoldBackgroundColor?)context.dependOnInheritedWidgetOfExactType<CupertinoPageScaffoldBackgroundColor>());
-        return ((global::Doroti.Ui.Color?)scaffoldBackgroundColor?.color);
+        CupertinoPageScaffoldBackgroundColor? scaffoldBackgroundColor = context.dependOnInheritedWidgetOfExactType<CupertinoPageScaffoldBackgroundColor>();
+        return scaffoldBackgroundColor?.color;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("page scaffold background color", this.color));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("page scaffold background color", color));
     }
 
 }
@@ -135,23 +135,23 @@ internal class _HitTestableAtOrigin__page_scaffold : global::Doroti.Framework.Wi
 
     public static bool hitTestableAtOrigin(global::Doroti.Framework.Widgets.GlobalKey<IState> key)
     {
-        var context = ((global::Doroti.Framework.Widgets.Element?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)key).currentContext)!;
-        if ((context is null))
+        var context = ((global::Doroti.Framework.Widgets.Element?)key.currentContext)!;
+        if (context is null)
         {
             DartRuntimePrimitives.Assert(() => false, () => (object?)$"BuildContext associated with {key} is not mounted.");
             return false;
         }
-        var renderObjectLocal = ((global::Doroti.Framework.Rendering.RenderMetaData?)((global::Doroti.Framework.Widgets.Element)context).renderObject!)!;
+        var renderObjectLocal = ((global::Doroti.Framework.Rendering.RenderMetaData?)context.renderObject!)!;
         long viewIdLocal = checked((long)View.of(context).viewId);
         var result = new global::Doroti.Framework.Gestures.HitTestResult();
         WidgetsBinding.instance.hitTestInView(result, Offset.zero, viewIdLocal);
-        return ((global::Doroti.Framework.Gestures.HitTestResult)result).path.any(((entry) => (Equals(((global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>)entry).target, renderObjectLocal))));
+        return result.path.any((entry) => Equals(entry.target, renderObjectLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MetaData(key: this.globalKey, behavior: HitTestBehavior.translucent, child: SizedBox.CreateExpand()));
+        return new global::Doroti.Framework.Widgets.MetaData(key: globalKey, behavior: HitTestBehavior.translucent, child: SizedBox.CreateExpand());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

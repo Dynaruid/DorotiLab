@@ -786,13 +786,13 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                     Native.ClientToScreen(hwnd, ref point);
                     Native.ScreenToClient(_owner._parent, ref point);
                 }
-                var packed = (nint)((uint)(ushort)point.X | ((uint)(ushort)point.Y << 16));
+                var packed = (nint)((ushort)point.X | ((uint)(ushort)point.Y << 16));
                 var forwarded = message switch { 0x203 => 0x201u, 0x206 => 0x204u, 0x209 => 0x207u, _ => message };
                 if (message <= 0x209 && _owner.NativeAt(point) is var native && native != 0)
                 {
                     Native.ClientToScreen(_owner._parent, ref point);
                     Native.ScreenToClient(native, ref point);
-                    var nativePoint = (nint)((uint)(ushort)point.X | ((uint)(ushort)point.Y << 16));
+                    var nativePoint = (nint)((ushort)point.X | ((uint)(ushort)point.Y << 16));
                     return Native.SendMessageW(native, message, wparam, nativePoint);
                 }
                 return Native.SendMessageW(_owner._parent, forwarded, wparam, packed);

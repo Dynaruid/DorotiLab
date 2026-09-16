@@ -22,7 +22,7 @@ public class BottomNavigationBarItem
         this.backgroundColor = backgroundColor;
         this.tooltip = tooltip;
         this.semanticsLabel = semanticsLabel;
-        this.activeIcon = (activeIcon ?? icon);
+        this.activeIcon = activeIcon ?? icon;
     }
 
 }

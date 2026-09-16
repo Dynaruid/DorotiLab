@@ -41,8 +41,8 @@ public class CupertinoThumbPainter
 
     public virtual void paint(Canvas canvas, Rect rect)
     {
-        var thumbShape = RRect.fromRectAndRadius(rect, Radius.circular((rect.shortestSide / 2.0)));
-        foreach (global::Doroti.Framework.Painting.BoxShadow shadow in this.shadows)
+        var thumbShape = RRect.fromRectAndRadius(rect, Radius.circular(rect.shortestSide / 2.0));
+        foreach (global::Doroti.Framework.Painting.BoxShadow shadow in shadows)
         {
             canvas.drawRRect(thumbShape.shift(shadow.offset), shadow.toPaint());
         }
@@ -55,7 +55,7 @@ public class CupertinoThumbPainter
         canvas.drawRRect(thumbShape, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color;
+    __cascade.color = color;
     return __cascade;
 }))());
     }

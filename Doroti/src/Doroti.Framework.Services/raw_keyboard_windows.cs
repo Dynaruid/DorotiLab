@@ -15,20 +15,20 @@ public class RawKeyEventDataWindows : RawKeyEventData
     public virtual long scanCode { get; private set; } = default!;
     public virtual long characterCodePoint { get; private set; } = default!;
     public virtual long modifiers { get; private set; } = default!;
-    public static long modifierShift = (1L << (int)(0L));
-    public static long modifierLeftShift = (1L << (int)(1L));
-    public static long modifierRightShift = (1L << (int)(2L));
-    public static long modifierControl = (1L << (int)(3L));
-    public static long modifierLeftControl = (1L << (int)(4L));
-    public static long modifierRightControl = (1L << (int)(5L));
-    public static long modifierAlt = (1L << (int)(6L));
-    public static long modifierLeftAlt = (1L << (int)(7L));
-    public static long modifierRightAlt = (1L << (int)(8L));
-    public static long modifierLeftMeta = (1L << (int)(9L));
-    public static long modifierRightMeta = (1L << (int)(10L));
-    public static long modifierCaps = (1L << (int)(11L));
-    public static long modifierNumLock = (1L << (int)(12L));
-    public static long modifierScrollLock = (1L << (int)(13L));
+    public static long modifierShift = 1L << (int)0L;
+    public static long modifierLeftShift = 1L << (int)1L;
+    public static long modifierRightShift = 1L << (int)2L;
+    public static long modifierControl = 1L << (int)3L;
+    public static long modifierLeftControl = 1L << (int)4L;
+    public static long modifierRightControl = 1L << (int)5L;
+    public static long modifierAlt = 1L << (int)6L;
+    public static long modifierLeftAlt = 1L << (int)7L;
+    public static long modifierRightAlt = 1L << (int)8L;
+    public static long modifierLeftMeta = 1L << (int)9L;
+    public static long modifierRightMeta = 1L << (int)10L;
+    public static long modifierCaps = 1L << (int)11L;
+    public static long modifierNumLock = 1L << (int)12L;
+    public static long modifierScrollLock = 1L << (int)13L;
 
     public RawKeyEventDataWindows(long keyCode = 0, long scanCode = 0, long characterCodePoint = 0, long modifiers = 0)
     {
@@ -38,41 +38,41 @@ public class RawKeyEventDataWindows : RawKeyEventData
         this.modifiers = modifiers;
     }
 
-    public override string keyLabel => ((characterCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)characterCodePoint)));
-    public override PhysicalKeyboardKey physicalKey => (Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + scanCode)));
+    public override string keyLabel => (characterCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)characterCodePoint));
+    public override PhysicalKeyboardKey physicalKey => Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey(LogicalKeyboardKey.windowsPlane + scanCode);
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
             LogicalKeyboardKey? numPadKey = Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
-            if ((numPadKey is not null))
+            if (numPadKey is not null)
             {
                 return numPadKey;
             }
-            if (((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel)))
+            if ((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel))
             {
-                long keyId = (LogicalKeyboardKey.unicodePlane | ((characterCodePoint & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
+                long keyId = LogicalKeyboardKey.unicodePlane | characterCodePoint & LogicalKeyboardKey.valueMask;
+                return LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId);
             }
             LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
-            if ((newKey is not null))
+            if (newKey is not null)
             {
                 return newKey;
             }
-            return new LogicalKeyboardKey((keyCode | LogicalKeyboardKey.windowsPlane));
+            return new LogicalKeyboardKey(keyCode | LogicalKeyboardKey.windowsPlane);
         }
     }
     internal virtual bool _isLeftRightModifierPressed(KeyboardSide side, long anyMask, long leftMask, long rightMask)
     {
-        if (((modifiers & (((leftMask | rightMask) | anyMask))) == 0L))
+        if ((modifiers & (leftMask | rightMask | anyMask)) == 0L)
         {
             return false;
         }
-        if (((modifiers & (((leftMask | rightMask) | anyMask))) == anyMask))
+        if ((modifiers & (leftMask | rightMask | anyMask)) == anyMask)
         {
             return true;
         }
-        return (side switch { var __case4703 when Equals(__case4703, KeyboardSide.any) => true, var __case4735 when Equals(__case4735, KeyboardSide.all) => (((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L)), var __case4818 when Equals(__case4818, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case4872 when Equals(__case4872, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return side switch { var __case4703 when Equals(__case4703, KeyboardSide.any) => true, var __case4735 when Equals(__case4735, KeyboardSide.all) => ((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L), var __case4818 when Equals(__case4818, KeyboardSide.left) => (modifiers & leftMask) != 0L, var __case4872 when Equals(__case4872, KeyboardSide.right) => (modifiers & rightMask) != 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -98,22 +98,22 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 }
             case var __case5617 when Equals(__case5617, ModifierKey.metaModifier):
                 {
-                    result = _isLeftRightModifierPressed(side, (modifierLeftMeta | modifierRightMeta), modifierLeftMeta, modifierRightMeta);
+                    result = _isLeftRightModifierPressed(side, modifierLeftMeta | modifierRightMeta, modifierLeftMeta, modifierRightMeta);
                     break;
                 }
             case var __case5900 when Equals(__case5900, ModifierKey.capsLockModifier):
                 {
-                    result = ((modifiers & modifierCaps) != 0L);
+                    result = (modifiers & modifierCaps) != 0L;
                     break;
                 }
             case var __case5989 when Equals(__case5989, ModifierKey.scrollLockModifier):
                 {
-                    result = ((modifiers & modifierScrollLock) != 0L);
+                    result = (modifiers & modifierScrollLock) != 0L;
                     break;
                 }
             case var __case6086 when Equals(__case6086, ModifierKey.numLockModifier):
                 {
-                    result = ((modifiers & modifierNumLock) != 0L);
+                    result = (modifiers & modifierNumLock) != 0L;
                     break;
                 }
             case var __case6271 when Equals(__case6271, ModifierKey.functionModifier):
@@ -123,7 +123,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
                     break;
                 }
         }
-        DartRuntimePrimitives.Assert(() => (!result || (getModifierSide(key) is not null)));
+        DartRuntimePrimitives.Assert(() => !result || (getModifierSide(key) is not null));
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -132,21 +132,21 @@ public class RawKeyEventDataWindows : RawKeyEventData
     {
         KeyboardSide? findSide(long leftMask, long rightMask, long anyMask)
         {
-            long combinedMask = (leftMask | rightMask);
-            long combined = (modifiers & combinedMask);
-            if ((combined == leftMask))
+            long combinedMask = leftMask | rightMask;
+            long combined = modifiers & combinedMask;
+            if (combined == leftMask)
             {
                 return KeyboardSide.left;
             }
             else
             {
-                if ((combined == rightMask))
+                if (combined == rightMask)
                 {
                     return KeyboardSide.right;
                 }
                 else
                 {
-                    if (((combined == combinedMask) || ((modifiers & ((combinedMask | anyMask))) == anyMask)))
+                    if ((combined == combinedMask) || ((modifiers & (combinedMask | anyMask)) == anyMask))
                     {
                         return KeyboardSide.all;
                     }
@@ -187,7 +187,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
 
     public override bool shouldDispatchEvent()
     {
-        return (keyCode != Raw_keyboard_windowsLibrary._vkProcessKey);
+        return keyCode != Raw_keyboard_windowsLibrary._vkProcessKey;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -208,11 +208,11 @@ public class RawKeyEventDataWindows : RawKeyEventData
         {
             return true;
         }
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return (((((__other is RawKeyEventDataWindows) && (((RawKeyEventDataWindows)__other).keyCode == keyCode)) && (((RawKeyEventDataWindows)__other).scanCode == scanCode)) && (((RawKeyEventDataWindows)__other).characterCodePoint == characterCodePoint)) && (((RawKeyEventDataWindows)__other).modifiers == modifiers));
+        return (__other is RawKeyEventDataWindows) && (__other.keyCode == keyCode) && (__other.scanCode == scanCode) && (__other.characterCodePoint == characterCodePoint) && (__other.modifiers == modifiers);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(keyCode, scanCode, characterCodePoint, modifiers);

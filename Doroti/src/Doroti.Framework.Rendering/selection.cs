@@ -32,7 +32,7 @@ public class SelectedContentRange : Diagnosticable
     {
         this.startOffset = startOffset;
         this.endOffset = endOffset;
-        System.Diagnostics.Debug.Assert((((startOffset >= 0L) && (endOffset >= 0L))));
+        System.Diagnostics.Debug.Assert((startOffset >= 0L) && (endOffset >= 0L));
     }
 
     public override bool Equals(object? other)
@@ -43,22 +43,22 @@ public class SelectedContentRange : Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is SelectedContentRange) && (((SelectedContentRange)((SelectedContentRange)__other)).startOffset == this.startOffset)) && (((SelectedContentRange)((SelectedContentRange)__other)).endOffset == this.endOffset));
+        return (__other is SelectedContentRange) && (__other.startOffset == startOffset) && (__other.endOffset == endOffset);
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(this.startOffset, this.endOffset);
+        return FoundationRuntimePorts.ObjectHash(startOffset, endOffset);
     }
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new IntProperty("startOffset", this.startOffset));
-        properties.add(new IntProperty("endOffset", this.endOffset));
+        properties.add(new IntProperty("startOffset", startOffset));
+        properties.add(new IntProperty("endOffset", endOffset));
     }
 
 }
@@ -75,7 +75,7 @@ public class SelectedContent : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new StringProperty("plainText", this.plainText));
+        properties.add(new StringProperty("plainText", plainText));
     }
 
 }
@@ -101,15 +101,15 @@ public abstract class SelectionUtils
         {
             return SelectionResult.end;
         }
-        if ((point.dy < targetRect.top))
+        if (point.dy < targetRect.top)
         {
             return SelectionResult.previous;
         }
-        if ((point.dy > targetRect.bottom))
+        if (point.dy > targetRect.bottom)
         {
             return SelectionResult.next;
         }
-        return ((point.dx >= targetRect.right) ? SelectionResult.next : SelectionResult.previous);
+        return (point.dx >= targetRect.right) ? SelectionResult.next : SelectionResult.previous;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,13 +119,13 @@ public abstract class SelectionUtils
         {
             return point;
         }
-        if (((point.dy <= targetRect.top) || ((point.dy <= targetRect.bottom) && (point.dx <= targetRect.left))))
+        if ((point.dy <= targetRect.top) || ((point.dy <= targetRect.bottom) && (point.dx <= targetRect.left)))
         {
-            return ((Equals(direction, TextDirection.ltr)) ? targetRect.topLeft : targetRect.topRight);
+            return Equals(direction, TextDirection.ltr) ? targetRect.topLeft : targetRect.topRight;
         }
         else
         {
-            return ((Equals(direction, TextDirection.ltr)) ? targetRect.bottomRight : targetRect.bottomLeft);
+            return Equals(direction, TextDirection.ltr) ? targetRect.bottomRight : targetRect.bottomLeft;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -212,14 +212,14 @@ public class SelectionEdgeUpdateEvent : SelectionEvent
     public SelectionEdgeUpdateEvent(Offset globalPosition, TextGranularity? granularity = null) : base(SelectionEventType.startEdgeUpdate)
     {
         this.globalPosition = globalPosition;
-        this.granularity = (granularity ?? TextGranularity.character);
+        this.granularity = granularity ?? TextGranularity.character;
     }
 
     public static SelectionEdgeUpdateEvent CreateForEnd(Offset globalPosition, TextGranularity? granularity = null)
     {
         var __instance = new SelectionEdgeUpdateEvent(globalPosition, granularity);
         __instance.globalPosition = globalPosition;
-        __instance.granularity = (granularity ?? TextGranularity.character);
+        __instance.granularity = granularity ?? TextGranularity.character;
         return __instance;
     }
 
@@ -263,7 +263,7 @@ public class DirectionallyExtendSelectionEvent : SelectionEvent
 
     public virtual DirectionallyExtendSelectionEvent copyWith(double? dx = null, bool? isEnd = null, SelectionExtendDirection? direction = null)
     {
-        return new DirectionallyExtendSelectionEvent(dx: (dx ?? this.dx), isEnd: (isEnd ?? this.isEnd), direction: (direction ?? this.direction));
+        return new DirectionallyExtendSelectionEvent(dx: dx ?? this.dx, isEnd: isEnd ?? this.isEnd, direction: direction ?? this.direction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -298,13 +298,13 @@ public class SelectionGeometry : Diagnosticable
         this.selectionRects = __selectionRects;
         this.status = status;
         this.hasContent = hasContent;
-        System.Diagnostics.Debug.Assert(((((startSelectionPoint is null) && (endSelectionPoint is null))) || (!Equals(DartRuntimePrimitives.RequireValue(status), SelectionStatus.none))));
+        System.Diagnostics.Debug.Assert((startSelectionPoint is null) && (endSelectionPoint is null) || (!Equals(DartRuntimePrimitives.RequireValue(status), SelectionStatus.none)));
     }
 
-    public virtual bool hasSelection => (!Equals(this.status, SelectionStatus.none));
+    public virtual bool hasSelection => !Equals(status, SelectionStatus.none);
     public virtual SelectionGeometry copyWith(SelectionPoint? startSelectionPoint = null, SelectionPoint? endSelectionPoint = null, List<Rect>? selectionRects = null, SelectionStatus? status = null, bool? hasContent = null)
     {
-        return new SelectionGeometry(startSelectionPoint: (startSelectionPoint ?? this.startSelectionPoint), endSelectionPoint: (endSelectionPoint ?? this.endSelectionPoint), selectionRects: (selectionRects ?? this.selectionRects), status: (status ?? this.status), hasContent: (hasContent ?? this.hasContent));
+        return new SelectionGeometry(startSelectionPoint: startSelectionPoint ?? this.startSelectionPoint, endSelectionPoint: endSelectionPoint ?? this.endSelectionPoint, selectionRects: selectionRects ?? this.selectionRects, status: status ?? this.status, hasContent: hasContent ?? this.hasContent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -316,25 +316,25 @@ public class SelectionGeometry : Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((__other is SelectionGeometry) && (Equals(((SelectionGeometry)((SelectionGeometry)__other)).startSelectionPoint, this.startSelectionPoint))) && (Equals(((SelectionGeometry)((SelectionGeometry)__other)).endSelectionPoint, this.endSelectionPoint))) && CollectionsLibrary.listEquals(((SelectionGeometry)((SelectionGeometry)__other)).selectionRects, this.selectionRects)) && (Equals(((SelectionGeometry)((SelectionGeometry)__other)).status, this.status))) && (((SelectionGeometry)((SelectionGeometry)__other)).hasContent == this.hasContent));
+        return (__other is SelectionGeometry) && Equals(__other.startSelectionPoint, startSelectionPoint) && Equals(__other.endSelectionPoint, endSelectionPoint) && CollectionsLibrary.listEquals(__other.selectionRects, selectionRects) && Equals(__other.status, status) && (__other.hasContent == hasContent);
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(this.startSelectionPoint, this.endSelectionPoint, this.selectionRects, this.status, this.hasContent);
+        return FoundationRuntimePorts.ObjectHash(startSelectionPoint, endSelectionPoint, selectionRects, status, hasContent);
     }
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<SelectionPoint>("startSelectionPoint", this.startSelectionPoint));
-        properties.add(new DiagnosticsProperty<SelectionPoint>("endSelectionPoint", this.endSelectionPoint));
-        properties.add(new IterableProperty<global::Doroti.Ui.Rect>("selectionRects", this.selectionRects));
-        properties.add(new EnumProperty<SelectionStatus>("status", this.status));
-        properties.add(new DiagnosticsProperty<bool>("hasContent", this.hasContent));
+        properties.add(new DiagnosticsProperty<SelectionPoint>("startSelectionPoint", startSelectionPoint));
+        properties.add(new DiagnosticsProperty<SelectionPoint>("endSelectionPoint", endSelectionPoint));
+        properties.add(new IterableProperty<global::Doroti.Ui.Rect>("selectionRects", selectionRects));
+        properties.add(new EnumProperty<SelectionStatus>("status", status));
+        properties.add(new DiagnosticsProperty<bool>("hasContent", hasContent));
     }
 
 }
@@ -360,23 +360,23 @@ public class SelectionPoint : Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is SelectionPoint) && (Equals(((SelectionPoint)((SelectionPoint)__other)).localPosition, this.localPosition))) && (((SelectionPoint)((SelectionPoint)__other)).lineHeight == this.lineHeight)) && (Equals(((SelectionPoint)((SelectionPoint)__other)).handleType, this.handleType)));
+        return (__other is SelectionPoint) && Equals(__other.localPosition, localPosition) && (__other.lineHeight == lineHeight) && Equals(__other.handleType, handleType);
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(this.localPosition, this.lineHeight, this.handleType);
+        return FoundationRuntimePorts.ObjectHash(localPosition, lineHeight, handleType);
     }
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DoubleProperty("lineHeight", this.lineHeight));
-        properties.add(new EnumProperty<TextSelectionHandleType>("handleType", this.handleType));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DoubleProperty("lineHeight", lineHeight));
+        properties.add(new EnumProperty<TextSelectionHandleType>("handleType", handleType));
     }
 
 }

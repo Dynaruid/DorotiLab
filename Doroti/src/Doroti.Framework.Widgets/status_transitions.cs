@@ -22,35 +22,35 @@ internal class _StatusTransitionState__status_transitions : State<StatusTransiti
     public override void initState()
     {
         base.initState();
-        ((StatusTransitionWidget)this.widget).animation.addStatusListener((AnimationStatusListener)this._animationStatusChanged);
+        widget.animation.addStatusListener(_animationStatusChanged);
     }
 
     public override void didUpdateWidget(StatusTransitionWidget oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((StatusTransitionWidget)this.widget).animation, ((StatusTransitionWidget)oldWidget).animation)))
+        if (!Equals(widget.animation, oldWidget.animation))
         {
-            ((StatusTransitionWidget)oldWidget).animation.removeStatusListener((AnimationStatusListener)this._animationStatusChanged);
-            ((StatusTransitionWidget)this.widget).animation.addStatusListener((AnimationStatusListener)this._animationStatusChanged);
+            oldWidget.animation.removeStatusListener(_animationStatusChanged);
+            widget.animation.addStatusListener(_animationStatusChanged);
         }
     }
 
     public override void dispose()
     {
-        ((StatusTransitionWidget)this.widget).animation.removeStatusListener((AnimationStatusListener)this._animationStatusChanged);
+        widget.animation.removeStatusListener(_animationStatusChanged);
         base.dispose();
     }
 
     internal virtual void _animationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)this.widget.build(context));
+        return widget.build(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

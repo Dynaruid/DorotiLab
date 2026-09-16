@@ -38,7 +38,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new _AnimatedSize__animated_size(alignment: ((AnimatedSize)this.widget).alignment, curve: ((AnimatedSize)this.widget).curve, duration: ((AnimatedSize)this.widget).duration, reverseDuration: ((AnimatedSize)this.widget).reverseDuration, vsync: this, clipBehavior: ((AnimatedSize)this.widget).clipBehavior, onEnd: ((AnimatedSize)this.widget).onEnd, child: ((AnimatedSize)this.widget).child));
+        return new _AnimatedSize__animated_size(alignment: widget.alignment, curve: widget.curve, duration: widget.duration, reverseDuration: widget.reverseDuration, vsync: this, clipBehavior: widget.clipBehavior, onEnd: widget.onEnd, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -46,17 +46,17 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._ticker is null))
+                if (_ticker is null)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
+        _ticker = new global::Doroti.Framework.Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
         _updateTickerModeNotifier();
         _updateTicker();
-        return this._ticker!;
+        return _ticker!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,15 +64,15 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._ticker is null) || !this._ticker!.isActive))
+                if ((_ticker is null) || !_ticker!.isActive)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        this._tickerModeNotifier = null;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        _tickerModeNotifier = null;
         base.dispose();
     }
 
@@ -85,31 +85,31 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
 
     public virtual void _updateTicker()
     {
-        TickerModeData values = this._tickerModeNotifier!.value;
-        if ((this._ticker is not null))
+        TickerModeData values = _tickerModeNotifier!.value;
+        if (_ticker is not null)
         {
-            this._ticker!.muted = !((TickerModeData)values).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
+            _ticker!.muted = !values.enabled;
+            _ticker!.forceFrames = values.forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        newNotifier.addListener(this._updateTicker);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        newNotifier.addListener(_updateTicker);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -139,7 +139,7 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: this.onEnd));
+        return new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: alignment, duration: duration, reverseDuration: reverseDuration, curve: curve, vsync: vsync, textDirection: Directionality.maybeOf(context), clipBehavior: clipBehavior, onEnd: onEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -149,14 +149,14 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnimatedSize>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.duration = this.duration;
-    __cascade.reverseDuration = this.reverseDuration;
-    __cascade.curve = this.curve;
-    __cascade.vsync = this.vsync;
+    __cascade.alignment = alignment;
+    __cascade.duration = duration;
+    __cascade.reverseDuration = reverseDuration;
+    __cascade.curve = curve;
+    __cascade.vsync = vsync;
     __cascade.textDirection = Directionality.maybeOf(context);
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.onEnd = this.onEnd;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.onEnd = onEnd;
     return __cascade;
 }))());
     }
@@ -164,9 +164,9 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: Alignment.topCenter));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: Alignment.topCenter));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", duration.inMilliseconds, unit: "ms"));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
     }
 
 }

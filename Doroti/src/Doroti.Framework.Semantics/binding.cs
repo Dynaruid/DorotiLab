@@ -51,7 +51,7 @@ public class SemanticsHandle
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this._onDispose();
+        _onDispose();
     }
 
 }

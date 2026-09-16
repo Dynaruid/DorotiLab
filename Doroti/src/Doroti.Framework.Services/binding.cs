@@ -29,8 +29,8 @@ public abstract class ServicesBinding : SchedulerBinding
         _restorationManager = createRestorationManager();
         _initKeyboard();
         initLicenses();
-        SystemChannels.system.setMessageHandler(((message) => handleSystemMessage(((object?)message)!)));
-        SystemChannels.accessibility.setMessageHandler(((message) => _handleAccessibilityMessage(((object?)message)!)));
+        SystemChannels.system.setMessageHandler((message) => handleSystemMessage(message!));
+        SystemChannels.accessibility.setMessageHandler((message) => _handleAccessibilityMessage(message!));
         SystemChannels.lifecycle.setMessageHandler(_handleLifecycleMessage);
         SystemChannels.platform.setMethodCallHandler(_handlePlatformMessage);
         platformDispatcher.onViewFocusChange = handleViewFocusChanged;
@@ -46,11 +46,11 @@ public abstract class ServicesBinding : SchedulerBinding
     {
         _keyboard = new HardwareKeyboard();
         _keyEventManager = new KeyEventManager(_keyboard, RawKeyboard.instance);
-        _ = _keyboard.syncKeyboardState().then(((_) =>
+        _ = _keyboard.syncKeyboardState().then((_) =>
         {
             platformDispatcher.onKeyData = _keyEventManager.handleKeyData;
             SystemChannels.keyEvent.setMessageHandler(_keyEventManager.handleRawKeyMessage);
-        }));
+        });
     }
 
     public virtual BinaryMessenger defaultBinaryMessenger => _defaultBinaryMessenger;
@@ -90,7 +90,7 @@ public abstract class ServicesBinding : SchedulerBinding
     internal virtual Stream<LicenseEntry> _addLicenses()
     {
         StreamController<LicenseEntry> controller = default!;
-        controller = new StreamController<LicenseEntry>(onListen: (async () =>
+        controller = new StreamController<LicenseEntry>(onListen: async () =>
         {
             string rawLicenses = default!;
             if (ConstantsLibrary.kIsWeb)
@@ -106,7 +106,7 @@ public abstract class ServicesBinding : SchedulerBinding
             List<LicenseEntry> licenses = await IsolatesLibrary.compute<string, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
             licenses.forEach(controller.add);
             await controller.close();
-        }));
+        });
         return controller.stream;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -123,18 +123,18 @@ public abstract class ServicesBinding : SchedulerBinding
         base.initServiceExtensions();
         DartRuntimePrimitives.Assert(() =>
             {
-                registerStringServiceExtension(name: ServicesServiceExtensions.evict.ToString(), getter: (() => ""), setter: ((value) =>
+                registerStringServiceExtension(name: ServicesServiceExtensions.evict.ToString(), getter: () => "", setter: (value) =>
                 {
                     evict(value);
-                }));
+                });
                 return true;
             });
         if (!ConstantsLibrary.kReleaseMode)
         {
-            registerBoolServiceExtension(name: ServicesServiceExtensions.profilePlatformChannels.ToString(), getter: (() => DebugLibrary.debugProfilePlatformChannels), setter: ((value) =>
+            registerBoolServiceExtension(name: ServicesServiceExtensions.profilePlatformChannels.ToString(), getter: () => DebugLibrary.debugProfilePlatformChannels, setter: (value) =>
             {
                 DebugLibrary.debugProfilePlatformChannels = value;
-            }));
+            });
         }
     }
 
@@ -168,12 +168,12 @@ public abstract class ServicesBinding : SchedulerBinding
 
     internal virtual List<AppLifecycleState> _generateStateTransitions(AppLifecycleState? previousState, AppLifecycleState state)
     {
-        if ((Equals(previousState, state)))
+        if (Equals(previousState, state))
         {
             return new List<global::Doroti.Ui.AppLifecycleState>();
         }
         var stateChanges = new List<global::Doroti.Ui.AppLifecycleState>();
-        if ((previousState is null))
+        if (previousState is null)
         {
             stateChanges.Add(state);
         }
@@ -181,30 +181,30 @@ public abstract class ServicesBinding : SchedulerBinding
         {
             long previousStateIndex = Enum.GetValues<AppLifecycleState>().ToList().IndexOf(DartRuntimePrimitives.RequireValue(previousState));
             long stateIndex = Enum.GetValues<AppLifecycleState>().ToList().IndexOf(state);
-            DartRuntimePrimitives.Assert(() => (previousStateIndex != -1L));
-            DartRuntimePrimitives.Assert(() => (stateIndex != -1L));
-            if ((Equals(state, AppLifecycleState.detached)))
+            DartRuntimePrimitives.Assert(() => previousStateIndex != -1L);
+            DartRuntimePrimitives.Assert(() => stateIndex != -1L);
+            if (Equals(state, AppLifecycleState.detached))
             {
-                for (long i = (previousStateIndex + 1L); (i < Enum.GetValues<AppLifecycleState>().ToList().Count); ++i)
+                for (long i = previousStateIndex + 1L; i < Enum.GetValues<AppLifecycleState>().ToList().Count; ++i)
                 {
-                    stateChanges.Add(Enum.GetValues<AppLifecycleState>().ToList()[(int)(i)]);
+                    stateChanges.Add(Enum.GetValues<AppLifecycleState>().ToList()[(int)i]);
                 }
                 stateChanges.Add(AppLifecycleState.detached);
             }
             else
             {
-                if ((previousStateIndex > stateIndex))
+                if (previousStateIndex > stateIndex)
                 {
-                    for (var i = stateIndex; (i < previousStateIndex); ++i)
+                    for (var i = stateIndex; i < previousStateIndex; ++i)
                     {
-                        stateChanges.Insert(checked((int)0L), Enum.GetValues<AppLifecycleState>().ToList()[(int)(i)]);
+                        stateChanges.Insert(checked((int)0L), Enum.GetValues<AppLifecycleState>().ToList()[(int)i]);
                     }
                 }
                 else
                 {
-                    for (long i = (previousStateIndex + 1L); (i <= stateIndex); ++i)
+                    for (long i = previousStateIndex + 1L; i <= stateIndex; ++i)
                     {
-                        stateChanges.Add(Enum.GetValues<AppLifecycleState>().ToList()[(int)(i)]);
+                        stateChanges.Add(Enum.GetValues<AppLifecycleState>().ToList()[(int)i]);
                     }
                 }
             }
@@ -228,21 +228,21 @@ public abstract class ServicesBinding : SchedulerBinding
 
     internal static bool _debugVerifyLifecycleChange(AppLifecycleState? starting, AppLifecycleState ending)
     {
-        if ((starting is null))
+        if (starting is null)
         {
             return true;
         }
-        if ((Equals(starting, ending)))
+        if (Equals(starting, ending))
         {
             return false;
         }
-        return (starting switch { var __case13833 when Equals(__case13833, AppLifecycleState.resumed) => (Equals(ending, AppLifecycleState.inactive)), var __case13906 when Equals(__case13906, AppLifecycleState.detached) => ((Equals(ending, AppLifecycleState.resumed)) || (Equals(ending, AppLifecycleState.paused))), var __case14025 when Equals(__case14025, AppLifecycleState.inactive) => ((Equals(ending, AppLifecycleState.resumed)) || (Equals(ending, AppLifecycleState.hidden))), var __case14144 when Equals(__case14144, AppLifecycleState.hidden) => ((Equals(ending, AppLifecycleState.paused)) || (Equals(ending, AppLifecycleState.inactive))), var __case14262 when Equals(__case14262, AppLifecycleState.paused) => ((Equals(ending, AppLifecycleState.hidden)) || (Equals(ending, AppLifecycleState.detached))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return starting switch { var __case13833 when Equals(__case13833, AppLifecycleState.resumed) => Equals(ending, AppLifecycleState.inactive), var __case13906 when Equals(__case13906, AppLifecycleState.detached) => Equals(ending, AppLifecycleState.resumed) || Equals(ending, AppLifecycleState.paused), var __case14025 when Equals(__case14025, AppLifecycleState.inactive) => Equals(ending, AppLifecycleState.resumed) || Equals(ending, AppLifecycleState.hidden), var __case14144 when Equals(__case14144, AppLifecycleState.hidden) => Equals(ending, AppLifecycleState.paused) || Equals(ending, AppLifecycleState.inactive), var __case14262 when Equals(__case14262, AppLifecycleState.paused) => Equals(ending, AppLifecycleState.hidden) || Equals(ending, AppLifecycleState.detached), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal async virtual Future _handleAccessibilityMessage(object accessibilityMessage)
     {
-        DartMap<string, object> message = (DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)accessibilityMessage)).cast<string, object>();
+        DartMap<string, object> message = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)accessibilityMessage).cast<string, object>();
         var type = ((string?)message.GetValueOrDefault("type"))!;
         switch (type)
         {
@@ -267,7 +267,7 @@ public abstract class ServicesBinding : SchedulerBinding
         {
             case var __case15705 when Equals(__case15705, "ContextMenu.onDismissSystemContextMenu"):
                 {
-                    if ((_systemContextMenuClient is null))
+                    if (_systemContextMenuClient is null)
                     {
                         DartRuntimePrimitives.Assert(() => false);
                         return default!;
@@ -278,13 +278,13 @@ public abstract class ServicesBinding : SchedulerBinding
                 }
             case var __case16083 when Equals(__case16083, "ContextMenu.onPerformCustomAction"):
                 {
-                    if ((_systemContextMenuClient is null))
+                    if (_systemContextMenuClient is null)
                     {
                         DartRuntimePrimitives.Assert(() => false);
                         return default!;
                     }
                     var args = ((List<object>?)methodCall.arguments)!;
-                    var callbackId = ((string?)args[(int)(1L)])!;
+                    var callbackId = ((string?)args[(int)1L])!;
                     _systemContextMenuClient!.handleCustomContextMenuAction(callbackId);
                     break;
                 }
@@ -309,7 +309,7 @@ public abstract class ServicesBinding : SchedulerBinding
 
     internal static AppLifecycleState? _parseAppLifecycleMessage(string message)
     {
-        return (message switch { var __case17111 when Equals(__case17111, "AppLifecycleState.resumed") => AppLifecycleState.resumed, var __case17175 when Equals(__case17175, "AppLifecycleState.inactive") => AppLifecycleState.inactive, var __case17241 when Equals(__case17241, "AppLifecycleState.hidden") => AppLifecycleState.hidden, var __case17303 when Equals(__case17303, "AppLifecycleState.paused") => AppLifecycleState.paused, var __case17365 when Equals(__case17365, "AppLifecycleState.detached") => AppLifecycleState.detached, _ => null });
+        return message switch { var __case17111 when Equals(__case17111, "AppLifecycleState.resumed") => AppLifecycleState.resumed, var __case17175 when Equals(__case17175, "AppLifecycleState.inactive") => AppLifecycleState.inactive, var __case17241 when Equals(__case17241, "AppLifecycleState.hidden") => AppLifecycleState.hidden, var __case17303 when Equals(__case17303, "AppLifecycleState.paused") => AppLifecycleState.paused, var __case17365 when Equals(__case17365, "AppLifecycleState.detached") => AppLifecycleState.detached, _ => null };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -322,7 +322,7 @@ public abstract class ServicesBinding : SchedulerBinding
     public async virtual Future<AppExitResponse> exitApplication(AppExitType exitType, long exitCode = 0)
     {
         DartMap<string, object?>? result = await SystemChannels.platform.invokeMethod<DartMap<string, object?>>("System.exitApplication", new DartMap<string, object?> { ["type"] = exitType.ToString(), ["exitCode"] = exitCode });
-        if ((result is null))
+        if (result is null)
         {
             return Dart_uiLibrary.AppExitResponse.cancel;
         }
@@ -379,14 +379,14 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
     public async virtual Future handlePlatformMessage(string channel, ByteData? data, Action<ByteData?>? callback)
     {
         DartRuntimePrimitives.Observe(
-            Dart_uiLibrary.channelBuffers.push(channel, data, ((data) => callback?.Invoke(data))),
+            Dart_uiLibrary.channelBuffers.push(channel, data, (data) => callback?.Invoke(data)),
             "BinaryMessenger.handlePlatformMessage");
     }
 
     public virtual Future<ByteData?> send(string channel, ByteData? message)
     {
         var completer = new Completer<ByteData?>();
-        Dart_uiLibrary.PlatformDispatcher.instance.sendPlatformMessage(channel, message, ((reply) =>
+        Dart_uiLibrary.PlatformDispatcher.instance.sendPlatformMessage(channel, message, (reply) =>
         {
             try
             {
@@ -397,20 +397,20 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
                 var stack = new System.Diagnostics.StackTrace();
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("during a platform message response callback")));
             }
-        }));
+        });
         return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void setMessageHandler(string channel, Func<ByteData?, Future<ByteData?>?>? handler)
     {
-        if ((handler is null))
+        if (handler is null)
         {
             Dart_uiLibrary.channelBuffers.clearListener(channel);
         }
         else
         {
-            Dart_uiLibrary.channelBuffers.setListener(channel, (async (data, callback) =>
+            Dart_uiLibrary.channelBuffers.setListener(channel, async (data, callback) =>
             {
                 ByteData? response = default!;
                 try
@@ -426,7 +426,7 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
                 {
                     callback(response);
                 }
-            }));
+            });
         }
     }
 

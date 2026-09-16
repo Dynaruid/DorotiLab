@@ -32,8 +32,8 @@ public abstract class TwoDimensionalViewport : RenderObjectWidget
         this.cacheExtentStyle = cacheExtentStyle;
         this.scrollCacheExtent = scrollCacheExtent;
         this.clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert(((Equals(verticalAxisDirection, AxisDirection.down)) || (Equals(verticalAxisDirection, AxisDirection.up))));
-        System.Diagnostics.Debug.Assert(((Equals(horizontalAxisDirection, AxisDirection.left)) || (Equals(horizontalAxisDirection, AxisDirection.right))));
+        System.Diagnostics.Debug.Assert(Equals(verticalAxisDirection, AxisDirection.down) || Equals(verticalAxisDirection, AxisDirection.up));
+        System.Diagnostics.Debug.Assert(Equals(horizontalAxisDirection, AxisDirection.left) || Equals(horizontalAxisDirection, AxisDirection.right));
     }
 
     public override RenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<RenderObjectElement>(new _TwoDimensionalViewportElement__two_dimensional_viewport(this));
@@ -56,17 +56,17 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
     public override void performRebuild()
     {
         base.performRebuild();
-        (this.renderObject).markNeedsLayout(withDelegateRebuild: true);
+        renderObject.markNeedsLayout(withDelegateRebuild: true);
     }
 
     public override void forgetChild(Element child)
     {
-        DartRuntimePrimitives.Assert(() => !this._debugIsDoingLayout);
+        DartRuntimePrimitives.Assert(() => !_debugIsDoingLayout);
         base.forgetChild(child);
-        this._vicinityToChild.remove((child.slot as ChildVicinity ?? throw new InvalidOperationException("The viewport child has no vicinity.")));
-        if ((((Element)child).widget.key is not null))
+        _vicinityToChild.remove(child.slot as ChildVicinity ?? throw new InvalidOperationException("The viewport child has no vicinity."));
+        if (child.widget.key is not null)
         {
-            this._keyToChild.remove(((Element)child).widget.key);
+            _keyToChild.remove(child.widget.key);
         }
     }
 
@@ -74,7 +74,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
         var __slot = slot as ChildVicinity ?? throw new ArgumentException("A viewport child requires a vicinity.", nameof(slot));
-        this.renderObject._insertChild(__child, __slot);
+        renderObject._insertChild(__child, __slot);
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -82,26 +82,26 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
         var __oldSlot = oldSlot as ChildVicinity ?? throw new ArgumentException("A viewport child requires a vicinity.", nameof(oldSlot));
         var __newSlot = newSlot as ChildVicinity ?? throw new ArgumentException("A viewport child requires a vicinity.", nameof(newSlot));
-        this.renderObject._moveChild(__child, from: __oldSlot, to: __newSlot);
+        renderObject._moveChild(__child, from: __oldSlot, to: __newSlot);
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
         var __slot = slot as ChildVicinity ?? throw new ArgumentException("A viewport child requires a vicinity.", nameof(slot));
-        this.renderObject._removeChild(__child, __slot);
+        renderObject._removeChild(__child, __slot);
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        this._vicinityToChild.Values.forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
+        _vicinityToChild.Values.forEach((__arg0) => visitor(__arg0));
     }
 
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         List<Element> children = ((Func<List<Element>>)(() =>
 {
-    var __cascade = this._vicinityToChild.Values.ToList();
+    var __cascade = _vicinityToChild.Values.ToList();
     __cascade.sort(_compareChildren);
     return __cascade;
 }))().ToList();
@@ -111,111 +111,111 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
 
     internal static long _compareChildren(Element a, Element b)
     {
-        var aSlot = ((ChildVicinity?)((Element)a).slot!)!;
-        var bSlot = ((ChildVicinity?)((Element)b).slot!)!;
+        var aSlot = ((ChildVicinity?)a.slot!)!;
+        var bSlot = ((ChildVicinity?)b.slot!)!;
         return aSlot.compareTo(bSlot);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _debugIsDoingLayout => DartRuntimePrimitives.ConvertValue<bool>(((this._newKeyToChild is not null) && (this._newVicinityToChild is not null)));
+    internal virtual bool _debugIsDoingLayout => DartRuntimePrimitives.ConvertValue<bool>((_newKeyToChild is not null) && (_newVicinityToChild is not null));
     public virtual void _startLayout()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugIsDoingLayout);
+        DartRuntimePrimitives.Assert(() => !_debugIsDoingLayout);
         _newVicinityToChild = new DartMap<ChildVicinity, Element>().cast<ChildVicinity, Element>();
         _newKeyToChild = new DartMap<global::Doroti.Framework.Foundation.Key, Element>().cast<global::Doroti.Framework.Foundation.Key, Element>();
     }
 
     public virtual void _buildChild(ChildVicinity vicinity)
     {
-        DartRuntimePrimitives.Assert(() => this._debugIsDoingLayout);
-        this.owner!.buildScope(this, ((global::System.Action)(() =>
+        DartRuntimePrimitives.Assert(() => _debugIsDoingLayout);
+        owner!.buildScope(this, () =>
         {
-            Widget? newWidget = ((Widget?)(((TwoDimensionalViewport?)this.widget)!).@delegate.build(this, vicinity));
-            if ((newWidget is null))
+            Widget? newWidget = ((TwoDimensionalViewport?)widget)!.@delegate.build(this, vicinity);
+            if (newWidget is null)
             {
                 return;
             }
-            Element? oldElement = ((Element?)_retrieveOldElement(newWidget, vicinity));
+            Element? oldElement = _retrieveOldElement(newWidget, vicinity);
             Element newChild = updateChild(oldElement, newWidget, vicinity) ?? throw new InvalidOperationException("Updating a non-null widget must produce an element.");
-            DartRuntimePrimitives.Assert(() => (newChild is not null));
-            DartRuntimePrimitives.Assert(() => (!this._newVicinityToChild!.ContainsKey(vicinity)));
-            this._newVicinityToChild![vicinity] = newChild!;
-            if ((((Widget)newWidget).key is not null))
+            DartRuntimePrimitives.Assert(() => newChild is not null);
+            DartRuntimePrimitives.Assert(() => !_newVicinityToChild!.ContainsKey(vicinity));
+            _newVicinityToChild![vicinity] = newChild!;
+            if (newWidget.key is not null)
             {
-                DartRuntimePrimitives.Assert(() => (!this._newKeyToChild!.ContainsKey(((Widget)newWidget).key!)));
-                this._newKeyToChild![((Widget)newWidget).key!] = newChild;
+                DartRuntimePrimitives.Assert(() => !_newKeyToChild!.ContainsKey(newWidget.key!));
+                _newKeyToChild![newWidget.key!] = newChild;
             }
-        })));
+        });
     }
 
     internal virtual Element? _retrieveOldElement(Widget newWidget, ChildVicinity vicinity)
     {
-        if ((((Widget)newWidget).key is not null))
+        if (newWidget.key is not null)
         {
-            Element? result = this._keyToChild.remove(((Widget)newWidget).key);
-            if ((result is not null))
+            Element? result = _keyToChild.remove(newWidget.key);
+            if (result is not null)
             {
-                this._vicinityToChild.remove((result.slot as ChildVicinity ?? throw new InvalidOperationException("The viewport child has no vicinity.")));
+                _vicinityToChild.remove(result.slot as ChildVicinity ?? throw new InvalidOperationException("The viewport child has no vicinity."));
             }
             return result;
         }
-        Element? potentialOldElement = this._vicinityToChild.GetValueOrDefault(vicinity);
-        if (((potentialOldElement is not null) && (((Element)potentialOldElement).widget.key is null)))
+        Element? potentialOldElement = _vicinityToChild.GetValueOrDefault(vicinity);
+        if ((potentialOldElement is not null) && (potentialOldElement.widget.key is null))
         {
-            return this._vicinityToChild.remove(vicinity);
+            return _vicinityToChild.remove(vicinity);
         }
-        return ((Element?)null);
+        return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _reuseChild(ChildVicinity vicinity)
     {
-        DartRuntimePrimitives.Assert(() => this._debugIsDoingLayout);
-        Element elementToReuse = this._vicinityToChild.remove(vicinity) ?? throw new InvalidOperationException($"No element exists at {vicinity} to reuse.");
-        DartRuntimePrimitives.Assert(() => (elementToReuse is not null), () => (object?)$"Expected to re-use an element at {vicinity}, but none was found.");
-        this._newVicinityToChild![vicinity] = elementToReuse!;
-        if ((elementToReuse.widget.key is not null))
+        DartRuntimePrimitives.Assert(() => _debugIsDoingLayout);
+        Element elementToReuse = _vicinityToChild.remove(vicinity) ?? throw new InvalidOperationException($"No element exists at {vicinity} to reuse.");
+        DartRuntimePrimitives.Assert(() => elementToReuse is not null, () => (object?)$"Expected to re-use an element at {vicinity}, but none was found.");
+        _newVicinityToChild![vicinity] = elementToReuse!;
+        if (elementToReuse.widget.key is not null)
         {
-            DartRuntimePrimitives.Assert(() => this._keyToChild.ContainsKey(((Element)elementToReuse).widget.key));
-            DartRuntimePrimitives.Assert(() => (Equals(this._keyToChild.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((Element)elementToReuse).widget.key)), elementToReuse)));
-            this._newKeyToChild![((Element)elementToReuse).widget.key!] = this._keyToChild.remove(((Element)elementToReuse).widget.key)!;
+            DartRuntimePrimitives.Assert(() => _keyToChild.ContainsKey(elementToReuse.widget.key));
+            DartRuntimePrimitives.Assert(() => Equals(_keyToChild.GetValueOrDefault(DartRuntimePrimitives.RequireReference(elementToReuse.widget.key)), elementToReuse));
+            _newKeyToChild![elementToReuse.widget.key!] = _keyToChild.remove(elementToReuse.widget.key)!;
         }
     }
 
     public virtual void _endLayout()
     {
-        DartRuntimePrimitives.Assert(() => this._debugIsDoingLayout);
-        foreach (Element element in this._vicinityToChild.Values)
+        DartRuntimePrimitives.Assert(() => _debugIsDoingLayout);
+        foreach (Element element in _vicinityToChild.Values)
         {
-            if ((((Element)element).widget.key is null))
+            if (element.widget.key is null)
             {
-                updateChild(element, ((Widget?)null), null);
+                updateChild(element, null, null);
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => this._keyToChild.containsValue(element));
+                DartRuntimePrimitives.Assert(() => _keyToChild.containsValue(element));
             }
         }
-        foreach (Element elementLocal in this._keyToChild.Values)
+        foreach (Element elementLocal in _keyToChild.Values)
         {
-            DartRuntimePrimitives.Assert(() => (((Element)elementLocal).widget.key is not null));
-            updateChild(elementLocal, ((Widget?)null), null);
+            DartRuntimePrimitives.Assert(() => elementLocal.widget.key is not null);
+            updateChild(elementLocal, null, null);
         }
-        _vicinityToChild = this._newVicinityToChild!;
-        _keyToChild = this._newKeyToChild!;
+        _vicinityToChild = _newVicinityToChild!;
+        _keyToChild = _newKeyToChild!;
         _newVicinityToChild = null;
         _newKeyToChild = null;
-        DartRuntimePrimitives.Assert(() => !this._debugIsDoingLayout);
+        DartRuntimePrimitives.Assert(() => !_debugIsDoingLayout);
     }
 
     public override void attachNotificationTree()
     {
-        _notificationTree = new _NotificationNode__framework(this._parent?._notificationTree, this);
+        _notificationTree = new _NotificationNode__framework(_parent?._notificationTree, this);
     }
 
     public virtual bool onNotification(Notification notification)
     {
-        if ((notification is ViewportNotificationMixin))
+        if (notification is ViewportNotificationMixin)
         {
             ((ViewportNotificationMixin)notification)._depth += 1L;
         }
@@ -241,20 +241,20 @@ public class TwoDimensionalViewportParentData : global::Doroti.Framework.Renderi
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((this._paintExtent is null))
+                    if (_paintExtent is null)
                     {
                         throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The paint extent of the child has not been determined yet."), new global::Doroti.Framework.Foundation.ErrorDescription("The paint extent, and therefore the visibility, of a child of a " + "RenderTwoDimensionalViewport is computed after " + "RenderTwoDimensionalViewport.layoutChildSequence.") }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            return (((!Equals(this._paintExtent, Size.zero)) || (DartRuntimePrimitives.RequireValue(this._paintExtent).height != 0.0)) || (DartRuntimePrimitives.RequireValue(this._paintExtent).width != 0.0));
+            return (!Equals(_paintExtent, Size.zero)) || (DartRuntimePrimitives.RequireValue(_paintExtent).height != 0.0) || (DartRuntimePrimitives.RequireValue(_paintExtent).width != 0.0);
         }
     }
-    public virtual bool keptAlive => DartRuntimePrimitives.ConvertValue<bool>((this.keepAlive && !this.isVisible));
+    public virtual bool keptAlive => DartRuntimePrimitives.ConvertValue<bool>(keepAlive && !isVisible);
     public override string ToString()
     {
-        return $"vicinity={this.vicinity}; " + $"layoutOffset={this.layoutOffset}; " + $"paintOffset={this.paintOffset}; " + $"{((this._paintExtent is null) ? "not visible; " : $"{(!this.isVisible ? "not " : "")}visible - paintExtent={this._paintExtent}; ")}" + $"{(this.keepAlive ? "keepAlive; " : "")}";
+        return $"vicinity={vicinity}; " + $"layoutOffset={layoutOffset}; " + $"paintOffset={paintOffset}; " + $"{((_paintExtent is null) ? "not visible; " : $"{(!isVisible ? "not " : "")}visible - paintExtent={_paintExtent}; ")}" + $"{(keepAlive ? "keepAlive; " : "")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -286,48 +286,48 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     protected RenderTwoDimensionalViewport(global::Doroti.Framework.Rendering.ViewportOffset horizontalOffset, global::Doroti.Framework.Painting.AxisDirection horizontalAxisDirection, global::Doroti.Framework.Rendering.ViewportOffset verticalOffset, global::Doroti.Framework.Painting.AxisDirection verticalAxisDirection, TwoDimensionalChildDelegate @delegate, global::Doroti.Framework.Painting.Axis mainAxis, TwoDimensionalChildManager childManager, double? cacheExtent = null, global::Doroti.Framework.Rendering.CacheExtentStyle? cacheExtentStyle = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, Clip clipBehavior = Clip.hardEdge)
     {
-        this._childManager = childManager;
-        this._horizontalOffset = horizontalOffset;
-        this._horizontalAxisDirection = horizontalAxisDirection;
-        this._verticalOffset = verticalOffset;
-        this._verticalAxisDirection = verticalAxisDirection;
-        this._delegate = @delegate;
-        this._mainAxis = mainAxis;
-        this._scrollCacheExtent = (scrollCacheExtent ?? (((cacheExtent is not null) ? (cacheExtentStyle switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent)), null => ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent)), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(cacheExtent)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) : ScrollCacheExtent.CreatePixels(RenderAbstractViewport.defaultCacheExtent))));
-        this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert(((Equals(verticalAxisDirection, AxisDirection.down)) || (Equals(verticalAxisDirection, AxisDirection.up))));
-        System.Diagnostics.Debug.Assert(((Equals(horizontalAxisDirection, AxisDirection.left)) || (Equals(horizontalAxisDirection, AxisDirection.right))));
+        _childManager = childManager;
+        _horizontalOffset = horizontalOffset;
+        _horizontalAxisDirection = horizontalAxisDirection;
+        _verticalOffset = verticalOffset;
+        _verticalAxisDirection = verticalAxisDirection;
+        _delegate = @delegate;
+        _mainAxis = mainAxis;
+        _scrollCacheExtent = scrollCacheExtent ?? ((cacheExtent is not null) ? (cacheExtentStyle switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent)), null => ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent)), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(cacheExtent)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) : ScrollCacheExtent.CreatePixels(RenderAbstractViewport.defaultCacheExtent));
+        _clipBehavior = clipBehavior;
+        System.Diagnostics.Debug.Assert(Equals(verticalAxisDirection, AxisDirection.down) || Equals(verticalAxisDirection, AxisDirection.up));
+        System.Diagnostics.Debug.Assert(Equals(horizontalAxisDirection, AxisDirection.left) || Equals(horizontalAxisDirection, AxisDirection.right));
     }
 
     public virtual global::Doroti.Framework.Rendering.ViewportOffset horizontalOffset
     {
-        get => this._horizontalOffset;
+        get => _horizontalOffset;
         set
         {
             var __value = value;
-            if ((Equals(this._horizontalOffset, __value)))
+            if (Equals(_horizontalOffset, __value))
             {
                 return;
             }
-            if (this.attached)
+            if (attached)
             {
-                this._horizontalOffset.removeListener(this.markNeedsLayout);
+                _horizontalOffset.removeListener(markNeedsLayout);
             }
             _horizontalOffset = __value;
-            if (this.attached)
+            if (attached)
             {
-                this._horizontalOffset.addListener(this.markNeedsLayout);
+                _horizontalOffset.addListener(markNeedsLayout);
             }
             markNeedsLayout();
         }
     }
     public virtual global::Doroti.Framework.Painting.AxisDirection horizontalAxisDirection
     {
-        get => this._horizontalAxisDirection;
+        get => _horizontalAxisDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._horizontalAxisDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_horizontalAxisDirection, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -337,33 +337,33 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     }
     public virtual global::Doroti.Framework.Rendering.ViewportOffset verticalOffset
     {
-        get => this._verticalOffset;
+        get => _verticalOffset;
         set
         {
             var __value = value;
-            if ((Equals(this._verticalOffset, __value)))
+            if (Equals(_verticalOffset, __value))
             {
                 return;
             }
-            if (this.attached)
+            if (attached)
             {
-                this._verticalOffset.removeListener(this.markNeedsLayout);
+                _verticalOffset.removeListener(markNeedsLayout);
             }
             _verticalOffset = __value;
-            if (this.attached)
+            if (attached)
             {
-                this._verticalOffset.addListener(this.markNeedsLayout);
+                _verticalOffset.addListener(markNeedsLayout);
             }
             markNeedsLayout();
         }
     }
     public virtual global::Doroti.Framework.Painting.AxisDirection verticalAxisDirection
     {
-        get => this._verticalAxisDirection;
+        get => _verticalAxisDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._verticalAxisDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_verticalAxisDirection, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -373,25 +373,25 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     }
     public virtual TwoDimensionalChildDelegate @delegate
     {
-        get => this._delegate;
+        get => _delegate;
         set
         {
             var __value = value;
-            if ((Equals(this._delegate, __value)))
+            if (Equals(_delegate, __value))
             {
                 return;
             }
-            if (this.attached)
+            if (attached)
             {
-                this._delegate.removeListener(this._handleDelegateNotification);
+                _delegate.removeListener(_handleDelegateNotification);
             }
-            TwoDimensionalChildDelegate oldDelegate = this._delegate;
+            TwoDimensionalChildDelegate oldDelegate = _delegate;
             _delegate = __value;
-            if (this.attached)
+            if (attached)
             {
-                this._delegate.addListener(this._handleDelegateNotification);
+                _delegate.addListener(_handleDelegateNotification);
             }
-            if (((!Equals(DartRuntimePrimitives.RuntimeType(this._delegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || this._delegate.shouldRebuild(oldDelegate)))
+            if ((!Equals(DartRuntimePrimitives.RuntimeType(_delegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || _delegate.shouldRebuild(oldDelegate))
             {
                 _handleDelegateNotification();
             }
@@ -399,11 +399,11 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     }
     public virtual global::Doroti.Framework.Painting.Axis mainAxis
     {
-        get => this._mainAxis;
+        get => _mainAxis;
         set
         {
             var __value = value;
-            if ((Equals(this._mainAxis, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_mainAxis, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -413,57 +413,57 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     }
     public virtual double cacheExtent
     {
-        get => ((global::Doroti.Framework.Rendering.ScrollCacheExtent)this._scrollCacheExtent).value;
+        get => _scrollCacheExtent.value;
         set
         {
             double? __value = value;
-            if ((__value == this.cacheExtent))
+            if (__value == cacheExtent)
             {
                 return;
             }
-            if ((__value is null))
+            if (__value is null)
             {
                 _scrollCacheExtent = ScrollCacheExtent.CreatePixels(RenderAbstractViewport.defaultCacheExtent);
             }
             else
             {
-                _scrollCacheExtent = (this.cacheExtentStyle switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(__value)), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(__value)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                _scrollCacheExtent = cacheExtentStyle switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(__value)), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(__value)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             }
             markNeedsLayout();
         }
     }
     public virtual global::Doroti.Framework.Rendering.CacheExtentStyle cacheExtentStyle
     {
-        get => ((global::Doroti.Framework.Rendering.ScrollCacheExtent)this._scrollCacheExtent).style;
+        get => _scrollCacheExtent.style;
         set
         {
             global::Doroti.Framework.Rendering.CacheExtentStyle? __value = value;
-            if ((Equals(__value, this.cacheExtentStyle)))
+            if (Equals(__value, cacheExtentStyle))
             {
                 return;
             }
-            if ((__value is null))
+            if (__value is null)
             {
-                _scrollCacheExtent = ScrollCacheExtent.CreatePixels(this.cacheExtent);
+                _scrollCacheExtent = ScrollCacheExtent.CreatePixels(cacheExtent);
             }
             else
             {
-                _scrollCacheExtent = (DartRuntimePrimitives.RequireValue(__value) switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(this.cacheExtent), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(this.cacheExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                _scrollCacheExtent = DartRuntimePrimitives.RequireValue(__value) switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(cacheExtent), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(cacheExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             }
             markNeedsLayout();
         }
     }
     public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent scrollCacheExtent
     {
-        get => this._scrollCacheExtent;
+        get => _scrollCacheExtent;
         set
         {
             global::Doroti.Framework.Rendering.ScrollCacheExtent? __value = value;
-            if ((Equals(this._scrollCacheExtent, __value)))
+            if (Equals(_scrollCacheExtent, __value))
             {
                 return;
             }
-            if ((__value is null))
+            if (__value is null)
             {
                 _scrollCacheExtent = ScrollCacheExtent.CreatePixels(RenderAbstractViewport.defaultCacheExtent);
             }
@@ -476,11 +476,11 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     }
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            if ((Equals(this._clipBehavior, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(_clipBehavior, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -491,18 +491,18 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     }
     public override bool isRepaintBoundary => true;
     public override bool sizedByParent => true;
-    public virtual global::Doroti.Framework.Rendering.RenderBox? firstChild => this._firstChild;
-    public virtual global::Doroti.Framework.Rendering.RenderBox? lastChild => this._lastChild;
+    public virtual global::Doroti.Framework.Rendering.RenderBox? firstChild => _firstChild;
+    public virtual global::Doroti.Framework.Rendering.RenderBox? lastChild => _lastChild;
     public virtual global::Doroti.Framework.Rendering.RenderBox? childBefore(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return parentDataOf(child)._previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Rendering.RenderBox? childAfter(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return parentDataOf(child)._nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -516,7 +516,7 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        if ((__child.parentData is not TwoDimensionalViewportParentData))
+        if (__child.parentData is not TwoDimensionalViewportParentData)
         {
             __child.parentData = new TwoDimensionalViewportParentData();
         }
@@ -524,23 +524,23 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public virtual TwoDimensionalViewportParentData parentDataOf(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => ((this._children.containsValue(child) || this._keepAliveBucket.containsValue(child)) || this._debugOrphans!.Contains(child)));
+        DartRuntimePrimitives.Assert(() => _children.containsValue(child) || _keepAliveBucket.containsValue(child) || _debugOrphans!.Contains(child));
         return ((TwoDimensionalViewportParentData?)child.parentData!)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.RenderBox? getChildFor(ChildVicinity vicinity) => this._children.GetValueOrDefault(vicinity);
+    public virtual global::Doroti.Framework.Rendering.RenderBox? getChildFor(ChildVicinity vicinity) => _children.GetValueOrDefault(vicinity);
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        this._horizontalOffset.addListener(this.markNeedsLayout);
-        this._verticalOffset.addListener(this.markNeedsLayout);
-        this._delegate.addListener(this._handleDelegateNotification);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in this._children.Values)
+        _horizontalOffset.addListener(markNeedsLayout);
+        _verticalOffset.addListener(markNeedsLayout);
+        _delegate.addListener(_handleDelegateNotification);
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _children.Values)
         {
             child.attach(owner);
         }
-        foreach (global::Doroti.Framework.Rendering.RenderBox childLocal in this._keepAliveBucket.Values)
+        foreach (global::Doroti.Framework.Rendering.RenderBox childLocal in _keepAliveBucket.Values)
         {
             childLocal.attach(owner);
         }
@@ -549,14 +549,14 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     public override void detach()
     {
         base.detach();
-        this._horizontalOffset.removeListener(this.markNeedsLayout);
-        this._verticalOffset.removeListener(this.markNeedsLayout);
-        this._delegate.removeListener(this._handleDelegateNotification);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in this._children.Values)
+        _horizontalOffset.removeListener(markNeedsLayout);
+        _verticalOffset.removeListener(markNeedsLayout);
+        _delegate.removeListener(_handleDelegateNotification);
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _children.Values)
         {
             child.detach();
         }
-        foreach (global::Doroti.Framework.Rendering.RenderBox childLocal in this._keepAliveBucket.Values)
+        foreach (global::Doroti.Framework.Rendering.RenderBox childLocal in _keepAliveBucket.Values)
         {
             childLocal.detach();
         }
@@ -564,32 +564,32 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public override void redepthChildren()
     {
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in this._children.Values)
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _children.Values)
         {
             child.redepthChildren();
         }
-        this._keepAliveBucket.Values.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)this.redepthChild)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
+        _keepAliveBucket.Values.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
     }
 
     public override void visitChildren(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this._firstChild;
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             child = parentDataOf(child)._nextSibling;
         }
-        this._keepAliveBucket.Values.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
+        _keepAliveBucket.Values.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
     }
 
     public override void visitChildrenForSemantics(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this._firstChild;
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = _firstChild;
+        while (child is not null)
         {
-            TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
+            TwoDimensionalViewportParentData childParentData = parentDataOf(child);
             visitor(child);
-            child = ((TwoDimensionalViewportParentData)childParentData)._nextSibling;
+            child = childParentData._nextSibling;
         }
     }
 
@@ -604,25 +604,25 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     {
         DartRuntimePrimitives.Assert(() => Rendering.DebugLibrary.debugCheckHasBoundedAxis(Axis.vertical, constraints));
         DartRuntimePrimitives.Assert(() => Rendering.DebugLibrary.debugCheckHasBoundedAxis(Axis.horizontal, constraints));
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest;
+        return constraints.biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in this._children.Values)
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _children.Values)
         {
-            TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
-            if (!((TwoDimensionalViewportParentData)childParentData).isVisible)
+            TwoDimensionalViewportParentData childParentData = parentDataOf(child);
+            if (!childParentData.isVisible)
             {
                 continue;
             }
-            bool isHit = result.addWithPaintOffset(offset: ((TwoDimensionalViewportParentData)childParentData).paintOffset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            bool isHit = result.addWithPaintOffset(offset: childParentData.paintOffset, position: position, hitTest: (result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - DartRuntimePrimitives.RequireValue(((TwoDimensionalViewportParentData)childParentData).paintOffset)))));
+                DartRuntimePrimitives.Assert(() => Equals(transformed, position - DartRuntimePrimitives.RequireValue(childParentData.paintOffset)));
                 return child.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })));
+            });
             if (isHit)
             {
                 return true;
@@ -636,17 +636,17 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => this.hasSize);
-            return this.size;
+            DartRuntimePrimitives.Assert(() => hasSize);
+            return size;
         }
     }
     public override void performResize()
     {
-        global::Doroti.Ui.Size? oldSize = ((global::Doroti.Ui.Size?)(this.hasSize ? this.size : null));
+        global::Doroti.Ui.Size? oldSize = hasSize ? size : null;
         base.performResize();
-        this.horizontalOffset.applyViewportDimension(this.size.width);
-        this.verticalOffset.applyViewportDimension(this.size.height);
-        if ((!Equals(oldSize, this.size)))
+        horizontalOffset.applyViewportDimension(size.width);
+        verticalOffset.applyViewportDimension(size.height);
+        if (!Equals(oldSize, size))
         {
             _didResize = true;
         }
@@ -654,27 +654,27 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public virtual global::Doroti.Framework.Rendering.RevealedOffset getOffsetToReveal(global::Doroti.Framework.Rendering.RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null)
     {
-        axis ??= this.mainAxis;
-        var (offsetLocal, axisDirection) = (DartRuntimePrimitives.RequireValue(axis) switch { Axis.vertical => (((double, global::Doroti.Framework.Painting.AxisDirection))((((global::Doroti.Framework.Rendering.ViewportOffset)this.verticalOffset).pixels, this.verticalAxisDirection))), Axis.horizontal => (((double, global::Doroti.Framework.Painting.AxisDirection))((((global::Doroti.Framework.Rendering.ViewportOffset)this.horizontalOffset).pixels, this.horizontalAxisDirection))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        rect ??= ((global::Doroti.Framework.Rendering.RenderObject)target).paintBounds;
+        axis ??= mainAxis;
+        var (offsetLocal, axisDirection) = DartRuntimePrimitives.RequireValue(axis) switch { Axis.vertical => (verticalOffset.pixels, verticalAxisDirection), Axis.horizontal => ((double, global::Doroti.Framework.Painting.AxisDirection))(horizontalOffset.pixels, horizontalAxisDirection), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        rect ??= target.paintBounds;
         var child = target;
-        while ((!Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, this)))
+        while (!Equals(child.parent, this))
         {
-            child = ((global::Doroti.Framework.Rendering.RenderObject)child).parent!;
+            child = child.parent!;
         }
-        DartRuntimePrimitives.Assert(() => (Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var box = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
-        global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(((Matrix4)(target).getTransformTo(((global::Doroti.Framework.Rendering.RenderBox)child))), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
+        global::Doroti.Ui.Rect rectLocal = MatrixUtils.transformRect(target.getTransformTo((global::Doroti.Framework.Rendering.RenderBox)child), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
         var leadingScrollOffset = offsetLocal;
-        leadingScrollOffset += (DartRuntimePrimitives.RequireValue(axisDirection) switch { AxisDirection.up => (((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)child)).size.height - rectLocal.bottom), AxisDirection.left => (((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)child)).size.width - rectLocal.right), AxisDirection.right => rectLocal.left, AxisDirection.down => rectLocal.top, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Offset paintOffsetLocal = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(parentDataOf(box).paintOffset));
-        leadingScrollOffset += (DartRuntimePrimitives.RequireValue(axisDirection) switch { AxisDirection.up => ((this.viewportDimension.height - paintOffsetLocal.dy) - ((global::Doroti.Framework.Rendering.RenderBox)box).size.height), AxisDirection.left => ((this.viewportDimension.width - paintOffsetLocal.dx) - ((global::Doroti.Framework.Rendering.RenderBox)box).size.width), AxisDirection.right => paintOffsetLocal.dx, AxisDirection.down => paintOffsetLocal.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        Matrix4 transform = ((Matrix4)((Matrix4)(target).getTransformTo(this)));
-        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
-        double mainAxisExtentDifference = (DartRuntimePrimitives.RequireValue(axis) switch { Axis.horizontal => (this.viewportDimension.width - rectLocal.width), Axis.vertical => (this.viewportDimension.height - rectLocal.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        double targetOffset = (leadingScrollOffset - (mainAxisExtentDifference * alignment));
-        double offsetDifference = (DartRuntimePrimitives.RequireValue(axis) switch { Axis.horizontal => (((global::Doroti.Framework.Rendering.ViewportOffset)this.horizontalOffset).pixels - targetOffset), Axis.vertical => (((global::Doroti.Framework.Rendering.ViewportOffset)this.verticalOffset).pixels - targetOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        targetRect = (DartRuntimePrimitives.RequireValue(axisDirection) switch { AxisDirection.up => targetRect.translate(0.0, -offsetDifference), AxisDirection.down => targetRect.translate(0.0, offsetDifference), AxisDirection.left => targetRect.translate(-offsetDifference, 0.0), AxisDirection.right => targetRect.translate(offsetDifference, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        leadingScrollOffset += DartRuntimePrimitives.RequireValue(axisDirection) switch { AxisDirection.up => ((global::Doroti.Framework.Rendering.RenderBox)child).size.height - rectLocal.bottom, AxisDirection.left => ((global::Doroti.Framework.Rendering.RenderBox)child).size.width - rectLocal.right, AxisDirection.right => rectLocal.left, AxisDirection.down => rectLocal.top, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        global::Doroti.Ui.Offset paintOffsetLocal = DartRuntimePrimitives.RequireValue(parentDataOf(box).paintOffset);
+        leadingScrollOffset += DartRuntimePrimitives.RequireValue(axisDirection) switch { AxisDirection.up => viewportDimension.height - paintOffsetLocal.dy - box.size.height, AxisDirection.left => viewportDimension.width - paintOffsetLocal.dx - box.size.width, AxisDirection.right => paintOffsetLocal.dx, AxisDirection.down => paintOffsetLocal.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        Matrix4 transform = target.getTransformTo(this);
+        global::Doroti.Ui.Rect targetRect = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
+        double mainAxisExtentDifference = DartRuntimePrimitives.RequireValue(axis) switch { Axis.horizontal => viewportDimension.width - rectLocal.width, Axis.vertical => viewportDimension.height - rectLocal.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        double targetOffset = leadingScrollOffset - (mainAxisExtentDifference * alignment);
+        double offsetDifference = DartRuntimePrimitives.RequireValue(axis) switch { Axis.horizontal => horizontalOffset.pixels - targetOffset, Axis.vertical => verticalOffset.pixels - targetOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        targetRect = DartRuntimePrimitives.RequireValue(axisDirection) switch { AxisDirection.up => targetRect.translate(0.0, -offsetDifference), AxisDirection.down => targetRect.translate(0.0, offsetDifference), AxisDirection.left => targetRect.translate(-offsetDifference, 0.0), AxisDirection.right => targetRect.translate(offsetDifference, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var revealedOffset = new global::Doroti.Framework.Rendering.RevealedOffset(offset: targetOffset, rect: targetRect);
         return revealedOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -682,8 +682,8 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public override void showOnScreen(global::Doroti.Framework.Rendering.RenderObject? descendant = null, Rect? rect = null, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!)
     {
-        bool allowHorizontal = ((global::Doroti.Framework.Rendering.ViewportOffset)this.horizontalOffset).allowImplicitScrolling;
-        bool allowVertical = ((global::Doroti.Framework.Rendering.ViewportOffset)this.verticalOffset).allowImplicitScrolling;
+        bool allowHorizontal = horizontalOffset.allowImplicitScrolling;
+        bool allowVertical = verticalOffset.allowImplicitScrolling;
         global::Doroti.Framework.Painting.AxisDirection? axisDirectionLocal = default!;
         switch ((allowHorizontal, allowVertical))
         {
@@ -693,12 +693,12 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
                 }
             case (false, true):
                 {
-                    axisDirectionLocal = this.verticalAxisDirection;
+                    axisDirectionLocal = verticalAxisDirection;
                     break;
                 }
             case (true, false):
                 {
-                    axisDirectionLocal = this.horizontalAxisDirection;
+                    axisDirectionLocal = horizontalAxisDirection;
                     break;
                 }
             case (false, false):
@@ -707,13 +707,13 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
                     return;
                 }
         }
-        global::Doroti.Ui.Rect? newRect = ((global::Doroti.Ui.Rect?)showInViewport(descendant: descendant, viewport: this, axisDirection: axisDirectionLocal, rect: rect, duration: duration, curve: curve));
+        global::Doroti.Ui.Rect? newRect = showInViewport(descendant: descendant, viewport: this, axisDirection: axisDirectionLocal, rect: rect, duration: duration, curve: curve);
         base.showOnScreen(rect: newRect, duration: duration, curve: curve);
     }
 
     public static global::Doroti.Ui.Rect? showInViewport(global::Doroti.Framework.Rendering.RenderObject? descendant = null, Rect? rect = null, RenderTwoDimensionalViewport viewport = default!, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null)
     {
-        if ((descendant is null))
+        if (descendant is null)
         {
             return rect;
         }
@@ -741,13 +741,13 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
                 }
             case null:
                 {
-                    rect = (showHorizontal(rect) ?? rect);
+                    rect = showHorizontal(rect) ?? rect;
                     rect = showVertical(rect);
-                    if ((rect is null))
+                    if (rect is null)
                     {
-                        DartRuntimePrimitives.Assert(() => (viewport.parent is not null));
-                        Matrix4 transform = ((Matrix4)((Matrix4)(descendant).getTransformTo(viewport.parent)));
-                        return ((global::Doroti.Ui.Rect?)(object?)MatrixUtils.transformRect(transform, ((rect ?? (Rect)((global::Doroti.Framework.Rendering.RenderObject)descendant).paintBounds))));
+                        DartRuntimePrimitives.Assert(() => viewport.parent is not null);
+                        Matrix4 transform = descendant.getTransformTo(viewport.parent);
+                        return (global::Doroti.Ui.Rect?)(object?)MatrixUtils.transformRect(transform, rect ?? descendant.paintBounds);
                     }
                     return DartRuntimePrimitives.RequireValue(rect);
                 }
@@ -759,27 +759,27 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     internal static global::Doroti.Ui.Rect? _showInViewportForAxisDirection(global::Doroti.Framework.Rendering.RenderObject descendant, Rect? rect = null, RenderTwoDimensionalViewport viewport = default!, global::Doroti.Framework.Painting.Axis axis = default!, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!)
     {
-        global::Doroti.Framework.Rendering.ViewportOffset offsetLocal = (DartRuntimePrimitives.RequireValue(axis) switch { Axis.vertical => ((RenderTwoDimensionalViewport)viewport).verticalOffset, Axis.horizontal => ((RenderTwoDimensionalViewport)viewport).horizontalOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Rendering.RevealedOffset leadingEdgeOffsetLocal = ((global::Doroti.Framework.Rendering.RevealedOffset)viewport.getOffsetToReveal(descendant, 0.0, rect: rect, axis: DartRuntimePrimitives.RequireValue(axis)));
-        global::Doroti.Framework.Rendering.RevealedOffset trailingEdgeOffsetLocal = ((global::Doroti.Framework.Rendering.RevealedOffset)viewport.getOffsetToReveal(descendant, 1.0, rect: rect, axis: DartRuntimePrimitives.RequireValue(axis)));
-        double currentOffsetLocal = ((global::Doroti.Framework.Rendering.ViewportOffset)offsetLocal).pixels;
-        global::Doroti.Framework.Rendering.RevealedOffset? targetOffset = ((global::Doroti.Framework.Rendering.RevealedOffset?)RevealedOffset.clampOffset(leadingEdgeOffset: leadingEdgeOffsetLocal, trailingEdgeOffset: trailingEdgeOffsetLocal, currentOffset: currentOffsetLocal));
-        if ((targetOffset is null))
+        global::Doroti.Framework.Rendering.ViewportOffset offsetLocal = DartRuntimePrimitives.RequireValue(axis) switch { Axis.vertical => viewport.verticalOffset, Axis.horizontal => viewport.horizontalOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        global::Doroti.Framework.Rendering.RevealedOffset leadingEdgeOffsetLocal = viewport.getOffsetToReveal(descendant, 0.0, rect: rect, axis: DartRuntimePrimitives.RequireValue(axis));
+        global::Doroti.Framework.Rendering.RevealedOffset trailingEdgeOffsetLocal = viewport.getOffsetToReveal(descendant, 1.0, rect: rect, axis: DartRuntimePrimitives.RequireValue(axis));
+        double currentOffsetLocal = offsetLocal.pixels;
+        global::Doroti.Framework.Rendering.RevealedOffset? targetOffset = RevealedOffset.clampOffset(leadingEdgeOffset: leadingEdgeOffsetLocal, trailingEdgeOffset: trailingEdgeOffsetLocal, currentOffset: currentOffsetLocal);
+        if (targetOffset is null)
         {
             return null;
         }
-        DartRuntimePrimitives.Ignore(offsetLocal.moveTo(((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).offset, duration: duration, curve: curve));
-        return ((global::Doroti.Framework.Rendering.RevealedOffset)targetOffset).rect;
+        DartRuntimePrimitives.Ignore(offsetLocal.moveTo(targetOffset.offset, duration: duration, curve: curve));
+        return targetOffset.rect;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool didResize => this._didResize;
-    public virtual bool needsDelegateRebuild => this._needsDelegateRebuild;
+    public virtual bool didResize => _didResize;
+    public virtual bool needsDelegateRebuild => _needsDelegateRebuild;
     public override void markNeedsLayout() => markNeedsLayout(withDelegateRebuild: false);
 
     public virtual void markNeedsLayout(bool withDelegateRebuild)
     {
-        _needsDelegateRebuild = (this._needsDelegateRebuild || withDelegateRebuild);
+        _needsDelegateRebuild = _needsDelegateRebuild || withDelegateRebuild;
         base.markNeedsLayout();
     }
 
@@ -788,66 +788,66 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     {
         _firstChild = null;
         _lastChild = null;
-        this._activeChildrenForLayoutPass.Clear();
-        this._childManager._startLayout();
+        _activeChildrenForLayoutPass.Clear();
+        _childManager._startLayout();
         layoutChildSequence();
         DartRuntimePrimitives.Assert(() => _debugCheckContentDimensions());
         _didResize = false;
         _needsDelegateRebuild = false;
         _cacheKeepAlives();
-        invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) =>
+        invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>((_) =>
         {
-            this._childManager._endLayout();
-            DartRuntimePrimitives.Assert(() => ((this._debugOrphans is { } __items48761 ? !Enumerable.Any(__items48761) : (bool?)null) ?? true));
-            DartRuntimePrimitives.Assert(() => !Enumerable.Any(this._debugDanglingKeepAlives));
-            DartRuntimePrimitives.Assert(() => !Enumerable.Any(this._keepAliveBucket.Values.where(((child) =>
+            _childManager._endLayout();
+            DartRuntimePrimitives.Assert(() => (_debugOrphans is { } __items48761 ? !Enumerable.Any(__items48761) : (bool?)null) ?? true);
+            DartRuntimePrimitives.Assert(() => !Enumerable.Any(_debugDanglingKeepAlives));
+            DartRuntimePrimitives.Assert(() => !Enumerable.Any(_keepAliveBucket.Values.where((child) =>
             {
                 return !parentDataOf(child).keepAlive;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))));
+            })));
             _reifyChildren();
-        })));
+        });
     }
 
     internal virtual void _cacheKeepAlives()
     {
-        List<global::Doroti.Framework.Rendering.RenderBox> remainingChildren = this._children.Values.toSet().difference<global::Doroti.Framework.Rendering.RenderBox>(this._activeChildrenForLayoutPass.Values.toSet()).ToList().ToList();
+        List<global::Doroti.Framework.Rendering.RenderBox> remainingChildren = _children.Values.toSet().difference<global::Doroti.Framework.Rendering.RenderBox>(_activeChildrenForLayoutPass.Values.toSet()).ToList().ToList();
         foreach (var child in remainingChildren)
         {
-            TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
+            TwoDimensionalViewportParentData childParentData = parentDataOf(child);
             if (childParentData.keepAlive)
             {
-                this._keepAliveBucket[((TwoDimensionalViewportParentData)childParentData).vicinity] = child;
-                this._childManager._reuseChild(((TwoDimensionalViewportParentData)childParentData).vicinity);
+                _keepAliveBucket[childParentData.vicinity] = child;
+                _childManager._reuseChild(childParentData.vicinity);
             }
         }
     }
 
     internal virtual void _sortByYIndex()
     {
-        this._currentChildVicinities.sort(((a, b) =>
+        _currentChildVicinities.sort((a, b) =>
         {
-            long yComparison = ((ChildVicinity)a).yIndex.CompareTo(((ChildVicinity)b).yIndex);
-            if ((yComparison != 0L))
+            long yComparison = a.yIndex.CompareTo(b.yIndex);
+            if (yComparison != 0L)
             {
                 return yComparison;
             }
-            return ((ChildVicinity)a).xIndex.CompareTo(((ChildVicinity)b).xIndex);
+            return a.xIndex.CompareTo(b.xIndex);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }));
+        });
     }
 
     internal virtual void _sortByXIndex()
     {
-        this._currentChildVicinities.sort();
+        _currentChildVicinities.sort();
     }
 
     internal virtual void _reifyChildren()
     {
-        DartRuntimePrimitives.Assert(() => (this._firstChild is null));
-        DartRuntimePrimitives.Assert(() => (this._lastChild is null));
+        DartRuntimePrimitives.Assert(() => _firstChild is null);
+        DartRuntimePrimitives.Assert(() => _lastChild is null);
         global::Doroti.Framework.Rendering.RenderBox? previousChildLocal = default!;
-        switch (this.mainAxis)
+        switch (mainAxis)
         {
             case Axis.vertical:
                 {
@@ -860,29 +860,29 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
                     break;
                 }
         }
-        foreach (ChildVicinity vicinity in this._currentChildVicinities)
+        foreach (ChildVicinity vicinity in _currentChildVicinities)
         {
-            previousChildLocal = (_completeChildParentData(vicinity, previousChild: previousChildLocal) ?? previousChildLocal);
+            previousChildLocal = _completeChildParentData(vicinity, previousChild: previousChildLocal) ?? previousChildLocal;
         }
         _lastChild = previousChildLocal;
-        if ((this._lastChild is not null))
+        if (_lastChild is not null)
         {
-            parentDataOf(this._lastChild!)._nextSibling = null;
+            parentDataOf(_lastChild!)._nextSibling = null;
         }
-        this._currentChildVicinities.Clear();
+        _currentChildVicinities.Clear();
     }
 
     internal virtual global::Doroti.Framework.Rendering.RenderBox? _completeChildParentData(ChildVicinity vicinity, global::Doroti.Framework.Rendering.RenderBox? previousChild = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(vicinity, ChildVicinity.invalid)));
-        if (this._children.ContainsKey(vicinity))
+        DartRuntimePrimitives.Assert(() => !Equals(vicinity, ChildVicinity.invalid));
+        if (_children.ContainsKey(vicinity))
         {
-            global::Doroti.Framework.Rendering.RenderBox child = this._children.GetValueOrDefault(vicinity)!;
-            DartRuntimePrimitives.Assert(() => (Equals(parentDataOf(child).vicinity, vicinity)));
+            global::Doroti.Framework.Rendering.RenderBox child = _children.GetValueOrDefault(vicinity)!;
+            DartRuntimePrimitives.Assert(() => Equals(parentDataOf(child).vicinity, vicinity));
             updateChildPaintData(child);
-            if ((previousChild is null))
+            if (previousChild is null)
             {
-                DartRuntimePrimitives.Assert(() => (this._firstChild is null));
+                DartRuntimePrimitives.Assert(() => _firstChild is null);
                 _firstChild = child;
             }
             else
@@ -892,7 +892,7 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             }
             return child;
         }
-        return ((global::Doroti.Framework.Rendering.RenderBox?)null);
+        return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -901,7 +901,7 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
         var hint = "Subclasses should call applyContentDimensions on the " + "verticalOffset and horizontalOffset to set the min and max scroll offset. " + "If the contents exceed one or both sides of the viewportDimension, " + "ensure the viewportDimension height or width is subtracted in that axis " + "for the correct extent.";
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!(((ScrollPosition?)this.verticalOffset)!).hasContentDimensions)
+                if (!((ScrollPosition?)verticalOffset)!.hasContentDimensions)
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The verticalOffset was not given content dimensions during " + "layoutChildSequence."), new global::Doroti.Framework.Foundation.ErrorHint(hint) }));
                 }
@@ -910,7 +910,7 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             });
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!(((ScrollPosition?)this.horizontalOffset)!).hasContentDimensions)
+                if (!((ScrollPosition?)horizontalOffset)!.hasContentDimensions)
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The horizontalOffset was not given content dimensions during " + "layoutChildSequence."), new global::Doroti.Framework.Foundation.ErrorHint(hint) }));
                 }
@@ -923,103 +923,103 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public virtual global::Doroti.Framework.Rendering.RenderBox? buildOrObtainChildFor(ChildVicinity vicinity)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(vicinity, ChildVicinity.invalid)));
-        DartRuntimePrimitives.Assert(() => this.debugDoingThisLayout);
-        if ((this._needsDelegateRebuild || ((!this._children.ContainsKey(vicinity) && !this._keepAliveBucket.ContainsKey(vicinity)))))
+        DartRuntimePrimitives.Assert(() => !Equals(vicinity, ChildVicinity.invalid));
+        DartRuntimePrimitives.Assert(() => debugDoingThisLayout);
+        if (_needsDelegateRebuild || !_children.ContainsKey(vicinity) && !_keepAliveBucket.ContainsKey(vicinity))
         {
-            invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) =>
+            invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>((_) =>
             {
-                this._childManager._buildChild(vicinity);
-            })));
+                _childManager._buildChild(vicinity);
+            });
         }
         else
         {
-            this._keepAliveBucket.remove(vicinity);
-            this._childManager._reuseChild(vicinity);
+            _keepAliveBucket.remove(vicinity);
+            _childManager._reuseChild(vicinity);
         }
-        if (!this._children.ContainsKey(vicinity))
+        if (!_children.ContainsKey(vicinity))
         {
-            return ((global::Doroti.Framework.Rendering.RenderBox?)null);
+            return null;
         }
-        DartRuntimePrimitives.Assert(() => this._children.ContainsKey(vicinity));
-        global::Doroti.Framework.Rendering.RenderBox child = this._children.GetValueOrDefault(vicinity)!;
-        this._activeChildrenForLayoutPass[vicinity] = child;
+        DartRuntimePrimitives.Assert(() => _children.ContainsKey(vicinity));
+        global::Doroti.Framework.Rendering.RenderBox child = _children.GetValueOrDefault(vicinity)!;
+        _activeChildrenForLayoutPass[vicinity] = child;
         parentDataOf(child).vicinity = vicinity;
-        this._currentChildVicinities.Add(vicinity);
+        _currentChildVicinities.Add(vicinity);
         return child;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void updateChildPaintData(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
-        DartRuntimePrimitives.Assert(() => (((TwoDimensionalViewportParentData)childParentData).layoutOffset is not null), () => (object?)$"The child with ChildVicinity(xIndex: {((TwoDimensionalViewportParentData)childParentData).vicinity.xIndex}, " + $"yIndex: {((TwoDimensionalViewportParentData)childParentData).vicinity.yIndex}) was not provided a " + "layoutOffset. This should be set during layoutChildSequence, " + "representing the position of the child.");
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)child).hasSize);
-        childParentData._paintExtent = computeChildPaintExtent(DartRuntimePrimitives.RequireValue(((TwoDimensionalViewportParentData)childParentData).layoutOffset), ((global::Doroti.Framework.Rendering.RenderBox)child).size);
-        childParentData.paintOffset = computeAbsolutePaintOffsetFor(child, layoutOffset: DartRuntimePrimitives.RequireValue(((TwoDimensionalViewportParentData)childParentData).layoutOffset));
-        _hasVisualOverflow = ((this._hasVisualOverflow || (!Equals(((TwoDimensionalViewportParentData)childParentData).layoutOffset, ((TwoDimensionalViewportParentData)childParentData)._paintExtent))) || !((TwoDimensionalViewportParentData)childParentData).isVisible);
+        TwoDimensionalViewportParentData childParentData = parentDataOf(child);
+        DartRuntimePrimitives.Assert(() => childParentData.layoutOffset is not null, () => (object?)$"The child with ChildVicinity(xIndex: {childParentData.vicinity.xIndex}, " + $"yIndex: {childParentData.vicinity.yIndex}) was not provided a " + "layoutOffset. This should be set during layoutChildSequence, " + "representing the position of the child.");
+        DartRuntimePrimitives.Assert(() => child.hasSize);
+        childParentData._paintExtent = computeChildPaintExtent(DartRuntimePrimitives.RequireValue(childParentData.layoutOffset), child.size);
+        childParentData.paintOffset = computeAbsolutePaintOffsetFor(child, layoutOffset: DartRuntimePrimitives.RequireValue(childParentData.layoutOffset));
+        _hasVisualOverflow = _hasVisualOverflow || (!Equals(childParentData.layoutOffset, childParentData._paintExtent)) || !childParentData.isVisible;
     }
 
     public virtual global::Doroti.Ui.Size computeChildPaintExtent(Offset layoutOffset, Size childSize)
     {
-        if ((((Equals(childSize, Size.zero)) || (childSize.height == 0.0)) || (childSize.width == 0.0)))
+        if (Equals(childSize, Size.zero) || (childSize.height == 0.0) || (childSize.width == 0.0))
         {
             return Size.zero;
         }
         double widthLocal = default!;
-        if ((layoutOffset.dx < 0.0))
+        if (layoutOffset.dx < 0.0)
         {
-            if (((layoutOffset.dx + childSize.width) <= 0.0))
+            if ((layoutOffset.dx + childSize.width) <= 0.0)
             {
                 return Size.zero;
             }
-            widthLocal = (layoutOffset.dx + childSize.width);
+            widthLocal = layoutOffset.dx + childSize.width;
         }
         else
         {
-            if ((layoutOffset.dx >= this.viewportDimension.width))
+            if (layoutOffset.dx >= viewportDimension.width)
             {
                 return Size.zero;
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => ((layoutOffset.dx >= 0L) && (layoutOffset.dx < this.viewportDimension.width)));
-                if (((layoutOffset.dx + childSize.width) > this.viewportDimension.width))
+                DartRuntimePrimitives.Assert(() => (layoutOffset.dx >= 0L) && (layoutOffset.dx < viewportDimension.width));
+                if ((layoutOffset.dx + childSize.width) > viewportDimension.width)
                 {
-                    widthLocal = (this.viewportDimension.width - layoutOffset.dx);
+                    widthLocal = viewportDimension.width - layoutOffset.dx;
                 }
                 else
                 {
-                    DartRuntimePrimitives.Assert(() => ((layoutOffset.dx + childSize.width) <= this.viewportDimension.width));
+                    DartRuntimePrimitives.Assert(() => (layoutOffset.dx + childSize.width) <= viewportDimension.width);
                     widthLocal = childSize.width;
                 }
             }
         }
         double heightLocal = default!;
-        if ((layoutOffset.dy < 0.0))
+        if (layoutOffset.dy < 0.0)
         {
-            if (((layoutOffset.dy + childSize.height) <= 0.0))
+            if ((layoutOffset.dy + childSize.height) <= 0.0)
             {
                 return Size.zero;
             }
-            heightLocal = (layoutOffset.dy + childSize.height);
+            heightLocal = layoutOffset.dy + childSize.height;
         }
         else
         {
-            if ((layoutOffset.dy >= this.viewportDimension.height))
+            if (layoutOffset.dy >= viewportDimension.height)
             {
                 return Size.zero;
             }
             else
             {
-                DartRuntimePrimitives.Assert(() => ((layoutOffset.dy >= 0L) && (layoutOffset.dy < this.viewportDimension.height)));
-                if (((layoutOffset.dy + childSize.height) > this.viewportDimension.height))
+                DartRuntimePrimitives.Assert(() => (layoutOffset.dy >= 0L) && (layoutOffset.dy < viewportDimension.height));
+                if ((layoutOffset.dy + childSize.height) > viewportDimension.height)
                 {
-                    heightLocal = (this.viewportDimension.height - layoutOffset.dy);
+                    heightLocal = viewportDimension.height - layoutOffset.dy;
                 }
                 else
                 {
-                    DartRuntimePrimitives.Assert(() => ((layoutOffset.dy + childSize.height) <= this.viewportDimension.height));
+                    DartRuntimePrimitives.Assert(() => (layoutOffset.dy + childSize.height) <= viewportDimension.height);
                     heightLocal = childSize.height;
                 }
             }
@@ -1030,114 +1030,114 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public virtual global::Doroti.Ui.Offset computeAbsolutePaintOffsetFor(global::Doroti.Framework.Rendering.RenderBox child, Offset layoutOffset)
     {
-        DartRuntimePrimitives.Assert(() => this.hasSize);
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)child).hasSize);
-        double xOffset = (this.horizontalAxisDirection switch { AxisDirection.right => layoutOffset.dx, AxisDirection.left => (this.viewportDimension.width - ((layoutOffset.dx + ((global::Doroti.Framework.Rendering.RenderBox)child).size.width))), AxisDirection.up => throw new Exception("This should not happen"), AxisDirection.down => throw new Exception("This should not happen"), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        double yOffset = (this.verticalAxisDirection switch { AxisDirection.up => (this.viewportDimension.height - ((layoutOffset.dy + ((global::Doroti.Framework.Rendering.RenderBox)child).size.height))), AxisDirection.down => layoutOffset.dy, AxisDirection.right => throw new Exception("This should not happen"), AxisDirection.left => throw new Exception("This should not happen"), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Assert(() => hasSize);
+        DartRuntimePrimitives.Assert(() => child.hasSize);
+        double xOffset = horizontalAxisDirection switch { AxisDirection.right => layoutOffset.dx, AxisDirection.left => viewportDimension.width - (layoutOffset.dx + child.size.width), AxisDirection.up => throw new Exception("This should not happen"), AxisDirection.down => throw new Exception("This should not happen"), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        double yOffset = verticalAxisDirection switch { AxisDirection.up => viewportDimension.height - (layoutOffset.dy + child.size.height), AxisDirection.down => layoutOffset.dy, AxisDirection.right => throw new Exception("This should not happen"), AxisDirection.left => throw new Exception("This should not happen"), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         return new global::Doroti.Ui.Offset(xOffset, yOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if (!Enumerable.Any(this._children))
+        if (!Enumerable.Any(_children))
         {
             return;
         }
-        if ((this._hasVisualOverflow && (!Equals(this.clipBehavior, Clip.none))))
+        if (_hasVisualOverflow && (!Equals(clipBehavior, Clip.none)))
         {
-            this._clipRectLayer.layer = context.pushClipRect(this.needsCompositing, offset, (Offset.zero & this.viewportDimension), (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)this._paintChildren, clipBehavior: this.clipBehavior, oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.ClipRectLayer>)this._clipRectLayer).layer);
+            _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, Offset.zero & viewportDimension, _paintChildren, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
         }
         else
         {
-            this._clipRectLayer.layer = null;
+            _clipRectLayer.layer = null;
             _paintChildren(context, offset);
         }
     }
 
     internal virtual void _paintChildren(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = this._firstChild;
-        while ((child is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = _firstChild;
+        while (child is not null)
         {
-            TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
-            if (((TwoDimensionalViewportParentData)childParentData).isVisible)
+            TwoDimensionalViewportParentData childParentData = parentDataOf(child);
+            if (childParentData.isVisible)
             {
-                context.paintChild(child, (offset + DartRuntimePrimitives.RequireValue(((TwoDimensionalViewportParentData)childParentData).paintOffset)));
+                context.paintChild(child, offset + DartRuntimePrimitives.RequireValue(childParentData.paintOffset));
             }
-            child = ((TwoDimensionalViewportParentData)childParentData)._nextSibling;
+            child = childParentData._nextSibling;
         }
     }
 
     internal virtual void _insertChild(global::Doroti.Framework.Rendering.RenderBox child, ChildVicinity slot)
     {
-        DartRuntimePrimitives.Assert(() => _debugTrackOrphans(newOrphan: this._children.GetValueOrDefault(slot)));
-        DartRuntimePrimitives.Assert(() => !this._keepAliveBucket.containsValue(child));
-        this._children[slot] = child;
+        DartRuntimePrimitives.Assert(() => _debugTrackOrphans(newOrphan: _children.GetValueOrDefault(slot)));
+        DartRuntimePrimitives.Assert(() => !_keepAliveBucket.containsValue(child));
+        _children[slot] = child;
         adoptChild(child);
     }
 
     internal virtual void _moveChild(global::Doroti.Framework.Rendering.RenderBox child, ChildVicinity from, ChildVicinity to)
     {
-        TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
-        if (!((TwoDimensionalViewportParentData)childParentData).keptAlive)
+        TwoDimensionalViewportParentData childParentData = parentDataOf(child);
+        if (!childParentData.keptAlive)
         {
-            if ((Equals(this._children.GetValueOrDefault(from), child)))
+            if (Equals(_children.GetValueOrDefault(from), child))
             {
-                this._children.remove(from);
+                _children.remove(from);
             }
-            DartRuntimePrimitives.Assert(() => _debugTrackOrphans(newOrphan: this._children.GetValueOrDefault(to), noLongerOrphan: child));
-            this._children[to] = child;
+            DartRuntimePrimitives.Assert(() => _debugTrackOrphans(newOrphan: _children.GetValueOrDefault(to), noLongerOrphan: child));
+            _children[to] = child;
             return;
         }
-        if ((Equals(this._keepAliveBucket.GetValueOrDefault(((TwoDimensionalViewportParentData)childParentData).vicinity), child)))
+        if (Equals(_keepAliveBucket.GetValueOrDefault(childParentData.vicinity), child))
         {
-            this._keepAliveBucket.remove(((TwoDimensionalViewportParentData)childParentData).vicinity);
+            _keepAliveBucket.remove(childParentData.vicinity);
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugDanglingKeepAlives.Remove(child);
+                _debugDanglingKeepAlives.Remove(child);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         DartRuntimePrimitives.Assert(() =>
             {
-                if (this._keepAliveBucket.ContainsKey(((TwoDimensionalViewportParentData)childParentData).vicinity))
+                if (_keepAliveBucket.ContainsKey(childParentData.vicinity))
                 {
-                    this._debugDanglingKeepAlives.Add(this._keepAliveBucket.GetValueOrDefault(((TwoDimensionalViewportParentData)childParentData).vicinity)!);
+                    _debugDanglingKeepAlives.Add(_keepAliveBucket.GetValueOrDefault(childParentData.vicinity)!);
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._keepAliveBucket[((TwoDimensionalViewportParentData)childParentData).vicinity] = child;
+        _keepAliveBucket[childParentData.vicinity] = child;
     }
 
     internal virtual void _removeChild(global::Doroti.Framework.Rendering.RenderBox child, ChildVicinity slot)
     {
-        TwoDimensionalViewportParentData childParentData = ((TwoDimensionalViewportParentData)parentDataOf(child));
-        if (!((TwoDimensionalViewportParentData)childParentData).keptAlive)
+        TwoDimensionalViewportParentData childParentData = parentDataOf(child);
+        if (!childParentData.keptAlive)
         {
-            if ((Equals(this._children.GetValueOrDefault(slot), child)))
+            if (Equals(_children.GetValueOrDefault(slot), child))
             {
-                this._children.remove(slot);
+                _children.remove(slot);
             }
             DartRuntimePrimitives.Assert(() => _debugTrackOrphans(noLongerOrphan: child));
-            if ((Equals(this._keepAliveBucket.GetValueOrDefault(((TwoDimensionalViewportParentData)childParentData).vicinity), child)))
+            if (Equals(_keepAliveBucket.GetValueOrDefault(childParentData.vicinity), child))
             {
-                this._keepAliveBucket.remove(((TwoDimensionalViewportParentData)childParentData).vicinity);
+                _keepAliveBucket.remove(childParentData.vicinity);
             }
-            DartRuntimePrimitives.Assert(() => (!Equals(this._keepAliveBucket.GetValueOrDefault(((TwoDimensionalViewportParentData)childParentData).vicinity), child)));
+            DartRuntimePrimitives.Assert(() => !Equals(_keepAliveBucket.GetValueOrDefault(childParentData.vicinity), child));
             dropChild(child);
             return;
         }
-        DartRuntimePrimitives.Assert(() => (Equals(this._keepAliveBucket.GetValueOrDefault(((TwoDimensionalViewportParentData)childParentData).vicinity), child)));
+        DartRuntimePrimitives.Assert(() => Equals(_keepAliveBucket.GetValueOrDefault(childParentData.vicinity), child));
         DartRuntimePrimitives.Assert(() =>
             {
-                this._debugDanglingKeepAlives.Remove(child);
+                _debugDanglingKeepAlives.Remove(child);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._keepAliveBucket.remove(((TwoDimensionalViewportParentData)childParentData).vicinity);
+        _keepAliveBucket.remove(childParentData.vicinity);
         dropChild(child);
     }
 
@@ -1146,13 +1146,13 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugOrphans ??= new List<global::Doroti.Framework.Rendering.RenderBox>();
-                if ((newOrphan is not null))
+                if (newOrphan is not null)
                 {
-                    this._debugOrphans!.Add(newOrphan);
+                    _debugOrphans!.Add(newOrphan);
                 }
-                if ((noLongerOrphan is not null))
+                if (noLongerOrphan is not null)
                 {
-                    this._debugOrphans!.Remove(noLongerOrphan);
+                    _debugOrphans!.Remove(noLongerOrphan);
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1167,7 +1167,7 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             {
                 if (!debugCheckingIntrinsics)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} does not support returning intrinsic dimensions."), new global::Doroti.Framework.Foundation.ErrorDescription("Calculating the intrinsic dimensions would require instantiating every child of " + "the viewport, which defeats the point of viewports being lazy.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} does not support returning intrinsic dimensions."), new global::Doroti.Framework.Foundation.ErrorDescription("Calculating the intrinsic dimensions would require instantiating every child of " + "the viewport, which defeats the point of viewports being lazy.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1207,13 +1207,13 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
-        global::Doroti.Ui.Offset paintOffsetLocal = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(parentDataOf(__child).paintOffset));
+        global::Doroti.Ui.Offset paintOffsetLocal = DartRuntimePrimitives.RequireValue(parentDataOf(__child).paintOffset);
         transform.translate(paintOffsetLocal.dx, paintOffsetLocal.dy);
     }
 
     public override void dispose()
     {
-        this._clipRectLayer.layer = null;
+        _clipRectLayer.layer = null;
         base.dispose();
     }
 
@@ -1237,31 +1237,31 @@ public class ChildVicinity : IComparable<ChildVicinity>
     {
         this.xIndex = xIndex;
         this.yIndex = yIndex;
-        System.Diagnostics.Debug.Assert((xIndex >= -1L));
-        System.Diagnostics.Debug.Assert((yIndex >= -1L));
+        System.Diagnostics.Debug.Assert(xIndex >= -1L);
+        System.Diagnostics.Debug.Assert(yIndex >= -1L);
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as ChildVicinity;
         if (__other is null) return false;
-        return (((__other is ChildVicinity) && (((ChildVicinity)((ChildVicinity)__other)).xIndex == this.xIndex)) && (((ChildVicinity)((ChildVicinity)__other)).yIndex == this.yIndex));
+        return (__other is ChildVicinity) && (__other.xIndex == xIndex) && (__other.yIndex == yIndex);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.xIndex, this.yIndex));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(xIndex, yIndex));
     public virtual long compareTo(ChildVicinity other)
     {
-        if ((this.xIndex == ((ChildVicinity)other).xIndex))
+        if (xIndex == other.xIndex)
         {
-            return (this.yIndex - ((ChildVicinity)other).yIndex);
+            return yIndex - other.yIndex;
         }
-        return (this.xIndex - ((ChildVicinity)other).xIndex);
+        return xIndex - other.xIndex;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"(xIndex: {this.xIndex}, yIndex: {this.yIndex})";
+        return $"(xIndex: {xIndex}, yIndex: {yIndex})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -125,7 +125,7 @@ public sealed class Uint8List : IList<long>, IReadOnlyList<long>
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    public int IndexOf(long item) => ((IEnumerable<long>)this).Select((value, index) => (value, index)).FirstOrDefault(pair => pair.value == item, (0, -1)).index;
+    public int IndexOf(long item) => this.Select((value, index) => (value, index)).FirstOrDefault(pair => pair.value == item, (0, -1)).index;
     public bool Contains(long item) => IndexOf(item) >= 0;
     public void CopyTo(long[] array, int arrayIndex) { for (var i = 0; i < Count; i++) array[arrayIndex + i] = this[i]; }
     public void Clear() { for (var i = 0; i < Count; i++) this[i] = 0; }

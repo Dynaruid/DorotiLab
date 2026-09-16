@@ -101,7 +101,7 @@ public class AutofillConfiguration
 
     public virtual DartMap<string, object?>? toJson()
     {
-        return (enabled ? new DartMap<string, object?> { ["uniqueIdentifier"] = uniqueIdentifier, ["hints"] = autofillHints, ["editingValue"] = currentEditingValue.toJSON(), ["hintText"] = hintText } : null);
+        return enabled ? new DartMap<string, object?> { ["uniqueIdentifier"] = uniqueIdentifier, ["hints"] = autofillHints, ["editingValue"] = currentEditingValue.toJSON(), ["hintText"] = hintText } : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,11 +113,11 @@ public class AutofillConfiguration
         {
             return true;
         }
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return ((((((__other is AutofillConfiguration) && (((AutofillConfiguration)__other).enabled == enabled)) && (((AutofillConfiguration)__other).uniqueIdentifier == uniqueIdentifier)) && CollectionsLibrary.listEquals(((AutofillConfiguration)__other).autofillHints, autofillHints)) && (Equals(((AutofillConfiguration)__other).currentEditingValue, currentEditingValue))) && (((AutofillConfiguration)__other).hintText == hintText));
+        return (__other is AutofillConfiguration) && (__other.enabled == enabled) && (__other.uniqueIdentifier == uniqueIdentifier) && CollectionsLibrary.listEquals(__other.autofillHints, autofillHints) && Equals(__other.currentEditingValue, currentEditingValue) && (__other.hintText == hintText);
     }
 
     public override int GetHashCode()
@@ -159,7 +159,7 @@ internal class _AutofillScopeTextInputConfiguration__autofill : TextInputConfigu
     public override DartMap<string, object?> toJson()
     {
         DartMap<string, object?> result = base.toJson();
-        result["fields"] = allConfigurations.map(((configuration) => configuration.toJson())).ToList();
+        result["fields"] = allConfigurations.map((configuration) => configuration.toJson()).ToList();
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -170,8 +170,8 @@ public interface AutofillScopeMixin : AutofillScope
 {
     public new TextInputConnection attach(TextInputClient trigger, TextInputConfiguration configuration)
     {
-        DartRuntimePrimitives.Assert(() => !autofillClients.any(((client) => !client.textInputConfiguration.autofillConfiguration.enabled)));
-        TextInputConfiguration inputConfiguration = new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: autofillClients.map(((client) => client.textInputConfiguration)), currentClientConfiguration: configuration);
+        DartRuntimePrimitives.Assert(() => !autofillClients.any((client) => !client.textInputConfiguration.autofillConfiguration.enabled));
+        TextInputConfiguration inputConfiguration = new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: autofillClients.map((client) => client.textInputConfiguration), currentClientConfiguration: configuration);
         return TextInput.attach(trigger, inputConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

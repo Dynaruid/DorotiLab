@@ -13,17 +13,17 @@ public abstract class CustomPainter : Listenable
 
     protected CustomPainter(Listenable? repaint = null)
     {
-        this._repaint = repaint;
+        _repaint = repaint;
     }
 
-    public virtual void addListener(Action listener) => this._repaint?.addListener(listener);
-    public virtual void removeListener(Action listener) => this._repaint?.removeListener(listener);
+    public virtual void addListener(Action listener) => _repaint?.addListener(listener);
+    public virtual void removeListener(Action listener) => _repaint?.removeListener(listener);
     public abstract void paint(Canvas canvas, Size size);
     public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder => null;
     public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => shouldRepaint(oldDelegate);
     public abstract bool shouldRepaint(CustomPainter oldDelegate);
     public virtual bool? hitTest(Offset position) => null;
-    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}({(this._repaint?.ToString() ?? "")})";
+    public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({_repaint?.ToString() ?? ""})";
 }
 
 public class CustomPainterSemantics
@@ -61,51 +61,51 @@ public class RenderCustomPaint : RenderProxyBox
     {
         this.isComplex = isComplex;
         this.willChange = willChange;
-        this._painter = painter;
-        this._foregroundPainter = foregroundPainter;
-        this._preferredSize = preferredSize ?? Size.zero;
+        _painter = painter;
+        _foregroundPainter = foregroundPainter;
+        _preferredSize = preferredSize ?? Size.zero;
     }
 
     public virtual CustomPainter? painter
     {
-        get => this._painter;
+        get => _painter;
         set
         {
             var __value = value;
-            if ((Equals(this._painter, __value)))
+            if (Equals(_painter, __value))
             {
                 return;
             }
-            CustomPainter? oldPainter = this._painter;
+            CustomPainter? oldPainter = _painter;
             _painter = __value;
-            _didUpdatePainter(this._painter, oldPainter);
+            _didUpdatePainter(_painter, oldPainter);
         }
     }
     public virtual CustomPainter? foregroundPainter
     {
-        get => this._foregroundPainter;
+        get => _foregroundPainter;
         set
         {
             var __value = value;
-            if ((Equals(this._foregroundPainter, __value)))
+            if (Equals(_foregroundPainter, __value))
             {
                 return;
             }
-            CustomPainter? oldPainter = this._foregroundPainter;
+            CustomPainter? oldPainter = _foregroundPainter;
             _foregroundPainter = __value;
-            _didUpdatePainter(this._foregroundPainter, oldPainter);
+            _didUpdatePainter(_foregroundPainter, oldPainter);
         }
     }
     internal virtual void _didUpdatePainter(CustomPainter? newPainter, CustomPainter? oldPainter)
     {
-        if ((newPainter is null))
+        if (newPainter is null)
         {
-            DartRuntimePrimitives.Assert(() => (oldPainter is not null));
+            DartRuntimePrimitives.Assert(() => oldPainter is not null);
             markNeedsPaint();
         }
         else
         {
-            if ((((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter)))) || newPainter.shouldRepaint(oldPainter)))
+            if ((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter))) || newPainter.shouldRepaint(oldPainter))
             {
                 markNeedsPaint();
             }
@@ -115,9 +115,9 @@ public class RenderCustomPaint : RenderProxyBox
             oldPainter?.removeListener(markNeedsPaint);
             newPainter?.addListener(markNeedsPaint);
         }
-        if ((newPainter is null))
+        if (newPainter is null)
         {
-            DartRuntimePrimitives.Assert(() => (oldPainter is not null));
+            DartRuntimePrimitives.Assert(() => oldPainter is not null);
             if (attached)
             {
                 markNeedsSemanticsUpdate();
@@ -125,7 +125,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
         else
         {
-            if ((((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter)))) || newPainter.shouldRebuildSemantics(oldPainter)))
+            if ((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter))) || newPainter.shouldRebuildSemantics(oldPainter))
             {
                 markNeedsSemanticsUpdate();
             }
@@ -134,11 +134,11 @@ public class RenderCustomPaint : RenderProxyBox
 
     public virtual global::Doroti.Ui.Size preferredSize
     {
-        get => this._preferredSize;
+        get => _preferredSize;
         set
         {
             var __value = value;
-            if ((Equals(this.preferredSize, DartRuntimePrimitives.RequireValue(__value))))
+            if (Equals(preferredSize, DartRuntimePrimitives.RequireValue(__value)))
             {
                 return;
             }
@@ -148,9 +148,9 @@ public class RenderCustomPaint : RenderProxyBox
     }
     public override double computeMinIntrinsicWidth(double height)
     {
-        if ((child is null))
+        if (child is null)
         {
-            return (double.IsFinite(this.preferredSize.width) ? this.preferredSize.width : 0);
+            return double.IsFinite(preferredSize.width) ? preferredSize.width : 0;
         }
         return base.computeMinIntrinsicWidth(height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -158,9 +158,9 @@ public class RenderCustomPaint : RenderProxyBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        if ((child is null))
+        if (child is null)
         {
-            return (double.IsFinite(this.preferredSize.width) ? this.preferredSize.width : 0);
+            return double.IsFinite(preferredSize.width) ? preferredSize.width : 0;
         }
         return base.computeMaxIntrinsicWidth(height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -168,9 +168,9 @@ public class RenderCustomPaint : RenderProxyBox
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        if ((child is null))
+        if (child is null)
         {
-            return (double.IsFinite(this.preferredSize.height) ? this.preferredSize.height : 0);
+            return double.IsFinite(preferredSize.height) ? preferredSize.height : 0;
         }
         return base.computeMinIntrinsicHeight(width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -178,9 +178,9 @@ public class RenderCustomPaint : RenderProxyBox
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        if ((child is null))
+        if (child is null)
         {
-            return (double.IsFinite(this.preferredSize.height) ? this.preferredSize.height : 0);
+            return double.IsFinite(preferredSize.height) ? preferredSize.height : 0;
         }
         return base.computeMaxIntrinsicHeight(width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -189,20 +189,20 @@ public class RenderCustomPaint : RenderProxyBox
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        this._painter?.addListener(markNeedsPaint);
-        this._foregroundPainter?.addListener(markNeedsPaint);
+        _painter?.addListener(markNeedsPaint);
+        _foregroundPainter?.addListener(markNeedsPaint);
     }
 
     public override void detach()
     {
-        this._painter?.removeListener(markNeedsPaint);
-        this._foregroundPainter?.removeListener(markNeedsPaint);
+        _painter?.removeListener(markNeedsPaint);
+        _foregroundPainter?.removeListener(markNeedsPaint);
         base.detach();
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        if (((this._foregroundPainter is not null) && ((this._foregroundPainter!.hitTest(position) ?? false))))
+        if ((_foregroundPainter is not null) && (_foregroundPainter!.hitTest(position) ?? false))
         {
             return true;
         }
@@ -212,7 +212,7 @@ public class RenderCustomPaint : RenderProxyBox
 
     public override bool hitTestSelf(Offset position)
     {
-        return ((this._painter is not null) && ((this._painter!.hitTest(position) ?? true)));
+        return (_painter is not null) && (_painter!.hitTest(position) ?? true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -224,7 +224,7 @@ public class RenderCustomPaint : RenderProxyBox
 
     public override Size computeSizeForNoChild(BoxConstraints constraints)
     {
-        return constraints.constrain(this.preferredSize);
+        return constraints.constrain(preferredSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -237,7 +237,7 @@ public class RenderCustomPaint : RenderProxyBox
                 debugPreviousCanvasSaveCount = canvas.getSaveCount();
                 return true;
             });
-        if ((!Equals(offset, Offset.zero)))
+        if (!Equals(offset, Offset.zero))
         {
             canvas.translate(offset.dx, offset.dy);
         }
@@ -245,41 +245,41 @@ public class RenderCustomPaint : RenderProxyBox
         DartRuntimePrimitives.Assert(() =>
             {
                 long debugNewCanvasSaveCount = canvas.getSaveCount();
-                if ((debugNewCanvasSaveCount > debugPreviousCanvasSaveCount))
+                if (debugNewCanvasSaveCount > debugPreviousCanvasSaveCount)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {painter} custom painter called canvas.save() or canvas.saveLayer() at least " + $"{(debugNewCanvasSaveCount - debugPreviousCanvasSaveCount)} more " + $"time{(((debugNewCanvasSaveCount - debugPreviousCanvasSaveCount) == 1L) ? "" : "s")} " + "than it called canvas.restore()."), new ErrorDescription("This leaves the canvas in an inconsistent state and will probably result in a broken display."), new ErrorHint("You must pair each call to save()/saveLayer() with a later matching call to restore().") });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {painter} custom painter called canvas.save() or canvas.saveLayer() at least " + $"{debugNewCanvasSaveCount - debugPreviousCanvasSaveCount} more " + $"time{(((debugNewCanvasSaveCount - debugPreviousCanvasSaveCount) == 1L) ? "" : "s")} " + "than it called canvas.restore()."), new ErrorDescription("This leaves the canvas in an inconsistent state and will probably result in a broken display."), new ErrorHint("You must pair each call to save()/saveLayer() with a later matching call to restore().") });
                 }
-                if ((debugNewCanvasSaveCount < debugPreviousCanvasSaveCount))
+                if (debugNewCanvasSaveCount < debugPreviousCanvasSaveCount)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {painter} custom painter called canvas.restore() " + $"{(debugPreviousCanvasSaveCount - debugNewCanvasSaveCount)} more " + $"time{(((debugPreviousCanvasSaveCount - debugNewCanvasSaveCount) == 1L) ? "" : "s")} " + "than it called canvas.save() or canvas.saveLayer()."), new ErrorDescription("This leaves the canvas in an inconsistent state and will result in a broken display."), new ErrorHint("You should only call restore() if you first called save() or saveLayer().") });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {painter} custom painter called canvas.restore() " + $"{debugPreviousCanvasSaveCount - debugNewCanvasSaveCount} more " + $"time{(((debugPreviousCanvasSaveCount - debugNewCanvasSaveCount) == 1L) ? "" : "s")} " + "than it called canvas.save() or canvas.saveLayer()."), new ErrorDescription("This leaves the canvas in an inconsistent state and will result in a broken display."), new ErrorHint("You should only call restore() if you first called save() or saveLayer().") });
                 }
-                return (debugNewCanvasSaveCount == debugPreviousCanvasSaveCount);
+                return debugNewCanvasSaveCount == debugPreviousCanvasSaveCount;
             });
         canvas.restore();
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((this._painter is not null))
+        if (_painter is not null)
         {
-            _paintWithPainter(((PaintingContext)context).canvas, offset, this._painter!);
+            _paintWithPainter(context.canvas, offset, _painter!);
             _setRasterCacheHints(context);
         }
         base.paint(context, offset);
-        if ((this._foregroundPainter is not null))
+        if (_foregroundPainter is not null)
         {
-            _paintWithPainter(((PaintingContext)context).canvas, offset, this._foregroundPainter!);
+            _paintWithPainter(context.canvas, offset, _foregroundPainter!);
             _setRasterCacheHints(context);
         }
     }
 
     internal virtual void _setRasterCacheHints(PaintingContext context)
     {
-        if (this.isComplex)
+        if (isComplex)
         {
             context.setIsComplexHint();
         }
-        if (this.willChange)
+        if (willChange)
         {
             context.setWillChangeHint();
         }
@@ -288,27 +288,27 @@ public class RenderCustomPaint : RenderProxyBox
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        _backgroundSemanticsBuilder = this.painter?.semanticsBuilder;
-        _foregroundSemanticsBuilder = this.foregroundPainter?.semanticsBuilder;
-        config.isSemanticBoundary = ((this._backgroundSemanticsBuilder is not null) || (this._foregroundSemanticsBuilder is not null));
+        _backgroundSemanticsBuilder = painter?.semanticsBuilder;
+        _foregroundSemanticsBuilder = foregroundPainter?.semanticsBuilder;
+        config.isSemanticBoundary = (_backgroundSemanticsBuilder is not null) || (_foregroundSemanticsBuilder is not null);
     }
 
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((child is null) && (children.Count() != 0)))
+                if ((child is null) && (children.Count() != 0))
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this.GetType()} does not have a child widget but received a non-empty list of child SemanticsNode:\n" + $"{string.Join("\n", children)}") });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} does not have a child widget but received a non-empty list of child SemanticsNode:\n" + $"{string.Join("\n", children)}") });
                 }
                 return true;
             });
-        List<CustomPainterSemantics> backgroundSemantics = ((this._backgroundSemanticsBuilder is null ? new List<CustomPainterSemantics>() : this._backgroundSemanticsBuilder.Invoke(size)));
-        _backgroundSemanticsNodes = _updateSemanticsChildren(this._backgroundSemanticsNodes, backgroundSemantics);
-        List<CustomPainterSemantics> foregroundSemantics = ((this._foregroundSemanticsBuilder is null ? new List<CustomPainterSemantics>() : this._foregroundSemanticsBuilder.Invoke(size)));
-        _foregroundSemanticsNodes = _updateSemanticsChildren(this._foregroundSemanticsNodes, foregroundSemantics);
-        bool hasBackgroundSemantics = ((this._backgroundSemanticsNodes is not null) && (checked((long)(this._backgroundSemanticsNodes!.Count)) != 0));
-        bool hasForegroundSemantics = ((this._foregroundSemanticsNodes is not null) && (checked((long)(this._foregroundSemanticsNodes!.Count)) != 0));
+        List<CustomPainterSemantics> backgroundSemantics = _backgroundSemanticsBuilder is null ? new List<CustomPainterSemantics>() : _backgroundSemanticsBuilder.Invoke(size);
+        _backgroundSemanticsNodes = _updateSemanticsChildren(_backgroundSemanticsNodes, backgroundSemantics);
+        List<CustomPainterSemantics> foregroundSemantics = _foregroundSemanticsBuilder is null ? new List<CustomPainterSemantics>() : _foregroundSemanticsBuilder.Invoke(size);
+        _foregroundSemanticsNodes = _updateSemanticsChildren(_foregroundSemanticsNodes, foregroundSemantics);
+        bool hasBackgroundSemantics = (_backgroundSemanticsNodes is not null) && (checked((long)_backgroundSemanticsNodes!.Count) != 0);
+        bool hasForegroundSemantics = (_foregroundSemanticsNodes is not null) && (checked((long)_foregroundSemanticsNodes!.Count) != 0);
         var finalChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
         base.assembleSemanticsNode(node, config, finalChildren);
     }
@@ -322,25 +322,25 @@ public class RenderCustomPaint : RenderProxyBox
 
     internal static List<global::Doroti.Framework.Semantics.SemanticsNode> _updateSemanticsChildren(List<global::Doroti.Framework.Semantics.SemanticsNode>? oldSemantics, List<CustomPainterSemantics>? newChildSemantics)
     {
-        oldSemantics = (oldSemantics ?? new List<global::Doroti.Framework.Semantics.SemanticsNode>());
-        newChildSemantics = (newChildSemantics ?? new List<CustomPainterSemantics>());
+        oldSemantics = oldSemantics ?? new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        newChildSemantics = newChildSemantics ?? new List<CustomPainterSemantics>();
         DartRuntimePrimitives.Assert(() =>
             {
                 DartMap<Key, long> keys = new DartMap<Key, long>();
                 var information = new List<DiagnosticsNode>();
-                for (var i = 0L; (i < checked((long)(newChildSemantics!.Count))); i += 1L)
+                for (var i = 0L; i < checked(newChildSemantics!.Count); i += 1L)
                 {
-                    CustomPainterSemantics child = newChildSemantics[(int)(i)];
-                    if ((((CustomPainterSemantics)child).key is not null))
+                    CustomPainterSemantics child = newChildSemantics[(int)i];
+                    if (child.key is not null)
                     {
-                        if (keys.ContainsKey(((CustomPainterSemantics)child).key))
+                        if (keys.ContainsKey(child.key))
                         {
-                            information.Add(new ErrorDescription($"- duplicate key {((CustomPainterSemantics)child).key} found at position {i}"));
+                            information.Add(new ErrorDescription($"- duplicate key {child.key} found at position {i}"));
                         }
-                        keys[((CustomPainterSemantics)child).key!] = i;
+                        keys[child.key!] = i;
                     }
                 }
-                if ((checked((long)(information.Count)) != 0))
+                if (checked((long)information.Count) != 0)
                 {
                     information.Insert(checked((int)0L), new ErrorSummary("Failed to update the list of CustomPainterSemantics:"));
                     throw new FlutterError(information);
@@ -349,26 +349,26 @@ public class RenderCustomPaint : RenderProxyBox
             });
         var newChildrenTop = 0L;
         var oldChildrenTop = 0L;
-        long newChildrenBottom = (checked((long)(newChildSemantics.Count)) - 1L);
-        long oldChildrenBottom = (checked((long)(oldSemantics.Count)) - 1L);
-        var newChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode?>(Enumerable.Repeat<global::Doroti.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)(newChildSemantics.Count)))));
-        while ((((oldChildrenTop <= oldChildrenBottom)) && ((newChildrenTop <= newChildrenBottom))))
+        long newChildrenBottom = checked(newChildSemantics.Count) - 1L;
+        long oldChildrenBottom = checked(oldSemantics.Count) - 1L;
+        var newChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode?>(Enumerable.Repeat<global::Doroti.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)newChildSemantics.Count))));
+        while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode oldChild = oldSemantics[(int)(oldChildrenTop)];
-            CustomPainterSemantics newSemantics = newChildSemantics[(int)(newChildrenTop)];
+            global::Doroti.Framework.Semantics.SemanticsNode oldChild = oldSemantics[(int)oldChildrenTop];
+            CustomPainterSemantics newSemantics = newChildSemantics[(int)newChildrenTop];
             if (!_canUpdateSemanticsChild(oldChild, newSemantics))
             {
                 break;
             }
             global::Doroti.Framework.Semantics.SemanticsNode newChild = _updateSemanticsChild(oldChild, newSemantics);
-            newChildren[(int)(newChildrenTop)] = newChild;
+            newChildren[(int)newChildrenTop] = newChild;
             newChildrenTop += 1L;
             oldChildrenTop += 1L;
         }
-        while ((((oldChildrenTop <= oldChildrenBottom)) && ((newChildrenTop <= newChildrenBottom))))
+        while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode oldChildLocal = oldSemantics[(int)(oldChildrenBottom)];
-            CustomPainterSemantics newChildLocal = newChildSemantics[(int)(newChildrenBottom)];
+            global::Doroti.Framework.Semantics.SemanticsNode oldChildLocal = oldSemantics[(int)oldChildrenBottom];
+            CustomPainterSemantics newChildLocal = newChildSemantics[(int)newChildrenBottom];
             if (!_canUpdateSemanticsChild(oldChildLocal, newChildLocal))
             {
                 break;
@@ -376,32 +376,32 @@ public class RenderCustomPaint : RenderProxyBox
             oldChildrenBottom -= 1L;
             newChildrenBottom -= 1L;
         }
-        bool haveOldChildren = (oldChildrenTop <= oldChildrenBottom);
+        bool haveOldChildren = oldChildrenTop <= oldChildrenBottom;
         DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode> oldKeyedChildren = default!;
         if (haveOldChildren)
         {
             oldKeyedChildren = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
-            while ((oldChildrenTop <= oldChildrenBottom))
+            while (oldChildrenTop <= oldChildrenBottom)
             {
-                global::Doroti.Framework.Semantics.SemanticsNode oldChildAlternate = oldSemantics[(int)(oldChildrenTop)];
-                if ((((global::Doroti.Framework.Semantics.SemanticsNode)oldChildAlternate).key is not null))
+                global::Doroti.Framework.Semantics.SemanticsNode oldChildAlternate = oldSemantics[(int)oldChildrenTop];
+                if (oldChildAlternate.key is not null)
                 {
-                    oldKeyedChildren[((global::Doroti.Framework.Semantics.SemanticsNode)oldChildAlternate).key!] = oldChildAlternate;
+                    oldKeyedChildren[oldChildAlternate.key!] = oldChildAlternate;
                 }
                 oldChildrenTop += 1L;
             }
         }
-        while ((newChildrenTop <= newChildrenBottom))
+        while (newChildrenTop <= newChildrenBottom)
         {
             global::Doroti.Framework.Semantics.SemanticsNode? oldChildNested = default!;
-            CustomPainterSemantics newSemanticsLocal = newChildSemantics[(int)(newChildrenTop)];
+            CustomPainterSemantics newSemanticsLocal = newChildSemantics[(int)newChildrenTop];
             if (haveOldChildren)
             {
-                Key? keyLocal = ((CustomPainterSemantics)newSemanticsLocal).key;
-                if ((keyLocal is not null))
+                Key? keyLocal = newSemanticsLocal.key;
+                if (keyLocal is not null)
                 {
                     oldChildNested = oldKeyedChildren.GetValueOrDefault(keyLocal);
-                    if ((oldChildNested is not null))
+                    if (oldChildNested is not null)
                     {
                         if (_canUpdateSemanticsChild(oldChildNested, newSemanticsLocal))
                         {
@@ -414,25 +414,25 @@ public class RenderCustomPaint : RenderProxyBox
                     }
                 }
             }
-            DartRuntimePrimitives.Assert(() => ((oldChildNested is null) || _canUpdateSemanticsChild(oldChildNested, newSemanticsLocal)));
+            DartRuntimePrimitives.Assert(() => (oldChildNested is null) || _canUpdateSemanticsChild(oldChildNested, newSemanticsLocal));
             global::Doroti.Framework.Semantics.SemanticsNode newChildAlternate = _updateSemanticsChild(oldChildNested, newSemanticsLocal);
-            DartRuntimePrimitives.Assert(() => ((Equals(oldChildNested, newChildAlternate)) || (oldChildNested is null)));
-            newChildren[(int)(newChildrenTop)] = newChildAlternate;
+            DartRuntimePrimitives.Assert(() => Equals(oldChildNested, newChildAlternate) || (oldChildNested is null));
+            newChildren[(int)newChildrenTop] = newChildAlternate;
             newChildrenTop += 1L;
         }
-        DartRuntimePrimitives.Assert(() => (oldChildrenTop == (oldChildrenBottom + 1L)));
-        DartRuntimePrimitives.Assert(() => (newChildrenTop == (newChildrenBottom + 1L)));
-        DartRuntimePrimitives.Assert(() => ((checked((long)(newChildSemantics.Count)) - newChildrenTop) == (checked((long)(oldSemantics.Count)) - oldChildrenTop)));
-        newChildrenBottom = (checked((long)(newChildSemantics.Count)) - 1L);
-        oldChildrenBottom = (checked((long)(oldSemantics.Count)) - 1L);
-        while ((((oldChildrenTop <= oldChildrenBottom)) && ((newChildrenTop <= newChildrenBottom))))
+        DartRuntimePrimitives.Assert(() => oldChildrenTop == (oldChildrenBottom + 1L));
+        DartRuntimePrimitives.Assert(() => newChildrenTop == (newChildrenBottom + 1L));
+        DartRuntimePrimitives.Assert(() => (checked(newChildSemantics.Count) - newChildrenTop) == (checked(oldSemantics.Count) - oldChildrenTop));
+        newChildrenBottom = checked(newChildSemantics.Count) - 1L;
+        oldChildrenBottom = checked(oldSemantics.Count) - 1L;
+        while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode oldChildCurrent = oldSemantics[(int)(oldChildrenTop)];
-            CustomPainterSemantics newSemanticsAlternate = newChildSemantics[(int)(newChildrenTop)];
+            global::Doroti.Framework.Semantics.SemanticsNode oldChildCurrent = oldSemantics[(int)oldChildrenTop];
+            CustomPainterSemantics newSemanticsAlternate = newChildSemantics[(int)newChildrenTop];
             DartRuntimePrimitives.Assert(() => _canUpdateSemanticsChild(oldChildCurrent, newSemanticsAlternate));
             global::Doroti.Framework.Semantics.SemanticsNode newChildNested = _updateSemanticsChild(oldChildCurrent, newSemanticsAlternate);
-            DartRuntimePrimitives.Assert(() => (Equals(oldChildCurrent, newChildNested)));
-            newChildren[(int)(newChildrenTop)] = newChildNested;
+            DartRuntimePrimitives.Assert(() => Equals(oldChildCurrent, newChildNested));
+            newChildren[(int)newChildrenTop] = newChildNested;
             newChildrenTop += 1L;
             oldChildrenTop += 1L;
         }
@@ -440,7 +440,7 @@ public class RenderCustomPaint : RenderProxyBox
             {
                 foreach (var node in newChildren)
                 {
-                    DartRuntimePrimitives.Assert(() => (node is not null));
+                    DartRuntimePrimitives.Assert(() => node is not null);
                 }
                 return true;
             });
@@ -450,315 +450,315 @@ public class RenderCustomPaint : RenderProxyBox
 
     internal static bool _canUpdateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode oldChild, CustomPainterSemantics newSemantics)
     {
-        return (Equals(((global::Doroti.Framework.Semantics.SemanticsNode)oldChild).key, ((CustomPainterSemantics)newSemantics).key));
+        return Equals(oldChild.key, newSemantics.key);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Framework.Semantics.SemanticsNode _updateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode? oldChild, CustomPainterSemantics newSemantics)
     {
-        DartRuntimePrimitives.Assert(() => ((oldChild is null) || _canUpdateSemanticsChild(oldChild, newSemantics)));
-        global::Doroti.Framework.Semantics.SemanticsNode newChild = (oldChild ?? new global::Doroti.Framework.Semantics.SemanticsNode(key: ((CustomPainterSemantics)newSemantics).key));
-        global::Doroti.Framework.Semantics.SemanticsProperties propertiesLocal = ((CustomPainterSemantics)newSemantics).properties;
+        DartRuntimePrimitives.Assert(() => (oldChild is null) || _canUpdateSemanticsChild(oldChild, newSemantics));
+        global::Doroti.Framework.Semantics.SemanticsNode newChild = oldChild ?? new global::Doroti.Framework.Semantics.SemanticsNode(key: newSemantics.key);
+        global::Doroti.Framework.Semantics.SemanticsProperties propertiesLocal = newSemantics.properties;
         var configLocal = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).role is not null))
+        if (propertiesLocal.role is not null)
         {
-            configLocal.role = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).role);
+            configLocal.role = DartRuntimePrimitives.RequireValue(propertiesLocal.role);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).sortKey is not null))
+        if (propertiesLocal.sortKey is not null)
         {
-            configLocal.sortKey = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).sortKey;
+            configLocal.sortKey = propertiesLocal.sortKey;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).@checked is not null))
+        if (propertiesLocal.@checked is not null)
         {
-            configLocal.isChecked = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).@checked;
+            configLocal.isChecked = propertiesLocal.@checked;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).mixed is not null))
+        if (propertiesLocal.mixed is not null)
         {
-            configLocal.isCheckStateMixed = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).mixed;
+            configLocal.isCheckStateMixed = propertiesLocal.mixed;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).selected is not null))
+        if (propertiesLocal.selected is not null)
         {
-            configLocal.isSelected = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).selected);
+            configLocal.isSelected = DartRuntimePrimitives.RequireValue(propertiesLocal.selected);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).button is not null))
+        if (propertiesLocal.button is not null)
         {
-            configLocal.isButton = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).button);
+            configLocal.isButton = DartRuntimePrimitives.RequireValue(propertiesLocal.button);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).expanded is not null))
+        if (propertiesLocal.expanded is not null)
         {
-            configLocal.isExpanded = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).expanded;
+            configLocal.isExpanded = propertiesLocal.expanded;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).link is not null))
+        if (propertiesLocal.link is not null)
         {
-            configLocal.isLink = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).link);
+            configLocal.isLink = DartRuntimePrimitives.RequireValue(propertiesLocal.link);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).linkUrl is not null))
+        if (propertiesLocal.linkUrl is not null)
         {
-            configLocal.linkUrl = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).linkUrl;
+            configLocal.linkUrl = propertiesLocal.linkUrl;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).textField is not null))
+        if (propertiesLocal.textField is not null)
         {
-            configLocal.isTextField = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).textField);
+            configLocal.isTextField = DartRuntimePrimitives.RequireValue(propertiesLocal.textField);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).slider is not null))
+        if (propertiesLocal.slider is not null)
         {
-            configLocal.isSlider = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).slider);
+            configLocal.isSlider = DartRuntimePrimitives.RequireValue(propertiesLocal.slider);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).keyboardKey is not null))
+        if (propertiesLocal.keyboardKey is not null)
         {
-            configLocal.isKeyboardKey = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).keyboardKey);
+            configLocal.isKeyboardKey = DartRuntimePrimitives.RequireValue(propertiesLocal.keyboardKey);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).readOnly is not null))
+        if (propertiesLocal.readOnly is not null)
         {
-            configLocal.isReadOnly = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).readOnly);
+            configLocal.isReadOnly = DartRuntimePrimitives.RequireValue(propertiesLocal.readOnly);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).focusable is not null))
+        if (propertiesLocal.focusable is not null)
         {
-            configLocal.isFocusable = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).focusable);
+            configLocal.isFocusable = DartRuntimePrimitives.RequireValue(propertiesLocal.focusable);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).focused is not null))
+        if (propertiesLocal.focused is not null)
         {
-            configLocal.isFocused = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).focused;
+            configLocal.isFocused = propertiesLocal.focused;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).accessibilityFocusBlockType is not null))
+        if (propertiesLocal.accessibilityFocusBlockType is not null)
         {
-            configLocal.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).accessibilityFocusBlockType);
+            configLocal.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(propertiesLocal.accessibilityFocusBlockType);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).enabled is not null))
+        if (propertiesLocal.enabled is not null)
         {
-            configLocal.isEnabled = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).enabled;
+            configLocal.isEnabled = propertiesLocal.enabled;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).inMutuallyExclusiveGroup is not null))
+        if (propertiesLocal.inMutuallyExclusiveGroup is not null)
         {
-            configLocal.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).inMutuallyExclusiveGroup);
+            configLocal.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(propertiesLocal.inMutuallyExclusiveGroup);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).obscured is not null))
+        if (propertiesLocal.obscured is not null)
         {
-            configLocal.isObscured = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).obscured);
+            configLocal.isObscured = DartRuntimePrimitives.RequireValue(propertiesLocal.obscured);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).multiline is not null))
+        if (propertiesLocal.multiline is not null)
         {
-            configLocal.isMultiline = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).multiline);
+            configLocal.isMultiline = DartRuntimePrimitives.RequireValue(propertiesLocal.multiline);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hidden is not null))
+        if (propertiesLocal.hidden is not null)
         {
-            configLocal.isHidden = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hidden);
+            configLocal.isHidden = DartRuntimePrimitives.RequireValue(propertiesLocal.hidden);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).header is not null))
+        if (propertiesLocal.header is not null)
         {
-            configLocal.isHeader = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).header);
+            configLocal.isHeader = DartRuntimePrimitives.RequireValue(propertiesLocal.header);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).headingLevel is not null))
+        if (propertiesLocal.headingLevel is not null)
         {
-            configLocal.headingLevel = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).headingLevel);
+            configLocal.headingLevel = DartRuntimePrimitives.RequireValue(propertiesLocal.headingLevel);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).scopesRoute is not null))
+        if (propertiesLocal.scopesRoute is not null)
         {
-            configLocal.scopesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).scopesRoute);
+            configLocal.scopesRoute = DartRuntimePrimitives.RequireValue(propertiesLocal.scopesRoute);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).namesRoute is not null))
+        if (propertiesLocal.namesRoute is not null)
         {
-            configLocal.namesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).namesRoute);
+            configLocal.namesRoute = DartRuntimePrimitives.RequireValue(propertiesLocal.namesRoute);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).liveRegion is not null))
+        if (propertiesLocal.liveRegion is not null)
         {
-            configLocal.liveRegion = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).liveRegion);
+            configLocal.liveRegion = DartRuntimePrimitives.RequireValue(propertiesLocal.liveRegion);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).isRequired is not null))
+        if (propertiesLocal.isRequired is not null)
         {
-            configLocal.isRequired = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).isRequired;
+            configLocal.isRequired = propertiesLocal.isRequired;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).maxValueLength is not null))
+        if (propertiesLocal.maxValueLength is not null)
         {
-            configLocal.maxValueLength = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).maxValueLength;
+            configLocal.maxValueLength = propertiesLocal.maxValueLength;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).currentValueLength is not null))
+        if (propertiesLocal.currentValueLength is not null)
         {
-            configLocal.currentValueLength = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).currentValueLength;
+            configLocal.currentValueLength = propertiesLocal.currentValueLength;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).toggled is not null))
+        if (propertiesLocal.toggled is not null)
         {
-            configLocal.isToggled = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).toggled;
+            configLocal.isToggled = propertiesLocal.toggled;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).image is not null))
+        if (propertiesLocal.image is not null)
         {
-            configLocal.isImage = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).image);
+            configLocal.isImage = DartRuntimePrimitives.RequireValue(propertiesLocal.image);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).label is not null))
+        if (propertiesLocal.label is not null)
         {
-            configLocal.label = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).label!;
+            configLocal.label = propertiesLocal.label!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).value is not null))
+        if (propertiesLocal.value is not null)
         {
-            configLocal.value = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).value!;
+            configLocal.value = propertiesLocal.value!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).increasedValue is not null))
+        if (propertiesLocal.increasedValue is not null)
         {
-            configLocal.increasedValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).increasedValue!;
+            configLocal.increasedValue = propertiesLocal.increasedValue!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).decreasedValue is not null))
+        if (propertiesLocal.decreasedValue is not null)
         {
-            configLocal.decreasedValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).decreasedValue!;
+            configLocal.decreasedValue = propertiesLocal.decreasedValue!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hint is not null))
+        if (propertiesLocal.hint is not null)
         {
-            configLocal.hint = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hint!;
+            configLocal.hint = propertiesLocal.hint!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).identifier is not null))
+        if (propertiesLocal.identifier is not null)
         {
-            configLocal.identifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).identifier!;
+            configLocal.identifier = propertiesLocal.identifier!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).traversalParentIdentifier is not null))
+        if (propertiesLocal.traversalParentIdentifier is not null)
         {
-            configLocal.traversalParentIdentifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).traversalParentIdentifier;
+            configLocal.traversalParentIdentifier = propertiesLocal.traversalParentIdentifier;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).traversalChildIdentifier is not null))
+        if (propertiesLocal.traversalChildIdentifier is not null)
         {
-            configLocal.traversalChildIdentifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).traversalChildIdentifier;
+            configLocal.traversalChildIdentifier = propertiesLocal.traversalChildIdentifier;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).tooltip is not null))
+        if (propertiesLocal.tooltip is not null)
         {
-            configLocal.tooltip = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).tooltip!;
+            configLocal.tooltip = propertiesLocal.tooltip!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hintOverrides is not null))
+        if (propertiesLocal.hintOverrides is not null)
         {
-            configLocal.hintOverrides = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hintOverrides;
+            configLocal.hintOverrides = propertiesLocal.hintOverrides;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).tagForChildren is not null))
+        if (propertiesLocal.tagForChildren is not null)
         {
-            configLocal.addTagForChildren(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).tagForChildren!);
+            configLocal.addTagForChildren(propertiesLocal.tagForChildren!);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).controlsNodes is not null))
+        if (propertiesLocal.controlsNodes is not null)
         {
-            configLocal.controlsNodes = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).controlsNodes;
+            configLocal.controlsNodes = propertiesLocal.controlsNodes;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hint is not null))
+        if (propertiesLocal.hint is not null)
         {
-            configLocal.hint = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hint!;
+            configLocal.hint = propertiesLocal.hint!;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).textDirection is not null))
+        if (propertiesLocal.textDirection is not null)
         {
-            configLocal.textDirection = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).textDirection;
+            configLocal.textDirection = propertiesLocal.textDirection;
         }
-        if ((!Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)configLocal).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).validationResult)))
+        if (!Equals(configLocal.validationResult, propertiesLocal.validationResult))
         {
-            configLocal.validationResult = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).validationResult;
+            configLocal.validationResult = propertiesLocal.validationResult;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hitTestBehavior is not null))
+        if (propertiesLocal.hitTestBehavior is not null)
         {
-            configLocal.hitTestBehavior = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).hitTestBehavior);
+            configLocal.hitTestBehavior = DartRuntimePrimitives.RequireValue(propertiesLocal.hitTestBehavior);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).inputType is not null))
+        if (propertiesLocal.inputType is not null)
         {
-            configLocal.inputType = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).inputType);
+            configLocal.inputType = DartRuntimePrimitives.RequireValue(propertiesLocal.inputType);
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).minValue is not null))
+        if (propertiesLocal.minValue is not null)
         {
-            configLocal.minValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).minValue;
+            configLocal.minValue = propertiesLocal.minValue;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).maxValue is not null))
+        if (propertiesLocal.maxValue is not null)
         {
-            configLocal.maxValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).maxValue;
+            configLocal.maxValue = propertiesLocal.maxValue;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onTap is not null))
+        if (propertiesLocal.onTap is not null)
         {
-            configLocal.onTap = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onTap;
+            configLocal.onTap = propertiesLocal.onTap;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onLongPress is not null))
+        if (propertiesLocal.onLongPress is not null)
         {
-            configLocal.onLongPress = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onLongPress;
+            configLocal.onLongPress = propertiesLocal.onLongPress;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollLeft is not null))
+        if (propertiesLocal.onScrollLeft is not null)
         {
-            configLocal.onScrollLeft = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollLeft;
+            configLocal.onScrollLeft = propertiesLocal.onScrollLeft;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollRight is not null))
+        if (propertiesLocal.onScrollRight is not null)
         {
-            configLocal.onScrollRight = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollRight;
+            configLocal.onScrollRight = propertiesLocal.onScrollRight;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollUp is not null))
+        if (propertiesLocal.onScrollUp is not null)
         {
-            configLocal.onScrollUp = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollUp;
+            configLocal.onScrollUp = propertiesLocal.onScrollUp;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollDown is not null))
+        if (propertiesLocal.onScrollDown is not null)
         {
-            configLocal.onScrollDown = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onScrollDown;
+            configLocal.onScrollDown = propertiesLocal.onScrollDown;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onIncrease is not null))
+        if (propertiesLocal.onIncrease is not null)
         {
-            configLocal.onIncrease = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onIncrease;
+            configLocal.onIncrease = propertiesLocal.onIncrease;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDecrease is not null))
+        if (propertiesLocal.onDecrease is not null)
         {
-            configLocal.onDecrease = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDecrease;
+            configLocal.onDecrease = propertiesLocal.onDecrease;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onCopy is not null))
+        if (propertiesLocal.onCopy is not null)
         {
-            configLocal.onCopy = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onCopy;
+            configLocal.onCopy = propertiesLocal.onCopy;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onCut is not null))
+        if (propertiesLocal.onCut is not null)
         {
-            configLocal.onCut = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onCut;
+            configLocal.onCut = propertiesLocal.onCut;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onPaste is not null))
+        if (propertiesLocal.onPaste is not null)
         {
-            configLocal.onPaste = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onPaste;
+            configLocal.onPaste = propertiesLocal.onPaste;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorForwardByCharacter is not null))
+        if (propertiesLocal.onMoveCursorForwardByCharacter is not null)
         {
-            configLocal.onMoveCursorForwardByCharacter = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorForwardByCharacter;
+            configLocal.onMoveCursorForwardByCharacter = propertiesLocal.onMoveCursorForwardByCharacter;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorBackwardByCharacter is not null))
+        if (propertiesLocal.onMoveCursorBackwardByCharacter is not null)
         {
-            configLocal.onMoveCursorBackwardByCharacter = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorBackwardByCharacter;
+            configLocal.onMoveCursorBackwardByCharacter = propertiesLocal.onMoveCursorBackwardByCharacter;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorForwardByWord is not null))
+        if (propertiesLocal.onMoveCursorForwardByWord is not null)
         {
-            configLocal.onMoveCursorForwardByWord = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorForwardByWord;
+            configLocal.onMoveCursorForwardByWord = propertiesLocal.onMoveCursorForwardByWord;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorBackwardByWord is not null))
+        if (propertiesLocal.onMoveCursorBackwardByWord is not null)
         {
-            configLocal.onMoveCursorBackwardByWord = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onMoveCursorBackwardByWord;
+            configLocal.onMoveCursorBackwardByWord = propertiesLocal.onMoveCursorBackwardByWord;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onSetSelection is not null))
+        if (propertiesLocal.onSetSelection is not null)
         {
-            configLocal.onSetSelection = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onSetSelection;
+            configLocal.onSetSelection = propertiesLocal.onSetSelection;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onSetText is not null))
+        if (propertiesLocal.onSetText is not null)
         {
-            configLocal.onSetText = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onSetText;
+            configLocal.onSetText = propertiesLocal.onSetText;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDidGainAccessibilityFocus is not null))
+        if (propertiesLocal.onDidGainAccessibilityFocus is not null)
         {
-            configLocal.onDidGainAccessibilityFocus = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDidGainAccessibilityFocus;
+            configLocal.onDidGainAccessibilityFocus = propertiesLocal.onDidGainAccessibilityFocus;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDidLoseAccessibilityFocus is not null))
+        if (propertiesLocal.onDidLoseAccessibilityFocus is not null)
         {
-            configLocal.onDidLoseAccessibilityFocus = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDidLoseAccessibilityFocus;
+            configLocal.onDidLoseAccessibilityFocus = propertiesLocal.onDidLoseAccessibilityFocus;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onFocus is not null))
+        if (propertiesLocal.onFocus is not null)
         {
-            configLocal.onFocus = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onFocus;
+            configLocal.onFocus = propertiesLocal.onFocus;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDismiss is not null))
+        if (propertiesLocal.onDismiss is not null)
         {
-            configLocal.onDismiss = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onDismiss;
+            configLocal.onDismiss = propertiesLocal.onDismiss;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onExpand is not null))
+        if (propertiesLocal.onExpand is not null)
         {
-            configLocal.onExpand = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onExpand;
+            configLocal.onExpand = propertiesLocal.onExpand;
         }
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onCollapse is not null))
+        if (propertiesLocal.onCollapse is not null)
         {
-            configLocal.onCollapse = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).onCollapse;
+            configLocal.onCollapse = propertiesLocal.onCollapse;
         }
         newChild.updateWith(config: configLocal, childrenInInversePaintOrder: new List<global::Doroti.Framework.Semantics.SemanticsNode>());
         ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
     var __cascade = newChild;
-    __cascade.rect = ((CustomPainterSemantics)newSemantics).rect;
-    __cascade.transform = ((CustomPainterSemantics)newSemantics).transform;
-    __cascade.tags = ((CustomPainterSemantics)newSemantics).tags;
+    __cascade.rect = newSemantics.rect;
+    __cascade.transform = newSemantics.transform;
+    __cascade.tags = newSemantics.tags;
     return __cascade;
 }))();
         return newChild;
@@ -768,11 +768,11 @@ public class RenderCustomPaint : RenderProxyBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new MessageProperty("painter", $"{this.painter}"));
-        properties.add(new MessageProperty("foregroundPainter", $"{this.foregroundPainter}", level: ((this.foregroundPainter is not null) ? DiagnosticLevel.info : DiagnosticLevel.fine)));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("preferredSize", this.preferredSize, defaultValue: Size.zero));
-        properties.add(new DiagnosticsProperty<bool>("isComplex", this.isComplex, defaultValue: false));
-        properties.add(new DiagnosticsProperty<bool>("willChange", this.willChange, defaultValue: false));
+        properties.add(new MessageProperty("painter", $"{painter}"));
+        properties.add(new MessageProperty("foregroundPainter", $"{foregroundPainter}", level: (foregroundPainter is not null) ? DiagnosticLevel.info : DiagnosticLevel.fine));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("preferredSize", preferredSize, defaultValue: Size.zero));
+        properties.add(new DiagnosticsProperty<bool>("isComplex", isComplex, defaultValue: false));
+        properties.add(new DiagnosticsProperty<bool>("willChange", willChange, defaultValue: false));
     }
 
 }

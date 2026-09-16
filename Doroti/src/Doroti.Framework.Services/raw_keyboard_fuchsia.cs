@@ -13,16 +13,16 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
     public const long modifierCapsLock = 1L;
     public const long modifierLeftShift = 2L;
     public const long modifierRightShift = 4L;
-    public static long modifierShift = (modifierLeftShift | modifierRightShift);
+    public static long modifierShift = modifierLeftShift | modifierRightShift;
     public const long modifierLeftControl = 8L;
     public const long modifierRightControl = 16L;
-    public static long modifierControl = (modifierLeftControl | modifierRightControl);
+    public static long modifierControl = modifierLeftControl | modifierRightControl;
     public const long modifierLeftAlt = 32L;
     public const long modifierRightAlt = 64L;
-    public static long modifierAlt = (modifierLeftAlt | modifierRightAlt);
+    public static long modifierAlt = modifierLeftAlt | modifierRightAlt;
     public const long modifierLeftMeta = 128L;
     public const long modifierRightMeta = 256L;
-    public static long modifierMeta = (modifierLeftMeta | modifierRightMeta);
+    public static long modifierMeta = modifierLeftMeta | modifierRightMeta;
 
     public RawKeyEventDataFuchsia(long hidUsage = 0, long codePoint = 0, long modifiers = 0)
     {
@@ -31,32 +31,32 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
         this.modifiers = modifiers;
     }
 
-    public override string keyLabel => ((codePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)codePoint)));
+    public override string keyLabel => (codePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)codePoint));
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            if ((codePoint != 0L))
+            if (codePoint != 0L)
             {
-                long flutterId = (LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask));
-                return (Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
+                long flutterId = LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask);
+                return Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId) ?? new LogicalKeyboardKey(LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask));
             }
-            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
-            if ((newKey is not null))
+            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(hidUsage | LogicalKeyboardKey.fuchsiaPlane);
+            if (newKey is not null)
             {
                 return newKey;
             }
-            return new LogicalKeyboardKey((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
+            return new LogicalKeyboardKey(hidUsage | LogicalKeyboardKey.fuchsiaPlane);
         }
     }
-    public override PhysicalKeyboardKey physicalKey => (Keyboard_maps_gLibrary.kFuchsiaToPhysicalKey.GetValueOrDefault(hidUsage) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.fuchsiaPlane + hidUsage)));
+    public override PhysicalKeyboardKey physicalKey => Keyboard_maps_gLibrary.kFuchsiaToPhysicalKey.GetValueOrDefault(hidUsage) ?? new PhysicalKeyboardKey(LogicalKeyboardKey.fuchsiaPlane + hidUsage);
     internal virtual bool _isLeftRightModifierPressed(KeyboardSide side, long anyMask, long leftMask, long rightMask)
     {
-        if (((modifiers & anyMask) == 0L))
+        if ((modifiers & anyMask) == 0L)
         {
             return false;
         }
-        return (side switch { var __case4021 when Equals(__case4021, KeyboardSide.any) => true, var __case4053 when Equals(__case4053, KeyboardSide.all) => ((((modifiers & leftMask) != 0L)) && (((modifiers & rightMask) != 0L))), var __case4140 when Equals(__case4140, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case4194 when Equals(__case4194, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return side switch { var __case4021 when Equals(__case4021, KeyboardSide.any) => true, var __case4053 when Equals(__case4053, KeyboardSide.all) => (modifiers & leftMask) != 0L && (modifiers & rightMask) != 0L, var __case4140 when Equals(__case4140, KeyboardSide.left) => (modifiers & leftMask) != 0L, var __case4194 when Equals(__case4194, KeyboardSide.right) => (modifiers & rightMask) != 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -82,7 +82,7 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
                 }
             case var __case5048 when Equals(__case5048, ModifierKey.capsLockModifier):
                 {
-                    return ((modifiers & modifierCapsLock) != 0L);
+                    return (modifiers & modifierCapsLock) != 0L;
                 }
             case var __case5139 when Equals(__case5139, ModifierKey.numLockModifier):
             case var __case5179 when Equals(__case5179, ModifierKey.scrollLockModifier):
@@ -99,20 +99,20 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
     {
         KeyboardSide? findSide(long anyMask, long leftMask, long rightMask)
         {
-            long combined = (modifiers & anyMask);
-            if ((combined == leftMask))
+            long combined = modifiers & anyMask;
+            if (combined == leftMask)
             {
                 return KeyboardSide.left;
             }
             else
             {
-                if ((combined == rightMask))
+                if (combined == rightMask)
                 {
                     return KeyboardSide.right;
                 }
                 else
                 {
-                    if ((combined == anyMask))
+                    if (combined == anyMask)
                     {
                         return KeyboardSide.all;
                     }
@@ -141,7 +141,7 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
                 }
             case var __case6312 when Equals(__case6312, ModifierKey.capsLockModifier):
                 {
-                    return ((((modifiers & modifierCapsLock) == 0L)) ? null : KeyboardSide.all);
+                    return ((modifiers & modifierCapsLock) == 0L) ? null : KeyboardSide.all;
                 }
             case var __case6431 when Equals(__case6431, ModifierKey.numLockModifier):
             case var __case6471 when Equals(__case6471, ModifierKey.scrollLockModifier):
@@ -170,11 +170,11 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
         {
             return true;
         }
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return ((((__other is RawKeyEventDataFuchsia) && (((RawKeyEventDataFuchsia)__other).hidUsage == hidUsage)) && (((RawKeyEventDataFuchsia)__other).codePoint == codePoint)) && (((RawKeyEventDataFuchsia)__other).modifiers == modifiers));
+        return (__other is RawKeyEventDataFuchsia) && (__other.hidUsage == hidUsage) && (__other.codePoint == codePoint) && (__other.modifiers == modifiers);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(hidUsage, codePoint, modifiers);

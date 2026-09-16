@@ -60,8 +60,8 @@ public class MouseTrackerAnnotation : Diagnosticable, IMouseTrackerAnnotation
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new FlagsSummary<IMouseTrackerCallback?>("callbacks", new DartMap<string, IMouseTrackerCallback?> { ["enter"] = this.onEnter, ["exit"] = this.onExit }, ifEmpty: "<none>"));
-        properties.add(new DiagnosticsProperty<MouseCursor>("cursor", this.cursor, defaultValue: MouseCursor.defer));
+        properties.add(new FlagsSummary<IMouseTrackerCallback?>("callbacks", new DartMap<string, IMouseTrackerCallback?> { ["enter"] = onEnter, ["exit"] = onExit }, ifEmpty: "<none>"));
+        properties.add(new DiagnosticsProperty<MouseCursor>("cursor", cursor, defaultValue: MouseCursor.defer));
     }
 
 }

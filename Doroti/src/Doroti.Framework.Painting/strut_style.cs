@@ -30,28 +30,28 @@ public class StrutStyle : Diagnosticable
         this.fontStyle = fontStyle;
         this.forceStrutHeight = forceStrutHeight;
         this.debugLabel = debugLabel;
-        this.fontFamily = ((package is null) ? fontFamily : $"packages/{package}/{fontFamily}");
-        this._fontFamilyFallback = fontFamilyFallback;
-        this._package = package;
-        System.Diagnostics.Debug.Assert(((fontSize is null) || (DartRuntimePrimitives.RequireValue(fontSize) > 0L)));
-        System.Diagnostics.Debug.Assert(((leading is null) || (leading >= 0L)));
-        System.Diagnostics.Debug.Assert(((package is null) || (((fontFamily is not null) || (fontFamilyFallback is not null)))));
+        this.fontFamily = (package is null) ? fontFamily : $"packages/{package}/{fontFamily}";
+        _fontFamilyFallback = fontFamilyFallback;
+        _package = package;
+        System.Diagnostics.Debug.Assert((fontSize is null) || (DartRuntimePrimitives.RequireValue(fontSize) > 0L));
+        System.Diagnostics.Debug.Assert((leading is null) || (leading >= 0L));
+        System.Diagnostics.Debug.Assert((package is null) || (fontFamily is not null) || (fontFamilyFallback is not null));
     }
 
     public static StrutStyle CreateFromTextStyle(TextStyle textStyle, string? fontFamily = null, List<string>? fontFamilyFallback = null, double? fontSize = null, double? height = null, TextLeadingDistribution? leadingDistribution = null, double? leading = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, bool? forceStrutHeight = null, string? debugLabel = null, string? package = null)
     {
-        return new StrutStyle(fontFamily: ((fontFamily is not null) ? (((package is null) ? fontFamily : $"packages/{package}/{fontFamily}")) : ((TextStyle)textStyle).fontFamily), fontFamilyFallback: (fontFamilyFallback ?? ((TextStyle)textStyle).fontFamilyFallback), height: (height ?? ((TextStyle)textStyle).height), leadingDistribution: (leadingDistribution ?? ((TextStyle)textStyle).leadingDistribution), fontSize: (fontSize ?? ((TextStyle)textStyle).fontSize), leading: leading, fontWeight: (fontWeight ?? ((TextStyle)textStyle).fontWeight), fontStyle: (fontStyle ?? ((TextStyle)textStyle).fontStyle), forceStrutHeight: forceStrutHeight, debugLabel: (debugLabel ?? ((TextStyle)textStyle).debugLabel), package: package);
+        return new StrutStyle(fontFamily: (fontFamily is not null) ? ((package is null) ? fontFamily : $"packages/{package}/{fontFamily}") : textStyle.fontFamily, fontFamilyFallback: fontFamilyFallback ?? textStyle.fontFamilyFallback, height: height ?? textStyle.height, leadingDistribution: leadingDistribution ?? textStyle.leadingDistribution, fontSize: fontSize ?? textStyle.fontSize, leading: leading, fontWeight: fontWeight ?? textStyle.fontWeight, fontStyle: fontStyle ?? textStyle.fontStyle, forceStrutHeight: forceStrutHeight, debugLabel: debugLabel ?? textStyle.debugLabel, package: package);
     }
 
     public virtual List<string>? fontFamilyFallback
     {
         get
         {
-            if (((this._package is not null) && (this._fontFamilyFallback is not null)))
+            if ((_package is not null) && (_fontFamilyFallback is not null))
             {
-                return this._fontFamilyFallback.map<string, string>(((family) => $"packages/{this._package}/{family}")).ToList();
+                return _fontFamilyFallback.map<string, string>((family) => $"packages/{_package}/{family}").ToList();
             }
-            return this._fontFamilyFallback;
+            return _fontFamilyFallback;
         }
     }
     public virtual RenderComparison compareTo(StrutStyle other)
@@ -60,7 +60,7 @@ public class StrutStyle : Diagnosticable
         {
             return RenderComparison.identical;
         }
-        if ((((((((((this.fontFamily != ((StrutStyle)other).fontFamily) || (this.fontSize != ((StrutStyle)other).fontSize)) || (!Equals(this.fontWeight, ((StrutStyle)other).fontWeight))) || (!Equals(this.fontStyle, ((StrutStyle)other).fontStyle))) || (this.height != ((StrutStyle)other).height)) || (this.leading != ((StrutStyle)other).leading)) || (this.forceStrutHeight != ((StrutStyle)other).forceStrutHeight)) || (!CollectionsLibrary.listEquals(this.fontFamilyFallback, ((StrutStyle)other).fontFamilyFallback))) || (((this.height is not null) && (!Equals(this.leadingDistribution, ((StrutStyle)other).leadingDistribution))))))
+        if ((fontFamily != other.fontFamily) || (fontSize != other.fontSize) || (!Equals(fontWeight, other.fontWeight)) || (!Equals(fontStyle, other.fontStyle)) || (height != other.height) || (leading != other.leading) || (forceStrutHeight != other.forceStrutHeight) || (!CollectionsLibrary.listEquals(fontFamilyFallback, other.fontFamilyFallback)) || (height is not null) && (!Equals(leadingDistribution, other.leadingDistribution)))
         {
             return RenderComparison.layout;
         }
@@ -70,22 +70,22 @@ public class StrutStyle : Diagnosticable
 
     public virtual StrutStyle inheritFromTextStyle(TextStyle? other)
     {
-        if ((other is null))
+        if (other is null)
         {
             return this;
         }
-        double? effectiveHeight = (this.height ?? ((TextStyle)other).height);
-        return new StrutStyle(fontFamily: (this.fontFamily ?? ((TextStyle)other).fontFamily), fontFamilyFallback: (this.fontFamilyFallback ?? ((TextStyle)other).fontFamilyFallback), fontSize: (this.fontSize ?? ((TextStyle)other).fontSize), height: effectiveHeight, leading: this.leading, fontWeight: (this.fontWeight ?? ((TextStyle)other).fontWeight), fontStyle: (this.fontStyle ?? ((TextStyle)other).fontStyle), forceStrutHeight: this.forceStrutHeight, debugLabel: (this.debugLabel ?? ((TextStyle)other).debugLabel), leadingDistribution: ((effectiveHeight is not null) ? ((this.leadingDistribution ?? ((TextStyle)other).leadingDistribution)) : null));
+        double? effectiveHeight = height ?? other.height;
+        return new StrutStyle(fontFamily: fontFamily ?? other.fontFamily, fontFamilyFallback: fontFamilyFallback ?? other.fontFamilyFallback, fontSize: fontSize ?? other.fontSize, height: effectiveHeight, leading: leading, fontWeight: fontWeight ?? other.fontWeight, fontStyle: fontStyle ?? other.fontStyle, forceStrutHeight: forceStrutHeight, debugLabel: debugLabel ?? other.debugLabel, leadingDistribution: (effectiveHeight is not null) ? (leadingDistribution ?? other.leadingDistribution) : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual StrutStyle merge(StrutStyle? other)
     {
-        if ((other is null))
+        if (other is null)
         {
             return this;
         }
-        return new StrutStyle(fontFamily: (((StrutStyle)other).fontFamily ?? this.fontFamily), fontFamilyFallback: (((StrutStyle)other).fontFamilyFallback ?? this.fontFamilyFallback), fontSize: (((StrutStyle)other).fontSize ?? this.fontSize), height: (((StrutStyle)other).height ?? this.height), leadingDistribution: (((StrutStyle)other).leadingDistribution ?? this.leadingDistribution), leading: (((StrutStyle)other).leading ?? this.leading), fontWeight: (((StrutStyle)other).fontWeight ?? this.fontWeight), fontStyle: (((StrutStyle)other).fontStyle ?? this.fontStyle), forceStrutHeight: (((StrutStyle)other).forceStrutHeight ?? this.forceStrutHeight), debugLabel: (((StrutStyle)other).debugLabel ?? this.debugLabel), package: (((StrutStyle)other)._package ?? this._package));
+        return new StrutStyle(fontFamily: other.fontFamily ?? fontFamily, fontFamilyFallback: other.fontFamilyFallback ?? fontFamilyFallback, fontSize: other.fontSize ?? fontSize, height: other.height ?? height, leadingDistribution: other.leadingDistribution ?? leadingDistribution, leading: other.leading ?? leading, fontWeight: other.fontWeight ?? fontWeight, fontStyle: other.fontStyle ?? fontStyle, forceStrutHeight: other.forceStrutHeight ?? forceStrutHeight, debugLabel: other.debugLabel ?? debugLabel, package: other._package ?? _package);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -97,42 +97,42 @@ public class StrutStyle : Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((__other is StrutStyle) && (((StrutStyle)((StrutStyle)__other)).fontFamily == this.fontFamily)) && (((StrutStyle)((StrutStyle)__other)).fontSize == this.fontSize)) && (Equals(((StrutStyle)((StrutStyle)__other)).fontWeight, this.fontWeight))) && (Equals(((StrutStyle)((StrutStyle)__other)).fontStyle, this.fontStyle))) && (((StrutStyle)((StrutStyle)__other)).height == this.height)) && (((StrutStyle)((StrutStyle)__other)).leading == this.leading)) && (((StrutStyle)((StrutStyle)__other)).forceStrutHeight == this.forceStrutHeight)) && (((this.height is null) || (Equals(this.leadingDistribution, ((StrutStyle)((StrutStyle)__other)).leadingDistribution))))) && CollectionsLibrary.listEquals(((StrutStyle)((StrutStyle)__other)).fontFamilyFallback, this.fontFamilyFallback));
+        return (__other is StrutStyle) && (__other.fontFamily == fontFamily) && (__other.fontSize == fontSize) && Equals(__other.fontWeight, fontWeight) && Equals(__other.fontStyle, fontStyle) && (__other.height == height) && (__other.leading == leading) && (__other.forceStrutHeight == forceStrutHeight) && ((height is null) || Equals(leadingDistribution, __other.leadingDistribution)) && CollectionsLibrary.listEquals(__other.fontFamilyFallback, fontFamilyFallback);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.fontFamily, this.fontSize, this.fontWeight, this.fontStyle, this.height, this.leading, this.forceStrutHeight);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(fontFamily, fontSize, fontWeight, fontStyle, height, leading, forceStrutHeight);
     public virtual string toStringShort() => objectRuntimeTypeFunctions.objectRuntimeType(this, "StrutStyle");
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties, string prefix = "")
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        if ((this.debugLabel is not null))
+        if (debugLabel is not null)
         {
-            properties.add(new MessageProperty($"{prefix}debugLabel", this.debugLabel!));
+            properties.add(new MessageProperty($"{prefix}debugLabel", debugLabel!));
         }
-        var styles = new List<DiagnosticsNode> { new StringProperty($"{prefix}family", this.fontFamily, defaultValue: null, quoted: false), new IterableProperty<string>($"{prefix}familyFallback", this.fontFamilyFallback, defaultValue: null), new DoubleProperty($"{prefix}size", this.fontSize, defaultValue: null) };
+        var styles = new List<DiagnosticsNode> { new StringProperty($"{prefix}family", fontFamily, defaultValue: null, quoted: false), new IterableProperty<string>($"{prefix}familyFallback", fontFamilyFallback, defaultValue: null), new DoubleProperty($"{prefix}size", fontSize, defaultValue: null) };
         string? weightDescription = default!;
-        if ((this.fontWeight is not null))
+        if (fontWeight is not null)
         {
-            weightDescription = $"w{(FoundationRuntimePorts.EnumIndex(this.fontWeight!) + 1L)}00";
+            weightDescription = $"w{FoundationRuntimePorts.EnumIndex(fontWeight!) + 1L}00";
         }
-        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>($"{prefix}weight", this.fontWeight, description: weightDescription, defaultValue: null));
-        styles.Add(new EnumProperty<global::Doroti.Ui.FontStyle>($"{prefix}style", this.fontStyle, defaultValue: null));
-        styles.Add(new DoubleProperty($"{prefix}height", this.height, unit: "x", defaultValue: null));
-        styles.Add(new FlagProperty($"{prefix}forceStrutHeight", value: this.forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
-        if ((this.height is not null))
+        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>($"{prefix}weight", fontWeight, description: weightDescription, defaultValue: null));
+        styles.Add(new EnumProperty<global::Doroti.Ui.FontStyle>($"{prefix}style", fontStyle, defaultValue: null));
+        styles.Add(new DoubleProperty($"{prefix}height", height, unit: "x", defaultValue: null));
+        styles.Add(new FlagProperty($"{prefix}forceStrutHeight", value: forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
+        if (height is not null)
         {
             double height__value26382 = DartRuntimePrimitives.RequireValue(height);
-            styles.Add(new EnumProperty<global::Doroti.Ui.TextLeadingDistribution>($"{prefix}leadingDistribution", this.leadingDistribution, defaultValue: null));
+            styles.Add(new EnumProperty<global::Doroti.Ui.TextLeadingDistribution>($"{prefix}leadingDistribution", leadingDistribution, defaultValue: null));
         }
-        bool styleSpecified = styles.any(((n) => !n.isFiltered(DiagnosticLevel.info)));
+        bool styleSpecified = styles.any((n) => !n.isFiltered(DiagnosticLevel.info));
         styles.forEach(properties.add);
         if (!styleSpecified)
         {
-            properties.add(new FlagProperty("forceStrutHeight", value: this.forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
+            properties.add(new FlagProperty("forceStrutHeight", value: forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
         }
     }
 

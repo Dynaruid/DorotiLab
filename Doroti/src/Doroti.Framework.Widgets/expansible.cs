@@ -18,14 +18,14 @@ public class ExpansibleController : global::Doroti.Framework.Foundation.ChangeNo
 
     internal virtual void _setExpansionState(bool newValue)
     {
-        if ((newValue != this._isExpanded))
+        if (newValue != _isExpanded)
         {
             _isExpanded = newValue;
             notifyListeners();
         }
     }
 
-    public virtual bool isExpanded => this._isExpanded;
+    public virtual bool isExpanded => _isExpanded;
     public virtual void expand()
     {
         _setExpansionState(true);
@@ -36,13 +36,13 @@ public class ExpansibleController : global::Doroti.Framework.Foundation.ChangeNo
         _setExpansionState(false);
     }
 
-    public virtual void toggle() => ((Action)(() => { if (this.isExpanded) { collapse(); } else { expand(); } }))();
+    public virtual void toggle() => ((Action)(() => { if (isExpanded) { collapse(); } else { expand(); } }))();
     public static ExpansibleController of(BuildContext context)
     {
-        _ExpansibleState__expansible? result = ((_ExpansibleState__expansible?)context.findAncestorStateOfType<_ExpansibleState__expansible>());
+        _ExpansibleState__expansible? result = context.findAncestorStateOfType<_ExpansibleState__expansible>();
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((result is null))
+                if (result is null)
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("ExpansibleController.of() called with a context that does not contain a Expansible."), new global::Doroti.Framework.Foundation.ErrorDescription("No Expansible ancestor could be found starting from the context that was passed to ExpansibleController.of(). " + "This usually happens when the context provided is from the same StatefulWidget as that " + "whose build function actually creates the Expansible widget being sought."), new global::Doroti.Framework.Foundation.ErrorHint("There are several ways to avoid this problem. The simplest is to use a Builder to get a " + "context that is \"under\" the Expansible. "), new global::Doroti.Framework.Foundation.ErrorHint("A more efficient solution is to split your build function into several widgets. This " + "introduces a new context from which you can obtain the Expansible. In this solution, " + "you would have an outer widget that creates the Expansible populated by instances of " + "your new inner widgets, and then in these inner widgets you would use ExpansibleController.of().\n" + "An other solution is assign a GlobalKey to the Expansible, " + "then use the key.currentState property to obtain the Expansible rather than " + "using the ExpansibleController.of() function."), context.describeElement("The context used was") }));
                 }
@@ -91,7 +91,7 @@ public class Expansible : StatefulWidget
 
     internal static Widget _defaultExpansibleBuilder(BuildContext context, Widget header, Widget body, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        return ((Widget)new Column(mainAxisSize: MainAxisSize.min, children: new List<Widget> { header, body }));
+        return new Column(mainAxisSize: MainAxisSize.min, children: new List<Widget> { header, body });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -109,65 +109,65 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
     {
         get
         {
-            return (((Expansible)this.widget).animationStyle?.duration ?? ((Expansible)this.widget).duration);
+            return widget.animationStyle?.duration ?? widget.duration;
         }
     }
     internal virtual global::Doroti.Framework.Animation.Curve _curve
     {
         get
         {
-            return (((Expansible)this.widget).animationStyle?.curve ?? ((Expansible)this.widget).curve);
+            return widget.animationStyle?.curve ?? widget.curve;
         }
     }
     internal virtual global::Doroti.Framework.Animation.Curve? _reverseCurve
     {
         get
         {
-            return (((Expansible)this.widget).animationStyle?.reverseCurve ?? ((Expansible)this.widget).reverseCurve);
+            return widget.animationStyle?.reverseCurve ?? widget.reverseCurve;
         }
     }
     public override void initState()
     {
         base.initState();
-        _animationController = new global::Doroti.Framework.Animation.AnimationController(duration: this._duration, vsync: this);
-        bool initiallyExpanded = (((bool?)PageStorage.maybeOf(this.context)?.readState(this.context)) ?? ((Expansible)this.widget).controller.isExpanded);
+        _animationController = new global::Doroti.Framework.Animation.AnimationController(duration: _duration, vsync: this);
+        bool initiallyExpanded = ((bool?)PageStorage.maybeOf(context)?.readState(context)) ?? widget.controller.isExpanded;
         if (initiallyExpanded)
         {
-            this._animationController.value = 1.0;
-            ((Expansible)this.widget).controller.expand();
+            _animationController.value = 1.0;
+            widget.controller.expand();
         }
         else
         {
-            ((Expansible)this.widget).controller.collapse();
+            widget.controller.collapse();
         }
         var heightFactorTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0);
-        _heightFactor = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._animationController.drive(heightFactorTween), curve: this._curve, reverseCurve: this._reverseCurve);
-        ((Expansible)this.widget).controller.addListener(this._toggleExpansion);
+        _heightFactor = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _animationController.drive(heightFactorTween), curve: _curve, reverseCurve: _reverseCurve);
+        widget.controller.addListener(_toggleExpansion);
     }
 
     public override void didUpdateWidget(Expansible oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        Duration oldDuration = (((Expansible)oldWidget).animationStyle?.duration ?? ((Expansible)oldWidget).duration);
-        global::Doroti.Framework.Animation.Curve oldCurve = (((Expansible)oldWidget).animationStyle?.curve ?? ((Expansible)oldWidget).curve);
-        global::Doroti.Framework.Animation.Curve? oldReverseCurve = (((Expansible)oldWidget).animationStyle?.reverseCurve ?? ((Expansible)oldWidget).reverseCurve);
-        if ((!Equals(this._curve, oldCurve)))
+        Duration oldDuration = oldWidget.animationStyle?.duration ?? oldWidget.duration;
+        global::Doroti.Framework.Animation.Curve oldCurve = oldWidget.animationStyle?.curve ?? oldWidget.curve;
+        global::Doroti.Framework.Animation.Curve? oldReverseCurve = oldWidget.animationStyle?.reverseCurve ?? oldWidget.reverseCurve;
+        if (!Equals(_curve, oldCurve))
         {
-            this._heightFactor.curve = this._curve;
+            _heightFactor.curve = _curve;
         }
-        if ((!Equals(this._reverseCurve, oldReverseCurve)))
+        if (!Equals(_reverseCurve, oldReverseCurve))
         {
-            this._heightFactor.reverseCurve = this._reverseCurve;
+            _heightFactor.reverseCurve = _reverseCurve;
         }
-        if ((!Equals(this._duration, oldDuration)))
+        if (!Equals(_duration, oldDuration))
         {
-            this._animationController.duration = this._duration;
+            _animationController.duration = _duration;
         }
-        if ((!Equals(((Expansible)this.widget).controller, ((Expansible)oldWidget).controller)))
+        if (!Equals(widget.controller, oldWidget.controller))
         {
-            ((Expansible)oldWidget).controller.removeListener(this._toggleExpansion);
-            ((Expansible)this.widget).controller.addListener(this._toggleExpansion);
-            if ((((Expansible)oldWidget).controller.isExpanded != ((Expansible)this.widget).controller.isExpanded))
+            oldWidget.controller.removeListener(_toggleExpansion);
+            widget.controller.addListener(_toggleExpansion);
+            if (oldWidget.controller.isExpanded != widget.controller.isExpanded)
             {
                 _toggleExpansion();
             }
@@ -176,62 +176,62 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
 
     public override void dispose()
     {
-        ((Expansible)this.widget).controller.removeListener(this._toggleExpansion);
-        this._animationController.dispose();
-        this._heightFactor.dispose();
+        widget.controller.removeListener(_toggleExpansion);
+        _animationController.dispose();
+        _heightFactor.dispose();
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._ticker is null) || !this._ticker!.isActive))
+                if ((_ticker is null) || !_ticker!.isActive)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
 
     internal virtual void _toggleExpansion()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-            if (((Expansible)this.widget).controller.isExpanded)
+            if (widget.controller.isExpanded)
             {
-                this._animationController.forward();
+                _animationController.forward();
             }
             else
             {
-                DartRuntimePrimitives.Ignore(this._animationController.reverse().then(((global::System.Func<object?, object>)((value) =>
+                DartRuntimePrimitives.Ignore(_animationController.reverse().then((value) =>
                 {
-                    if (!this.mounted)
+                    if (!mounted)
                     {
                         return default!;
                     }
-                    setState(((global::System.Action)(() =>
+                    setState(() =>
                     {
-                    })));
+                    });
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                }))));
+                }));
             }
-            PageStorage.maybeOf(this.context)?.writeState(this.context, ((Expansible)this.widget).controller.isExpanded);
-        })));
+            PageStorage.maybeOf(context)?.writeState(context, widget.controller.isExpanded);
+        });
     }
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => (!this._animationController.isDismissed || !((Expansible)this.widget).controller.isExpanded));
-        bool closed = (!((Expansible)this.widget).controller.isExpanded && this._animationController.isDismissed);
-        bool shouldRemoveBody = (closed && !((Expansible)this.widget).maintainState);
-        Widget result = ((Widget)new Offstage(offstage: closed, child: new TickerMode(enabled: !closed, child: this.widget.bodyBuilder(context, this._animationController))));
-        return ((Widget)new AnimatedBuilder(animation: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).view, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        DartRuntimePrimitives.Assert(() => !_animationController.isDismissed || !widget.controller.isExpanded);
+        bool closed = !widget.controller.isExpanded && _animationController.isDismissed;
+        bool shouldRemoveBody = closed && !widget.maintainState;
+        Widget result = new Offstage(offstage: closed, child: new TickerMode(enabled: !closed, child: widget.bodyBuilder(context, _animationController)));
+        return new AnimatedBuilder(animation: _animationController.view, builder: (context, child) =>
         {
-            Widget header = this.widget.headerBuilder(context, this._animationController);
-            Widget body = ((Widget)new ClipRect(child: new Align(heightFactor: ((global::Doroti.Framework.Animation.CurvedAnimation)this._heightFactor).value, child: child)));
-            return this.widget.expansibleBuilder(context, header, body, this._animationController);
+            Widget header = widget.headerBuilder(context, _animationController);
+            Widget body = new ClipRect(child: new Align(heightFactor: _heightFactor.value, child: child));
+            return widget.expansibleBuilder(context, header, body, _animationController);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: (shouldRemoveBody ? null : result)));
+        }, child: shouldRemoveBody ? null : result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -239,17 +239,17 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._ticker is null))
+                if (_ticker is null)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
+        _ticker = new global::Doroti.Framework.Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
         _updateTickerModeNotifier();
         _updateTicker();
-        return this._ticker!;
+        return _ticker!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -262,31 +262,31 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
 
     public virtual void _updateTicker()
     {
-        TickerModeData values = this._tickerModeNotifier!.value;
-        if ((this._ticker is not null))
+        TickerModeData values = _tickerModeNotifier!.value;
+        if (_ticker is not null)
         {
-            this._ticker!.muted = !((TickerModeData)values).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
+            _ticker!.muted = !values.enabled;
+            _ticker!.forceFrames = values.forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        newNotifier.addListener(this._updateTicker);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        newNotifier.addListener(_updateTicker);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }

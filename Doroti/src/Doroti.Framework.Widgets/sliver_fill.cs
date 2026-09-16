@@ -18,12 +18,12 @@ public class SliverFillViewport : StatelessWidget
         this.viewportFraction = viewportFraction;
         this.padEnds = padEnds;
         this.allowImplicitScrolling = allowImplicitScrolling;
-        System.Diagnostics.Debug.Assert((viewportFraction > 0.0));
+        System.Diagnostics.Debug.Assert(viewportFraction > 0.0);
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new _SliverFractionalPadding__sliver_fill(viewportFraction: (this.padEnds ? (Dart_uiLibrary.clampDouble((1L - this.viewportFraction), 0, 1) / 2L) : 0), sliver: new _SliverFillViewportRenderObjectWidget__sliver_fill(viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling, @delegate: this.@delegate)));
+        return new _SliverFractionalPadding__sliver_fill(viewportFraction: padEnds ? (Dart_uiLibrary.clampDouble(1L - viewportFraction, 0, 1) / 2L) : 0, sliver: new _SliverFillViewportRenderObjectWidget__sliver_fill(viewportFraction: viewportFraction, allowImplicitScrolling: allowImplicitScrolling, @delegate: @delegate));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -38,21 +38,21 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
     {
         this.viewportFraction = viewportFraction;
         this.allowImplicitScrolling = allowImplicitScrolling;
-        System.Diagnostics.Debug.Assert((viewportFraction > 0.0));
+        System.Diagnostics.Debug.Assert(viewportFraction > 0.0);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         var element = ((SliverMultiBoxAdaptorElement?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverFillViewport(childManager: element, viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling));
+        return new global::Doroti.Framework.Rendering.RenderSliverFillViewport(childManager: element, viewportFraction: viewportFraction, allowImplicitScrolling: allowImplicitScrolling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverFillViewport)renderObject;
-        __renderObject.viewportFraction = this.viewportFraction;
-        __renderObject.allowImplicitScrolling = this.allowImplicitScrolling;
+        __renderObject.viewportFraction = viewportFraction;
+        __renderObject.allowImplicitScrolling = allowImplicitScrolling;
     }
 
 }
@@ -64,15 +64,15 @@ internal class _SliverFractionalPadding__sliver_fill : SingleChildRenderObjectWi
     internal _SliverFractionalPadding__sliver_fill(double viewportFraction = 0, Widget? sliver = null) : base(child: sliver)
     {
         this.viewportFraction = viewportFraction;
-        System.Diagnostics.Debug.Assert((viewportFraction >= 0L));
-        System.Diagnostics.Debug.Assert((viewportFraction <= 0.5));
+        System.Diagnostics.Debug.Assert(viewportFraction >= 0L);
+        System.Diagnostics.Debug.Assert(viewportFraction <= 0.5);
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _RenderSliverFractionalPadding__sliver_fill(viewportFraction: this.viewportFraction));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _RenderSliverFractionalPadding__sliver_fill(viewportFraction: viewportFraction));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderSliverFractionalPadding__sliver_fill)renderObject;
-        __renderObject.viewportFraction = this.viewportFraction;
+        __renderObject.viewportFraction = viewportFraction;
     }
 
 }
@@ -85,18 +85,18 @@ public class _RenderSliverFractionalPadding__sliver_fill : global::Doroti.Framew
 
     internal _RenderSliverFractionalPadding__sliver_fill(double viewportFraction = 0)
     {
-        this._viewportFraction = viewportFraction;
-        System.Diagnostics.Debug.Assert((viewportFraction <= 0.5));
-        System.Diagnostics.Debug.Assert((viewportFraction >= 0L));
+        _viewportFraction = viewportFraction;
+        System.Diagnostics.Debug.Assert(viewportFraction <= 0.5);
+        System.Diagnostics.Debug.Assert(viewportFraction >= 0L);
     }
 
     public virtual double viewportFraction
     {
-        get => this._viewportFraction;
+        get => _viewportFraction;
         set
         {
             var newValue = value;
-            if ((this._viewportFraction == newValue))
+            if (_viewportFraction == newValue)
             {
                 return;
             }
@@ -104,7 +104,7 @@ public class _RenderSliverFractionalPadding__sliver_fill : global::Doroti.Framew
             _markNeedsResolution();
         }
     }
-    public override global::Doroti.Framework.Painting.EdgeInsets? resolvedPadding => this._resolvedPadding;
+    public override global::Doroti.Framework.Painting.EdgeInsets? resolvedPadding => _resolvedPadding;
     internal virtual void _markNeedsResolution()
     {
         _resolvedPadding = null;
@@ -113,13 +113,13 @@ public class _RenderSliverFractionalPadding__sliver_fill : global::Doroti.Framew
 
     internal virtual void _resolve()
     {
-        if (((this._resolvedPadding is not null) && (Equals(this._lastResolvedConstraints, this.constraints))))
+        if ((_resolvedPadding is not null) && Equals(_lastResolvedConstraints, constraints))
         {
             return;
         }
-        double paddingValue = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent * this.viewportFraction);
-        _lastResolvedConstraints = this.constraints;
-        _resolvedPadding = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { Axis.horizontal => EdgeInsets.CreateSymmetric(horizontal: paddingValue), Axis.vertical => EdgeInsets.CreateSymmetric(vertical: paddingValue), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double paddingValue = constraints.viewportMainAxisExtent * viewportFraction;
+        _lastResolvedConstraints = constraints;
+        _resolvedPadding = constraints.axis switch { Axis.horizontal => EdgeInsets.CreateSymmetric(horizontal: paddingValue), Axis.vertical => EdgeInsets.CreateSymmetric(vertical: paddingValue), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         return;
     }
 
@@ -146,22 +146,22 @@ public class SliverFillRemaining : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        if (this.hasScrollBody)
+        if (hasScrollBody)
         {
-            return ((Widget)new _SliverFillRemainingWithScrollable__sliver_fill(child: this.child));
+            return new _SliverFillRemainingWithScrollable__sliver_fill(child: child);
         }
-        if (!this.fillOverscroll)
+        if (!fillOverscroll)
         {
-            return ((Widget)new _SliverFillRemainingWithoutScrollable__sliver_fill(child: this.child));
+            return new _SliverFillRemainingWithoutScrollable__sliver_fill(child: child);
         }
-        return ((Widget)new _SliverFillRemainingAndOverscroll__sliver_fill(child: this.child));
+        return new _SliverFillRemainingAndOverscroll__sliver_fill(child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("child", this.child));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("child", child));
         var flags = new List<string>();
         if (!Enumerable.Any(flags))
         {

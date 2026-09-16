@@ -19,7 +19,7 @@ public abstract class AnimatedWidget : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Foundation.Listenable>("listenable", this.listenable));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Foundation.Listenable>("listenable", listenable));
     }
 
 }
@@ -29,37 +29,37 @@ internal class _AnimatedState__transitions : State<AnimatedWidget>
     public override void initState()
     {
         base.initState();
-        ((AnimatedWidget)this.widget).listenable.addListener(this._handleChange);
+        widget.listenable.addListener(_handleChange);
     }
 
     public override void didUpdateWidget(AnimatedWidget oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((AnimatedWidget)this.widget).listenable, ((AnimatedWidget)oldWidget).listenable)))
+        if (!Equals(widget.listenable, oldWidget.listenable))
         {
-            ((AnimatedWidget)oldWidget).listenable.removeListener(this._handleChange);
-            ((AnimatedWidget)this.widget).listenable.addListener(this._handleChange);
+            oldWidget.listenable.removeListener(_handleChange);
+            widget.listenable.addListener(_handleChange);
         }
     }
 
     public override void dispose()
     {
-        ((AnimatedWidget)this.widget).listenable.removeListener(this._handleChange);
+        widget.listenable.removeListener(_handleChange);
         base.dispose();
     }
 
     internal virtual void _handleChange()
     {
-        if (!this.mounted)
+        if (!mounted)
         {
             return;
         }
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-        })));
+        });
     }
 
-    public override Widget build(BuildContext context) => this.widget.build(context);
+    public override Widget build(BuildContext context) => widget.build(context);
 }
 
 public delegate Widget? DelegatedTransitionBuilder(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, bool allowSnapshotting, Widget? child);
@@ -77,15 +77,15 @@ public class SlideTransition : AnimatedWidget
         this.child = child;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> position => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>?)this.listenable)!);
+    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> position => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>?)listenable)!);
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.Offset offset = ((global::Doroti.Ui.Offset)((global::Doroti.Framework.Animation.Animation<Offset>)this.position).value);
-        if ((Equals(this.textDirection, TextDirection.rtl)))
+        global::Doroti.Ui.Offset offset = position.value;
+        if (Equals(textDirection, TextDirection.rtl))
         {
             offset = new global::Doroti.Ui.Offset(-offset.dx, offset.dy);
         }
-        return ((Widget)new FractionalTranslation(translation: offset, transformHitTests: this.transformHitTests, child: this.child));
+        return new FractionalTranslation(translation: offset, transformHitTests: transformHitTests, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -109,10 +109,10 @@ public class MatrixTransition : AnimatedWidget
         this.child = child;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation => ((global::Doroti.Framework.Animation.Animation<double>?)this.listenable)!;
+    public virtual global::Doroti.Framework.Animation.Animation<double> animation => ((global::Doroti.Framework.Animation.Animation<double>?)listenable)!;
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new Transform(transform: this.onTransform(((global::Doroti.Framework.Animation.Animation<double>)this.animation).value), alignment: this.alignment, filterQuality: (((global::Doroti.Framework.Animation.Animation<double>)this.animation).isAnimating ? this.filterQuality : null), child: this.child));
+        return new Transform(transform: onTransform(animation.value), alignment: alignment, filterQuality: animation.isAnimating ? filterQuality : null, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -120,22 +120,22 @@ public class MatrixTransition : AnimatedWidget
 
 public class ScaleTransition : MatrixTransition
 {
-    public ScaleTransition(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> scale = default!, global::Doroti.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, Widget? child = null) : base(key: key, alignment: alignment ?? Alignment.center, filterQuality: filterQuality, child: child, animation: scale, onTransform: (global::System.Func<double, Matrix4>)_handleScaleMatrix)
+    public ScaleTransition(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> scale = default!, global::Doroti.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, Widget? child = null) : base(key: key, alignment: alignment ?? Alignment.center, filterQuality: filterQuality, child: child, animation: scale, onTransform: _handleScaleMatrix)
     {
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> scale => this.animation;
+    public virtual global::Doroti.Framework.Animation.Animation<double> scale => animation;
     internal static Matrix4 _handleScaleMatrix(double value) => Matrix4.diagonal3Values(value, value, 1.0);
 }
 
 public class RotationTransition : MatrixTransition
 {
-    public RotationTransition(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> turns = default!, global::Doroti.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, Widget? child = null) : base(key: key, alignment: alignment ?? Alignment.center, filterQuality: filterQuality, child: child, animation: turns, onTransform: (global::System.Func<double, Matrix4>)_handleTurnsMatrix)
+    public RotationTransition(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> turns = default!, global::Doroti.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, Widget? child = null) : base(key: key, alignment: alignment ?? Alignment.center, filterQuality: filterQuality, child: child, animation: turns, onTransform: _handleTurnsMatrix)
     {
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> turns => this.animation;
-    internal static Matrix4 _handleTurnsMatrix(double value) => Matrix4.rotationZ(((value * Dart_mathLibrary.pi) * 2.0));
+    public virtual global::Doroti.Framework.Animation.Animation<double> turns => animation;
+    internal static Matrix4 _handleTurnsMatrix(double value) => Matrix4.rotationZ(value * Dart_mathLibrary.pi * 2.0);
 }
 
 public class SizeTransition : AnimatedWidget
@@ -153,14 +153,14 @@ public class SizeTransition : AnimatedWidget
         this.alignment = alignment;
         this.fixedCrossAxisSizeFactor = fixedCrossAxisSizeFactor;
         this.child = child;
-        System.Diagnostics.Debug.Assert(((fixedCrossAxisSizeFactor is null) || (fixedCrossAxisSizeFactor >= 0.0)));
-        System.Diagnostics.Debug.Assert(((axisAlignment is null) || (alignment is null)));
+        System.Diagnostics.Debug.Assert((fixedCrossAxisSizeFactor is null) || (fixedCrossAxisSizeFactor >= 0.0));
+        System.Diagnostics.Debug.Assert((axisAlignment is null) || (alignment is null));
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> sizeFactor => ((global::Doroti.Framework.Animation.Animation<double>?)this.listenable)!;
+    public virtual global::Doroti.Framework.Animation.Animation<double> sizeFactor => ((global::Doroti.Framework.Animation.Animation<double>?)listenable)!;
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new ClipRect(child: new Align(alignment: (this.alignment ?? (this.axis switch { Axis.horizontal => new global::Doroti.Framework.Painting.AlignmentDirectional((this.axisAlignment ?? 0.0), -1.0), Axis.vertical => new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, (this.axisAlignment ?? 0.0)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })), heightFactor: ((Equals(this.axis, Axis.vertical)) ? Math.Max(((global::Doroti.Framework.Animation.Animation<double>)this.sizeFactor).value, 0.0) : this.fixedCrossAxisSizeFactor), widthFactor: ((Equals(this.axis, Axis.horizontal)) ? Math.Max(((global::Doroti.Framework.Animation.Animation<double>)this.sizeFactor).value, 0.0) : this.fixedCrossAxisSizeFactor), child: this.child)));
+        return new ClipRect(child: new Align(alignment: alignment ?? (axis switch { Axis.horizontal => new global::Doroti.Framework.Painting.AlignmentDirectional(axisAlignment ?? 0.0, -1.0), Axis.vertical => new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, axisAlignment ?? 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), heightFactor: Equals(axis, Axis.vertical) ? Math.Max(sizeFactor.value, 0.0) : fixedCrossAxisSizeFactor, widthFactor: Equals(axis, Axis.horizontal) ? Math.Max(sizeFactor.value, 0.0) : fixedCrossAxisSizeFactor, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -179,7 +179,7 @@ public class FadeTransition : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderAnimatedOpacity(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
+        return new global::Doroti.Framework.Rendering.RenderAnimatedOpacity(opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -189,8 +189,8 @@ public class FadeTransition : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnimatedOpacity>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.opacity = this.opacity;
-    __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
+    __cascade.opacity = opacity;
+    __cascade.alwaysIncludeSemantics = alwaysIncludeSemantics;
     return __cascade;
 }))());
     }
@@ -198,8 +198,8 @@ public class FadeTransition : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("opacity", this.opacity));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alwaysIncludeSemantics", value: this.alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("opacity", opacity));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
     }
 
 }
@@ -217,7 +217,7 @@ public class SliverFadeTransition : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverAnimatedOpacity(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
+        return new global::Doroti.Framework.Rendering.RenderSliverAnimatedOpacity(opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -227,8 +227,8 @@ public class SliverFadeTransition : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSliverAnimatedOpacity>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.opacity = this.opacity;
-    __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
+    __cascade.opacity = opacity;
+    __cascade.alwaysIncludeSemantics = alwaysIncludeSemantics;
     return __cascade;
 }))());
     }
@@ -236,8 +236,8 @@ public class SliverFadeTransition : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("opacity", this.opacity));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alwaysIncludeSemantics", value: this.alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>>("opacity", opacity));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
     }
 
 }
@@ -248,7 +248,7 @@ public class RelativeRectTween : global::Doroti.Framework.Animation.Tween<global
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RelativeRect lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RelativeRect>(RelativeRect.lerp(this.begin, this.end, t)!);
+    public override global::Doroti.Framework.Rendering.RelativeRect lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RelativeRect>(RelativeRect.lerp(begin, end, t)!);
 }
 
 public class PositionedTransition : AnimatedWidget
@@ -260,10 +260,10 @@ public class PositionedTransition : AnimatedWidget
         this.child = child;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Rendering.RelativeRect> rect => ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Rendering.RelativeRect>?)this.listenable)!;
+    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Rendering.RelativeRect> rect => ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Rendering.RelativeRect>?)listenable)!;
     public override Widget build(BuildContext context)
     {
-        return ((Widget)Positioned.CreateFromRelativeRect(rect: ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Rendering.RelativeRect>)this.rect).value, child: this.child));
+        return Positioned.CreateFromRelativeRect(rect: rect.value, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -280,11 +280,11 @@ public class RelativePositionedTransition : AnimatedWidget
         this.child = child;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?> rect => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?>?)this.listenable)!);
+    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?> rect => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?>?)listenable)!);
     public override Widget build(BuildContext context)
     {
-        var offsets = RelativeRect.CreateFromSize((((global::Doroti.Framework.Animation.Animation<Rect?>)this.rect).value ?? Rect.zero), this.size);
-        return ((Widget)new Positioned(top: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).bottom, left: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).left, child: this.child));
+        var offsets = RelativeRect.CreateFromSize(rect.value ?? Rect.zero, size);
+        return new Positioned(top: offsets.top, right: offsets.right, bottom: offsets.bottom, left: offsets.left, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -305,7 +305,7 @@ public class DecoratedBoxTransition : AnimatedWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new DecoratedBox(decoration: ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.Decoration>)this.decoration).value, position: this.position, child: this.child));
+        return new DecoratedBox(decoration: decoration.value, position: position, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -324,10 +324,10 @@ public class AlignTransition : AnimatedWidget
         this.heightFactor = heightFactor;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.AlignmentGeometry> alignment => ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.AlignmentGeometry>?)this.listenable)!;
+    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.AlignmentGeometry> alignment => ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.AlignmentGeometry>?)listenable)!;
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new Align(alignment: ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.AlignmentGeometry>)this.alignment).value, widthFactor: this.widthFactor, heightFactor: this.heightFactor, child: this.child));
+        return new Align(alignment: alignment.value, widthFactor: widthFactor, heightFactor: heightFactor, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -350,10 +350,10 @@ public class DefaultTextStyleTransition : AnimatedWidget
         this.maxLines = maxLines;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.TextStyle> style => ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.TextStyle>?)this.listenable)!;
+    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.TextStyle> style => ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.TextStyle>?)listenable)!;
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new DefaultTextStyle(style: ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.TextStyle>)this.style).value, textAlign: this.textAlign, softWrap: this.softWrap, overflow: this.overflow, maxLines: this.maxLines, child: this.child));
+        return new DefaultTextStyle(style: style.value, textAlign: textAlign, softWrap: softWrap, overflow: overflow, maxLines: maxLines, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -371,7 +371,7 @@ public class ListenableBuilder : AnimatedWidget
     }
 
     public override global::Doroti.Framework.Foundation.Listenable listenable => base.listenable;
-    public override Widget build(BuildContext context) => this.builder(context, this.child);
+    public override Widget build(BuildContext context) => builder(context, child);
 }
 
 public class AnimatedBuilder : ListenableBuilder

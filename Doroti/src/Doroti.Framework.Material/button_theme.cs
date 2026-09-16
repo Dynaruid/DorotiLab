@@ -25,9 +25,9 @@ public class ButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public ButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, ButtonTextTheme textTheme = ButtonTextTheme.normal, ButtonBarLayoutBehavior layoutBehavior = ButtonBarLayoutBehavior.padded, double minWidth = 88.0, double height = 36.0, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, bool alignedDropdown = false, Color? buttonColor = null, Color? disabledColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, ColorScheme? colorScheme = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
-        this.data = new ButtonThemeData(textTheme: textTheme, minWidth: minWidth, height: height, padding: padding, shape: shape, alignedDropdown: alignedDropdown, layoutBehavior: layoutBehavior, buttonColor: buttonColor, disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, colorScheme: colorScheme, materialTapTargetSize: materialTapTargetSize);
-        System.Diagnostics.Debug.Assert((minWidth >= 0.0));
-        System.Diagnostics.Debug.Assert((height >= 0.0));
+        data = new ButtonThemeData(textTheme: textTheme, minWidth: minWidth, height: height, padding: padding, shape: shape, alignedDropdown: alignedDropdown, layoutBehavior: layoutBehavior, buttonColor: buttonColor, disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, colorScheme: colorScheme, materialTapTargetSize: materialTapTargetSize);
+        System.Diagnostics.Debug.Assert(minWidth >= 0.0);
+        System.Diagnostics.Debug.Assert(height >= 0.0);
     }
 
     public static ButtonTheme CreateFromButtonThemeData(global::Doroti.Framework.Foundation.Key? key = null, ButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!)
@@ -39,16 +39,16 @@ public class ButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static ButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ButtonTheme? inheritedButtonTheme = ((ButtonTheme?)context.dependOnInheritedWidgetOfExactType<ButtonTheme>());
+        ButtonTheme? inheritedButtonTheme = context.dependOnInheritedWidgetOfExactType<ButtonTheme>();
         ButtonThemeData? buttonThemeLocal = inheritedButtonTheme?.data;
-        if ((buttonThemeLocal?.colorScheme is null))
+        if (buttonThemeLocal?.colorScheme is null)
         {
-            ThemeData theme = ((ThemeData)Theme.of(context));
-            buttonThemeLocal ??= ((ThemeData)theme).buttonTheme;
-            if ((((ButtonThemeData)buttonThemeLocal).colorScheme is null))
+            ThemeData theme = Theme.of(context);
+            buttonThemeLocal ??= theme.buttonTheme;
+            if (buttonThemeLocal.colorScheme is null)
             {
-                buttonThemeLocal = buttonThemeLocal.copyWith(colorScheme: (((ThemeData)theme).buttonTheme.colorScheme ?? ((ThemeData)theme).colorScheme));
-                DartRuntimePrimitives.Assert(() => (((ButtonThemeData)buttonThemeLocal).colorScheme is not null));
+                buttonThemeLocal = buttonThemeLocal.copyWith(colorScheme: theme.buttonTheme.colorScheme ?? theme.colorScheme);
+                DartRuntimePrimitives.Assert(() => buttonThemeLocal.colorScheme is not null);
             }
         }
         return buttonThemeLocal!;
@@ -57,11 +57,11 @@ public class ButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)CreateFromButtonThemeData(data: this.data, child: child));
+        return CreateFromButtonThemeData(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ButtonTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ButtonTheme)oldWidget).data));
 }
 
 public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
@@ -90,72 +90,72 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         this.layoutBehavior = layoutBehavior;
         this.alignedDropdown = alignedDropdown;
         this.colorScheme = colorScheme;
-        this._buttonColor = buttonColor;
-        this._disabledColor = disabledColor;
-        this._focusColor = focusColor;
-        this._hoverColor = hoverColor;
-        this._highlightColor = highlightColor;
-        this._splashColor = splashColor;
-        this._padding = padding;
-        this._shape = shape;
-        this._materialTapTargetSize = materialTapTargetSize;
-        System.Diagnostics.Debug.Assert((minWidth >= 0.0));
-        System.Diagnostics.Debug.Assert((height >= 0.0));
+        _buttonColor = buttonColor;
+        _disabledColor = disabledColor;
+        _focusColor = focusColor;
+        _hoverColor = hoverColor;
+        _highlightColor = highlightColor;
+        _splashColor = splashColor;
+        _padding = padding;
+        _shape = shape;
+        _materialTapTargetSize = materialTapTargetSize;
+        System.Diagnostics.Debug.Assert(minWidth >= 0.0);
+        System.Diagnostics.Debug.Assert(height >= 0.0);
     }
 
     public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints
     {
         get
         {
-            return new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: DartRuntimePrimitives.RequireValue(this.minWidth), minHeight: DartRuntimePrimitives.RequireValue(this.height));
+            return new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: DartRuntimePrimitives.RequireValue(minWidth), minHeight: DartRuntimePrimitives.RequireValue(height));
         }
     }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>((this._padding ?? (this.textTheme switch { ButtonTextTheme.normal => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.accent => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.primary => EdgeInsets.CreateSymmetric(horizontal: 24.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
-    public virtual global::Doroti.Framework.Painting.ShapeBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>((this._shape ?? (this.textTheme switch { ButtonTextTheme.normal => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0))), ButtonTextTheme.accent => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0))), ButtonTextTheme.primary => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(_padding ?? (textTheme switch { ButtonTextTheme.normal => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.accent => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.primary => EdgeInsets.CreateSymmetric(horizontal: 24.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+    public virtual global::Doroti.Framework.Painting.ShapeBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(_shape ?? (textTheme switch { ButtonTextTheme.normal => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0))), ButtonTextTheme.accent => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0))), ButtonTextTheme.primary => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
     public virtual global::Doroti.Ui.Brightness getBrightness(MaterialButton button)
     {
-        return (button.colorBrightness ?? this.colorScheme!.brightness);
+        return button.colorBrightness ?? colorScheme!.brightness;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ButtonTextTheme getTextTheme(MaterialButton button) => DartRuntimePrimitives.ConvertValue<ButtonTextTheme>((button.textTheme ?? this.textTheme));
+    public virtual ButtonTextTheme getTextTheme(MaterialButton button) => DartRuntimePrimitives.ConvertValue<ButtonTextTheme>(button.textTheme ?? textTheme);
     public virtual global::Doroti.Ui.Color getDisabledTextColor(MaterialButton button)
     {
-        return ((global::Doroti.Ui.Color)((button.textColor ?? button.disabledTextColor) ?? this.colorScheme!.onSurface.withOpacity(0.38)));
+        return (button.textColor ?? button.disabledTextColor) ?? colorScheme!.onSurface.withOpacity(0.38);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color getDisabledFillColor(MaterialButton button)
     {
-        return ((global::Doroti.Ui.Color)((button.disabledColor ?? this._disabledColor) ?? this.colorScheme!.onSurface.withOpacity(0.38)));
+        return (button.disabledColor ?? _disabledColor) ?? colorScheme!.onSurface.withOpacity(0.38);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color? getFillColor(MaterialButton button)
     {
-        global::Doroti.Ui.Color? fillColor = ((global::Doroti.Ui.Color?)(button.enabled ? button.color : button.disabledColor));
-        if ((fillColor is not null))
+        global::Doroti.Ui.Color? fillColor = button.enabled ? button.color : button.disabledColor;
+        if (fillColor is not null)
         {
-            return ((global::Doroti.Ui.Color?)fillColor);
+            return (global::Doroti.Ui.Color?)fillColor;
         }
-        if ((Equals(DartRuntimePrimitives.RuntimeType(button), typeof(MaterialButton))))
+        if (Equals(DartRuntimePrimitives.RuntimeType(button), typeof(MaterialButton)))
         {
             return null;
         }
-        if ((button.enabled && (this._buttonColor is not null)))
+        if (button.enabled && (_buttonColor is not null))
         {
-            return ((global::Doroti.Ui.Color?)this._buttonColor);
+            return (global::Doroti.Ui.Color?)_buttonColor;
         }
         switch (getTextTheme(button))
         {
             case ButtonTextTheme.normal:
             case ButtonTextTheme.accent:
                 {
-                    return ((global::Doroti.Ui.Color?)(button.enabled ? this.colorScheme!.primary : getDisabledFillColor(button)));
+                    return (global::Doroti.Ui.Color?)(button.enabled ? colorScheme!.primary : getDisabledFillColor(button));
                 }
             case ButtonTextTheme.primary:
                 {
-                    return ((global::Doroti.Ui.Color?)(button.enabled ? (this._buttonColor ?? this.colorScheme!.primary) : this.colorScheme!.onSurface.withOpacity(0.12)));
+                    return (global::Doroti.Ui.Color?)(button.enabled ? (_buttonColor ?? colorScheme!.primary) : colorScheme!.onSurface.withOpacity(0.12));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -167,27 +167,27 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
     {
         if (!button.enabled)
         {
-            return ((global::Doroti.Ui.Color)getDisabledTextColor(button));
+            return getDisabledTextColor(button);
         }
-        if ((button.textColor is not null))
+        if (button.textColor is not null)
         {
-            return ((global::Doroti.Ui.Color)button.textColor!);
+            return button.textColor!;
         }
         switch (getTextTheme(button))
         {
             case ButtonTextTheme.normal:
                 {
-                    return ((global::Doroti.Ui.Color)((Equals(getBrightness(button), Brightness.dark)) ? Colors.white : Colors.black87));
+                    return Equals(getBrightness(button), Brightness.dark) ? Colors.white : Colors.black87;
                 }
             case ButtonTextTheme.accent:
                 {
-                    return ((global::Doroti.Ui.Color)this.colorScheme!.secondary);
+                    return colorScheme!.secondary;
                 }
             case ButtonTextTheme.primary:
                 {
-                    global::Doroti.Ui.Color? fillColor = ((global::Doroti.Ui.Color?)getFillColor(button));
-                    var fillIsDark = ((fillColor is not null) ? (Equals(ThemeData.estimateBrightnessForColor(fillColor), Brightness.dark)) : (Equals(getBrightness(button), Brightness.dark)));
-                    return ((global::Doroti.Ui.Color)(fillIsDark ? Colors.white : Colors.black));
+                    global::Doroti.Ui.Color? fillColor = getFillColor(button);
+                    var fillIsDark = (fillColor is not null) ? Equals(ThemeData.estimateBrightnessForColor(fillColor), Brightness.dark) : Equals(getBrightness(button), Brightness.dark);
+                    return fillIsDark ? Colors.white : Colors.black;
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -197,18 +197,18 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual global::Doroti.Ui.Color getSplashColor(MaterialButton button)
     {
-        if ((button.splashColor is not null))
+        if (button.splashColor is not null)
         {
-            return ((global::Doroti.Ui.Color)button.splashColor!);
+            return button.splashColor!;
         }
-        if ((this._splashColor is not null))
+        if (_splashColor is not null)
         {
             switch (getTextTheme(button))
             {
                 case ButtonTextTheme.normal:
                 case ButtonTextTheme.accent:
                     {
-                        return ((global::Doroti.Ui.Color)this._splashColor);
+                        return _splashColor;
                     }
                 case ButtonTextTheme.primary:
                     {
@@ -218,38 +218,38 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
         }
-        return ((global::Doroti.Ui.Color)getTextColor(button).withOpacity(0.12));
+        return getTextColor(button).withOpacity(0.12);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color getFocusColor(MaterialButton button)
     {
-        return ((global::Doroti.Ui.Color)((button.focusColor ?? this._focusColor) ?? getTextColor(button).withOpacity(0.12)));
+        return (button.focusColor ?? _focusColor) ?? getTextColor(button).withOpacity(0.12);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color getHoverColor(MaterialButton button)
     {
-        return ((global::Doroti.Ui.Color)((button.hoverColor ?? this._hoverColor) ?? getTextColor(button).withOpacity(0.04)));
+        return (button.hoverColor ?? _hoverColor) ?? getTextColor(button).withOpacity(0.04);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color getHighlightColor(MaterialButton button)
     {
-        if ((button.highlightColor is not null))
+        if (button.highlightColor is not null)
         {
-            return ((global::Doroti.Ui.Color)button.highlightColor!);
+            return button.highlightColor!;
         }
         switch (getTextTheme(button))
         {
             case ButtonTextTheme.normal:
             case ButtonTextTheme.accent:
                 {
-                    return ((global::Doroti.Ui.Color)(this._highlightColor ?? getTextColor(button).withOpacity(0.16)));
+                    return _highlightColor ?? getTextColor(button).withOpacity(0.16);
                 }
             case ButtonTextTheme.primary:
                 {
-                    return ((global::Doroti.Ui.Color)Colors.transparent);
+                    return Colors.transparent;
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -257,34 +257,34 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double getElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>((button.elevation ?? 2.0));
-    public virtual double getFocusElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>((button.focusElevation ?? 4.0));
-    public virtual double getHoverElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>((button.hoverElevation ?? 4.0));
-    public virtual double getHighlightElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>((button.highlightElevation ?? 8.0));
-    public virtual double getDisabledElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>((button.disabledElevation ?? 0.0));
+    public virtual double getElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>(button.elevation ?? 2.0);
+    public virtual double getFocusElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>(button.focusElevation ?? 4.0);
+    public virtual double getHoverElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>(button.hoverElevation ?? 4.0);
+    public virtual double getHighlightElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>(button.highlightElevation ?? 8.0);
+    public virtual double getDisabledElevation(MaterialButton button) => DartRuntimePrimitives.ConvertValue<double>(button.disabledElevation ?? 0.0);
     public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry getPadding(MaterialButton button)
     {
-        return ((button.padding ?? this._padding) ?? (getTextTheme(button) switch { ButtonTextTheme.normal => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.accent => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.primary => EdgeInsets.CreateSymmetric(horizontal: 24.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return (button.padding ?? _padding) ?? (getTextTheme(button) switch { ButtonTextTheme.normal => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.accent => EdgeInsets.CreateSymmetric(horizontal: 16.0), ButtonTextTheme.primary => EdgeInsets.CreateSymmetric(horizontal: 24.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Painting.ShapeBorder getShape(MaterialButton button) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(((button.shape ?? (global::Doroti.Framework.Painting.ShapeBorder)this.shape)));
+    public virtual global::Doroti.Framework.Painting.ShapeBorder getShape(MaterialButton button) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(button.shape ?? shape);
     public virtual Duration getAnimationDuration(MaterialButton button)
     {
-        return (button.animationDuration ?? ConstantsLibrary.kThemeChangeDuration);
+        return button.animationDuration ?? ConstantsLibrary.kThemeChangeDuration;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints getConstraints(MaterialButton button) => this.constraints;
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints getConstraints(MaterialButton button) => constraints;
     public virtual MaterialTapTargetSize getMaterialTapTargetSize(MaterialButton button)
     {
-        return ((button.materialTapTargetSize ?? this._materialTapTargetSize) ?? MaterialTapTargetSize.padded);
+        return (button.materialTapTargetSize ?? _materialTapTargetSize) ?? MaterialTapTargetSize.padded;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ButtonThemeData copyWith(ButtonTextTheme? textTheme = null, ButtonBarLayoutBehavior? layoutBehavior = null, double? minWidth = null, double? height = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, bool? alignedDropdown = null, Color? buttonColor = null, Color? disabledColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, ColorScheme? colorScheme = null, MaterialTapTargetSize? materialTapTargetSize = null)
     {
-        return new ButtonThemeData(textTheme: (textTheme ?? this.textTheme), layoutBehavior: (layoutBehavior ?? this.layoutBehavior), minWidth: (minWidth ?? this.minWidth), height: (height ?? this.height), padding: (padding ?? this.padding), shape: (shape ?? this.shape), alignedDropdown: (alignedDropdown ?? this.alignedDropdown), buttonColor: (buttonColor ?? this._buttonColor), disabledColor: (disabledColor ?? this._disabledColor), focusColor: (focusColor ?? this._focusColor), hoverColor: (hoverColor ?? this._hoverColor), highlightColor: (highlightColor ?? this._highlightColor), splashColor: (splashColor ?? this._splashColor), colorScheme: (colorScheme ?? this.colorScheme), materialTapTargetSize: (materialTapTargetSize ?? this._materialTapTargetSize));
+        return new ButtonThemeData(textTheme: textTheme ?? this.textTheme, layoutBehavior: layoutBehavior ?? this.layoutBehavior, minWidth: minWidth ?? this.minWidth, height: height ?? this.height, padding: padding ?? this.padding, shape: shape ?? this.shape, alignedDropdown: alignedDropdown ?? this.alignedDropdown, buttonColor: buttonColor ?? _buttonColor, disabledColor: disabledColor ?? _disabledColor, focusColor: focusColor ?? _focusColor, hoverColor: hoverColor ?? _hoverColor, highlightColor: highlightColor ?? _highlightColor, splashColor: splashColor ?? _splashColor, colorScheme: colorScheme ?? this.colorScheme, materialTapTargetSize: materialTapTargetSize ?? _materialTapTargetSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,31 +292,31 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
     {
         var __other = other as ButtonThemeData;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((((((((((((__other is ButtonThemeData) && (Equals(((ButtonThemeData)((ButtonThemeData)__other)).textTheme, this.textTheme))) && (((ButtonThemeData)((ButtonThemeData)__other)).minWidth == this.minWidth)) && (((ButtonThemeData)((ButtonThemeData)__other)).height == this.height)) && (Equals(((ButtonThemeData)((ButtonThemeData)__other)).padding, this.padding))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other)).shape, this.shape))) && (((ButtonThemeData)((ButtonThemeData)__other)).alignedDropdown == this.alignedDropdown)) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._buttonColor, this._buttonColor))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._disabledColor, this._disabledColor))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._focusColor, this._focusColor))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._hoverColor, this._hoverColor))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._highlightColor, this._highlightColor))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._splashColor, this._splashColor))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other)).colorScheme, this.colorScheme))) && (Equals(((ButtonThemeData)((ButtonThemeData)__other))._materialTapTargetSize, this._materialTapTargetSize)));
+        return (__other is ButtonThemeData) && Equals(__other.textTheme, textTheme) && (__other.minWidth == minWidth) && (__other.height == height) && Equals(__other.padding, padding) && Equals(__other.shape, shape) && (__other.alignedDropdown == alignedDropdown) && Equals(__other._buttonColor, _buttonColor) && Equals(__other._disabledColor, _disabledColor) && Equals(__other._focusColor, _focusColor) && Equals(__other._hoverColor, _hoverColor) && Equals(__other._highlightColor, _highlightColor) && Equals(__other._splashColor, _splashColor) && Equals(__other.colorScheme, colorScheme) && Equals(__other._materialTapTargetSize, _materialTapTargetSize);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.textTheme, this.minWidth, this.height, this.padding, this.shape, this.alignedDropdown, this._buttonColor, this._disabledColor, this._focusColor, this._hoverColor, this._highlightColor, this._splashColor, this.colorScheme, this._materialTapTargetSize));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(textTheme, minWidth, height, padding, shape, alignedDropdown, _buttonColor, _disabledColor, _focusColor, _hoverColor, _highlightColor, _splashColor, colorScheme, _materialTapTargetSize));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         var defaultTheme = new ButtonThemeData();
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<ButtonTextTheme>("textTheme", this.textTheme, defaultValue: ((ButtonThemeData)defaultTheme).textTheme));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minWidth", this.minWidth, defaultValue: ((ButtonThemeData)defaultTheme).minWidth));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: ((ButtonThemeData)defaultTheme).height));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: ((ButtonThemeData)defaultTheme).padding));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: ((ButtonThemeData)defaultTheme).shape));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alignedDropdown", value: this.alignedDropdown, defaultValue: ((ButtonThemeData)defaultTheme).alignedDropdown, ifTrue: "dropdown width matches button"));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("buttonColor", this._buttonColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this._disabledColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", this._focusColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", this._hoverColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", this._highlightColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", this._splashColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ColorScheme>("colorScheme", this.colorScheme, defaultValue: ((ButtonThemeData)defaultTheme).colorScheme));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", this._materialTapTargetSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<ButtonTextTheme>("textTheme", textTheme, defaultValue: defaultTheme.textTheme));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minWidth", minWidth, defaultValue: defaultTheme.minWidth));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: defaultTheme.height));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding, defaultValue: defaultTheme.padding));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: defaultTheme.shape));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alignedDropdown", value: alignedDropdown, defaultValue: defaultTheme.alignedDropdown, ifTrue: "dropdown width matches button"));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("buttonColor", _buttonColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", _disabledColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", _focusColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", _hoverColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", _highlightColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", _splashColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ColorScheme>("colorScheme", colorScheme, defaultValue: defaultTheme.colorScheme));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", _materialTapTargetSize, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -330,13 +330,13 @@ public class ButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

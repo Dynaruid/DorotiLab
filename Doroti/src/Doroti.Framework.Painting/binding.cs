@@ -33,7 +33,7 @@ public class _SystemFontsNotifier__binding : Listenable
 
     public virtual void notifyListeners()
     {
-        foreach (Action callback in this._systemFontsCallbacks)
+        foreach (Action callback in _systemFontsCallbacks)
         {
             callback();
         }
@@ -41,12 +41,12 @@ public class _SystemFontsNotifier__binding : Listenable
 
     public virtual void addListener(Action listener)
     {
-        this._systemFontsCallbacks.Add(listener);
+        _systemFontsCallbacks.Add(listener);
     }
 
     public virtual void removeListener(Action listener)
     {
-        this._systemFontsCallbacks.Remove(listener);
+        _systemFontsCallbacks.Remove(listener);
     }
 
 }

@@ -16,20 +16,20 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : global::Doroti.Framewo
 
     public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.loosen());
+        return constraints.loosen();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        return new global::Doroti.Ui.Offset(TextSelectionToolbarLayoutDelegate.centerOn(this.anchor.dx, childSize.width, size.width), (((this.anchor.dy + childSize.height) > size.height) ? (size.height - childSize.height) : this.anchor.dy));
+        return new global::Doroti.Ui.Offset(TextSelectionToolbarLayoutDelegate.centerOn(anchor.dx, childSize.width, size.width), ((anchor.dy + childSize.height) > size.height) ? (size.height - childSize.height) : anchor.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (SpellCheckSuggestionsToolbarLayoutDelegate)oldDelegate;
-        return (!Equals(this.anchor, ((SpellCheckSuggestionsToolbarLayoutDelegate)__oldDelegate).anchor));
+        return !Equals(anchor, __oldDelegate.anchor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

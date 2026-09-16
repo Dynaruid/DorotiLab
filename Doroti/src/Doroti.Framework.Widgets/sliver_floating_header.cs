@@ -35,7 +35,7 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new _SliverFloatingHeader__sliver_floating_header(vsync: this, animationStyle: ((SliverFloatingHeader)this.widget).animationStyle, snapMode: ((SliverFloatingHeader)this.widget).snapMode, child: new _SnapTrigger__sliver_floating_header(((SliverFloatingHeader)this.widget).child)));
+        return new _SliverFloatingHeader__sliver_floating_header(vsync: this, animationStyle: widget.animationStyle, snapMode: widget.snapMode, child: new _SnapTrigger__sliver_floating_header(widget.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -43,17 +43,17 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._ticker is null))
+                if (_ticker is null)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
+        _ticker = new global::Doroti.Framework.Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
         _updateTickerModeNotifier();
         _updateTicker();
-        return this._ticker!;
+        return _ticker!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -61,15 +61,15 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._ticker is null) || !this._ticker!.isActive))
+                if ((_ticker is null) || !_ticker!.isActive)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        this._tickerModeNotifier = null;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        _tickerModeNotifier = null;
         base.dispose();
     }
 
@@ -82,31 +82,31 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
 
     public virtual void _updateTicker()
     {
-        TickerModeData values = this._tickerModeNotifier!.value;
-        if ((this._ticker is not null))
+        TickerModeData values = _tickerModeNotifier!.value;
+        if (_ticker is not null)
         {
-            this._ticker!.muted = !((TickerModeData)values).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
+            _ticker!.muted = !values.enabled;
+            _ticker!.forceFrames = values.forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        newNotifier.addListener(this._updateTicker);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        newNotifier.addListener(_updateTicker);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -130,34 +130,34 @@ internal class _SnapTriggerState__sliver_floating_header : State<_SnapTrigger__s
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        if ((this.position is not null))
+        if (position is not null)
         {
-            this.position!.isScrollingNotifier.removeListener(this.isScrollingListener);
+            position!.isScrollingNotifier.removeListener(isScrollingListener);
         }
-        position = Scrollable.maybeOf(this.context)?.position;
-        if ((this.position is not null))
+        position = Scrollable.maybeOf(context)?.position;
+        if (position is not null)
         {
-            this.position!.isScrollingNotifier.addListener(this.isScrollingListener);
+            position!.isScrollingNotifier.addListener(isScrollingListener);
         }
     }
 
     public override void dispose()
     {
-        if ((this.position is not null))
+        if (position is not null)
         {
-            this.position!.isScrollingNotifier.removeListener(this.isScrollingListener);
+            position!.isScrollingNotifier.removeListener(isScrollingListener);
         }
         base.dispose();
     }
 
     public virtual void isScrollingListener()
     {
-        DartRuntimePrimitives.Assert(() => (this.position is not null));
-        _RenderSliverFloatingHeader__sliver_floating_header? renderer = ((_RenderSliverFloatingHeader__sliver_floating_header?)this.context.findAncestorRenderObjectOfType<_RenderSliverFloatingHeader__sliver_floating_header>());
-        renderer?.isScrollingUpdate(this.position!);
+        DartRuntimePrimitives.Assert(() => position is not null);
+        _RenderSliverFloatingHeader__sliver_floating_header? renderer = context.findAncestorRenderObjectOfType<_RenderSliverFloatingHeader__sliver_floating_header>();
+        renderer?.isScrollingUpdate(position!);
     }
 
-    public override Widget build(BuildContext context) => ((_SnapTrigger__sliver_floating_header)this.widget).child;
+    public override Widget build(BuildContext context) => widget.child;
 }
 
 internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRenderObjectWidget
@@ -175,7 +175,7 @@ internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRender
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverFloatingHeader__sliver_floating_header(vsync: this.vsync, animationStyle: this.animationStyle, snapMode: this.snapMode));
+        return new _RenderSliverFloatingHeader__sliver_floating_header(vsync: vsync, animationStyle: animationStyle, snapMode: snapMode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -185,9 +185,9 @@ internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRender
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverFloatingHeader__sliver_floating_header>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.vsync = this.vsync;
-    __cascade.animationStyle = this.animationStyle;
-    __cascade.snapMode = this.snapMode;
+    __cascade.vsync = vsync;
+    __cascade.animationStyle = animationStyle;
+    __cascade.snapMode = snapMode;
     return __cascade;
 }))());
     }
@@ -208,59 +208,59 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : global::Dorot
     {
         this.animationStyle = animationStyle;
         this.snapMode = snapMode;
-        this._vsync = vsync;
+        _vsync = vsync;
     }
 
     public virtual global::Doroti.Framework.Scheduler.TickerProvider? vsync
     {
-        get => this._vsync;
+        get => _vsync;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._vsync)))
+            if (Equals(__value, _vsync))
             {
                 return;
             }
             _vsync = __value;
-            if ((__value is null))
+            if (__value is null)
             {
-                this.snapController?.dispose();
+                snapController?.dispose();
                 snapController = null;
             }
             else
             {
-                this.snapController?.resync(__value);
+                snapController?.resync(__value);
             }
         }
     }
     public virtual void isScrollingUpdate(ScrollPosition position)
     {
-        if (((ScrollPosition)position).isScrollingNotifier.value)
+        if (position.isScrollingNotifier.value)
         {
-            this.snapController?.stop();
+            snapController?.stop();
         }
         else
         {
             global::Doroti.Framework.Rendering.ScrollDirection direction = position.userScrollDirection;
-            bool headerIsPartiallyVisible = (direction switch { ScrollDirection.forward when ((this.effectiveScrollOffset <= 0L)) => false, ScrollDirection.reverse when ((this.effectiveScrollOffset >= this.childExtent)) => false, _ => true });
+            bool headerIsPartiallyVisible = direction switch { ScrollDirection.forward when effectiveScrollOffset <= 0L => false, ScrollDirection.reverse when effectiveScrollOffset >= childExtent => false, _ => true };
             if (headerIsPartiallyVisible)
             {
                 snapController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this.vsync!);
-    __cascade.addListener(((global::System.Action)(() =>
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: vsync!);
+    __cascade.addListener(() =>
     {
-        if ((this.effectiveScrollOffset != ((global::Doroti.Framework.Animation.Animation<double>)this.snapAnimation).value))
+        if (effectiveScrollOffset != snapAnimation.value)
         {
-            effectiveScrollOffset = ((global::Doroti.Framework.Animation.Animation<double>)this.snapAnimation).value;
+            effectiveScrollOffset = snapAnimation.value;
             markNeedsLayout();
         }
-    })));
+    });
     return __cascade;
 }))();
-                this.snapController!.duration = (direction switch { ScrollDirection.forward => (this.animationStyle?.duration ?? Duration.Create(milliseconds: 300L)), _ => (this.animationStyle?.reverseDuration ?? Duration.Create(milliseconds: 300L)) });
-                snapAnimation = this.snapController!.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: this.effectiveScrollOffset, end: (direction switch { ScrollDirection.forward => 0, _ => this.childExtent })).chain(new global::Doroti.Framework.Animation.CurveTween(curve: (direction switch { ScrollDirection.forward => (this.animationStyle?.curve ?? Curves.easeInOut), _ => (this.animationStyle?.reverseCurve ?? Curves.easeInOut) }))));
-                this.snapController!.forward(from: 0.0);
+                snapController!.duration = direction switch { ScrollDirection.forward => animationStyle?.duration ?? Duration.Create(milliseconds: 300L), _ => animationStyle?.reverseDuration ?? Duration.Create(milliseconds: 300L) };
+                snapAnimation = snapController!.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: effectiveScrollOffset, end: direction switch { ScrollDirection.forward => 0, _ => childExtent }).chain(new global::Doroti.Framework.Animation.CurveTween(curve: direction switch { ScrollDirection.forward => animationStyle?.curve ?? Curves.easeInOut, _ => animationStyle?.reverseCurve ?? Curves.easeInOut })));
+                snapController!.forward(from: 0.0);
             }
         }
     }
@@ -269,17 +269,17 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : global::Dorot
     {
         get
         {
-            if ((this.child is null))
+            if (child is null)
             {
                 return 0.0;
             }
-            DartRuntimePrimitives.Assert(() => this.child!.hasSize);
-            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { Axis.vertical => this.child!.size.height, Axis.horizontal => this.child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            DartRuntimePrimitives.Assert(() => child!.hasSize);
+            return constraints.axis switch { Axis.vertical => child!.size.height, Axis.horizontal => child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
     }
     public override void detach()
     {
-        this.snapController?.dispose();
+        snapController?.dispose();
         snapController = null;
         base.detach();
     }
@@ -288,56 +288,56 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : global::Dorot
     {
         get
         {
-            return ((this.lastScrollOffset is not null) && (((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset < DartRuntimePrimitives.RequireValue(this.lastScrollOffset)) || (this.effectiveScrollOffset < this.childExtent))));
+            return (lastScrollOffset is not null) && ((constraints.scrollOffset < DartRuntimePrimitives.RequireValue(lastScrollOffset)) || (effectiveScrollOffset < childExtent));
         }
     }
     public override void performLayout()
     {
-        if (!this.floatingHeaderNeedsToBeUpdated)
+        if (!floatingHeaderNeedsToBeUpdated)
         {
-            effectiveScrollOffset = ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset;
+            effectiveScrollOffset = constraints.scrollOffset;
         }
         else
         {
-            double delta = (DartRuntimePrimitives.RequireValue(this.lastScrollOffset) - ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset);
-            if ((Equals(((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).userScrollDirection, ScrollDirection.forward)))
+            double delta = DartRuntimePrimitives.RequireValue(lastScrollOffset) - constraints.scrollOffset;
+            if (Equals(constraints.userScrollDirection, ScrollDirection.forward))
             {
-                if ((this.effectiveScrollOffset > this.childExtent))
+                if (effectiveScrollOffset > childExtent)
                 {
-                    effectiveScrollOffset = this.childExtent;
+                    effectiveScrollOffset = childExtent;
                 }
             }
             else
             {
                 delta = Dart_uiLibrary.clampDouble(delta, -double.PositiveInfinity, 0);
             }
-            effectiveScrollOffset = Dart_uiLibrary.clampDouble((this.effectiveScrollOffset - delta), 0.0, ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset);
+            effectiveScrollOffset = Dart_uiLibrary.clampDouble(effectiveScrollOffset - delta, 0.0, constraints.scrollOffset);
         }
-        this.child?.layout(this.constraints.asBoxConstraints(), parentUsesSize: true);
-        double paintExtentLocal = (this.childExtent - this.effectiveScrollOffset);
-        double layoutExtentLocal = ((this.snapMode ?? FloatingHeaderSnapMode.overlay) switch { FloatingHeaderSnapMode.overlay => (this.childExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset), FloatingHeaderSnapMode.scroll => paintExtentLocal, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(paintOrigin: Math.Min(((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).overlap, 0.0), scrollExtent: this.childExtent, paintExtent: Dart_uiLibrary.clampDouble(paintExtentLocal, 0.0, ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent), layoutExtent: Dart_uiLibrary.clampDouble(layoutExtentLocal, 0.0, ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent), maxPaintExtent: this.childExtent, hasVisualOverflow: true);
-        lastScrollOffset = ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset;
+        child?.layout(constraints.asBoxConstraints(), parentUsesSize: true);
+        double paintExtentLocal = childExtent - effectiveScrollOffset;
+        double layoutExtentLocal = (snapMode ?? FloatingHeaderSnapMode.overlay) switch { FloatingHeaderSnapMode.overlay => childExtent - constraints.scrollOffset, FloatingHeaderSnapMode.scroll => paintExtentLocal, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(paintOrigin: Math.Min(constraints.overlap, 0.0), scrollExtent: childExtent, paintExtent: Dart_uiLibrary.clampDouble(paintExtentLocal, 0.0, constraints.remainingPaintExtent), layoutExtent: Dart_uiLibrary.clampDouble(layoutExtentLocal, 0.0, constraints.remainingPaintExtent), maxPaintExtent: childExtent, hasVisualOverflow: true);
+        lastScrollOffset = constraints.scrollOffset;
     }
 
     public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child)
     {
-        return ((this.geometry is null) ? 0 : Math.Min(0, (this.geometry!.paintExtent - this.childExtent)));
+        return (geometry is null) ? 0 : Math.Min(0, geometry!.paintExtent - childExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child, ((global::Doroti.Framework.Rendering.RenderBox?)(this).child))));
+        DartRuntimePrimitives.Assert(() => Equals(child, this.child));
         applyPaintTransformForBoxChild(((global::Doroti.Framework.Rendering.RenderBox?)child)!, transform);
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if (((this.child is not null) && this.geometry!.visible))
+        if ((child is not null) && geometry!.visible)
         {
-            offset += (SliverLibrary.applyGrowthDirectionToAxisDirection(((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axisDirection, ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((this.geometry!.paintExtent - childMainAxisPosition(this.child!)) - this.childExtent)), AxisDirection.left => new global::Doroti.Ui.Offset(((this.geometry!.paintExtent - childMainAxisPosition(this.child!)) - this.childExtent), 0.0), AxisDirection.right => new global::Doroti.Ui.Offset(childMainAxisPosition(this.child!), 0.0), AxisDirection.down => new global::Doroti.Ui.Offset(0.0, childMainAxisPosition(this.child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            context.paintChild(this.child!, offset);
+            offset += SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, geometry!.paintExtent - childMainAxisPosition(child!) - childExtent), AxisDirection.left => new global::Doroti.Ui.Offset(geometry!.paintExtent - childMainAxisPosition(child!) - childExtent, 0.0), AxisDirection.right => new global::Doroti.Ui.Offset(childMainAxisPosition(child!), 0.0), AxisDirection.down => new global::Doroti.Ui.Offset(0.0, childMainAxisPosition(child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            context.paintChild(child!, offset);
         }
     }
 

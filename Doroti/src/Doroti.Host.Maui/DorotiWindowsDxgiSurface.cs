@@ -1,33 +1,33 @@
 #if WINDOWS
-using Doroti.Graphics.DirectX;
-using static Doroti.Graphics.DirectX.DirectX;
-using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
-using Format = Silk.NET.DXGI.Format;
-using GpuPreference = Silk.NET.DXGI.GpuPreference;
-using Scaling = Silk.NET.DXGI.Scaling;
-using SwapEffect = Silk.NET.DXGI.SwapEffect;
-using AlphaMode = Silk.NET.DXGI.AlphaMode;
-using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
-using CommandListType = Silk.NET.Direct3D12.CommandListType;
-using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
-using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
-using HeapType = Silk.NET.Direct3D12.HeapType;
-using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
-using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
-using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Diagnostics.Tracing;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Doroti.Graphics.DirectX;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
 using Microsoft.Maui.Handlers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using static Doroti.Graphics.DirectX.DirectX;
+using AlphaMode = Silk.NET.DXGI.AlphaMode;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
+using HeapType = Silk.NET.Direct3D12.HeapType;
+using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
+using Scaling = Silk.NET.DXGI.Scaling;
+using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
+using SwapEffect = Silk.NET.DXGI.SwapEffect;
 
 namespace Doroti.Host.Maui;
 
@@ -1413,7 +1413,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
         _pointer = pointer;
         _preparedTaskRunner = new(_preparedCoordinator);
         _presentedTaskRunner = new(_presentedCoordinator);
-        _clientCursor = LoadCursor(0, (nint)IdcArrow);
+        _clientCursor = LoadCursor(0, IdcArrow);
         _parentSubclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
         _childSubclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
         _parentProcedure = HandleParentWindowMessage;
@@ -1615,7 +1615,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
             DorotiMouseCursorKind.none => 0,
             _ => IdcArrow,
         };
-        return resource == 0 ? 0 : LoadCursor(0, (nint)resource);
+        return resource == 0 ? 0 : LoadCursor(0, resource);
     }
 
     private nint HandleChildWindowMessage(
@@ -1844,10 +1844,10 @@ internal sealed class WindowsClientResizeSource : IDisposable
             !TryGetClientSize(out var childWidth, out var childHeight)) return;
         var suggested = Marshal.PtrToStructure<NativeRect>(suggestedRectPointer);
         var nonClientWidth = Math.Max(0,
-            (currentOuter.Right - currentOuter.Left) -
+            currentOuter.Right - currentOuter.Left -
             (currentClient.Right - currentClient.Left));
         var nonClientHeight = Math.Max(0,
-            (currentOuter.Bottom - currentOuter.Top) -
+            currentOuter.Bottom - currentOuter.Top -
             (currentClient.Bottom - currentClient.Top));
         var width = Math.Max(1,
             suggested.Right - suggested.Left - nonClientWidth);

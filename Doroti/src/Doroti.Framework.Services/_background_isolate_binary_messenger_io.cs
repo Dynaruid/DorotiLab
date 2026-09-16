@@ -20,7 +20,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
     {
         get
         {
-            if ((_instance is null))
+            if (_instance is null)
             {
                 throw new InvalidOperationException("The BackgroundIsolateBinaryMessenger.instance value is invalid " + "until BackgroundIsolateBinaryMessenger.ensureInitialized is " + "executed.");
             }
@@ -29,18 +29,18 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
     }
     public static void ensureInitialized(RootIsolateToken token)
     {
-        if ((_instance is null))
+        if (_instance is null)
         {
             Dart_uiLibrary.PlatformDispatcher.instance.registerBackgroundIsolate(token);
             var portBinaryMessenger = new BackgroundIsolateBinaryMessenger();
             _instance = portBinaryMessenger;
-            portBinaryMessenger._receivePort.listen(((message) =>
+            portBinaryMessenger._receivePort.listen((message) =>
             {
                 try
                 {
                     var args = ((List<object>?)message)!;
-                    var identifier = ((long)args[(int)(0L)]);
-                    var bytes = ((Uint8List?)args[(int)(1L)])!;
+                    var identifier = (long)args[(int)0L];
+                    var bytes = ((Uint8List?)args[(int)1L])!;
                     var byteData = new ByteData(bytes);
                     portBinaryMessenger._completers.remove(identifier)!.complete(byteData);
                 }
@@ -49,7 +49,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
                     var stack = new System.Diagnostics.StackTrace();
                     FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("during a platform message response callback")));
                 }
-            }));
+            });
         }
     }
 

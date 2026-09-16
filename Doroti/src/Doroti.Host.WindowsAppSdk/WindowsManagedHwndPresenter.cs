@@ -1,22 +1,22 @@
+using System.Runtime.InteropServices;
 using Doroti.Graphics.DirectX;
+using SkiaSharp;
 using static Doroti.Graphics.DirectX.DirectX;
-using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
-using Format = Silk.NET.DXGI.Format;
-using GpuPreference = Silk.NET.DXGI.GpuPreference;
-using Scaling = Silk.NET.DXGI.Scaling;
-using SwapEffect = Silk.NET.DXGI.SwapEffect;
 using AlphaMode = Silk.NET.DXGI.AlphaMode;
-using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
 using CommandListType = Silk.NET.Direct3D12.CommandListType;
 using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
 using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
-using HeapType = Silk.NET.Direct3D12.HeapType;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
 using HeapFlags = Silk.NET.Direct3D12.HeapFlags;
+using HeapType = Silk.NET.Direct3D12.HeapType;
+using MessageSeverity = Silk.NET.Direct3D12.MessageSeverity;
 using ResourceFlags = Silk.NET.Direct3D12.ResourceFlags;
 using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
-using MessageSeverity = Silk.NET.Direct3D12.MessageSeverity;
-using System.Runtime.InteropServices;
-using SkiaSharp;
+using Scaling = Silk.NET.DXGI.Scaling;
+using SwapChainFlags = Silk.NET.DXGI.SwapChainFlag;
+using SwapEffect = Silk.NET.DXGI.SwapEffect;
 
 namespace Doroti.Host.WindowsAppSdk;
 

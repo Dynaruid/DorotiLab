@@ -48,41 +48,41 @@ public class Badge : global::Doroti.Framework.Widgets.StatelessWidget
         __instance.offset = offset;
         __instance.isLabelVisible = isLabelVisible;
         __instance.child = child;
-        __instance.label = new global::Doroti.Framework.Widgets.Text(((count > maxCount) ? $"{maxCount}+" : $"{count}"));
+        __instance.label = new global::Doroti.Framework.Widgets.Text((count > maxCount) ? $"{maxCount}+" : $"{count}");
         return __instance;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if (!this.isLabelVisible)
+        if (!isLabelVisible)
         {
-            return (this.child ?? new global::Doroti.Framework.Widgets.SizedBox());
+            return child ?? new global::Doroti.Framework.Widgets.SizedBox();
         }
         BadgeThemeData badgeTheme = BadgeTheme.of(context);
-        BadgeThemeData defaults = ((BadgeThemeData)new _BadgeDefaultsM3__badge(context));
-        global::Doroti.Framework.Painting.Decoration effectiveDecoration = ((global::Doroti.Framework.Painting.Decoration)new global::Doroti.Framework.Painting.ShapeDecoration(color: ((this.backgroundColor ?? badgeTheme.backgroundColor) ?? defaults.backgroundColor!), shape: new global::Doroti.Framework.Painting.StadiumBorder()));
+        BadgeThemeData defaults = new _BadgeDefaultsM3__badge(context);
+        global::Doroti.Framework.Painting.Decoration effectiveDecoration = new global::Doroti.Framework.Painting.ShapeDecoration(color: (backgroundColor ?? badgeTheme.backgroundColor) ?? defaults.backgroundColor!, shape: new global::Doroti.Framework.Painting.StadiumBorder());
         double effectiveWidthOffset = default!;
         global::Doroti.Framework.Widgets.Widget badge = default!;
-        var hasLabelLocal = (this.label is not null);
+        var hasLabelLocal = label is not null;
         if (hasLabelLocal)
         {
-            double minSizeLocal = effectiveWidthOffset = ((this.largeSize ?? badgeTheme.largeSize) ?? DartRuntimePrimitives.RequireValue(defaults.largeSize));
-            badge = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (((this.textStyle ?? badgeTheme.textStyle) ?? defaults.textStyle!)).copyWith(color: ((this.textColor ?? badgeTheme.textColor) ?? defaults.textColor!)), child: new _IntrinsicHorizontalStadium__badge(minSize: minSizeLocal, child: new global::Doroti.Framework.Widgets.Container(clipBehavior: Clip.antiAlias, decoration: effectiveDecoration, padding: ((this.padding ?? badgeTheme.padding) ?? defaults.padding!), alignment: Alignment.center, child: this.label))));
+            double minSizeLocal = effectiveWidthOffset = (largeSize ?? badgeTheme.largeSize) ?? DartRuntimePrimitives.RequireValue(defaults.largeSize);
+            badge = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: ((textStyle ?? badgeTheme.textStyle) ?? defaults.textStyle!).copyWith(color: (textColor ?? badgeTheme.textColor) ?? defaults.textColor!), child: new _IntrinsicHorizontalStadium__badge(minSize: minSizeLocal, child: new global::Doroti.Framework.Widgets.Container(clipBehavior: Clip.antiAlias, decoration: effectiveDecoration, padding: (padding ?? badgeTheme.padding) ?? defaults.padding!, alignment: Alignment.center, child: label))));
         }
         else
         {
-            double effectiveSmallSize = effectiveWidthOffset = ((this.smallSize ?? badgeTheme.smallSize) ?? DartRuntimePrimitives.RequireValue(defaults.smallSize));
+            double effectiveSmallSize = effectiveWidthOffset = (smallSize ?? badgeTheme.smallSize) ?? DartRuntimePrimitives.RequireValue(defaults.smallSize);
             badge = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Container(width: effectiveSmallSize, height: effectiveSmallSize, clipBehavior: Clip.antiAlias, decoration: effectiveDecoration));
         }
-        if ((this.child is null))
+        if (child is null)
         {
             return badge;
         }
-        global::Doroti.Framework.Painting.AlignmentGeometry effectiveAlignment = ((this.alignment ?? badgeTheme.alignment) ?? defaults.alignment!);
+        global::Doroti.Framework.Painting.AlignmentGeometry effectiveAlignment = (alignment ?? badgeTheme.alignment) ?? defaults.alignment!;
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        var defaultOffset = ((Equals(textDirectionLocal, TextDirection.ltr)) ? new global::Doroti.Ui.Offset(4, -4) : new global::Doroti.Ui.Offset(-4, -4));
-        global::Doroti.Ui.Offset effectiveOffset = ((global::Doroti.Ui.Offset)((((this.offset ?? badgeTheme.offset) ?? defaultOffset)) + new global::Doroti.Ui.Offset(0, 8)));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Stack(clipBehavior: Clip.none, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.child!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateFill(child: new _Badge__badge(alignment: effectiveAlignment, offset: (hasLabelLocal ? effectiveOffset : Offset.zero), hasLabel: hasLabelLocal, widthOffset: effectiveWidthOffset, textDirection: textDirectionLocal, child: badge))) }));
+        var defaultOffset = Equals(textDirectionLocal, TextDirection.ltr) ? new global::Doroti.Ui.Offset(4, -4) : new global::Doroti.Ui.Offset(-4, -4);
+        global::Doroti.Ui.Offset effectiveOffset = ((offset ?? badgeTheme.offset) ?? defaultOffset) + new global::Doroti.Ui.Offset(0, 8);
+        return new global::Doroti.Framework.Widgets.Stack(clipBehavior: Clip.none, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateFill(child: new _Badge__badge(alignment: effectiveAlignment, offset: hasLabelLocal ? effectiveOffset : Offset.zero, hasLabel: hasLabelLocal, widthOffset: effectiveWidthOffset, textDirection: textDirectionLocal, child: badge))) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -107,7 +107,7 @@ internal class _Badge__badge : global::Doroti.Framework.Widgets.SingleChildRende
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderBadge__badge(alignment: this.alignment, widthOffset: this.widthOffset, hasLabel: this.hasLabel, offset: this.offset, textDirection: Directionality.maybeOf(context)));
+        return new _RenderBadge__badge(alignment: alignment, widthOffset: widthOffset, hasLabel: hasLabel, offset: offset, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -117,10 +117,10 @@ internal class _Badge__badge : global::Doroti.Framework.Widgets.SingleChildRende
         DartRuntimePrimitives.Ignore(((Func<_RenderBadge__badge>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.offset = this.offset;
-    __cascade.widthOffset = this.widthOffset;
-    __cascade.hasLabel = this.hasLabel;
+    __cascade.alignment = alignment;
+    __cascade.offset = offset;
+    __cascade.widthOffset = widthOffset;
+    __cascade.hasLabel = hasLabel;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -129,8 +129,8 @@ internal class _Badge__badge : global::Doroti.Framework.Widgets.SingleChildRende
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset));
     }
 
 }
@@ -143,18 +143,18 @@ public class _RenderBadge__badge : global::Doroti.Framework.Rendering.RenderAlig
 
     internal _RenderBadge__badge(TextDirection? textDirection = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, Offset offset = default!, bool hasLabel = default!, double widthOffset = default!) : base(textDirection: textDirection, alignment: alignment ?? Alignment.center)
     {
-        this._offset = offset;
-        this._hasLabel = hasLabel;
-        this._widthOffset = widthOffset;
+        _offset = offset;
+        _hasLabel = hasLabel;
+        _widthOffset = widthOffset;
     }
 
     public virtual global::Doroti.Ui.Offset offset
     {
-        get => this._offset;
+        get => _offset;
         set
         {
             var __value = value;
-            if ((Equals(this._offset, __value)))
+            if (Equals(_offset, __value))
             {
                 return;
             }
@@ -164,11 +164,11 @@ public class _RenderBadge__badge : global::Doroti.Framework.Rendering.RenderAlig
     }
     public virtual bool hasLabel
     {
-        get => this._hasLabel;
+        get => _hasLabel;
         set
         {
             var __value = value;
-            if ((this._hasLabel == __value))
+            if (_hasLabel == __value)
             {
                 return;
             }
@@ -178,11 +178,11 @@ public class _RenderBadge__badge : global::Doroti.Framework.Rendering.RenderAlig
     }
     public virtual double widthOffset
     {
-        get => this._widthOffset;
+        get => _widthOffset;
         set
         {
             var __value = value;
-            if ((this._widthOffset == __value))
+            if (_widthOffset == __value)
             {
                 return;
             }
@@ -192,50 +192,50 @@ public class _RenderBadge__badge : global::Doroti.Framework.Rendering.RenderAlig
     }
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = this.constraints;
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.BoxConstraints)constraintsLocal).hasBoundedWidth);
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.BoxConstraints)constraintsLocal).hasBoundedHeight);
-        size = ((global::Doroti.Framework.Rendering.BoxConstraints)constraintsLocal).biggest;
-        this.child!.layout(new global::Doroti.Framework.Rendering.BoxConstraints(), parentUsesSize: true);
-        double badgeSize = this.child!.size.height;
-        global::Doroti.Framework.Painting.Alignment resolvedAlignment = ((global::Doroti.Framework.Painting.Alignment)this.alignment.resolve(this.textDirection));
-        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)this.child!.parentData!)!;
-        global::Doroti.Ui.Offset badgeLocation = ((global::Doroti.Ui.Offset)(this.offset + resolvedAlignment.alongOffset(new global::Doroti.Ui.Offset((this.size.width - this.widthOffset), this.size.height))));
-        if (this.hasLabel)
+        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = constraints;
+        DartRuntimePrimitives.Assert(() => constraintsLocal.hasBoundedWidth);
+        DartRuntimePrimitives.Assert(() => constraintsLocal.hasBoundedHeight);
+        size = constraintsLocal.biggest;
+        child!.layout(new global::Doroti.Framework.Rendering.BoxConstraints(), parentUsesSize: true);
+        double badgeSize = child!.size.height;
+        global::Doroti.Framework.Painting.Alignment resolvedAlignment = alignment.resolve(textDirection);
+        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)child!.parentData!)!;
+        global::Doroti.Ui.Offset badgeLocation = offset + resolvedAlignment.alongOffset(new global::Doroti.Ui.Offset(size.width - widthOffset, size.height));
+        if (hasLabel)
         {
-            badgeLocation = (badgeLocation - new global::Doroti.Ui.Offset(0, (badgeSize / 2L)));
+            badgeLocation = badgeLocation - new global::Doroti.Ui.Offset(0, badgeSize / 2L);
         }
         childParentData.offset = badgeLocation;
     }
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest;
+        return constraints.biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)child);
-        if ((childLocal is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = child;
+        if (childLocal is null)
         {
             return null;
         }
         var childConstraints = new global::Doroti.Framework.Rendering.BoxConstraints();
         double? childBaseline = childLocal.getDryBaseline(childConstraints, baseline);
-        if ((childBaseline is null))
+        if (childBaseline is null)
         {
             return null;
         }
-        global::Doroti.Ui.Size mySize = ((global::Doroti.Ui.Size)getDryLayout(constraints));
-        global::Doroti.Framework.Painting.Alignment resolvedAlignment = ((global::Doroti.Framework.Painting.Alignment)this.alignment.resolve(this.textDirection));
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)childLocal.getDryLayout(childConstraints));
-        global::Doroti.Ui.Offset badgeLocation = ((global::Doroti.Ui.Offset)(this.offset + resolvedAlignment.alongOffset(new global::Doroti.Ui.Offset((mySize.width - this.widthOffset), mySize.height))));
-        if (this.hasLabel)
+        global::Doroti.Ui.Size mySize = getDryLayout(constraints);
+        global::Doroti.Framework.Painting.Alignment resolvedAlignment = alignment.resolve(textDirection);
+        global::Doroti.Ui.Size childSize = childLocal.getDryLayout(childConstraints);
+        global::Doroti.Ui.Offset badgeLocation = offset + resolvedAlignment.alongOffset(new global::Doroti.Ui.Offset(mySize.width - widthOffset, mySize.height));
+        if (hasLabel)
         {
-            badgeLocation -= new global::Doroti.Ui.Offset(0, (childSize.height / 2L));
+            badgeLocation -= new global::Doroti.Ui.Offset(0, childSize.height / 2L);
         }
-        return (DartRuntimePrimitives.RequireValue(childBaseline) + badgeLocation.dy);
+        return DartRuntimePrimitives.RequireValue(childBaseline) + badgeLocation.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -252,7 +252,7 @@ internal class _IntrinsicHorizontalStadium__badge : global::Doroti.Framework.Wid
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderIntrinsicHorizontalStadium__badge(minSize: this.minSize));
+        return new _RenderIntrinsicHorizontalStadium__badge(minSize: minSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -264,16 +264,16 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
 
     internal _RenderIntrinsicHorizontalStadium__badge(global::Doroti.Framework.Rendering.RenderBox? child = null, double minSize = default!) : base(child)
     {
-        this._minSize = minSize;
+        _minSize = minSize;
     }
 
     public virtual double minSize
     {
-        get => this._minSize;
+        get => _minSize;
         set
         {
             var __value = value;
-            if ((this._minSize == __value))
+            if (_minSize == __value)
             {
                 return;
             }
@@ -301,23 +301,23 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return Math.Max(this.minSize, base.computeMaxIntrinsicHeight(width));
+        return Math.Max(minSize, base.computeMaxIntrinsicHeight(width));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _childConstraints(global::Doroti.Framework.Rendering.RenderBox child, global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        double childHeight = Math.Max(this.minSize, child.getMaxIntrinsicHeight(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth));
-        double childWidth = child.getMaxIntrinsicWidth(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight);
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.tighten(width: Math.Max(childWidth, childHeight), height: childHeight));
+        double childHeight = Math.Max(minSize, child.getMaxIntrinsicHeight(constraints.maxWidth));
+        double childWidth = child.getMaxIntrinsicWidth(constraints.maxHeight);
+        return constraints.tighten(width: Math.Max(childWidth, childHeight), height: childHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _computeSize(global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild, global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)layoutChild(childLocal, _childConstraints(childLocal, constraints)));
-        if ((childSize.height > childSize.width))
+        global::Doroti.Framework.Rendering.RenderBox childLocal = child!;
+        global::Doroti.Ui.Size childSize = layoutChild(childLocal, _childConstraints(childLocal, constraints));
+        if (childSize.height > childSize.width)
         {
             return new global::Doroti.Ui.Size(childSize.height, childSize.height);
         }
@@ -327,20 +327,20 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return _computeSize(layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, constraints: constraints);
+        return _computeSize(layoutChild: ChildLayoutHelper.dryLayoutChild, constraints: constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
+        global::Doroti.Framework.Rendering.RenderBox childLocal = child!;
         return childLocal.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        size = _computeSize(layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.layoutChild, constraints: this.constraints);
+        size = _computeSize(layoutChild: ChildLayoutHelper.layoutChild, constraints: constraints);
     }
 
 }
@@ -356,7 +356,7 @@ internal class _BadgeDefaultsM3__badge : BadgeThemeData
         {
             if (!__late__theme_initialized)
             {
-                __late__theme = Theme.of(this.context);
+                __late__theme = Theme.of(context);
                 __late__theme_initialized = true;
             }
             return __late__theme;
@@ -370,7 +370,7 @@ internal class _BadgeDefaultsM3__badge : BadgeThemeData
         {
             if (!__late__colors_initialized)
             {
-                __late__colors = this._theme.colorScheme;
+                __late__colors = _theme.colorScheme;
                 __late__colors_initialized = true;
             }
             return __late__colors;
@@ -382,7 +382,7 @@ internal class _BadgeDefaultsM3__badge : BadgeThemeData
         this.context = context;
     }
 
-    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.error);
-    public override global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onError);
-    public override global::Doroti.Framework.Painting.TextStyle? textStyle => Theme.of(this.context).textTheme.labelSmall;
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.error);
+    public override global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onError);
+    public override global::Doroti.Framework.Painting.TextStyle? textStyle => Theme.of(context).textTheme.labelSmall;
 }

@@ -14,10 +14,10 @@ public class Accumulator
         this._value = _value;
     }
 
-    public virtual long value => this._value;
+    public virtual long value => _value;
     public virtual void increment(long addend)
     {
-        DartRuntimePrimitives.Assert(() => (addend >= 0L));
+        DartRuntimePrimitives.Assert(() => addend >= 0L);
         _value += addend;
     }
 
@@ -45,19 +45,19 @@ public class InlineSpanSemanticsInformation
         this.semanticsIdentifier = semanticsIdentifier;
         this.stringAttributes = __stringAttributes;
         this.recognizer = recognizer;
-        this.requiresOwnNode = ((isPlaceholder || (recognizer is not null)) || (semanticsIdentifier is not null));
-        System.Diagnostics.Debug.Assert((!isPlaceholder || ((((text == "￼") && (semanticsLabel is null)) && (recognizer is null)))));
+        requiresOwnNode = isPlaceholder || (recognizer is not null) || (semanticsIdentifier is not null);
+        System.Diagnostics.Debug.Assert(!isPlaceholder || (text == "￼") && (semanticsLabel is null) && (recognizer is null));
     }
 
     public override bool Equals(object? other)
     {
         var __other = other as InlineSpanSemanticsInformation;
         if (__other is null) return false;
-        return (((((((__other is InlineSpanSemanticsInformation) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).text == this.text)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsLabel == this.semanticsLabel)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (Equals(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).recognizer, this.recognizer))) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).isPlaceholder == this.isPlaceholder)) && CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).stringAttributes, this.stringAttributes));
+        return (__other is InlineSpanSemanticsInformation) && (__other.text == text) && (__other.semanticsLabel == semanticsLabel) && (__other.semanticsIdentifier == semanticsIdentifier) && Equals(__other.recognizer, recognizer) && (__other.isPlaceholder == isPlaceholder) && CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(__other.stringAttributes, stringAttributes);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.text, this.semanticsLabel, this.semanticsIdentifier, this.recognizer, this.isPlaceholder);
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "InlineSpanSemanticsInformation"))}{{text: {this.text}, semanticsLabel: {this.semanticsLabel}, semanticsIdentifier: {this.semanticsIdentifier}, recognizer: {this.recognizer}}}";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(text, semanticsLabel, semanticsIdentifier, recognizer, isPlaceholder);
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "InlineSpanSemanticsInformation")}{{text: {text}, semanticsLabel: {semanticsLabel}, semanticsIdentifier: {semanticsIdentifier}, recognizer: {recognizer}}}";
 }
 
 public static partial class Inline_spanLibrary
@@ -70,7 +70,7 @@ public static partial class Inline_spanLibrary
         var workingAttributes = new List<global::Doroti.Ui.StringAttribute>();
         foreach (var info in infoList)
         {
-            if (((InlineSpanSemanticsInformation)info).requiresOwnNode)
+            if (info.requiresOwnNode)
             {
                 combined.Add(new InlineSpanSemanticsInformation(workingText, semanticsLabel: workingLabel, stringAttributes: workingAttributes));
                 workingText = "";
@@ -80,11 +80,11 @@ public static partial class Inline_spanLibrary
             }
             else
             {
-                workingText += ((InlineSpanSemanticsInformation)info).text;
-                string effectiveLabel = (((InlineSpanSemanticsInformation)info).semanticsLabel ?? ((InlineSpanSemanticsInformation)info).text);
-                foreach (global::Doroti.Ui.StringAttribute infoAttribute in ((InlineSpanSemanticsInformation)info).stringAttributes)
+                workingText += info.text;
+                string effectiveLabel = info.semanticsLabel ?? info.text;
+                foreach (global::Doroti.Ui.StringAttribute infoAttribute in info.stringAttributes)
                 {
-                    workingAttributes.Add(infoAttribute.copy(range: new global::Doroti.Ui.TextRange(start: (infoAttribute.range.start + workingLabel.Length), end: (infoAttribute.range.end + workingLabel.Length))));
+                    workingAttributes.Add(infoAttribute.copy(range: new global::Doroti.Ui.TextRange(start: infoAttribute.range.start + workingLabel.Length, end: infoAttribute.range.end + workingLabel.Length)));
                 }
                 workingLabel += effectiveLabel;
             }
@@ -112,11 +112,11 @@ public abstract class InlineSpan : DiagnosticableTree
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         var offset = new Accumulator();
         InlineSpan? result = default!;
-        visitChildren(((Func<InlineSpan, bool>)((span) =>
+        visitChildren((span) =>
         {
             result = span.getSpanForPositionVisitor(position, offset);
-            return (result is null);
-        })));
+            return result is null;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -142,17 +142,17 @@ public abstract class InlineSpan : DiagnosticableTree
     public abstract void computeToPlainText(StringBuffer buffer, bool includeSemanticsLabels = true, bool includePlaceholders = true);
     public virtual long? codeUnitAt(long index)
     {
-        if ((index < 0L))
+        if (index < 0L)
         {
             return null;
         }
         var offset = new Accumulator();
         long? result = default!;
-        visitChildren(((Func<InlineSpan, bool>)((span) =>
+        visitChildren((span) =>
         {
             result = span.codeUnitAtVisitor(index, offset);
-            return (result is null);
-        })));
+            return result is null;
+        });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -168,19 +168,19 @@ public abstract class InlineSpan : DiagnosticableTree
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is InlineSpan) && (Equals(((InlineSpan)((InlineSpan)__other)).style, this.style)));
+        return (__other is InlineSpan) && Equals(__other.style, style);
     }
 
-    public override int GetHashCode() => this.style?.GetHashCode() ?? 0;
+    public override int GetHashCode() => style?.GetHashCode() ?? 0;
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.defaultDiagnosticsTreeStyle = DiagnosticsTreeStyle.whitespace;
-        this.style?.debugFillProperties(properties);
+        style?.debugFillProperties(properties);
     }
 
     public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = null) =>

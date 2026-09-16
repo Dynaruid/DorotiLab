@@ -19,7 +19,7 @@ public enum MaterialType
 
 public static partial class MaterialLibrary
 {
-    public static DartMap<MaterialType, global::Doroti.Framework.Painting.BorderRadius?> kMaterialEdges = new DartMap<MaterialType, global::Doroti.Framework.Painting.BorderRadius?> { [MaterialType.canvas] = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)null), [MaterialType.card] = BorderRadius.CreateAll(Radius.circular(2.0)), [MaterialType.circle] = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)null), [MaterialType.button] = BorderRadius.CreateAll(Radius.circular(2.0)), [MaterialType.transparency] = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)null) };
+    public static DartMap<MaterialType, global::Doroti.Framework.Painting.BorderRadius?> kMaterialEdges = new DartMap<MaterialType, global::Doroti.Framework.Painting.BorderRadius?> { [MaterialType.canvas] = (global::Doroti.Framework.Painting.BorderRadius?)(object?)null, [MaterialType.card] = BorderRadius.CreateAll(Radius.circular(2.0)), [MaterialType.circle] = (global::Doroti.Framework.Painting.BorderRadius?)(object?)null, [MaterialType.button] = BorderRadius.CreateAll(Radius.circular(2.0)), [MaterialType.transparency] = (global::Doroti.Framework.Painting.BorderRadius?)(object?)null };
 }
 
 public interface MaterialInkController
@@ -63,23 +63,23 @@ public class Material : global::Doroti.Framework.Widgets.StatefulWidget
         this.animationDuration = __animationDuration;
         this.child = child;
         this.animateColor = animateColor;
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
-        System.Diagnostics.Debug.Assert(!(((shape is not null) && (borderRadius is not null))));
-        System.Diagnostics.Debug.Assert(!((DartRuntimePrimitives.Identical(type, MaterialType.circle) && (((borderRadius is not null) || (shape is not null))))));
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
+        System.Diagnostics.Debug.Assert(!((shape is not null) && (borderRadius is not null)));
+        System.Diagnostics.Debug.Assert(!(DartRuntimePrimitives.Identical(type, MaterialType.circle) && ((borderRadius is not null) || (shape is not null))));
     }
 
     public static MaterialInkController? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((MaterialInkController?)LookupBoundary.findAncestorRenderObjectOfType<_RenderInkFeatures__material>(context));
+        return LookupBoundary.findAncestorRenderObjectOfType<_RenderInkFeatures__material>(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static MaterialInkController of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MaterialInkController? controller = ((MaterialInkController?)maybeOf(context));
+        MaterialInkController? controller = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((controller is null))
+                if (controller is null)
                 {
                     if (LookupBoundary.debugIsHidingAncestorRenderObjectOfType<_RenderInkFeatures__material>(context))
                     {
@@ -97,15 +97,15 @@ public class Material : global::Doroti.Framework.Widgets.StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<MaterialType>("type", this.type));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: 0.0));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        this.textStyle?.debugFillProperties(properties, prefix: "textStyle.");
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("borderOnForeground", this.borderOnForeground, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", this.borderRadius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<MaterialType>("type", type));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: 0.0));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        textStyle?.debugFillProperties(properties, prefix: "textStyle.");
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("borderOnForeground", borderOnForeground, defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", borderRadius, defaultValue: null));
     }
 
 }
@@ -119,61 +119,61 @@ internal class _MaterialState__material : global::Doroti.Framework.Widgets.State
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        global::Doroti.Ui.Color? backgroundColor = ((global::Doroti.Ui.Color?)(((Material)this.widget).color ?? (((Material)this.widget).type switch { MaterialType.canvas => theme.canvasColor, MaterialType.card => theme.cardColor, MaterialType.button or MaterialType.circle => DartRuntimePrimitives.ConvertValue<Color>(null), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<Color>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
-        global::Doroti.Ui.Color modelShadowColor = ((global::Doroti.Ui.Color)(((Material)this.widget).shadowColor ?? (((theme.colorScheme.shadow)))));
-        DartRuntimePrimitives.Assert(() => ((backgroundColor is not null) || (Equals(((Material)this.widget).type, MaterialType.transparency))), () => (object?)"If Material type is not MaterialType.transparency, a color must " + "either be passed in through the `color` property, or be defined " + "in the theme (ex. canvasColor != null if type is set to " + "MaterialType.canvas)");
-        global::Doroti.Framework.Widgets.Widget? contents = ((Material)this.widget).child;
-        if ((contents is not null))
+        global::Doroti.Ui.Color? backgroundColor = (global::Doroti.Ui.Color?)(widget.color ?? (widget.type switch { MaterialType.canvas => theme.canvasColor, MaterialType.card => theme.cardColor, MaterialType.button or MaterialType.circle => DartRuntimePrimitives.ConvertValue<Color>(null), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<Color>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        global::Doroti.Ui.Color modelShadowColor = widget.shadowColor ?? theme.colorScheme.shadow;
+        DartRuntimePrimitives.Assert(() => (backgroundColor is not null) || Equals(widget.type, MaterialType.transparency), () => (object?)"If Material type is not MaterialType.transparency, a color must " + "either be passed in through the `color` property, or be defined " + "in the theme (ex. canvasColor != null if type is set to " + "MaterialType.canvas)");
+        global::Doroti.Framework.Widgets.Widget? contents = widget.child;
+        if (contents is not null)
         {
-            contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: (((Material)this.widget).textStyle ?? Theme.of(context).textTheme.bodyMedium!), duration: ((Material)this.widget).animationDuration, child: contents));
+            contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium!, duration: widget.animationDuration, child: contents));
         }
-        contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.LayoutChangedNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.LayoutChangedNotification, bool>)((notification) =>
+        contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.LayoutChangedNotification>(onNotification: (notification) =>
         {
-            var renderer = ((_RenderInkFeatures__material?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._inkFeatureRenderer).currentContext!.findRenderObject()!)!;
+            var renderer = ((_RenderInkFeatures__material?)_inkFeatureRenderer.currentContext!.findRenderObject()!)!;
             renderer._didChangeLayout();
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: new _InkFeatures__material(key: this._inkFeatureRenderer, absorbHitTest: (!Equals(((Material)this.widget).type, MaterialType.transparency)), color: backgroundColor, vsync: this, child: contents)));
-        global::Doroti.Framework.Painting.ShapeBorder? shapeLocal = ((((Material)this.widget).borderRadius is not null) ? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: ((Material)this.widget).borderRadius!) : ((Material)this.widget).shape);
-        if (((Equals(((Material)this.widget).type, MaterialType.canvas)) && (shapeLocal is null)))
+        }, child: new _InkFeatures__material(key: _inkFeatureRenderer, absorbHitTest: !Equals(widget.type, MaterialType.transparency), color: backgroundColor, vsync: this, child: contents)));
+        global::Doroti.Framework.Painting.ShapeBorder? shapeLocal = (widget.borderRadius is not null) ? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: widget.borderRadius!) : widget.shape;
+        if (Equals(widget.type, MaterialType.canvas) && (shapeLocal is null))
         {
-            global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)((ElevationOverlay.applySurfaceTint(backgroundColor!, ((Material)this.widget).surfaceTintColor, ((Material)this.widget).elevation))));
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.AnimatedPhysicalModel(curve: Curves.fastOutSlowIn, duration: ((Material)this.widget).animationDuration, clipBehavior: ((Material)this.widget).clipBehavior, elevation: ((Material)this.widget).elevation, color: colorLocal, shadowColor: modelShadowColor, animateColor: ((Material)this.widget).animateColor, child: contents));
+            global::Doroti.Ui.Color colorLocal = ElevationOverlay.applySurfaceTint(backgroundColor!, widget.surfaceTintColor, widget.elevation);
+            return new global::Doroti.Framework.Widgets.AnimatedPhysicalModel(curve: Curves.fastOutSlowIn, duration: widget.animationDuration, clipBehavior: widget.clipBehavior, elevation: widget.elevation, color: colorLocal, shadowColor: modelShadowColor, animateColor: widget.animateColor, child: contents);
         }
-        shapeLocal ??= (((Material)this.widget).type switch { MaterialType.circle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.CircleBorder()), MaterialType.canvas => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), MaterialType.card => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0)))), MaterialType.button => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if ((Equals(((Material)this.widget).type, MaterialType.transparency)))
+        shapeLocal ??= (widget.type switch { MaterialType.circle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.CircleBorder()), MaterialType.canvas => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), MaterialType.card => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0)))), MaterialType.button => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(2.0)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        if (Equals(widget.type, MaterialType.transparency))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ClipPath(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: ((Material)this.widget).clipBehavior, child: new _ShapeBorderPaint__material(shape: shapeLocal, child: contents)));
+            return new global::Doroti.Framework.Widgets.ClipPath(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: widget.clipBehavior, child: new _ShapeBorderPaint__material(shape: shapeLocal, child: contents));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new _MaterialInterior__material(curve: Curves.fastOutSlowIn, duration: ((Material)this.widget).animationDuration, shape: shapeLocal, borderOnForeground: ((Material)this.widget).borderOnForeground, clipBehavior: ((Material)this.widget).clipBehavior, elevation: ((Material)this.widget).elevation, color: backgroundColor!, shadowColor: modelShadowColor, surfaceTintColor: ((Material)this.widget).surfaceTintColor, child: contents));
+        return new _MaterialInterior__material(curve: Curves.fastOutSlowIn, duration: widget.animationDuration, shape: shapeLocal, borderOnForeground: widget.borderOnForeground, clipBehavior: widget.clipBehavior, elevation: widget.elevation, color: backgroundColor!, shadowColor: modelShadowColor, surfaceTintColor: widget.surfaceTintColor, child: contents);
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
-        if ((this._tickerModeNotifier is null))
+        if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
-        DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values = this._tickerModeNotifier!.value;
+        DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
+        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values).enabled;
-    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
+    var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+    __cascade.muted = !values.enabled;
+    __cascade.forceFrames = values.forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)result);
+        _tickers!.Add(result);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
     {
-        DartRuntimePrimitives.Assert(() => (this._tickers is not null));
-        DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
-        this._tickers!.Remove(ticker);
+        DartRuntimePrimitives.Assert(() => _tickers is not null);
+        DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
+        _tickers!.Remove(ticker);
     }
 
     public override void activate()
@@ -185,55 +185,55 @@ internal class _MaterialState__material : global::Doroti.Framework.Widgets.State
 
     public virtual void _updateTickers()
     {
-        if ((this._tickers is not null))
+        if (_tickers is not null)
         {
-            TickerModeData values = this._tickerModeNotifier!.value;
-            bool mutedLocal = !((TickerModeData)values).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+            TickerModeData values = _tickerModeNotifier!.value;
+            bool mutedLocal = !values.enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
-                ticker.forceFrames = ((TickerModeData)values).forceFrames;
+                ticker.forceFrames = values.forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        newNotifier.addListener(this._updateTickers);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        newNotifier.addListener(_updateTickers);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void dispose()
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._tickers is not null))
+                if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
+                        if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(this._updateTickers);
-        this._tickerModeNotifier = null;
+        _tickerModeNotifier?.removeListener(_updateTickers);
+        _tickerModeNotifier = null;
         base.dispose();
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -258,53 +258,53 @@ public class _RenderInkFeatures__material : global::Doroti.Framework.Rendering.R
         {
             if (Foundation.ConstantsLibrary.kDebugMode)
             {
-                return this._inkFeatures;
+                return _inkFeatures;
             }
             return null;
         }
     }
     public virtual void addInkFeature(InkFeature feature)
     {
-        DartRuntimePrimitives.Assert(() => !((InkFeature)feature)._debugDisposed);
-        DartRuntimePrimitives.Assert(() => (Equals(((InkFeature)feature)._controller, this)));
+        DartRuntimePrimitives.Assert(() => !feature._debugDisposed);
+        DartRuntimePrimitives.Assert(() => Equals(feature._controller, this));
         _inkFeatures ??= new List<InkFeature>();
-        DartRuntimePrimitives.Assert(() => !this._inkFeatures!.Contains(feature));
-        this._inkFeatures!.Add(feature);
+        DartRuntimePrimitives.Assert(() => !_inkFeatures!.Contains(feature));
+        _inkFeatures!.Add(feature);
         markNeedsPaint();
     }
 
     internal virtual void _removeFeature(InkFeature feature)
     {
-        DartRuntimePrimitives.Assert(() => (this._inkFeatures is not null));
-        this._inkFeatures!.Remove(feature);
+        DartRuntimePrimitives.Assert(() => _inkFeatures is not null);
+        _inkFeatures!.Remove(feature);
         markNeedsPaint();
     }
 
     internal virtual void _didChangeLayout()
     {
-        if (((this._inkFeatures is { } __items23755 ? System.Linq.Enumerable.Any(__items23755) : (bool?)null) ?? false))
+        if ((_inkFeatures is { } __items23755 ? System.Linq.Enumerable.Any(__items23755) : (bool?)null) ?? false)
         {
             markNeedsPaint();
         }
     }
 
-    public override bool hitTestSelf(Offset position) => this.absorbHitTest;
+    public override bool hitTestSelf(Offset position) => absorbHitTest;
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        List<InkFeature>? inkFeatures = this._inkFeatures;
-        if (((inkFeatures is not null) && Enumerable.Any(inkFeatures)))
+        List<InkFeature>? inkFeatures = _inkFeatures;
+        if ((inkFeatures is not null) && Enumerable.Any(inkFeatures))
         {
-            global::Doroti.Ui.Canvas canvasLocal = ((global::Doroti.Ui.Canvas)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
+            global::Doroti.Ui.Canvas canvasLocal = context.canvas;
             canvasLocal.save();
             canvasLocal.translate(offset.dx, offset.dy);
-            canvasLocal.clipRect((Offset.zero & this.size));
+            canvasLocal.clipRect(Offset.zero & size);
             foreach (InkFeature inkFeature in inkFeatures)
             {
                 inkFeature._paint(canvasLocal);
             }
             canvasLocal.restore();
         }
-        DartRuntimePrimitives.Assert(() => (Equals(inkFeatures, this._inkFeatures)));
+        DartRuntimePrimitives.Assert(() => Equals(inkFeatures, _inkFeatures));
         base.paint(context, offset);
     }
 
@@ -325,7 +325,7 @@ internal class _InkFeatures__material : global::Doroti.Framework.Widgets.SingleC
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderInkFeatures__material(color: this.color, absorbHitTest: this.absorbHitTest, vsync: this.vsync));
+        return new _RenderInkFeatures__material(color: color, absorbHitTest: absorbHitTest, vsync: vsync);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -335,11 +335,11 @@ internal class _InkFeatures__material : global::Doroti.Framework.Widgets.SingleC
         DartRuntimePrimitives.Ignore(((Func<_RenderInkFeatures__material>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.color = this.color;
-    __cascade.absorbHitTest = this.absorbHitTest;
+    __cascade.color = color;
+    __cascade.absorbHitTest = absorbHitTest;
     return __cascade;
 }))());
-        DartRuntimePrimitives.Assert(() => (Equals(this.vsync, ((_RenderInkFeatures__material)__renderObject).vsync)));
+        DartRuntimePrimitives.Assert(() => Equals(vsync, __renderObject.vsync));
     }
 
 }
@@ -355,22 +355,22 @@ public abstract class InkFeature
     {
         this.referenceBox = referenceBox;
         this.onRemoved = onRemoved;
-        this._controller = ((_RenderInkFeatures__material?)controller)!;
+        _controller = ((_RenderInkFeatures__material?)controller)!;
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "InkFeature", this));
     }
 
-    public virtual MaterialInkController controller => DartRuntimePrimitives.ConvertValue<MaterialInkController>(this._controller);
+    public virtual MaterialInkController controller => DartRuntimePrimitives.ConvertValue<MaterialInkController>(_controller);
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugDisposed);
+        DartRuntimePrimitives.Assert(() => !_debugDisposed);
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugDisposed = true;
                 return true;
             });
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this._controller._removeFeature(this);
-        this.onRemoved?.Invoke();
+        _controller._removeFeature(this);
+        onRemoved?.Invoke();
     }
 
     internal static Matrix4? _getPaintTransform(global::Doroti.Framework.Rendering.RenderObject fromRenderObject, global::Doroti.Framework.Rendering.RenderObject toRenderObject)
@@ -381,11 +381,11 @@ public abstract class InkFeature
         var to = toRenderObject;
         while (!DartRuntimePrimitives.Identical(@from, to))
         {
-            long fromDepth = ((global::Doroti.Framework.Rendering.RenderObject)@from).depth;
-            long toDepth = ((global::Doroti.Framework.Rendering.RenderObject)to).depth;
-            if ((fromDepth >= toDepth))
+            long fromDepth = @from.depth;
+            long toDepth = to.depth;
+            if (fromDepth >= toDepth)
             {
-                global::Doroti.Framework.Rendering.RenderObject? fromParent = ((global::Doroti.Framework.Rendering.RenderObject)@from).parent;
+                global::Doroti.Framework.Rendering.RenderObject? fromParent = @from.parent;
                 if (fromParent is null || !fromParent.paintsChild(@from))
                 {
                     return null;
@@ -393,9 +393,9 @@ public abstract class InkFeature
                 fromPath.Add(fromParent);
                 @from = fromParent;
             }
-            if ((fromDepth <= toDepth))
+            if (fromDepth <= toDepth)
             {
-                global::Doroti.Framework.Rendering.RenderObject? toParent = ((global::Doroti.Framework.Rendering.RenderObject)to).parent;
+                global::Doroti.Framework.Rendering.RenderObject? toParent = to.parent;
                 if (toParent is null || !toParent.paintsChild(to))
                 {
                     return null;
@@ -407,29 +407,29 @@ public abstract class InkFeature
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(@from, to));
         var transform = Matrix4.identity();
         var inverseTransform = Matrix4.identity();
-        for (long index = (checked((long)(toPath.Count)) - 1L); (index > 0L); index -= 1L)
+        for (long index = checked(toPath.Count) - 1L; index > 0L; index -= 1L)
         {
-            (toPath[(int)(index)]).applyPaintTransform(toPath[(int)((index - 1L))], transform);
+            toPath[(int)index].applyPaintTransform(toPath[(int)(index - 1L)], transform);
         }
-        for (long indexLocal = (checked((long)(fromPath.Count)) - 1L); (indexLocal > 0L); indexLocal -= 1L)
+        for (long indexLocal = checked(fromPath.Count) - 1L; indexLocal > 0L; indexLocal -= 1L)
         {
-            (fromPath[(int)(indexLocal)]).applyPaintTransform(fromPath[(int)((indexLocal - 1L))], inverseTransform);
+            fromPath[(int)indexLocal].applyPaintTransform(fromPath[(int)(indexLocal - 1L)], inverseTransform);
         }
         double det = inverseTransform.invert();
-        return ((det != 0L) ? (((Func<Matrix4>)(() =>
+        return (det != 0L) ? ((Func<Matrix4>)(() =>
 {
     var __cascade = inverseTransform;
     __cascade.multiply(transform);
     return __cascade;
-}))()) : null);
+}))() : null;
     }
 
     internal virtual void _paint(Canvas canvas)
     {
-        DartRuntimePrimitives.Assert(() => this.referenceBox.attached);
-        DartRuntimePrimitives.Assert(() => !this._debugDisposed);
-        Matrix4? transform = ((Matrix4?)_getPaintTransform(this._controller, this.referenceBox));
-        if ((transform is not null))
+        DartRuntimePrimitives.Assert(() => referenceBox.attached);
+        DartRuntimePrimitives.Assert(() => !_debugDisposed);
+        Matrix4? transform = _getPaintTransform(_controller, referenceBox);
+        if (transform is not null)
         {
             paintFeature(canvas, transform);
         }
@@ -447,7 +447,7 @@ public class ShapeBorderTween : global::Doroti.Framework.Animation.Tween<global:
 
     public override global::Doroti.Framework.Painting.ShapeBorder? lerp(double t)
     {
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)ShapeBorder.lerp(this.begin, this.end, t));
+        return ShapeBorder.lerp(begin, end, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -474,17 +474,17 @@ internal class _MaterialInterior__material : global::Doroti.Framework.Widgets.Im
         this.color = color;
         this.shadowColor = shadowColor;
         this.surfaceTintColor = surfaceTintColor;
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialInteriorState__material());
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape));
-        description.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation));
-        description.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color));
-        description.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape));
+        description.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation));
+        description.add(new global::Doroti.Framework.Painting.ColorProperty("color", color));
+        description.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor));
     }
 
 }
@@ -498,19 +498,19 @@ internal class _MaterialInteriorState__material : global::Doroti.Framework.Widge
 
     public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object?, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _elevation = ((global::Doroti.Framework.Animation.Tween<double>?)visitor(this._elevation, ((_MaterialInterior__material)this.widget).elevation, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _shadowColor = ((global::Doroti.Framework.Animation.ColorTween?)visitor(this._shadowColor, ((_MaterialInterior__material)this.widget).shadowColor, ((value) => new global::Doroti.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)value)!))))!;
-        _surfaceTintColor = ((((_MaterialInterior__material)this.widget).surfaceTintColor is not null) ? ((global::Doroti.Framework.Animation.ColorTween?)visitor(this._surfaceTintColor, ((_MaterialInterior__material)this.widget).surfaceTintColor, ((value) => new global::Doroti.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)value)!))))! : null);
-        _border = ((ShapeBorderTween?)visitor(this._border, ((_MaterialInterior__material)this.widget).shape, ((value) => new ShapeBorderTween(begin: ((global::Doroti.Framework.Painting.ShapeBorder?)value)!))))!;
+        _elevation = ((global::Doroti.Framework.Animation.Tween<double>?)visitor(_elevation, widget.elevation, (value) => new global::Doroti.Framework.Animation.Tween<double>(begin: (double)value)))!;
+        _shadowColor = ((global::Doroti.Framework.Animation.ColorTween?)visitor(_shadowColor, widget.shadowColor, (value) => new global::Doroti.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)value)!)))!;
+        _surfaceTintColor = (widget.surfaceTintColor is not null) ? ((global::Doroti.Framework.Animation.ColorTween?)visitor(_surfaceTintColor, widget.surfaceTintColor, (value) => new global::Doroti.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)value)!)))! : null;
+        _border = ((ShapeBorderTween?)visitor(_border, widget.shape, (value) => new ShapeBorderTween(begin: ((global::Doroti.Framework.Painting.ShapeBorder?)value)!)))!;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Painting.ShapeBorder shapeLocal = this._border!.evaluate(this.animation)!;
-        double elevationLocal = this._elevation!.evaluate(this.animation);
-        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)((ElevationOverlay.applySurfaceTint(((_MaterialInterior__material)this.widget).color, this._surfaceTintColor?.evaluate(this.animation), elevationLocal))));
-        global::Doroti.Ui.Color shadowColorLocal = ((global::Doroti.Ui.Color)this._shadowColor!.evaluate(this.animation)!);
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.PhysicalShape(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: ((_MaterialInterior__material)this.widget).clipBehavior, elevation: elevationLocal, color: colorLocal, shadowColor: shadowColorLocal, child: new _ShapeBorderPaint__material(shape: shapeLocal, borderOnForeground: ((_MaterialInterior__material)this.widget).borderOnForeground, child: ((_MaterialInterior__material)this.widget).child)));
+        global::Doroti.Framework.Painting.ShapeBorder shapeLocal = _border!.evaluate(animation)!;
+        double elevationLocal = _elevation!.evaluate(animation);
+        global::Doroti.Ui.Color colorLocal = ElevationOverlay.applySurfaceTint(widget.color, _surfaceTintColor?.evaluate(animation), elevationLocal);
+        global::Doroti.Ui.Color shadowColorLocal = _shadowColor!.evaluate(animation)!;
+        return new global::Doroti.Framework.Widgets.PhysicalShape(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: widget.clipBehavior, elevation: elevationLocal, color: colorLocal, shadowColor: shadowColorLocal, child: new _ShapeBorderPaint__material(shape: shapeLocal, borderOnForeground: widget.borderOnForeground, child: widget.child));
     }
 
 }
@@ -530,7 +530,7 @@ internal class _ShapeBorderPaint__material : global::Doroti.Framework.Widgets.St
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.CustomPaint(painter: (this.borderOnForeground ? null : new _ShapeBorderPainter__material(this.shape, Directionality.maybeOf(context))), foregroundPainter: (this.borderOnForeground ? new _ShapeBorderPainter__material(this.shape, Directionality.maybeOf(context)) : null), child: this.child));
+        return new global::Doroti.Framework.Widgets.CustomPaint(painter: borderOnForeground ? null : new _ShapeBorderPainter__material(shape, Directionality.maybeOf(context)), foregroundPainter: borderOnForeground ? new _ShapeBorderPainter__material(shape, Directionality.maybeOf(context)) : null, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -549,13 +549,13 @@ internal class _ShapeBorderPainter__material : global::Doroti.Framework.Renderin
 
     public override void paint(Canvas canvas, Size size)
     {
-        this.border.paint(canvas, (Offset.zero & size), textDirection: this.textDirection);
+        border.paint(canvas, Offset.zero & size, textDirection: textDirection);
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (_ShapeBorderPainter__material)oldDelegate;
-        return (!Equals(((_ShapeBorderPainter__material)__oldDelegate).border, this.border));
+        return !Equals(__oldDelegate.border, border);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

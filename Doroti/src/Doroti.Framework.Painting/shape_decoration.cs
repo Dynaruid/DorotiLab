@@ -20,20 +20,20 @@ public class ShapeDecoration : Decoration
         this.gradient = gradient;
         this.shadows = shadows;
         this.shape = shape;
-        System.Diagnostics.Debug.Assert(!(((color is not null) && (gradient is not null))));
+        System.Diagnostics.Debug.Assert(!((color is not null) && (gradient is not null)));
     }
 
     public static ShapeDecoration CreateFromBoxDecoration(BoxDecoration source)
     {
         ShapeBorder shapeLocal = default!;
-        switch (((BoxDecoration)source).shape)
+        switch (source.shape)
         {
             case BoxShape.circle:
                 {
-                    if ((((BoxDecoration)source).border is not null))
+                    if (source.border is not null)
                     {
-                        DartRuntimePrimitives.Assert(() => ((BoxDecoration)source).border!.isUniform);
-                        shapeLocal = new CircleBorder(side: ((BoxDecoration)source).border!.top);
+                        DartRuntimePrimitives.Assert(() => source.border!.isUniform);
+                        shapeLocal = new CircleBorder(side: source.border!.top);
                     }
                     else
                     {
@@ -43,38 +43,38 @@ public class ShapeDecoration : Decoration
                 }
             case BoxShape.rectangle:
                 {
-                    if ((((BoxDecoration)source).borderRadius is not null))
+                    if (source.borderRadius is not null)
                     {
-                        DartRuntimePrimitives.Assert(() => ((((BoxDecoration)source).border is null) || ((BoxDecoration)source).border!.isUniform));
-                        shapeLocal = new RoundedRectangleBorder(side: (((BoxDecoration)source).border?.top ?? BorderSide.none), borderRadius: ((BoxDecoration)source).borderRadius!);
+                        DartRuntimePrimitives.Assert(() => (source.border is null) || source.border!.isUniform);
+                        shapeLocal = new RoundedRectangleBorder(side: source.border?.top ?? BorderSide.none, borderRadius: source.borderRadius!);
                     }
                     else
                     {
-                        shapeLocal = (((BoxDecoration)source).border ?? new Border());
+                        shapeLocal = source.border ?? new Border();
                     }
                     break;
                 }
         }
-        return new ShapeDecoration(color: ((BoxDecoration)source).color, image: ((BoxDecoration)source).image, gradient: ((BoxDecoration)source).gradient, shadows: ((BoxDecoration)source).boxShadow, shape: shapeLocal);
+        return new ShapeDecoration(color: source.color, image: source.image, gradient: source.gradient, shadows: source.boxShadow, shape: shapeLocal);
     }
 
     public override Path getClipPath(Rect rect, TextDirection textDirection)
     {
-        return this.shape.getOuterPath(rect, textDirection: DartRuntimePrimitives.RequireValue(textDirection));
+        return shape.getOuterPath(rect, textDirection: DartRuntimePrimitives.RequireValue(textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override EdgeInsetsGeometry padding => ((ShapeBorder)this.shape).dimensions;
-    public override bool isComplex => (this.shadows is not null);
+    public override EdgeInsetsGeometry padding => shape.dimensions;
+    public override bool isComplex => shadows is not null;
     public override ShapeDecoration? lerpFrom(Decoration? a, double t)
     {
-        return (a switch { BoxDecoration __object6540 => lerp(CreateFromBoxDecoration(((BoxDecoration)__object6540)), this, t), ShapeDecoration __typed6634 => lerp(((ShapeDecoration?)__typed6634), this, t), _ => ((ShapeDecoration?)base.lerpFrom(a, t))! });
+        return a switch { BoxDecoration __object6540 => lerp(CreateFromBoxDecoration(__object6540), this, t), ShapeDecoration __typed6634 => lerp((ShapeDecoration?)__typed6634, this, t), _ => ((ShapeDecoration?)base.lerpFrom(a, t))! };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ShapeDecoration? lerpTo(Decoration? b, double t)
     {
-        return (b switch { BoxDecoration __object6850 => lerp(this, CreateFromBoxDecoration(((BoxDecoration)__object6850)), t), ShapeDecoration __typed6944 => lerp(this, ((ShapeDecoration?)__typed6944), t), _ => ((ShapeDecoration?)base.lerpTo(b, t))! });
+        return b switch { BoxDecoration __object6850 => lerp(this, CreateFromBoxDecoration(__object6850), t), ShapeDecoration __typed6944 => lerp(this, (ShapeDecoration?)__typed6944, t), _ => ((ShapeDecoration?)base.lerpTo(b, t))! };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -84,32 +84,32 @@ public class ShapeDecoration : Decoration
         {
             return a;
         }
-        if (((a is not null) && (b is not null)))
+        if ((a is not null) && (b is not null))
         {
-            if ((t == 0.0))
+            if (t == 0.0)
             {
                 return a;
             }
-            if ((t == 1.0))
+            if (t == 1.0)
             {
                 return b;
             }
         }
         Gradient? aGradient = a?.gradient;
         Gradient? bGradient = b?.gradient;
-        if ((((aGradient is null) && (bGradient is not null)) && (a?.color is not null)))
+        if ((aGradient is null) && (bGradient is not null) && (a?.color is not null))
         {
             aGradient = bGradient.fromColor(a!.color!);
         }
         else
         {
-            if ((((bGradient is null) && (aGradient is not null)) && (b?.color is not null)))
+            if ((bGradient is null) && (aGradient is not null) && (b?.color is not null))
             {
                 bGradient = aGradient.fromColor(b!.color!);
             }
         }
         Gradient? gradientLocal = Gradient.lerp(aGradient, bGradient, t);
-        return new ShapeDecoration(color: ((gradientLocal is null) ? Dart_uiLibrary.Color.lerp(a?.color, b?.color, t) : null), gradient: gradientLocal, image: DecorationImage.lerp(a?.image, b?.image, t), shadows: BoxShadow.lerpList(a?.shadows, b?.shadows, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t)!);
+        return new ShapeDecoration(color: (gradientLocal is null) ? Dart_uiLibrary.Color.lerp(a?.color, b?.color, t) : null, gradient: gradientLocal, image: DecorationImage.lerp(a?.image, b?.image, t), shadows: BoxShadow.lerpList(a?.shadows, b?.shadows, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t)!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -121,34 +121,34 @@ public class ShapeDecoration : Decoration
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((__other is ShapeDecoration) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).color, this.color))) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).gradient, this.gradient))) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).image, this.image))) && CollectionsLibrary.listEquals<BoxShadow>(((ShapeDecoration)((ShapeDecoration)__other)).shadows, this.shadows)) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).shape, this.shape)));
+        return (__other is ShapeDecoration) && Equals(__other.color, color) && Equals(__other.gradient, gradient) && Equals(__other.image, image) && CollectionsLibrary.listEquals<BoxShadow>(__other.shadows, shadows) && Equals(__other.shape, shape);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.color, this.gradient, this.image, this.shape, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!)));
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, gradient, image, shape, (shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(shadows!));
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.defaultDiagnosticsTreeStyle = DiagnosticsTreeStyle.whitespace;
-        properties.add(new ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new DiagnosticsProperty<Gradient>("gradient", this.gradient, defaultValue: null));
-        properties.add(new DiagnosticsProperty<DecorationImage>("image", this.image, defaultValue: null));
-        properties.add(new IterableProperty<BoxShadow>("shadows", this.shadows, defaultValue: null, style: DiagnosticsTreeStyle.whitespace));
-        properties.add(new DiagnosticsProperty<ShapeBorder>("shape", this.shape));
+        properties.add(new ColorProperty("color", color, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Gradient>("gradient", gradient, defaultValue: null));
+        properties.add(new DiagnosticsProperty<DecorationImage>("image", image, defaultValue: null));
+        properties.add(new IterableProperty<BoxShadow>("shadows", shadows, defaultValue: null, style: DiagnosticsTreeStyle.whitespace));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("shape", shape));
     }
 
     public override bool hitTest(Size size, Offset position, TextDirection? textDirection = null)
     {
-        return this.shape.hitTest((Offset.zero & size), position, textDirection: textDirection);
+        return shape.hitTest(Offset.zero & size, position, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override BoxPainter createBoxPainter(Action onChanged = default!)
     {
-        DartRuntimePrimitives.Assert(() => ((onChanged is not null) || (this.image is null)));
+        DartRuntimePrimitives.Assert(() => (onChanged is not null) || (image is null));
         return new _ShapeDecorationPainter__shape_decoration(this, onChanged!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -177,53 +177,53 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     public override Action onChanged => DartRuntimePrimitives.RequireReference(base.onChanged);
     internal virtual void _precache(Rect rect, TextDirection? textDirection)
     {
-        if (((Equals(rect, this._lastRect)) && (Equals(textDirection, this._lastTextDirection))))
+        if (Equals(rect, _lastRect) && Equals(textDirection, _lastTextDirection))
         {
             return;
         }
-        if (((this._interiorPaint is null) && (((((ShapeDecoration)this._decoration).color is not null) || (((ShapeDecoration)this._decoration).gradient is not null)))))
+        if ((_interiorPaint is null) && ((_decoration.color is not null) || (_decoration.gradient is not null)))
         {
             _interiorPaint = new global::Doroti.Ui.Paint();
-            if ((((ShapeDecoration)this._decoration).color is not null))
+            if (_decoration.color is not null)
             {
-                this._interiorPaint!.color = ((ShapeDecoration)this._decoration).color!;
+                _interiorPaint!.color = _decoration.color!;
             }
         }
-        if ((((ShapeDecoration)this._decoration).gradient is not null))
+        if (_decoration.gradient is not null)
         {
-            this._interiorPaint!.shader = ((ShapeDecoration)this._decoration).gradient!.createShader(rect, textDirection: textDirection);
+            _interiorPaint!.shader = _decoration.gradient!.createShader(rect, textDirection: textDirection);
         }
-        if ((((ShapeDecoration)this._decoration).shadows is not null))
+        if (_decoration.shadows is not null)
         {
-            if ((this._shadowCount is null))
+            if (_shadowCount is null)
             {
-                _shadowCount = checked((long)(((ShapeDecoration)this._decoration).shadows!.Count));
-                _shadowPaints = ((ShapeDecoration)this._decoration).shadows!
+                _shadowCount = checked(_decoration.shadows!.Count);
+                _shadowPaints = _decoration.shadows!
                     .Select(shadow => shadow.toPaint())
                     .ToList();
             }
-            if (((ShapeDecoration)this._decoration).shape.preferPaintInterior)
+            if (_decoration.shape.preferPaintInterior)
             {
-                _shadowBounds = ((ShapeDecoration)this._decoration).shadows!
+                _shadowBounds = _decoration.shadows!
                     .Select(shadow => rect.shift(shadow.offset).inflate(shadow.spreadRadius))
                     .ToList();
             }
             else
             {
-                _shadowPaths = ((ShapeDecoration)this._decoration).shadows!
-                    .Select(shadow => ((ShapeDecoration)this._decoration).shape.getOuterPath(
+                _shadowPaths = _decoration.shadows!
+                    .Select(shadow => _decoration.shape.getOuterPath(
                         rect.shift(shadow.offset).inflate(shadow.spreadRadius),
                         textDirection: textDirection))
                     .ToList();
             }
         }
-        if ((!((ShapeDecoration)this._decoration).shape.preferPaintInterior && (((this._interiorPaint is not null) || (this._shadowCount is not null)))))
+        if (!_decoration.shape.preferPaintInterior && ((_interiorPaint is not null) || (_shadowCount is not null)))
         {
-            _outerPath = ((ShapeDecoration)this._decoration).shape.getOuterPath(rect, textDirection: textDirection);
+            _outerPath = _decoration.shape.getOuterPath(rect, textDirection: textDirection);
         }
-        if ((((ShapeDecoration)this._decoration).image is not null))
+        if (_decoration.image is not null)
         {
-            _innerPath = ((ShapeDecoration)this._decoration).shape.getInnerPath(rect, textDirection: textDirection);
+            _innerPath = _decoration.shape.getInnerPath(rect, textDirection: textDirection);
         }
         _lastRect = rect;
         _lastTextDirection = textDirection;
@@ -233,7 +233,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     {
         bool debugHandleDisabledShadowStart(Canvas canvas, BoxShadow boxShadow, Path path)
         {
-            if ((DebugLibrary.debugDisableShadows && (Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
+            if (DebugLibrary.debugDisableShadows && Equals(boxShadow.blurStyle, BlurStyle.outer))
             {
                 canvas.save();
                 var clipPathLocal = new global::Doroti.Ui.Path();
@@ -247,31 +247,31 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         }
         bool debugHandleDisabledShadowEnd(Canvas canvas, BoxShadow boxShadow)
         {
-            if ((DebugLibrary.debugDisableShadows && (Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
+            if (DebugLibrary.debugDisableShadows && Equals(boxShadow.blurStyle, BlurStyle.outer))
             {
                 canvas.restore();
             }
             return true;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        if ((this._shadowCount is not null))
+        if (_shadowCount is not null)
         {
-            if (((ShapeDecoration)this._decoration).shape.preferPaintInterior)
+            if (_decoration.shape.preferPaintInterior)
             {
-                for (var index = 0L; (index < DartRuntimePrimitives.RequireValue(this._shadowCount)); index += 1L)
+                for (var index = 0L; index < DartRuntimePrimitives.RequireValue(_shadowCount); index += 1L)
                 {
-                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowStart(canvas, ((ShapeDecoration)this._decoration).shadows![(int)(index)], ((ShapeDecoration)this._decoration).shape.getOuterPath(this._shadowBounds[(int)(index)], textDirection: textDirection)));
-                    ((ShapeDecoration)this._decoration).shape.paintInterior(canvas, this._shadowBounds[(int)(index)], this._shadowPaints[(int)(index)], textDirection: textDirection);
-                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowEnd(canvas, ((ShapeDecoration)this._decoration).shadows![(int)(index)]));
+                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowStart(canvas, _decoration.shadows![(int)index], _decoration.shape.getOuterPath(_shadowBounds[(int)index], textDirection: textDirection)));
+                    _decoration.shape.paintInterior(canvas, _shadowBounds[(int)index], _shadowPaints[(int)index], textDirection: textDirection);
+                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowEnd(canvas, _decoration.shadows![(int)index]));
                 }
             }
             else
             {
-                for (var indexLocal = 0L; (indexLocal < DartRuntimePrimitives.RequireValue(this._shadowCount)); indexLocal += 1L)
+                for (var indexLocal = 0L; indexLocal < DartRuntimePrimitives.RequireValue(_shadowCount); indexLocal += 1L)
                 {
-                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowStart(canvas, ((ShapeDecoration)this._decoration).shadows![(int)(indexLocal)], this._shadowPaths[(int)(indexLocal)]));
-                    canvas.drawPath(this._shadowPaths[(int)(indexLocal)], this._shadowPaints[(int)(indexLocal)]);
-                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowEnd(canvas, ((ShapeDecoration)this._decoration).shadows![(int)(indexLocal)]));
+                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowStart(canvas, _decoration.shadows![(int)indexLocal], _shadowPaths[(int)indexLocal]));
+                    canvas.drawPath(_shadowPaths[(int)indexLocal], _shadowPaints[(int)indexLocal]);
+                    DartRuntimePrimitives.Assert(() => debugHandleDisabledShadowEnd(canvas, _decoration.shadows![(int)indexLocal]));
                 }
             }
         }
@@ -279,28 +279,28 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
 
     internal virtual void _paintInterior(Canvas canvas, Rect rect, TextDirection? textDirection)
     {
-        if ((this._interiorPaint is not null))
+        if (_interiorPaint is not null)
         {
-            if (((ShapeDecoration)this._decoration).shape.preferPaintInterior)
+            if (_decoration.shape.preferPaintInterior)
             {
                 global::Doroti.Ui.Rect adjustedRect = _adjustedRectOnOutlinedBorder(rect);
-                ((ShapeDecoration)this._decoration).shape.paintInterior(canvas, adjustedRect, this._interiorPaint!, textDirection: textDirection);
+                _decoration.shape.paintInterior(canvas, adjustedRect, _interiorPaint!, textDirection: textDirection);
             }
             else
             {
-                canvas.drawPath(this._outerPath, this._interiorPaint!);
+                canvas.drawPath(_outerPath, _interiorPaint!);
             }
         }
     }
 
     internal virtual global::Doroti.Ui.Rect _adjustedRectOnOutlinedBorder(Rect rect)
     {
-        if (((((ShapeDecoration)this._decoration).shape is OutlinedBorder) && (((ShapeDecoration)this._decoration).color is not null)))
+        if ((_decoration.shape is OutlinedBorder) && (_decoration.color is not null))
         {
-            BorderSide sideLocal = (((OutlinedBorder?)((ShapeDecoration)this._decoration).shape)!).side;
-            if (((((BorderSide)sideLocal).color.alpha == 255L) && (Equals(((BorderSide)sideLocal).style, BorderStyle.solid))))
+            BorderSide sideLocal = ((OutlinedBorder?)_decoration.shape)!.side;
+            if ((sideLocal.color.alpha == 255L) && Equals(sideLocal.style, BorderStyle.solid))
             {
-                return rect.deflate((((BorderSide)sideLocal).strokeInset / 2L));
+                return rect.deflate(sideLocal.strokeInset / 2L);
             }
         }
         return rect;
@@ -309,30 +309,30 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
 
     internal virtual void _paintImage(Canvas canvas, ImageConfiguration configuration)
     {
-        if ((((ShapeDecoration)this._decoration).image is null))
+        if (_decoration.image is null)
         {
             return;
         }
-        _imagePainter ??= ((ShapeDecoration)this._decoration).image!.createPainter(this.onChanged);
-        this._imagePainter!.paint(canvas, DartRuntimePrimitives.RequireValue(this._lastRect), this._innerPath, configuration);
+        _imagePainter ??= _decoration.image!.createPainter(onChanged);
+        _imagePainter!.paint(canvas, DartRuntimePrimitives.RequireValue(_lastRect), _innerPath, configuration);
     }
 
     public override void dispose()
     {
-        this._imagePainter?.dispose();
+        _imagePainter?.dispose();
         base.dispose();
     }
 
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
-        DartRuntimePrimitives.Assert(() => (((ImageConfiguration)configuration).size is not null));
-        global::Doroti.Ui.Rect rect = (offset & DartRuntimePrimitives.RequireValue(((ImageConfiguration)configuration).size));
-        global::Doroti.Ui.TextDirection? textDirectionLocal = ((ImageConfiguration)configuration).textDirection;
+        DartRuntimePrimitives.Assert(() => configuration.size is not null);
+        global::Doroti.Ui.Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
+        global::Doroti.Ui.TextDirection? textDirectionLocal = configuration.textDirection;
         _precache(rect, textDirectionLocal);
         _paintShadows(canvas, rect, textDirectionLocal);
         _paintInterior(canvas, rect, textDirectionLocal);
         _paintImage(canvas, configuration);
-        ((ShapeDecoration)this._decoration).shape.paint(canvas, rect, textDirection: textDirectionLocal);
+        _decoration.shape.paint(canvas, rect, textDirection: textDirectionLocal);
     }
 
 }

@@ -15,39 +15,39 @@ public class IconTheme : InheritedTheme
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!)
     {
-        return ((Widget)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        return new Builder(builder: (context) =>
         {
-            return ((Widget)new IconTheme(key: key, data: _getInheritedIconThemeData(context).merge(data), child: child));
+            return new IconTheme(key: key, data: _getInheritedIconThemeData(context).merge(data), child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static IconThemeData of(BuildContext context)
     {
-        IconThemeData iconThemeData = ((IconThemeData)_getInheritedIconThemeData(context).resolve(context));
-        return (((IconThemeData)iconThemeData).isConcrete ? iconThemeData : iconThemeData.copyWith(size: (((IconThemeData)iconThemeData).size ?? IconThemeData.CreateFallback().size), fill: (((IconThemeData)iconThemeData).fill ?? IconThemeData.CreateFallback().fill), weight: (((IconThemeData)iconThemeData).weight ?? IconThemeData.CreateFallback().weight), grade: (((IconThemeData)iconThemeData).grade ?? IconThemeData.CreateFallback().grade), opticalSize: (((IconThemeData)iconThemeData).opticalSize ?? IconThemeData.CreateFallback().opticalSize), color: (((IconThemeData)iconThemeData).color ?? IconThemeData.CreateFallback().color), opacity: (((IconThemeData)iconThemeData).opacity ?? IconThemeData.CreateFallback().opacity), shadows: (((IconThemeData)iconThemeData).shadows ?? IconThemeData.CreateFallback().shadows), applyTextScaling: (((IconThemeData)iconThemeData).applyTextScaling ?? IconThemeData.CreateFallback().applyTextScaling)));
+        IconThemeData iconThemeData = _getInheritedIconThemeData(context).resolve(context);
+        return iconThemeData.isConcrete ? iconThemeData : iconThemeData.copyWith(size: iconThemeData.size ?? IconThemeData.CreateFallback().size, fill: iconThemeData.fill ?? IconThemeData.CreateFallback().fill, weight: iconThemeData.weight ?? IconThemeData.CreateFallback().weight, grade: iconThemeData.grade ?? IconThemeData.CreateFallback().grade, opticalSize: iconThemeData.opticalSize ?? IconThemeData.CreateFallback().opticalSize, color: iconThemeData.color ?? IconThemeData.CreateFallback().color, opacity: iconThemeData.opacity ?? IconThemeData.CreateFallback().opacity, shadows: iconThemeData.shadows ?? IconThemeData.CreateFallback().shadows, applyTextScaling: iconThemeData.applyTextScaling ?? IconThemeData.CreateFallback().applyTextScaling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static IconThemeData _getInheritedIconThemeData(BuildContext context)
     {
-        IconTheme? iconTheme = ((IconTheme?)context.dependOnInheritedWidgetOfExactType<IconTheme>());
-        return (iconTheme?.data ?? IconThemeData.CreateFallback());
+        IconTheme? iconTheme = context.dependOnInheritedWidgetOfExactType<IconTheme>();
+        return iconTheme?.data ?? IconThemeData.CreateFallback();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((IconTheme)oldWidget).data)));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((IconTheme)oldWidget).data));
     public override Widget wrap(BuildContext context, Widget child)
     {
-        return ((Widget)new IconTheme(data: this.data, child: child));
+        return new IconTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        this.data.debugFillProperties(properties);
+        data.debugFillProperties(properties);
     }
 
 }

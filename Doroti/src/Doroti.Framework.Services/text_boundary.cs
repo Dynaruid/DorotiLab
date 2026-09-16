@@ -15,26 +15,26 @@ public abstract class TextBoundary
 
     public virtual long? getLeadingTextBoundaryAt(long position)
     {
-        if ((position < 0L))
+        if (position < 0L)
         {
             return null;
         }
         long start = getTextBoundaryAt(position).start;
-        return ((start >= 0L) ? start : null);
+        return (start >= 0L) ? start : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual long? getTrailingTextBoundaryAt(long position)
     {
         long end = getTextBoundaryAt(Math.Max(0L, position)).end;
-        return ((end >= 0L) ? end : null);
+        return (end >= 0L) ? end : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual TextRange getTextBoundaryAt(long position)
     {
-        long start = (getLeadingTextBoundaryAt(position) ?? -1L);
-        long end = (getTrailingTextBoundaryAt(position) ?? -1L);
+        long start = getLeadingTextBoundaryAt(position) ?? -1L;
+        long end = getTrailingTextBoundaryAt(position) ?? -1L;
         return new global::Doroti.Ui.TextRange(start: start, end: end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -52,44 +52,44 @@ public class CharacterBoundary : TextBoundary
 
     public override long? getLeadingTextBoundaryAt(long position)
     {
-        if ((position < 0L))
+        if (position < 0L)
         {
             return null;
         }
         long graphemeStart = new CharacterRange(_text, Math.Min(position, _text.Length)).stringBeforeLength;
-        DartRuntimePrimitives.Assert(() => (new CharacterRange(_text, graphemeStart).Count == 0));
+        DartRuntimePrimitives.Assert(() => new CharacterRange(_text, graphemeStart).Count == 0);
         return graphemeStart;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
     {
-        if ((position >= _text.Length))
+        if (position >= _text.Length)
         {
             return null;
         }
-        var rangeAtPosition = new CharacterRange(_text, Math.Max(0L, (position + 1L)));
-        long nextBoundary = (rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length);
-        DartRuntimePrimitives.Assert(() => ((nextBoundary == _text.Length) || (new CharacterRange(_text, nextBoundary).Count == 0)));
+        var rangeAtPosition = new CharacterRange(_text, Math.Max(0L, position + 1L));
+        long nextBoundary = rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length;
+        DartRuntimePrimitives.Assert(() => (nextBoundary == _text.Length) || (new CharacterRange(_text, nextBoundary).Count == 0));
         return nextBoundary;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override TextRange getTextBoundaryAt(long position)
     {
-        if ((position < 0L))
+        if (position < 0L)
         {
-            return new global::Doroti.Ui.TextRange(start: -1L, end: (getTrailingTextBoundaryAt(position) ?? -1L));
+            return new global::Doroti.Ui.TextRange(start: -1L, end: getTrailingTextBoundaryAt(position) ?? -1L);
         }
         else
         {
-            if ((position >= _text.Length))
+            if (position >= _text.Length)
             {
-                return new global::Doroti.Ui.TextRange(start: (getLeadingTextBoundaryAt(position) ?? -1L), end: -1L);
+                return new global::Doroti.Ui.TextRange(start: getLeadingTextBoundaryAt(position) ?? -1L, end: -1L);
             }
         }
         var rangeAtPosition = new CharacterRange(_text, position);
-        return ((rangeAtPosition.Count != 0) ? new global::Doroti.Ui.TextRange(start: rangeAtPosition.stringBeforeLength, end: (rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length)) : new global::Doroti.Ui.TextRange(start: rangeAtPosition.stringBeforeLength, end: (getTrailingTextBoundaryAt(position) ?? -1L)));
+        return (rangeAtPosition.Count != 0) ? new global::Doroti.Ui.TextRange(start: rangeAtPosition.stringBeforeLength, end: rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length) : new global::Doroti.Ui.TextRange(start: rangeAtPosition.stringBeforeLength, end: getTrailingTextBoundaryAt(position) ?? -1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -118,20 +118,20 @@ public class ParagraphBoundary : TextBoundary
 
     public override long? getLeadingTextBoundaryAt(long position)
     {
-        if (((position < 0L) || (_text.Length == 0)))
+        if ((position < 0L) || (_text.Length == 0))
         {
             return null;
         }
-        if ((position >= _text.Length))
+        if (position >= _text.Length)
         {
             return _text.Length;
         }
-        if ((position == 0L))
+        if (position == 0L)
         {
             return 0L;
         }
         var index = position;
-        if ((((index > 1L) && (_text.codeUnitAt(index) == 10L)) && (_text.codeUnitAt((index - 1L)) == 13L)))
+        if ((index > 1L) && (_text.codeUnitAt(index) == 10L) && (_text.codeUnitAt(index - 1L) == 13L))
         {
             index -= 2L;
         }
@@ -142,11 +142,11 @@ public class ParagraphBoundary : TextBoundary
                 index -= 1L;
             }
         }
-        while ((index > 0L))
+        while (index > 0L)
         {
             if (TextLayoutMetrics.isLineTerminator(_text.codeUnitAt(index)))
             {
-                return (index + 1L);
+                return index + 1L;
             }
             index -= 1L;
         }
@@ -156,11 +156,11 @@ public class ParagraphBoundary : TextBoundary
 
     public override long? getTrailingTextBoundaryAt(long position)
     {
-        if (((position >= _text.Length) || (_text.Length == 0)))
+        if ((position >= _text.Length) || (_text.Length == 0))
         {
             return null;
         }
-        if ((position < 0L))
+        if (position < 0L)
         {
             return 0L;
         }
@@ -168,12 +168,12 @@ public class ParagraphBoundary : TextBoundary
         while (!TextLayoutMetrics.isLineTerminator(_text.codeUnitAt(index)))
         {
             index += 1L;
-            if ((index == _text.Length))
+            if (index == _text.Length)
             {
                 return index;
             }
         }
-        return ((((index < (_text.Length - 1L)) && (_text.codeUnitAt(index) == 13L)) && (_text.codeUnitAt((index + 1L)) == 10L)) ? (index + 2L) : (index + 1L));
+        return ((index < (_text.Length - 1L)) && (_text.codeUnitAt(index) == 13L) && (_text.codeUnitAt(index + 1L) == 10L)) ? (index + 2L) : (index + 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -188,7 +188,7 @@ public class DocumentBoundary : TextBoundary
         this._text = _text;
     }
 
-    public override long? getLeadingTextBoundaryAt(long position) => ((position < 0L) ? null : 0L);
-    public override long? getTrailingTextBoundaryAt(long position) => ((position >= _text.Length) ? null : _text.Length);
+    public override long? getLeadingTextBoundaryAt(long position) => (position < 0L) ? null : 0L;
+    public override long? getTrailingTextBoundaryAt(long position) => (position >= _text.Length) ? null : _text.Length;
 }
 

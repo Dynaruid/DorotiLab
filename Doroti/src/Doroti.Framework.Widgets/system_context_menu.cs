@@ -21,27 +21,27 @@ public class SystemContextMenu : StatefulWidget
     public static SystemContextMenu CreateEditableText(global::Doroti.Framework.Foundation.Key? key = null, EditableTextState editableTextState = default!, List<IOSSystemContextMenuItem>? items = null)
     {
         var (startGlyphHeight, endGlyphHeight) = editableTextState.getGlyphHeights();
-        return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(((EditableTextState)editableTextState).renderEditable, startGlyphHeight, endGlyphHeight, ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(((EditableTextState)editableTextState).renderEditable).getEndpointsForSelection(((EditableTextState)editableTextState).textEditingValue.selection))), items: ((items ?? (List<IOSSystemContextMenuItem>)getDefaultItems(editableTextState))), onSystemHide: ((global::System.Action)(() => { editableTextState.hideToolbar(false); })));
+        return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(editableTextState.renderEditable, startGlyphHeight, endGlyphHeight, editableTextState.renderEditable.getEndpointsForSelection(editableTextState.textEditingValue.selection)), items: items ?? getDefaultItems(editableTextState), onSystemHide: () => { editableTextState.hideToolbar(false); });
     }
 
     public static bool isSupported(BuildContext context)
     {
-        return ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && ((MediaQuery.maybeSupportsShowingSystemContextMenu(context) ?? false)));
+        return Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS) && (MediaQuery.maybeSupportsShowingSystemContextMenu(context) ?? false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isSupportedByField(EditableTextState editableTextState)
     {
-        return (!editableTextState.widget.readOnly && isSupported(editableTextState.context));
+        return !editableTextState.widget.readOnly && isSupported(editableTextState.context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static List<IOSSystemContextMenuItem> getDefaultItems(EditableTextState editableTextState)
     {
         var items = new List<IOSSystemContextMenuItem>();
-        foreach (ContextMenuButtonItem button in ((EditableTextState)editableTextState).contextMenuButtonItems)
+        foreach (ContextMenuButtonItem button in editableTextState.contextMenuButtonItems)
         {
-            switch (((ContextMenuButtonItem)button).type)
+            switch (button.type)
             {
                 case ContextMenuButtonType.copy:
                     {
@@ -102,25 +102,25 @@ internal class _SystemContextMenuState__system_context_menu : State<SystemContex
     public override void initState()
     {
         base.initState();
-        _systemContextMenuController = new global::Doroti.Framework.Services.SystemContextMenuController(onSystemHide: () => ((SystemContextMenu)this.widget).onSystemHide?.Invoke());
+        _systemContextMenuController = new global::Doroti.Framework.Services.SystemContextMenuController(onSystemHide: () => widget.onSystemHide?.Invoke());
     }
 
     public override void dispose()
     {
-        this._systemContextMenuController.dispose();
+        _systemContextMenuController.dispose();
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => SystemContextMenu.isSupported(context));
-        if (Enumerable.Any(((SystemContextMenu)this.widget).items))
+        if (Enumerable.Any(widget.items))
         {
-            WidgetsLocalizations localizations = ((WidgetsLocalizations)WidgetsLocalizations.of(context));
-            List<global::Doroti.Framework.Services.IOSSystemContextMenuItemData> itemDatas = ((SystemContextMenu)this.widget).items.map<IOSSystemContextMenuItem, global::Doroti.Framework.Services.IOSSystemContextMenuItemData>(((item) => item.getData(localizations))).ToList().ToList();
-            DartRuntimePrimitives.Ignore(this._systemContextMenuController.showWithItems(((SystemContextMenu)this.widget).anchor, itemDatas));
+            WidgetsLocalizations localizations = WidgetsLocalizations.of(context);
+            List<global::Doroti.Framework.Services.IOSSystemContextMenuItemData> itemDatas = widget.items.map<IOSSystemContextMenuItem, global::Doroti.Framework.Services.IOSSystemContextMenuItemData>((item) => item.getData(localizations)).ToList().ToList();
+            DartRuntimePrimitives.Ignore(_systemContextMenuController.showWithItems(widget.anchor, itemDatas));
         }
-        return ((Widget)SizedBox.CreateShrink());
+        return SizedBox.CreateShrink();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,7 +134,7 @@ public abstract class IOSSystemContextMenuItem
 
     public virtual string? title => DartRuntimePrimitives.ConvertValue<string>(null);
     public abstract global::Doroti.Framework.Services.IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations);
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>((this.title?.GetHashCode() ?? 0));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(title?.GetHashCode() ?? 0);
     public override bool Equals(object? other)
     {
         var __other = other as IOSSystemContextMenuItem;
@@ -143,11 +143,11 @@ public abstract class IOSSystemContextMenuItem
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is IOSSystemContextMenuItem) && (((IOSSystemContextMenuItem)((IOSSystemContextMenuItem)__other)).title == this.title));
+        return (__other is IOSSystemContextMenuItem) && (__other.title == title);
     }
 
 }
@@ -215,18 +215,18 @@ public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, global::
 
     public IOSSystemContextMenuItemLookUp(string? title = null)
     {
-        this.__field_title = title;
+        __field_title = title;
     }
 
     public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLookUp getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLookUp(title: ((this.title ?? (string)((WidgetsLocalizations)localizations).lookUpButtonLabel)));
+        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLookUp(title: title ?? localizations.lookUpButtonLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("title", this.title));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("title", title));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -241,13 +241,13 @@ public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, global::
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -260,18 +260,18 @@ public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, globa
 
     public IOSSystemContextMenuItemSearchWeb(string? title = null)
     {
-        this.__field_title = title;
+        __field_title = title;
     }
 
     public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSearchWeb getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSearchWeb(title: ((this.title ?? (string)((WidgetsLocalizations)localizations).searchWebButtonLabel)));
+        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSearchWeb(title: title ?? localizations.searchWebButtonLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("title", this.title));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("title", title));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -286,13 +286,13 @@ public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, globa
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -305,18 +305,18 @@ public class IOSSystemContextMenuItemShare : IOSSystemContextMenuItem, global::D
 
     public IOSSystemContextMenuItemShare(string? title = null)
     {
-        this.__field_title = title;
+        __field_title = title;
     }
 
     public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataShare getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataShare(title: ((this.title ?? (string)((WidgetsLocalizations)localizations).shareButtonLabel)));
+        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataShare(title: title ?? localizations.shareButtonLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", this.title));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", title));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -331,13 +331,13 @@ public class IOSSystemContextMenuItemShare : IOSSystemContextMenuItem, global::D
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -351,7 +351,7 @@ public class IOSSystemContextMenuItemLiveText : IOSSystemContextMenuItem
 
     public override global::Doroti.Framework.Services.IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations)
     {
-        return ((global::Doroti.Framework.Services.IOSSystemContextMenuItemData)new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLiveText());
+        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLiveText();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -365,17 +365,17 @@ public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, global::
 
     public IOSSystemContextMenuItemCustom(string title, global::System.Action onPressed)
     {
-        this.__field_title = title;
+        __field_title = title;
         this.onPressed = onPressed;
     }
 
     public override global::Doroti.Framework.Services.IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations)
     {
-        return ((global::Doroti.Framework.Services.IOSSystemContextMenuItemData)new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCustom(title: DartRuntimePrimitives.RequireReference(this.title), onPressed: () => this.onPressed()));
+        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCustom(title: DartRuntimePrimitives.RequireReference(title), onPressed: () => onPressed());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.title, this.onPressed));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(title, onPressed));
     public override bool Equals(object? other)
     {
         var __other = other as IOSSystemContextMenuItemCustom;
@@ -384,13 +384,13 @@ public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, global::
         {
             return true;
         }
-        return (((__other is IOSSystemContextMenuItemCustom) && (((IOSSystemContextMenuItemCustom)((IOSSystemContextMenuItemCustom)__other)).title == this.title)) && (Equals((global::System.Action)((IOSSystemContextMenuItemCustom)((IOSSystemContextMenuItemCustom)__other)).onPressed, (global::System.Action)this.onPressed)));
+        return (__other is IOSSystemContextMenuItemCustom) && (__other.title == title) && Equals(__other.onPressed, onPressed);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", this.title));
-        properties.add(ObjectFlagProperty<Action>.CreateHas("onPressed", this.onPressed));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", title));
+        properties.add(ObjectFlagProperty<Action>.CreateHas("onPressed", onPressed));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -405,13 +405,13 @@ public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, global::
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

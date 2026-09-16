@@ -23,7 +23,7 @@ public class ProcessTextAction
         {
             return true;
         }
-        return (((__other is ProcessTextAction) && (((ProcessTextAction)__other).id == id)) && (((ProcessTextAction)__other).label == label));
+        return (__other is ProcessTextAction) && (__other.id == id) && (__other.label == label);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(id, label);
@@ -58,7 +58,7 @@ public class DefaultProcessTextService : ProcessTextService
         try
         {
             var result = await _processTextChannel.invokeMethod<object>("ProcessText.queryTextActions");
-            if ((result is null))
+            if (result is null)
             {
                 return new List<ProcessTextAction>();
             }

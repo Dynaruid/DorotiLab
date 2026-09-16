@@ -30,16 +30,16 @@ public class DesktopTextSelectionToolbarButton : global::Doroti.Framework.Widget
     {
         var __instance = new DesktopTextSelectionToolbarButton(key: key, onPressed: onPressed, child: default!);
         __instance.onPressed = onPressed;
-        __instance.child = new global::Doroti.Framework.Widgets.Text(text, overflow: TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((Equals(Theme.of(context).colorScheme.brightness, Brightness.dark)) ? Colors.white : Colors.black87)));
+        __instance.child = new global::Doroti.Framework.Widgets.Text(text, overflow: TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: Equals(Theme.of(context).colorScheme.brightness, Brightness.dark) ? Colors.white : Colors.black87));
         return __instance;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        var isDark = (Equals(theme.colorScheme.brightness, Brightness.dark));
-        global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)(isDark ? Colors.white : Colors.black87));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new TextButton(style: TextButton.styleFrom(alignment: Alignment.centerLeft, enabledMouseCursor: SystemMouseCursors.basic, disabledMouseCursor: SystemMouseCursors.basic, foregroundColor: foregroundColorLocal, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, 36.0), padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding), onPressed: this.onPressed, child: this.child)));
+        var isDark = Equals(theme.colorScheme.brightness, Brightness.dark);
+        global::Doroti.Ui.Color foregroundColorLocal = isDark ? Colors.white : Colors.black87;
+        return new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new TextButton(style: TextButton.styleFrom(alignment: Alignment.centerLeft, enabledMouseCursor: SystemMouseCursors.basic, disabledMouseCursor: SystemMouseCursors.basic, foregroundColor: foregroundColorLocal, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, 36.0), padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding), onPressed: onPressed, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

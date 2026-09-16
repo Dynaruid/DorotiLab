@@ -174,7 +174,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             }
             return Native.DefSubclassProc(hwnd, message, wparam, lparam);
         }
-        private static nint Pack(Native.Point point) => (nint)((uint)(ushort)point.X | ((uint)(ushort)point.Y << 16));
+        private static nint Pack(Native.Point point) => (nint)((ushort)point.X | ((uint)(ushort)point.Y << 16));
         public ValueTask ApplyAsync(PlatformViewPlacement placement)
         {
             _owner.VerifyThread(); placement.Validate();

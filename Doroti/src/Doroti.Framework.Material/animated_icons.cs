@@ -30,17 +30,17 @@ public class AnimatedIcon : global::Doroti.Framework.Widgets.StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         var iconData = ((_AnimatedIconData__animated_icons_data?)icon)!;
-        global::Doroti.Framework.Widgets.IconThemeData iconTheme = ((global::Doroti.Framework.Widgets.IconThemeData)IconTheme.of(context));
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).isConcrete);
-        double iconSize = (size ?? DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).size));
-        global::Doroti.Ui.TextDirection textDirectionLocal = ((((TextDirection?)textDirection) ?? (TextDirection)Directionality.of(context)));
-        double iconOpacity = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).opacity);
-        global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)(color ?? ((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).color!));
-        if ((iconOpacity != 1.0))
+        global::Doroti.Framework.Widgets.IconThemeData iconTheme = IconTheme.of(context);
+        DartRuntimePrimitives.Assert(() => iconTheme.isConcrete);
+        double iconSize = size ?? DartRuntimePrimitives.RequireValue(iconTheme.size);
+        global::Doroti.Ui.TextDirection textDirectionLocal = textDirection ?? Directionality.of(context);
+        double iconOpacity = DartRuntimePrimitives.RequireValue(iconTheme.opacity);
+        global::Doroti.Ui.Color iconColor = color ?? iconTheme.color!;
+        if (iconOpacity != 1.0)
         {
-            iconColor = iconColor.withOpacity((iconColor.opacity * iconOpacity));
+            iconColor = iconColor.withOpacity(iconColor.opacity * iconOpacity);
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(label: semanticLabel, child: new global::Doroti.Framework.Widgets.CustomPaint(size: new global::Doroti.Ui.Size(iconSize, iconSize), painter: new _AnimatedIconPainter__animated_icons(paths: ((_AnimatedIconData__animated_icons_data)iconData).paths, progress: progress, color: iconColor, scale: (iconSize / ((_AnimatedIconData__animated_icons_data)iconData).size.width), shouldMirror: ((Equals(DartRuntimePrimitives.RequireValue(textDirectionLocal), TextDirection.rtl)) && ((_AnimatedIconData__animated_icons_data)iconData).matchTextDirection), uiPathFactory: (global::System.Func<Path>)_pathFactory))));
+        return new global::Doroti.Framework.Widgets.Semantics(label: semanticLabel, child: new global::Doroti.Framework.Widgets.CustomPaint(size: new global::Doroti.Ui.Size(iconSize, iconSize), painter: new _AnimatedIconPainter__animated_icons(paths: iconData.paths, progress: progress, color: iconColor, scale: iconSize / iconData.size.width, shouldMirror: Equals(DartRuntimePrimitives.RequireValue(textDirectionLocal), TextDirection.rtl) && iconData.matchTextDirection, uiPathFactory: _pathFactory)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -75,17 +75,17 @@ internal class _AnimatedIconPainter__animated_icons : global::Doroti.Framework.R
             canvas.translate(-size.width, -size.height);
         }
         canvas.scale(scale, scale);
-        double clampedProgress = Dart_uiLibrary.clampDouble(((global::Doroti.Framework.Animation.Animation<double>)progress).value, 0.0, 1.0);
+        double clampedProgress = Dart_uiLibrary.clampDouble(progress.value, 0.0, 1.0);
         foreach (_PathFrames__animated_icons path in paths)
         {
-            path.paint(canvas, color, (global::System.Func<Path>)uiPathFactory, clampedProgress);
+            path.paint(canvas, color, uiPathFactory, clampedProgress);
         }
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (_AnimatedIconPainter__animated_icons)oldDelegate;
-        return (((((((_AnimatedIconPainter__animated_icons)__oldDelegate).progress.value != ((global::Doroti.Framework.Animation.Animation<double>)progress).value) || (!Equals(((_AnimatedIconPainter__animated_icons)__oldDelegate).color, color))) || (!Equals(((_AnimatedIconPainter__animated_icons)__oldDelegate).paths, paths))) || (((_AnimatedIconPainter__animated_icons)__oldDelegate).scale != scale)) || (!Equals((global::System.Func<Path>)((_AnimatedIconPainter__animated_icons)__oldDelegate).uiPathFactory, (global::System.Func<Path>)uiPathFactory)));
+        return (__oldDelegate.progress.value != progress.value) || (!Equals(__oldDelegate.color, color)) || (!Equals(__oldDelegate.paths, paths)) || (__oldDelegate.scale != scale) || (!Equals(__oldDelegate.uiPathFactory, uiPathFactory));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,10 +112,10 @@ public class _PathFrames__animated_icons
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.fill;
-    __cascade.color = color.withOpacity((color.opacity * opacityLocal));
+    __cascade.color = color.withOpacity(color.opacity * opacityLocal);
     return __cascade;
 }))();
-        global::Doroti.Ui.Path path = ((global::Doroti.Ui.Path)uiPathFactory());
+        global::Doroti.Ui.Path path = uiPathFactory();
         foreach (_PathCommand__animated_icons command in commands)
         {
             command.apply(path, progress);
@@ -141,7 +141,7 @@ internal class _PathMoveTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        global::Doroti.Ui.Offset offset = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(points, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value)));
+        global::Doroti.Ui.Offset offset = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(points, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
         path.moveTo(offset.dx, offset.dy);
     }
 
@@ -162,9 +162,9 @@ internal class _PathCubicTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        global::Doroti.Ui.Offset controlPoint1 = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(controlPoints1, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value)));
-        global::Doroti.Ui.Offset controlPoint2 = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(controlPoints2, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value)));
-        global::Doroti.Ui.Offset targetPoint = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(targetPoints, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value)));
+        global::Doroti.Ui.Offset controlPoint1 = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(controlPoints1, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
+        global::Doroti.Ui.Offset controlPoint2 = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(controlPoints2, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
+        global::Doroti.Ui.Offset targetPoint = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(targetPoints, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
         path.cubicTo(controlPoint1.dx, controlPoint1.dy, controlPoint2.dx, controlPoint2.dy, targetPoint.dx, targetPoint.dy);
     }
 
@@ -181,7 +181,7 @@ internal class _PathLineTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        global::Doroti.Ui.Offset point = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(points, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value)));
+        global::Doroti.Ui.Offset point = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<global::Doroti.Ui.Offset>(points, progress, (a, b, t) => Offset.lerp(a, b, t)!.Value));
         path.lineTo(point.dx, point.dy);
     }
 
@@ -204,17 +204,17 @@ public static partial class Animated_iconsLibrary
 {
     internal static T _interpolate<T>(List<T> values, double progress, global::System.Func<T, T, double, T> interpolator)
     {
-        DartRuntimePrimitives.Assert(() => (progress <= 1.0));
-        DartRuntimePrimitives.Assert(() => (progress >= 0.0));
-        if ((checked((long)(values.Count)) == 1L))
+        DartRuntimePrimitives.Assert(() => progress <= 1.0);
+        DartRuntimePrimitives.Assert(() => progress >= 0.0);
+        if (checked(values.Count) == 1L)
         {
-            return values[(int)(0L)];
+            return values[(int)0L];
         }
-        double targetIdx = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, (checked((long)(values.Count)) - 1L), progress));
+        double targetIdx = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress));
         long lowIdx = targetIdx.floor();
         long highIdx = targetIdx.ceil();
-        double t = (targetIdx - lowIdx);
-        return interpolator(values[(int)(lowIdx)], values[(int)(highIdx)], t);
+        double t = targetIdx - lowIdx;
+        return interpolator(values[(int)lowIdx], values[(int)highIdx], t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

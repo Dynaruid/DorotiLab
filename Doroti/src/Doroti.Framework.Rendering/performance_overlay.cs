@@ -15,22 +15,22 @@ public enum PerformanceOverlayOption
 
 public class RenderPerformanceOverlay : RenderBox
 {
-    internal static long _rasterizerMask = (((1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayRasterizerStatistics)))) | ((1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeRasterizerStatistics)))));
-    internal static long _engineMask = (((1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayEngineStatistics)))) | ((1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeEngineStatistics)))));
+    internal static long _rasterizerMask = 1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayRasterizerStatistics) | 1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeRasterizerStatistics);
+    internal static long _engineMask = 1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayEngineStatistics) | 1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeEngineStatistics);
     internal virtual long _optionsMask { get; set; } = default!;
 
     public RenderPerformanceOverlay(long optionsMask = 0)
     {
-        this._optionsMask = optionsMask;
+        _optionsMask = optionsMask;
     }
 
     public virtual long optionsMask
     {
-        get => this._optionsMask;
+        get => _optionsMask;
         set
         {
             var __value = value;
-            if ((__value == this._optionsMask))
+            if (__value == _optionsMask)
             {
                 return;
             }
@@ -58,11 +58,11 @@ public class RenderPerformanceOverlay : RenderBox
         {
             var kDefaultGraphHeight = 80.0;
             var result = 0.0;
-            if ((((this.optionsMask & _rasterizerMask)) != 0L))
+            if ((optionsMask & _rasterizerMask) != 0L)
             {
                 result += kDefaultGraphHeight;
             }
-            if ((((this.optionsMask & _engineMask)) != 0L))
+            if ((optionsMask & _engineMask) != 0L)
             {
                 result += kDefaultGraphHeight;
             }
@@ -71,26 +71,26 @@ public class RenderPerformanceOverlay : RenderBox
     }
     public override double computeMinIntrinsicHeight(double width)
     {
-        return this._intrinsicHeight;
+        return _intrinsicHeight;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return this._intrinsicHeight;
+        return _intrinsicHeight;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return constraints.constrain(new global::Doroti.Ui.Size(double.PositiveInfinity, this._intrinsicHeight));
+        return constraints.constrain(new global::Doroti.Ui.Size(double.PositiveInfinity, _intrinsicHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() => needsCompositing);
-        context.addLayer(new PerformanceOverlayLayer(overlayRect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), optionsMask: this.optionsMask));
+        context.addLayer(new PerformanceOverlayLayer(overlayRect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), optionsMask: optionsMask));
     }
 
 }

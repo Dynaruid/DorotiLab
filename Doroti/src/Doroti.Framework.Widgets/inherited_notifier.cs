@@ -16,7 +16,7 @@ public abstract class InheritedNotifier<T> : InheritedWidget where T : global::D
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (InheritedNotifier<T>)oldWidget;
-        return !EqualityComparer<T>.Default.Equals(((InheritedNotifier<T>)__oldWidget).notifier, this.notifier);
+        return !EqualityComparer<T>.Default.Equals(__oldWidget.notifier, notifier);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -35,23 +35,23 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
     public override void update(Widget newWidget)
     {
         var __newWidget = (InheritedNotifier<T>)newWidget;
-        T? oldNotifier = (((InheritedNotifier<T>?)this.widget)!).notifier;
-        T? newNotifier = ((InheritedNotifier<T>)__newWidget).notifier;
+        T? oldNotifier = ((InheritedNotifier<T>?)widget)!.notifier;
+        T? newNotifier = __newWidget.notifier;
         if (!EqualityComparer<T>.Default.Equals(oldNotifier, newNotifier))
         {
-            oldNotifier?.removeListener(this._handleUpdate);
-            newNotifier?.addListener(this._handleUpdate);
+            oldNotifier?.removeListener(_handleUpdate);
+            newNotifier?.addListener(_handleUpdate);
         }
         base.update(__newWidget);
     }
 
     public override Widget build()
     {
-        if (this._dirty)
+        if (_dirty)
         {
-            notifyClients(((InheritedNotifier<T>?)this.widget)!);
+            notifyClients(((InheritedNotifier<T>?)widget)!);
         }
-        return ((Widget)base.build());
+        return base.build();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -70,7 +70,7 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
 
     public override void unmount()
     {
-        (((InheritedNotifier<T>?)this.widget)!).notifier?.removeListener(this._handleUpdate);
+        ((InheritedNotifier<T>?)widget)!.notifier?.removeListener(_handleUpdate);
         base.unmount();
     }
 

@@ -9,8 +9,8 @@ public static partial class Tap_and_dragLibrary
 {
     internal static double _getGlobalDistance(PointerEvent @event, OffsetPair? originPosition)
     {
-        DartRuntimePrimitives.Assert(() => (originPosition is not null));
-        global::Doroti.Ui.Offset offset = (((PointerEvent)@event).position - originPosition!.global);
+        DartRuntimePrimitives.Assert(() => originPosition is not null);
+        global::Doroti.Ui.Offset offset = @event.position - originPosition!.global;
         return offset.distance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -36,8 +36,8 @@ public class TapDragDownDetails : PositionedGestureDetails, Diagnosticable
 
     public TapDragDownDetails(Offset globalPosition, Offset localPosition, PointerDeviceKind? kind = null, long consecutiveTapCount = default!)
     {
-        this.__field_globalPosition = globalPosition;
-        this.__field_localPosition = localPosition;
+        __field_globalPosition = globalPosition;
+        __field_localPosition = localPosition;
         this.kind = kind;
         this.consecutiveTapCount = consecutiveTapCount;
     }
@@ -45,10 +45,10 @@ public class TapDragDownDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
-        properties.add(new IntProperty("consecutiveTapCount", this.consecutiveTapCount));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
 }
@@ -66,8 +66,8 @@ public class TapDragUpDetails : PositionedGestureDetails, Diagnosticable
 
     public TapDragUpDetails(Offset globalPosition, Offset localPosition, PointerDeviceKind kind, long consecutiveTapCount)
     {
-        this.__field_globalPosition = globalPosition;
-        this.__field_localPosition = localPosition;
+        __field_globalPosition = globalPosition;
+        __field_localPosition = localPosition;
         this.kind = kind;
         this.consecutiveTapCount = consecutiveTapCount;
     }
@@ -75,10 +75,10 @@ public class TapDragUpDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
-        properties.add(new IntProperty("consecutiveTapCount", this.consecutiveTapCount));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
 }
@@ -97,8 +97,8 @@ public class TapDragStartDetails : PositionedGestureDetails, Diagnosticable
 
     public TapDragStartDetails(Offset globalPosition, Offset localPosition, Duration? sourceTimeStamp = null, PointerDeviceKind? kind = null, long consecutiveTapCount = default!)
     {
-        this.__field_globalPosition = globalPosition;
-        this.__field_localPosition = localPosition;
+        __field_globalPosition = globalPosition;
+        __field_localPosition = localPosition;
         this.sourceTimeStamp = sourceTimeStamp;
         this.kind = kind;
         this.consecutiveTapCount = consecutiveTapCount;
@@ -107,11 +107,11 @@ public class TapDragStartDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", this.sourceTimeStamp));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
-        properties.add(new IntProperty("consecutiveTapCount", this.consecutiveTapCount));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
 }
@@ -134,8 +134,8 @@ public class TapDragUpdateDetails : PositionedGestureDetails, Diagnosticable
 
     public TapDragUpdateDetails(Offset globalPosition, Offset localPosition, Duration? sourceTimeStamp = null, Offset delta = default, double? primaryDelta = null, PointerDeviceKind? kind = null, Offset offsetFromOrigin = default!, Offset localOffsetFromOrigin = default!, long consecutiveTapCount = default!)
     {
-        this.__field_globalPosition = globalPosition;
-        this.__field_localPosition = localPosition;
+        __field_globalPosition = globalPosition;
+        __field_localPosition = localPosition;
         this.sourceTimeStamp = sourceTimeStamp;
         this.delta = delta;
         this.primaryDelta = primaryDelta;
@@ -143,21 +143,21 @@ public class TapDragUpdateDetails : PositionedGestureDetails, Diagnosticable
         this.offsetFromOrigin = offsetFromOrigin;
         this.localOffsetFromOrigin = localOffsetFromOrigin;
         this.consecutiveTapCount = consecutiveTapCount;
-        System.Diagnostics.Debug.Assert((((primaryDelta is null) || (((DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dx) && (delta.dy == 0.0)))) || (((DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dy) && (delta.dx == 0.0)))));
+        System.Diagnostics.Debug.Assert((primaryDelta is null) || (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dx) && (delta.dy == 0.0) || (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dy) && (delta.dx == 0.0));
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", this.sourceTimeStamp));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", this.delta));
-        properties.add(new DoubleProperty("primaryDelta", this.primaryDelta));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offsetFromOrigin", this.offsetFromOrigin));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localOffsetFromOrigin", this.localOffsetFromOrigin));
-        properties.add(new IntProperty("consecutiveTapCount", this.consecutiveTapCount));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta));
+        properties.add(new DoubleProperty("primaryDelta", primaryDelta));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offsetFromOrigin", offsetFromOrigin));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localOffsetFromOrigin", localOffsetFromOrigin));
+        properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
 }
@@ -177,22 +177,22 @@ public class TapDragEndDetails : PositionedGestureDetails, Diagnosticable
     public TapDragEndDetails(Offset globalPosition = default, Offset? localPosition = null, Velocity velocity = default!, double? primaryVelocity = null, long consecutiveTapCount = default!)
     {
         Velocity __velocity = velocity ?? Velocity.zero;
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.velocity = __velocity;
         this.primaryVelocity = primaryVelocity;
         this.consecutiveTapCount = consecutiveTapCount;
-        this.__field_localPosition = (localPosition ?? globalPosition);
-        System.Diagnostics.Debug.Assert((((primaryVelocity is null) || (DartRuntimePrimitives.RequireValue(primaryVelocity) == ((Velocity)__velocity).pixelsPerSecond.dx)) || (DartRuntimePrimitives.RequireValue(primaryVelocity) == ((Velocity)__velocity).pixelsPerSecond.dy)));
+        __field_localPosition = localPosition ?? globalPosition;
+        System.Diagnostics.Debug.Assert((primaryVelocity is null) || (DartRuntimePrimitives.RequireValue(primaryVelocity) == __velocity.pixelsPerSecond.dx) || (DartRuntimePrimitives.RequireValue(primaryVelocity) == __velocity.pixelsPerSecond.dy));
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new DiagnosticsProperty<Velocity>("velocity", this.velocity));
-        properties.add(new DoubleProperty("primaryVelocity", this.primaryVelocity));
-        properties.add(new IntProperty("consecutiveTapCount", this.consecutiveTapCount));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Velocity>("velocity", velocity));
+        properties.add(new DoubleProperty("primaryVelocity", primaryVelocity));
+        properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
 }
@@ -269,8 +269,8 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     protected BaseTapAndDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, bool eagerVictoryOnDrag = true) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
         this.eagerVictoryOnDrag = eagerVictoryOnDrag;
-        this._deadline = ConstantsLibrary.kPressTimeout;
-        this.dragStartBehavior = DragStartBehavior.start;
+        _deadline = ConstantsLibrary.kPressTimeout;
+        dragStartBehavior = DragStartBehavior.start;
     }
 
     internal abstract global::Doroti.Ui.Offset _getDeltaForDetails(Offset delta);
@@ -278,10 +278,10 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     internal abstract bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind);
     internal virtual void _handleDragUpdateThrottled()
     {
-        DartRuntimePrimitives.Assert(() => (this._lastDragUpdateDetails is not null));
-        if ((this.onDragUpdate is not null))
+        DartRuntimePrimitives.Assert(() => _lastDragUpdateDetails is not null);
+        if (onDragUpdate is not null)
         {
-            invokeCallback<object?>("onDragUpdate", () => { ((Action)((() => this.onDragUpdate!(this._lastDragUpdateDetails!))))(); return null; });
+            invokeCallback<object?>("onDragUpdate", () => { ((Action)(() => onDragUpdate!(_lastDragUpdateDetails!)))(); return null; });
         }
         _dragUpdateThrottleTimer = null;
         _lastDragUpdateDetails = null;
@@ -289,13 +289,13 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
-        if ((this._primaryPointer is null))
+        if (_primaryPointer is null)
         {
-            switch (((PointerEvent)@event).buttons)
+            switch (@event.buttons)
             {
                 case var __constant38875 when Equals(__constant38875, EventsLibrary.kPrimaryButton):
                     {
-                        if (((((((this.onTapDown is null) && (this.onDragStart is null)) && (this.onDragUpdate is null)) && (this.onDragEnd is null)) && (this.onTapUp is null)) && (this.onCancel is null)))
+                        if ((onTapDown is null) && (onDragStart is null) && (onDragUpdate is null) && (onDragEnd is null) && (onTapUp is null) && (onCancel is null))
                         {
                             return false;
                         }
@@ -309,7 +309,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         }
         else
         {
-            if ((((PointerEvent)@event).pointer != this._primaryPointer))
+            if (@event.pointer != _primaryPointer)
             {
                 return false;
             }
@@ -320,19 +320,19 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public override void addAllowedPointer(PointerDownEvent @event)
     {
-        if ((Equals(this._dragState, _DragState__tap_and_drag.ready)))
+        if (Equals(_dragState, _DragState__tap_and_drag.ready))
         {
             base.addAllowedPointer(@event);
-            if (((this._consecutiveTapTimer is not null) && !this._consecutiveTapTimer!.isActive))
+            if ((_consecutiveTapTimer is not null) && !_consecutiveTapTimer!.isActive)
             {
                 _tapTrackerReset();
             }
-            if ((this.maxConsecutiveTap == this._consecutiveTapCount))
+            if (maxConsecutiveTap == _consecutiveTapCount)
             {
                 _tapTrackerReset();
             }
             _up = null;
-            if (((this._down is not null) && !_representsSameSeries(@event)))
+            if ((_down is not null) && !_representsSameSeries(@event))
             {
                 _consecutiveTapCount = 1L;
             }
@@ -347,16 +347,16 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
             _globalDistanceMovedAllAxes = 0.0;
             _dragState = _DragState__tap_and_drag.possible;
             _initialPosition = new OffsetPair(global: @event.position, local: @event.localPosition);
-            _currentPosition = this._initialPosition;
-            _deadlineTimer = new Timer(this._deadline, (() => _didExceedDeadlineWithEvent(@event)));
+            _currentPosition = _initialPosition;
+            _deadlineTimer = new Timer(_deadline, () => _didExceedDeadlineWithEvent(@event));
         }
     }
 
     public override void handleNonAllowedPointer(PointerDownEvent @event)
     {
-        if ((@event.buttons != EventsLibrary.kPrimaryButton))
+        if (@event.buttons != EventsLibrary.kPrimaryButton)
         {
-            if (!this._wonArenaForPrimaryPointer)
+            if (!_wonArenaForPrimaryPointer)
             {
                 base.handleNonAllowedPointer(@event);
             }
@@ -365,32 +365,32 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public override void acceptGesture(long pointer)
     {
-        if ((pointer != this._primaryPointer))
+        if (pointer != _primaryPointer)
         {
             return;
         }
         _stopDeadlineTimer();
-        DartRuntimePrimitives.Assert(() => !this._acceptedActivePointers.Contains(pointer));
-        this._acceptedActivePointers.Add(pointer);
-        if ((currentDown is not null))
+        DartRuntimePrimitives.Assert(() => !_acceptedActivePointers.Contains(pointer));
+        _acceptedActivePointers.Add(pointer);
+        if (currentDown is not null)
         {
             _checkTapDown(currentDown!);
         }
         _wonArenaForPrimaryPointer = true;
-        if (((this._start is not null) && this.eagerVictoryOnDrag))
+        if ((_start is not null) && eagerVictoryOnDrag)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._dragState, _DragState__tap_and_drag.accepted)));
-            DartRuntimePrimitives.Assert(() => (currentUp is null));
-            _acceptDrag(this._start!);
+            DartRuntimePrimitives.Assert(() => Equals(_dragState, _DragState__tap_and_drag.accepted));
+            DartRuntimePrimitives.Assert(() => currentUp is null);
+            _acceptDrag(_start!);
         }
-        if (((this._start is not null) && !this.eagerVictoryOnDrag))
+        if ((_start is not null) && !eagerVictoryOnDrag)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._dragState, _DragState__tap_and_drag.possible)));
-            DartRuntimePrimitives.Assert(() => (currentUp is null));
+            DartRuntimePrimitives.Assert(() => Equals(_dragState, _DragState__tap_and_drag.possible));
+            DartRuntimePrimitives.Assert(() => currentUp is null);
             _dragState = _DragState__tap_and_drag.accepted;
-            _acceptDrag(this._start!);
+            _acceptDrag(_start!);
         }
-        if ((currentUp is not null))
+        if (currentUp is not null)
         {
             _checkTapUp(currentUp!);
         }
@@ -398,7 +398,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public override void didStopTrackingLastPointer(long pointer)
     {
-        switch (this._dragState)
+        switch (_dragState)
         {
             case _DragState__tap_and_drag.ready:
                 {
@@ -408,13 +408,13 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
                 }
             case _DragState__tap_and_drag.possible:
                 {
-                    if (this._pastSlopTolerance)
+                    if (_pastSlopTolerance)
                     {
-                        if (this._wonArenaForPrimaryPointer)
+                        if (_wonArenaForPrimaryPointer)
                         {
-                            if ((currentDown is not null))
+                            if (currentDown is not null)
                             {
-                                if (!this._acceptedActivePointers.Remove(pointer))
+                                if (!_acceptedActivePointers.Remove(pointer))
                                 {
                                     resolvePointer(pointer, GestureDisposition.rejected);
                                 }
@@ -431,7 +431,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
                     }
                     else
                     {
-                        if ((currentUp is not null))
+                        if (currentUp is not null)
                         {
                             _checkTapUp(currentUp!);
                         }
@@ -452,15 +452,15 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public override void handleEvent(PointerEvent @event)
     {
-        if ((((PointerEvent)@event).pointer != this._primaryPointer))
+        if (@event.pointer != _primaryPointer)
         {
             return;
         }
-        if ((@event is PointerMoveEvent))
+        if (@event is PointerMoveEvent)
         {
             PointerMoveEvent @event__as22088 = (PointerMoveEvent)@event;
-            double computedSlop = EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as22088).kind, gestureSettings);
-            bool isSlopPastTolerance = (Tap_and_dragLibrary._getGlobalDistance(((PointerMoveEvent)@event__as22088), this._originPosition) > computedSlop);
+            double computedSlop = EventsLibrary.computeHitSlop(@event__as22088.kind, gestureSettings);
+            bool isSlopPastTolerance = Tap_and_dragLibrary._getGlobalDistance(@event__as22088, _originPosition) > computedSlop;
             if (isSlopPastTolerance)
             {
                 _consecutiveTapTimerStop();
@@ -470,11 +470,11 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         }
         else
         {
-            if ((@event is PointerUpEvent))
+            if (@event is PointerUpEvent)
             {
                 PointerUpEvent @event__as22451 = (PointerUpEvent)@event;
-                _up = ((PointerUpEvent)@event__as22451);
-                if ((this._down is not null))
+                _up = @event__as22451;
+                if (_down is not null)
                 {
                     _consecutiveTapTimerStop();
                     _consecutiveTapTimerStart();
@@ -482,63 +482,63 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
             }
             else
             {
-                if ((@event is PointerCancelEvent))
+                if (@event is PointerCancelEvent)
                 {
                     PointerCancelEvent @event__as22620 = (PointerCancelEvent)@event;
                     _tapTrackerReset();
                 }
             }
         }
-        if ((@event is PointerMoveEvent))
+        if (@event is PointerMoveEvent)
         {
             PointerMoveEvent @event__as43046 = (PointerMoveEvent)@event;
-            double computedSlopLocal = EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as43046).kind, gestureSettings);
-            _pastSlopTolerance = (this._pastSlopTolerance || (Tap_and_dragLibrary._getGlobalDistance(((PointerMoveEvent)@event__as43046), this._initialPosition) > computedSlopLocal));
-            if ((Equals(this._dragState, _DragState__tap_and_drag.accepted)))
+            double computedSlopLocal = EventsLibrary.computeHitSlop(@event__as43046.kind, gestureSettings);
+            _pastSlopTolerance = _pastSlopTolerance || (Tap_and_dragLibrary._getGlobalDistance(@event__as43046, _initialPosition) > computedSlopLocal);
+            if (Equals(_dragState, _DragState__tap_and_drag.accepted))
             {
-                _currentPosition = OffsetPair.CreateFromEventPosition(((PointerMoveEvent)@event__as43046));
-                _checkDragUpdate(((PointerMoveEvent)@event__as43046));
+                _currentPosition = OffsetPair.CreateFromEventPosition(@event__as43046);
+                _checkDragUpdate(@event__as43046);
             }
             else
             {
-                if ((Equals(this._dragState, _DragState__tap_and_drag.possible)))
+                if (Equals(_dragState, _DragState__tap_and_drag.possible))
                 {
-                    if ((this._start is null))
+                    if (_start is null)
                     {
-                        _checkDrag(((PointerMoveEvent)@event__as43046));
+                        _checkDrag(@event__as43046);
                     }
-                    if (((this._start is not null) && this._wonArenaForPrimaryPointer))
+                    if ((_start is not null) && _wonArenaForPrimaryPointer)
                     {
                         _dragState = _DragState__tap_and_drag.accepted;
-                        _acceptDrag(this._start!);
+                        _acceptDrag(_start!);
                     }
                 }
             }
         }
         else
         {
-            if ((@event is PointerUpEvent))
+            if (@event is PointerUpEvent)
             {
                 PointerUpEvent @event__as45053 = (PointerUpEvent)@event;
-                if ((Equals(this._dragState, _DragState__tap_and_drag.possible)))
+                if (Equals(_dragState, _DragState__tap_and_drag.possible))
                 {
-                    stopTrackingIfPointerNoLongerDown(((PointerUpEvent)@event__as45053));
+                    stopTrackingIfPointerNoLongerDown(@event__as45053);
                 }
                 else
                 {
-                    if ((Equals(this._dragState, _DragState__tap_and_drag.accepted)))
+                    if (Equals(_dragState, _DragState__tap_and_drag.accepted))
                     {
-                        _giveUpPointer(((PointerUpEvent)@event__as45053).pointer);
+                        _giveUpPointer(@event__as45053.pointer);
                     }
                 }
             }
             else
             {
-                if ((@event is PointerCancelEvent))
+                if (@event is PointerCancelEvent)
                 {
                     PointerCancelEvent @event__as45427 = (PointerCancelEvent)@event;
                     _dragState = _DragState__tap_and_drag.ready;
-                    _giveUpPointer(((PointerCancelEvent)@event__as45427).pointer);
+                    _giveUpPointer(@event__as45427.pointer);
                 }
             }
         }
@@ -546,7 +546,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public override void rejectGesture(long pointer)
     {
-        if ((pointer != this._primaryPointer))
+        if (pointer != _primaryPointer)
         {
             return;
         }
@@ -568,42 +568,42 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     public override string debugDescription => "tap_and_drag";
     internal virtual void _acceptDrag(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(this._dragState, _DragState__tap_and_drag.accepted)));
-        if (!this._wonArenaForPrimaryPointer)
+        DartRuntimePrimitives.Assert(() => Equals(_dragState, _DragState__tap_and_drag.accepted));
+        if (!_wonArenaForPrimaryPointer)
         {
             return;
         }
-        if ((Equals(this.dragStartBehavior, DragStartBehavior.start)))
+        if (Equals(dragStartBehavior, DragStartBehavior.start))
         {
-            _initialPosition = _initialPosition.op_Add(new OffsetPair(global: ((PointerEvent)@event).delta, local: ((PointerEvent)@event).localDelta));
-            _currentPosition = this._initialPosition;
+            _initialPosition = _initialPosition.op_Add(new OffsetPair(global: @event.delta, local: @event.localDelta));
+            _currentPosition = _initialPosition;
         }
         _checkDragStart(@event);
-        global::Doroti.Ui.Offset localDeltaLocal = ((PointerEvent)@event).localDelta;
-        if ((!Equals(localDeltaLocal, Offset.zero)))
+        global::Doroti.Ui.Offset localDeltaLocal = @event.localDelta;
+        if (!Equals(localDeltaLocal, Offset.zero))
         {
             _currentPosition = OffsetPair.CreateFromEventPosition(@event);
-            global::Doroti.Ui.Offset correctedLocalPosition = (((OffsetPair)this._initialPosition).local + localDeltaLocal);
-            Matrix4? localToGlobalTransform = ((((PointerEvent)@event).transform is null) ? null : Matrix4.tryInvert(((PointerEvent)@event).transform!));
+            global::Doroti.Ui.Offset correctedLocalPosition = _initialPosition.local + localDeltaLocal;
+            Matrix4? localToGlobalTransform = (@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!);
             global::Doroti.Ui.Offset globalUpdateDelta = PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: localDeltaLocal, untransformedEndPosition: correctedLocalPosition);
             var updateDelta = new OffsetPair(local: localDeltaLocal, global: globalUpdateDelta);
-            _checkDragUpdate(@event, corrected: (this._initialPosition.op_Add(updateDelta)));
+            _checkDragUpdate(@event, corrected: _initialPosition.op_Add(updateDelta));
         }
     }
 
     internal virtual void _checkDrag(PointerMoveEvent @event)
     {
-        Matrix4? localToGlobalTransform = ((@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!));
+        Matrix4? localToGlobalTransform = (@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!);
         global::Doroti.Ui.Offset movedLocally = _getDeltaForDetails(@event.localDelta);
-        _globalDistanceMoved += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: movedLocally, untransformedEndPosition: @event.localPosition).distance * Math.Sign(((_getPrimaryValueFromOffset(movedLocally) ?? 1))));
-        _globalDistanceMovedAllAxes += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: @event.localDelta, untransformedEndPosition: @event.localPosition).distance * Math.Sign(1L));
-        if ((_hasSufficientGlobalDistanceToAccept(@event.kind) || ((this._wonArenaForPrimaryPointer && (this._globalDistanceMovedAllAxes.abs() > EventsLibrary.computePanSlop(@event.kind, gestureSettings))))))
+        _globalDistanceMoved += PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: movedLocally, untransformedEndPosition: @event.localPosition).distance * Math.Sign(_getPrimaryValueFromOffset(movedLocally) ?? 1);
+        _globalDistanceMovedAllAxes += PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: @event.localDelta, untransformedEndPosition: @event.localPosition).distance * Math.Sign(1L);
+        if (_hasSufficientGlobalDistanceToAccept(@event.kind) || _wonArenaForPrimaryPointer && (_globalDistanceMovedAllAxes.abs() > EventsLibrary.computePanSlop(@event.kind, gestureSettings)))
         {
             _start = @event;
-            if (this.eagerVictoryOnDrag)
+            if (eagerVictoryOnDrag)
             {
                 _dragState = _DragState__tap_and_drag.accepted;
-                if (!this._wonArenaForPrimaryPointer)
+                if (!_wonArenaForPrimaryPointer)
                 {
                     resolve(GestureDisposition.accepted);
                 }
@@ -613,31 +613,31 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _checkTapDown(PointerDownEvent @event)
     {
-        if (this._sentTapDown)
+        if (_sentTapDown)
         {
             return;
         }
         var details = new TapDragDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer), consecutiveTapCount: consecutiveTapCount);
-        if ((this.onTapDown is not null))
+        if (onTapDown is not null)
         {
-            invokeCallback<object?>("onTapDown", () => { ((Action)((() => this.onTapDown!(details))))(); return null; });
+            invokeCallback<object?>("onTapDown", () => { ((Action)(() => onTapDown!(details)))(); return null; });
         }
         _sentTapDown = true;
     }
 
     internal virtual void _checkTapUp(PointerUpEvent @event)
     {
-        if (!this._wonArenaForPrimaryPointer)
+        if (!_wonArenaForPrimaryPointer)
         {
             return;
         }
         var upDetails = new TapDragUpDetails(kind: @event.kind, globalPosition: @event.position, localPosition: @event.localPosition, consecutiveTapCount: consecutiveTapCount);
-        if ((this.onTapUp is not null))
+        if (onTapUp is not null)
         {
-            invokeCallback<object?>("onTapUp", () => { ((Action)((() => this.onTapUp!(upDetails))))(); return null; });
+            invokeCallback<object?>("onTapUp", () => { ((Action)(() => onTapUp!(upDetails)))(); return null; });
         }
         _resetTaps();
-        if (!this._acceptedActivePointers.Remove(@event.pointer))
+        if (!_acceptedActivePointers.Remove(@event.pointer))
         {
             resolvePointer(@event.pointer, GestureDisposition.rejected);
         }
@@ -645,46 +645,46 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _checkDragStart(PointerEvent @event)
     {
-        if ((this.onDragStart is not null))
+        if (onDragStart is not null)
         {
-            var details = new TapDragStartDetails(sourceTimeStamp: ((PointerEvent)@event).timeStamp, globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local, kind: getKindForPointer(((PointerEvent)@event).pointer), consecutiveTapCount: consecutiveTapCount);
-            invokeCallback<object?>("onDragStart", () => { ((Action)((() => this.onDragStart!(details))))(); return null; });
+            var details = new TapDragStartDetails(sourceTimeStamp: @event.timeStamp, globalPosition: _initialPosition.global, localPosition: _initialPosition.local, kind: getKindForPointer(@event.pointer), consecutiveTapCount: consecutiveTapCount);
+            invokeCallback<object?>("onDragStart", () => { ((Action)(() => onDragStart!(details)))(); return null; });
         }
         _start = null;
     }
 
     internal virtual void _checkDragUpdate(PointerEvent @event, OffsetPair? corrected = null)
     {
-        global::Doroti.Ui.Offset globalPositionLocal = (corrected?.global ?? ((PointerEvent)@event).position);
-        global::Doroti.Ui.Offset localPositionLocal = (corrected?.local ?? ((PointerEvent)@event).localPosition);
-        var details = new TapDragUpdateDetails(sourceTimeStamp: ((PointerEvent)@event).timeStamp, delta: ((PointerEvent)@event).localDelta, globalPosition: globalPositionLocal, kind: getKindForPointer(((PointerEvent)@event).pointer), localPosition: localPositionLocal, offsetFromOrigin: (globalPositionLocal - ((OffsetPair)this._initialPosition).global), localOffsetFromOrigin: (localPositionLocal - ((OffsetPair)this._initialPosition).local), consecutiveTapCount: consecutiveTapCount);
-        if ((this.dragUpdateThrottleFrequency is not null))
+        global::Doroti.Ui.Offset globalPositionLocal = corrected?.global ?? @event.position;
+        global::Doroti.Ui.Offset localPositionLocal = corrected?.local ?? @event.localPosition;
+        var details = new TapDragUpdateDetails(sourceTimeStamp: @event.timeStamp, delta: @event.localDelta, globalPosition: globalPositionLocal, kind: getKindForPointer(@event.pointer), localPosition: localPositionLocal, offsetFromOrigin: globalPositionLocal - _initialPosition.global, localOffsetFromOrigin: localPositionLocal - _initialPosition.local, consecutiveTapCount: consecutiveTapCount);
+        if (dragUpdateThrottleFrequency is not null)
         {
             _lastDragUpdateDetails = details;
-            _dragUpdateThrottleTimer ??= new Timer(DartRuntimePrimitives.RequireValue(this.dragUpdateThrottleFrequency), this._handleDragUpdateThrottled);
+            _dragUpdateThrottleTimer ??= new Timer(DartRuntimePrimitives.RequireValue(dragUpdateThrottleFrequency), _handleDragUpdateThrottled);
         }
         else
         {
-            if ((this.onDragUpdate is not null))
+            if (onDragUpdate is not null)
             {
-                invokeCallback<object?>("onDragUpdate", () => { ((Action)((() => this.onDragUpdate!(details))))(); return null; });
+                invokeCallback<object?>("onDragUpdate", () => { ((Action)(() => onDragUpdate!(details)))(); return null; });
             }
         }
     }
 
     internal virtual void _checkDragEnd()
     {
-        global::Doroti.Ui.Offset globalPositionLocal = ((OffsetPair)this._currentPosition).global;
-        global::Doroti.Ui.Offset localPositionLocal = ((OffsetPair)this._currentPosition).local;
-        if ((this._dragUpdateThrottleTimer is not null))
+        global::Doroti.Ui.Offset globalPositionLocal = _currentPosition.global;
+        global::Doroti.Ui.Offset localPositionLocal = _currentPosition.local;
+        if (_dragUpdateThrottleTimer is not null)
         {
-            this._dragUpdateThrottleTimer!.cancel();
+            _dragUpdateThrottleTimer!.cancel();
             _handleDragUpdateThrottled();
         }
         var endDetails = new TapDragEndDetails(globalPosition: globalPositionLocal, localPosition: localPositionLocal, primaryVelocity: 0.0, consecutiveTapCount: consecutiveTapCount);
-        if ((this.onDragEnd is not null))
+        if (onDragEnd is not null)
         {
-            invokeCallback<object?>("onDragEnd", () => { ((Action)((() => this.onDragEnd!(endDetails))))(); return null; });
+            invokeCallback<object?>("onDragEnd", () => { ((Action)(() => onDragEnd!(endDetails)))(); return null; });
         }
         _resetTaps();
         _resetDragUpdateThrottle();
@@ -692,13 +692,13 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _checkCancel()
     {
-        if (!this._sentTapDown)
+        if (!_sentTapDown)
         {
             return;
         }
-        if ((this.onCancel is not null))
+        if (onCancel is not null)
         {
-            invokeCallback<object?>("onCancel", () => { ((Action)(this.onCancel!))(); return null; });
+            invokeCallback<object?>("onCancel", () => { onCancel!(); return null; });
         }
         _resetDragUpdateThrottle();
         _resetTaps();
@@ -711,10 +711,10 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _didExceedDeadline()
     {
-        if ((currentDown is not null))
+        if (currentDown is not null)
         {
             _checkTapDown(currentDown!);
-            if ((consecutiveTapCount > 1L))
+            if (consecutiveTapCount > 1L)
             {
                 resolve(GestureDisposition.accepted);
             }
@@ -724,7 +724,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     internal virtual void _giveUpPointer(long pointer)
     {
         stopTrackingPointer(pointer);
-        if (!this._acceptedActivePointers.Remove(pointer))
+        if (!_acceptedActivePointers.Remove(pointer))
         {
             resolvePointer(pointer, GestureDisposition.rejected);
         }
@@ -739,43 +739,43 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _resetDragUpdateThrottle()
     {
-        if ((this.dragUpdateThrottleFrequency is null))
+        if (dragUpdateThrottleFrequency is null)
         {
             return;
         }
         _lastDragUpdateDetails = null;
-        if ((this._dragUpdateThrottleTimer is not null))
+        if (_dragUpdateThrottleTimer is not null)
         {
-            this._dragUpdateThrottleTimer!.cancel();
+            _dragUpdateThrottleTimer!.cancel();
             _dragUpdateThrottleTimer = null;
         }
     }
 
     internal virtual void _stopDeadlineTimer()
     {
-        if ((this._deadlineTimer is not null))
+        if (_deadlineTimer is not null)
         {
-            this._deadlineTimer!.cancel();
+            _deadlineTimer!.cancel();
             _deadlineTimer = null;
         }
     }
 
-    public virtual PointerDownEvent? currentDown => this._down;
-    public virtual PointerUpEvent? currentUp => this._up;
-    public virtual long consecutiveTapCount => this._consecutiveTapCount;
+    public virtual PointerDownEvent? currentDown => _down;
+    public virtual PointerUpEvent? currentUp => _up;
+    public virtual long consecutiveTapCount => _consecutiveTapCount;
     public virtual void _trackTap(PointerDownEvent @event)
     {
-        this._down = @event;
-        this._previousButtons = @event.buttons;
-        this._lastTapOffset = @event.position;
-        this._originPosition = new OffsetPair(local: @event.localPosition, global: @event.position);
-        this.onTapTrackStart?.Invoke();
+        _down = @event;
+        _previousButtons = @event.buttons;
+        _lastTapOffset = @event.position;
+        _originPosition = new OffsetPair(local: @event.localPosition, global: @event.position);
+        onTapTrackStart?.Invoke();
     }
 
     public virtual bool _hasSameButton(long buttons)
     {
-        DartRuntimePrimitives.Assert(() => (this._previousButtons is not null));
-        if ((buttons == DartRuntimePrimitives.RequireValue(this._previousButtons)))
+        DartRuntimePrimitives.Assert(() => _previousButtons is not null);
+        if (buttons == DartRuntimePrimitives.RequireValue(_previousButtons))
         {
             return true;
         }
@@ -788,32 +788,32 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     public virtual bool _isWithinConsecutiveTapTolerance(Offset secondTapOffset)
     {
-        if ((this._lastTapOffset is null))
+        if (_lastTapOffset is null)
         {
             return false;
         }
-        global::Doroti.Ui.Offset difference = (secondTapOffset - DartRuntimePrimitives.RequireValue(this._lastTapOffset));
-        return (difference.distance <= ConstantsLibrary.kDoubleTapSlop);
+        global::Doroti.Ui.Offset difference = secondTapOffset - DartRuntimePrimitives.RequireValue(_lastTapOffset);
+        return difference.distance <= ConstantsLibrary.kDoubleTapSlop;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _representsSameSeries(PointerDownEvent @event)
     {
-        return (((this._consecutiveTapTimer is not null) && _isWithinConsecutiveTapTolerance(@event.position)) && _hasSameButton(@event.buttons));
+        return (_consecutiveTapTimer is not null) && _isWithinConsecutiveTapTolerance(@event.position) && _hasSameButton(@event.buttons);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void _consecutiveTapTimerStart()
     {
-        this._consecutiveTapTimer ??= new Timer(ConstantsLibrary.kDoubleTapTimeout, this._consecutiveTapTimerTimeout);
+        _consecutiveTapTimer ??= new Timer(ConstantsLibrary.kDoubleTapTimeout, _consecutiveTapTimerTimeout);
     }
 
     public virtual void _consecutiveTapTimerStop()
     {
-        if ((this._consecutiveTapTimer is not null))
+        if (_consecutiveTapTimer is not null)
         {
-            this._consecutiveTapTimer!.cancel();
-            this._consecutiveTapTimer = null;
+            _consecutiveTapTimer!.cancel();
+            _consecutiveTapTimer = null;
         }
     }
 
@@ -824,13 +824,13 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     public virtual void _tapTrackerReset()
     {
         _consecutiveTapTimerStop();
-        this._previousButtons = null;
-        this._originPosition = null;
-        this._lastTapOffset = null;
-        this._consecutiveTapCount = 0L;
-        this._down = null;
-        this._up = null;
-        this.onTapTrackReset?.Invoke();
+        _previousButtons = null;
+        _originPosition = null;
+        _lastTapOffset = null;
+        _consecutiveTapCount = 0L;
+        _down = null;
+        _up = null;
+        onTapTrackReset?.Invoke();
     }
 
 }
@@ -843,7 +843,7 @@ public class TapAndHorizontalDragGestureRecognizer : BaseTapAndDragGestureRecogn
 
     internal override bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind)
     {
-        return (_globalDistanceMoved.abs() > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
+        return _globalDistanceMoved.abs() > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -860,7 +860,7 @@ public class TapAndPanGestureRecognizer : BaseTapAndDragGestureRecognizer
 
     internal override bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind)
     {
-        return (_globalDistanceMoved.abs() > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings));
+        return _globalDistanceMoved.abs() > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -877,7 +877,7 @@ public class TapAndDragGestureRecognizer : BaseTapAndDragGestureRecognizer
 
     internal override bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind)
     {
-        return (_globalDistanceMoved.abs() > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings));
+        return _globalDistanceMoved.abs() > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

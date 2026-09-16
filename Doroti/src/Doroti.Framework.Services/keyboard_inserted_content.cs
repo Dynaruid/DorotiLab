@@ -22,21 +22,21 @@ public class KeyboardInsertedContent
         var __instance = new KeyboardInsertedContent(default!, default!, default!);
         __instance.mimeType = ((string?)metadata.GetValueOrDefault("mimeType"))!;
         __instance.uri = ((string?)metadata.GetValueOrDefault("uri"))!;
-        __instance.data = ((metadata.GetValueOrDefault("data") is not null) ? new Uint8List(new List<long>(DartRuntimePrimitives.ConvertEnumerable<long>(((IEnumerable<object>?)metadata.GetValueOrDefault("data"))!))) : null);
+        __instance.data = (metadata.GetValueOrDefault("data") is not null) ? new Uint8List(new List<long>(DartRuntimePrimitives.ConvertEnumerable<long>(((IEnumerable<object>?)metadata.GetValueOrDefault("data"))!))) : null;
         return __instance;
     }
 
-    public virtual bool hasData => (((bool?)((data?.Count != 0))) ?? false);
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "KeyboardInsertedContent"))}({mimeType}, {uri}, {data})";
+    public virtual bool hasData => ((bool?)(data?.Count != 0)) ?? false;
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "KeyboardInsertedContent")}({mimeType}, {uri}, {data})";
     public override bool Equals(object? other)
     {
         var __other = other as KeyboardInsertedContent;
         if (__other is null) return false;
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return ((((__other is KeyboardInsertedContent) && (((KeyboardInsertedContent)__other).mimeType == mimeType)) && (((KeyboardInsertedContent)__other).uri == uri)) && (Equals(((KeyboardInsertedContent)__other).data, data)));
+        return (__other is KeyboardInsertedContent) && (__other.mimeType == mimeType) && (__other.uri == uri) && Equals(__other.data, data);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(mimeType, uri, data);

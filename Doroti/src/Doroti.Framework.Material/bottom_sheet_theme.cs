@@ -41,7 +41,7 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
 
     public virtual BottomSheetThemeData copyWith(Color? backgroundColor = null, Color? surfaceTintColor = null, double? elevation = null, Color? modalBackgroundColor = null, Color? modalBarrierColor = null, Color? shadowColor = null, double? modalElevation = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, bool? showDragHandle = null, Color? dragHandleColor = null, Size? dragHandleSize = null, Clip? clipBehavior = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null)
     {
-        return new BottomSheetThemeData(backgroundColor: (backgroundColor ?? this.backgroundColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), elevation: (elevation ?? this.elevation), modalBackgroundColor: (modalBackgroundColor ?? this.modalBackgroundColor), modalBarrierColor: (modalBarrierColor ?? this.modalBarrierColor), shadowColor: (shadowColor ?? this.shadowColor), modalElevation: (modalElevation ?? this.modalElevation), shape: (shape ?? this.shape), showDragHandle: (showDragHandle ?? this.showDragHandle), dragHandleColor: (dragHandleColor ?? this.dragHandleColor), dragHandleSize: (dragHandleSize ?? this.dragHandleSize), clipBehavior: (clipBehavior ?? this.clipBehavior), constraints: (constraints ?? this.constraints));
+        return new BottomSheetThemeData(backgroundColor: backgroundColor ?? this.backgroundColor, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, elevation: elevation ?? this.elevation, modalBackgroundColor: modalBackgroundColor ?? this.modalBackgroundColor, modalBarrierColor: modalBarrierColor ?? this.modalBarrierColor, shadowColor: shadowColor ?? this.shadowColor, modalElevation: modalElevation ?? this.modalElevation, shape: shape ?? this.shape, showDragHandle: showDragHandle ?? this.showDragHandle, dragHandleColor: dragHandleColor ?? this.dragHandleColor, dragHandleSize: dragHandleSize ?? this.dragHandleSize, clipBehavior: clipBehavior ?? this.clipBehavior, constraints: constraints ?? this.constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -51,11 +51,11 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
         {
             return a;
         }
-        return new BottomSheetThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), modalBackgroundColor: Dart_uiLibrary.Color.lerp(a?.modalBackgroundColor, b?.modalBackgroundColor, t), modalBarrierColor: Dart_uiLibrary.Color.lerp(a?.modalBarrierColor, b?.modalBarrierColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), modalElevation: Dart_uiLibrary.lerpDouble(a?.modalElevation, b?.modalElevation, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), showDragHandle: ((t < 0.5) ? a?.showDragHandle : b?.showDragHandle), dragHandleColor: Dart_uiLibrary.Color.lerp(a?.dragHandleColor, b?.dragHandleColor, t), dragHandleSize: Dart_uiLibrary.Size.lerp(a?.dragHandleSize, b?.dragHandleSize, t), clipBehavior: ((t < 0.5) ? a?.clipBehavior : b?.clipBehavior), constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t));
+        return new BottomSheetThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), modalBackgroundColor: Dart_uiLibrary.Color.lerp(a?.modalBackgroundColor, b?.modalBackgroundColor, t), modalBarrierColor: Dart_uiLibrary.Color.lerp(a?.modalBarrierColor, b?.modalBarrierColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), modalElevation: Dart_uiLibrary.lerpDouble(a?.modalElevation, b?.modalElevation, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), showDragHandle: (t < 0.5) ? a?.showDragHandle : b?.showDragHandle, dragHandleColor: Dart_uiLibrary.Color.lerp(a?.dragHandleColor, b?.dragHandleColor, t), dragHandleSize: Dart_uiLibrary.Size.lerp(a?.dragHandleSize, b?.dragHandleSize, t), clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior, constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.backgroundColor, this.surfaceTintColor, this.elevation, this.modalBackgroundColor, this.modalBarrierColor, this.shadowColor, this.modalElevation, this.shape, this.showDragHandle, this.dragHandleColor, this.dragHandleSize, this.clipBehavior, this.constraints));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(backgroundColor, surfaceTintColor, elevation, modalBackgroundColor, modalBarrierColor, shadowColor, modalElevation, shape, showDragHandle, dragHandleColor, dragHandleSize, clipBehavior, constraints));
     public override bool Equals(object? other)
     {
         var __other = other as BottomSheetThemeData;
@@ -64,28 +64,28 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((((((__other is BottomSheetThemeData) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).elevation == this.elevation)) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalBackgroundColor, this.modalBackgroundColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalBarrierColor, this.modalBarrierColor))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalElevation == this.modalElevation)) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).shape, this.shape))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).showDragHandle == this.showDragHandle)) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).dragHandleColor, this.dragHandleColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).dragHandleSize, this.dragHandleSize))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).clipBehavior, this.clipBehavior))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).constraints, this.constraints)));
+        return (__other is BottomSheetThemeData) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.surfaceTintColor, surfaceTintColor) && (__other.elevation == elevation) && Equals(__other.modalBackgroundColor, modalBackgroundColor) && Equals(__other.shadowColor, shadowColor) && Equals(__other.modalBarrierColor, modalBarrierColor) && (__other.modalElevation == modalElevation) && Equals(__other.shape, shape) && (__other.showDragHandle == showDragHandle) && Equals(__other.dragHandleColor, dragHandleColor) && Equals(__other.dragHandleSize, dragHandleSize) && Equals(__other.clipBehavior, clipBehavior) && Equals(__other.constraints, constraints);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("modalBackgroundColor", this.modalBackgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("modalBarrierColor", this.modalBarrierColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("modalElevation", this.modalElevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("showDragHandle", this.showDragHandle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dragHandleColor", this.dragHandleColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Size>("dragHandleSize", this.dragHandleSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("modalBackgroundColor", modalBackgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("modalBarrierColor", modalBarrierColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("modalElevation", modalElevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("showDragHandle", showDragHandle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dragHandleColor", dragHandleColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Size>("dragHandleSize", dragHandleSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", constraints, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -99,13 +99,13 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

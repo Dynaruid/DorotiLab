@@ -78,28 +78,28 @@ public class RenderErrorBox : RenderBox
     {
         try
         {
-            ((PaintingContext)context).canvas.drawRect((offset & size), ((Func<Paint>)(() =>
+            context.canvas.drawRect(offset & size, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = backgroundColor;
     return __cascade;
 }))());
-            if ((this._paragraph is not null))
+            if (_paragraph is not null)
             {
                 double widthLocal = size.width;
                 var leftLocal = 0.0;
                 var topLocal = 0.0;
-                if ((widthLocal > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).left + minimumWidth) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right)))
+                if (widthLocal > (padding.left + minimumWidth + padding.right))
                 {
-                    widthLocal -= (((global::Doroti.Framework.Painting.EdgeInsets)padding).left + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right);
-                    leftLocal += ((global::Doroti.Framework.Painting.EdgeInsets)padding).left;
+                    widthLocal -= padding.left + padding.right;
+                    leftLocal += padding.left;
                 }
-                this._paragraph.layout(new global::Doroti.Ui.ParagraphConstraints(width: widthLocal));
-                if ((size.height > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).top + this._paragraph.height) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom)))
+                _paragraph.layout(new global::Doroti.Ui.ParagraphConstraints(width: widthLocal));
+                if (size.height > (padding.top + _paragraph.height + padding.bottom))
                 {
-                    topLocal += ((global::Doroti.Framework.Painting.EdgeInsets)padding).top;
+                    topLocal += padding.top;
                 }
-                ((PaintingContext)context).canvas.drawParagraph(this._paragraph, (offset + new global::Doroti.Ui.Offset(leftLocal, topLocal)));
+                context.canvas.drawParagraph(_paragraph, offset + new global::Doroti.Ui.Offset(leftLocal, topLocal));
             }
         }
         catch (Exception)

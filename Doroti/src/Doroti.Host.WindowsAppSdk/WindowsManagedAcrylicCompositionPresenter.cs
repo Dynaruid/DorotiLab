@@ -810,7 +810,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     }
 
     private static int RoundBufferCapacity(int value) =>
-        checked(((value + BufferCapacityQuantum - 1) / BufferCapacityQuantum) * BufferCapacityQuantum);
+        checked((value + BufferCapacityQuantum - 1) / BufferCapacityQuantum * BufferCapacityQuantum);
 
     private static bool CanReuseCapacity(
         Slot slot,

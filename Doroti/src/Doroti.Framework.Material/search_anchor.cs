@@ -23,22 +23,22 @@ public static partial class Search_anchorLibrary
 
 public static partial class Search_anchorLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kViewFadeOnInterval = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Interval(0.0, (1L / 2L)));
+    internal static global::Doroti.Framework.Animation.Curve _kViewFadeOnInterval = new global::Doroti.Framework.Animation.Interval(0.0, 1L / 2L);
 }
 
 public static partial class Search_anchorLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kViewIconsFadeOnInterval = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Interval((1L / 6L), (2L / 6L)));
+    internal static global::Doroti.Framework.Animation.Curve _kViewIconsFadeOnInterval = new global::Doroti.Framework.Animation.Interval(1L / 6L, 2L / 6L);
 }
 
 public static partial class Search_anchorLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kViewDividerFadeOnInterval = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Interval(0.0, (1L / 6L)));
+    internal static global::Doroti.Framework.Animation.Curve _kViewDividerFadeOnInterval = new global::Doroti.Framework.Animation.Interval(0.0, 1L / 6L);
 }
 
 public static partial class Search_anchorLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kViewListFadeOnInterval = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Interval((133L / _kOpenViewMilliseconds), (233L / _kOpenViewMilliseconds)));
+    internal static global::Doroti.Framework.Animation.Curve _kViewListFadeOnInterval = new global::Doroti.Framework.Animation.Interval(133L / _kOpenViewMilliseconds, 233L / _kOpenViewMilliseconds);
 }
 
 public static partial class Search_anchorLibrary
@@ -135,21 +135,21 @@ internal class _SearchAnchorState__search_anchor : global::Doroti.Framework.Widg
     internal virtual SearchController? _internalSearchController { get; set; } = default;
     internal virtual _SearchViewRoute__search_anchor? _route { get; set; } = default;
 
-    internal virtual bool _viewIsOpen => !this._anchorIsVisible;
-    internal virtual SearchController _searchController => DartRuntimePrimitives.ConvertValue<SearchController>((((SearchAnchor)this.widget).searchController ?? (_internalSearchController ??= new SearchController())));
+    internal virtual bool _viewIsOpen => !_anchorIsVisible;
+    internal virtual SearchController _searchController => DartRuntimePrimitives.ConvertValue<SearchController>(widget.searchController ?? (_internalSearchController ??= new SearchController()));
     public override void initState()
     {
         base.initState();
-        this._searchController._attach(this);
+        _searchController._attach(this);
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Ui.Size updatedScreenSize = ((global::Doroti.Ui.Size)MediaQuery.of(this.context).size);
-        if (((this._screenSize is not null) && (!Equals(this._screenSize, updatedScreenSize))))
+        global::Doroti.Ui.Size updatedScreenSize = MediaQuery.of(context).size;
+        if ((_screenSize is not null) && (!Equals(_screenSize, updatedScreenSize)))
         {
-            if ((((SearchController)this._searchController).isOpen && !getShowFullScreenView()))
+            if (_searchController.isOpen && !getShowFullScreenView())
             {
                 _closeView(null);
             }
@@ -160,70 +160,70 @@ internal class _SearchAnchorState__search_anchor : global::Doroti.Framework.Widg
     public override void didUpdateWidget(SearchAnchor oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((SearchAnchor)oldWidget).searchController, ((SearchAnchor)this.widget).searchController)))
+        if (!Equals(oldWidget.searchController, widget.searchController))
         {
-            ((SearchAnchor)oldWidget).searchController?._detach(this);
-            this._searchController._attach(this);
+            oldWidget.searchController?._detach(this);
+            _searchController._attach(this);
         }
     }
 
     public override void dispose()
     {
-        ((SearchAnchor)this.widget).searchController?._detach(this);
-        this._internalSearchController?._detach(this);
-        var usingExternalController = (((SearchAnchor)this.widget).searchController is not null);
-        if ((this._route?.navigator is not null))
+        widget.searchController?._detach(this);
+        _internalSearchController?._detach(this);
+        var usingExternalController = widget.searchController is not null;
+        if (_route?.navigator is not null)
         {
-            this._route?._dismiss(disposeController: !usingExternalController);
+            _route?._dismiss(disposeController: !usingExternalController);
             if (usingExternalController)
             {
-                this._internalSearchController?.dispose();
+                _internalSearchController?.dispose();
             }
         }
         else
         {
-            this._internalSearchController?.dispose();
+            _internalSearchController?.dispose();
         }
         base.dispose();
     }
 
     internal virtual void _openView()
     {
-        global::Doroti.Framework.Widgets.NavigatorState navigator = ((global::Doroti.Framework.Widgets.NavigatorState)Navigator.of(this.context));
-        _route = new _SearchViewRoute__search_anchor(viewOnChanged: (global::System.Action<string>?)((SearchAnchor)this.widget).viewOnChanged, viewOnSubmitted: (global::System.Action<string>?)((SearchAnchor)this.widget).viewOnSubmitted, viewOnClose: ((SearchAnchor)this.widget).viewOnClose, viewOnOpen: ((SearchAnchor)this.widget).viewOnOpen, viewLeading: ((SearchAnchor)this.widget).viewLeading, viewTrailing: ((SearchAnchor)this.widget).viewTrailing, viewHintText: ((SearchAnchor)this.widget).viewHintText, viewBackgroundColor: ((SearchAnchor)this.widget).viewBackgroundColor, viewElevation: ((SearchAnchor)this.widget).viewElevation, viewSurfaceTintColor: ((SearchAnchor)this.widget).viewSurfaceTintColor, viewSide: ((SearchAnchor)this.widget).viewSide, viewShape: ((SearchAnchor)this.widget).viewShape, viewBarPadding: ((SearchAnchor)this.widget).viewBarPadding, viewHeaderHeight: ((SearchAnchor)this.widget).headerHeight, viewHeaderTextStyle: ((SearchAnchor)this.widget).headerTextStyle, viewHeaderHintStyle: ((SearchAnchor)this.widget).headerHintStyle, dividerColor: ((SearchAnchor)this.widget).dividerColor, viewConstraints: ((SearchAnchor)this.widget).viewConstraints, viewPadding: ((SearchAnchor)this.widget).viewPadding, shrinkWrap: ((SearchAnchor)this.widget).shrinkWrap, showFullScreenView: getShowFullScreenView(), toggleVisibility: (global::System.Func<bool>)this.toggleVisibility, textDirection: Directionality.of(this.context), viewBuilder: (global::System.Func<IEnumerable<global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget>?)((SearchAnchor)this.widget).viewBuilder, anchorKey: this._anchorKey, searchController: this._searchController, suggestionsBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, SearchController, object>)((SearchAnchor)this.widget).suggestionsBuilder, textCapitalization: ((SearchAnchor)this.widget).textCapitalization, capturedThemes: InheritedTheme.capture(from: this.context, to: navigator.context), textInputAction: ((SearchAnchor)this.widget).textInputAction, keyboardType: ((SearchAnchor)this.widget).keyboardType, smartDashesType: ((SearchAnchor)this.widget).smartDashesType, smartQuotesType: ((SearchAnchor)this.widget).smartQuotesType);
-        DartRuntimePrimitives.Ignore(navigator.push(this._route!));
+        global::Doroti.Framework.Widgets.NavigatorState navigator = Navigator.of(context);
+        _route = new _SearchViewRoute__search_anchor(viewOnChanged: widget.viewOnChanged, viewOnSubmitted: widget.viewOnSubmitted, viewOnClose: widget.viewOnClose, viewOnOpen: widget.viewOnOpen, viewLeading: widget.viewLeading, viewTrailing: widget.viewTrailing, viewHintText: widget.viewHintText, viewBackgroundColor: widget.viewBackgroundColor, viewElevation: widget.viewElevation, viewSurfaceTintColor: widget.viewSurfaceTintColor, viewSide: widget.viewSide, viewShape: widget.viewShape, viewBarPadding: widget.viewBarPadding, viewHeaderHeight: widget.headerHeight, viewHeaderTextStyle: widget.headerTextStyle, viewHeaderHintStyle: widget.headerHintStyle, dividerColor: widget.dividerColor, viewConstraints: widget.viewConstraints, viewPadding: widget.viewPadding, shrinkWrap: widget.shrinkWrap, showFullScreenView: getShowFullScreenView(), toggleVisibility: toggleVisibility, textDirection: Directionality.of(context), viewBuilder: widget.viewBuilder, anchorKey: _anchorKey, searchController: _searchController, suggestionsBuilder: widget.suggestionsBuilder, textCapitalization: widget.textCapitalization, capturedThemes: InheritedTheme.capture(from: context, to: navigator.context), textInputAction: widget.textInputAction, keyboardType: widget.keyboardType, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType);
+        DartRuntimePrimitives.Ignore(navigator.push(_route!));
     }
 
     internal virtual void _closeView(string? selectedText)
     {
-        if ((selectedText is not null))
+        if (selectedText is not null)
         {
-            this._searchController.value = new global::Doroti.Framework.Services.TextEditingValue(text: selectedText);
+            _searchController.value = new global::Doroti.Framework.Services.TextEditingValue(text: selectedText);
         }
-        Navigator.of(this.context).pop<object>();
+        Navigator.of(context).pop<object>();
     }
 
     public virtual bool toggleVisibility()
     {
-        setState(((global::System.Action)(() =>
+        setState(() =>
         {
-            _anchorIsVisible = !this._anchorIsVisible;
-        })));
-        return this._anchorIsVisible;
+            _anchorIsVisible = !_anchorIsVisible;
+        });
+        return _anchorIsVisible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool getShowFullScreenView()
     {
-        return (((SearchAnchor)this.widget).isFullScreen ?? (Theme.of(this.context).platform switch { TargetPlatform.iOS or TargetPlatform.android => true, TargetPlatform.fuchsia => true, TargetPlatform.macOS or TargetPlatform.linux => false, TargetPlatform.windows => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return widget.isFullScreen ?? (Theme.of(context).platform switch { TargetPlatform.iOS or TargetPlatform.android => true, TargetPlatform.fuchsia => true, TargetPlatform.macOS or TargetPlatform.linux => false, TargetPlatform.windows => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _getOpacity()
     {
-        if (((SearchAnchor)this.widget).enabled)
+        if (widget.enabled)
         {
-            return (this._anchorIsVisible ? 1.0 : 0.0);
+            return _anchorIsVisible ? 1.0 : 0.0;
         }
         return Search_anchorLibrary._kDisableSearchBarOpacity;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -231,7 +231,7 @@ internal class _SearchAnchorState__search_anchor : global::Doroti.Framework.Widg
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.AnimatedOpacity(key: this._anchorKey, opacity: _getOpacity(), duration: Search_anchorLibrary._kAnchorFadeDuration, child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: !((SearchAnchor)this.widget).enabled, child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: () => this._openView(), child: this.widget.builder(context, this._searchController)))));
+        return new global::Doroti.Framework.Widgets.AnimatedOpacity(key: _anchorKey, opacity: _getOpacity(), duration: Search_anchorLibrary._kAnchorFadeDuration, child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: !widget.enabled, child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: () => _openView(), child: widget.builder(context, _searchController))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -321,14 +321,14 @@ internal class _SearchViewRoute__search_anchor : global::Doroti.Framework.Widget
     public override string? barrierLabel => "Dismiss";
     public virtual global::Doroti.Ui.Rect? getRect()
     {
-        global::Doroti.Framework.Widgets.BuildContext? contextLocal = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext;
-        if ((contextLocal is not null))
+        global::Doroti.Framework.Widgets.BuildContext? contextLocal = anchorKey.currentContext;
+        if (contextLocal is not null)
         {
             var searchBarBox = ((global::Doroti.Framework.Rendering.RenderBox?)contextLocal.findRenderObject()!)!;
-            global::Doroti.Ui.Size boxSize = ((global::Doroti.Ui.Size)((global::Doroti.Framework.Rendering.RenderBox)searchBarBox).size);
-            global::Doroti.Framework.Widgets.NavigatorState navigator = ((global::Doroti.Framework.Widgets.NavigatorState)Navigator.of(contextLocal));
-            global::Doroti.Ui.Offset boxLocation = ((global::Doroti.Ui.Offset)((Offset)(searchBarBox).localToGlobal(Offset.zero, ancestor: navigator.context.findRenderObject())));
-            return (boxLocation & boxSize);
+            global::Doroti.Ui.Size boxSize = searchBarBox.size;
+            global::Doroti.Framework.Widgets.NavigatorState navigator = Navigator.of(contextLocal);
+            global::Doroti.Ui.Offset boxLocation = searchBarBox.localToGlobal(Offset.zero, ancestor: navigator.context.findRenderObject());
+            return boxLocation & boxSize;
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -336,28 +336,28 @@ internal class _SearchViewRoute__search_anchor : global::Doroti.Framework.Widget
 
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext is not null));
-        updateViewConfig(((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext!);
-        updateTweens(((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext!);
-        this.toggleVisibility?.Invoke();
-        this.viewOnOpen?.Invoke();
-        return ((global::Doroti.Framework.Scheduler.TickerFuture)base.didPush());
+        DartRuntimePrimitives.Assert(() => anchorKey.currentContext is not null);
+        updateViewConfig(anchorKey.currentContext!);
+        updateTweens(anchorKey.currentContext!);
+        toggleVisibility?.Invoke();
+        viewOnOpen?.Invoke();
+        return base.didPush();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool didPop(_SearchViewRoute__search_anchor? result)
     {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext is not null));
-        updateTweens(((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext!);
-        this.toggleVisibility?.Invoke();
-        this.viewOnClose?.Invoke();
-        WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        DartRuntimePrimitives.Assert(() => anchorKey.currentContext is not null);
+        updateTweens(anchorKey.currentContext!);
+        toggleVisibility?.Invoke();
+        viewOnClose?.Invoke();
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
         {
-            if ((((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext is not null))
+            if (anchorKey.currentContext is not null)
             {
-                FocusScope.of(((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.anchorKey).currentContext!).unfocus();
+                FocusScope.of(anchorKey.currentContext!).unfocus();
             }
-        })));
+        });
         return base.didPop(result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -365,72 +365,72 @@ internal class _SearchViewRoute__search_anchor : global::Doroti.Framework.Widget
     internal virtual void _dismiss(bool disposeController)
     {
         willDisposeSearchController = disposeController;
-        if (this.isActive)
+        if (isActive)
         {
-            this.navigator?.removeRoute(this);
+            navigator?.removeRoute(this);
         }
     }
 
     public override void dispose()
     {
-        this.curvedAnimation?.dispose();
-        this.viewFadeOnIntervalCurve?.dispose();
-        if (this.willDisposeSearchController)
+        curvedAnimation?.dispose();
+        viewFadeOnIntervalCurve?.dispose();
+        if (willDisposeSearchController)
         {
-            this.searchController.dispose();
+            searchController.dispose();
         }
         base.dispose();
     }
 
     public virtual void updateViewConfig(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        viewDefaults = DartRuntimePrimitives.ConvertValue<SearchViewThemeData>(new _SearchViewDefaultsM3__search_anchor(context, isFullScreen: this.showFullScreenView));
+        viewDefaults = DartRuntimePrimitives.ConvertValue<SearchViewThemeData>(new _SearchViewDefaultsM3__search_anchor(context, isFullScreen: showFullScreenView));
         viewTheme = SearchViewTheme.of(context);
     }
 
     public virtual void updateTweens(global::Doroti.Framework.Widgets.BuildContext context)
     {
         var navigator = ((global::Doroti.Framework.Rendering.RenderBox?)Navigator.of(context).context.findRenderObject()!)!;
-        global::Doroti.Ui.Size screenSize = ((global::Doroti.Ui.Size)((global::Doroti.Framework.Rendering.RenderBox)navigator).size);
-        global::Doroti.Ui.Rect anchorRect = ((global::Doroti.Ui.Rect)(getRect() ?? Rect.zero));
-        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraints = ((this.viewConstraints ?? this.viewTheme.constraints) ?? this.viewDefaults.constraints!);
-        this._rectTween.begin = anchorRect;
-        double viewWidth = Dart_uiLibrary.clampDouble(anchorRect.width, ((global::Doroti.Framework.Rendering.BoxConstraints)effectiveConstraints).minWidth, ((global::Doroti.Framework.Rendering.BoxConstraints)effectiveConstraints).maxWidth);
-        double viewHeight = Dart_uiLibrary.clampDouble(((screenSize.height * 2L) / 3L), ((global::Doroti.Framework.Rendering.BoxConstraints)effectiveConstraints).minHeight, ((global::Doroti.Framework.Rendering.BoxConstraints)effectiveConstraints).maxHeight);
-        switch ((this.textDirection ?? TextDirection.ltr))
+        global::Doroti.Ui.Size screenSize = navigator.size;
+        global::Doroti.Ui.Rect anchorRect = getRect() ?? Rect.zero;
+        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraints = (viewConstraints ?? viewTheme.constraints) ?? viewDefaults.constraints!;
+        _rectTween.begin = anchorRect;
+        double viewWidth = Dart_uiLibrary.clampDouble(anchorRect.width, effectiveConstraints.minWidth, effectiveConstraints.maxWidth);
+        double viewHeight = Dart_uiLibrary.clampDouble(screenSize.height * 2L / 3L, effectiveConstraints.minHeight, effectiveConstraints.maxHeight);
+        switch (textDirection ?? TextDirection.ltr)
         {
             case TextDirection.ltr:
                 {
-                    double viewLeftToScreenRight = (screenSize.width - anchorRect.left);
-                    double viewTopToScreenBottom = (screenSize.height - anchorRect.top);
-                    global::Doroti.Ui.Offset topLeftLocal = ((global::Doroti.Ui.Offset)anchorRect.topLeft);
-                    if ((viewLeftToScreenRight < viewWidth))
+                    double viewLeftToScreenRight = screenSize.width - anchorRect.left;
+                    double viewTopToScreenBottom = screenSize.height - anchorRect.top;
+                    global::Doroti.Ui.Offset topLeftLocal = anchorRect.topLeft;
+                    if (viewLeftToScreenRight < viewWidth)
                     {
-                        topLeftLocal = new global::Doroti.Ui.Offset((screenSize.width - Math.Min(viewWidth, screenSize.width)), topLeftLocal.dy);
+                        topLeftLocal = new global::Doroti.Ui.Offset(screenSize.width - Math.Min(viewWidth, screenSize.width), topLeftLocal.dy);
                     }
-                    if ((viewTopToScreenBottom < viewHeight))
+                    if (viewTopToScreenBottom < viewHeight)
                     {
-                        topLeftLocal = new global::Doroti.Ui.Offset(topLeftLocal.dx, (screenSize.height - Math.Min(viewHeight, screenSize.height)));
+                        topLeftLocal = new global::Doroti.Ui.Offset(topLeftLocal.dx, screenSize.height - Math.Min(viewHeight, screenSize.height));
                     }
                     var endSize = new global::Doroti.Ui.Size(viewWidth, viewHeight);
-                    this._rectTween.end = (this.showFullScreenView ? (Offset.zero & screenSize) : ((topLeftLocal & endSize)));
+                    _rectTween.end = showFullScreenView ? (Offset.zero & screenSize) : (topLeftLocal & endSize);
                     return;
                 }
             case TextDirection.rtl:
                 {
                     double viewRightToScreenLeft = anchorRect.right;
-                    double viewTopToScreenBottomLocal = (screenSize.height - anchorRect.top);
-                    var topLeftAlternate = new global::Doroti.Ui.Offset(Math.Max((anchorRect.right - viewWidth), 0.0), anchorRect.top);
-                    if ((viewRightToScreenLeft < viewWidth))
+                    double viewTopToScreenBottomLocal = screenSize.height - anchorRect.top;
+                    var topLeftAlternate = new global::Doroti.Ui.Offset(Math.Max(anchorRect.right - viewWidth, 0.0), anchorRect.top);
+                    if (viewRightToScreenLeft < viewWidth)
                     {
                         topLeftAlternate = new global::Doroti.Ui.Offset(0.0, topLeftAlternate.dy);
                     }
-                    if ((viewTopToScreenBottomLocal < viewHeight))
+                    if (viewTopToScreenBottomLocal < viewHeight)
                     {
-                        topLeftAlternate = new global::Doroti.Ui.Offset(topLeftAlternate.dx, (screenSize.height - Math.Min(viewHeight, screenSize.height)));
+                        topLeftAlternate = new global::Doroti.Ui.Offset(topLeftAlternate.dx, screenSize.height - Math.Min(viewHeight, screenSize.height));
                     }
                     var endSizeLocal = new global::Doroti.Ui.Size(viewWidth, viewHeight);
-                    this._rectTween.end = (this.showFullScreenView ? (Offset.zero & screenSize) : ((topLeftAlternate & endSizeLocal)));
+                    _rectTween.end = showFullScreenView ? (Offset.zero & screenSize) : (topLeftAlternate & endSizeLocal);
                     break;
                 }
         }
@@ -438,15 +438,15 @@ internal class _SearchViewRoute__search_anchor : global::Doroti.Framework.Widget
 
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Directionality(textDirection: (this.textDirection ?? TextDirection.ltr), child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        return new global::Doroti.Framework.Widgets.Directionality(textDirection: textDirection ?? TextDirection.ltr, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: animation, builder: (context, child) =>
         {
             curvedAnimation ??= new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: Curves.easeInOutCubicEmphasized, reverseCurve: Curves.easeInOutCubicEmphasized.flipped);
-            global::Doroti.Ui.Rect viewRectLocal = ((global::Doroti.Ui.Rect)DartRuntimePrimitives.RequireValue(this._rectTween.evaluate(this.curvedAnimation!)));
-            double topPaddingLocal = (this.showFullScreenView ? DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, MediaQuery.paddingOf(context).top, this.curvedAnimation!.value)) : 0.0);
-            viewFadeOnIntervalCurve ??= new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: Search_anchorLibrary._kViewFadeOnInterval, reverseCurve: ((global::Doroti.Framework.Animation.Curve)Search_anchorLibrary._kViewFadeOnInterval).flipped);
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.viewFadeOnIntervalCurve!, child: this.capturedThemes.wrap(new _ViewContent__search_anchor(viewOnChanged: (global::System.Action<string>?)this.viewOnChanged, viewOnSubmitted: (global::System.Action<string>?)this.viewOnSubmitted, viewLeading: this.viewLeading, viewTrailing: this.viewTrailing, viewHintText: this.viewHintText, viewBackgroundColor: this.viewBackgroundColor, viewElevation: this.viewElevation, viewSurfaceTintColor: this.viewSurfaceTintColor, viewSide: this.viewSide, viewShape: this.viewShape, viewBarPadding: this.viewBarPadding, viewHeaderHeight: this.viewHeaderHeight, viewHeaderTextStyle: this.viewHeaderTextStyle, viewHeaderHintStyle: this.viewHeaderHintStyle, dividerColor: this.dividerColor, viewConstraints: this.viewConstraints, viewPadding: this.viewPadding, shrinkWrap: this.shrinkWrap, showFullScreenView: this.showFullScreenView, animation: this.curvedAnimation!, topPadding: topPaddingLocal, viewMaxWidth: DartRuntimePrimitives.RequireValue(this._rectTween.end).width, viewRect: viewRectLocal, viewBuilder: (global::System.Func<IEnumerable<global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget>?)this.viewBuilder, searchController: this.searchController, suggestionsBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, SearchController, object>)this.suggestionsBuilder, textCapitalization: this.textCapitalization, textInputAction: this.textInputAction, keyboardType: this.keyboardType, smartDashesType: this.smartDashesType, smartQuotesType: this.smartQuotesType))));
+            global::Doroti.Ui.Rect viewRectLocal = DartRuntimePrimitives.RequireValue(_rectTween.evaluate(curvedAnimation!));
+            double topPaddingLocal = showFullScreenView ? DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, MediaQuery.paddingOf(context).top, curvedAnimation!.value)) : 0.0;
+            viewFadeOnIntervalCurve ??= new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: Search_anchorLibrary._kViewFadeOnInterval, reverseCurve: Search_anchorLibrary._kViewFadeOnInterval.flipped);
+            return new global::Doroti.Framework.Widgets.FadeTransition(opacity: viewFadeOnIntervalCurve!, child: capturedThemes.wrap(new _ViewContent__search_anchor(viewOnChanged: viewOnChanged, viewOnSubmitted: viewOnSubmitted, viewLeading: viewLeading, viewTrailing: viewTrailing, viewHintText: viewHintText, viewBackgroundColor: viewBackgroundColor, viewElevation: viewElevation, viewSurfaceTintColor: viewSurfaceTintColor, viewSide: viewSide, viewShape: viewShape, viewBarPadding: viewBarPadding, viewHeaderHeight: viewHeaderHeight, viewHeaderTextStyle: viewHeaderTextStyle, viewHeaderHintStyle: viewHeaderHintStyle, dividerColor: dividerColor, viewConstraints: viewConstraints, viewPadding: viewPadding, shrinkWrap: shrinkWrap, showFullScreenView: showFullScreenView, animation: curvedAnimation!, topPadding: topPaddingLocal, viewMaxWidth: DartRuntimePrimitives.RequireValue(_rectTween.end).width, viewRect: viewRectLocal, viewBuilder: viewBuilder, searchController: searchController, suggestionsBuilder: suggestionsBuilder, textCapitalization: textCapitalization, textInputAction: textInputAction, keyboardType: keyboardType, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType)));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })))));
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -533,155 +533,155 @@ internal class _ViewContentState__search_anchor : global::Doroti.Framework.Widge
     public virtual global::Doroti.Framework.Animation.CurvedAnimation viewDividerFadeCurve { get; set; } = default!;
     public virtual global::Doroti.Framework.Animation.CurvedAnimation viewListFadeOnIntervalCurve { get; set; } = default!;
     internal virtual SearchController _controller { get; private set; } = default!;
-    public virtual IEnumerable<global::Doroti.Framework.Widgets.Widget> result { get; set; } = ((IEnumerable<global::Doroti.Framework.Widgets.Widget>)new List<global::Doroti.Framework.Widgets.Widget>());
+    public virtual IEnumerable<global::Doroti.Framework.Widgets.Widget> result { get; set; } = new List<global::Doroti.Framework.Widgets.Widget>();
     public virtual string? searchValue { get; set; } = default;
     internal virtual Timer? _timer { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _viewRect = ((_ViewContent__search_anchor)this.widget).viewRect;
-        _controller = ((_ViewContent__search_anchor)this.widget).searchController;
-        this._controller.addListener(this._updateSuggestionsListener);
+        _viewRect = widget.viewRect;
+        _controller = widget.searchController;
+        _controller.addListener(_updateSuggestionsListener);
         _setupAnimations();
     }
 
     public override void didUpdateWidget(_ViewContent__search_anchor oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((_ViewContent__search_anchor)this.widget).viewRect, ((_ViewContent__search_anchor)oldWidget).viewRect)))
+        if (!Equals(widget.viewRect, oldWidget.viewRect))
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                _viewRect = ((_ViewContent__search_anchor)this.widget).viewRect;
-            })));
+                _viewRect = widget.viewRect;
+            });
         }
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Ui.Size updatedScreenSize = ((global::Doroti.Ui.Size)MediaQuery.of(this.context).size);
-        if ((!Equals(this._screenSize, updatedScreenSize)))
+        global::Doroti.Ui.Size updatedScreenSize = MediaQuery.of(context).size;
+        if (!Equals(_screenSize, updatedScreenSize))
         {
             _screenSize = updatedScreenSize;
-            if (((_ViewContent__search_anchor)this.widget).showFullScreenView)
+            if (widget.showFullScreenView)
             {
-                _viewRect = (Offset.zero & DartRuntimePrimitives.RequireValue(this._screenSize));
+                _viewRect = Offset.zero & DartRuntimePrimitives.RequireValue(_screenSize);
             }
         }
-        if ((this.searchValue != this._controller.text))
+        if (searchValue != _controller.text)
         {
-            this._timer?.cancel();
-            _timer = new Timer(Duration.zero, (async () =>
+            _timer?.cancel();
+            _timer = new Timer(Duration.zero, async () =>
             {
-                searchValue = this._controller.text;
-                IEnumerable<global::Doroti.Framework.Widgets.Widget> suggestions = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<global::Doroti.Framework.Widgets.Widget>>(this.widget.suggestionsBuilder(this.context, this._controller));
-                this._timer?.cancel();
+                searchValue = _controller.text;
+                IEnumerable<global::Doroti.Framework.Widgets.Widget> suggestions = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<global::Doroti.Framework.Widgets.Widget>>(widget.suggestionsBuilder(context, _controller));
+                _timer?.cancel();
                 _timer = null;
-                if (this.mounted)
+                if (mounted)
                 {
-                    setState(((global::System.Action)(() =>
+                    setState(() =>
                     {
                         result = suggestions;
-                    })));
+                    });
                 }
                 return;
-            }));
+            });
         }
     }
 
     public override void dispose()
     {
-        this._controller.removeListener(this._updateSuggestionsListener);
+        _controller.removeListener(_updateSuggestionsListener);
         _disposeAnimations();
-        this._timer?.cancel();
+        _timer?.cancel();
         _timer = null;
         base.dispose();
     }
 
     internal virtual void _setupAnimations()
     {
-        viewIconsFadeCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_ViewContent__search_anchor)this.widget).animation, curve: Search_anchorLibrary._kViewIconsFadeOnInterval, reverseCurve: ((global::Doroti.Framework.Animation.Curve)Search_anchorLibrary._kViewIconsFadeOnInterval).flipped);
-        viewDividerFadeCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_ViewContent__search_anchor)this.widget).animation, curve: Search_anchorLibrary._kViewDividerFadeOnInterval, reverseCurve: ((global::Doroti.Framework.Animation.Curve)Search_anchorLibrary._kViewFadeOnInterval).flipped);
-        viewListFadeOnIntervalCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_ViewContent__search_anchor)this.widget).animation, curve: Search_anchorLibrary._kViewListFadeOnInterval, reverseCurve: ((global::Doroti.Framework.Animation.Curve)Search_anchorLibrary._kViewListFadeOnInterval).flipped);
+        viewIconsFadeCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.animation, curve: Search_anchorLibrary._kViewIconsFadeOnInterval, reverseCurve: Search_anchorLibrary._kViewIconsFadeOnInterval.flipped);
+        viewDividerFadeCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.animation, curve: Search_anchorLibrary._kViewDividerFadeOnInterval, reverseCurve: Search_anchorLibrary._kViewFadeOnInterval.flipped);
+        viewListFadeOnIntervalCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.animation, curve: Search_anchorLibrary._kViewListFadeOnInterval, reverseCurve: Search_anchorLibrary._kViewListFadeOnInterval.flipped);
     }
 
     internal virtual void _disposeAnimations()
     {
-        this.viewIconsFadeCurve.dispose();
-        this.viewDividerFadeCurve.dispose();
-        this.viewListFadeOnIntervalCurve.dispose();
+        viewIconsFadeCurve.dispose();
+        viewDividerFadeCurve.dispose();
+        viewListFadeOnIntervalCurve.dispose();
     }
 
     private void _updateSuggestionsListener() => _ = updateSuggestions();
 
     public async virtual Future updateSuggestions()
     {
-        if ((this.searchValue != this._controller.text))
+        if (searchValue != _controller.text)
         {
-            searchValue = this._controller.text;
-            IEnumerable<global::Doroti.Framework.Widgets.Widget> suggestions = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<global::Doroti.Framework.Widgets.Widget>>(this.widget.suggestionsBuilder(this.context, this._controller));
-            if (this.mounted)
+            searchValue = _controller.text;
+            IEnumerable<global::Doroti.Framework.Widgets.Widget> suggestions = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<global::Doroti.Framework.Widgets.Widget>>(widget.suggestionsBuilder(context, _controller));
+            if (mounted)
             {
-                setState(((global::System.Action)(() =>
+                setState(() =>
                 {
                     result = suggestions;
-                })));
+                });
             }
         }
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget defaultLeading = ((global::Doroti.Framework.Widgets.Widget)new BackButton(style: new ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap), onPressed: (() =>
+        global::Doroti.Framework.Widgets.Widget defaultLeading = new BackButton(style: new ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap), onPressed: () =>
         {
             Navigator.of(context).pop<object>();
-        })));
+        });
         var defaultTrailing = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
-            var __collection36360 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((this._controller.text.Length != 0))
+            var __collection36360 = new List<global::Doroti.Framework.Widgets.Widget>(); if (_controller.text.Length != 0)
             {
-                __collection36360.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.close), tooltip: MaterialLocalizations.of(context).clearButtonTooltip, onPressed: (() =>
+                __collection36360.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(icon: new global::Doroti.Framework.Widgets.Icon(Icons.close), tooltip: MaterialLocalizations.of(context).clearButtonTooltip, onPressed: () =>
                 {
-                    this._controller.clear();
-                }))));
+                    _controller.clear();
+                })));
             }
             return __collection36360;
         }))();
-        SearchViewThemeData viewDefaults = ((SearchViewThemeData)new _SearchViewDefaultsM3__search_anchor(context, isFullScreen: ((_ViewContent__search_anchor)this.widget).showFullScreenView));
+        SearchViewThemeData viewDefaults = new _SearchViewDefaultsM3__search_anchor(context, isFullScreen: widget.showFullScreenView);
         SearchViewThemeData viewTheme = SearchViewTheme.of(context);
         DividerThemeData dividerTheme = DividerTheme.of(context);
-        global::Doroti.Ui.Color effectiveBackgroundColor = ((global::Doroti.Ui.Color)((((_ViewContent__search_anchor)this.widget).viewBackgroundColor ?? viewTheme.backgroundColor) ?? viewDefaults.backgroundColor!));
-        global::Doroti.Ui.Color effectiveSurfaceTint = ((global::Doroti.Ui.Color)((((_ViewContent__search_anchor)this.widget).viewSurfaceTintColor ?? viewTheme.surfaceTintColor) ?? viewDefaults.surfaceTintColor!));
-        double effectiveElevation = ((((_ViewContent__search_anchor)this.widget).viewElevation ?? viewTheme.elevation) ?? DartRuntimePrimitives.RequireValue(viewDefaults.elevation));
-        global::Doroti.Framework.Painting.BorderSide? effectiveSide = ((((_ViewContent__search_anchor)this.widget).viewSide ?? viewTheme.side) ?? viewDefaults.side);
-        global::Doroti.Framework.Painting.OutlinedBorder effectiveShape = ((((_ViewContent__search_anchor)this.widget).viewShape ?? viewTheme.shape) ?? viewDefaults.shape!);
-        if ((effectiveSide is not null))
+        global::Doroti.Ui.Color effectiveBackgroundColor = (widget.viewBackgroundColor ?? viewTheme.backgroundColor) ?? viewDefaults.backgroundColor!;
+        global::Doroti.Ui.Color effectiveSurfaceTint = (widget.viewSurfaceTintColor ?? viewTheme.surfaceTintColor) ?? viewDefaults.surfaceTintColor!;
+        double effectiveElevation = (widget.viewElevation ?? viewTheme.elevation) ?? DartRuntimePrimitives.RequireValue(viewDefaults.elevation);
+        global::Doroti.Framework.Painting.BorderSide? effectiveSide = (widget.viewSide ?? viewTheme.side) ?? viewDefaults.side;
+        global::Doroti.Framework.Painting.OutlinedBorder effectiveShape = (widget.viewShape ?? viewTheme.shape) ?? viewDefaults.shape!;
+        if (effectiveSide is not null)
         {
             effectiveShape = effectiveShape.copyWith(side: effectiveSide);
         }
-        global::Doroti.Ui.Color effectiveDividerColor = ((global::Doroti.Ui.Color)(((((_ViewContent__search_anchor)this.widget).dividerColor ?? viewTheme.dividerColor) ?? dividerTheme.color) ?? viewDefaults.dividerColor!));
-        double? effectiveHeaderHeight = (((_ViewContent__search_anchor)this.widget).viewHeaderHeight ?? viewTheme.headerHeight);
-        global::Doroti.Framework.Rendering.BoxConstraints? headerConstraints = ((effectiveHeaderHeight is null) ? null : BoxConstraints.CreateTightFor(height: DartRuntimePrimitives.RequireValue(effectiveHeaderHeight)));
-        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = ((((_ViewContent__search_anchor)this.widget).viewHeaderTextStyle ?? viewTheme.headerTextStyle) ?? viewDefaults.headerTextStyle);
-        global::Doroti.Framework.Painting.TextStyle? effectiveHintStyle = ((((((_ViewContent__search_anchor)this.widget).viewHeaderHintStyle ?? viewTheme.headerHintStyle) ?? ((_ViewContent__search_anchor)this.widget).viewHeaderTextStyle) ?? viewTheme.headerTextStyle) ?? viewDefaults.headerHintStyle);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = ((((_ViewContent__search_anchor)this.widget).viewPadding ?? viewTheme.padding) ?? viewDefaults.padding);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectiveBarPadding = ((((_ViewContent__search_anchor)this.widget).viewBarPadding ?? viewTheme.barPadding) ?? viewDefaults.barPadding);
-        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraints = ((((_ViewContent__search_anchor)this.widget).viewConstraints ?? viewTheme.constraints) ?? viewDefaults.constraints!);
-        double minWidthLocal = Math.Min(((global::Doroti.Framework.Rendering.BoxConstraints)effectiveConstraints).minWidth, this._viewRect.width);
-        double minHeightLocal = Math.Min(((global::Doroti.Framework.Rendering.BoxConstraints)effectiveConstraints).minHeight, this._viewRect.height);
-        bool effectiveShrinkWrap = ((((_ViewContent__search_anchor)this.widget).shrinkWrap ?? viewTheme.shrinkWrap) ?? DartRuntimePrimitives.RequireValue(viewDefaults.shrinkWrap));
-        global::Doroti.Framework.Widgets.Widget viewDivider = ((global::Doroti.Framework.Widgets.Widget)new DividerTheme(data: dividerTheme.copyWith(color: effectiveDividerColor), child: new Divider(height: 1)));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Align(alignment: Alignment.topLeft, child: Transform.CreateTranslate(offset: this._viewRect.topLeft, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: minWidthLocal, maxWidth: this._viewRect.width, minHeight: minHeightLocal, maxHeight: this._viewRect.height), child: new global::Doroti.Framework.Widgets.Padding(padding: (((_ViewContent__search_anchor)this.widget).showFullScreenView ? EdgeInsets.zero : ((effectivePadding ?? EdgeInsets.zero))), child: new Material(clipBehavior: Clip.antiAlias, shape: effectiveShape, color: effectiveBackgroundColor, surfaceTintColor: effectiveSurfaceTint, elevation: effectiveElevation, child: new global::Doroti.Framework.Widgets.OverflowBox(alignment: Alignment.topLeft, maxWidth: Math.Min(((_ViewContent__search_anchor)this.widget).viewMaxWidth, DartRuntimePrimitives.RequireValue(this._screenSize).width), minWidth: 0, fit: OverflowBoxFit.deferToChild, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.viewIconsFadeCurve, child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        global::Doroti.Ui.Color effectiveDividerColor = ((widget.dividerColor ?? viewTheme.dividerColor) ?? dividerTheme.color) ?? viewDefaults.dividerColor!;
+        double? effectiveHeaderHeight = widget.viewHeaderHeight ?? viewTheme.headerHeight;
+        global::Doroti.Framework.Rendering.BoxConstraints? headerConstraints = (effectiveHeaderHeight is null) ? null : BoxConstraints.CreateTightFor(height: DartRuntimePrimitives.RequireValue(effectiveHeaderHeight));
+        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = (widget.viewHeaderTextStyle ?? viewTheme.headerTextStyle) ?? viewDefaults.headerTextStyle;
+        global::Doroti.Framework.Painting.TextStyle? effectiveHintStyle = (((widget.viewHeaderHintStyle ?? viewTheme.headerHintStyle) ?? widget.viewHeaderTextStyle) ?? viewTheme.headerTextStyle) ?? viewDefaults.headerHintStyle;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = (widget.viewPadding ?? viewTheme.padding) ?? viewDefaults.padding;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectiveBarPadding = (widget.viewBarPadding ?? viewTheme.barPadding) ?? viewDefaults.barPadding;
+        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraints = (widget.viewConstraints ?? viewTheme.constraints) ?? viewDefaults.constraints!;
+        double minWidthLocal = Math.Min(effectiveConstraints.minWidth, _viewRect.width);
+        double minHeightLocal = Math.Min(effectiveConstraints.minHeight, _viewRect.height);
+        bool effectiveShrinkWrap = (widget.shrinkWrap ?? viewTheme.shrinkWrap) ?? DartRuntimePrimitives.RequireValue(viewDefaults.shrinkWrap);
+        global::Doroti.Framework.Widgets.Widget viewDivider = new DividerTheme(data: dividerTheme.copyWith(color: effectiveDividerColor), child: new Divider(height: 1));
+        return new global::Doroti.Framework.Widgets.Align(alignment: Alignment.topLeft, child: Transform.CreateTranslate(offset: _viewRect.topLeft, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: minWidthLocal, maxWidth: _viewRect.width, minHeight: minHeightLocal, maxHeight: _viewRect.height), child: new global::Doroti.Framework.Widgets.Padding(padding: widget.showFullScreenView ? EdgeInsets.zero : (effectivePadding ?? EdgeInsets.zero), child: new Material(clipBehavior: Clip.antiAlias, shape: effectiveShape, color: effectiveBackgroundColor, surfaceTintColor: effectiveSurfaceTint, elevation: effectiveElevation, child: new global::Doroti.Framework.Widgets.OverflowBox(alignment: Alignment.topLeft, maxWidth: Math.Min(widget.viewMaxWidth, DartRuntimePrimitives.RequireValue(_screenSize).width), minWidth: 0, fit: OverflowBoxFit.deferToChild, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: viewIconsFadeCurve, child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
-            var __collection40516 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection40516.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(top: ((_ViewContent__search_anchor)this.widget).topPadding), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, bottom: false, child: new SearchBar(autoFocus: true, constraints: (headerConstraints ?? ((((_ViewContent__search_anchor)this.widget).showFullScreenView ? new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: _SearchViewDefaultsM3__search_anchor.fullScreenBarHeight) : null))), padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(effectiveBarPadding), leading: (((_ViewContent__search_anchor)this.widget).viewLeading ?? defaultLeading), trailing: (((_ViewContent__search_anchor)this.widget).viewTrailing ?? defaultTrailing).Cast<global::Doroti.Framework.Widgets.Widget>(), hintText: ((_ViewContent__search_anchor)this.widget).viewHintText, backgroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent), overlayColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent), elevation: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(0.0), textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(effectiveTextStyle), hintStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(effectiveHintStyle), controller: this._controller, onChanged: ((global::System.Action<string>)((value) =>
+            var __collection40516 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection40516.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(top: widget.topPadding), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, bottom: false, child: new SearchBar(autoFocus: true, constraints: headerConstraints ?? (widget.showFullScreenView ? new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: _SearchViewDefaultsM3__search_anchor.fullScreenBarHeight) : null), padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(effectiveBarPadding), leading: widget.viewLeading ?? defaultLeading, trailing: (widget.viewTrailing ?? defaultTrailing).Cast<global::Doroti.Framework.Widgets.Widget>(), hintText: widget.viewHintText, backgroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent), overlayColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent), elevation: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(0.0), textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(effectiveTextStyle), hintStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(effectiveHintStyle), controller: _controller, onChanged: (value) =>
             {
-                ((_ViewContent__search_anchor)this.widget).viewOnChanged?.Invoke(value);
+                widget.viewOnChanged?.Invoke(value);
                 DartRuntimePrimitives.Ignore(updateSuggestions());
-            })), onSubmitted: (global::System.Action<string>?)((_ViewContent__search_anchor)this.widget).viewOnSubmitted, textCapitalization: ((_ViewContent__search_anchor)this.widget).textCapitalization, textInputAction: ((_ViewContent__search_anchor)this.widget).textInputAction, keyboardType: ((_ViewContent__search_anchor)this.widget).keyboardType, smartDashesType: ((_ViewContent__search_anchor)this.widget).smartDashesType, smartQuotesType: ((_ViewContent__search_anchor)this.widget).smartQuotesType))))); if ((((!effectiveShrinkWrap || (minHeightLocal > 0L)) || ((_ViewContent__search_anchor)this.widget).showFullScreenView) || Enumerable.Any(this.result))) { __collection40516.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.viewDividerFadeCurve, child: viewDivider)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(fit: (((effectiveShrinkWrap && !((_ViewContent__search_anchor)this.widget).showFullScreenView)) ? FlexFit.loose : FlexFit.tight), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.viewListFadeOnIntervalCurve, child: ((((_ViewContent__search_anchor)this.widget).viewBuilder is null) ? MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: new global::Doroti.Framework.Widgets.ListView(padding: EdgeInsets.CreateOnly(bottom: MediaQuery.viewInsetsOf(context).bottom), shrinkWrap: effectiveShrinkWrap, children: this.result.ToList())) : ((_ViewContent__search_anchor)this.widget).viewBuilder!(this.result))))) }); }
+            }, onSubmitted: widget.viewOnSubmitted, textCapitalization: widget.textCapitalization, textInputAction: widget.textInputAction, keyboardType: widget.keyboardType, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType))))); if (!effectiveShrinkWrap || (minHeightLocal > 0L) || widget.showFullScreenView || Enumerable.Any(result)) { __collection40516.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: viewDividerFadeCurve, child: viewDivider)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(fit: (effectiveShrinkWrap && !widget.showFullScreenView) ? FlexFit.loose : FlexFit.tight, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: viewListFadeOnIntervalCurve, child: (widget.viewBuilder is null) ? MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: new global::Doroti.Framework.Widgets.ListView(padding: EdgeInsets.CreateOnly(bottom: MediaQuery.viewInsetsOf(context).bottom), shrinkWrap: effectiveShrinkWrap, children: result.ToList())) : widget.viewBuilder!(result)))) }); }
             return __collection40516;
-        }))())))))))));
+        }))()))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -689,18 +689,18 @@ internal class _ViewContentState__search_anchor : global::Doroti.Framework.Widge
 
 internal class _SearchAnchorWithSearchBar__search_anchor : SearchAnchor
 {
-    internal _SearchAnchorWithSearchBar__search_anchor(global::Doroti.Framework.Widgets.Widget? barLeading = null, IEnumerable<global::Doroti.Framework.Widgets.Widget>? barTrailing = null, string? barHintText = null, global::System.Action? onTap = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? barElevation = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? barBackgroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? barOverlayColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? barSide = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>? barShape = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>? barPadding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? viewBarPadding = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? barTextStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? barHintStyle = null, global::System.Func<IEnumerable<global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget>? viewBuilder = null, global::Doroti.Framework.Widgets.Widget? viewLeading = null, IEnumerable<global::Doroti.Framework.Widgets.Widget>? viewTrailing = null, string? viewHintText = null, Color? viewBackgroundColor = null, double? viewElevation = null, global::Doroti.Framework.Painting.BorderSide? viewSide = null, global::Doroti.Framework.Painting.OutlinedBorder? viewShape = null, double? viewHeaderHeight = null, global::Doroti.Framework.Painting.TextStyle? viewHeaderTextStyle = null, global::Doroti.Framework.Painting.TextStyle? viewHeaderHintStyle = null, Color? dividerColor = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Rendering.BoxConstraints? viewConstraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? viewPadding = null, bool? shrinkWrap = null, bool? isFullScreen = null, SearchController? searchController = null, global::Doroti.Framework.Services.TextCapitalization? textCapitalization = null, global::System.Action<string>? onChanged = null, global::System.Action<string>? onSubmitted = null, global::System.Action? onClose = null, global::System.Action? onOpen = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, SearchController, object> suggestionsBuilder = default!, global::Doroti.Framework.Services.TextInputAction? textInputAction = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, global::Doroti.Framework.Painting.EdgeInsets scrollPadding = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget> contextMenuBuilder = default!, bool enabled = true, global::Doroti.Framework.Services.SmartDashesType? smartDashesType = null, global::Doroti.Framework.Services.SmartQuotesType? smartQuotesType = null) : base(viewBarPadding: viewBarPadding, viewBuilder: viewBuilder, viewLeading: viewLeading, viewTrailing: viewTrailing, viewBackgroundColor: viewBackgroundColor, viewElevation: viewElevation, viewSide: viewSide, viewShape: viewShape, dividerColor: dividerColor, viewConstraints: viewConstraints, viewPadding: viewPadding, shrinkWrap: shrinkWrap, isFullScreen: isFullScreen, searchController: searchController, textCapitalization: textCapitalization, suggestionsBuilder: suggestionsBuilder, textInputAction: textInputAction, keyboardType: keyboardType, enabled: enabled, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType, viewHintText: (viewHintText ?? barHintText), headerHeight: viewHeaderHeight, headerTextStyle: viewHeaderTextStyle, headerHintStyle: viewHeaderHintStyle, viewOnSubmitted: (global::System.Action<string>?)onSubmitted, viewOnChanged: (global::System.Action<string>?)onChanged, viewOnClose: onClose, viewOnOpen: onOpen, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, SearchController, global::Doroti.Framework.Widgets.Widget>)((context, controller) =>
+    internal _SearchAnchorWithSearchBar__search_anchor(global::Doroti.Framework.Widgets.Widget? barLeading = null, IEnumerable<global::Doroti.Framework.Widgets.Widget>? barTrailing = null, string? barHintText = null, global::System.Action? onTap = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? barElevation = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? barBackgroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? barOverlayColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? barSide = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>? barShape = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>? barPadding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? viewBarPadding = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? barTextStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? barHintStyle = null, global::System.Func<IEnumerable<global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget>? viewBuilder = null, global::Doroti.Framework.Widgets.Widget? viewLeading = null, IEnumerable<global::Doroti.Framework.Widgets.Widget>? viewTrailing = null, string? viewHintText = null, Color? viewBackgroundColor = null, double? viewElevation = null, global::Doroti.Framework.Painting.BorderSide? viewSide = null, global::Doroti.Framework.Painting.OutlinedBorder? viewShape = null, double? viewHeaderHeight = null, global::Doroti.Framework.Painting.TextStyle? viewHeaderTextStyle = null, global::Doroti.Framework.Painting.TextStyle? viewHeaderHintStyle = null, Color? dividerColor = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Rendering.BoxConstraints? viewConstraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? viewPadding = null, bool? shrinkWrap = null, bool? isFullScreen = null, SearchController? searchController = null, global::Doroti.Framework.Services.TextCapitalization? textCapitalization = null, global::System.Action<string>? onChanged = null, global::System.Action<string>? onSubmitted = null, global::System.Action? onClose = null, global::System.Action? onOpen = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, SearchController, object> suggestionsBuilder = default!, global::Doroti.Framework.Services.TextInputAction? textInputAction = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, global::Doroti.Framework.Painting.EdgeInsets scrollPadding = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget> contextMenuBuilder = default!, bool enabled = true, global::Doroti.Framework.Services.SmartDashesType? smartDashesType = null, global::Doroti.Framework.Services.SmartQuotesType? smartQuotesType = null) : base(viewBarPadding: viewBarPadding, viewBuilder: viewBuilder, viewLeading: viewLeading, viewTrailing: viewTrailing, viewBackgroundColor: viewBackgroundColor, viewElevation: viewElevation, viewSide: viewSide, viewShape: viewShape, dividerColor: dividerColor, viewConstraints: viewConstraints, viewPadding: viewPadding, shrinkWrap: shrinkWrap, isFullScreen: isFullScreen, searchController: searchController, textCapitalization: textCapitalization, suggestionsBuilder: suggestionsBuilder, textInputAction: textInputAction, keyboardType: keyboardType, enabled: enabled, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType, viewHintText: viewHintText ?? barHintText, headerHeight: viewHeaderHeight, headerTextStyle: viewHeaderTextStyle, headerHintStyle: viewHeaderHintStyle, viewOnSubmitted: onSubmitted, viewOnChanged: onChanged, viewOnClose: onClose, viewOnOpen: onOpen, builder: (context, controller) =>
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new SearchBar(constraints: constraints, controller: controller, onTap: ((global::System.Action)(() =>
+        return new SearchBar(constraints: constraints, controller: controller, onTap: () =>
         {
             controller.openView();
             onTap?.Invoke();
-        })), onChanged: ((global::System.Action<string>)((value) =>
+        }, onChanged: (value) =>
         {
             controller.openView();
-        })), onSubmitted: (global::System.Action<string>?)onSubmitted, hintText: barHintText, hintStyle: barHintStyle, textStyle: barTextStyle, elevation: barElevation, backgroundColor: barBackgroundColor, overlayColor: barOverlayColor, side: barSide, shape: barShape, padding: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>>((object?)barPadding ?? new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(EdgeInsets.CreateSymmetric(horizontal: 16.0))), leading: (barLeading ?? new global::Doroti.Framework.Widgets.Icon(Icons.search)), trailing: barTrailing, textCapitalization: textCapitalization, textInputAction: textInputAction, keyboardType: keyboardType, scrollPadding: scrollPadding ?? EdgeInsets.CreateAll(20.0), contextMenuBuilder: contextMenuBuilder ?? SearchBar._defaultContextMenuBuilder, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType));
+        }, onSubmitted: onSubmitted, hintText: barHintText, hintStyle: barHintStyle, textStyle: barTextStyle, elevation: barElevation, backgroundColor: barBackgroundColor, overlayColor: barOverlayColor, side: barSide, shape: barShape, padding: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>>((object?)barPadding ?? new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(EdgeInsets.CreateSymmetric(horizontal: 16.0))), leading: barLeading ?? new global::Doroti.Framework.Widgets.Icon(Icons.search), trailing: barTrailing, textCapitalization: textCapitalization, textInputAction: textInputAction, keyboardType: keyboardType, scrollPadding: scrollPadding ?? EdgeInsets.CreateAll(20.0), contextMenuBuilder: contextMenuBuilder ?? SearchBar._defaultContextMenuBuilder, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType);
         throw new InvalidOperationException("Dart closure completed without a value.");
-    })))
+    })
     {
     }
 
@@ -710,25 +710,25 @@ public class SearchController : global::Doroti.Framework.Widgets.TextEditingCont
 {
     internal virtual _SearchAnchorState__search_anchor? _anchor { get; set; } = default;
 
-    public virtual bool isAttached => DartRuntimePrimitives.ConvertValue<bool>((this._anchor is not null));
+    public virtual bool isAttached => DartRuntimePrimitives.ConvertValue<bool>(_anchor is not null);
     public virtual bool isOpen
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => this.isAttached);
-            return this._anchor!._viewIsOpen;
+            DartRuntimePrimitives.Assert(() => isAttached);
+            return _anchor!._viewIsOpen;
         }
     }
     public virtual void openView()
     {
-        DartRuntimePrimitives.Assert(() => this.isAttached);
-        this._anchor!._openView();
+        DartRuntimePrimitives.Assert(() => isAttached);
+        _anchor!._openView();
     }
 
     public virtual void closeView(string? selectedText)
     {
-        DartRuntimePrimitives.Assert(() => this.isAttached);
-        this._anchor!._closeView(selectedText);
+        DartRuntimePrimitives.Assert(() => isAttached);
+        _anchor!._closeView(selectedText);
     }
 
     internal virtual void _attach(_SearchAnchorState__search_anchor anchor)
@@ -738,7 +738,7 @@ public class SearchController : global::Doroti.Framework.Widgets.TextEditingCont
 
     internal virtual void _detach(_SearchAnchorState__search_anchor anchor)
     {
-        if ((Equals(this._anchor, anchor)))
+        if (Equals(_anchor, anchor))
         {
             _anchor = null;
         }
@@ -819,9 +819,9 @@ public class SearchBar : global::Doroti.Framework.Widgets.StatefulWidget
     {
         if (SystemContextMenu.isSupportedByField(editableTextState))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)SystemContextMenu.CreateEditableText(editableTextState: editableTextState));
+            return SystemContextMenu.CreateEditableText(editableTextState: editableTextState);
         }
-        return ((global::Doroti.Framework.Widgets.Widget)AdaptiveTextSelectionToolbar.CreateEditableText(editableTextState: editableTextState));
+        return AdaptiveTextSelectionToolbar.CreateEditableText(editableTextState: editableTextState);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -833,23 +833,23 @@ internal class _SearchBarState__search_anchor : global::Doroti.Framework.Widgets
     internal virtual global::Doroti.Framework.Widgets.WidgetStatesController _internalStatesController { get; private set; } = default!;
     internal virtual global::Doroti.Framework.Widgets.FocusNode? _internalFocusNode { get; set; } = default;
 
-    internal virtual global::Doroti.Framework.Widgets.FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>((((SearchBar)this.widget).focusNode ?? (_internalFocusNode ??= new global::Doroti.Framework.Widgets.FocusNode())));
+    internal virtual global::Doroti.Framework.Widgets.FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>(widget.focusNode ?? (_internalFocusNode ??= new global::Doroti.Framework.Widgets.FocusNode()));
     public override void initState()
     {
         base.initState();
         _internalStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController();
-        this._internalStatesController.addListener(((global::System.Action)(() =>
+        _internalStatesController.addListener(() =>
         {
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-            })));
-        })));
+            });
+        });
     }
 
     public override void dispose()
     {
-        this._internalStatesController.dispose();
-        this._internalFocusNode?.dispose();
+        _internalStatesController.dispose();
+        _internalFocusNode?.dispose();
         base.dispose();
     }
 
@@ -858,41 +858,41 @@ internal class _SearchBarState__search_anchor : global::Doroti.Framework.Widgets
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
         ColorScheme colorSchemeLocal = Theme.of(context).colorScheme;
         SearchBarThemeData searchBarTheme = SearchBarTheme.of(context);
-        SearchBarThemeData defaults = ((SearchBarThemeData)new _SearchBarDefaultsM3__search_anchor(context));
+        SearchBarThemeData defaults = new _SearchBarDefaultsM3__search_anchor(context);
         P? resolve<P>(global::Doroti.Framework.Widgets.WidgetStateProperty<P>? widgetValue, global::Doroti.Framework.Widgets.WidgetStateProperty<P>? themeValue, global::Doroti.Framework.Widgets.WidgetStateProperty<P>? defaultValue)
         {
-            HashSet<global::Doroti.Framework.Widgets.WidgetState> states = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)this._internalStatesController.value);
+            HashSet<global::Doroti.Framework.Widgets.WidgetState> states = _internalStatesController.value;
             return widgetValue is not null ? widgetValue.resolve(states) : themeValue is not null ? themeValue.resolve(states) : defaultValue is not null ? defaultValue.resolve(states) : default;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = resolve<global::Doroti.Framework.Painting.TextStyle?>(((SearchBar)this.widget).textStyle, searchBarTheme.textStyle, defaults.textStyle);
-        double? effectiveElevation = resolve<double?>(((SearchBar)this.widget).elevation, searchBarTheme.elevation, defaults.elevation);
-        global::Doroti.Ui.Color? effectiveShadowColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((SearchBar)this.widget).shadowColor, searchBarTheme.shadowColor, defaults.shadowColor));
-        global::Doroti.Ui.Color? effectiveBackgroundColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((SearchBar)this.widget).backgroundColor, searchBarTheme.backgroundColor, defaults.backgroundColor));
-        global::Doroti.Ui.Color? effectiveSurfaceTintColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((SearchBar)this.widget).surfaceTintColor, searchBarTheme.surfaceTintColor, defaults.surfaceTintColor));
-        global::Doroti.Framework.Painting.OutlinedBorder? effectiveShape = resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((SearchBar)this.widget).shape, searchBarTheme.shape, defaults.shape);
-        global::Doroti.Framework.Painting.BorderSide? effectiveSide = resolve<global::Doroti.Framework.Painting.BorderSide?>(((SearchBar)this.widget).side, searchBarTheme.side, defaults.side);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = resolve<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(((SearchBar)this.widget).padding, searchBarTheme.padding, defaults.padding);
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveOverlayColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)((((SearchBar)this.widget).overlayColor ?? searchBarTheme.overlayColor) ?? defaults.overlayColor));
-        global::Doroti.Framework.Services.TextCapitalization effectiveTextCapitalization = ((((SearchBar)this.widget).textCapitalization ?? searchBarTheme.textCapitalization) ?? DartRuntimePrimitives.RequireValue(defaults.textCapitalization));
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> statesLocal = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)this._internalStatesController.value);
-        global::Doroti.Framework.Painting.TextStyle? effectiveHintStyle = ((((((((((SearchBar)this.widget).hintStyle?.resolve(statesLocal) ?? (global::Doroti.Framework.Painting.TextStyle?)searchBarTheme.hintStyle?.resolve(statesLocal))) ?? (global::Doroti.Framework.Painting.TextStyle?)((SearchBar)this.widget).textStyle?.resolve(statesLocal))) ?? (global::Doroti.Framework.Painting.TextStyle?)searchBarTheme.textStyle?.resolve(statesLocal))) ?? (global::Doroti.Framework.Painting.TextStyle?)defaults.hintStyle?.resolve(statesLocal)));
-        global::Doroti.Ui.Color defaultColor = ((global::Doroti.Ui.Color)(colorSchemeLocal.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Framework.Widgets.IconThemeData? customTheme = (IconTheme.of(context) switch { global::Doroti.Framework.Widgets.IconThemeData iconTheme when ((!Equals(((global::Doroti.Framework.Widgets.IconThemeData)iconTheme).color, defaultColor))) => iconTheme, _ => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.IconThemeData>(null) });
+        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = resolve<global::Doroti.Framework.Painting.TextStyle?>(widget.textStyle, searchBarTheme.textStyle, defaults.textStyle);
+        double? effectiveElevation = resolve<double?>(widget.elevation, searchBarTheme.elevation, defaults.elevation);
+        global::Doroti.Ui.Color? effectiveShadowColor = resolve<global::Doroti.Ui.Color?>(widget.shadowColor, searchBarTheme.shadowColor, defaults.shadowColor);
+        global::Doroti.Ui.Color? effectiveBackgroundColor = resolve<global::Doroti.Ui.Color?>(widget.backgroundColor, searchBarTheme.backgroundColor, defaults.backgroundColor);
+        global::Doroti.Ui.Color? effectiveSurfaceTintColor = resolve<global::Doroti.Ui.Color?>(widget.surfaceTintColor, searchBarTheme.surfaceTintColor, defaults.surfaceTintColor);
+        global::Doroti.Framework.Painting.OutlinedBorder? effectiveShape = resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(widget.shape, searchBarTheme.shape, defaults.shape);
+        global::Doroti.Framework.Painting.BorderSide? effectiveSide = resolve<global::Doroti.Framework.Painting.BorderSide?>(widget.side, searchBarTheme.side, defaults.side);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = resolve<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(widget.padding, searchBarTheme.padding, defaults.padding);
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveOverlayColor = (widget.overlayColor ?? searchBarTheme.overlayColor) ?? defaults.overlayColor;
+        global::Doroti.Framework.Services.TextCapitalization effectiveTextCapitalization = (widget.textCapitalization ?? searchBarTheme.textCapitalization) ?? DartRuntimePrimitives.RequireValue(defaults.textCapitalization);
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> statesLocal = _internalStatesController.value;
+        global::Doroti.Framework.Painting.TextStyle? effectiveHintStyle = (((widget.hintStyle?.resolve(statesLocal) ?? (searchBarTheme.hintStyle?.resolve(statesLocal))) ?? (widget.textStyle?.resolve(statesLocal))) ?? (searchBarTheme.textStyle?.resolve(statesLocal))) ?? (defaults.hintStyle?.resolve(statesLocal));
+        global::Doroti.Ui.Color defaultColor = colorSchemeLocal.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        global::Doroti.Framework.Widgets.IconThemeData? customTheme = IconTheme.of(context) switch { global::Doroti.Framework.Widgets.IconThemeData iconTheme when !Equals(iconTheme.color, defaultColor) => iconTheme, _ => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.IconThemeData>(null) };
         global::Doroti.Framework.Widgets.Widget? leadingLocal = default!;
-        if ((((SearchBar)this.widget).leading is not null))
+        if (widget.leading is not null)
         {
-            leadingLocal = IconTheme.merge(data: (customTheme ?? new global::Doroti.Framework.Widgets.IconThemeData(color: colorSchemeLocal.onSurface)), child: ((SearchBar)this.widget).leading!);
+            leadingLocal = IconTheme.merge(data: customTheme ?? new global::Doroti.Framework.Widgets.IconThemeData(color: colorSchemeLocal.onSurface), child: widget.leading!);
         }
-        List<global::Doroti.Framework.Widgets.Widget>? trailingLocal = ((SearchBar)this.widget).trailing?.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((trailing) => IconTheme.merge(data: (customTheme ?? new global::Doroti.Framework.Widgets.IconThemeData(color: colorSchemeLocal.onSurfaceVariant)), child: trailing))).ToList().ToList();
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: ((((SearchBar)this.widget).constraints ?? searchBarTheme.constraints) ?? defaults.constraints!), child: new global::Doroti.Framework.Widgets.Opacity(opacity: (((SearchBar)this.widget).enabled ? 1 : Search_anchorLibrary._kDisableSearchBarOpacity), child: new Material(elevation: DartRuntimePrimitives.RequireValue(effectiveElevation), shadowColor: effectiveShadowColor, color: effectiveBackgroundColor, surfaceTintColor: effectiveSurfaceTintColor, shape: effectiveShape?.copyWith(side: effectiveSide), child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: !((SearchBar)this.widget).enabled, child: new InkWell(onTap: (() =>
+        List<global::Doroti.Framework.Widgets.Widget>? trailingLocal = widget.trailing?.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>((trailing) => IconTheme.merge(data: customTheme ?? new global::Doroti.Framework.Widgets.IconThemeData(color: colorSchemeLocal.onSurfaceVariant), child: trailing)).ToList().ToList();
+        return new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: (widget.constraints ?? searchBarTheme.constraints) ?? defaults.constraints!, child: new global::Doroti.Framework.Widgets.Opacity(opacity: widget.enabled ? 1 : Search_anchorLibrary._kDisableSearchBarOpacity, child: new Material(elevation: DartRuntimePrimitives.RequireValue(effectiveElevation), shadowColor: effectiveShadowColor, color: effectiveBackgroundColor, surfaceTintColor: effectiveSurfaceTintColor, shape: effectiveShape?.copyWith(side: effectiveSide), child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: !widget.enabled, child: new InkWell(onTap: () =>
         {
-            ((SearchBar)this.widget).onTap?.Invoke();
-            if (!((global::Doroti.Framework.Widgets.FocusNode)this._focusNode).hasFocus)
+            widget.onTap?.Invoke();
+            if (!_focusNode.hasFocus)
             {
-                this._focusNode.requestFocus();
+                _focusNode.requestFocus();
             }
-        }), overlayColor: effectiveOverlayColor, customBorder: effectiveShape?.copyWith(side: effectiveSide), statesController: this._internalStatesController, child: new global::Doroti.Framework.Widgets.Padding(padding: effectivePadding!, child: new global::Doroti.Framework.Widgets.Row(textDirection: textDirectionLocal, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection64758 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement64788 = leadingLocal; if (__collectionElement64788 is { } __nonNullCollectionElement64788) { __collection64758.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement64788)); } __collection64758.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: DartRuntimePrimitives.RequireReference(effectivePadding), child: new global::Doroti.Framework.Widgets.Semantics(inputType: SemanticsInputType.search, child: new TextField(readOnly: ((SearchBar)this.widget).readOnly, autofocus: ((SearchBar)this.widget).autoFocus, onTap: ((SearchBar)this.widget).onTap, onTapAlwaysCalled: true, onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>?)((SearchBar)this.widget).onTapOutside, focusNode: this._focusNode, onChanged: (global::System.Action<string>?)((SearchBar)this.widget).onChanged, onSubmitted: (global::System.Action<string>?)((SearchBar)this.widget).onSubmitted, controller: ((SearchBar)this.widget).controller, style: effectiveTextStyle, enabled: ((SearchBar)this.widget).enabled, decoration: new InputDecoration(hintText: ((SearchBar)this.widget).hintText).applyDefaults(new InputDecorationThemeData(hintStyle: effectiveHintStyle, enabledBorder: InputBorder.none, border: InputBorder.none, focusedBorder: InputBorder.none, contentPadding: EdgeInsets.zero, isDense: true)), textCapitalization: effectiveTextCapitalization, textInputAction: ((SearchBar)this.widget).textInputAction, keyboardType: ((SearchBar)this.widget).keyboardType, scrollPadding: ((SearchBar)this.widget).scrollPadding, contextMenuBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>?)((SearchBar)this.widget).contextMenuBuilder, smartDashesType: ((SearchBar)this.widget).smartDashesType, smartQuotesType: ((SearchBar)this.widget).smartQuotesType)))))); var __collectionSpread67233 = trailingLocal; if (__collectionSpread67233 is not null) { __collection64758.AddRange(__collectionSpread67233); } return __collection64758; }))()))))))));
+        }, overlayColor: effectiveOverlayColor, customBorder: effectiveShape?.copyWith(side: effectiveSide), statesController: _internalStatesController, child: new global::Doroti.Framework.Widgets.Padding(padding: effectivePadding!, child: new global::Doroti.Framework.Widgets.Row(textDirection: textDirectionLocal, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection64758 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement64788 = leadingLocal; if (__collectionElement64788 is { } __nonNullCollectionElement64788) { __collection64758.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement64788)); } __collection64758.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: DartRuntimePrimitives.RequireReference(effectivePadding), child: new global::Doroti.Framework.Widgets.Semantics(inputType: SemanticsInputType.search, child: new TextField(readOnly: widget.readOnly, autofocus: widget.autoFocus, onTap: widget.onTap, onTapAlwaysCalled: true, onTapOutside: widget.onTapOutside, focusNode: _focusNode, onChanged: widget.onChanged, onSubmitted: widget.onSubmitted, controller: widget.controller, style: effectiveTextStyle, enabled: widget.enabled, decoration: new InputDecoration(hintText: widget.hintText).applyDefaults(new InputDecorationThemeData(hintStyle: effectiveHintStyle, enabledBorder: InputBorder.none, border: InputBorder.none, focusedBorder: InputBorder.none, contentPadding: EdgeInsets.zero, isDense: true)), textCapitalization: effectiveTextCapitalization, textInputAction: widget.textInputAction, keyboardType: widget.keyboardType, scrollPadding: widget.scrollPadding, contextMenuBuilder: widget.contextMenuBuilder, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType)))))); var __collectionSpread67233 = trailingLocal; if (__collectionSpread67233 is not null) { __collection64758.AddRange(__collectionSpread67233); } return __collection64758; }))())))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -909,7 +909,7 @@ internal class _SearchBarDefaultsM3__search_anchor : SearchBarThemeData
         {
             if (!__late__colors_initialized)
             {
-                __late__colors = Theme.of(this.context).colorScheme;
+                __late__colors = Theme.of(context).colorScheme;
                 __late__colors_initialized = true;
             }
             return __late__colors;
@@ -923,7 +923,7 @@ internal class _SearchBarDefaultsM3__search_anchor : SearchBarThemeData
         {
             if (!__late__textTheme_initialized)
             {
-                __late__textTheme = Theme.of(this.context).textTheme;
+                __late__textTheme = Theme.of(context).textTheme;
                 __late__textTheme_initialized = true;
             }
             return __late__textTheme;
@@ -935,31 +935,31 @@ internal class _SearchBarDefaultsM3__search_anchor : SearchBarThemeData
         this.context = context;
     }
 
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(this._colors.surfaceContainerHigh));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(_colors.surfaceContainerHigh));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(6.0));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(this._colors.shadow));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(_colors.shadow));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.pressed))
         {
-            return (this._colors.onSurface.withOpacity(0.1));
+            return _colors.onSurface.withOpacity(0.1);
         }
         if (states.Contains(WidgetState.hovered))
         {
-            return (this._colors.onSurface.withOpacity(0.08));
+            return _colors.onSurface.withOpacity(0.08);
         }
         if (states.Contains(WidgetState.focused))
         {
-            return (Colors.transparent);
+            return Colors.transparent;
         }
-        return (Colors.transparent);
+        return Colors.transparent;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.CreateSymmetric(horizontal: 8.0)));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(this._textTheme.bodyLarge?.copyWith(color: this._colors.onSurface)));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> hintStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(this._textTheme.bodyLarge?.copyWith(color: this._colors.onSurfaceVariant)));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(_textTheme.bodyLarge?.copyWith(color: _colors.onSurface)));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> hintStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(_textTheme.bodyLarge?.copyWith(color: _colors.onSurfaceVariant)));
     public override global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 360.0, maxWidth: 800.0, minHeight: 56.0);
     public override global::Doroti.Framework.Services.TextCapitalization? textCapitalization => TextCapitalization.none;
 }
@@ -976,7 +976,7 @@ internal class _SearchViewDefaultsM3__search_anchor : SearchViewThemeData
         {
             if (!__late__colors_initialized)
             {
-                __late__colors = Theme.of(this.context).colorScheme;
+                __late__colors = Theme.of(context).colorScheme;
                 __late__colors_initialized = true;
             }
             return __late__colors;
@@ -990,7 +990,7 @@ internal class _SearchViewDefaultsM3__search_anchor : SearchViewThemeData
         {
             if (!__late__textTheme_initialized)
             {
-                __late__textTheme = Theme.of(this.context).textTheme;
+                __late__textTheme = Theme.of(context).textTheme;
                 __late__textTheme_initialized = true;
             }
             return __late__textTheme;
@@ -1004,14 +1004,14 @@ internal class _SearchViewDefaultsM3__search_anchor : SearchViewThemeData
         this.isFullScreen = isFullScreen;
     }
 
-    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerHigh);
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.surfaceContainerHigh);
     public override double? elevation => 6.0;
     public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.OutlinedBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>((this.isFullScreen ? new global::Doroti.Framework.Painting.RoundedRectangleBorder() : new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(28.0)))));
-    public override global::Doroti.Framework.Painting.TextStyle? headerTextStyle => this._textTheme.bodyLarge?.copyWith(color: this._colors.onSurface);
-    public override global::Doroti.Framework.Painting.TextStyle? headerHintStyle => this._textTheme.bodyLarge?.copyWith(color: this._colors.onSurfaceVariant);
+    public override global::Doroti.Framework.Painting.OutlinedBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(isFullScreen ? new global::Doroti.Framework.Painting.RoundedRectangleBorder() : new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(28.0))));
+    public override global::Doroti.Framework.Painting.TextStyle? headerTextStyle => _textTheme.bodyLarge?.copyWith(color: _colors.onSurface);
+    public override global::Doroti.Framework.Painting.TextStyle? headerHintStyle => _textTheme.bodyLarge?.copyWith(color: _colors.onSurfaceVariant);
     public override global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 360.0, minHeight: 240.0);
     public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? barPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.CreateSymmetric(horizontal: 8.0));
     public override bool? shrinkWrap => false;
-    public override global::Doroti.Ui.Color? dividerColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.outline);
+    public override global::Doroti.Ui.Color? dividerColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.outline);
 }

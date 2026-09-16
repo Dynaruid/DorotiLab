@@ -22,10 +22,10 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         }
     }
 
-    public override global::Doroti.Framework.Painting.AxisDirection axisDirection => ((ScrollContext)this.context).axisDirection;
+    public override global::Doroti.Framework.Painting.AxisDirection axisDirection => context.axisDirection;
     public override double setPixels(double newPixels)
     {
-        DartRuntimePrimitives.Assert(() => this.activity!.isScrolling);
+        DartRuntimePrimitives.Assert(() => activity!.isScrolling);
         return base.setPixels(newPixels);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -33,18 +33,18 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public override void absorb(ScrollPosition other)
     {
         base.absorb(other);
-        if ((other is not ScrollPositionWithSingleContext))
+        if (other is not ScrollPositionWithSingleContext)
         {
             goIdle();
             return;
         }
-        this.activity!.updateDelegate(this);
-        _userScrollDirection = ((ScrollPositionWithSingleContext)((ScrollPositionWithSingleContext)other))._userScrollDirection;
-        DartRuntimePrimitives.Assert(() => (this._currentDrag is null));
-        if ((((ScrollPositionWithSingleContext)((ScrollPositionWithSingleContext)other))._currentDrag is not null))
+        activity!.updateDelegate(this);
+        _userScrollDirection = ((ScrollPositionWithSingleContext)other)._userScrollDirection;
+        DartRuntimePrimitives.Assert(() => _currentDrag is null);
+        if (((ScrollPositionWithSingleContext)other)._currentDrag is not null)
         {
-            _currentDrag = ((ScrollPositionWithSingleContext)((ScrollPositionWithSingleContext)other))._currentDrag;
-            this._currentDrag!.updateDelegate(this);
+            _currentDrag = ((ScrollPositionWithSingleContext)other)._currentDrag;
+            _currentDrag!.updateDelegate(this);
             ((ScrollPositionWithSingleContext)other)._currentDrag = null;
         }
     }
@@ -52,21 +52,21 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public override void applyNewDimensions()
     {
         base.applyNewDimensions();
-        this.context.setCanDrag(this.physics.shouldAcceptUserOffset(this));
+        context.setCanDrag(physics.shouldAcceptUserOffset(this));
     }
 
     public override void beginActivity(ScrollActivity? newActivity)
     {
         _heldPreviousVelocity = 0.0;
-        if ((newActivity is null))
+        if (newActivity is null)
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => (Equals(((ScrollActivity)newActivity).@delegate, this)));
+        DartRuntimePrimitives.Assert(() => Equals(newActivity.@delegate, this));
         base.beginActivity(newActivity);
-        this._currentDrag?.dispose();
+        _currentDrag?.dispose();
         _currentDrag = null;
-        if (!this.activity!.isScrolling)
+        if (!activity!.isScrolling)
         {
             updateUserScrollDirection(ScrollDirection.idle);
         }
@@ -74,8 +74,8 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public virtual void applyUserOffset(double delta)
     {
-        updateUserScrollDirection(((delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse));
-        setPixels((this.pixels - this.physics.applyPhysicsToUserOffset(this, delta)));
+        updateUserScrollDirection((delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse);
+        setPixels(pixels - physics.applyPhysicsToUserOffset(this, delta));
     }
 
     public virtual void goIdle()
@@ -85,11 +85,11 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public virtual void goBallistic(double velocity)
     {
-        DartRuntimePrimitives.Assert(() => this.hasPixels);
-        global::Doroti.Framework.Physics.Simulation? simulation = ((global::Doroti.Framework.Physics.Simulation?)this.physics.createBallisticSimulation(this, velocity));
-        if ((simulation is not null))
+        DartRuntimePrimitives.Assert(() => hasPixels);
+        global::Doroti.Framework.Physics.Simulation? simulation = physics.createBallisticSimulation(this, velocity);
+        if (simulation is not null)
         {
-            beginActivity(new BallisticScrollActivity(this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
+            beginActivity(new BallisticScrollActivity(this, simulation, context.vsync, shouldIgnorePointer));
         }
         else
         {
@@ -97,10 +97,10 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         }
     }
 
-    public override global::Doroti.Framework.Rendering.ScrollDirection userScrollDirection => this._userScrollDirection;
+    public override global::Doroti.Framework.Rendering.ScrollDirection userScrollDirection => _userScrollDirection;
     public virtual void updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection value)
     {
-        if ((Equals(this.userScrollDirection, value)))
+        if (Equals(userScrollDirection, value))
         {
             return;
         }
@@ -110,26 +110,26 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public override Future animateTo(double to, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
-        if (Physics.UtilsLibrary.nearEqual(to, this.pixels, this.physics.toleranceFor(this).distance))
+        if (Physics.UtilsLibrary.nearEqual(to, pixels, physics.toleranceFor(this).distance))
         {
             jumpTo(to);
             return Future.value();
         }
-        var activity = new DrivenScrollActivity(this, from: this.pixels, to: to, duration: duration, curve: curve, vsync: ((ScrollContext)this.context).vsync);
+        var activity = new DrivenScrollActivity(this, from: pixels, to: to, duration: duration, curve: curve, vsync: context.vsync);
         beginActivity(activity);
-        return ((DrivenScrollActivity)activity).done;
+        return activity.done;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void jumpTo(double pixels)
     {
         goIdle();
-        if ((this.pixels != pixels))
+        if (this.pixels != pixels)
         {
             double oldPixels = this.pixels;
             forcePixels(pixels);
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels));
+            didUpdateScrollPositionBy(this.pixels - oldPixels);
             didEndScroll();
         }
         goBallistic(0.0);
@@ -137,21 +137,21 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public override void pointerScroll(double delta)
     {
-        if ((delta == 0.0))
+        if (delta == 0.0)
         {
             goBallistic(0.0);
             return;
         }
-        double targetPixels = Math.Min(Math.Max((this.pixels + delta), this.minScrollExtent), this.maxScrollExtent);
-        if ((targetPixels != this.pixels))
+        double targetPixels = Math.Min(Math.Max(pixels + delta, minScrollExtent), maxScrollExtent);
+        if (targetPixels != pixels)
         {
             goIdle();
-            updateUserScrollDirection(((-delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse));
-            double oldPixels = this.pixels;
-            this.isScrollingNotifier.value = true;
+            updateUserScrollDirection((-delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse);
+            double oldPixels = pixels;
+            isScrollingNotifier.value = true;
             forcePixels(targetPixels);
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels));
+            didUpdateScrollPositionBy(pixels - oldPixels);
             didEndScroll();
             goBallistic(0.0);
         }
@@ -160,39 +160,39 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public override void jumpToWithoutSettling(double value)
     {
         goIdle();
-        if ((this.pixels != value))
+        if (pixels != value)
         {
-            double oldPixels = this.pixels;
+            double oldPixels = pixels;
             forcePixels(value);
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels));
+            didUpdateScrollPositionBy(pixels - oldPixels);
             didEndScroll();
         }
     }
 
     public override ScrollHoldController hold(global::System.Action holdCancelCallback)
     {
-        double previousVelocity = this.activity!.velocity;
+        double previousVelocity = activity!.velocity;
         var holdActivity = new HoldScrollActivity(@delegate: this, onHoldCanceled: () => holdCancelCallback());
         beginActivity(holdActivity);
         _heldPreviousVelocity = previousVelocity;
-        return ((ScrollHoldController)holdActivity);
+        return holdActivity;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback)
     {
-        var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback(), carriedVelocity: this.physics.carriedMomentum(this._heldPreviousVelocity), motionStartDistanceThreshold: ((ScrollPhysics)this.physics).dragStartDistanceMotionThreshold);
+        var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback(), carriedVelocity: physics.carriedMomentum(_heldPreviousVelocity), motionStartDistanceThreshold: physics.dragStartDistanceMotionThreshold);
         beginActivity(new DragScrollActivity(this, dragLocal));
-        DartRuntimePrimitives.Assert(() => (this._currentDrag is null));
+        DartRuntimePrimitives.Assert(() => _currentDrag is null);
         _currentDrag = dragLocal;
-        return ((global::Doroti.Framework.Gestures.Drag)dragLocal);
+        return dragLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()
     {
-        this._currentDrag?.dispose();
+        _currentDrag?.dispose();
         _currentDrag = null;
         base.dispose();
     }
@@ -200,10 +200,10 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"{DartRuntimePrimitives.RuntimeType(this.context)}");
-        description.Add($"{this.physics}");
-        description.Add($"{this.activity}");
-        description.Add($"{this.userScrollDirection}");
+        description.Add($"{DartRuntimePrimitives.RuntimeType(context)}");
+        description.Add($"{physics}");
+        description.Add($"{activity}");
+        description.Add($"{userScrollDirection}");
     }
 
 }

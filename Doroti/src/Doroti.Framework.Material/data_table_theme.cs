@@ -39,19 +39,19 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
         this.headingCellCursor = headingCellCursor;
         this.dataRowCursor = dataRowCursor;
         this.headingRowAlignment = headingRowAlignment;
-        this.dataRowMinHeight = (dataRowHeight ?? dataRowMinHeight);
-        this.dataRowMaxHeight = (dataRowHeight ?? dataRowMaxHeight);
-        System.Diagnostics.Debug.Assert((((dataRowMinHeight is null) || (dataRowMaxHeight is null)) || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight))));
-        System.Diagnostics.Debug.Assert(((dataRowHeight is null) || (((dataRowMinHeight is null) && (dataRowMaxHeight is null)))));
+        this.dataRowMinHeight = dataRowHeight ?? dataRowMinHeight;
+        this.dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;
+        System.Diagnostics.Debug.Assert((dataRowMinHeight is null) || (dataRowMaxHeight is null) || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight)));
+        System.Diagnostics.Debug.Assert((dataRowHeight is null) || (dataRowMinHeight is null) && (dataRowMaxHeight is null));
     }
 
-    public virtual double? dataRowHeight => ((this.dataRowMinHeight == this.dataRowMaxHeight) ? this.dataRowMinHeight : null);
+    public virtual double? dataRowHeight => (dataRowMinHeight == dataRowMaxHeight) ? dataRowMinHeight : null;
     public virtual DataTableThemeData copyWith(global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, global::Doroti.Framework.Painting.TextStyle? dataTextStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, global::Doroti.Framework.Painting.TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, double? dividerThickness = null, double? checkboxHorizontalMargin = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? headingCellCursor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? dataRowCursor = null, global::Doroti.Framework.Rendering.MainAxisAlignment? headingRowAlignment = null)
     {
-        DartRuntimePrimitives.Assert(() => ((dataRowHeight is null) || (((dataRowMinHeight is null) && (dataRowMaxHeight is null)))), () => (object?)$"dataRowHeight ({DartRuntimePrimitives.RequireValue(dataRowHeight)}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set.");
-        dataRowMinHeight = (dataRowHeight ?? dataRowMinHeight);
-        dataRowMaxHeight = (dataRowHeight ?? dataRowMaxHeight);
-        return new DataTableThemeData(decoration: (decoration ?? this.decoration), dataRowColor: (dataRowColor ?? this.dataRowColor), dataRowMinHeight: (dataRowMinHeight ?? this.dataRowMinHeight), dataRowMaxHeight: (dataRowMaxHeight ?? this.dataRowMaxHeight), dataTextStyle: (dataTextStyle ?? this.dataTextStyle), headingRowColor: (headingRowColor ?? this.headingRowColor), headingRowHeight: (headingRowHeight ?? this.headingRowHeight), headingTextStyle: (headingTextStyle ?? this.headingTextStyle), horizontalMargin: (horizontalMargin ?? this.horizontalMargin), columnSpacing: (columnSpacing ?? this.columnSpacing), dividerThickness: (dividerThickness ?? this.dividerThickness), checkboxHorizontalMargin: (checkboxHorizontalMargin ?? this.checkboxHorizontalMargin), headingCellCursor: (headingCellCursor ?? this.headingCellCursor), dataRowCursor: (dataRowCursor ?? this.dataRowCursor), headingRowAlignment: (headingRowAlignment ?? this.headingRowAlignment));
+        DartRuntimePrimitives.Assert(() => (dataRowHeight is null) || (dataRowMinHeight is null) && (dataRowMaxHeight is null), () => (object?)$"dataRowHeight ({DartRuntimePrimitives.RequireValue(dataRowHeight)}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set.");
+        dataRowMinHeight = dataRowHeight ?? dataRowMinHeight;
+        dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;
+        return new DataTableThemeData(decoration: decoration ?? this.decoration, dataRowColor: dataRowColor ?? this.dataRowColor, dataRowMinHeight: dataRowMinHeight ?? this.dataRowMinHeight, dataRowMaxHeight: dataRowMaxHeight ?? this.dataRowMaxHeight, dataTextStyle: dataTextStyle ?? this.dataTextStyle, headingRowColor: headingRowColor ?? this.headingRowColor, headingRowHeight: headingRowHeight ?? this.headingRowHeight, headingTextStyle: headingTextStyle ?? this.headingTextStyle, horizontalMargin: horizontalMargin ?? this.horizontalMargin, columnSpacing: columnSpacing ?? this.columnSpacing, dividerThickness: dividerThickness ?? this.dividerThickness, checkboxHorizontalMargin: checkboxHorizontalMargin ?? this.checkboxHorizontalMargin, headingCellCursor: headingCellCursor ?? this.headingCellCursor, dataRowCursor: dataRowCursor ?? this.dataRowCursor, headingRowAlignment: headingRowAlignment ?? this.headingRowAlignment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -61,11 +61,11 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return a;
         }
-        return new DataTableThemeData(decoration: Decoration.lerp(((DataTableThemeData)a).decoration, ((DataTableThemeData)b).decoration, t), dataRowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(((DataTableThemeData)a).dataRowColor, ((DataTableThemeData)b).dataRowColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dataRowMinHeight: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).dataRowMinHeight, ((DataTableThemeData)b).dataRowMinHeight, t), dataRowMaxHeight: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).dataRowMaxHeight, ((DataTableThemeData)b).dataRowMaxHeight, t), dataTextStyle: TextStyle.lerp(((DataTableThemeData)a).dataTextStyle, ((DataTableThemeData)b).dataTextStyle, t), headingRowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(((DataTableThemeData)a).headingRowColor, ((DataTableThemeData)b).headingRowColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), headingRowHeight: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).headingRowHeight, ((DataTableThemeData)b).headingRowHeight, t), headingTextStyle: TextStyle.lerp(((DataTableThemeData)a).headingTextStyle, ((DataTableThemeData)b).headingTextStyle, t), horizontalMargin: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).horizontalMargin, ((DataTableThemeData)b).horizontalMargin, t), columnSpacing: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).columnSpacing, ((DataTableThemeData)b).columnSpacing, t), dividerThickness: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).dividerThickness, ((DataTableThemeData)b).dividerThickness, t), checkboxHorizontalMargin: Dart_uiLibrary.lerpDouble(((DataTableThemeData)a).checkboxHorizontalMargin, ((DataTableThemeData)b).checkboxHorizontalMargin, t), headingCellCursor: ((t < 0.5) ? ((DataTableThemeData)a).headingCellCursor : ((DataTableThemeData)b).headingCellCursor), dataRowCursor: ((t < 0.5) ? ((DataTableThemeData)a).dataRowCursor : ((DataTableThemeData)b).dataRowCursor), headingRowAlignment: ((t < 0.5) ? ((DataTableThemeData)a).headingRowAlignment : ((DataTableThemeData)b).headingRowAlignment));
+        return new DataTableThemeData(decoration: Decoration.lerp(a.decoration, b.decoration, t), dataRowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a.dataRowColor, b.dataRowColor, t, Color.lerp), dataRowMinHeight: Dart_uiLibrary.lerpDouble(a.dataRowMinHeight, b.dataRowMinHeight, t), dataRowMaxHeight: Dart_uiLibrary.lerpDouble(a.dataRowMaxHeight, b.dataRowMaxHeight, t), dataTextStyle: TextStyle.lerp(a.dataTextStyle, b.dataTextStyle, t), headingRowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a.headingRowColor, b.headingRowColor, t, Color.lerp), headingRowHeight: Dart_uiLibrary.lerpDouble(a.headingRowHeight, b.headingRowHeight, t), headingTextStyle: TextStyle.lerp(a.headingTextStyle, b.headingTextStyle, t), horizontalMargin: Dart_uiLibrary.lerpDouble(a.horizontalMargin, b.horizontalMargin, t), columnSpacing: Dart_uiLibrary.lerpDouble(a.columnSpacing, b.columnSpacing, t), dividerThickness: Dart_uiLibrary.lerpDouble(a.dividerThickness, b.dividerThickness, t), checkboxHorizontalMargin: Dart_uiLibrary.lerpDouble(a.checkboxHorizontalMargin, b.checkboxHorizontalMargin, t), headingCellCursor: (t < 0.5) ? a.headingCellCursor : b.headingCellCursor, dataRowCursor: (t < 0.5) ? a.dataRowCursor : b.dataRowCursor, headingRowAlignment: (t < 0.5) ? a.headingRowAlignment : b.headingRowAlignment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.decoration, this.dataRowColor, this.dataRowMinHeight, this.dataRowMaxHeight, this.dataTextStyle, this.headingRowColor, this.headingRowHeight, this.headingTextStyle, this.horizontalMargin, this.columnSpacing, this.dividerThickness, this.checkboxHorizontalMargin, this.headingCellCursor, this.dataRowCursor, this.headingRowAlignment));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(decoration, dataRowColor, dataRowMinHeight, dataRowMaxHeight, dataTextStyle, headingRowColor, headingRowHeight, headingTextStyle, horizontalMargin, columnSpacing, dividerThickness, checkboxHorizontalMargin, headingCellCursor, dataRowCursor, headingRowAlignment));
     public override bool Equals(object? other)
     {
         var __other = other as DataTableThemeData;
@@ -74,30 +74,30 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((((((((__other is DataTableThemeData) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).decoration, this.decoration))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowColor, this.dataRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMinHeight == this.dataRowMinHeight)) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMaxHeight == this.dataRowMaxHeight)) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataTextStyle, this.dataTextStyle))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowColor, this.headingRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).headingRowHeight == this.headingRowHeight)) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingTextStyle, this.headingTextStyle))) && (((DataTableThemeData)((DataTableThemeData)__other)).horizontalMargin == this.horizontalMargin)) && (((DataTableThemeData)((DataTableThemeData)__other)).columnSpacing == this.columnSpacing)) && (((DataTableThemeData)((DataTableThemeData)__other)).dividerThickness == this.dividerThickness)) && (((DataTableThemeData)((DataTableThemeData)__other)).checkboxHorizontalMargin == this.checkboxHorizontalMargin)) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingCellCursor, this.headingCellCursor))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowCursor, this.dataRowCursor))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowAlignment, this.headingRowAlignment)));
+        return (__other is DataTableThemeData) && Equals(__other.decoration, decoration) && Equals(__other.dataRowColor, dataRowColor) && (__other.dataRowMinHeight == dataRowMinHeight) && (__other.dataRowMaxHeight == dataRowMaxHeight) && Equals(__other.dataTextStyle, dataTextStyle) && Equals(__other.headingRowColor, headingRowColor) && (__other.headingRowHeight == headingRowHeight) && Equals(__other.headingTextStyle, headingTextStyle) && (__other.horizontalMargin == horizontalMargin) && (__other.columnSpacing == columnSpacing) && (__other.dividerThickness == dividerThickness) && (__other.checkboxHorizontalMargin == checkboxHorizontalMargin) && Equals(__other.headingCellCursor, headingCellCursor) && Equals(__other.dataRowCursor, dataRowCursor) && Equals(__other.headingRowAlignment, headingRowAlignment);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("decoration", this.decoration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("dataRowColor", this.dataRowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dataRowMinHeight", this.dataRowMinHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dataRowMaxHeight", this.dataRowMaxHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("dataTextStyle", this.dataTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("headingRowColor", this.headingRowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("headingRowHeight", this.headingRowHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headingTextStyle", this.headingTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("horizontalMargin", this.horizontalMargin, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("columnSpacing", this.columnSpacing, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dividerThickness", this.dividerThickness, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("checkboxHorizontalMargin", this.checkboxHorizontalMargin, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("headingCellCursor", this.headingCellCursor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("dataRowCursor", this.dataRowCursor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("headingRowAlignment", this.headingRowAlignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("decoration", decoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("dataRowColor", dataRowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dataRowMinHeight", dataRowMinHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dataRowMaxHeight", dataRowMaxHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("dataTextStyle", dataTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("headingRowColor", headingRowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("headingRowHeight", headingRowHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headingTextStyle", headingTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("horizontalMargin", horizontalMargin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("columnSpacing", columnSpacing, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dividerThickness", dividerThickness, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("checkboxHorizontalMargin", checkboxHorizontalMargin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("headingCellCursor", headingCellCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("dataRowCursor", dataRowCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("headingRowAlignment", headingRowAlignment, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -111,13 +111,13 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,10 +134,10 @@ public class DataTableTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static DataTableThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DataTableTheme? dataTableThemeLocal = ((DataTableTheme?)context.dependOnInheritedWidgetOfExactType<DataTableTheme>());
-        return (dataTableThemeLocal?.data ?? Theme.of(context).dataTableTheme);
+        DataTableTheme? dataTableThemeLocal = context.dependOnInheritedWidgetOfExactType<DataTableTheme>();
+        return dataTableThemeLocal?.data ?? Theme.of(context).dataTableTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DataTableTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((DataTableTheme)oldWidget).data));
 }

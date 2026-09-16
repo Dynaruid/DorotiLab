@@ -20,41 +20,41 @@ public class CupertinoSpellCheckSuggestionsToolbar : global::Doroti.Framework.Wi
     {
         this.anchors = anchors;
         this.buttonItems = buttonItems;
-        System.Diagnostics.Debug.Assert((checked((long)(buttonItems.Count)) <= Spell_check_suggestions_toolbarLibrary._kMaxSuggestions));
+        System.Diagnostics.Debug.Assert(checked(buttonItems.Count) <= Spell_check_suggestions_toolbarLibrary._kMaxSuggestions);
     }
 
     public static CupertinoSpellCheckSuggestionsToolbar CreateEditableText(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.EditableTextState editableTextState = default!)
     {
         var __instance = new CupertinoSpellCheckSuggestionsToolbar(key: key, anchors: default!, buttonItems: default!);
-        __instance.buttonItems = (buildButtonItems(editableTextState) ?? new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem>());
-        __instance.anchors = ((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).contextMenuAnchors;
+        __instance.buttonItems = buildButtonItems(editableTextState) ?? new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem>();
+        __instance.anchors = editableTextState.contextMenuAnchors;
         return __instance;
     }
 
     public static List<global::Doroti.Framework.Widgets.ContextMenuButtonItem>? buildButtonItems(global::Doroti.Framework.Widgets.EditableTextState editableTextState)
     {
-        global::Doroti.Framework.Services.SuggestionSpan? spanAtCursorIndex = ((global::Doroti.Framework.Services.SuggestionSpan?)editableTextState.findSuggestionSpanAtCursorIndex(((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).currentTextEditingValue.selection.baseOffset));
-        if ((spanAtCursorIndex is null))
+        global::Doroti.Framework.Services.SuggestionSpan? spanAtCursorIndex = editableTextState.findSuggestionSpanAtCursorIndex(editableTextState.currentTextEditingValue.selection.baseOffset);
+        if (spanAtCursorIndex is null)
         {
             return null;
         }
-        if (!Enumerable.Any(((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex).suggestions))
+        if (!Enumerable.Any(spanAtCursorIndex.suggestions))
         {
             DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasCupertinoLocalizations(editableTextState.context));
-            CupertinoLocalizations localizations = ((CupertinoLocalizations)CupertinoLocalizations.of(editableTextState.context));
-            return new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem> { new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: null, label: ((CupertinoLocalizations)localizations).noSpellCheckReplacementsLabel) };
+            CupertinoLocalizations localizations = CupertinoLocalizations.of(editableTextState.context);
+            return new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem> { new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: null, label: localizations.noSpellCheckReplacementsLabel) };
         }
         var buttonItems = new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem>();
-        foreach (string suggestion in ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex).suggestions.take(Spell_check_suggestions_toolbarLibrary._kMaxSuggestions))
+        foreach (string suggestion in spanAtCursorIndex.suggestions.take(Spell_check_suggestions_toolbarLibrary._kMaxSuggestions))
         {
-            buttonItems.Add(new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() =>
+            buttonItems.Add(new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: () =>
             {
                 if (!editableTextState.mounted)
                 {
                     return;
                 }
-                _replaceText(editableTextState, suggestion, ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex).range);
-            })), label: suggestion));
+                _replaceText(editableTextState, suggestion, spanAtCursorIndex.range);
+            }, label: suggestion));
         }
         return buttonItems;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -62,37 +62,37 @@ public class CupertinoSpellCheckSuggestionsToolbar : global::Doroti.Framework.Wi
 
     internal static void _replaceText(global::Doroti.Framework.Widgets.EditableTextState editableTextState, string text, TextRange replacementRange)
     {
-        DartRuntimePrimitives.Assert(() => (!editableTextState.widget.readOnly && !editableTextState.widget.obscureText));
-        global::Doroti.Framework.Services.TextEditingValue newValue = ((global::Doroti.Framework.Services.TextEditingValue)((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.replaced(replacementRange, text).copyWith(selection: TextSelection.CreateCollapsed(offset: (replacementRange.start + text.Length))));
+        DartRuntimePrimitives.Assert(() => !editableTextState.widget.readOnly && !editableTextState.widget.obscureText);
+        global::Doroti.Framework.Services.TextEditingValue newValue = editableTextState.textEditingValue.replaced(replacementRange, text).copyWith(selection: TextSelection.CreateCollapsed(offset: replacementRange.start + text.Length));
         editableTextState.userUpdateTextEditingValue(newValue, SelectionChangedCause.toolbar);
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) =>
         {
             if (editableTextState.mounted)
             {
-                editableTextState.bringIntoView(((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.selection.extent);
+                editableTextState.bringIntoView(editableTextState.textEditingValue.selection.extent);
             }
-        })), debugLabel: "SpellCheckSuggestions.bringIntoView");
+        }, debugLabel: "SpellCheckSuggestions.bringIntoView");
         editableTextState.hideToolbar();
     }
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildToolbarButtons(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>(((buttonItem) =>
+        return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>((buttonItem) =>
         {
             return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })).Cast<global::Doroti.Framework.Widgets.Widget>().ToList();
+        }).Cast<global::Doroti.Framework.Widgets.Widget>().ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if (!Enumerable.Any(this.buttonItems))
+        if (!Enumerable.Any(buttonItems))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
+            return SizedBox.CreateShrink();
         }
-        List<global::Doroti.Framework.Widgets.Widget> childrenLocal = ((List<global::Doroti.Framework.Widgets.Widget>)_buildToolbarButtons(context));
-        return ((global::Doroti.Framework.Widgets.Widget)new CupertinoTextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: ((((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor is null) ? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor : DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor)), children: childrenLocal));
+        List<global::Doroti.Framework.Widgets.Widget> childrenLocal = _buildToolbarButtons(context);
+        return new CupertinoTextSelectionToolbar(anchorAbove: anchors.primaryAnchor, anchorBelow: (anchors.secondaryAnchor is null) ? anchors.primaryAnchor : DartRuntimePrimitives.RequireValue(anchors.secondaryAnchor), children: childrenLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

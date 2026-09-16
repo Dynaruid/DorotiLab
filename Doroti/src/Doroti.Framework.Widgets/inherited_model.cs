@@ -21,26 +21,26 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
     public virtual bool isSupportedAspect(object aspect) => true;
     internal static void _findModels<TModel>(BuildContext context, object aspect, List<InheritedElement> results) where TModel : InheritedWidget
     {
-        InheritedElement? model = ((InheritedElement?)context.getElementForInheritedWidgetOfExactType<TModel>());
-        if ((model is null))
+        InheritedElement? model = context.getElementForInheritedWidgetOfExactType<TModel>();
+        if (model is null)
         {
             return;
         }
         results.Add(model);
-        DartRuntimePrimitives.Assert(() => (model.widget is TModel));
+        DartRuntimePrimitives.Assert(() => model.widget is TModel);
         var modelWidget = ((TModel?)model.widget)!;
         if (((IInheritedModelAspect)modelWidget).isSupportedAspect(aspect))
         {
             return;
         }
         Element? modelParent = default!;
-        model.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        model.visitAncestorElements((ancestor) =>
         {
             modelParent = ancestor;
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
-        if ((modelParent is null))
+        });
+        if (modelParent is null)
         {
             return;
         }
@@ -49,9 +49,9 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
 
     public static TModel? inheritFrom<TModel>(BuildContext context, object? aspect = null) where TModel : InheritedWidget
     {
-        if ((aspect is null))
+        if (aspect is null)
         {
-            return ((TModel?)context.dependOnInheritedWidgetOfExactType<TModel>());
+            return context.dependOnInheritedWidgetOfExactType<TModel>();
         }
         var models = new List<InheritedElement>();
         _findModels<TModel>(context, aspect, models);
@@ -63,7 +63,7 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
         foreach (var model in models)
         {
             var value = ((TModel?)context.dependOnInheritedElement(model, aspect: aspect))!;
-            if ((Equals(model, lastModel)))
+            if (Equals(model, lastModel))
             {
                 return value;
             }
@@ -84,20 +84,20 @@ public class InheritedModelElement<T> : InheritedElement where T : notnull
     public override void updateDependencies(Element dependent, object? aspect)
     {
         var dependencies = ((HashSet<T>?)getDependencies(dependent))!;
-        if (((dependencies is not null) && !Enumerable.Any(dependencies)))
+        if ((dependencies is not null) && !Enumerable.Any(dependencies))
         {
             return;
         }
-        if ((aspect is null))
+        if (aspect is null)
         {
             setDependencies(dependent, new HashSet<T>());
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (aspect is T));
+            DartRuntimePrimitives.Assert(() => aspect is T);
             setDependencies(dependent, ((Func<HashSet<T>>)(() =>
 {
-    var __cascade = ((dependencies ?? new HashSet<T>()));
+    var __cascade = dependencies ?? new HashSet<T>();
     __cascade.Add(((T?)(object?)aspect)!);
     return __cascade;
 }))());
@@ -108,11 +108,11 @@ public class InheritedModelElement<T> : InheritedElement where T : notnull
     {
         var __oldWidget = (InheritedModel<T>)oldWidget;
         var dependencies = ((HashSet<T>?)getDependencies(dependent))!;
-        if ((dependencies is null))
+        if (dependencies is null)
         {
             return;
         }
-        if ((!Enumerable.Any(dependencies) || (((InheritedModel<T>?)this.widget)!).updateShouldNotifyDependent(__oldWidget, dependencies)))
+        if (!Enumerable.Any(dependencies) || ((InheritedModel<T>?)widget)!.updateShouldNotifyDependent(__oldWidget, dependencies))
         {
             dependent.didChangeDependencies();
         }

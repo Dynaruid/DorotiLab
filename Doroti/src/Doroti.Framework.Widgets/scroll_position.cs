@@ -49,74 +49,74 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
         }
     }
 
-    public virtual double minScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._minScrollExtent));
-    public virtual double maxScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._maxScrollExtent));
-    public virtual bool hasContentDimensions => DartRuntimePrimitives.ConvertValue<bool>(((this._minScrollExtent is not null) && (this._maxScrollExtent is not null)));
-    public override double pixels => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._pixels));
-    public override bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>((this._pixels is not null));
-    public virtual double viewportDimension => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(this._viewportDimension));
-    public virtual bool hasViewportDimension => DartRuntimePrimitives.ConvertValue<bool>((this._viewportDimension is not null));
-    public virtual bool haveDimensions => this._haveDimensions;
-    public virtual bool shouldIgnorePointer => DartRuntimePrimitives.ConvertValue<bool>((!this.outOfRange && ((this.activity?.shouldIgnorePointer ?? true))));
+    public virtual double minScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_minScrollExtent));
+    public virtual double maxScrollExtent => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_maxScrollExtent));
+    public virtual bool hasContentDimensions => DartRuntimePrimitives.ConvertValue<bool>((_minScrollExtent is not null) && (_maxScrollExtent is not null));
+    public override double pixels => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_pixels));
+    public override bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>(_pixels is not null);
+    public virtual double viewportDimension => DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_viewportDimension));
+    public virtual bool hasViewportDimension => DartRuntimePrimitives.ConvertValue<bool>(_viewportDimension is not null);
+    public virtual bool haveDimensions => _haveDimensions;
+    public virtual bool shouldIgnorePointer => DartRuntimePrimitives.ConvertValue<bool>(!outOfRange && (activity?.shouldIgnorePointer ?? true));
     public virtual void absorb(ScrollPosition other)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((ScrollPosition)other).context, this.context)));
-        DartRuntimePrimitives.Assert(() => (this._pixels is null));
-        if (((ScrollPosition)other).hasContentDimensions)
+        DartRuntimePrimitives.Assert(() => Equals(other.context, context));
+        DartRuntimePrimitives.Assert(() => _pixels is null);
+        if (other.hasContentDimensions)
         {
-            _minScrollExtent = ((ScrollPosition)other).minScrollExtent;
-            _maxScrollExtent = ((ScrollPosition)other).maxScrollExtent;
+            _minScrollExtent = other.minScrollExtent;
+            _maxScrollExtent = other.maxScrollExtent;
         }
-        if (((ScrollPosition)other).hasPixels)
+        if (other.hasPixels)
         {
-            _pixels = ((ScrollPosition)other).pixels;
+            _pixels = other.pixels;
         }
-        if (((ScrollPosition)other).hasViewportDimension)
+        if (other.hasViewportDimension)
         {
-            _viewportDimension = ((ScrollPosition)other).viewportDimension;
+            _viewportDimension = other.viewportDimension;
         }
-        DartRuntimePrimitives.Assert(() => (this.activity is null));
-        DartRuntimePrimitives.Assert(() => (((ScrollPosition)other).activity is not null));
-        _activity = ((ScrollPosition)other).activity;
+        DartRuntimePrimitives.Assert(() => activity is null);
+        DartRuntimePrimitives.Assert(() => other.activity is not null);
+        _activity = other.activity;
         other._activity = null;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(other), GetType()))
         {
-            this.activity!.resetActivity();
+            activity!.resetActivity();
         }
-        this.context.setIgnorePointer(this.activity!.shouldIgnorePointer);
-        this.isScrollingNotifier.value = this.activity!.isScrolling;
+        context.setIgnorePointer(activity!.shouldIgnorePointer);
+        isScrollingNotifier.value = activity!.isScrolling;
     }
 
-    public virtual double devicePixelRatio => ((ScrollContext)this.context).devicePixelRatio;
+    public virtual double devicePixelRatio => context.devicePixelRatio;
     public virtual double setPixels(double newPixels)
     {
-        DartRuntimePrimitives.Assert(() => this.hasPixels);
-        DartRuntimePrimitives.Assert(() => (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)), () => (object?)"A scrollable's position should not change during the build, layout, and paint phases, otherwise the rendering will be confused.");
-        if ((newPixels != this.pixels))
+        DartRuntimePrimitives.Assert(() => hasPixels);
+        DartRuntimePrimitives.Assert(() => !Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks), () => (object?)"A scrollable's position should not change during the build, layout, and paint phases, otherwise the rendering will be confused.");
+        if (newPixels != pixels)
         {
             double overscroll = applyBoundaryConditions(newPixels);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    double delta = (newPixels - this.pixels);
-                    if ((overscroll.abs() > delta.abs()))
+                    double delta = newPixels - pixels;
+                    if (overscroll.abs() > delta.abs())
                     {
-                        throw DartRuntimePrimitives.AsException(FlutterError.Create($"{this.GetType()}.applyBoundaryConditions returned invalid overscroll value.\n" + $"setPixels() was called to change the scroll offset from {this.pixels} to {newPixels}.\n" + $"That is a delta of {delta} units.\n" + $"{this.GetType()}.applyBoundaryConditions reported an overscroll of {overscroll} units."));
+                        throw DartRuntimePrimitives.AsException(FlutterError.Create($"{GetType()}.applyBoundaryConditions returned invalid overscroll value.\n" + $"setPixels() was called to change the scroll offset from {pixels} to {newPixels}.\n" + $"That is a delta of {delta} units.\n" + $"{GetType()}.applyBoundaryConditions reported an overscroll of {overscroll} units."));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            double oldPixels = this.pixels;
-            _pixels = (newPixels - overscroll);
-            if ((this._pixels != oldPixels))
+            double oldPixels = pixels;
+            _pixels = newPixels - overscroll;
+            if (_pixels != oldPixels)
             {
-                if (this.outOfRange)
+                if (outOfRange)
                 {
-                    this.context.setIgnorePointer(false);
+                    context.setIgnorePointer(false);
                 }
                 notifyListeners();
-                didUpdateScrollPositionBy((this.pixels - oldPixels));
+                didUpdateScrollPositionBy(pixels - oldPixels);
             }
-            if ((overscroll.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance))
+            if (overscroll.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance)
             {
                 didOverscrollBy(overscroll);
                 return overscroll;
@@ -133,34 +133,34 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public override void correctBy(double correction)
     {
-        DartRuntimePrimitives.Assert(() => this.hasPixels, () => (object?)"An initial pixels value must exist by calling correctPixels on the ScrollPosition");
-        _pixels = (DartRuntimePrimitives.RequireValue(this._pixels) + correction);
+        DartRuntimePrimitives.Assert(() => hasPixels, () => (object?)"An initial pixels value must exist by calling correctPixels on the ScrollPosition");
+        _pixels = DartRuntimePrimitives.RequireValue(_pixels) + correction;
         _didChangeViewportDimensionOrReceiveCorrection = true;
     }
 
     public virtual void forcePixels(double value)
     {
-        DartRuntimePrimitives.Assert(() => this.hasPixels);
-        _impliedVelocity = (value - this.pixels);
+        DartRuntimePrimitives.Assert(() => hasPixels);
+        _impliedVelocity = value - pixels;
         _pixels = value;
         notifyListeners();
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
         {
             _impliedVelocity = 0;
-        })), debugLabel: "ScrollPosition.resetVelocity");
+        }, debugLabel: "ScrollPosition.resetVelocity");
     }
 
     public virtual void saveScrollOffset()
     {
-        PageStorage.maybeOf(((ScrollContext)this.context).storageContext)?.writeState(((ScrollContext)this.context).storageContext, this.pixels);
+        PageStorage.maybeOf(context.storageContext)?.writeState(context.storageContext, pixels);
     }
 
     public virtual void restoreScrollOffset()
     {
-        if (!this.hasPixels)
+        if (!hasPixels)
         {
-            var value = ((double?)PageStorage.maybeOf(((ScrollContext)this.context).storageContext)?.readState(((ScrollContext)this.context).storageContext));
-            if ((value is not null))
+            var value = (double?)PageStorage.maybeOf(context.storageContext)?.readState(context.storageContext);
+            if (value is not null)
             {
                 double value__23743__value23862 = DartRuntimePrimitives.RequireValue(value);
                 correctPixels(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value__23743__value23862)));
@@ -182,19 +182,19 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public virtual void saveOffset()
     {
-        DartRuntimePrimitives.Assert(() => this.hasPixels);
-        this.context.saveOffset(this.pixels);
+        DartRuntimePrimitives.Assert(() => hasPixels);
+        context.saveOffset(pixels);
     }
 
     public virtual double applyBoundaryConditions(double value)
     {
-        double result = this.physics.applyBoundaryConditions(this, value);
+        double result = physics.applyBoundaryConditions(this, value);
         DartRuntimePrimitives.Assert(() =>
             {
-                double delta = (value - this.pixels);
-                if ((result.abs() > delta.abs()))
+                double delta = value - pixels;
+                if (result.abs() > delta.abs())
                 {
-                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{DartRuntimePrimitives.RuntimeType(this.physics)}.applyBoundaryConditions returned invalid overscroll value.\n" + $"The method was called to consider a change from {this.pixels} to {value}, which is a " + $"delta of {delta.toStringAsFixed(1L)} units. However, it returned an overscroll of " + $"{result.toStringAsFixed(1L)} units, which has a greater magnitude than the delta. " + "The applyBoundaryConditions method is only supposed to reduce the possible range " + "of movement, not increase it.\n" + $"The scroll extents are {this.minScrollExtent} .. {this.maxScrollExtent}, and the " + $"viewport dimension is {this.viewportDimension}."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{DartRuntimePrimitives.RuntimeType(physics)}.applyBoundaryConditions returned invalid overscroll value.\n" + $"The method was called to consider a change from {pixels} to {value}, which is a " + $"delta of {delta.toStringAsFixed(1L)} units. However, it returned an overscroll of " + $"{result.toStringAsFixed(1L)} units, which has a greater magnitude than the delta. " + "The applyBoundaryConditions method is only supposed to reduce the possible range " + "of movement, not increase it.\n" + $"The scroll extents are {minScrollExtent} .. {maxScrollExtent}, and the " + $"viewport dimension is {viewportDimension}."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -205,7 +205,7 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public override bool applyViewportDimension(double viewportDimension)
     {
-        if ((this._viewportDimension != viewportDimension))
+        if (_viewportDimension != viewportDimension)
         {
             _viewportDimension = viewportDimension;
             _didChangeViewportDimensionOrReceiveCorrection = true;
@@ -216,42 +216,42 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     internal virtual bool _isMetricsChanged()
     {
-        DartRuntimePrimitives.Assert(() => this.haveDimensions);
-        ScrollMetrics currentMetrics = ((ScrollMetrics)copyWith());
-        return ((this._lastMetrics is null) || !(((((((ScrollMetrics)currentMetrics).extentBefore == this._lastMetrics!.extentBefore) && (((ScrollMetrics)currentMetrics).extentInside == this._lastMetrics!.extentInside)) && (((ScrollMetrics)currentMetrics).extentAfter == this._lastMetrics!.extentAfter)) && (Equals(((ScrollMetrics)currentMetrics).axisDirection, this._lastMetrics!.axisDirection)))));
+        DartRuntimePrimitives.Assert(() => haveDimensions);
+        ScrollMetrics currentMetrics = copyWith();
+        return (_lastMetrics is null) || !((currentMetrics.extentBefore == _lastMetrics!.extentBefore) && (currentMetrics.extentInside == _lastMetrics!.extentInside) && (currentMetrics.extentAfter == _lastMetrics!.extentAfter) && Equals(currentMetrics.axisDirection, _lastMetrics!.axisDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool applyContentDimensions(double minScrollExtent, double maxScrollExtent)
     {
-        DartRuntimePrimitives.Assert(() => (this.haveDimensions == ((this._lastMetrics is not null))));
-        if ((((!Physics.UtilsLibrary.nearEqual(this._minScrollExtent, minScrollExtent, Physics.Tolerance.defaultTolerance.distance) || !Physics.UtilsLibrary.nearEqual(this._maxScrollExtent, maxScrollExtent, Physics.Tolerance.defaultTolerance.distance)) || this._didChangeViewportDimensionOrReceiveCorrection) || (!Equals(this._lastAxis, this.axis))))
+        DartRuntimePrimitives.Assert(() => haveDimensions == _lastMetrics is not null);
+        if (!Physics.UtilsLibrary.nearEqual(_minScrollExtent, minScrollExtent, Physics.Tolerance.defaultTolerance.distance) || !Physics.UtilsLibrary.nearEqual(_maxScrollExtent, maxScrollExtent, Physics.Tolerance.defaultTolerance.distance) || _didChangeViewportDimensionOrReceiveCorrection || (!Equals(_lastAxis, axis)))
         {
-            DartRuntimePrimitives.Assert(() => (minScrollExtent <= maxScrollExtent));
+            DartRuntimePrimitives.Assert(() => minScrollExtent <= maxScrollExtent);
             _minScrollExtent = minScrollExtent;
             _maxScrollExtent = maxScrollExtent;
-            _lastAxis = this.axis;
-            ScrollMetrics? currentMetrics = (this.haveDimensions ? copyWith() : null);
+            _lastAxis = axis;
+            ScrollMetrics? currentMetrics = haveDimensions ? copyWith() : null;
             _didChangeViewportDimensionOrReceiveCorrection = false;
             _pendingDimensions = true;
-            if ((this.haveDimensions && !correctForNewDimensions(this._lastMetrics!, currentMetrics!)))
+            if (haveDimensions && !correctForNewDimensions(_lastMetrics!, currentMetrics!))
             {
                 return false;
             }
             _haveDimensions = true;
         }
-        DartRuntimePrimitives.Assert(() => this.haveDimensions);
-        if (this._pendingDimensions)
+        DartRuntimePrimitives.Assert(() => haveDimensions);
+        if (_pendingDimensions)
         {
             applyNewDimensions();
             _pendingDimensions = false;
         }
-        DartRuntimePrimitives.Assert(() => !this._didChangeViewportDimensionOrReceiveCorrection, () => (object?)"Use correctForNewDimensions() (and return true) to change the scroll offset during applyContentDimensions().");
+        DartRuntimePrimitives.Assert(() => !_didChangeViewportDimensionOrReceiveCorrection, () => (object?)"Use correctForNewDimensions() (and return true) to change the scroll offset during applyContentDimensions().");
         if (_isMetricsChanged())
         {
-            if (!this._haveScheduledUpdateNotification)
+            if (!_haveScheduledUpdateNotification)
             {
-                DartAsyncRuntime.scheduleMicrotask(this.didUpdateScrollMetrics);
+                DartAsyncRuntime.scheduleMicrotask(didUpdateScrollMetrics);
                 _haveScheduledUpdateNotification = true;
             }
             _lastMetrics = copyWith();
@@ -262,8 +262,8 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public virtual bool correctForNewDimensions(ScrollMetrics oldPosition, ScrollMetrics newPosition)
     {
-        double newPixels = this.physics.adjustPositionForNewDimensions(oldPosition: oldPosition, newPosition: newPosition, isScrolling: this.activity!.isScrolling, velocity: this.activity!.velocity);
-        if ((newPixels != this.pixels))
+        double newPixels = physics.adjustPositionForNewDimensions(oldPosition: oldPosition, newPosition: newPosition, isScrolling: activity!.isScrolling, velocity: activity!.velocity);
+        if (newPixels != pixels)
         {
             correctPixels(newPixels);
             return false;
@@ -274,84 +274,84 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public virtual void applyNewDimensions()
     {
-        DartRuntimePrimitives.Assert(() => this.hasPixels);
-        DartRuntimePrimitives.Assert(() => this._pendingDimensions);
-        this.activity!.applyNewDimensions();
+        DartRuntimePrimitives.Assert(() => hasPixels);
+        DartRuntimePrimitives.Assert(() => _pendingDimensions);
+        activity!.applyNewDimensions();
         _updateSemanticActions();
     }
 
     internal virtual void _updateSemanticActions()
     {
-        var (forward, backward) = (this.axisDirection switch { AxisDirection.up => (((SemanticsAction, SemanticsAction))((SemanticsAction.scrollDown, SemanticsAction.scrollUp))), AxisDirection.down => (((SemanticsAction, SemanticsAction))((SemanticsAction.scrollUp, SemanticsAction.scrollDown))), AxisDirection.left => (((SemanticsAction, SemanticsAction))((SemanticsAction.scrollRight, SemanticsAction.scrollLeft))), AxisDirection.right => (((SemanticsAction, SemanticsAction))((SemanticsAction.scrollLeft, SemanticsAction.scrollRight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (forward, backward) = axisDirection switch { AxisDirection.up => (SemanticsAction.scrollDown, SemanticsAction.scrollUp), AxisDirection.down => (SemanticsAction.scrollUp, SemanticsAction.scrollDown), AxisDirection.left => (SemanticsAction.scrollRight, SemanticsAction.scrollLeft), AxisDirection.right => (SemanticsAction.scrollLeft, SemanticsAction.scrollRight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var actions = new HashSet<SemanticsAction>();
-        if (CollectionsLibrary.setEquals<global::Doroti.Ui.SemanticsAction>(actions, this._semanticActions))
+        if (CollectionsLibrary.setEquals<global::Doroti.Ui.SemanticsAction>(actions, _semanticActions))
         {
             return;
         }
         _semanticActions = actions;
-        this.context.setSemanticsActions(this._semanticActions!);
+        context.setSemanticsActions(_semanticActions!);
     }
 
     internal virtual ScrollPositionAlignmentPolicy _maybeFlipAlignment(ScrollPositionAlignmentPolicy alignmentPolicy)
     {
-        return (alignmentPolicy switch { ScrollPositionAlignmentPolicy.@explicit => alignmentPolicy, ScrollPositionAlignmentPolicy.keepVisibleAtEnd => ScrollPositionAlignmentPolicy.keepVisibleAtStart, ScrollPositionAlignmentPolicy.keepVisibleAtStart => ScrollPositionAlignmentPolicy.keepVisibleAtEnd, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return alignmentPolicy switch { ScrollPositionAlignmentPolicy.@explicit => alignmentPolicy, ScrollPositionAlignmentPolicy.keepVisibleAtEnd => ScrollPositionAlignmentPolicy.keepVisibleAtStart, ScrollPositionAlignmentPolicy.keepVisibleAtStart => ScrollPositionAlignmentPolicy.keepVisibleAtEnd, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual ScrollPositionAlignmentPolicy _applyAxisDirectionToAlignmentPolicy(ScrollPositionAlignmentPolicy alignmentPolicy)
     {
-        return (this.axisDirection switch { AxisDirection.up => _maybeFlipAlignment(alignmentPolicy), AxisDirection.left => _maybeFlipAlignment(alignmentPolicy), AxisDirection.down => alignmentPolicy, AxisDirection.right => alignmentPolicy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return axisDirection switch { AxisDirection.up => _maybeFlipAlignment(alignmentPolicy), AxisDirection.left => _maybeFlipAlignment(alignmentPolicy), AxisDirection.down => alignmentPolicy, AxisDirection.right => alignmentPolicy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public async virtual Future ensureVisible(global::Doroti.Framework.Rendering.RenderObject @object, double alignment = 0.0, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!, ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.@explicit, global::Doroti.Framework.Rendering.RenderObject? targetRenderObject = null)
     {
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderObject)@object).attached);
-        global::Doroti.Framework.Rendering.RenderAbstractViewport? viewport = ((global::Doroti.Framework.Rendering.RenderAbstractViewport?)RenderAbstractViewport.maybeOf(@object));
-        if ((viewport is null))
+        DartRuntimePrimitives.Assert(() => @object.attached);
+        global::Doroti.Framework.Rendering.RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(@object);
+        if (viewport is null)
         {
             return;
         }
         global::Doroti.Ui.Rect? targetRect = default!;
-        if (((targetRenderObject is not null) && (!Equals(targetRenderObject, @object))))
+        if ((targetRenderObject is not null) && (!Equals(targetRenderObject, @object)))
         {
-            targetRect = MatrixUtils.transformRect(((Matrix4)(targetRenderObject).getTransformTo(@object)), ((global::Doroti.Framework.Rendering.RenderObject)@object).paintBounds.intersect(((global::Doroti.Framework.Rendering.RenderObject)targetRenderObject).paintBounds));
+            targetRect = MatrixUtils.transformRect(targetRenderObject.getTransformTo(@object), @object.paintBounds.intersect(targetRenderObject.paintBounds));
         }
         double target = default!;
         switch (_applyAxisDirectionToAlignmentPolicy(alignmentPolicy))
         {
             case ScrollPositionAlignmentPolicy.@explicit:
                 {
-                    target = viewport.getOffsetToReveal(@object, alignment, rect: targetRect, axis: this.axis).offset;
-                    target = Dart_uiLibrary.clampDouble(target, this.minScrollExtent, this.maxScrollExtent);
+                    target = viewport.getOffsetToReveal(@object, alignment, rect: targetRect, axis: axis).offset;
+                    target = Dart_uiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
                     break;
                 }
             case ScrollPositionAlignmentPolicy.keepVisibleAtEnd:
                 {
-                    target = viewport.getOffsetToReveal(@object, 1.0, rect: targetRect, axis: this.axis).offset;
-                    target = Dart_uiLibrary.clampDouble(target, this.minScrollExtent, this.maxScrollExtent);
-                    if ((target < this.pixels))
+                    target = viewport.getOffsetToReveal(@object, 1.0, rect: targetRect, axis: axis).offset;
+                    target = Dart_uiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
+                    if (target < pixels)
                     {
-                        target = this.pixels;
+                        target = pixels;
                     }
                     break;
                 }
             case ScrollPositionAlignmentPolicy.keepVisibleAtStart:
                 {
-                    target = viewport.getOffsetToReveal(@object, 0.0, rect: targetRect, axis: this.axis).offset;
-                    target = Dart_uiLibrary.clampDouble(target, this.minScrollExtent, this.maxScrollExtent);
-                    if ((target > this.pixels))
+                    target = viewport.getOffsetToReveal(@object, 0.0, rect: targetRect, axis: axis).offset;
+                    target = Dart_uiLibrary.clampDouble(target, minScrollExtent, maxScrollExtent);
+                    if (target > pixels)
                     {
-                        target = this.pixels;
+                        target = pixels;
                     }
                     break;
                 }
         }
-        if ((target == this.pixels))
+        if (target == pixels)
         {
             return;
         }
-        if ((Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero)))
+        if (Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero))
         {
             jumpTo(target);
             return;
@@ -368,37 +368,37 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
         // C# binds optional arguments at the call site's static type. A call
         // through ViewportOffset supplies null; Dart selects this override's true.
         clamp ??= true;
-        DartRuntimePrimitives.Assert(() => (clamp is not null));
+        DartRuntimePrimitives.Assert(() => clamp is not null);
         if (DartRuntimePrimitives.RequireValue(clamp))
         {
-            to = Dart_uiLibrary.clampDouble(to, this.minScrollExtent, this.maxScrollExtent);
+            to = Dart_uiLibrary.clampDouble(to, minScrollExtent, maxScrollExtent);
         }
-        return ((Future)base.moveTo(to, duration: duration, curve: curve));
+        return base.moveTo(to, duration: duration, curve: curve);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool allowImplicitScrolling => ((ScrollPhysics)this.physics).allowImplicitScrolling;
+    public override bool allowImplicitScrolling => physics.allowImplicitScrolling;
     public abstract void jumpToWithoutSettling(double value);
     public abstract ScrollHoldController hold(global::System.Action holdCancelCallback);
     public abstract global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback);
-    public virtual ScrollActivity? activity => this._activity;
+    public virtual ScrollActivity? activity => _activity;
     public virtual void beginActivity(ScrollActivity? newActivity)
     {
-        if ((newActivity is null))
+        if (newActivity is null)
         {
             return;
         }
         bool wasScrolling = default!;
         bool oldIgnorePointer = default!;
-        if ((this._activity is not null))
+        if (_activity is not null)
         {
-            oldIgnorePointer = this._activity!.shouldIgnorePointer;
-            wasScrolling = this._activity!.isScrolling;
-            if ((wasScrolling && !((ScrollActivity)newActivity).isScrolling))
+            oldIgnorePointer = _activity!.shouldIgnorePointer;
+            wasScrolling = _activity!.isScrolling;
+            if (wasScrolling && !newActivity.isScrolling)
             {
                 didEndScroll();
             }
-            this._activity!.dispose();
+            _activity!.dispose();
         }
         else
         {
@@ -406,12 +406,12 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
             wasScrolling = false;
         }
         _activity = newActivity;
-        if ((oldIgnorePointer != this.activity!.shouldIgnorePointer))
+        if (oldIgnorePointer != activity!.shouldIgnorePointer)
         {
-            this.context.setIgnorePointer(this.activity!.shouldIgnorePointer);
+            context.setIgnorePointer(activity!.shouldIgnorePointer);
         }
-        this.isScrollingNotifier.value = this.activity!.isScrolling;
-        if ((!wasScrolling && this._activity!.isScrolling))
+        isScrollingNotifier.value = activity!.isScrolling;
+        if (!wasScrolling && _activity!.isScrolling)
         {
             didStartScroll();
         }
@@ -420,21 +420,21 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
     public virtual void didStartScroll()
     {
         recordScrollTrace(DorotiFramePhase.scrollStart);
-        this.activity!.dispatchScrollStartNotification(copyWith(), ((ScrollContext)this.context).notificationContext);
+        activity!.dispatchScrollStartNotification(copyWith(), context.notificationContext);
     }
 
     public virtual void didUpdateScrollPositionBy(double delta)
     {
         recordScrollTrace(DorotiFramePhase.scrollUpdate, delta);
-        this.activity!.dispatchScrollUpdateNotification(copyWith(), ((ScrollContext)this.context).notificationContext!, delta);
+        activity!.dispatchScrollUpdateNotification(copyWith(), context.notificationContext!, delta);
     }
 
     public virtual void didEndScroll()
     {
         recordScrollTrace(DorotiFramePhase.scrollEnd);
-        this.activity!.dispatchScrollEndNotification(copyWith(), ((ScrollContext)this.context).notificationContext!);
+        activity!.dispatchScrollEndNotification(copyWith(), context.notificationContext!);
         saveOffset();
-        if (this.keepScrollOffset)
+        if (keepScrollOffset)
         {
             saveScrollOffset();
         }
@@ -456,38 +456,38 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public virtual void didOverscrollBy(double value)
     {
-        DartRuntimePrimitives.Assert(() => this.activity!.isScrolling);
-        this.activity!.dispatchOverscrollNotification(copyWith(), ((ScrollContext)this.context).notificationContext!, value);
+        DartRuntimePrimitives.Assert(() => activity!.isScrolling);
+        activity!.dispatchOverscrollNotification(copyWith(), context.notificationContext!, value);
     }
 
     public virtual void didUpdateScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection direction)
     {
-        new UserScrollNotification(metrics: copyWith(), context: ((ScrollContext)this.context).notificationContext!, direction: direction).dispatch(((ScrollContext)this.context).notificationContext);
+        new UserScrollNotification(metrics: copyWith(), context: context.notificationContext!, direction: direction).dispatch(context.notificationContext);
     }
 
     public virtual void didUpdateScrollMetrics()
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)));
-        DartRuntimePrimitives.Assert(() => this._haveScheduledUpdateNotification);
+        DartRuntimePrimitives.Assert(() => !Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks));
+        DartRuntimePrimitives.Assert(() => _haveScheduledUpdateNotification);
         _haveScheduledUpdateNotification = false;
-        if ((((ScrollContext)this.context).notificationContext is not null))
+        if (context.notificationContext is not null)
         {
-            new ScrollMetricsNotification(metrics: copyWith(), context: ((ScrollContext)this.context).notificationContext!).dispatch(((ScrollContext)this.context).notificationContext);
+            new ScrollMetricsNotification(metrics: copyWith(), context: context.notificationContext!).dispatch(context.notificationContext);
         }
     }
 
     public virtual bool recommendDeferredLoading(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => (this.activity is not null));
-        return this.physics.recommendDeferredLoading((this.activity!.velocity + this._impliedVelocity), copyWith(), context);
+        DartRuntimePrimitives.Assert(() => activity is not null);
+        return physics.recommendDeferredLoading(activity!.velocity + _impliedVelocity, copyWith(), context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()
     {
-        this.activity?.dispose();
+        activity?.dispose();
         _activity = null;
-        this.isScrollingNotifier.dispose();
+        isScrollingNotifier.dispose();
         base.dispose();
     }
 
@@ -499,36 +499,36 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public override void debugFillDescription(List<string> description)
     {
-        if ((this.debugLabel is not null))
+        if (debugLabel is not null)
         {
-            description.Add(this.debugLabel!);
+            description.Add(debugLabel!);
         }
         base.debugFillDescription(description);
-        description.Add($"range: {this._minScrollExtent?.toStringAsFixed(1L)}..{this._maxScrollExtent?.toStringAsFixed(1L)}");
-        description.Add($"viewport: {this._viewportDimension?.toStringAsFixed(1L)}");
+        description.Add($"range: {_minScrollExtent?.toStringAsFixed(1L)}..{_maxScrollExtent?.toStringAsFixed(1L)}");
+        description.Add($"viewport: {_viewportDimension?.toStringAsFixed(1L)}");
     }
 
     public abstract AxisDirection axisDirection { get; }
     public virtual ScrollMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
-        return ((ScrollMetrics)new FixedScrollMetrics(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio)));
+        return new FixedScrollMetrics(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(this.axisDirection));
-    public virtual bool outOfRange => DartRuntimePrimitives.ConvertValue<bool>(((this.pixels < this.minScrollExtent) || (this.pixels > this.maxScrollExtent)));
-    public virtual bool atEdge => DartRuntimePrimitives.ConvertValue<bool>(((this.pixels == this.minScrollExtent) || (this.pixels == this.maxScrollExtent)));
-    public virtual double extentBefore => Math.Max((this.pixels - this.minScrollExtent), 0.0);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(axisDirection));
+    public virtual bool outOfRange => DartRuntimePrimitives.ConvertValue<bool>((pixels < minScrollExtent) || (pixels > maxScrollExtent));
+    public virtual bool atEdge => DartRuntimePrimitives.ConvertValue<bool>((pixels == minScrollExtent) || (pixels == maxScrollExtent));
+    public virtual double extentBefore => Math.Max(pixels - minScrollExtent, 0.0);
     public virtual double extentInside
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => (this.minScrollExtent <= this.maxScrollExtent));
-            return ((this.viewportDimension - Dart_uiLibrary.clampDouble((this.minScrollExtent - this.pixels), 0, this.viewportDimension)) - Dart_uiLibrary.clampDouble((this.pixels - this.maxScrollExtent), 0, this.viewportDimension));
+            DartRuntimePrimitives.Assert(() => minScrollExtent <= maxScrollExtent);
+            return viewportDimension - Dart_uiLibrary.clampDouble(minScrollExtent - pixels, 0, viewportDimension) - Dart_uiLibrary.clampDouble(pixels - maxScrollExtent, 0, viewportDimension);
         }
     }
-    public virtual double extentAfter => Math.Max((this.maxScrollExtent - this.pixels), 0.0);
-    public virtual double extentTotal => DartRuntimePrimitives.ConvertValue<double>(((this.maxScrollExtent - this.minScrollExtent) + this.viewportDimension));
+    public virtual double extentAfter => Math.Max(maxScrollExtent - pixels, 0.0);
+    public virtual double extentTotal => DartRuntimePrimitives.ConvertValue<double>(maxScrollExtent - minScrollExtent + viewportDimension);
 }
 
 public class ScrollMetricsNotification : Notification, ViewportNotificationMixin
@@ -545,16 +545,16 @@ public class ScrollMetricsNotification : Notification, ViewportNotificationMixin
 
     public virtual ScrollUpdateNotification asScrollUpdate()
     {
-        return new ScrollUpdateNotification(metrics: this.metrics, context: this.context, depth: this.depth);
+        return new ScrollUpdateNotification(metrics: metrics, context: context, depth: depth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillDescription(List<string> description)
     {
         base.debugFillDescription(description);
-        description.Add($"depth: {this.depth} ({((this.depth == 0L) ? "local" : "remote")})");
-        description.Add($"{this.metrics}");
+        description.Add($"depth: {depth} ({((depth == 0L) ? "local" : "remote")})");
+        description.Add($"{metrics}");
     }
 
-    public virtual long depth => this._depth;
+    public virtual long depth => _depth;
 }

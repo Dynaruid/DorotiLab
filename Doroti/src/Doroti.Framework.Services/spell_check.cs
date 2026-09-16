@@ -24,7 +24,7 @@ public class SuggestionSpan
         {
             return true;
         }
-        return ((((__other is SuggestionSpan) && (((SuggestionSpan)__other).range.start == range.start)) && (((SuggestionSpan)__other).range.end == range.end)) && CollectionsLibrary.listEquals<string>(((SuggestionSpan)__other).suggestions, suggestions));
+        return (__other is SuggestionSpan) && (__other.range.start == range.start) && (__other.range.end == range.end) && CollectionsLibrary.listEquals<string>(__other.suggestions, suggestions);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(range.start, range.end, FoundationRuntimePorts.ObjectHashAll(suggestions));
@@ -55,7 +55,7 @@ public class SpellCheckResults
         {
             return true;
         }
-        return (((__other is SpellCheckResults) && (((SpellCheckResults)__other).spellCheckedText == spellCheckedText)) && CollectionsLibrary.listEquals<SuggestionSpan>(((SpellCheckResults)__other).suggestionSpans, suggestionSpans));
+        return (__other is SpellCheckResults) && (__other.spellCheckedText == spellCheckedText) && CollectionsLibrary.listEquals<SuggestionSpan>(__other.suggestionSpans, suggestionSpans);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(spellCheckedText, FoundationRuntimePorts.ObjectHashAll(suggestionSpans));
@@ -88,11 +88,11 @@ public class DefaultSpellCheckService : SpellCheckService
         SuggestionSpan newSpan = default!;
         var oldSpanPointer = 0L;
         var newSpanPointer = 0L;
-        while (((oldSpanPointer < oldResults.Count) && (newSpanPointer < newResults.Count)))
+        while ((oldSpanPointer < oldResults.Count) && (newSpanPointer < newResults.Count))
         {
-            oldSpan = oldResults[(int)(oldSpanPointer)];
-            newSpan = newResults[(int)(newSpanPointer)];
-            if ((oldSpan.range.start == newSpan.range.start))
+            oldSpan = oldResults[(int)oldSpanPointer];
+            newSpan = newResults[(int)newSpanPointer];
+            if (oldSpan.range.start == newSpan.range.start)
             {
                 mergedResults.Add(oldSpan);
                 oldSpanPointer++;
@@ -100,7 +100,7 @@ public class DefaultSpellCheckService : SpellCheckService
             }
             else
             {
-                if ((oldSpan.range.start < newSpan.range.start))
+                if (oldSpan.range.start < newSpan.range.start)
                 {
                     mergedResults.Add(oldSpan);
                     oldSpanPointer++;
@@ -131,11 +131,11 @@ public class DefaultSpellCheckService : SpellCheckService
             return null;
         }
         var suggestionSpans = new List<SuggestionSpan>();
-        if ((lastSavedResults is not null))
+        if (lastSavedResults is not null)
         {
-            var textHasNotChanged = (lastSavedResults!.spellCheckedText == text);
+            var textHasNotChanged = lastSavedResults!.spellCheckedText == text;
             bool spansHaveChanged = CollectionsLibrary.listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
-            if ((textHasNotChanged && spansHaveChanged))
+            if (textHasNotChanged && spansHaveChanged)
             {
                 suggestionSpans = mergeResults(lastSavedResults!.suggestionSpans, suggestionSpans);
             }

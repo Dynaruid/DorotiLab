@@ -18,7 +18,7 @@ public class AnnotationEntry<T>
 
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "AnnotationEntry"))}(annotation: {this.annotation}, localPosition: {this.localPosition})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AnnotationEntry")}(annotation: {annotation}, localPosition: {localPosition})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -28,13 +28,13 @@ public class AnnotationResult<T>
 {
     internal virtual List<AnnotationEntry<T>> _entries { get; private set; } = new List<AnnotationEntry<T>>();
 
-    public virtual void add(AnnotationEntry<T> entry) => this._entries.Add(entry);
-    public virtual IEnumerable<AnnotationEntry<T>> entries => this._entries;
+    public virtual void add(AnnotationEntry<T> entry) => _entries.Add(entry);
+    public virtual IEnumerable<AnnotationEntry<T>> entries => _entries;
     public virtual IEnumerable<T> annotations
     {
         get
         {
-            return this._entries.map<AnnotationEntry<T>, T>(((entry) => ((AnnotationEntry<T>)entry).annotation));
+            return _entries.map<AnnotationEntry<T>, T>((entry) => entry.annotation);
         }
     }
 }
@@ -61,22 +61,22 @@ public abstract class Layer : DiagnosticableTreeMixin
     {
     }
 
-    public virtual bool subtreeHasCompositionCallbacks => (this._compositionCallbackCount > 0L);
+    public virtual bool subtreeHasCompositionCallbacks => _compositionCallbackCount > 0L;
     internal virtual void _updateSubtreeCompositionObserverCount(long delta)
     {
-        DartRuntimePrimitives.Assert(() => (delta != 0L));
+        DartRuntimePrimitives.Assert(() => delta != 0L);
         _compositionCallbackCount += delta;
-        DartRuntimePrimitives.Assert(() => (this._compositionCallbackCount >= 0L));
-        this.parent?._updateSubtreeCompositionObserverCount(delta);
+        DartRuntimePrimitives.Assert(() => _compositionCallbackCount >= 0L);
+        parent?._updateSubtreeCompositionObserverCount(delta);
     }
 
     internal virtual void _fireCompositionCallbacks(bool includeChildren)
     {
-        if ((checked((long)(this._callbacks.Count)) == 0))
+        if (checked((long)_callbacks.Count) == 0)
         {
             return;
         }
-        foreach (var callback in new List<Action>(DartRuntimePrimitives.ConvertEnumerable<Action>(this._callbacks.Values)))
+        foreach (var callback in new List<Action>(DartRuntimePrimitives.ConvertEnumerable<Action>(_callbacks.Values)))
         {
             callback();
         }
@@ -93,7 +93,7 @@ public abstract class Layer : DiagnosticableTreeMixin
     {
         _updateSubtreeCompositionObserverCount(1L);
         long callbackId = _nextCallbackId += 1L;
-        this._callbacks[callbackId] = (() =>
+        _callbacks[callbackId] = () =>
         {
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -106,13 +106,13 @@ public abstract class Layer : DiagnosticableTreeMixin
                     _debugMutationsLocked = false;
                     return true;
                 });
-        });
-        return (() =>
+        };
+        return () =>
         {
-            DartRuntimePrimitives.Assert(() => (this.debugDisposed || this._callbacks.ContainsKey(callbackId)));
-            this._callbacks.remove(callbackId);
+            DartRuntimePrimitives.Assert(() => debugDisposed || _callbacks.ContainsKey(callbackId));
+            _callbacks.remove(callbackId);
             _updateSubtreeCompositionObserverCount(-1L);
-        });
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -123,7 +123,7 @@ public abstract class Layer : DiagnosticableTreeMixin
             bool disposed = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    disposed = this._debugDisposed;
+                    disposed = _debugDisposed;
                     return true;
                 });
             return disposed;
@@ -131,10 +131,10 @@ public abstract class Layer : DiagnosticableTreeMixin
     }
     internal virtual void _unref()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-        DartRuntimePrimitives.Assert(() => (this._refCount > 0L));
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
+        DartRuntimePrimitives.Assert(() => _refCount > 0L);
         _refCount -= 1L;
-        if ((this._refCount == 0L))
+        if (_refCount == 0L)
         {
             dispose();
         }
@@ -147,7 +147,7 @@ public abstract class Layer : DiagnosticableTreeMixin
             long count = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    count = this._refCount;
+                    count = _refCount;
                     return true;
                 });
             return count;
@@ -155,26 +155,26 @@ public abstract class Layer : DiagnosticableTreeMixin
     }
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-        DartRuntimePrimitives.Assert(() => !this._debugDisposed);
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
+        DartRuntimePrimitives.Assert(() => !_debugDisposed);
         DartRuntimePrimitives.Assert(() =>
             {
-                DartRuntimePrimitives.Assert(() => (this._refCount == 0L));
+                DartRuntimePrimitives.Assert(() => _refCount == 0L);
                 _debugDisposed = true;
                 return true;
             });
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this._engineLayer?.dispose();
+        _engineLayer?.dispose();
         _engineLayer = null;
     }
 
-    public virtual ContainerLayer? parent => this._parent;
+    public virtual ContainerLayer? parent => _parent;
     public virtual void markNeedsAddToScene()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-        DartRuntimePrimitives.Assert(() => !this.alwaysNeedsAddToScene);
-        DartRuntimePrimitives.Assert(() => !this._debugDisposed);
-        if (this._needsAddToScene)
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
+        DartRuntimePrimitives.Assert(() => !alwaysNeedsAddToScene);
+        DartRuntimePrimitives.Assert(() => !_debugDisposed);
+        if (_needsAddToScene)
         {
             return;
         }
@@ -183,7 +183,7 @@ public abstract class Layer : DiagnosticableTreeMixin
 
     public virtual void debugMarkClean()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
         DartRuntimePrimitives.Assert(() =>
             {
                 _needsAddToScene = false;
@@ -199,7 +199,7 @@ public abstract class Layer : DiagnosticableTreeMixin
             bool? result = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    result = this._needsAddToScene;
+                    result = _needsAddToScene;
                     return true;
                 });
             return result;
@@ -207,70 +207,70 @@ public abstract class Layer : DiagnosticableTreeMixin
     }
     public virtual global::Doroti.Ui.EngineLayer? engineLayer
     {
-        get => this._engineLayer;
+        get => _engineLayer;
         set
         {
-            var __value = value is null ? null : (EngineLayer)value;
-            DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-            DartRuntimePrimitives.Assert(() => !this._debugDisposed);
+            var __value = value is null ? null : value;
+            DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
+            DartRuntimePrimitives.Assert(() => !_debugDisposed);
             // Doroti's managed SceneBuilder deliberately returns the same engine-layer
             // handle when a scope can be updated in place. Do not dispose that handle
             // while installing it again; doing so would turn the next retained scene
             // into a reference to an already-disposed resource.
-            if (ReferenceEquals(this._engineLayer, __value))
+            if (ReferenceEquals(_engineLayer, __value))
             {
                 // A child may have updated its immutable retained payload while this
                 // managed handle stayed stable. Its parent still needs to rebuild if
                 // the child was composed outside the parent's current scene build.
-                if ((!this.alwaysNeedsAddToScene && (this.parent is not null) && !this.parent!.alwaysNeedsAddToScene))
+                if (!alwaysNeedsAddToScene && (parent is not null) && !parent!.alwaysNeedsAddToScene)
                 {
-                    this.parent!.markNeedsAddToScene();
+                    parent!.markNeedsAddToScene();
                 }
                 return;
             }
-            this._engineLayer?.dispose();
+            _engineLayer?.dispose();
             _engineLayer = __value;
-            if (!this.alwaysNeedsAddToScene)
+            if (!alwaysNeedsAddToScene)
             {
-                if (((this.parent is not null) && !this.parent!.alwaysNeedsAddToScene))
+                if ((parent is not null) && !parent!.alwaysNeedsAddToScene)
                 {
-                    this.parent!.markNeedsAddToScene();
+                    parent!.markNeedsAddToScene();
                 }
             }
         }
     }
     public virtual void updateSubtreeNeedsAddToScene()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-        _needsAddToScene = (this._needsAddToScene || this.alwaysNeedsAddToScene);
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
+        _needsAddToScene = _needsAddToScene || alwaysNeedsAddToScene;
     }
 
-    public virtual object? owner => this._owner;
-    public virtual bool attached => (this._owner is not null);
+    public virtual object? owner => _owner;
+    public virtual bool attached => _owner is not null;
     public virtual void attach(object owner)
     {
-        DartRuntimePrimitives.Assert(() => (this._owner is null));
+        DartRuntimePrimitives.Assert(() => _owner is null);
         _owner = owner;
     }
 
     public virtual void detach()
     {
-        DartRuntimePrimitives.Assert(() => (this._owner is not null));
+        DartRuntimePrimitives.Assert(() => _owner is not null);
         _owner = null;
-        DartRuntimePrimitives.Assert(() => ((this.parent is null) || (this.attached == this.parent!.attached)));
+        DartRuntimePrimitives.Assert(() => (parent is null) || (attached == parent!.attached));
     }
 
-    public virtual long depth => this._depth;
+    public virtual long depth => _depth;
     public virtual void redepthChildren()
     {
     }
 
-    public virtual Layer? nextSibling => this._nextSibling;
-    public virtual Layer? previousSibling => this._previousSibling;
+    public virtual Layer? nextSibling => _nextSibling;
+    public virtual Layer? previousSibling => _previousSibling;
     public virtual void remove()
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-        this.parent?._removeChild(this);
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
+        parent?._removeChild(this);
     }
 
     public virtual bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
@@ -283,7 +283,7 @@ public abstract class Layer : DiagnosticableTreeMixin
     {
         var result = new AnnotationResult<S>();
         findAnnotations<S>(result, localPosition, onlyFirst: true);
-        return ((((AnnotationResult<S>)result).entries.Count() == 0) ? default(S) : ((AnnotationResult<S>)result).entries.First().annotation);
+        return (result.entries.Count() == 0) ? default(S) : result.entries.First().annotation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -298,31 +298,31 @@ public abstract class Layer : DiagnosticableTreeMixin
     public abstract void addToScene(SceneBuilder builder);
     internal virtual void _addToSceneWithRetainedRendering(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
+        DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
         // This is the same retained-layer decision as Flutter: a clean layer with
         // a completed engine handle contributes one immutable retained node. The
         // host still replays that node into a fresh native back buffer when needed,
         // but it does not re-record the unchanged subtree.
-        if ((!this._needsAddToScene && (this._engineLayer is not null)))
+        if (!_needsAddToScene && (_engineLayer is not null))
         {
-            builder.addRetained(this._engineLayer!);
+            builder.addRetained(_engineLayer!);
             return;
         }
         addToScene(builder);
         _needsAddToScene = false;
     }
 
-    public override string toStringShort() => $"{base.toStringShort()}{((this.owner is null) ? " DETACHED" : "")}";
+    public override string toStringShort() => $"{base.toStringShort()}{((owner is null) ? " DETACHED" : "")}";
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<object>("owner", this.owner, level: ((this.parent is not null) ? DiagnosticLevel.hidden : DiagnosticLevel.info), defaultValue: null));
-        properties.add(new DiagnosticsProperty<object?>("creator", this.debugCreator, defaultValue: null, level: DiagnosticLevel.debug));
-        if ((this._engineLayer is not null))
+        properties.add(new DiagnosticsProperty<object>("owner", owner, level: (parent is not null) ? DiagnosticLevel.hidden : DiagnosticLevel.info, defaultValue: null));
+        properties.add(new DiagnosticsProperty<object?>("creator", debugCreator, defaultValue: null, level: DiagnosticLevel.debug));
+        if (_engineLayer is not null)
         {
-            properties.add(new DiagnosticsProperty<string>("engine layer", DiagnosticsLibrary.describeIdentity(this._engineLayer)));
+            properties.add(new DiagnosticsProperty<string>("engine layer", DiagnosticsLibrary.describeIdentity(_engineLayer)));
         }
-        properties.add(new DiagnosticsProperty<long>("handles", this.debugHandleCount));
+        properties.add(new DiagnosticsProperty<long>("handles", debugHandleCount));
     }
 
 }
@@ -333,7 +333,7 @@ public class LayerHandle<T> where T : Layer
 
     public LayerHandle(T? _layer = default)
     {
-        DartRuntimePrimitives.Assert(() => (_layer?.debugDisposed != true));
+        DartRuntimePrimitives.Assert(() => _layer?.debugDisposed != true);
         this._layer = _layer;
         if (_layer is not null)
         {
@@ -343,24 +343,24 @@ public class LayerHandle<T> where T : Layer
 
     public virtual T? layer
     {
-        get => this._layer;
+        get => _layer;
         set
         {
             var layer = value;
-            DartRuntimePrimitives.Assert(() => (layer?.debugDisposed != true));
-            if (DartRuntimePrimitives.Identical(layer, this._layer))
+            DartRuntimePrimitives.Assert(() => layer?.debugDisposed != true);
+            if (DartRuntimePrimitives.Identical(layer, _layer))
             {
                 return;
             }
-            this._layer?._unref();
+            _layer?._unref();
             _layer = layer;
-            if ((this._layer is not null))
+            if (_layer is not null)
             {
-                this._layer!._refCount += 1L;
+                _layer!._refCount += 1L;
             }
         }
     }
-    public override string ToString() => $"LayerHandle({((this._layer is not null) ? this._layer.ToString() : "DISPOSED")})";
+    public override string ToString() => $"LayerHandle({((_layer is not null) ? _layer.ToString() : "DISPOSED")})";
 }
 
 public class PictureLayer : Layer
@@ -377,23 +377,23 @@ public class PictureLayer : Layer
 
     public virtual global::Doroti.Ui.Picture? picture
     {
-        get => this._picture;
+        get => _picture;
         set
         {
-            var picture = value is null ? null : (Picture)value;
+            var picture = value is null ? null : value;
             DartRuntimePrimitives.Assert(() => !_debugDisposed);
             markNeedsAddToScene();
-            this._picture?.dispose();
+            _picture?.dispose();
             _picture = picture;
         }
     }
     public virtual bool isComplexHint
     {
-        get => this._isComplexHint;
+        get => _isComplexHint;
         set
         {
             var __value = value;
-            if ((__value != this._isComplexHint))
+            if (__value != _isComplexHint)
             {
                 _isComplexHint = __value;
                 markNeedsAddToScene();
@@ -402,11 +402,11 @@ public class PictureLayer : Layer
     }
     public virtual bool willChangeHint
     {
-        get => this._willChangeHint;
+        get => _willChangeHint;
         set
         {
             var __value = value;
-            if ((__value != this._willChangeHint))
+            if (__value != _willChangeHint)
             {
                 _willChangeHint = __value;
                 markNeedsAddToScene();
@@ -421,21 +421,21 @@ public class PictureLayer : Layer
 
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.picture is not null));
+        DartRuntimePrimitives.Assert(() => picture is not null);
         builder.addPicture(
             Offset.zero,
-            this.picture!,
-            this.canvasBounds,
-            isComplexHint: this.isComplexHint,
-            willChangeHint: this.willChangeHint);
+            picture!,
+            canvasBounds,
+            isComplexHint: isComplexHint,
+            willChangeHint: willChangeHint);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("paint bounds", this.canvasBounds));
-        properties.add(new DiagnosticsProperty<string>("picture", DiagnosticsLibrary.describeIdentity(this._picture)));
-        properties.add(new DiagnosticsProperty<string>("raster cache hints", $"isComplex = {this.isComplexHint}, willChange = {this.willChangeHint}"));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("paint bounds", canvasBounds));
+        properties.add(new DiagnosticsProperty<string>("picture", DiagnosticsLibrary.describeIdentity(_picture)));
+        properties.add(new DiagnosticsProperty<string>("raster cache hints", $"isComplex = {isComplexHint}, willChange = {willChangeHint}"));
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
@@ -463,7 +463,7 @@ public class TextureLayer : Layer
 
     public override void addToScene(SceneBuilder builder)
     {
-        builder.addTexture(this.textureId, offset: this.rect.topLeft, width: this.rect.width, height: this.rect.height, freeze: this.freeze, filterQuality: this.filterQuality);
+        builder.addTexture(textureId, offset: rect.topLeft, width: rect.width, height: rect.height, freeze: freeze, filterQuality: filterQuality);
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
@@ -493,7 +493,7 @@ public class PlatformViewLayer : Layer
 
     public override void addToScene(SceneBuilder builder)
     {
-        builder.addPlatformView(this.viewId, offset: this.rect.topLeft, width: this.rect.width, height: this.rect.height);
+        builder.addPlatformView(viewId, offset: rect.topLeft, width: rect.width, height: rect.height);
     }
 
 }
@@ -506,16 +506,16 @@ public class PerformanceOverlayLayer : Layer
     public PerformanceOverlayLayer(Rect overlayRect, long optionsMask)
     {
         this.optionsMask = optionsMask;
-        this._overlayRect = overlayRect;
+        _overlayRect = overlayRect;
     }
 
     public virtual global::Doroti.Ui.Rect overlayRect
     {
-        get => this._overlayRect;
+        get => _overlayRect;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._overlayRect)))
+            if (!Equals(__value, _overlayRect))
             {
                 _overlayRect = __value;
                 markNeedsAddToScene();
@@ -524,7 +524,7 @@ public class PerformanceOverlayLayer : Layer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        builder.addPerformanceOverlay(this.optionsMask, this.overlayRect);
+        builder.addPerformanceOverlay(optionsMask, overlayRect);
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
@@ -549,20 +549,20 @@ public class ContainerLayer : Layer
         {
             return;
         }
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             child._fireCompositionCallbacks(includeChildren: includeChildren);
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
     }
 
-    public virtual Layer? firstChild => this._firstChild;
-    public virtual Layer? lastChild => this._lastChild;
-    public virtual bool hasChildren => (this._firstChild is not null);
+    public virtual Layer? firstChild => _firstChild;
+    public virtual Layer? lastChild => _lastChild;
+    public virtual bool hasChildren => _firstChild is not null;
     public override bool supportsRasterization()
     {
-        for (Layer? child = this.lastChild; (child is not null); child = ((Layer)child).previousSibling)
+        for (Layer? child = lastChild; child is not null; child = child.previousSibling)
         {
             if (!child.supportsRasterization())
             {
@@ -589,27 +589,27 @@ public class ContainerLayer : Layer
 
     internal virtual bool _debugUltimatePreviousSiblingOf(Layer child, Layer? equals = null)
     {
-        DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
-        while ((((Layer)child).previousSibling is not null))
+        DartRuntimePrimitives.Assert(() => child.attached == attached);
+        while (child.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(((Layer)child).previousSibling, child)));
-            child = ((Layer)child).previousSibling!;
-            DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
+            DartRuntimePrimitives.Assert(() => !Equals(child.previousSibling, child));
+            child = child.previousSibling!;
+            DartRuntimePrimitives.Assert(() => child.attached == attached);
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _debugUltimateNextSiblingOf(Layer child, Layer? equals = null)
     {
-        DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
-        while ((((Layer)child)._nextSibling is not null))
+        DartRuntimePrimitives.Assert(() => child.attached == attached);
+        while (child._nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(((Layer)child)._nextSibling, child)));
-            child = ((Layer)child)._nextSibling!;
-            DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
+            DartRuntimePrimitives.Assert(() => !Equals(child._nextSibling, child));
+            child = child._nextSibling!;
+            DartRuntimePrimitives.Assert(() => child.attached == attached);
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -623,25 +623,25 @@ public class ContainerLayer : Layer
     public override void updateSubtreeNeedsAddToScene()
     {
         base.updateSubtreeNeedsAddToScene();
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             child.updateSubtreeNeedsAddToScene();
-            _needsAddToScene = (_needsAddToScene || ((Layer)child)._needsAddToScene);
-            child = ((Layer)child).nextSibling;
+            _needsAddToScene = _needsAddToScene || child._needsAddToScene;
+            child = child.nextSibling;
         }
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        for (Layer? child = this.lastChild; (child is not null); child = ((Layer)child).previousSibling)
+        for (Layer? child = lastChild; child is not null; child = child.previousSibling)
         {
             bool isAbsorbed = child.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
             if (isAbsorbed)
             {
                 return true;
             }
-            if ((onlyFirst && (((AnnotationResult<S>)result).entries.Count() != 0)))
+            if (onlyFirst && (result.entries.Count() != 0))
             {
                 return isAbsorbed;
             }
@@ -654,11 +654,11 @@ public class ContainerLayer : Layer
     {
         DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
         base.attach(owner);
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             child.attach(owner);
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
     }
 
@@ -666,11 +666,11 @@ public class ContainerLayer : Layer
     {
         DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
         base.detach();
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             child.detach();
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
         _fireCompositionCallbacks(includeChildren: false);
     }
@@ -678,34 +678,34 @@ public class ContainerLayer : Layer
     public virtual void append(Layer child)
     {
         DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this.firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this.lastChild)));
-        DartRuntimePrimitives.Assert(() => (((Layer)child).parent is null));
-        DartRuntimePrimitives.Assert(() => !((Layer)child).attached);
-        DartRuntimePrimitives.Assert(() => (((Layer)child).nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (((Layer)child).previousSibling is null));
-        DartRuntimePrimitives.Assert(() => (((Layer)child)._parentHandle.layer is null));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, lastChild));
+        DartRuntimePrimitives.Assert(() => child.parent is null);
+        DartRuntimePrimitives.Assert(() => !child.attached);
+        DartRuntimePrimitives.Assert(() => child.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => child.previousSibling is null);
+        DartRuntimePrimitives.Assert(() => child._parentHandle.layer is null);
         DartRuntimePrimitives.Assert(() =>
             {
                 Layer node = this;
-                while ((((Layer)node).parent is not null))
+                while (node.parent is not null)
                 {
-                    node = ((Layer)node).parent!;
+                    node = node.parent!;
                 }
-                DartRuntimePrimitives.Assert(() => (!Equals(node, child)));
+                DartRuntimePrimitives.Assert(() => !Equals(node, child));
                 return true;
             });
         _adoptChild(child);
-        child._previousSibling = this.lastChild;
-        if ((this.lastChild is not null))
+        child._previousSibling = lastChild;
+        if (lastChild is not null)
         {
-            this.lastChild!._nextSibling = child;
+            lastChild!._nextSibling = child;
         }
         _lastChild = child;
         _firstChild ??= child;
-        ((Layer)child)._parentHandle.layer = child;
-        DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
+        child._parentHandle.layer = child;
+        DartRuntimePrimitives.Assert(() => child.attached == attached);
     }
 
     internal virtual void _adoptChild(Layer child)
@@ -715,19 +715,19 @@ public class ContainerLayer : Layer
         {
             markNeedsAddToScene();
         }
-        if ((((Layer)child)._compositionCallbackCount != 0L))
+        if (child._compositionCallbackCount != 0L)
         {
-            _updateSubtreeCompositionObserverCount(((Layer)child)._compositionCallbackCount);
+            _updateSubtreeCompositionObserverCount(child._compositionCallbackCount);
         }
-        DartRuntimePrimitives.Assert(() => (((Layer)child)._parent is null));
+        DartRuntimePrimitives.Assert(() => child._parent is null);
         DartRuntimePrimitives.Assert(() =>
             {
                 Layer node = this;
-                while ((((Layer)node).parent is not null))
+                while (node.parent is not null)
                 {
-                    node = ((Layer)node).parent!;
+                    node = node.parent!;
                 }
-                DartRuntimePrimitives.Assert(() => (!Equals(node, child)));
+                DartRuntimePrimitives.Assert(() => !Equals(node, child));
                 return true;
             });
         child._parent = this;
@@ -740,59 +740,59 @@ public class ContainerLayer : Layer
 
     public override void redepthChildren()
     {
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             redepthChild(child);
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
     }
 
     public virtual void redepthChild(Layer child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((Layer)child).owner, owner)));
-        if ((((Layer)child)._depth <= _depth))
+        DartRuntimePrimitives.Assert(() => Equals(child.owner, owner));
+        if (child._depth <= _depth)
         {
-            child._depth = (_depth + 1L);
+            child._depth = _depth + 1L;
             child.redepthChildren();
         }
     }
 
     internal virtual void _removeChild(Layer child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((Layer)child).parent, this)));
-        DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this.firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this.lastChild));
-        DartRuntimePrimitives.Assert(() => (((Layer)child)._parentHandle.layer is not null));
-        if ((((Layer)child)._previousSibling is null))
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
+        DartRuntimePrimitives.Assert(() => child.attached == attached);
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: lastChild));
+        DartRuntimePrimitives.Assert(() => child._parentHandle.layer is not null);
+        if (child._previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            _firstChild = ((Layer)child)._nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = child._nextSibling;
         }
         else
         {
-            ((Layer)child)._previousSibling!._nextSibling = ((Layer)child).nextSibling;
+            child._previousSibling!._nextSibling = child.nextSibling;
         }
-        if ((((Layer)child)._nextSibling is null))
+        if (child._nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this.lastChild, child)));
-            _lastChild = ((Layer)child).previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(lastChild, child));
+            _lastChild = child.previousSibling;
         }
         else
         {
-            ((Layer)child).nextSibling!._previousSibling = ((Layer)child).previousSibling;
+            child.nextSibling!._previousSibling = child.previousSibling;
         }
-        DartRuntimePrimitives.Assert(() => (((this.firstChild is null)) == ((this.lastChild is null))));
-        DartRuntimePrimitives.Assert(() => ((this.firstChild is null) || (this.firstChild!.attached == attached)));
-        DartRuntimePrimitives.Assert(() => ((this.lastChild is null) || (this.lastChild!.attached == attached)));
-        DartRuntimePrimitives.Assert(() => ((this.firstChild is null) || _debugUltimateNextSiblingOf(this.firstChild!, equals: this.lastChild)));
-        DartRuntimePrimitives.Assert(() => ((this.lastChild is null) || _debugUltimatePreviousSiblingOf(this.lastChild!, equals: this.firstChild)));
+        DartRuntimePrimitives.Assert(() => firstChild is null == lastChild is null);
+        DartRuntimePrimitives.Assert(() => (firstChild is null) || (firstChild!.attached == attached));
+        DartRuntimePrimitives.Assert(() => (lastChild is null) || (lastChild!.attached == attached));
+        DartRuntimePrimitives.Assert(() => (firstChild is null) || _debugUltimateNextSiblingOf(firstChild!, equals: lastChild));
+        DartRuntimePrimitives.Assert(() => (lastChild is null) || _debugUltimatePreviousSiblingOf(lastChild!, equals: firstChild));
         child._previousSibling = null;
         child._nextSibling = null;
         _dropChild(child);
-        ((Layer)child)._parentHandle.layer = null;
-        DartRuntimePrimitives.Assert(() => !((Layer)child).attached);
+        child._parentHandle.layer = null;
+        DartRuntimePrimitives.Assert(() => !child.attached);
     }
 
     internal virtual void _dropChild(Layer child)
@@ -802,12 +802,12 @@ public class ContainerLayer : Layer
         {
             markNeedsAddToScene();
         }
-        if ((((Layer)child)._compositionCallbackCount != 0L))
+        if (child._compositionCallbackCount != 0L)
         {
-            _updateSubtreeCompositionObserverCount(-((Layer)child)._compositionCallbackCount);
+            _updateSubtreeCompositionObserverCount(-child._compositionCallbackCount);
         }
-        DartRuntimePrimitives.Assert(() => (Equals(((Layer)child)._parent, this)));
-        DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
+        DartRuntimePrimitives.Assert(() => Equals(child._parent, this));
+        DartRuntimePrimitives.Assert(() => child.attached == attached);
         child._parent = null;
         if (attached)
         {
@@ -818,15 +818,15 @@ public class ContainerLayer : Layer
     public virtual void removeAllChildren()
     {
         DartRuntimePrimitives.Assert(() => !_debugMutationsLocked);
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
-            Layer? next = ((Layer)child).nextSibling;
+            Layer? next = child.nextSibling;
             child._previousSibling = null;
             child._nextSibling = null;
-            DartRuntimePrimitives.Assert(() => (((Layer)child).attached == attached));
+            DartRuntimePrimitives.Assert(() => child.attached == attached);
             _dropChild(child);
-            ((Layer)child)._parentHandle.layer = null;
+            child._parentHandle.layer = null;
             child = next;
         }
         _firstChild = null;
@@ -840,36 +840,36 @@ public class ContainerLayer : Layer
 
     public virtual void addChildrenToScene(SceneBuilder builder)
     {
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             child._addToSceneWithRetainedRendering(builder);
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
     }
 
     public virtual void applyTransform(Layer? child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (child is not null));
+        DartRuntimePrimitives.Assert(() => child is not null);
     }
 
     public virtual List<Layer> depthFirstIterateChildren()
     {
-        if ((this.firstChild is null))
+        if (firstChild is null)
         {
             return new List<Layer>();
         }
         var children = new List<Layer>();
-        Layer? child = this.firstChild;
-        while ((child is not null))
+        Layer? child = firstChild;
+        while (child is not null)
         {
             children.Add(child);
-            if ((child is ContainerLayer))
+            if (child is ContainerLayer)
             {
                 ContainerLayer child__50793__as50878 = (ContainerLayer)child;
-                children.AddRange(((ContainerLayer)child__50793__as50878).depthFirstIterateChildren());
+                children.AddRange(child__50793__as50878.depthFirstIterateChildren());
             }
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
         return children;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -878,21 +878,21 @@ public class ContainerLayer : Layer
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((this.firstChild is null))
+        if (firstChild is null)
         {
             return children;
         }
-        Layer? child = this.firstChild;
+        Layer? child = firstChild;
         var count = 1L;
         while (true)
         {
             children.Add(((Diagnosticable)child!).toDiagnosticsNode(name: $"child {count}"));
-            if ((Equals(child, this.lastChild)))
+            if (Equals(child, lastChild))
             {
                 break;
             }
             count += 1L;
-            child = ((Layer)child).nextSibling;
+            child = child.nextSibling;
         }
         return children;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -906,16 +906,16 @@ public class OffsetLayer : ContainerLayer
 
     public OffsetLayer(Offset offset = default)
     {
-        this._offset = offset;
+        _offset = offset;
     }
 
     public virtual global::Doroti.Ui.Offset offset
     {
-        get => this._offset;
+        get => _offset;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._offset)))
+            if (!Equals(__value, _offset))
             {
                 markNeedsAddToScene();
             }
@@ -924,21 +924,21 @@ public class OffsetLayer : ContainerLayer
     }
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        return base.findAnnotations<S>(result, (localPosition - this.offset), onlyFirst: onlyFirst);
+        return base.findAnnotations<S>(result, localPosition - offset, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void applyTransform(Layer? child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (child is not null));
-        transform.translateByDouble(this.offset.dx, this.offset.dy, 0, 1);
+        DartRuntimePrimitives.Assert(() => child is not null);
+        transform.translateByDouble(offset.dx, offset.dy, 0, 1);
     }
 
     public override void addToScene(SceneBuilder builder)
     {
         engineLayer = builder.pushOffset(
-            this.offset.dx,
-            this.offset.dy,
+            offset.dx,
+            offset.dy,
             oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
@@ -947,14 +947,14 @@ public class OffsetLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset));
     }
 
     internal virtual global::Doroti.Ui.Scene _createSceneForImage(Rect bounds, double pixelRatio = 1.0)
     {
         var builder = new global::Doroti.Ui.SceneBuilder();
         var transform = Matrix4.diagonal3Values(pixelRatio, pixelRatio, 1);
-        transform.translateByDouble(-((bounds.left + this.offset.dx)), -((bounds.top + this.offset.dy)), 0, 1);
+        transform.translateByDouble(-(bounds.left + offset.dx), -(bounds.top + offset.dy), 0, 1);
         builder.pushTransform(transform.storage);
         return buildScene(builder);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -965,7 +965,7 @@ public class OffsetLayer : ContainerLayer
         global::Doroti.Ui.Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
         try
         {
-            return await scene.toImage(((pixelRatio * bounds.width)).ceil(), ((pixelRatio * bounds.height)).ceil());
+            return await scene.toImage((pixelRatio * bounds.width).ceil(), (pixelRatio * bounds.height).ceil());
         }
         finally
         {
@@ -979,7 +979,7 @@ public class OffsetLayer : ContainerLayer
         global::Doroti.Ui.Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
         try
         {
-            return scene.toImageSync(((pixelRatio * bounds.width)).ceil(), ((pixelRatio * bounds.height)).ceil());
+            return scene.toImageSync((pixelRatio * bounds.width).ceil(), (pixelRatio * bounds.height).ceil());
         }
         finally
         {
@@ -997,33 +997,33 @@ public class ClipRectLayer : ContainerLayer
 
     public ClipRectLayer(Rect? clipRect = null, Clip clipBehavior = Clip.hardEdge)
     {
-        this._clipRect = clipRect;
-        this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((!Equals(clipBehavior, Clip.none)));
+        _clipRect = clipRect;
+        _clipBehavior = clipBehavior;
+        System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
     public virtual global::Doroti.Ui.Rect? clipRect
     {
-        get => this._clipRect;
+        get => _clipRect;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._clipRect)))
+            if (!Equals(__value, _clipRect))
             {
                 _clipRect = __value;
                 markNeedsAddToScene();
             }
         }
     }
-    public override Rect? describeClipBounds() => this.clipRect;
+    public override Rect? describeClipBounds() => clipRect;
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (!Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)));
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            DartRuntimePrimitives.Assert(() => !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none));
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsAddToScene();
@@ -1032,7 +1032,7 @@ public class ClipRectLayer : ContainerLayer
     }
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        if (!DartRuntimePrimitives.RequireValue(this.clipRect).contains(localPosition))
+        if (!DartRuntimePrimitives.RequireValue(clipRect).contains(localPosition))
         {
             return false;
         }
@@ -1042,7 +1042,7 @@ public class ClipRectLayer : ContainerLayer
 
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.clipRect is not null));
+        DartRuntimePrimitives.Assert(() => clipRect is not null);
         var enabled = true;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1051,7 +1051,7 @@ public class ClipRectLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipRect(DartRuntimePrimitives.RequireValue(this.clipRect), clipBehavior: this.clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRectEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipRect(DartRuntimePrimitives.RequireValue(clipRect), clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRectEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1067,8 +1067,8 @@ public class ClipRectLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("clipRect", this.clipRect));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("clipRect", clipRect));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1080,33 +1080,33 @@ public class ClipRRectLayer : ContainerLayer
 
     public ClipRRectLayer(RRect? clipRRect = null, Clip clipBehavior = Clip.antiAlias)
     {
-        this._clipRRect = clipRRect;
-        this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((!Equals(clipBehavior, Clip.none)));
+        _clipRRect = clipRRect;
+        _clipBehavior = clipBehavior;
+        System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
     public virtual global::Doroti.Ui.RRect? clipRRect
     {
-        get => this._clipRRect;
+        get => _clipRRect;
         set
         {
-            var __value = value is null ? null : (RRect)value;
-            if ((!Equals(__value, this._clipRRect)))
+            var __value = value is null ? null : value;
+            if (!Equals(__value, _clipRRect))
             {
                 _clipRRect = __value;
                 markNeedsAddToScene();
             }
         }
     }
-    public override Rect? describeClipBounds() => this.clipRRect?.outerRect;
+    public override Rect? describeClipBounds() => clipRRect?.outerRect;
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (!Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)));
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            DartRuntimePrimitives.Assert(() => !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none));
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsAddToScene();
@@ -1115,7 +1115,7 @@ public class ClipRRectLayer : ContainerLayer
     }
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        if (!this.clipRRect!.contains(localPosition))
+        if (!clipRRect!.contains(localPosition))
         {
             return false;
         }
@@ -1125,7 +1125,7 @@ public class ClipRRectLayer : ContainerLayer
 
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.clipRRect is not null));
+        DartRuntimePrimitives.Assert(() => clipRRect is not null);
         var enabled = true;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1134,7 +1134,7 @@ public class ClipRRectLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipRRect(this.clipRRect!, clipBehavior: this.clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRRectEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipRRect(clipRRect!, clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRRectEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1150,8 +1150,8 @@ public class ClipRRectLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.RRect>("clipRRect", this.clipRRect));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.RRect>("clipRRect", clipRRect));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1163,33 +1163,33 @@ public class ClipRSuperellipseLayer : ContainerLayer
 
     public ClipRSuperellipseLayer(RSuperellipse? clipRSuperellipse = null, Clip clipBehavior = Clip.antiAlias)
     {
-        this._clipRSuperellipse = clipRSuperellipse;
-        this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((!Equals(clipBehavior, Clip.none)));
+        _clipRSuperellipse = clipRSuperellipse;
+        _clipBehavior = clipBehavior;
+        System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
     public virtual global::Doroti.Ui.RSuperellipse? clipRSuperellipse
     {
-        get => this._clipRSuperellipse;
+        get => _clipRSuperellipse;
         set
         {
-            var __value = value is null ? null : (RSuperellipse)value;
-            if ((!Equals(__value, this._clipRSuperellipse)))
+            var __value = value is null ? null : value;
+            if (!Equals(__value, _clipRSuperellipse))
             {
                 _clipRSuperellipse = __value;
                 markNeedsAddToScene();
             }
         }
     }
-    public override Rect? describeClipBounds() => this.clipRSuperellipse?.outerRect;
+    public override Rect? describeClipBounds() => clipRSuperellipse?.outerRect;
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (!Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)));
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            DartRuntimePrimitives.Assert(() => !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none));
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsAddToScene();
@@ -1198,7 +1198,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
     }
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        if (!this.clipRSuperellipse!.outerRect.contains(localPosition))
+        if (!clipRSuperellipse!.outerRect.contains(localPosition))
         {
             return false;
         }
@@ -1208,7 +1208,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
 
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.clipRSuperellipse is not null));
+        DartRuntimePrimitives.Assert(() => clipRSuperellipse is not null);
         var enabled = true;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1217,7 +1217,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipRSuperellipse(this.clipRSuperellipse!, clipBehavior: this.clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRSuperellipseEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipRSuperellipse(clipRSuperellipse!, clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRSuperellipseEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1233,8 +1233,8 @@ public class ClipRSuperellipseLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.RSuperellipse>("clipRSuperellipse", this.clipRSuperellipse));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.RSuperellipse>("clipRSuperellipse", clipRSuperellipse));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1246,33 +1246,33 @@ public class ClipPathLayer : ContainerLayer
 
     public ClipPathLayer(Path? clipPath = null, Clip clipBehavior = Clip.antiAlias)
     {
-        this._clipPath = clipPath;
-        this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((!Equals(clipBehavior, Clip.none)));
+        _clipPath = clipPath;
+        _clipBehavior = clipBehavior;
+        System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
     public virtual global::Doroti.Ui.Path? clipPath
     {
-        get => this._clipPath;
+        get => _clipPath;
         set
         {
-            var __value = value is null ? null : (Path)value;
-            if ((!Equals(__value, this._clipPath)))
+            var __value = value is null ? null : value;
+            if (!Equals(__value, _clipPath))
             {
                 _clipPath = __value;
                 markNeedsAddToScene();
             }
         }
     }
-    public override Rect? describeClipBounds() => this.clipPath?.getBounds();
+    public override Rect? describeClipBounds() => clipPath?.getBounds();
     public virtual global::Doroti.Ui.Clip clipBehavior
     {
-        get => this._clipBehavior;
+        get => _clipBehavior;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (!Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)));
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            DartRuntimePrimitives.Assert(() => !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none));
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsAddToScene();
@@ -1281,7 +1281,7 @@ public class ClipPathLayer : ContainerLayer
     }
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        if (!this.clipPath!.contains(localPosition))
+        if (!clipPath!.contains(localPosition))
         {
             return false;
         }
@@ -1291,7 +1291,7 @@ public class ClipPathLayer : ContainerLayer
 
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.clipPath is not null));
+        DartRuntimePrimitives.Assert(() => clipPath is not null);
         var enabled = true;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1300,7 +1300,7 @@ public class ClipPathLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipPath(this.clipPath!, clipBehavior: this.clipBehavior, oldLayer: ((global::Doroti.Ui.ClipPathEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipPath(clipPath!, clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipPathEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1316,7 +1316,7 @@ public class ClipPathLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1327,17 +1327,17 @@ public class ColorFilterLayer : ContainerLayer
 
     public ColorFilterLayer(ColorFilter? colorFilter = null)
     {
-        this._colorFilter = colorFilter;
+        _colorFilter = colorFilter;
     }
 
     public virtual global::Doroti.Ui.ColorFilter? colorFilter
     {
-        get => this._colorFilter;
+        get => _colorFilter;
         set
         {
-            var __value = value is null ? null : (ColorFilter)value;
-            DartRuntimePrimitives.Assert(() => (__value is not null));
-            if ((!Equals(__value, this._colorFilter)))
+            var __value = value is null ? null : value;
+            DartRuntimePrimitives.Assert(() => __value is not null);
+            if (!Equals(__value, _colorFilter))
             {
                 _colorFilter = __value;
                 markNeedsAddToScene();
@@ -1346,8 +1346,8 @@ public class ColorFilterLayer : ContainerLayer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.colorFilter is not null));
-        engineLayer = builder.pushColorFilter(this.colorFilter!, oldLayer: ((global::Doroti.Ui.ColorFilterEngineLayer?)_engineLayer)!);
+        DartRuntimePrimitives.Assert(() => colorFilter is not null);
+        engineLayer = builder.pushColorFilter(colorFilter!, oldLayer: ((global::Doroti.Ui.ColorFilterEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1355,7 +1355,7 @@ public class ColorFilterLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", this.colorFilter));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", colorFilter));
     }
 
 }
@@ -1369,17 +1369,17 @@ public class ImageFilterLayer : OffsetLayer
 
     public ImageFilterLayer(ImageFilter? imageFilter = null, Offset offset = default) : base(offset: offset)
     {
-        this._imageFilter = imageFilter;
+        _imageFilter = imageFilter;
     }
 
     public virtual global::Doroti.Ui.ImageFilter? imageFilter
     {
-        get => this._imageFilter;
+        get => _imageFilter;
         set
         {
-            var __value = value is null ? null : (ImageFilter)value;
-            DartRuntimePrimitives.Assert(() => (__value is not null));
-            if ((!Equals(__value, this._imageFilter)))
+            var __value = value is null ? null : value;
+            DartRuntimePrimitives.Assert(() => __value is not null);
+            if (!Equals(__value, _imageFilter))
             {
                 _imageFilter = __value;
                 _filterInputDirty = true;
@@ -1389,10 +1389,10 @@ public class ImageFilterLayer : OffsetLayer
     }
     public virtual global::Doroti.Ui.Rect? bounds
     {
-        get => this._bounds;
+        get => _bounds;
         set
         {
-            if (!Equals(value, this._bounds))
+            if (!Equals(value, _bounds))
             {
                 _bounds = value;
                 _filterInputDirty = true;
@@ -1412,7 +1412,7 @@ public class ImageFilterLayer : OffsetLayer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.imageFilter is not null));
+        DartRuntimePrimitives.Assert(() => imageFilter is not null);
         var childNeedsUpdate = false;
         for (Layer? child = firstChild; child is not null; child = child.nextSibling)
         {
@@ -1430,9 +1430,9 @@ public class ImageFilterLayer : OffsetLayer
             _filterCacheGeneration++;
             _filterInputDirty = false;
         }
-        engineLayer = builder.pushImageFilter(this.imageFilter!, offset: offset,
+        engineLayer = builder.pushImageFilter(imageFilter!, offset: offset,
             oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)_engineLayer)!, bounds: bounds,
-            cacheKey: this, cacheGeneration: this._filterCacheGeneration);
+            cacheKey: this, cacheGeneration: _filterCacheGeneration);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1442,8 +1442,8 @@ public class ImageFilterLayer : OffsetLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", this.imageFilter));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect?>("bounds", this.bounds));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", imageFilter));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect?>("bounds", bounds));
     }
 
 }
@@ -1457,18 +1457,18 @@ public class TransformLayer : OffsetLayer
 
     public TransformLayer(Matrix4? transform = null, Offset offset = default) : base(offset: offset)
     {
-        this._transform = transform;
+        _transform = transform;
     }
 
     public virtual Matrix4? transform
     {
-        get => this._transform;
+        get => _transform;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is not null));
-            DartRuntimePrimitives.Assert(() => __value!.storage.All(((component) => double.IsFinite(component))));
-            if ((Equals(__value, this._transform)))
+            DartRuntimePrimitives.Assert(() => __value is not null);
+            DartRuntimePrimitives.Assert(() => __value!.storage.All((component) => double.IsFinite(component)));
+            if (Equals(__value, _transform))
             {
                 return;
             }
@@ -1479,41 +1479,41 @@ public class TransformLayer : OffsetLayer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.transform is not null));
-        _lastEffectiveTransform = this.transform;
-        if ((!Equals(offset, Offset.zero)))
+        DartRuntimePrimitives.Assert(() => transform is not null);
+        _lastEffectiveTransform = transform;
+        if (!Equals(offset, Offset.zero))
         {
             _lastEffectiveTransform = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.translationValues(offset.dx, offset.dy, 0.0);
-    __cascade.multiply(this._lastEffectiveTransform!);
+    __cascade.multiply(_lastEffectiveTransform!);
     return __cascade;
 }))();
         }
-        engineLayer = builder.pushTransform(this._lastEffectiveTransform!.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+        engineLayer = builder.pushTransform(_lastEffectiveTransform!.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
 
     internal virtual global::Doroti.Ui.Offset? _transformOffset(Offset localPosition)
     {
-        if (this._inverseDirty)
+        if (_inverseDirty)
         {
-            _invertedTransform = Matrix4.tryInvert(PointerEvent.removePerspectiveTransform(this.transform!));
+            _invertedTransform = Matrix4.tryInvert(PointerEvent.removePerspectiveTransform(transform!));
             _inverseDirty = false;
         }
-        if ((this._invertedTransform is null))
+        if (_invertedTransform is null)
         {
             return null;
         }
-        return MatrixUtils.transformPoint(this._invertedTransform!, localPosition);
+        return MatrixUtils.transformPoint(_invertedTransform!, localPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
         global::Doroti.Ui.Offset? transformedOffset = _transformOffset(localPosition);
-        if ((transformedOffset is null))
+        if (transformedOffset is null)
         {
             return false;
         }
@@ -1523,22 +1523,22 @@ public class TransformLayer : OffsetLayer
 
     public override void applyTransform(Layer? child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (child is not null));
-        DartRuntimePrimitives.Assert(() => ((this._lastEffectiveTransform is not null) || (this.transform is not null)));
-        if ((this._lastEffectiveTransform is null))
+        DartRuntimePrimitives.Assert(() => child is not null);
+        DartRuntimePrimitives.Assert(() => (_lastEffectiveTransform is not null) || (this.transform is not null));
+        if (_lastEffectiveTransform is null)
         {
             transform.multiply(this.transform!);
         }
         else
         {
-            transform.multiply(this._lastEffectiveTransform!);
+            transform.multiply(_lastEffectiveTransform!);
         }
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", this.transform));
+        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", transform));
     }
 
 }
@@ -1549,19 +1549,19 @@ public class OpacityLayer : OffsetLayer
 
     public OpacityLayer(long? alpha = null, Offset offset = default) : base(offset: offset)
     {
-        this._alpha = alpha;
+        _alpha = alpha;
     }
 
     public virtual long? alpha
     {
-        get => this._alpha;
+        get => _alpha;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => (__value is not null));
-            if ((__value != this._alpha))
+            DartRuntimePrimitives.Assert(() => __value is not null);
+            if (__value != _alpha)
             {
-                if (((__value == 255L) || (this._alpha == 255L)))
+                if ((__value == 255L) || (_alpha == 255L))
                 {
                     engineLayer = null;
                 }
@@ -1572,8 +1572,8 @@ public class OpacityLayer : OffsetLayer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.alpha is not null));
-        var enabled = (firstChild is not null);
+        DartRuntimePrimitives.Assert(() => alpha is not null);
+        var enabled = firstChild is not null;
         if (!enabled)
         {
             engineLayer = null;
@@ -1581,18 +1581,18 @@ public class OpacityLayer : OffsetLayer
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                enabled = (enabled && !DebugLibrary.debugDisableOpacityLayers);
+                enabled = enabled && !DebugLibrary.debugDisableOpacityLayers;
                 return true;
             });
-        long realizedAlpha = DartRuntimePrimitives.RequireValue(this.alpha);
-        if ((enabled && (realizedAlpha < 255L)))
+        long realizedAlpha = DartRuntimePrimitives.RequireValue(alpha);
+        if (enabled && (realizedAlpha < 255L))
         {
-            DartRuntimePrimitives.Assert(() => (_engineLayer is null or OpacityEngineLayer));
+            DartRuntimePrimitives.Assert(() => _engineLayer is null or OpacityEngineLayer);
             engineLayer = builder.pushOpacity(realizedAlpha, offset: offset, oldLayer: ((global::Doroti.Ui.OpacityEngineLayer?)_engineLayer)!);
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (_engineLayer is null or OffsetEngineLayer));
+            DartRuntimePrimitives.Assert(() => _engineLayer is null or OffsetEngineLayer);
             engineLayer = builder.pushOffset(offset.dx, offset.dy, oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)_engineLayer)!);
         }
         addChildrenToScene(builder);
@@ -1602,7 +1602,7 @@ public class OpacityLayer : OffsetLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new IntProperty("alpha", this.alpha));
+        properties.add(new IntProperty("alpha", alpha));
     }
 
 }
@@ -1615,18 +1615,18 @@ public class ShaderMaskLayer : ContainerLayer
 
     public ShaderMaskLayer(Shader? shader = null, Rect? maskRect = null, BlendMode? blendMode = null)
     {
-        this._shader = shader;
-        this._maskRect = maskRect;
-        this._blendMode = blendMode;
+        _shader = shader;
+        _maskRect = maskRect;
+        _blendMode = blendMode;
     }
 
     public virtual global::Doroti.Ui.Shader? shader
     {
-        get => this._shader;
+        get => _shader;
         set
         {
-            var __value = value is null ? null : (Shader)value;
-            if ((!Equals(__value, this._shader)))
+            var __value = value is null ? null : value;
+            if (!Equals(__value, _shader))
             {
                 _shader = __value;
                 markNeedsAddToScene();
@@ -1635,11 +1635,11 @@ public class ShaderMaskLayer : ContainerLayer
     }
     public virtual global::Doroti.Ui.Rect? maskRect
     {
-        get => this._maskRect;
+        get => _maskRect;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._maskRect)))
+            if (!Equals(__value, _maskRect))
             {
                 _maskRect = __value;
                 markNeedsAddToScene();
@@ -1648,11 +1648,11 @@ public class ShaderMaskLayer : ContainerLayer
     }
     public virtual global::Doroti.Ui.BlendMode? blendMode
     {
-        get => this._blendMode;
+        get => _blendMode;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._blendMode)))
+            if (!Equals(__value, _blendMode))
             {
                 _blendMode = __value;
                 markNeedsAddToScene();
@@ -1661,10 +1661,10 @@ public class ShaderMaskLayer : ContainerLayer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.shader is not null));
-        DartRuntimePrimitives.Assert(() => (this.maskRect is not null));
-        DartRuntimePrimitives.Assert(() => (this.blendMode is not null));
-        engineLayer = builder.pushShaderMask(this.shader!, DartRuntimePrimitives.RequireValue(this.maskRect), DartRuntimePrimitives.RequireValue(this.blendMode), oldLayer: ((global::Doroti.Ui.ShaderMaskEngineLayer?)_engineLayer)!);
+        DartRuntimePrimitives.Assert(() => shader is not null);
+        DartRuntimePrimitives.Assert(() => maskRect is not null);
+        DartRuntimePrimitives.Assert(() => blendMode is not null);
+        engineLayer = builder.pushShaderMask(shader!, DartRuntimePrimitives.RequireValue(maskRect), DartRuntimePrimitives.RequireValue(blendMode), oldLayer: ((global::Doroti.Ui.ShaderMaskEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1672,9 +1672,9 @@ public class ShaderMaskLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Shader>("shader", this.shader));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("maskRect", this.maskRect));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", this.blendMode));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Shader>("shader", shader));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("maskRect", maskRect));
+        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode));
     }
 
 }
@@ -1686,7 +1686,7 @@ public class BackdropKey
 
     public BackdropKey()
     {
-        this._key = _nextKey++;
+        _key = _nextKey++;
     }
 
 }
@@ -1699,17 +1699,17 @@ public class BackdropFilterLayer : ContainerLayer
 
     public BackdropFilterLayer(ImageFilter? filter = null, BlendMode blendMode = BlendMode.srcOver)
     {
-        this._filter = filter;
-        this._blendMode = blendMode;
+        _filter = filter;
+        _blendMode = blendMode;
     }
 
     public virtual global::Doroti.Ui.ImageFilter? filter
     {
-        get => this._filter;
+        get => _filter;
         set
         {
-            var __value = value is null ? null : (ImageFilter)value;
-            if ((!Equals(__value, this._filter)))
+            var __value = value is null ? null : value;
+            if (!Equals(__value, _filter))
             {
                 _filter = __value;
                 markNeedsAddToScene();
@@ -1718,11 +1718,11 @@ public class BackdropFilterLayer : ContainerLayer
     }
     public virtual global::Doroti.Ui.BlendMode blendMode
     {
-        get => this._blendMode;
+        get => _blendMode;
         set
         {
             var __value = value;
-            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._blendMode)))
+            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _blendMode))
             {
                 _blendMode = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsAddToScene();
@@ -1731,11 +1731,11 @@ public class BackdropFilterLayer : ContainerLayer
     }
     public virtual BackdropKey? backdropKey
     {
-        get => this._backdropKey;
+        get => _backdropKey;
         set
         {
             var __value = value;
-            if ((!Equals(__value, this._backdropKey)))
+            if (!Equals(__value, _backdropKey))
             {
                 _backdropKey = __value;
                 markNeedsAddToScene();
@@ -1744,8 +1744,8 @@ public class BackdropFilterLayer : ContainerLayer
     }
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.filter is not null));
-        engineLayer = builder.pushBackdropFilter(this.filter!, blendMode: this.blendMode, oldLayer: ((global::Doroti.Ui.BackdropFilterEngineLayer?)_engineLayer)!, backdropId: this._backdropKey?._key);
+        DartRuntimePrimitives.Assert(() => filter is not null);
+        engineLayer = builder.pushBackdropFilter(filter!, blendMode: blendMode, oldLayer: ((global::Doroti.Ui.BackdropFilterEngineLayer?)_engineLayer)!, backdropId: _backdropKey?._key);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1753,9 +1753,9 @@ public class BackdropFilterLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("filter", this.filter));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", this.blendMode));
-        properties.add(new IntProperty("backdropKey", this._backdropKey?._key));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("filter", filter));
+        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode));
+        properties.add(new IntProperty("backdropKey", _backdropKey?._key));
     }
 
 }
@@ -1767,17 +1767,17 @@ public class LayerLink
     internal virtual bool _debugLeaderCheckScheduled { get; set; } = false;
     public virtual Size? leaderSize { get; set; } = default;
 
-    public virtual LeaderLayer? leader => this._leader;
+    public virtual LeaderLayer? leader => _leader;
     internal virtual void _registerLeader(LeaderLayer leader)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(this._leader, leader)));
+        DartRuntimePrimitives.Assert(() => !Equals(_leader, leader));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._leader is not null))
+                if (_leader is not null)
                 {
                     _debugPreviousLeaders ??= new HashSet<LeaderLayer>();
                     _debugScheduleLeadersCleanUpCheck();
-                    return this._debugPreviousLeaders!.Add(this._leader!);
+                    return _debugPreviousLeaders!.Add(_leader!);
                 }
                 return true;
             });
@@ -1786,31 +1786,31 @@ public class LayerLink
 
     internal virtual void _unregisterLeader(LeaderLayer leader)
     {
-        if ((Equals(this._leader, leader)))
+        if (Equals(_leader, leader))
         {
             _leader = null;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => this._debugPreviousLeaders!.Remove(leader));
+            DartRuntimePrimitives.Assert(() => _debugPreviousLeaders!.Remove(leader));
         }
     }
 
     internal virtual void _debugScheduleLeadersCleanUpCheck()
     {
-        DartRuntimePrimitives.Assert(() => (this._debugPreviousLeaders is not null));
+        DartRuntimePrimitives.Assert(() => _debugPreviousLeaders is not null);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (this._debugLeaderCheckScheduled)
+                if (_debugLeaderCheckScheduled)
                 {
                     return true;
                 }
                 _debugLeaderCheckScheduled = true;
-                SchedulerBinding.instance.addPostFrameCallback(((timeStamp) =>
+                SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
                 {
                     _debugLeaderCheckScheduled = false;
-                    DartRuntimePrimitives.Assert(() => (checked((long)(this._debugPreviousLeaders!.Count)) == 0));
-                }), debugLabel: "LayerLink.leadersCleanUpCheck");
+                    DartRuntimePrimitives.Assert(() => checked((long)_debugPreviousLeaders!.Count) == 0);
+                }, debugLabel: "LayerLink.leadersCleanUpCheck");
                 return true;
             });
     }
@@ -1819,7 +1819,7 @@ public class LayerLink
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        return $"{(DiagnosticsLibrary.describeIdentity(this))}({((this._leader is not null) ? "<linked>" : "<dangling>")})";
+        return $"{DiagnosticsLibrary.describeIdentity(this)}({((_leader is not null) ? "<linked>" : "<dangling>")})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1832,23 +1832,23 @@ public class LeaderLayer : ContainerLayer
 
     public LeaderLayer(LayerLink link, Offset offset = default)
     {
-        this._link = link;
-        this._offset = offset;
+        _link = link;
+        _offset = offset;
     }
 
     public virtual LayerLink link
     {
-        get => this._link;
+        get => _link;
         set
         {
             var __value = value;
-            if ((Equals(this._link, __value)))
+            if (Equals(_link, __value))
             {
                 return;
             }
             if (attached)
             {
-                this._link._unregisterLeader(this);
+                _link._unregisterLeader(this);
                 __value._registerLeader(this);
             }
             _link = __value;
@@ -1856,11 +1856,11 @@ public class LeaderLayer : ContainerLayer
     }
     public virtual global::Doroti.Ui.Offset offset
     {
-        get => this._offset;
+        get => _offset;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._offset)))
+            if (Equals(__value, _offset))
             {
                 return;
             }
@@ -1874,33 +1874,33 @@ public class LeaderLayer : ContainerLayer
     public override void attach(object owner)
     {
         base.attach(owner);
-        this._link._registerLeader(this);
+        _link._registerLeader(this);
     }
 
     public override void detach()
     {
-        this._link._unregisterLeader(this);
+        _link._unregisterLeader(this);
         base.detach();
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        return base.findAnnotations<S>(result, (localPosition - this.offset), onlyFirst: onlyFirst);
+        return base.findAnnotations<S>(result, localPosition - offset, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
     {
-        if ((!Equals(this.offset, Offset.zero)))
+        if (!Equals(offset, Offset.zero))
         {
-            engineLayer = builder.pushTransform(Matrix4.translationValues(this.offset.dx, this.offset.dy, 0.0).storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushTransform(Matrix4.translationValues(offset.dx, offset.dy, 0.0).storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
         }
         else
         {
             engineLayer = null;
         }
         addChildrenToScene(builder);
-        if ((!Equals(this.offset, Offset.zero)))
+        if (!Equals(offset, Offset.zero))
         {
             builder.pop();
         }
@@ -1908,17 +1908,17 @@ public class LeaderLayer : ContainerLayer
 
     public override void applyTransform(Layer? child, Matrix4 transform)
     {
-        if ((!Equals(this.offset, Offset.zero)))
+        if (!Equals(offset, Offset.zero))
         {
-            transform.translateByDouble(this.offset.dx, this.offset.dy, 0, 1);
+            transform.translateByDouble(offset.dx, offset.dy, 0, 1);
         }
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset));
-        properties.add(new DiagnosticsProperty<LayerLink>("link", this.link));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset));
+        properties.add(new DiagnosticsProperty<LayerLink>("link", link));
     }
 
 }
@@ -1944,33 +1944,33 @@ public class FollowerLayer : ContainerLayer
 
     internal virtual global::Doroti.Ui.Offset? _transformOffset(Offset localPosition)
     {
-        if (this._inverseDirty)
+        if (_inverseDirty)
         {
             _invertedTransform = Matrix4.tryInvert(getLastTransform()!);
             _inverseDirty = false;
         }
-        if ((this._invertedTransform is null))
+        if (_invertedTransform is null)
         {
             return null;
         }
         var vector = new global::System.Numerics.Vector4(checked((float)localPosition.dx), checked((float)localPosition.dy), checked((float)0.0), checked((float)1.0));
-        global::System.Numerics.Vector4 result = this._invertedTransform!.transform(vector);
-        return new global::Doroti.Ui.Offset((result[(int)(0L)] - DartRuntimePrimitives.RequireValue(this.linkedOffset).dx), (result[(int)(1L)] - DartRuntimePrimitives.RequireValue(this.linkedOffset).dy));
+        global::System.Numerics.Vector4 result = _invertedTransform!.transform(vector);
+        return new global::Doroti.Ui.Offset(result[(int)0L] - DartRuntimePrimitives.RequireValue(linkedOffset).dx, result[(int)1L] - DartRuntimePrimitives.RequireValue(linkedOffset).dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        if ((((LayerLink)this.link).leader is null))
+        if (link.leader is null)
         {
-            if (DartRuntimePrimitives.RequireValue(this.showWhenUnlinked))
+            if (DartRuntimePrimitives.RequireValue(showWhenUnlinked))
             {
-                return base.findAnnotations(result, (localPosition - DartRuntimePrimitives.RequireValue(this.unlinkedOffset)), onlyFirst: onlyFirst);
+                return base.findAnnotations(result, localPosition - DartRuntimePrimitives.RequireValue(unlinkedOffset), onlyFirst: onlyFirst);
             }
             return false;
         }
         global::Doroti.Ui.Offset? transformedOffset = _transformOffset(localPosition);
-        if ((transformedOffset is null))
+        if (transformedOffset is null)
         {
             return false;
         }
@@ -1980,12 +1980,12 @@ public class FollowerLayer : ContainerLayer
 
     public virtual Matrix4? getLastTransform()
     {
-        if ((this._lastTransform is null))
+        if (_lastTransform is null)
         {
             return null;
         }
-        var result = Matrix4.translationValues(-DartRuntimePrimitives.RequireValue(this._lastOffset).dx, -DartRuntimePrimitives.RequireValue(this._lastOffset).dy, 0.0);
-        result.multiply(this._lastTransform!);
+        var result = Matrix4.translationValues(-DartRuntimePrimitives.RequireValue(_lastOffset).dx, -DartRuntimePrimitives.RequireValue(_lastOffset).dy, 0.0);
+        result.multiply(_lastTransform!);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1993,9 +1993,9 @@ public class FollowerLayer : ContainerLayer
     internal static Matrix4 _collectTransformForLayerChain(List<ContainerLayer?> layers)
     {
         var result = Matrix4.identity();
-        for (long index = (checked((long)(layers.Count)) - 1L); (index > 0L); index -= 1L)
+        for (long index = checked(layers.Count) - 1L; index > 0L; index -= 1L)
         {
-            layers[(int)(index)]?.applyTransform(layers[(int)((index - 1L))], result);
+            layers[(int)index]?.applyTransform(layers[(int)(index - 1L)], result);
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2003,7 +2003,7 @@ public class FollowerLayer : ContainerLayer
 
     internal static Layer? _pathsToCommonAncestor(Layer? a, Layer? b, List<ContainerLayer?> ancestorsA, List<ContainerLayer?> ancestorsB)
     {
-        if (((a is null) || (b is null)))
+        if ((a is null) || (b is null))
         {
             return null;
         }
@@ -2011,45 +2011,45 @@ public class FollowerLayer : ContainerLayer
         {
             return a;
         }
-        if ((((Layer)a).depth < ((Layer)b).depth))
+        if (a.depth < b.depth)
         {
-            ancestorsB.Add(((Layer)b).parent);
-            return _pathsToCommonAncestor(a, ((Layer)b).parent, ancestorsA, ancestorsB);
+            ancestorsB.Add(b.parent);
+            return _pathsToCommonAncestor(a, b.parent, ancestorsA, ancestorsB);
         }
         else
         {
-            if ((((Layer)a).depth > ((Layer)b).depth))
+            if (a.depth > b.depth)
             {
-                ancestorsA.Add(((Layer)a).parent);
-                return _pathsToCommonAncestor(((Layer)a).parent, b, ancestorsA, ancestorsB);
+                ancestorsA.Add(a.parent);
+                return _pathsToCommonAncestor(a.parent, b, ancestorsA, ancestorsB);
             }
         }
-        ancestorsA.Add(((Layer)a).parent);
-        ancestorsB.Add(((Layer)b).parent);
-        return _pathsToCommonAncestor(((Layer)a).parent, ((Layer)b).parent, ancestorsA, ancestorsB);
+        ancestorsA.Add(a.parent);
+        ancestorsB.Add(b.parent);
+        return _pathsToCommonAncestor(a.parent, b.parent, ancestorsA, ancestorsB);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _debugCheckLeaderBeforeFollower(List<ContainerLayer?> leaderToCommonAncestor, List<ContainerLayer?> followerToCommonAncestor)
     {
-        if ((checked((long)(followerToCommonAncestor.Count)) <= 1L))
+        if (checked(followerToCommonAncestor.Count) <= 1L)
         {
             return false;
         }
-        if ((checked((long)(leaderToCommonAncestor.Count)) <= 1L))
+        if (checked(leaderToCommonAncestor.Count) <= 1L)
         {
             return true;
         }
-        ContainerLayer? leaderSubtreeBelowAncestor = leaderToCommonAncestor[(int)((checked((long)(leaderToCommonAncestor.Count)) - 2L))];
-        ContainerLayer? followerSubtreeBelowAncestor = followerToCommonAncestor[(int)((checked((long)(followerToCommonAncestor.Count)) - 2L))];
+        ContainerLayer? leaderSubtreeBelowAncestor = leaderToCommonAncestor[(int)(checked(leaderToCommonAncestor.Count) - 2L)];
+        ContainerLayer? followerSubtreeBelowAncestor = followerToCommonAncestor[(int)(checked(followerToCommonAncestor.Count) - 2L)];
         Layer? sibling = leaderSubtreeBelowAncestor;
-        while ((sibling is not null))
+        while (sibling is not null)
         {
-            if ((Equals(sibling, followerSubtreeBelowAncestor)))
+            if (Equals(sibling, followerSubtreeBelowAncestor))
             {
                 return true;
             }
-            sibling = ((Layer)sibling).nextSibling;
+            sibling = sibling.nextSibling;
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2058,22 +2058,22 @@ public class FollowerLayer : ContainerLayer
     internal virtual void _establishTransform()
     {
         _lastTransform = null;
-        LeaderLayer? leaderLocal = ((LayerLink)this.link).leader;
-        if ((leaderLocal is null))
+        LeaderLayer? leaderLocal = link.leader;
+        if (leaderLocal is null)
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => (Equals(leaderLocal.owner, owner)));
+        DartRuntimePrimitives.Assert(() => Equals(leaderLocal.owner, owner));
         var forwardLayers = new List<ContainerLayer?> { leaderLocal };
         var inverseLayers = new List<ContainerLayer?> { this };
         Layer? ancestor = _pathsToCommonAncestor(leaderLocal, this, forwardLayers, inverseLayers);
-        DartRuntimePrimitives.Assert(() => (ancestor is not null));
+        DartRuntimePrimitives.Assert(() => ancestor is not null);
         DartRuntimePrimitives.Assert(() => _debugCheckLeaderBeforeFollower(forwardLayers, inverseLayers));
         Matrix4 forwardTransform = _collectTransformForLayerChain(forwardLayers);
         leaderLocal.applyTransform(null, forwardTransform);
-        forwardTransform.translateByDouble(DartRuntimePrimitives.RequireValue(this.linkedOffset).dx, DartRuntimePrimitives.RequireValue(this.linkedOffset).dy, 0, 1);
+        forwardTransform.translateByDouble(DartRuntimePrimitives.RequireValue(linkedOffset).dx, DartRuntimePrimitives.RequireValue(linkedOffset).dy, 0, 1);
         Matrix4 inverseTransform = _collectTransformForLayerChain(inverseLayers);
-        if ((inverseTransform.invert() == 0.0))
+        if (inverseTransform.invert() == 0.0)
         {
             return;
         }
@@ -2085,8 +2085,8 @@ public class FollowerLayer : ContainerLayer
     public override bool alwaysNeedsAddToScene => true;
     public override void addToScene(SceneBuilder builder)
     {
-        DartRuntimePrimitives.Assert(() => (this.showWhenUnlinked is not null));
-        if (((((LayerLink)this.link).leader is null) && !DartRuntimePrimitives.RequireValue(this.showWhenUnlinked)))
+        DartRuntimePrimitives.Assert(() => showWhenUnlinked is not null);
+        if ((link.leader is null) && !DartRuntimePrimitives.RequireValue(showWhenUnlinked))
         {
             _lastTransform = null;
             _lastOffset = null;
@@ -2095,17 +2095,17 @@ public class FollowerLayer : ContainerLayer
             return;
         }
         _establishTransform();
-        if ((this._lastTransform is not null))
+        if (_lastTransform is not null)
         {
-            _lastOffset = this.unlinkedOffset;
-            engineLayer = builder.pushTransform(this._lastTransform!.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+            _lastOffset = unlinkedOffset;
+            engineLayer = builder.pushTransform(_lastTransform!.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
             addChildrenToScene(builder);
             builder.pop();
         }
         else
         {
             _lastOffset = null;
-            var matrix = Matrix4.translationValues(DartRuntimePrimitives.RequireValue(this.unlinkedOffset).dx, DartRuntimePrimitives.RequireValue(this.unlinkedOffset).dy, 0.0);
+            var matrix = Matrix4.translationValues(DartRuntimePrimitives.RequireValue(unlinkedOffset).dx, DartRuntimePrimitives.RequireValue(unlinkedOffset).dy, 0.0);
             engineLayer = builder.pushTransform(matrix.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
             addChildrenToScene(builder);
             builder.pop();
@@ -2115,21 +2115,21 @@ public class FollowerLayer : ContainerLayer
 
     public override void applyTransform(Layer? child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (child is not null));
-        if ((this._lastTransform is not null))
+        DartRuntimePrimitives.Assert(() => child is not null);
+        if (_lastTransform is not null)
         {
-            transform.multiply(this._lastTransform!);
+            transform.multiply(_lastTransform!);
         }
         else
         {
-            transform.multiply(Matrix4.translationValues(DartRuntimePrimitives.RequireValue(this.unlinkedOffset).dx, DartRuntimePrimitives.RequireValue(this.unlinkedOffset).dy, 0));
+            transform.multiply(Matrix4.translationValues(DartRuntimePrimitives.RequireValue(unlinkedOffset).dx, DartRuntimePrimitives.RequireValue(unlinkedOffset).dy, 0));
         }
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<LayerLink>("link", this.link));
+        properties.add(new DiagnosticsProperty<LayerLink>("link", link));
         properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", getLastTransform(), defaultValue: null));
     }
 
@@ -2147,27 +2147,27 @@ public class AnnotatedRegionLayer<T> : ContainerLayer
         this.value = value;
         this.size = size;
         this.opaque = opaque;
-        this.offset = (offset ?? Offset.zero);
+        this.offset = offset ?? Offset.zero;
     }
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
         bool isAbsorbed = base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
-        if (((((AnnotationResult<S>)result).entries.Count() != 0) && onlyFirst))
+        if ((result.entries.Count() != 0) && onlyFirst)
         {
             return isAbsorbed;
         }
-        if (((this.size is not null) && !((this.offset & DartRuntimePrimitives.RequireValue(this.size))).contains(localPosition)))
+        if ((size is not null) && !(offset & DartRuntimePrimitives.RequireValue(size)).contains(localPosition))
         {
             Size size__value103949 = DartRuntimePrimitives.RequireValue(size);
             return isAbsorbed;
         }
-        if ((Equals(typeof(T), typeof(S))))
+        if (Equals(typeof(T), typeof(S)))
         {
-            isAbsorbed = (isAbsorbed || this.opaque);
-            object? untypedValue = this.value;
-            var typedValue = ((S?)(object?)untypedValue)!;
-            result.add(new AnnotationEntry<S>(annotation: typedValue, localPosition: (localPosition - this.offset)));
+            isAbsorbed = isAbsorbed || opaque;
+            object? untypedValue = value;
+            var typedValue = ((S?)untypedValue)!;
+            result.add(new AnnotationEntry<S>(annotation: typedValue, localPosition: localPosition - offset));
         }
         return isAbsorbed;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2176,10 +2176,10 @@ public class AnnotatedRegionLayer<T> : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<T>("value", this.value));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("size", this.size, defaultValue: null));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset, defaultValue: null));
-        properties.add(new DiagnosticsProperty<bool>("opaque", this.opaque, defaultValue: false));
+        properties.add(new DiagnosticsProperty<T>("value", value));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("size", size, defaultValue: null));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("opaque", opaque, defaultValue: false));
     }
 
 }

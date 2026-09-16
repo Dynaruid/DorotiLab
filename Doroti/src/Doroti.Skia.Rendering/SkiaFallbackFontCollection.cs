@@ -1,5 +1,5 @@
-using SkiaSharp;
 using System.Text;
+using SkiaSharp;
 
 namespace Doroti.Skia.Rendering;
 

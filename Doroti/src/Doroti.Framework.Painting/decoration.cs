@@ -24,23 +24,23 @@ public abstract class Decoration : Diagnosticable
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
-            return (b!.lerpFrom(null, t) ?? b);
+            return b!.lerpFrom(null, t) ?? b;
         }
-        if ((b is null))
+        if (b is null)
         {
-            return (a.lerpTo(null, t) ?? a);
+            return a.lerpTo(null, t) ?? a;
         }
-        if ((t == 0.0))
+        if (t == 0.0)
         {
             return a;
         }
-        if ((t == 1.0))
+        if (t == 1.0)
         {
             return b;
         }
-        return ((b.lerpFrom(a, t) ?? a.lerpTo(b, t)) ?? (((t < 0.5) ? ((a.lerpTo(null, (t * 2.0)) ?? a)) : ((b.lerpFrom(null, (((t - 0.5)) * 2.0)) ?? b)))));
+        return (b.lerpFrom(a, t) ?? a.lerpTo(b, t)) ?? ((t < 0.5) ? (a.lerpTo(null, t * 2.0) ?? a) : (b.lerpFrom(null, (t - 0.5) * 2.0) ?? b));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -48,7 +48,7 @@ public abstract class Decoration : Diagnosticable
     public abstract BoxPainter createBoxPainter(Action onChanged = default!);
     public virtual global::Doroti.Ui.Path getClipPath(Rect rect, TextDirection textDirection)
     {
-        throw new NotSupportedException($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "This Decoration subclass"))} does not expect to be used for clipping.");
+        throw new NotSupportedException($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "This Decoration subclass")} does not expect to be used for clipping.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

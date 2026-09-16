@@ -16,14 +16,14 @@ public class ImageFiltered : SingleChildRenderObjectWidget
         this.enabled = enabled;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ImageFilterRenderObject__image_filter(this.imageFilter, this.enabled));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ImageFilterRenderObject__image_filter(imageFilter, enabled));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Ignore(((Func<_ImageFilterRenderObject__image_filter>)(() =>
 {
-    var __cascade = (((_ImageFilterRenderObject__image_filter?)renderObject)!);
-    __cascade.enabled = this.enabled;
-    __cascade.imageFilter = this.imageFilter;
+    var __cascade = ((_ImageFilterRenderObject__image_filter?)renderObject)!;
+    __cascade.enabled = enabled;
+    __cascade.imageFilter = imageFilter;
     return __cascade;
 }))());
     }
@@ -31,7 +31,7 @@ public class ImageFiltered : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", this.imageFilter));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", imageFilter));
     }
 
 }
@@ -49,17 +49,17 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
 
     public virtual bool enabled
     {
-        get => this._enabled;
+        get => _enabled;
         set
         {
             var __value = value;
-            if ((this.enabled == __value))
+            if (enabled == __value)
             {
                 return;
             }
-            bool wasRepaintBoundary = this.isRepaintBoundary;
+            bool wasRepaintBoundary = isRepaintBoundary;
             _enabled = __value;
-            if ((this.isRepaintBoundary != wasRepaintBoundary))
+            if (isRepaintBoundary != wasRepaintBoundary)
             {
                 markNeedsCompositingBitsUpdate();
             }
@@ -68,26 +68,26 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
     }
     public virtual global::Doroti.Ui.ImageFilter imageFilter
     {
-        get => this._imageFilter;
+        get => _imageFilter;
         set
         {
-            var __value = (ImageFilter)value;
-            if ((!Equals(__value, this._imageFilter)))
+            var __value = value;
+            if (!Equals(__value, _imageFilter))
             {
                 _imageFilter = __value;
                 markNeedsCompositedLayerUpdate();
             }
         }
     }
-    public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>(((this.child is not null) && this.enabled));
-    public override bool isRepaintBoundary => this.alwaysNeedsCompositing;
+    public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((child is not null) && enabled);
+    public override bool isRepaintBoundary => alwaysNeedsCompositing;
     public override global::Doroti.Framework.Rendering.OffsetLayer updateCompositedLayer(global::Doroti.Framework.Rendering.OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (global::Doroti.Framework.Rendering.ImageFilterLayer)oldLayer;
-        global::Doroti.Framework.Rendering.ImageFilterLayer layer = (__oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer());
-        layer.imageFilter = this.imageFilter;
-        layer.bounds = this.paintBounds;
-        return ((global::Doroti.Framework.Rendering.OffsetLayer)layer);
+        global::Doroti.Framework.Rendering.ImageFilterLayer layer = __oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer();
+        layer.imageFilter = imageFilter;
+        layer.bounds = paintBounds;
+        return layer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

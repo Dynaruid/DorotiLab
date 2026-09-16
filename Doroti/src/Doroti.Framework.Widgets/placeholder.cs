@@ -20,12 +20,12 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
         var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color;
+    __cascade.color = color;
     __cascade.style = PaintingStyle.stroke;
-    __cascade.strokeWidth = this.strokeWidth;
+    __cascade.strokeWidth = strokeWidth;
     return __cascade;
 }))();
-        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(Offset.zero & size));
+        global::Doroti.Ui.Rect rect = Offset.zero & size;
         var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -40,7 +40,7 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_PlaceholderPainter__placeholder)oldDelegate;
-        return ((!Equals(((_PlaceholderPainter__placeholder)__oldPainter).color, this.color)) || (((_PlaceholderPainter__placeholder)__oldPainter).strokeWidth != this.strokeWidth));
+        return (!Equals(__oldPainter.color, color)) || (__oldPainter.strokeWidth != strokeWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -67,17 +67,17 @@ public class Placeholder : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new LimitedBox(maxWidth: this.fallbackWidth, maxHeight: this.fallbackHeight, child: new CustomPaint(size: Size.infinite, painter: new _PlaceholderPainter__placeholder(color: this.color, strokeWidth: this.strokeWidth), child: this.child)));
+        return new LimitedBox(maxWidth: fallbackWidth, maxHeight: fallbackHeight, child: new CustomPaint(size: Size.infinite, painter: new _PlaceholderPainter__placeholder(color: color, strokeWidth: strokeWidth), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: new global::Doroti.Ui.Color(4282735204L)));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeWidth", this.strokeWidth, defaultValue: 2.0));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackWidth", this.fallbackWidth, defaultValue: 400.0));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackHeight", this.fallbackHeight, defaultValue: 400.0));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: new global::Doroti.Ui.Color(4282735204L)));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeWidth", strokeWidth, defaultValue: 2.0));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackWidth", fallbackWidth, defaultValue: 400.0));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackHeight", fallbackHeight, defaultValue: 400.0));
     }
 
 }

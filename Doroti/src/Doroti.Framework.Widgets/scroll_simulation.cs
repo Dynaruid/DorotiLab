@@ -21,85 +21,85 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
         this.leadingExtent = leadingExtent;
         this.trailingExtent = trailingExtent;
         this.spring = spring;
-        System.Diagnostics.Debug.Assert((leadingExtent <= trailingExtent));
+        System.Diagnostics.Debug.Assert(leadingExtent <= trailingExtent);
         if (position < leadingExtent)
         {
-            this._springSimulation = _underscrollSimulation(position, velocity);
-            this._springTime = double.NegativeInfinity;
+            _springSimulation = _underscrollSimulation(position, velocity);
+            _springTime = double.NegativeInfinity;
         }
         else if (position > trailingExtent)
         {
-            this._springSimulation = _overscrollSimulation(position, velocity);
-            this._springTime = double.NegativeInfinity;
+            _springSimulation = _overscrollSimulation(position, velocity);
+            _springTime = double.NegativeInfinity;
         }
         else
         {
-            this._frictionSimulation = new global::Doroti.Framework.Physics.FrictionSimulation(
+            _frictionSimulation = new global::Doroti.Framework.Physics.FrictionSimulation(
                 0.135, position, velocity, constantDeceleration: constantDeceleration);
-            var finalX = this._frictionSimulation.finalX;
+            var finalX = _frictionSimulation.finalX;
             if (velocity > 0.0 && finalX > trailingExtent)
             {
-                this._springTime = this._frictionSimulation.timeAtX(trailingExtent);
-                this._springSimulation = _overscrollSimulation(
+                _springTime = _frictionSimulation.timeAtX(trailingExtent);
+                _springSimulation = _overscrollSimulation(
                     trailingExtent,
-                    Math.Min(this._frictionSimulation.dx(this._springTime), maxSpringTransferVelocity));
-                System.Diagnostics.Debug.Assert(double.IsFinite(this._springTime));
+                    Math.Min(_frictionSimulation.dx(_springTime), maxSpringTransferVelocity));
+                System.Diagnostics.Debug.Assert(double.IsFinite(_springTime));
             }
             else if (velocity < 0.0 && finalX < leadingExtent)
             {
-                this._springTime = this._frictionSimulation.timeAtX(leadingExtent);
-                this._springSimulation = _underscrollSimulation(
+                _springTime = _frictionSimulation.timeAtX(leadingExtent);
+                _springSimulation = _underscrollSimulation(
                     leadingExtent,
-                    Math.Min(this._frictionSimulation.dx(this._springTime), maxSpringTransferVelocity));
-                System.Diagnostics.Debug.Assert(double.IsFinite(this._springTime));
+                    Math.Min(_frictionSimulation.dx(_springTime), maxSpringTransferVelocity));
+                System.Diagnostics.Debug.Assert(double.IsFinite(_springTime));
             }
             else
             {
-                this._springTime = double.PositiveInfinity;
+                _springTime = double.PositiveInfinity;
             }
         }
     }
 
     internal virtual global::Doroti.Framework.Physics.Simulation _underscrollSimulation(double x, double dx)
     {
-        return ((global::Doroti.Framework.Physics.Simulation)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, x, this.leadingExtent, dx));
+        return new global::Doroti.Framework.Physics.ScrollSpringSimulation(spring, x, leadingExtent, dx);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Physics.Simulation _overscrollSimulation(double x, double dx)
     {
-        return ((global::Doroti.Framework.Physics.Simulation)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, x, this.trailingExtent, dx));
+        return new global::Doroti.Framework.Physics.ScrollSpringSimulation(spring, x, trailingExtent, dx);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Physics.Simulation _simulation(double time)
     {
         global::Doroti.Framework.Physics.Simulation simulation = default!;
-        if ((time > this._springTime))
+        if (time > _springTime)
         {
-            _timeOffset = (double.IsFinite(this._springTime) ? this._springTime : 0.0);
-            simulation = this._springSimulation;
+            _timeOffset = double.IsFinite(_springTime) ? _springTime : 0.0;
+            simulation = _springSimulation;
         }
         else
         {
             _timeOffset = 0.0;
-            simulation = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(this._frictionSimulation);
+            simulation = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(_frictionSimulation);
         }
         return ((Func<global::Doroti.Framework.Physics.Simulation>)(() =>
 {
     var __cascade = simulation;
-    __cascade.tolerance = this.tolerance;
+    __cascade.tolerance = tolerance;
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double x(double time) => _simulation(time).x((time - this._timeOffset));
-    public override double dx(double time) => _simulation(time).dx((time - this._timeOffset));
-    public override bool isDone(double time) => _simulation(time).isDone((time - this._timeOffset));
+    public override double x(double time) => _simulation(time).x(time - _timeOffset);
+    public override double dx(double time) => _simulation(time).dx(time - _timeOffset);
+    public override bool isDone(double time) => _simulation(time).isDone(time - _timeOffset);
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "BouncingScrollSimulation"))}(leadingExtent: {this.leadingExtent}, trailingExtent: {this.trailingExtent})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "BouncingScrollSimulation")}(leadingExtent: {leadingExtent}, trailingExtent: {trailingExtent})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,36 +112,36 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     public virtual double friction { get; private set; } = default!;
     internal virtual double _duration { get; set; } = default!;
     internal virtual double _distance { get; set; } = default!;
-    internal static double _kDecelerationRate = (Dart_mathLibrary.log(0.78) / Dart_mathLibrary.log(0.9));
+    internal static double _kDecelerationRate = Dart_mathLibrary.log(0.78) / Dart_mathLibrary.log(0.9);
     internal const double _kInflexion = 0.35;
-    internal static double _physicalCoeff = (((9.80665 * 39.37) * 160.0) * 0.84);
+    internal static double _physicalCoeff = 9.80665 * 39.37 * 160.0 * 0.84;
 
     public ClampingScrollSimulation(double position, double velocity, double friction = 0.015, global::Doroti.Framework.Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.position = position;
         this.velocity = velocity;
         this.friction = friction;
-        this._duration = _flingDuration();
-        this._distance = _flingDistance();
+        _duration = _flingDuration();
+        _distance = _flingDistance();
     }
 
     internal virtual double _flingDuration()
     {
-        double referenceVelocity = ((this.friction * _physicalCoeff) / _kInflexion);
-        var androidDuration = ((double)Dart_mathLibrary.pow((this.velocity.abs() / referenceVelocity), (1L / ((_kDecelerationRate - 1.0)))));
-        return ((_kDecelerationRate * _kInflexion) * androidDuration);
+        double referenceVelocity = friction * _physicalCoeff / _kInflexion;
+        var androidDuration = (double)Dart_mathLibrary.pow(velocity.abs() / referenceVelocity, 1L / (_kDecelerationRate - 1.0));
+        return _kDecelerationRate * _kInflexion * androidDuration;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _flingDistance()
     {
-        double distanceLocal = ((this.velocity * this._duration) / _kDecelerationRate);
+        double distanceLocal = velocity * _duration / _kDecelerationRate;
         DartRuntimePrimitives.Assert(() =>
             {
-                double referenceVelocity = ((this.friction * _physicalCoeff) / _kInflexion);
-                double logVelocity = Dart_mathLibrary.log((this.velocity.abs() / referenceVelocity));
-                double distanceAgain = ((this.friction * _physicalCoeff) * Dart_mathLibrary.exp(((logVelocity * _kDecelerationRate) / ((_kDecelerationRate - 1.0)))));
-                return (((distanceLocal.abs() - distanceAgain)).abs() < ((global::Doroti.Framework.Physics.Tolerance)this.tolerance).distance);
+                double referenceVelocity = friction * _physicalCoeff / _kInflexion;
+                double logVelocity = Dart_mathLibrary.log(velocity.abs() / referenceVelocity);
+                double distanceAgain = friction * _physicalCoeff * Dart_mathLibrary.exp(logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0));
+                return (distanceLocal.abs() - distanceAgain).abs() < tolerance.distance;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         return distanceLocal;
@@ -150,21 +150,21 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
 
     public override double x(double time)
     {
-        double t = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
-        return (this.position + (this._distance * ((1.0 - Dart_mathLibrary.pow((1.0 - t), _kDecelerationRate)))));
+        double t = Dart_uiLibrary.clampDouble(time / _duration, 0.0, 1.0);
+        return position + (_distance * (1.0 - Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double dx(double time)
     {
-        double t = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
-        return (this.velocity * Dart_mathLibrary.pow((1.0 - t), (_kDecelerationRate - 1.0)));
+        double t = Dart_uiLibrary.clampDouble(time / _duration, 0.0, 1.0);
+        return velocity * Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate - 1.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool isDone(double time)
     {
-        return (time >= this._duration);
+        return time >= _duration;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

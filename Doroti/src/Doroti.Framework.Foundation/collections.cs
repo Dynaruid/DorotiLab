@@ -8,11 +8,11 @@ public static partial class CollectionsLibrary
 {
     public static bool setEquals<T>(HashSet<T>? a, HashSet<T>? b)
     {
-        if ((a is null))
+        if (a is null)
         {
-            return (b is null);
+            return b is null;
         }
-        if (((b is null) || (a.Count != b.Count)))
+        if ((b is null) || (a.Count != b.Count))
         {
             return false;
         }
@@ -35,11 +35,11 @@ public static partial class CollectionsLibrary
 {
     public static bool listEquals<T>(List<T>? a, List<T>? b)
     {
-        if ((a is null))
+        if (a is null)
         {
-            return (b is null);
+            return b is null;
         }
-        if (((b is null) || (a.Count != b.Count)))
+        if ((b is null) || (a.Count != b.Count))
         {
             return false;
         }
@@ -47,7 +47,7 @@ public static partial class CollectionsLibrary
         {
             return true;
         }
-        for (var index = 0; (index < a.Count); index += 1)
+        for (var index = 0; index < a.Count; index += 1)
         {
             if (!EqualityComparer<T>.Default.Equals(a[index], b[index]))
             {
@@ -62,11 +62,11 @@ public static partial class CollectionsLibrary
 {
     public static bool mapEquals<T, U>(IReadOnlyDictionary<T, U>? a, IReadOnlyDictionary<T, U>? b) where T : notnull
     {
-        if ((a is null))
+        if (a is null)
         {
-            return (b is null);
+            return b is null;
         }
-        if (((b is null) || (a.Count != b.Count)))
+        if ((b is null) || (a.Count != b.Count))
         {
             return false;
         }
@@ -76,7 +76,7 @@ public static partial class CollectionsLibrary
         }
         foreach (T key in a.Keys)
         {
-            if ((!b.ContainsKey(key) || !EqualityComparer<U>.Default.Equals(b.GetValueOrDefault(key), a.GetValueOrDefault(key))))
+            if (!b.ContainsKey(key) || !EqualityComparer<U>.Default.Equals(b.GetValueOrDefault(key), a.GetValueOrDefault(key)))
             {
                 return false;
             }
@@ -91,18 +91,18 @@ public static partial class CollectionsLibrary
     {
         var min = 0;
         int max = sortedList.Count;
-        while ((min < max))
+        while (min < max)
         {
-            int mid = (min + ((((max - min)) >> 1)));
+            int mid = min + (max - min >> 1);
             T element = sortedList[mid];
             int comp = Comparer<T>.Default.Compare(element, value);
-            if ((comp == 0))
+            if (comp == 0)
             {
                 return mid;
             }
-            if ((comp < 0))
+            if (comp < 0)
             {
-                min = (mid + 1);
+                min = mid + 1;
             }
             else
             {
@@ -124,22 +124,22 @@ public static partial class CollectionsLibrary
     {
         if (end == -1) end = list.Count;
         compare ??= _defaultCompare<T>();
-        int length = (end - start);
-        if ((length < 2))
+        int length = end - start;
+        if (length < 2)
         {
             return;
         }
-        if ((length < _kMergeSortLimit))
+        if (length < _kMergeSortLimit)
         {
             _insertionSort<T>(list, compare, start, end);
             return;
         }
-        int middle = (start + ((((end - start)) >> 1)));
-        int firstLength = (middle - start);
-        int secondLength = (end - middle);
+        int middle = start + (end - start >> 1);
+        int firstLength = middle - start;
+        int secondLength = end - middle;
         var scratchSpace = new List<T>(Enumerable.Repeat<T>(list[start], secondLength));
         _mergeSort<T>(list, compare, middle, end, scratchSpace, 0);
-        int firstTarget = (end - firstLength);
+        int firstTarget = end - firstLength;
         _mergeSort<T>(list, compare, start, middle, list, firstTarget);
         _merge<T>(compare, list, firstTarget, end, scratchSpace, 0, secondLength, list, start);
     }
@@ -159,22 +159,22 @@ public static partial class CollectionsLibrary
     {
         compare ??= _defaultCompare<T>();
         if (end == -1) end = list.Count;
-        for (int pos = (start + 1); (pos < end); pos++)
+        for (int pos = start + 1; pos < end; pos++)
         {
             var min = start;
             var max = pos;
             T element = list[pos];
-            while ((min < max))
+            while (min < max)
             {
-                int mid = (min + ((((max - min)) >> 1)));
+                int mid = min + (max - min >> 1);
                 long comparison = compare(element, list[mid]);
-                if ((comparison < 0))
+                if (comparison < 0)
                 {
                     max = mid;
                 }
                 else
                 {
-                    min = (mid + 1);
+                    min = mid + 1;
                 }
             }
             for (var index = pos; index > min; index--)
@@ -190,27 +190,27 @@ public static partial class CollectionsLibrary
 {
     public static void _movingInsertionSort<T>(List<T> list, Func<T, T, long> compare, int start, int end, List<T> target, int targetOffset)
     {
-        int length = (end - start);
-        if ((length == 0))
+        int length = end - start;
+        if (length == 0)
         {
             return;
         }
         target[targetOffset] = list[start];
-        for (var i = 1; (i < length); i++)
+        for (var i = 1; i < length; i++)
         {
-            T element = list[(start + i)];
+            T element = list[start + i];
             var min = targetOffset;
-            int max = (targetOffset + i);
-            while ((min < max))
+            int max = targetOffset + i;
+            while (min < max)
             {
-                int mid = (min + ((((max - min)) >> 1)));
-                if ((compare(element, target[mid]) < 0))
+                int mid = min + (max - min >> 1);
+                if (compare(element, target[mid]) < 0)
                 {
                     max = mid;
                 }
                 else
                 {
-                    min = (mid + 1);
+                    min = mid + 1;
                 }
             }
             for (var index = targetOffset + i; index > min; index--)
@@ -226,19 +226,19 @@ public static partial class CollectionsLibrary
 {
     public static void _mergeSort<T>(List<T> list, Func<T, T, long> compare, int start, int end, List<T> target, int targetOffset)
     {
-        int length = (end - start);
-        if ((length < _kMergeSortLimit))
+        int length = end - start;
+        if (length < _kMergeSortLimit)
         {
             _movingInsertionSort<T>(list, compare, start, end, target, targetOffset);
             return;
         }
-        int middle = (start + ((length >> 1)));
-        int firstLength = (middle - start);
-        int secondLength = (end - middle);
-        int targetMiddle = (targetOffset + firstLength);
+        int middle = start + (length >> 1);
+        int firstLength = middle - start;
+        int secondLength = end - middle;
+        int targetMiddle = targetOffset + firstLength;
         _mergeSort<T>(list, compare, middle, end, target, targetMiddle);
         _mergeSort<T>(list, compare, start, middle, list, middle);
-        _merge<T>(compare, list, middle, (middle + firstLength), target, targetMiddle, (targetMiddle + secondLength), target, targetOffset);
+        _merge<T>(compare, list, middle, middle + firstLength, target, targetMiddle, targetMiddle + secondLength, target, targetOffset);
     }
 }
 
@@ -246,18 +246,18 @@ public static partial class CollectionsLibrary
 {
     public static void _merge<T>(Func<T, T, long> compare, List<T> firstList, int firstStart, int firstEnd, List<T> secondList, int secondStart, int secondEnd, List<T> target, int targetOffset)
     {
-        DartRuntimePrimitives.Assert(() => (firstStart < firstEnd));
-        DartRuntimePrimitives.Assert(() => (secondStart < secondEnd));
+        DartRuntimePrimitives.Assert(() => firstStart < firstEnd);
+        DartRuntimePrimitives.Assert(() => secondStart < secondEnd);
         var cursor1 = firstStart;
         var cursor2 = secondStart;
         T firstElement = firstList[cursor1++];
         T secondElement = secondList[cursor2++];
         while (true)
         {
-            if ((compare(firstElement, secondElement) <= 0))
+            if (compare(firstElement, secondElement) <= 0)
             {
                 target[targetOffset++] = firstElement;
-                if ((cursor1 == firstEnd))
+                if (cursor1 == firstEnd)
                 {
                     break;
                 }
@@ -266,7 +266,7 @@ public static partial class CollectionsLibrary
             else
             {
                 target[targetOffset++] = secondElement;
-                if ((cursor2 != secondEnd))
+                if (cursor2 != secondEnd)
                 {
                     secondElement = secondList[cursor2++];
                     continue;

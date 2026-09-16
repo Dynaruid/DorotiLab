@@ -18,7 +18,7 @@ public abstract class AssetBundle
     public async virtual Future<string> loadString(string key, bool cache = true)
     {
         ByteData data = await load(key);
-        if (((data.lengthInBytes < (50L * 1024L)) || ConstantsLibrary.kIsWeb))
+        if ((data.lengthInBytes < (50L * 1024L)) || ConstantsLibrary.kIsWeb)
         {
             return Dart_convertLibrary.utf8.decode(new Uint8List(data));
         }
@@ -52,7 +52,7 @@ public abstract class AssetBundle
     {
     }
 
-    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}()";
+    public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}()";
 }
 
 public class NetworkAssetBundle : AssetBundle
@@ -62,8 +62,8 @@ public class NetworkAssetBundle : AssetBundle
 
     public NetworkAssetBundle(DartUri baseUrl)
     {
-        this._baseUrl = baseUrl;
-        this._httpClient = new global::Doroti.Runtime.HttpClient();
+        _baseUrl = baseUrl;
+        _httpClient = new global::Doroti.Runtime.HttpClient();
     }
 
     internal virtual DartUri _urlFromKey(string key) => _baseUrl.resolve(key);
@@ -71,7 +71,7 @@ public class NetworkAssetBundle : AssetBundle
     {
         global::Doroti.Runtime.HttpClientRequest request = await _httpClient.getUrl(_urlFromKey(key));
         global::Doroti.Runtime.HttpClientResponse response = await request.close();
-        if ((response.statusCode != HttpStatus.ok))
+        if (response.statusCode != HttpStatus.ok)
         {
             throw new FlutterError(new List<DiagnosticsNode> { Asset_bundleLibrary._errorSummaryWithKey(key), new IntProperty("HTTP status code", response.statusCode) });
         }
@@ -80,7 +80,7 @@ public class NetworkAssetBundle : AssetBundle
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}({_baseUrl})";
+    public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({_baseUrl})";
 }
 
 public abstract class CachingAssetBundle : AssetBundle
@@ -93,7 +93,7 @@ public abstract class CachingAssetBundle : AssetBundle
     {
         if (cache)
         {
-            return _stringCache.putIfAbsent(key, (() => base.loadString(key)));
+            return _stringCache.putIfAbsent(key, () => base.loadString(key));
         }
         return base.loadString(key);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -107,18 +107,18 @@ public abstract class CachingAssetBundle : AssetBundle
         }
         Completer<T>? completer = default!;
         Future<T>? synchronousResult = default!;
-        _ = loadString(key, cache: false).then<T>(parser).then(((value) =>
+        _ = loadString(key, cache: false).then<T>(parser).then((value) =>
         {
             synchronousResult = new SynchronousFuture<T>(value);
             _ = _structuredDataCache[key] = synchronousResult!;
             completer?.complete(value);
-        }), onError: ((error, stack) =>
+        }, onError: (error, stack) =>
         {
-            DartRuntimePrimitives.Assert(() => (completer is not null));
+            DartRuntimePrimitives.Assert(() => completer is not null);
             _ = _structuredDataCache.remove(key);
             completer!.completeError(error, stack);
-        }));
-        if ((synchronousResult is not null))
+        });
+        if (synchronousResult is not null)
         {
             return synchronousResult!;
         }
@@ -136,18 +136,18 @@ public abstract class CachingAssetBundle : AssetBundle
         }
         Completer<T>? completer = default!;
         Future<T>? synchronousResult = default!;
-        _ = load(key).then<T>(parser).then(((value) =>
+        _ = load(key).then<T>(parser).then((value) =>
         {
             synchronousResult = new SynchronousFuture<T>(value);
             _ = _structuredBinaryDataCache[key] = synchronousResult!;
             completer?.complete(value);
-        }), onError: ((error, stack) =>
+        }, onError: (error, stack) =>
         {
-            DartRuntimePrimitives.Assert(() => (completer is not null));
+            DartRuntimePrimitives.Assert(() => completer is not null);
             _ = _structuredBinaryDataCache.remove(key);
             completer!.completeError(error, stack);
-        }));
-        if ((synchronousResult is not null))
+        });
+        if (synchronousResult is not null)
         {
             return synchronousResult!;
         }
@@ -185,15 +185,15 @@ public class PlatformAssetBundle : CachingAssetBundle
     public override Future<ByteData> load(string key)
     {
         Uint8List encoded = Dart_convertLibrary.utf8.encode(new DartUri(path: DartUri.encodeFull(key)).path);
-        Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send("flutter/assets", new ByteData(encoded))?.then<ByteData>(((asset) =>
+        Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send("flutter/assets", new ByteData(encoded))?.then<ByteData>((asset) =>
         {
-            if ((asset is null))
+            if (asset is null)
             {
                 throw new FlutterError(new List<DiagnosticsNode> { Asset_bundleLibrary._errorSummaryWithKey(key), new ErrorDescription("The asset does not exist or has empty data.") });
             }
             return asset;
-        }));
-        if ((future is null))
+        });
+        if (future is null)
         {
             throw new FlutterError(new List<DiagnosticsNode> { Asset_bundleLibrary._errorSummaryWithKey(key), new ErrorDescription("The asset does not exist or has empty data.") });
         }

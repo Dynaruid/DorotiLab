@@ -1,7 +1,7 @@
 using Doroti.Framework.Scheduler;
-using Doroti.Runtime;
 using Doroti.Framework.Services;
 using Doroti.Framework.Widgets;
+using Doroti.Runtime;
 
 var assertions = 0;
 void Check(bool condition, string message)
@@ -39,7 +39,7 @@ var incomplete = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuati
 var future = Future<int>.fromTask(incomplete.Task);
 await ThrowsAsync<TimeoutException>(() => future.timeout(Duration.zero, (Func<object>?)null).asTask());
 await ThrowsAsync<TimeoutException>(() => future.timeout(Duration.zero).asTask());
-Check(await future.timeout(Duration.zero, () => (object)42) == 42, "Timeout returns callback value.");
+Check(await future.timeout(Duration.zero, () => 42) == 42, "Timeout returns callback value.");
 Func<object> futureRecovery = () => Future<int>.fromTask(Task.FromResult(43));
 Check(await future.timeout(Duration.zero, futureRecovery) == 43, "Timeout awaits a FutureOr recovery.");
 Check(await future.timeout(Duration.zero, () => Future<int>.fromTask(Task.FromResult(44))) == 44,
@@ -55,7 +55,7 @@ try
     await Future<int>.fromTask(Task.FromException<int>(originalTimeout)).timeout(Duration.zero, () =>
     {
         recoveryInvoked = true;
-        return (object)9;
+        return 9;
     });
     throw new InvalidOperationException("The source timeout must propagate.");
 }

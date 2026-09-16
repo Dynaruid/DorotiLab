@@ -23,15 +23,15 @@ public class ContextMenuController
         // Capture from the caller before crossing into the root overlay. A local
         // Theme can override both the platform toolbar and its light/dark palette.
         CapturedThemes capturedThemes = InheritedTheme.capture(from: context, to: overlayState.context);
-        if (this.isShown)
+        if (isShown)
         {
-            _contextMenuBuilder = (global::System.Func<BuildContext, Widget>)contextMenuBuilder;
+            _contextMenuBuilder = contextMenuBuilder;
             _capturedThemes = capturedThemes;
             _menuOverlayEntry?.markNeedsBuild();
             return;
         }
         removeAny();
-        _contextMenuBuilder = (global::System.Func<BuildContext, Widget>)contextMenuBuilder;
+        _contextMenuBuilder = contextMenuBuilder;
         _capturedThemes = capturedThemes;
         _menuOverlayEntry = new OverlayEntry(builder: overlayContext =>
             _capturedThemes!.wrap(new Builder(builder: menuContext => _contextMenuBuilder!(menuContext))));
@@ -46,23 +46,23 @@ public class ContextMenuController
         _menuOverlayEntry = null;
         _contextMenuBuilder = null;
         _capturedThemes = null;
-        if ((_shownInstance is not null))
+        if (_shownInstance is not null)
         {
             _shownInstance!.onRemove?.Invoke();
             _shownInstance = null;
         }
     }
 
-    public virtual bool isShown => DartRuntimePrimitives.ConvertValue<bool>((Equals(_shownInstance, this)));
+    public virtual bool isShown => DartRuntimePrimitives.ConvertValue<bool>(Equals(_shownInstance, this));
     public virtual void markNeedsBuild()
     {
-        DartRuntimePrimitives.Assert(() => this.isShown);
+        DartRuntimePrimitives.Assert(() => isShown);
         _menuOverlayEntry?.markNeedsBuild();
     }
 
     public virtual void remove()
     {
-        if (!this.isShown)
+        if (!isShown)
         {
             return;
         }

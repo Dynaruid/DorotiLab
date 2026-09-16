@@ -14,7 +14,7 @@ public class PinnedHeaderSliver : StatelessWidget
         this.child = child;
     }
 
-    public override Widget build(BuildContext context) => DartRuntimePrimitives.ConvertValue<Widget>(new _PinnedHeaderSliver__pinned_header_sliver(child: new Semantics(container: true, explicitChildNodes: true, child: this.child)));
+    public override Widget build(BuildContext context) => DartRuntimePrimitives.ConvertValue<Widget>(new _PinnedHeaderSliver__pinned_header_sliver(child: new Semantics(container: true, explicitChildNodes: true, child: child)));
 }
 
 internal class _PinnedHeaderSliver__pinned_header_sliver : SingleChildRenderObjectWidget
@@ -25,7 +25,7 @@ internal class _PinnedHeaderSliver__pinned_header_sliver : SingleChildRenderObje
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderPinnedHeaderSliver__pinned_header_sliver());
+        return new _RenderPinnedHeaderSliver__pinned_header_sliver();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -41,28 +41,28 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.
     {
         get
         {
-            if ((this.child is null))
+            if (child is null)
             {
                 return 0.0;
             }
-            DartRuntimePrimitives.Assert(() => this.child!.hasSize);
-            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { Axis.vertical => this.child!.size.height, Axis.horizontal => this.child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            DartRuntimePrimitives.Assert(() => child!.hasSize);
+            return constraints.axis switch { Axis.vertical => child!.size.height, Axis.horizontal => child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
     }
     public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child) => 0;
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.SliverConstraints constraintsLocal = this.constraints;
-        this.child?.layout(constraintsLocal.asBoxConstraints(), parentUsesSize: true);
-        double layoutExtentLocal = Dart_uiLibrary.clampDouble((this.childExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).scrollOffset), 0, ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).remainingPaintExtent);
-        double paintExtentLocal = Math.Min(this.childExtent, (((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).remainingPaintExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).overlap));
-        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: this.childExtent, paintOrigin: ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).overlap, paintExtent: paintExtentLocal, layoutExtent: layoutExtentLocal, maxPaintExtent: this.childExtent, maxScrollObstructionExtent: this.childExtent, cacheExtent: calculateCacheOffset(constraintsLocal, from: 0.0, to: this.childExtent), hasVisualOverflow: true);
+        global::Doroti.Framework.Rendering.SliverConstraints constraintsLocal = constraints;
+        child?.layout(constraintsLocal.asBoxConstraints(), parentUsesSize: true);
+        double layoutExtentLocal = Dart_uiLibrary.clampDouble(childExtent - constraintsLocal.scrollOffset, 0, constraintsLocal.remainingPaintExtent);
+        double paintExtentLocal = Math.Min(childExtent, constraintsLocal.remainingPaintExtent - constraintsLocal.overlap);
+        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: childExtent, paintOrigin: constraintsLocal.overlap, paintExtent: paintExtentLocal, layoutExtent: layoutExtentLocal, maxPaintExtent: childExtent, maxScrollObstructionExtent: childExtent, cacheExtent: calculateCacheOffset(constraintsLocal, from: 0.0, to: childExtent), hasVisualOverflow: true);
     }
 
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        if (((this.geometry is not null) && (this.geometry!.layoutExtent < this.childExtent)))
+        if ((geometry is not null) && (geometry!.layoutExtent < childExtent))
         {
             config.addTagForChildren(RenderViewport.excludeFromScrolling);
         }

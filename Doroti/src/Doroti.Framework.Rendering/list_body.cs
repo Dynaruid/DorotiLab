@@ -20,13 +20,13 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public RenderListBody(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down)
     {
-        this._axisDirection = axisDirection;
+        _axisDirection = axisDirection;
     }
 
     public override void setupParentData(RenderObject child)
     {
         var __child = (RenderBox)(object)child;
-        if ((__child.parentData is not ListBodyParentData))
+        if (__child.parentData is not ListBodyParentData)
         {
             __child.parentData = new ListBodyParentData();
         }
@@ -34,11 +34,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection
     {
-        get => this._axisDirection;
+        get => _axisDirection;
         set
         {
             var __value = value;
-            if ((Equals(this._axisDirection, __value)))
+            if (Equals(_axisDirection, __value))
             {
                 return;
             }
@@ -46,20 +46,20 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.Axis mainAxis => Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis mainAxis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckConstraints(constraints));
         RenderBox? child = default!;
         Func<RenderBox, RenderBox?> nextChild = default!;
-        switch (this.axisDirection)
+        switch (axisDirection)
         {
             case AxisDirection.right:
             case AxisDirection.left:
                 {
-                    var childConstraints = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraints).maxHeight);
+                    var childConstraints = BoxConstraints.CreateTightFor(height: constraints.maxHeight);
                     BaselineOffset baselineOffset = BaselineOffset.noBaseline;
-                    for (child = firstChild; (child is not null); child = childAfter(child))
+                    for (child = firstChild; child is not null; child = childAfter(child))
                     {
                         baselineOffset = baselineOffset.minOf(new BaselineOffset(child.getDryBaseline(childConstraints, baseline)));
                     }
@@ -78,15 +78,15 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     break;
                 }
         }
-        var childConstraintsLocal = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraints).maxWidth);
+        var childConstraintsLocal = BoxConstraints.CreateTightFor(width: constraints.maxWidth);
         var mainAxisExtent = 0.0;
-        for (; (child is not null); child = nextChild(child))
+        for (; child is not null; child = nextChild(child))
         {
             double? childBaseline = child.getDryBaseline(childConstraintsLocal, baseline);
-            if ((childBaseline is not null))
+            if (childBaseline is not null)
             {
                 double childBaseline__3516__value3592 = DartRuntimePrimitives.RequireValue(childBaseline);
-                return (DartRuntimePrimitives.RequireValue(childBaseline__3516__value3592) + mainAxisExtent);
+                return DartRuntimePrimitives.RequireValue(childBaseline__3516__value3592) + mainAxisExtent;
             }
             mainAxisExtent += child.getDryLayout(childConstraintsLocal).height;
         }
@@ -99,31 +99,31 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         DartRuntimePrimitives.Assert(() => _debugCheckConstraints(constraints));
         var mainAxisExtent = 0.0;
         RenderBox? child = firstChild;
-        switch (this.axisDirection)
+        switch (axisDirection)
         {
             case AxisDirection.right:
             case AxisDirection.left:
                 {
-                    var innerConstraints = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraints).maxHeight);
-                    while ((child is not null))
+                    var innerConstraints = BoxConstraints.CreateTightFor(height: constraints.maxHeight);
+                    while (child is not null)
                     {
                         global::Doroti.Ui.Size childSize = child.getDryLayout(innerConstraints);
                         mainAxisExtent += childSize.width;
                         child = childAfter(child);
                     }
-                    return constraints.constrain(new global::Doroti.Ui.Size(mainAxisExtent, ((BoxConstraints)constraints).maxHeight));
+                    return constraints.constrain(new global::Doroti.Ui.Size(mainAxisExtent, constraints.maxHeight));
                 }
             case AxisDirection.up:
             case AxisDirection.down:
                 {
-                    var innerConstraintsLocal = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraints).maxWidth);
-                    while ((child is not null))
+                    var innerConstraintsLocal = BoxConstraints.CreateTightFor(width: constraints.maxWidth);
+                    while (child is not null)
                     {
                         global::Doroti.Ui.Size childSizeLocal = child.getDryLayout(innerConstraintsLocal);
                         mainAxisExtent += childSizeLocal.height;
                         child = childAfter(child);
                     }
-                    return constraints.constrain(new global::Doroti.Ui.Size(((BoxConstraints)constraints).maxWidth, mainAxisExtent));
+                    return constraints.constrain(new global::Doroti.Ui.Size(constraints.maxWidth, mainAxisExtent));
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -133,11 +133,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                switch (this.mainAxis)
+                switch (mainAxis)
                 {
                     case Axis.horizontal:
                         {
-                            if (!((BoxConstraints)constraints).hasBoundedWidth)
+                            if (!constraints.hasBoundedWidth)
                             {
                                 return true;
                             }
@@ -145,7 +145,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                         }
                     case Axis.vertical:
                         {
-                            if (!((BoxConstraints)constraints).hasBoundedHeight)
+                            if (!constraints.hasBoundedHeight)
                             {
                                 return true;
                             }
@@ -156,11 +156,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             });
         DartRuntimePrimitives.Assert(() =>
             {
-                switch (this.mainAxis)
+                switch (mainAxis)
                 {
                     case Axis.horizontal:
                         {
-                            if (((BoxConstraints)constraints).hasBoundedHeight)
+                            if (constraints.hasBoundedHeight)
                             {
                                 return true;
                             }
@@ -168,7 +168,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                         }
                     case Axis.vertical:
                         {
-                            if (((BoxConstraints)constraints).hasBoundedWidth)
+                            if (constraints.hasBoundedWidth)
                             {
                                 return true;
                             }
@@ -183,88 +183,88 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public override void performLayout()
     {
-        BoxConstraints constraintsLocal = this.constraints;
+        BoxConstraints constraintsLocal = constraints;
         DartRuntimePrimitives.Assert(() => _debugCheckConstraints(constraintsLocal));
         var mainAxisExtent = 0.0;
         RenderBox? child = firstChild;
-        switch (this.axisDirection)
+        switch (axisDirection)
         {
             case AxisDirection.right:
                 {
-                    var innerConstraints = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraintsLocal).maxHeight);
-                    while ((child is not null))
+                    var innerConstraints = BoxConstraints.CreateTightFor(height: constraintsLocal.maxHeight);
+                    while (child is not null)
                     {
                         child.layout(innerConstraints, parentUsesSize: true);
                         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
                         childParentData.offset = new global::Doroti.Ui.Offset(mainAxisExtent, 0.0);
-                        mainAxisExtent += ((RenderBox)child).size.width;
-                        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentData)));
+                        mainAxisExtent += child.size.width;
+                        DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentData));
                         child = childParentData.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(mainAxisExtent, ((BoxConstraints)constraintsLocal).maxHeight));
+                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(mainAxisExtent, constraintsLocal.maxHeight));
                     break;
                 }
             case AxisDirection.left:
                 {
-                    var innerConstraintsLocal = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraintsLocal).maxHeight);
-                    while ((child is not null))
+                    var innerConstraintsLocal = BoxConstraints.CreateTightFor(height: constraintsLocal.maxHeight);
+                    while (child is not null)
                     {
                         child.layout(innerConstraintsLocal, parentUsesSize: true);
                         var childParentDataLocal = ((ListBodyParentData?)(object?)child.parentData!)!;
-                        mainAxisExtent += ((RenderBox)child).size.width;
-                        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentDataLocal)));
+                        mainAxisExtent += child.size.width;
+                        DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataLocal));
                         child = childParentDataLocal.nextSibling;
                     }
                     var position = 0.0;
                     child = firstChild;
-                    while ((child is not null))
+                    while (child is not null)
                     {
                         var childParentDataAlternate = ((ListBodyParentData?)(object?)child.parentData!)!;
-                        position += ((RenderBox)child).size.width;
-                        childParentDataAlternate.offset = new global::Doroti.Ui.Offset((mainAxisExtent - position), 0.0);
-                        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentDataAlternate)));
+                        position += child.size.width;
+                        childParentDataAlternate.offset = new global::Doroti.Ui.Offset(mainAxisExtent - position, 0.0);
+                        DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataAlternate));
                         child = childParentDataAlternate.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(mainAxisExtent, ((BoxConstraints)constraintsLocal).maxHeight));
+                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(mainAxisExtent, constraintsLocal.maxHeight));
                     break;
                 }
             case AxisDirection.down:
                 {
-                    var innerConstraintsAlternate = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraintsLocal).maxWidth);
-                    while ((child is not null))
+                    var innerConstraintsAlternate = BoxConstraints.CreateTightFor(width: constraintsLocal.maxWidth);
+                    while (child is not null)
                     {
                         child.layout(innerConstraintsAlternate, parentUsesSize: true);
                         var childParentDataNested = ((ListBodyParentData?)(object?)child.parentData!)!;
                         childParentDataNested.offset = new global::Doroti.Ui.Offset(0.0, mainAxisExtent);
-                        mainAxisExtent += ((RenderBox)child).size.height;
-                        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentDataNested)));
+                        mainAxisExtent += child.size.height;
+                        DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataNested));
                         child = childParentDataNested.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(((BoxConstraints)constraintsLocal).maxWidth, mainAxisExtent));
+                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(constraintsLocal.maxWidth, mainAxisExtent));
                     break;
                 }
             case AxisDirection.up:
                 {
-                    var innerConstraintsNested = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraintsLocal).maxWidth);
-                    while ((child is not null))
+                    var innerConstraintsNested = BoxConstraints.CreateTightFor(width: constraintsLocal.maxWidth);
+                    while (child is not null)
                     {
                         child.layout(innerConstraintsNested, parentUsesSize: true);
                         var childParentDataCurrent = ((ListBodyParentData?)(object?)child.parentData!)!;
-                        mainAxisExtent += ((RenderBox)child).size.height;
-                        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentDataCurrent)));
+                        mainAxisExtent += child.size.height;
+                        DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataCurrent));
                         child = childParentDataCurrent.nextSibling;
                     }
                     var positionLocal = 0.0;
                     child = firstChild;
-                    while ((child is not null))
+                    while (child is not null)
                     {
                         var childParentDataNext = ((ListBodyParentData?)(object?)child.parentData!)!;
-                        positionLocal += ((RenderBox)child).size.height;
-                        childParentDataNext.offset = new global::Doroti.Ui.Offset(0.0, (mainAxisExtent - positionLocal));
-                        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentDataNext)));
+                        positionLocal += child.size.height;
+                        childParentDataNext.offset = new global::Doroti.Ui.Offset(0.0, mainAxisExtent - positionLocal);
+                        DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataNext));
                         child = childParentDataNext.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(((BoxConstraints)constraintsLocal).maxWidth, mainAxisExtent));
+                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(constraintsLocal.maxWidth, mainAxisExtent));
                     break;
                 }
         }
@@ -274,14 +274,14 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", this.axisDirection));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
     }
 
     internal virtual double _getIntrinsicCrossAxis(Func<RenderBox, double> childSize)
     {
         var extent = 0.0;
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             extent = Math.Max(extent, childSize(child));
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
@@ -295,7 +295,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     {
         var extent = 0.0;
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             extent += childSize(child);
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
@@ -307,25 +307,25 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        return (this.mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height)))), Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis((child) => child.getMinIntrinsicWidth(height)), Axis.vertical => _getIntrinsicCrossAxis((child) => child.getMinIntrinsicWidth(height)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return (this.mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height)))), Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis((child) => child.getMaxIntrinsicWidth(height)), Axis.vertical => _getIntrinsicCrossAxis((child) => child.getMaxIntrinsicWidth(height)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        return (this.mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicHeight(width)))), Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicHeight(width)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis((child) => child.getMinIntrinsicHeight(width)), Axis.vertical => _getIntrinsicCrossAxis((child) => child.getMinIntrinsicHeight(width)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return (this.mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicHeight(width)))), Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicHeight(width)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return mainAxis switch { Axis.horizontal => _getIntrinsicMainAxis((child) => child.getMaxIntrinsicHeight(width)), Axis.vertical => _getIntrinsicCrossAxis((child) => child.getMaxIntrinsicHeight(width)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -349,37 +349,37 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderBox))
+                if (child is not RenderBox)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -390,34 +390,34 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((ListBodyParentData?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((ListBodyParentData?)(object?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((ListBodyParentData?)(object?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -427,53 +427,53 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                 var childNextSiblingParentData = ((ListBodyParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is ListBodyParentData));
+        DartRuntimePrimitives.Assert(() => child.parentData is ListBodyParentData);
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderBox child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach(this.add);
+        children?.forEach(add);
     }
 
     public virtual void _removeFromChildList(RenderBox child)
     {
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((ListBodyParentData?)(object?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -482,7 +482,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderBox child)
@@ -493,8 +493,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public virtual void removeAll()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
@@ -503,19 +503,19 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -527,8 +527,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.attach(owner);
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
@@ -539,8 +539,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public override void detach()
     {
         base.detach();
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             child.detach();
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
@@ -550,8 +550,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public override void redepthChildren()
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
@@ -561,8 +561,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child = this._firstChild;
-        while ((child is not null))
+        RenderBox? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
@@ -570,11 +570,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         }
     }
 
-    public virtual RenderBox? firstChild => this._firstChild;
-    public virtual RenderBox? lastChild => this._lastChild;
+    public virtual RenderBox? firstChild => _firstChild;
+    public virtual RenderBox? lastChild => _lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -582,7 +582,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -591,14 +591,14 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderBox child = this.firstChild!;
+            RenderBox child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }
@@ -615,14 +615,14 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
             double? result = child.getDistanceToActualBaseline(baseline);
-            if ((result is not null))
+            if (result is not null)
             {
                 double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy);
+                return DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -635,10 +635,10 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         BaselineOffset minBaseline = BaselineOffset.noBaseline;
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-            BaselineOffset candidate = (new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy));
+            BaselineOffset candidate = new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy);
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
         }
@@ -649,14 +649,14 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
     {
         RenderBox? child = lastChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => Equals(transformed, position - childParentData.offset));
                 return child!.hitTest(result, position: transformed);
-            })));
+            });
             if (isHit)
             {
                 return true;
@@ -670,10 +670,10 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public virtual void defaultPaint(PaintingContext context, Offset offset)
     {
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-            context.paintChild(child, (childParentData.offset + offset));
+            context.paintChild(child, childParentData.offset + offset);
             child = childParentData.nextSibling;
         }
     }
@@ -682,7 +682,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     {
         var result = new List<RenderBox>();
         RenderBox? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
             result.Add(((RenderBox?)(object?)child)!);

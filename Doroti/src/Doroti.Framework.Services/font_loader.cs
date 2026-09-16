@@ -14,8 +14,8 @@ public class FontLoader
     public FontLoader(string family)
     {
         this.family = family;
-        this._loaded = false;
-        this._fontFutures = new List<Future<Uint8List>>();
+        _loaded = false;
+        _fontFutures = new List<Future<Uint8List>>();
     }
 
     public virtual void addFont(Future<ByteData> bytes)
@@ -24,7 +24,7 @@ public class FontLoader
         {
             throw new InvalidOperationException("FontLoader is already loaded");
         }
-        _fontFutures.Add(bytes.then<Uint8List>(((data) => new Uint8List(data.buffer, data.offsetInBytes, data.lengthInBytes))));
+        _fontFutures.Add(bytes.then<Uint8List>((data) => new Uint8List(data.buffer, data.offsetInBytes, data.lengthInBytes)));
     }
 
     public async virtual Future load()

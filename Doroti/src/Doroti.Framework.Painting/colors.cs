@@ -11,32 +11,32 @@ public static partial class ColorsLibrary
     internal static double _getHue(double red, double green, double blue, double max, double delta)
     {
         double hue = default!;
-        if ((max == 0.0))
+        if (max == 0.0)
         {
             hue = 0.0;
         }
         else
         {
-            if ((max == red))
+            if (max == red)
             {
-                hue = (60.0 * ((((((green - blue)) / delta)) % 6L)));
+                hue = 60.0 * ((green - blue) / delta % 6L);
             }
             else
             {
-                if ((max == green))
+                if (max == green)
                 {
-                    hue = (60.0 * ((((((blue - red)) / delta)) + 2L)));
+                    hue = 60.0 * ((blue - red) / delta + 2L);
                 }
                 else
                 {
-                    if ((max == blue))
+                    if (max == blue)
                     {
-                        hue = (60.0 * ((((((red - green)) / delta)) + 4L)));
+                        hue = 60.0 * ((red - green) / delta + 4L);
                     }
                 }
             }
         }
-        hue = (double.IsNaN(hue) ? 0.0 : hue);
+        hue = double.IsNaN(hue) ? 0.0 : hue;
         return hue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -46,8 +46,8 @@ public static partial class ColorsLibrary
 {
     internal static Color _colorFromHue(double alpha, double hue, double chroma, double secondary, double match)
     {
-        var (red, green, blue) = (hue switch { < 60.0 => (((double, double, double))((chroma, secondary, 0.0))), < 120.0 => (((double, double, double))((secondary, chroma, 0.0))), < 180.0 => (((double, double, double))((0.0, chroma, secondary))), < 240.0 => (((double, double, double))((0.0, secondary, chroma))), < 300.0 => (((double, double, double))((secondary, 0.0, chroma))), _ => (((double, double, double))((chroma, 0.0, secondary))) });
-        return Color.fromARGB(((alpha * 255L)).round(), ((((red + match)) * 255L)).round(), ((((green + match)) * 255L)).round(), ((((blue + match)) * 255L)).round());
+        var (red, green, blue) = hue switch { < 60.0 => (chroma, secondary, 0.0), < 120.0 => (secondary, chroma, 0.0), < 180.0 => (0.0, chroma, secondary), < 240.0 => (0.0, secondary, chroma), < 300.0 => (secondary, 0.0, chroma), _ => (chroma, 0.0, secondary) };
+        return Color.fromARGB((alpha * 255L).round(), ((red + match) * 255L).round(), ((green + match) * 255L).round(), ((blue + match) * 255L).round());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -65,66 +65,66 @@ public class HSVColor
         this.hue = hue;
         this.saturation = saturation;
         this.value = value;
-        System.Diagnostics.Debug.Assert((alpha >= 0.0));
-        System.Diagnostics.Debug.Assert((alpha <= 1.0));
-        System.Diagnostics.Debug.Assert((hue >= 0.0));
-        System.Diagnostics.Debug.Assert((hue <= 360.0));
-        System.Diagnostics.Debug.Assert((saturation >= 0.0));
-        System.Diagnostics.Debug.Assert((saturation <= 1.0));
-        System.Diagnostics.Debug.Assert((value >= 0.0));
-        System.Diagnostics.Debug.Assert((value <= 1.0));
+        System.Diagnostics.Debug.Assert(alpha >= 0.0);
+        System.Diagnostics.Debug.Assert(alpha <= 1.0);
+        System.Diagnostics.Debug.Assert(hue >= 0.0);
+        System.Diagnostics.Debug.Assert(hue <= 360.0);
+        System.Diagnostics.Debug.Assert(saturation >= 0.0);
+        System.Diagnostics.Debug.Assert(saturation <= 1.0);
+        System.Diagnostics.Debug.Assert(value >= 0.0);
+        System.Diagnostics.Debug.Assert(value <= 1.0);
     }
 
     public static HSVColor CreateFromColor(Color color)
     {
-        double redLocal = (color.red / 255L);
-        double greenLocal = (color.green / 255L);
-        double blueLocal = (color.blue / 255L);
+        double redLocal = color.red / 255L;
+        double greenLocal = color.green / 255L;
+        double blueLocal = color.blue / 255L;
         double max = Math.Max(redLocal, Math.Max(greenLocal, blueLocal));
         double min = Math.Min(redLocal, Math.Min(greenLocal, blueLocal));
-        double delta = (max - min);
-        double alphaLocal = (color.alpha / 255L);
+        double delta = max - min;
+        double alphaLocal = color.alpha / 255L;
         double hue = ColorsLibrary._getHue(redLocal, greenLocal, blueLocal, max, delta);
-        double saturation = ((max == 0.0) ? 0.0 : (delta / max));
+        double saturation = (max == 0.0) ? 0.0 : (delta / max);
         return new HSVColor(alphaLocal, hue, saturation, max);
     }
 
     public virtual HSVColor withAlpha(double alpha)
     {
-        return new HSVColor(alpha, this.hue, this.saturation, this.value);
+        return new HSVColor(alpha, hue, saturation, value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual HSVColor withHue(double hue)
     {
-        return new HSVColor(this.alpha, hue, this.saturation, this.value);
+        return new HSVColor(alpha, hue, saturation, value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual HSVColor withSaturation(double saturation)
     {
-        return new HSVColor(this.alpha, this.hue, saturation, this.value);
+        return new HSVColor(alpha, hue, saturation, value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual HSVColor withValue(double value)
     {
-        return new HSVColor(this.alpha, this.hue, this.saturation, value);
+        return new HSVColor(alpha, hue, saturation, value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color toColor()
     {
-        double chroma = (this.saturation * this.value);
-        double secondary = (chroma * ((1.0 - ((((((this.hue / 60.0)) % 2.0)) - 1.0)).abs())));
-        double match = (this.value - chroma);
-        return ColorsLibrary._colorFromHue(this.alpha, this.hue, chroma, secondary, match);
+        double chroma = saturation * value;
+        double secondary = chroma * (1.0 - (hue / 60.0 % 2.0 - 1.0).abs());
+        double match = value - chroma;
+        return ColorsLibrary._colorFromHue(alpha, hue, chroma, secondary, match);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual HSVColor _scaleAlpha(double factor)
     {
-        return withAlpha((this.alpha * factor));
+        return withAlpha(alpha * factor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,15 +134,15 @@ public class HSVColor
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
             return b!._scaleAlpha(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return a._scaleAlpha((1.0 - t));
+            return a._scaleAlpha(1.0 - t);
         }
-        return new HSVColor(Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSVColor)a).alpha, ((HSVColor)b).alpha, t)), 0.0, 1.0), (DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSVColor)a).hue, ((HSVColor)b).hue, t)) % 360.0), Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSVColor)a).saturation, ((HSVColor)b).saturation, t)), 0.0, 1.0), Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSVColor)a).value, ((HSVColor)b).value, t)), 0.0, 1.0));
+        return new HSVColor(Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)), 0.0, 1.0), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)) % 360.0, Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)), 0.0, 1.0), Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.value, b.value, t)), 0.0, 1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -154,11 +154,11 @@ public class HSVColor
         {
             return true;
         }
-        return (((((__other is HSVColor) && (((HSVColor)((HSVColor)__other)).alpha == this.alpha)) && (((HSVColor)((HSVColor)__other)).hue == this.hue)) && (((HSVColor)((HSVColor)__other)).saturation == this.saturation)) && (((HSVColor)((HSVColor)__other)).value == this.value));
+        return (__other is HSVColor) && (__other.alpha == alpha) && (__other.hue == hue) && (__other.saturation == saturation) && (__other.value == value);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.alpha, this.hue, this.saturation, this.value);
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "HSVColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.value})";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(alpha, hue, saturation, value);
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "HSVColor")}({alpha}, {hue}, {saturation}, {value})";
 }
 
 public class HSLColor
@@ -174,67 +174,67 @@ public class HSLColor
         this.hue = hue;
         this.saturation = saturation;
         this.lightness = lightness;
-        System.Diagnostics.Debug.Assert((alpha >= 0.0));
-        System.Diagnostics.Debug.Assert((alpha <= 1.0));
-        System.Diagnostics.Debug.Assert((hue >= 0.0));
-        System.Diagnostics.Debug.Assert((hue <= 360.0));
-        System.Diagnostics.Debug.Assert((saturation >= 0.0));
-        System.Diagnostics.Debug.Assert((saturation <= 1.0));
-        System.Diagnostics.Debug.Assert((lightness >= 0.0));
-        System.Diagnostics.Debug.Assert((lightness <= 1.0));
+        System.Diagnostics.Debug.Assert(alpha >= 0.0);
+        System.Diagnostics.Debug.Assert(alpha <= 1.0);
+        System.Diagnostics.Debug.Assert(hue >= 0.0);
+        System.Diagnostics.Debug.Assert(hue <= 360.0);
+        System.Diagnostics.Debug.Assert(saturation >= 0.0);
+        System.Diagnostics.Debug.Assert(saturation <= 1.0);
+        System.Diagnostics.Debug.Assert(lightness >= 0.0);
+        System.Diagnostics.Debug.Assert(lightness <= 1.0);
     }
 
     public static HSLColor CreateFromColor(Color color)
     {
-        double redLocal = (color.red / 255L);
-        double greenLocal = (color.green / 255L);
-        double blueLocal = (color.blue / 255L);
+        double redLocal = color.red / 255L;
+        double greenLocal = color.green / 255L;
+        double blueLocal = color.blue / 255L;
         double max = Math.Max(redLocal, Math.Max(greenLocal, blueLocal));
         double min = Math.Min(redLocal, Math.Min(greenLocal, blueLocal));
-        double delta = (max - min);
-        double alphaLocal = (color.alpha / 255L);
+        double delta = max - min;
+        double alphaLocal = color.alpha / 255L;
         double hue = ColorsLibrary._getHue(redLocal, greenLocal, blueLocal, max, delta);
-        double lightness = (((max + min)) / 2.0);
-        double saturation = ((min == max) ? 0.0 : Dart_uiLibrary.clampDouble((delta / ((1.0 - (((2.0 * lightness) - 1.0)).abs()))), 0.0, 1.0));
+        double lightness = (max + min) / 2.0;
+        double saturation = (min == max) ? 0.0 : Dart_uiLibrary.clampDouble(delta / (1.0 - ((2.0 * lightness) - 1.0).abs()), 0.0, 1.0);
         return new HSLColor(alphaLocal, hue, saturation, lightness);
     }
 
     public virtual HSLColor withAlpha(double alpha)
     {
-        return new HSLColor(alpha, this.hue, this.saturation, this.lightness);
+        return new HSLColor(alpha, hue, saturation, lightness);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual HSLColor withHue(double hue)
     {
-        return new HSLColor(this.alpha, hue, this.saturation, this.lightness);
+        return new HSLColor(alpha, hue, saturation, lightness);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual HSLColor withSaturation(double saturation)
     {
-        return new HSLColor(this.alpha, this.hue, saturation, this.lightness);
+        return new HSLColor(alpha, hue, saturation, lightness);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual HSLColor withLightness(double lightness)
     {
-        return new HSLColor(this.alpha, this.hue, this.saturation, lightness);
+        return new HSLColor(alpha, hue, saturation, lightness);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Color toColor()
     {
-        double chroma = (((1.0 - (((2.0 * this.lightness) - 1.0)).abs())) * this.saturation);
-        double secondary = (chroma * ((1.0 - ((((((this.hue / 60.0)) % 2.0)) - 1.0)).abs())));
-        double match = (this.lightness - (chroma / 2.0));
-        return ColorsLibrary._colorFromHue(this.alpha, this.hue, chroma, secondary, match);
+        double chroma = (1.0 - ((2.0 * lightness) - 1.0).abs()) * saturation;
+        double secondary = chroma * (1.0 - (hue / 60.0 % 2.0 - 1.0).abs());
+        double match = lightness - (chroma / 2.0);
+        return ColorsLibrary._colorFromHue(alpha, hue, chroma, secondary, match);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual HSLColor _scaleAlpha(double factor)
     {
-        return withAlpha((this.alpha * factor));
+        return withAlpha(alpha * factor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -244,15 +244,15 @@ public class HSLColor
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
             return b!._scaleAlpha(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return a._scaleAlpha((1.0 - t));
+            return a._scaleAlpha(1.0 - t);
         }
-        return new HSLColor(Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSLColor)a).alpha, ((HSLColor)b).alpha, t)), 0.0, 1.0), (DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSLColor)a).hue, ((HSLColor)b).hue, t)) % 360.0), Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSLColor)a).saturation, ((HSLColor)b).saturation, t)), 0.0, 1.0), Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((HSLColor)a).lightness, ((HSLColor)b).lightness, t)), 0.0, 1.0));
+        return new HSLColor(Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)), 0.0, 1.0), DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)) % 360.0, Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)), 0.0, 1.0), Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.lightness, b.lightness, t)), 0.0, 1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -264,11 +264,11 @@ public class HSLColor
         {
             return true;
         }
-        return (((((__other is HSLColor) && (((HSLColor)((HSLColor)__other)).alpha == this.alpha)) && (((HSLColor)((HSLColor)__other)).hue == this.hue)) && (((HSLColor)((HSLColor)__other)).saturation == this.saturation)) && (((HSLColor)((HSLColor)__other)).lightness == this.lightness));
+        return (__other is HSLColor) && (__other.alpha == alpha) && (__other.hue == hue) && (__other.saturation == saturation) && (__other.lightness == lightness);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.alpha, this.hue, this.saturation, this.lightness);
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "HSLColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.lightness})";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(alpha, hue, saturation, lightness);
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "HSLColor")}({alpha}, {hue}, {saturation}, {lightness})";
 }
 
 public class ColorSwatch<T> : Color where T : notnull
@@ -284,11 +284,11 @@ public class ColorSwatch<T> : Color where T : notnull
     {
         get
         {
-            return this._swatch.GetValueOrDefault(key);
+            return _swatch.GetValueOrDefault(key);
         }
     }
 
-    public virtual IEnumerable<T> keys => this._swatch.Keys;
+    public virtual IEnumerable<T> keys => _swatch.Keys;
     public override bool Equals(object? other)
     {
         var __other = other as ColorSwatch<T>;
@@ -297,15 +297,15 @@ public class ColorSwatch<T> : Color where T : notnull
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((Equals(__other) && (__other is ColorSwatch<T>)) && CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(((ColorSwatch<T>)((ColorSwatch<T>)__other))._swatch, this._swatch));
+        return Equals(__other) && (__other is ColorSwatch<T>) && CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(__other._swatch, _swatch);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.GetType(), value, this._swatch);
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ColorSwatch"))}(primary value: {base.ToString()})";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(GetType(), value, _swatch);
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ColorSwatch")}(primary value: {base.ToString()})";
     public static ColorSwatch<TKey>? lerp<TKey>(ColorSwatch<TKey>? a, ColorSwatch<TKey>? b, double t) where TKey : notnull
     {
         if (DartRuntimePrimitives.Identical(a, b))
@@ -313,19 +313,19 @@ public class ColorSwatch<T> : Color where T : notnull
             return a;
         }
         DartMap<TKey, global::Doroti.Ui.Color> swatch = default!;
-        if ((b is null))
+        if (b is null)
         {
-            swatch = a!._swatch.map<TKey, Color, TKey, Color>(((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!)));
+            swatch = a!._swatch.map<TKey, Color, TKey, Color>((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!));
         }
         else
         {
-            if ((a is null))
+            if (a is null)
             {
-                swatch = ((ColorSwatch<TKey>)b)._swatch.map<TKey, Color, TKey, Color>(((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!)));
+                swatch = b._swatch.map<TKey, Color, TKey, Color>((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!));
             }
             else
             {
-                swatch = ((ColorSwatch<TKey>)a)._swatch.map<TKey, Color, TKey, Color>(((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!)));
+                swatch = a._swatch.map<TKey, Color, TKey, Color>((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!));
             }
         }
         return new ColorSwatch<TKey>(Dart_uiLibrary.Color.lerp(a, b, t)!.value, swatch);
@@ -343,7 +343,7 @@ public class ColorProperty : DiagnosticsProperty<Color>
     public override DartMap<string, object?> toJsonMap(DiagnosticsSerializationDelegate? @delegate = null)
     {
         DartMap<string, object?> json = base.toJsonMap(@delegate);
-        if ((value is not null))
+        if (value is not null)
         {
             json["valueProperties"] = new DartMap<string, object> { ["red"] = value!.red, ["green"] = value!.green, ["blue"] = value!.blue, ["alpha"] = value!.alpha };
         }

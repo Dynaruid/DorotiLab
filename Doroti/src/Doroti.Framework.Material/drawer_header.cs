@@ -7,7 +7,7 @@ namespace Doroti.Framework.Material;
 
 public static partial class Drawer_headerLibrary
 {
-    internal static double _kDrawerHeaderHeight = (160.0 + 1.0);
+    internal static double _kDrawerHeaderHeight = 160.0 + 1.0;
 }
 
 public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
@@ -39,7 +39,7 @@ public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         ThemeData theme = Theme.of(context);
         double statusBarHeight = MediaQuery.paddingOf(context).top;
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(height: (statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight), margin: this.margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: this.padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: this.decoration, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: this.child!))))));
+        return new global::Doroti.Framework.Widgets.Container(height: statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight, margin: margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: decoration, duration: DartRuntimePrimitives.RequireValue(duration), curve: curve, child: (child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: child!))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

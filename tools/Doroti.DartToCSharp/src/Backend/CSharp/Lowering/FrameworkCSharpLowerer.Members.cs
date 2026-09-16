@@ -307,7 +307,7 @@ internal sealed partial class FrameworkCSharpLowerer
             actual.StartsWith("DartMap<", StringComparison.Ordinal);
         var needsCheckedCast = !isCollectionConversion &&
             expected is not ("object" or "dynamic" or "void") &&
-            actual is not ("void") &&
+            actual is not "void" &&
             !IsValueType(expected) &&
             !string.Equals(expected, actual, StringComparison.Ordinal);
         if (needsCheckedCast) builder.Append("((").Append(expectedType).Append(")(object?)");

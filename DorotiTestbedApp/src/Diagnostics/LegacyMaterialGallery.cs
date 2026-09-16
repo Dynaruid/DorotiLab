@@ -391,10 +391,10 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                             new Material.FilledButton(
                                 onPressed: _openingSample ? null : OpenSample,
                                 child: new Text(_openingSample ? "Opening sample…" : "Open Material sample")),
-                            .. (_sampleLoadFailed ? new Widget[] {
+                            .. _sampleLoadFailed ? new Widget[] {
                                 new Text("Could not open the sample. Please try again.",
                                     style: new Doroti.Framework.Painting.TextStyle(color: palette.error))
-                            } : []),
+                            } : [],
                             new Stack(children:
                             [
                                 new Text("Custom SkSL · shared GPU runtime effect · all targets",

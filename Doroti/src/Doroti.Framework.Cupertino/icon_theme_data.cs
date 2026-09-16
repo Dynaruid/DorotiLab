@@ -15,20 +15,20 @@ public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconTheme
 
     public override global::Doroti.Framework.Widgets.IconThemeData resolve(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color? resolvedColor = ((global::Doroti.Ui.Color?)CupertinoDynamicColor.maybeResolve(this.color, context));
-        return ((global::Doroti.Framework.Widgets.IconThemeData)((Equals(resolvedColor, this.color)) ? this : copyWith(color: resolvedColor)));
+        global::Doroti.Ui.Color? resolvedColor = CupertinoDynamicColor.maybeResolve(color, context);
+        return Equals(resolvedColor, color) ? this : copyWith(color: resolvedColor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override CupertinoIconThemeData copyWith(double? size = null, double? fill = null, double? weight = null, double? grade = null, double? opticalSize = null, Color? color = null, double? opacity = null, List<Shadow>? shadows = null, bool? applyTextScaling = null)
     {
-        return new CupertinoIconThemeData(size: (size ?? this.size), fill: (fill ?? this.fill), weight: (weight ?? this.weight), grade: (grade ?? this.grade), opticalSize: (opticalSize ?? this.opticalSize), color: (color ?? this.color), opacity: (opacity ?? this.opacity), shadows: (shadows ?? this.shadows), applyTextScaling: (applyTextScaling ?? this.applyTextScaling));
+        return new CupertinoIconThemeData(size: size ?? this.size, fill: fill ?? this.fill, weight: weight ?? this.weight, grade: grade ?? this.grade, opticalSize: opticalSize ?? this.opticalSize, color: color ?? this.color, opacity: opacity ?? this.opacity, shadows: shadows ?? this.shadows, applyTextScaling: applyTextScaling ?? this.applyTextScaling);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(ColorsLibrary.createCupertinoColorProperty("color", this.color, defaultValue: null));
+        properties.add(ColorsLibrary.createCupertinoColorProperty("color", color, defaultValue: null));
     }
 
     public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -40,13 +40,13 @@ public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconTheme
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

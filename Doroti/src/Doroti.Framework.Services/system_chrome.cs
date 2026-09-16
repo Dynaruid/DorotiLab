@@ -74,7 +74,7 @@ public class SystemUiOverlayStyle : Diagnosticable
 
     public virtual SystemUiOverlayStyle copyWith(Color? systemNavigationBarColor = null, Color? systemNavigationBarDividerColor = null, bool? systemNavigationBarContrastEnforced = null, Color? statusBarColor = null, Brightness? statusBarBrightness = null, Brightness? statusBarIconBrightness = null, bool? systemStatusBarContrastEnforced = null, Brightness? systemNavigationBarIconBrightness = null)
     {
-        return new SystemUiOverlayStyle(systemNavigationBarColor: (systemNavigationBarColor ?? this.systemNavigationBarColor), systemNavigationBarDividerColor: (systemNavigationBarDividerColor ?? this.systemNavigationBarDividerColor), systemNavigationBarContrastEnforced: (systemNavigationBarContrastEnforced ?? this.systemNavigationBarContrastEnforced), statusBarColor: (statusBarColor ?? this.statusBarColor), statusBarIconBrightness: (statusBarIconBrightness ?? this.statusBarIconBrightness), statusBarBrightness: (statusBarBrightness ?? this.statusBarBrightness), systemStatusBarContrastEnforced: (systemStatusBarContrastEnforced ?? this.systemStatusBarContrastEnforced), systemNavigationBarIconBrightness: (systemNavigationBarIconBrightness ?? this.systemNavigationBarIconBrightness));
+        return new SystemUiOverlayStyle(systemNavigationBarColor: systemNavigationBarColor ?? this.systemNavigationBarColor, systemNavigationBarDividerColor: systemNavigationBarDividerColor ?? this.systemNavigationBarDividerColor, systemNavigationBarContrastEnforced: systemNavigationBarContrastEnforced ?? this.systemNavigationBarContrastEnforced, statusBarColor: statusBarColor ?? this.statusBarColor, statusBarIconBrightness: statusBarIconBrightness ?? this.statusBarIconBrightness, statusBarBrightness: statusBarBrightness ?? this.statusBarBrightness, systemStatusBarContrastEnforced: systemStatusBarContrastEnforced ?? this.systemStatusBarContrastEnforced, systemNavigationBarIconBrightness: systemNavigationBarIconBrightness ?? this.systemNavigationBarIconBrightness);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -83,11 +83,11 @@ public class SystemUiOverlayStyle : Diagnosticable
     {
         var __other = other as SystemUiOverlayStyle;
         if (__other is null) return false;
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return (((((((((__other is SystemUiOverlayStyle) && (Equals(((SystemUiOverlayStyle)__other).systemNavigationBarColor, systemNavigationBarColor))) && (Equals(((SystemUiOverlayStyle)__other).systemNavigationBarDividerColor, systemNavigationBarDividerColor))) && (((SystemUiOverlayStyle)__other).systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced)) && (Equals(((SystemUiOverlayStyle)__other).statusBarColor, statusBarColor))) && (Equals(((SystemUiOverlayStyle)__other).statusBarIconBrightness, statusBarIconBrightness))) && (Equals(((SystemUiOverlayStyle)__other).statusBarBrightness, statusBarBrightness))) && (((SystemUiOverlayStyle)__other).systemStatusBarContrastEnforced == systemStatusBarContrastEnforced)) && (Equals(((SystemUiOverlayStyle)__other).systemNavigationBarIconBrightness, systemNavigationBarIconBrightness)));
+        return (__other is SystemUiOverlayStyle) && Equals(__other.systemNavigationBarColor, systemNavigationBarColor) && Equals(__other.systemNavigationBarDividerColor, systemNavigationBarDividerColor) && (__other.systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced) && Equals(__other.statusBarColor, statusBarColor) && Equals(__other.statusBarIconBrightness, statusBarIconBrightness) && Equals(__other.statusBarBrightness, statusBarBrightness) && (__other.systemStatusBarContrastEnforced == systemStatusBarContrastEnforced) && Equals(__other.systemNavigationBarIconBrightness, systemNavigationBarIconBrightness);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -127,13 +127,13 @@ public abstract class SystemChrome
 
     public static async Future setEnabledSystemUIMode(SystemUiMode mode, List<SystemUiOverlay>? overlays = null)
     {
-        if ((!Equals(mode, SystemUiMode.manual)))
+        if (!Equals(mode, SystemUiMode.manual))
         {
             await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setEnabledSystemUIMode", mode.ToString());
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => ((Equals(mode, SystemUiMode.manual)) && (overlays is not null)));
+            DartRuntimePrimitives.Assert(() => Equals(mode, SystemUiMode.manual) && (overlays is not null));
             await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setEnabledSystemUIOverlays", System_chromeLibrary._stringify(overlays!));
         }
     }
@@ -141,7 +141,7 @@ public abstract class SystemChrome
     public static async Future setSystemUIChangeCallback(Func<bool, Future>? callback)
     {
         ServicesBinding.instance.setSystemUiChangeCallback(callback);
-        if ((callback is not null))
+        if (callback is not null)
         {
             await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setSystemUIChangeListener");
         }
@@ -154,41 +154,41 @@ public abstract class SystemChrome
 
     public static void setSystemUIOverlayStyle(SystemUiOverlayStyle style)
     {
-        if ((_pendingStyle is not null))
+        if (_pendingStyle is not null)
         {
             _pendingStyle = style;
             return;
         }
-        if ((Equals(style, _latestStyle)))
+        if (Equals(style, _latestStyle))
         {
             return;
         }
         _pendingStyle = style;
-        DartAsyncRuntime.scheduleMicrotask((() =>
+        DartAsyncRuntime.scheduleMicrotask(() =>
         {
-            DartRuntimePrimitives.Assert(() => (_pendingStyle is not null));
-            if ((!Equals(_pendingStyle, _latestStyle)))
+            DartRuntimePrimitives.Assert(() => _pendingStyle is not null);
+            if (!Equals(_pendingStyle, _latestStyle))
             {
-                _ = SystemChannels.platform.invokeMethod<object?>("SystemChrome.setSystemUIOverlayStyle", _pendingStyle!._toMap()).then(((_) =>
+                _ = SystemChannels.platform.invokeMethod<object?>("SystemChrome.setSystemUIOverlayStyle", _pendingStyle!._toMap()).then((_) =>
                 {
-                }), onError: ((error, stack) =>
+                }, onError: (error, stack) =>
                 {
                     FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stack, library: "services library", context: new ErrorDescription("while setting the system UI overlay style")));
-                }));
+                });
                 _latestStyle = _pendingStyle;
             }
             _pendingStyle = null;
-        }));
+        });
     }
 
     public static void handleAppLifecycleStateChanged(AppLifecycleState state)
     {
-        if ((Equals(state, AppLifecycleState.detached)))
+        if (Equals(state, AppLifecycleState.detached))
         {
-            DartAsyncRuntime.scheduleMicrotask((() =>
+            DartAsyncRuntime.scheduleMicrotask(() =>
             {
                 _latestStyle = null;
-            }));
+            });
         }
     }
 

@@ -13,7 +13,7 @@ public static partial class Expansion_panelLibrary
 
 public static partial class Expansion_panelLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsets _kPanelHeaderExpandedDefaultPadding = EdgeInsets.CreateSymmetric(vertical: (64.0 - _kPanelHeaderCollapsedHeight));
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kPanelHeaderExpandedDefaultPadding = EdgeInsets.CreateSymmetric(vertical: 64.0 - _kPanelHeaderCollapsedHeight);
 }
 
 public static partial class Expansion_panelLibrary
@@ -36,18 +36,18 @@ internal class _SaltedKey__expansion_panel<S, V> : global::Doroti.Framework.Foun
     {
         var __other = other as _SaltedKey__expansion_panel<S, V>;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is _SaltedKey__expansion_panel<S, V>) && EqualityComparer<S>.Default.Equals(((_SaltedKey__expansion_panel<S, V>)((_SaltedKey__expansion_panel<S, V>)__other)).salt, this.salt)) && EqualityComparer<V>.Default.Equals(((_SaltedKey__expansion_panel<S, V>)((_SaltedKey__expansion_panel<S, V>)__other)).value, this.value));
+        return (__other is _SaltedKey__expansion_panel<S, V>) && EqualityComparer<S>.Default.Equals(__other.salt, salt) && EqualityComparer<V>.Default.Equals(__other.value, value);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.GetType(), this.salt, this.value));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(GetType(), salt, value));
     public override string ToString()
     {
-        var saltString = ((Equals(typeof(S), typeof(string))) ? $"<'{this.salt}'>" : $"<{this.salt}>");
-        var valueString = ((Equals(typeof(V), typeof(string))) ? $"<'{this.value}'>" : $"<{this.value}>");
+        var saltString = Equals(typeof(S), typeof(string)) ? $"<'{salt}'>" : $"<{salt}>";
+        var valueString = Equals(typeof(V), typeof(string)) ? $"<'{value}'>" : $"<{value}>";
         return $"[{saltString} {valueString}]";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -118,8 +118,8 @@ public class ExpansionPanelList : global::Doroti.Framework.Widgets.StatefulWidge
         this.elevation = elevation;
         this.expandIconColor = expandIconColor;
         this.materialGapSize = materialGapSize;
-        this._allowOnlyOnePanelOpen = false;
-        this.initialOpenPanelValue = null;
+        _allowOnlyOnePanelOpen = false;
+        initialOpenPanelValue = null;
     }
 
     public static ExpansionPanelList CreateRadio(global::Doroti.Framework.Foundation.Key? key = null, List<ExpansionPanel> children = default!, global::System.Action<long, bool>? expansionCallback = null, Duration? animationDuration = null, object? initialOpenPanelValue = null, global::Doroti.Framework.Painting.EdgeInsets expandedHeaderPadding = default!, Color? dividerColor = null, double elevation = 2, Color? expandIconColor = null, double materialGapSize = 16.0)
@@ -151,12 +151,12 @@ internal class _ExpansionPanelListState__expansion_panel : global::Doroti.Framew
     public override void initState()
     {
         base.initState();
-        if (((ExpansionPanelList)this.widget)._allowOnlyOnePanelOpen)
+        if (widget._allowOnlyOnePanelOpen)
         {
             DartRuntimePrimitives.Assert(() => _allIdentifiersUnique(), () => (object?)"All ExpansionPanelRadio identifier values must be unique.");
-            if ((((ExpansionPanelList)this.widget).initialOpenPanelValue is not null))
+            if (widget.initialOpenPanelValue is not null)
             {
-                _currentOpenPanel = searchPanelByValue(((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>().ToList(), ((ExpansionPanelList)this.widget).initialOpenPanelValue);
+                _currentOpenPanel = searchPanelByValue(widget.children.cast<ExpansionPanelRadio>().ToList(), widget.initialOpenPanelValue);
             }
         }
     }
@@ -164,12 +164,12 @@ internal class _ExpansionPanelListState__expansion_panel : global::Doroti.Framew
     public override void didUpdateWidget(ExpansionPanelList oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((ExpansionPanelList)this.widget)._allowOnlyOnePanelOpen)
+        if (widget._allowOnlyOnePanelOpen)
         {
             DartRuntimePrimitives.Assert(() => _allIdentifiersUnique(), () => (object?)"All ExpansionPanelRadio identifier values must be unique.");
-            if (!((ExpansionPanelList)oldWidget)._allowOnlyOnePanelOpen)
+            if (!oldWidget._allowOnlyOnePanelOpen)
             {
-                _currentOpenPanel = searchPanelByValue(((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>().ToList(), ((ExpansionPanelList)this.widget).initialOpenPanelValue);
+                _currentOpenPanel = searchPanelByValue(widget.children.cast<ExpansionPanelRadio>().ToList(), widget.initialOpenPanelValue);
             }
         }
         else
@@ -181,51 +181,51 @@ internal class _ExpansionPanelListState__expansion_panel : global::Doroti.Framew
     internal virtual bool _allIdentifiersUnique()
     {
         var identifierMap = new DartMap<object, bool>();
-        foreach (ExpansionPanelRadio child in ((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>())
+        foreach (ExpansionPanelRadio child in widget.children.cast<ExpansionPanelRadio>())
         {
-            identifierMap[((ExpansionPanelRadio)child).value] = true;
+            identifierMap[child.value] = true;
         }
-        return (checked((long)(identifierMap.Count)) == checked((long)(((ExpansionPanelList)this.widget).children.Count)));
+        return checked(identifierMap.Count) == checked((long)widget.children.Count);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _isChildExpanded(long index)
     {
-        if (((ExpansionPanelList)this.widget)._allowOnlyOnePanelOpen)
+        if (widget._allowOnlyOnePanelOpen)
         {
-            var radioWidget = ((ExpansionPanelRadio?)((ExpansionPanelList)this.widget).children[(int)(index)])!;
-            return (Equals(this._currentOpenPanel?.value, ((ExpansionPanelRadio)radioWidget).value));
+            var radioWidget = ((ExpansionPanelRadio?)widget.children[(int)index])!;
+            return Equals(_currentOpenPanel?.value, radioWidget.value);
         }
-        return ((ExpansionPanelList)this.widget).children[(int)(index)].isExpanded;
+        return widget.children[(int)index].isExpanded;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handlePressed(bool isExpanded, long index)
     {
-        if (((ExpansionPanelList)this.widget)._allowOnlyOnePanelOpen)
+        if (widget._allowOnlyOnePanelOpen)
         {
-            var pressedChild = ((ExpansionPanelRadio?)((ExpansionPanelList)this.widget).children[(int)(index)])!;
-            for (var childIndex = 0L; (childIndex < checked((long)(((ExpansionPanelList)this.widget).children.Count))); childIndex += 1L)
+            var pressedChild = ((ExpansionPanelRadio?)widget.children[(int)index])!;
+            for (var childIndex = 0L; childIndex < checked(widget.children.Count); childIndex += 1L)
             {
-                var child = ((ExpansionPanelRadio?)((ExpansionPanelList)this.widget).children[(int)(childIndex)])!;
-                if ((((((ExpansionPanelList)this.widget).expansionCallback is not null) && (childIndex != index)) && (Equals(((ExpansionPanelRadio)child).value, this._currentOpenPanel?.value))))
+                var child = ((ExpansionPanelRadio?)widget.children[(int)childIndex])!;
+                if ((widget.expansionCallback is not null) && (childIndex != index) && Equals(child.value, _currentOpenPanel?.value))
                 {
-                    ((ExpansionPanelList)this.widget).expansionCallback!(childIndex, false);
+                    widget.expansionCallback!(childIndex, false);
                 }
             }
-            setState(((global::System.Action)(() =>
+            setState(() =>
             {
-                _currentOpenPanel = (isExpanded ? null : pressedChild);
-            })));
+                _currentOpenPanel = isExpanded ? null : pressedChild;
+            });
         }
-        ((ExpansionPanelList)this.widget).expansionCallback?.Invoke(index, !isExpanded);
+        widget.expansionCallback?.Invoke(index, !isExpanded);
     }
 
     public virtual ExpansionPanelRadio? searchPanelByValue(List<ExpansionPanelRadio> panels, object? value)
     {
         foreach (var panel in panels)
         {
-            if ((Equals(((ExpansionPanelRadio)panel).value, value)))
+            if (Equals(panel.value, value))
             {
                 return panel;
             }
@@ -236,34 +236,34 @@ internal class _ExpansionPanelListState__expansion_panel : global::Doroti.Framew
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ShadowsLibrary.kElevationToShadow.ContainsKey(checked((long)((ExpansionPanelList)this.widget).elevation)), () => (object?)"Invalid value for elevation. See the kElevationToShadow constant for" + " possible elevation values.");
+        DartRuntimePrimitives.Assert(() => ShadowsLibrary.kElevationToShadow.ContainsKey(checked((long)widget.elevation)), () => (object?)"Invalid value for elevation. See the kElevationToShadow constant for" + " possible elevation values.");
         var items = new List<MergeableMaterialItem>();
-        for (var index = 0L; (index < checked((long)(((ExpansionPanelList)this.widget).children.Count))); index += 1L)
+        for (var index = 0L; index < checked(widget.children.Count); index += 1L)
         {
-            if (((_isChildExpanded(index) && (index != 0L)) && !_isChildExpanded((index - 1L))))
+            if (_isChildExpanded(index) && (index != 0L) && !_isChildExpanded(index - 1L))
             {
-                items.Add(new MaterialGap(key: new _SaltedKey__expansion_panel<global::Doroti.Framework.Widgets.BuildContext, long>(context, ((index * 2L) - 1L)), size: ((ExpansionPanelList)this.widget).materialGapSize));
+                items.Add(new MaterialGap(key: new _SaltedKey__expansion_panel<global::Doroti.Framework.Widgets.BuildContext, long>(context, (index * 2L) - 1L), size: widget.materialGapSize));
             }
-            ExpansionPanel childLocal = ((ExpansionPanelList)this.widget).children[(int)(index)];
+            ExpansionPanel childLocal = widget.children[(int)index];
             global::Doroti.Framework.Widgets.Widget headerWidget = childLocal.headerBuilder(context, _isChildExpanded(index));
-            global::Doroti.Framework.Widgets.Widget expandIconPadded = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(end: 8.0), child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: ((ExpansionPanel)childLocal).canTapOnHeader, child: new ExpandIcon(color: ((ExpansionPanelList)this.widget).expandIconColor, isExpanded: _isChildExpanded(index), padding: Expansion_panelLibrary._kExpandIconPadding, splashColor: ((ExpansionPanel)childLocal).splashColor, highlightColor: ((ExpansionPanel)childLocal).highlightColor, onPressed: ((global::System.Action<bool>)((isExpanded) => { _handlePressed(isExpanded, index); }))))));
-            if (!((ExpansionPanel)childLocal).canTapOnHeader)
+            global::Doroti.Framework.Widgets.Widget expandIconPadded = new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(end: 8.0), child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: childLocal.canTapOnHeader, child: new ExpandIcon(color: widget.expandIconColor, isExpanded: _isChildExpanded(index), padding: Expansion_panelLibrary._kExpandIconPadding, splashColor: childLocal.splashColor, highlightColor: childLocal.highlightColor, onPressed: (isExpanded) => { _handlePressed(isExpanded, index); })));
+            if (!childLocal.canTapOnHeader)
             {
-                MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
-                expandIconPadded = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: (_isChildExpanded(index) ? ((MaterialLocalizations)localizations).expandedIconTapHint : ((MaterialLocalizations)localizations).collapsedIconTapHint), container: true, child: expandIconPadded));
+                MaterialLocalizations localizations = MaterialLocalizations.of(context);
+                expandIconPadded = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: _isChildExpanded(index) ? localizations.expandedIconTapHint : localizations.collapsedIconTapHint, container: true, child: expandIconPadded));
             }
-            global::Doroti.Framework.Widgets.Widget header = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.AnimatedContainer(duration: ((ExpansionPanelList)this.widget).animationDuration, curve: Curves.fastOutSlowIn, margin: (_isChildExpanded(index) ? ((ExpansionPanelList)this.widget).expandedHeaderPadding : EdgeInsets.zero), child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: Expansion_panelLibrary._kPanelHeaderCollapsedHeight), child: headerWidget)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(expandIconPadded) }));
-            if (((ExpansionPanel)childLocal).canTapOnHeader)
+            global::Doroti.Framework.Widgets.Widget header = new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.AnimatedContainer(duration: widget.animationDuration, curve: Curves.fastOutSlowIn, margin: _isChildExpanded(index) ? widget.expandedHeaderPadding : EdgeInsets.zero, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: Expansion_panelLibrary._kPanelHeaderCollapsedHeight), child: headerWidget)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(expandIconPadded) });
+            if (childLocal.canTapOnHeader)
             {
-                header = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MergeSemantics(child: new InkWell(splashColor: ((ExpansionPanel)childLocal).splashColor, highlightColor: ((ExpansionPanel)childLocal).highlightColor, onTap: (() => { _handlePressed(_isChildExpanded(index), index); }), child: header)));
+                header = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MergeSemantics(child: new InkWell(splashColor: childLocal.splashColor, highlightColor: childLocal.highlightColor, onTap: () => { _handlePressed(_isChildExpanded(index), index); }, child: header)));
             }
-            items.Add(new MaterialSlice(key: new _SaltedKey__expansion_panel<global::Doroti.Framework.Widgets.BuildContext, long>(context, (index * 2L)), color: ((ExpansionPanel)childLocal).backgroundColor, child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedCrossFade(firstChild: new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, height: 0)), secondChild: ((ExpansionPanel)childLocal).body, firstCurve: new global::Doroti.Framework.Animation.Interval(0.0, 0.6, curve: Curves.fastOutSlowIn), secondCurve: new global::Doroti.Framework.Animation.Interval(0.4, 1.0, curve: Curves.fastOutSlowIn), sizeCurve: Curves.fastOutSlowIn, crossFadeState: (_isChildExpanded(index) ? CrossFadeState.showSecond : CrossFadeState.showFirst), duration: ((ExpansionPanelList)this.widget).animationDuration)) })));
-            if ((_isChildExpanded(index) && (index != (checked((long)(((ExpansionPanelList)this.widget).children.Count)) - 1L))))
+            items.Add(new MaterialSlice(key: new _SaltedKey__expansion_panel<global::Doroti.Framework.Widgets.BuildContext, long>(context, index * 2L), color: childLocal.backgroundColor, child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedCrossFade(firstChild: new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, height: 0)), secondChild: childLocal.body, firstCurve: new global::Doroti.Framework.Animation.Interval(0.0, 0.6, curve: Curves.fastOutSlowIn), secondCurve: new global::Doroti.Framework.Animation.Interval(0.4, 1.0, curve: Curves.fastOutSlowIn), sizeCurve: Curves.fastOutSlowIn, crossFadeState: _isChildExpanded(index) ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: widget.animationDuration)) })));
+            if (_isChildExpanded(index) && (index != (checked(widget.children.Count) - 1L)))
             {
-                items.Add(new MaterialGap(key: new _SaltedKey__expansion_panel<global::Doroti.Framework.Widgets.BuildContext, long>(context, ((index * 2L) + 1L)), size: ((ExpansionPanelList)this.widget).materialGapSize));
+                items.Add(new MaterialGap(key: new _SaltedKey__expansion_panel<global::Doroti.Framework.Widgets.BuildContext, long>(context, (index * 2L) + 1L), size: widget.materialGapSize));
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new MergeableMaterial(hasDividers: true, dividerColor: ((ExpansionPanelList)this.widget).dividerColor, elevation: ((ExpansionPanelList)this.widget).elevation, children: items));
+        return new MergeableMaterial(hasDividers: true, dividerColor: widget.dividerColor, elevation: widget.elevation, children: items);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

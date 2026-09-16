@@ -14,16 +14,16 @@ public class ColorFiltered : SingleChildRenderObjectWidget
         this.colorFilter = colorFilter;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ColorFilterRenderObject__color_filter(this.colorFilter));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ColorFilterRenderObject__color_filter(colorFilter));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        (((_ColorFilterRenderObject__color_filter?)renderObject)!).colorFilter = this.colorFilter;
+        ((_ColorFilterRenderObject__color_filter?)renderObject)!.colorFilter = colorFilter;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", this.colorFilter));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", colorFilter));
     }
 
 }
@@ -39,24 +39,24 @@ internal class _ColorFilterRenderObject__color_filter : global::Doroti.Framework
 
     public virtual global::Doroti.Ui.ColorFilter colorFilter
     {
-        get => this._colorFilter;
+        get => _colorFilter;
         set
         {
-            var __value = (ColorFilter)value;
-            if ((!Equals(__value, this._colorFilter)))
+            var __value = value;
+            if (!Equals(__value, _colorFilter))
             {
                 _colorFilter = __value;
                 markNeedsPaint();
             }
         }
     }
-    public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((this.child is not null));
+    public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>(child is not null);
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        layer = context.pushColorFilter(offset, this.colorFilter, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.ColorFilterLayer?)this.layer)!);
+        layer = context.pushColorFilter(offset, colorFilter, base.paint, oldLayer: ((global::Doroti.Framework.Rendering.ColorFilterLayer?)layer)!);
         DartRuntimePrimitives.Assert(() =>
             {
-                this.layer!.debugCreator = this.debugCreator;
+                layer!.debugCreator = debugCreator;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });

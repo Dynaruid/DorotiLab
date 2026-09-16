@@ -13,7 +13,7 @@ public class MouseCursorManager
     public MouseCursorManager(MouseCursor fallbackMouseCursor)
     {
         this.fallbackMouseCursor = fallbackMouseCursor;
-        System.Diagnostics.Debug.Assert((!Equals(fallbackMouseCursor, MouseCursor.defer)));
+        System.Diagnostics.Debug.Assert(!Equals(fallbackMouseCursor, MouseCursor.defer));
     }
 
     public virtual MouseCursor? debugDeviceActiveCursor(long device)
@@ -36,9 +36,9 @@ public class MouseCursorManager
             return;
         }
         MouseCursorSession? lastSession = _lastSession.GetValueOrDefault(device);
-        MouseCursor nextCursor = (_DeferringMouseCursor.firstNonDeferred(cursorCandidates) ?? fallbackMouseCursor);
-        DartRuntimePrimitives.Assert(() => (nextCursor is not _DeferringMouseCursor));
-        if ((Equals(lastSession?.cursor, nextCursor)))
+        MouseCursor nextCursor = _DeferringMouseCursor.firstNonDeferred(cursorCandidates) ?? fallbackMouseCursor;
+        DartRuntimePrimitives.Assert(() => nextCursor is not _DeferringMouseCursor);
+        if (Equals(lastSession?.cursor, nextCursor))
         {
             return;
         }
@@ -81,7 +81,7 @@ public abstract class MouseCursor : Diagnosticable
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string debugDescription = this.debugDescription;
-        if ((FoundationRuntimePorts.EnumIndex(minLevel) >= FoundationRuntimePorts.EnumIndex(DiagnosticLevel.info)))
+        if (FoundationRuntimePorts.EnumIndex(minLevel) >= FoundationRuntimePorts.EnumIndex(DiagnosticLevel.info))
         {
             return debugDescription;
         }
@@ -109,7 +109,7 @@ internal class _DeferringMouseCursor : MouseCursor
     {
         foreach (var cursor in cursors)
         {
-            if ((!Equals(cursor, defer)))
+            if (!Equals(cursor, defer))
             {
                 return cursor;
             }
@@ -191,17 +191,17 @@ public class SystemMouseCursor : MouseCursor
         this.kind = kind;
     }
 
-    public override string debugDescription => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor"))}({kind})";
+    public override string debugDescription => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor")}({kind})";
     public override MouseCursorSession createSession(long device) => new _SystemMouseCursorSession(this, device);
     public override bool Equals(object? other)
     {
         var __other = other as SystemMouseCursor;
         if (__other is null) return false;
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return ((__other is SystemMouseCursor) && (((SystemMouseCursor)((SystemMouseCursor)__other)).kind == kind));
+        return (__other is SystemMouseCursor) && (__other.kind == kind);
     }
 
     public override int GetHashCode() => kind.GetHashCode();

@@ -1,7 +1,7 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
-using System.Diagnostics;
 using SkiaSharp;
 
 namespace Doroti.Skia.Vulkan;

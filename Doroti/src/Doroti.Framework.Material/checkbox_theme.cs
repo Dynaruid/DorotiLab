@@ -33,21 +33,21 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
 
     public virtual CheckboxThemeData copyWith(global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? checkColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, global::Doroti.Framework.Painting.BorderSide? side = null)
     {
-        return new CheckboxThemeData(mouseCursor: (mouseCursor ?? this.mouseCursor), fillColor: (fillColor ?? this.fillColor), checkColor: (checkColor ?? this.checkColor), overlayColor: (overlayColor ?? this.overlayColor), splashRadius: (splashRadius ?? this.splashRadius), materialTapTargetSize: (materialTapTargetSize ?? this.materialTapTargetSize), visualDensity: (visualDensity ?? this.visualDensity), shape: (shape ?? this.shape), side: (side ?? this.side));
+        return new CheckboxThemeData(mouseCursor: mouseCursor ?? this.mouseCursor, fillColor: fillColor ?? this.fillColor, checkColor: checkColor ?? this.checkColor, overlayColor: overlayColor ?? this.overlayColor, splashRadius: splashRadius ?? this.splashRadius, materialTapTargetSize: materialTapTargetSize ?? this.materialTapTargetSize, visualDensity: visualDensity ?? this.visualDensity, shape: shape ?? this.shape, side: side ?? this.side);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static CheckboxThemeData lerp(CheckboxThemeData? a, CheckboxThemeData? b, double t)
     {
-        if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
+        if (DartRuntimePrimitives.Identical(a, b) && (a is not null))
         {
             return a;
         }
-        return new CheckboxThemeData(mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), fillColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.fillColor, b?.fillColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), checkColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.checkColor, b?.checkColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), materialTapTargetSize: ((t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize), visualDensity: ((t < 0.5) ? a?.visualDensity : b?.visualDensity), shape: ((global::Doroti.Framework.Painting.OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!, side: _lerpSides(a?.side, b?.side, t));
+        return new CheckboxThemeData(mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor, fillColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.fillColor, b?.fillColor, t, Color.lerp), checkColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.checkColor, b?.checkColor, t, Color.lerp), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), materialTapTargetSize: (t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize, visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity, shape: ((global::Doroti.Framework.Painting.OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!, side: _lerpSides(a?.side, b?.side, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.mouseCursor, this.fillColor, this.checkColor, this.overlayColor, this.splashRadius, this.materialTapTargetSize, this.visualDensity, this.shape, this.side));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(mouseCursor, fillColor, checkColor, overlayColor, splashRadius, materialTapTargetSize, visualDensity, shape, side));
     public override bool Equals(object? other)
     {
         var __other = other as CheckboxThemeData;
@@ -56,43 +56,43 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((__other is CheckboxThemeData) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).fillColor, this.fillColor))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).checkColor, this.checkColor))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).overlayColor, this.overlayColor))) && (((CheckboxThemeData)((CheckboxThemeData)__other)).splashRadius == this.splashRadius)) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).visualDensity, this.visualDensity))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).shape, this.shape))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).side, this.side)));
+        return (__other is CheckboxThemeData) && Equals(__other.mouseCursor, mouseCursor) && Equals(__other.fillColor, fillColor) && Equals(__other.checkColor, checkColor) && Equals(__other.overlayColor, overlayColor) && (__other.splashRadius == splashRadius) && Equals(__other.materialTapTargetSize, materialTapTargetSize) && Equals(__other.visualDensity, visualDensity) && Equals(__other.shape, shape) && Equals(__other.side, side);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("fillColor", this.fillColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("checkColor", this.checkColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("overlayColor", this.overlayColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("splashRadius", this.splashRadius, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", this.materialTapTargetSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", this.visualDensity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.OutlinedBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderSide>("side", this.side, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", mouseCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("fillColor", fillColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("checkColor", checkColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("overlayColor", overlayColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("splashRadius", splashRadius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", materialTapTargetSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.OutlinedBorder>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderSide>("side", side, defaultValue: null));
     }
 
     internal static global::Doroti.Framework.Painting.BorderSide? _lerpSides(global::Doroti.Framework.Painting.BorderSide? a, global::Doroti.Framework.Painting.BorderSide? b, double t)
     {
-        if (((a is null) && (b is null)))
+        if ((a is null) && (b is null))
         {
             return null;
         }
-        if ((a is global::Doroti.Framework.Widgets.WidgetStateBorderSide))
+        if (a is global::Doroti.Framework.Widgets.WidgetStateBorderSide)
         {
             a = ((global::Doroti.Framework.Widgets.WidgetStateBorderSide)a).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
         }
-        if ((b is global::Doroti.Framework.Widgets.WidgetStateBorderSide))
+        if (b is global::Doroti.Framework.Widgets.WidgetStateBorderSide)
         {
             b = ((global::Doroti.Framework.Widgets.WidgetStateBorderSide)b).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
         }
         a ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L));
-        b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L));
-        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t));
+        b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: a.color.withAlpha(0L));
+        return (global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -107,13 +107,13 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -130,10 +130,10 @@ public class CheckboxTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static CheckboxThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CheckboxTheme? checkboxThemeLocal = ((CheckboxTheme?)context.dependOnInheritedWidgetOfExactType<CheckboxTheme>());
-        return (checkboxThemeLocal?.data ?? Theme.of(context).checkboxTheme);
+        CheckboxTheme? checkboxThemeLocal = context.dependOnInheritedWidgetOfExactType<CheckboxTheme>();
+        return checkboxThemeLocal?.data ?? Theme.of(context).checkboxTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((CheckboxTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((CheckboxTheme)oldWidget).data));
 }

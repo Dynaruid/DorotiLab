@@ -12,7 +12,7 @@ public static partial class ScaleLibrary
 
 public static partial class ScaleLibrary
 {
-    public static Offset kDefaultTrackpadScrollToScaleFactor = new global::Doroti.Ui.Offset(0, (-1L / kDefaultMouseScrollToScaleFactor));
+    public static Offset kDefaultTrackpadScrollToScaleFactor = new global::Doroti.Ui.Offset(0, -1L / kDefaultMouseScrollToScaleFactor);
 }
 
 internal enum _ScaleState__scale
@@ -34,10 +34,10 @@ internal class _PointerPanZoomData__scale
     private _PointerPanZoomData__scale(ScaleGestureRecognizer parent, Offset position, Offset pan, double scale, double rotation)
     {
         this.parent = parent;
-        this._position = position;
-        this._pan = pan;
-        this._scale = scale;
-        this._rotation = rotation;
+        _position = position;
+        _pan = pan;
+        _scale = scale;
+        _rotation = rotation;
     }
 
     internal _PointerPanZoomData__scale(ScaleGestureRecognizer parent, PointerPanZoomStartEvent @event)
@@ -52,26 +52,26 @@ internal class _PointerPanZoomData__scale
     {
         get
         {
-            if (((ScaleGestureRecognizer)this.parent).trackpadScrollCausesScale)
+            if (parent.trackpadScrollCausesScale)
             {
-                return this._position;
+                return _position;
             }
-            return (this._position + this._pan);
+            return _position + _pan;
         }
     }
     public virtual double scale
     {
         get
         {
-            if (((ScaleGestureRecognizer)this.parent).trackpadScrollCausesScale)
+            if (parent.trackpadScrollCausesScale)
             {
-                return (this._scale * Dart_mathLibrary.exp((((this._pan.dx * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dx)) + ((this._pan.dy * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dy)))));
+                return _scale * Dart_mathLibrary.exp(_pan.dx * parent.trackpadScrollToScaleFactor.dx + _pan.dy * parent.trackpadScrollToScaleFactor.dy);
             }
-            return this._scale;
+            return _scale;
         }
     }
-    public virtual double rotation => this._rotation;
-    public override string ToString() => $"_PointerPanZoomData(parent: {this.parent}, _position: {this._position}, _pan: {this._pan}, _scale: {this._scale}, _rotation: {this._rotation})";
+    public virtual double rotation => _rotation;
+    public override string ToString() => $"_PointerPanZoomData(parent: {parent}, _position: {_position}, _pan: {_pan}, _scale: {_scale}, _rotation: {_rotation})";
 }
 
 public class ScaleStartDetails : Diagnosticable
@@ -88,16 +88,16 @@ public class ScaleStartDetails : Diagnosticable
         this.pointerCount = pointerCount;
         this.sourceTimeStamp = sourceTimeStamp;
         this.kind = kind;
-        this.localFocalPoint = (localFocalPoint ?? focalPoint);
+        this.localFocalPoint = localFocalPoint ?? focalPoint;
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPoint", this.focalPoint));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localFocalPoint", this.localFocalPoint));
-        properties.add(new IntProperty("pointerCount", this.pointerCount));
-        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", this.sourceTimeStamp));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPoint", focalPoint));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localFocalPoint", localFocalPoint));
+        properties.add(new IntProperty("pointerCount", pointerCount));
+        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
     }
 
 }
@@ -124,24 +124,24 @@ public class ScaleUpdateDetails : Diagnosticable
         this.pointerCount = pointerCount;
         this.focalPointDelta = focalPointDelta;
         this.sourceTimeStamp = sourceTimeStamp;
-        this.localFocalPoint = (localFocalPoint ?? focalPoint);
-        System.Diagnostics.Debug.Assert((scale >= 0.0));
-        System.Diagnostics.Debug.Assert((horizontalScale >= 0.0));
-        System.Diagnostics.Debug.Assert((verticalScale >= 0.0));
+        this.localFocalPoint = localFocalPoint ?? focalPoint;
+        System.Diagnostics.Debug.Assert(scale >= 0.0);
+        System.Diagnostics.Debug.Assert(horizontalScale >= 0.0);
+        System.Diagnostics.Debug.Assert(verticalScale >= 0.0);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPointDelta", this.focalPointDelta));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPoint", this.focalPoint));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localFocalPoint", this.localFocalPoint));
-        properties.add(new DoubleProperty("scale", this.scale));
-        properties.add(new DoubleProperty("horizontalScale", this.horizontalScale));
-        properties.add(new DoubleProperty("verticalScale", this.verticalScale));
-        properties.add(new DoubleProperty("rotation", this.rotation));
-        properties.add(new IntProperty("pointerCount", this.pointerCount));
-        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", this.sourceTimeStamp));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPointDelta", focalPointDelta));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPoint", focalPoint));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localFocalPoint", localFocalPoint));
+        properties.add(new DoubleProperty("scale", scale));
+        properties.add(new DoubleProperty("horizontalScale", horizontalScale));
+        properties.add(new DoubleProperty("verticalScale", verticalScale));
+        properties.add(new DoubleProperty("rotation", rotation));
+        properties.add(new IntProperty("pointerCount", pointerCount));
+        properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
     }
 
 }
@@ -163,9 +163,9 @@ public class ScaleEndDetails : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<Velocity>("velocity", this.velocity));
-        properties.add(new DoubleProperty("scaleVelocity", this.scaleVelocity));
-        properties.add(new IntProperty("pointerCount", this.pointerCount));
+        properties.add(new DiagnosticsProperty<Velocity>("velocity", velocity));
+        properties.add(new DoubleProperty("scaleVelocity", scaleVelocity));
+        properties.add(new IntProperty("pointerCount", pointerCount));
     }
 
 }
@@ -180,8 +180,8 @@ public static partial class ScaleLibrary
 {
     internal static bool _isFlingGesture(Velocity velocity)
     {
-        double speedSquared = ((Velocity)velocity).pixelsPerSecond.distanceSquared;
-        return (speedSquared > (ConstantsLibrary.kMinFlingVelocity * ConstantsLibrary.kMinFlingVelocity));
+        double speedSquared = velocity.pixelsPerSecond.distanceSquared;
+        return speedSquared > (ConstantsLibrary.kMinFlingVelocity * ConstantsLibrary.kMinFlingVelocity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -199,7 +199,7 @@ internal class _LineBetweenPointers__scale
         this.pointerStartId = pointerStartId;
         this.pointerEndLocation = pointerEndLocation;
         this.pointerEndId = pointerEndId;
-        System.Diagnostics.Debug.Assert((pointerStartId != pointerEndId));
+        System.Diagnostics.Debug.Assert(pointerStartId != pointerEndId);
     }
 
 }
@@ -247,20 +247,20 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            return (((2L * checked((long)(this._pointerPanZooms.Count)))) + checked((long)(this._pointerQueue.Count)));
+            return 2L * checked(_pointerPanZooms.Count) + checked(_pointerQueue.Count);
         }
     }
-    internal virtual double _pointerScaleFactor => ((this._initialSpan > 0.0) ? (this._currentSpan / this._initialSpan) : 1.0);
-    internal virtual double _pointerHorizontalScaleFactor => ((this._initialHorizontalSpan > 0.0) ? (this._currentHorizontalSpan / this._initialHorizontalSpan) : 1.0);
-    internal virtual double _pointerVerticalScaleFactor => ((this._initialVerticalSpan > 0.0) ? (this._currentVerticalSpan / this._initialVerticalSpan) : 1.0);
+    internal virtual double _pointerScaleFactor => (_initialSpan > 0.0) ? (_currentSpan / _initialSpan) : 1.0;
+    internal virtual double _pointerHorizontalScaleFactor => (_initialHorizontalSpan > 0.0) ? (_currentHorizontalSpan / _initialHorizontalSpan) : 1.0;
+    internal virtual double _pointerVerticalScaleFactor => (_initialVerticalSpan > 0.0) ? (_currentVerticalSpan / _initialVerticalSpan) : 1.0;
     internal virtual double _scaleFactor
     {
         get
         {
-            double scaleLocal = this._pointerScaleFactor;
-            foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
+            double scaleLocal = _pointerScaleFactor;
+            foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)
             {
-                scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
+                scaleLocal *= p.scale / _initialPanZoomScaleFactor;
             }
             return scaleLocal;
         }
@@ -269,10 +269,10 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            double scaleLocal = this._pointerHorizontalScaleFactor;
-            foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
+            double scaleLocal = _pointerHorizontalScaleFactor;
+            foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)
             {
-                scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
+                scaleLocal *= p.scale / _initialPanZoomScaleFactor;
             }
             return scaleLocal;
         }
@@ -281,10 +281,10 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            double scaleLocal = this._pointerVerticalScaleFactor;
-            foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
+            double scaleLocal = _pointerVerticalScaleFactor;
+            foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)
             {
-                scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
+                scaleLocal *= p.scale / _initialPanZoomScaleFactor;
             }
             return scaleLocal;
         }
@@ -292,25 +292,25 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     internal virtual double _computeRotationFactor()
     {
         var factor = 0.0;
-        if (((this._initialLine is not null) && (this._currentLine is not null)))
+        if ((_initialLine is not null) && (_currentLine is not null))
         {
-            double fx = this._initialLine!.pointerStartLocation.dx;
-            double fy = this._initialLine!.pointerStartLocation.dy;
-            double sx = this._initialLine!.pointerEndLocation.dx;
-            double sy = this._initialLine!.pointerEndLocation.dy;
-            double nfx = this._currentLine!.pointerStartLocation.dx;
-            double nfy = this._currentLine!.pointerStartLocation.dy;
-            double nsx = this._currentLine!.pointerEndLocation.dx;
-            double nsy = this._currentLine!.pointerEndLocation.dy;
-            double angle1 = Dart_mathLibrary.atan2((fy - sy), (fx - sx));
-            double angle2 = Dart_mathLibrary.atan2((nfy - nsy), (nfx - nsx));
-            factor = (angle2 - angle1);
+            double fx = _initialLine!.pointerStartLocation.dx;
+            double fy = _initialLine!.pointerStartLocation.dy;
+            double sx = _initialLine!.pointerEndLocation.dx;
+            double sy = _initialLine!.pointerEndLocation.dy;
+            double nfx = _currentLine!.pointerStartLocation.dx;
+            double nfy = _currentLine!.pointerStartLocation.dy;
+            double nsx = _currentLine!.pointerEndLocation.dx;
+            double nsy = _currentLine!.pointerEndLocation.dy;
+            double angle1 = Dart_mathLibrary.atan2(fy - sy, fx - sx);
+            double angle2 = Dart_mathLibrary.atan2(nfy - nsy, nfx - nsx);
+            factor = angle2 - angle1;
         }
-        foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
+        foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)
         {
-            factor += ((_PointerPanZoomData__scale)p).rotation;
+            factor += p.rotation;
         }
-        factor -= this._initialPanZoomRotationFactor;
+        factor -= _initialPanZoomRotationFactor;
         return factor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -318,9 +318,9 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     public override void addAllowedPointer(PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
-        this._velocityTrackers[@event.pointer] = new VelocityTracker(@event.kind);
+        _velocityTrackers[@event.pointer] = new VelocityTracker(@event.kind);
         _initialEventTimestamp = @event.timeStamp;
-        if ((Equals(this._state, _ScaleState__scale.ready)))
+        if (Equals(_state, _ScaleState__scale.ready))
         {
             _state = _ScaleState__scale.possible;
             _initialSpan = 0.0;
@@ -337,9 +337,9 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         base.addAllowedPointerPanZoom(@event);
         startTrackingPointer(@event.pointer, @event.transform);
-        this._velocityTrackers[@event.pointer] = new VelocityTracker(@event.kind);
+        _velocityTrackers[@event.pointer] = new VelocityTracker(@event.kind);
         _initialEventTimestamp = @event.timeStamp;
-        if ((Equals(this._state, _ScaleState__scale.ready)))
+        if (Equals(_state, _ScaleState__scale.ready))
         {
             _state = _ScaleState__scale.possible;
             _initialPanZoomScaleFactor = 1.0;
@@ -349,69 +349,69 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void handleEvent(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(this._state, _ScaleState__scale.ready)));
+        DartRuntimePrimitives.Assert(() => !Equals(_state, _ScaleState__scale.ready));
         var didChangeConfiguration = false;
         var shouldStartIfAccepted = false;
-        if ((@event is PointerMoveEvent))
+        if (@event is PointerMoveEvent)
         {
-            VelocityTracker tracker = this._velocityTrackers.GetValueOrDefault(((PointerMoveEvent)@event).pointer)!;
+            VelocityTracker tracker = _velocityTrackers.GetValueOrDefault(((PointerMoveEvent)@event).pointer)!;
             if (!((PointerMoveEvent)@event).synthesized)
             {
                 tracker.addPosition(((PointerMoveEvent)@event).timeStamp, ((PointerMoveEvent)@event).position);
             }
-            this._pointerLocations[@event.pointer] = ((PointerMoveEvent)@event).position;
+            _pointerLocations[@event.pointer] = ((PointerMoveEvent)@event).position;
             shouldStartIfAccepted = true;
             _lastTransform = ((PointerMoveEvent)@event).transform;
         }
         else
         {
-            if ((@event is PointerDownEvent))
+            if (@event is PointerDownEvent)
             {
-                this._pointerLocations[@event.pointer] = ((PointerDownEvent)@event).position;
-                this._pointerQueue.Add(((PointerDownEvent)@event).pointer);
+                _pointerLocations[@event.pointer] = ((PointerDownEvent)@event).position;
+                _pointerQueue.Add(((PointerDownEvent)@event).pointer);
                 didChangeConfiguration = true;
                 shouldStartIfAccepted = true;
                 _lastTransform = ((PointerDownEvent)@event).transform;
             }
             else
             {
-                if (((@event is PointerUpEvent) || (@event is PointerCancelEvent)))
+                if ((@event is PointerUpEvent) || (@event is PointerCancelEvent))
                 {
-                    this._pointerLocations.remove(((PointerEvent)@event).pointer);
-                    this._pointerQueue.Remove(((PointerEvent)@event).pointer);
+                    _pointerLocations.remove(@event.pointer);
+                    _pointerQueue.Remove(@event.pointer);
                     didChangeConfiguration = true;
-                    _lastTransform = ((PointerEvent)@event).transform;
+                    _lastTransform = @event.transform;
                 }
                 else
                 {
-                    if ((@event is PointerPanZoomStartEvent))
+                    if (@event is PointerPanZoomStartEvent)
                     {
-                        DartRuntimePrimitives.Assert(() => (!this._pointerPanZooms.ContainsKey(((PointerPanZoomStartEvent)@event).pointer)));
-                        this._pointerPanZooms[@event.pointer] = new _PointerPanZoomData__scale(this, ((PointerPanZoomStartEvent)@event));
+                        DartRuntimePrimitives.Assert(() => !_pointerPanZooms.ContainsKey(((PointerPanZoomStartEvent)@event).pointer));
+                        _pointerPanZooms[@event.pointer] = new _PointerPanZoomData__scale(this, (PointerPanZoomStartEvent)@event);
                         didChangeConfiguration = true;
                         shouldStartIfAccepted = true;
                         _lastTransform = ((PointerPanZoomStartEvent)@event).transform;
                     }
                     else
                     {
-                        if ((@event is PointerPanZoomUpdateEvent))
+                        if (@event is PointerPanZoomUpdateEvent)
                         {
-                            DartRuntimePrimitives.Assert(() => (this._pointerPanZooms.ContainsKey(((PointerPanZoomUpdateEvent)@event).pointer)));
-                            if ((!((PointerPanZoomUpdateEvent)@event).synthesized && !this.trackpadScrollCausesScale))
+                            DartRuntimePrimitives.Assert(() => _pointerPanZooms.ContainsKey(((PointerPanZoomUpdateEvent)@event).pointer));
+                            if (!((PointerPanZoomUpdateEvent)@event).synthesized && !trackpadScrollCausesScale)
                             {
-                                this._velocityTrackers.GetValueOrDefault(((PointerPanZoomUpdateEvent)@event).pointer)!.addPosition(((PointerPanZoomUpdateEvent)@event).timeStamp, ((PointerPanZoomUpdateEvent)((PointerPanZoomUpdateEvent)@event)).pan);
+                                _velocityTrackers.GetValueOrDefault(((PointerPanZoomUpdateEvent)@event).pointer)!.addPosition(((PointerPanZoomUpdateEvent)@event).timeStamp, ((PointerPanZoomUpdateEvent)@event).pan);
                             }
-                            this._pointerPanZooms[@event.pointer] = _PointerPanZoomData__scale.CreateFromUpdateEvent(this, ((PointerPanZoomUpdateEvent)@event));
+                            _pointerPanZooms[@event.pointer] = _PointerPanZoomData__scale.CreateFromUpdateEvent(this, (PointerPanZoomUpdateEvent)@event);
                             _lastTransform = ((PointerPanZoomUpdateEvent)@event).transform;
                             shouldStartIfAccepted = true;
                         }
                         else
                         {
-                            if ((@event is PointerPanZoomEndEvent))
+                            if (@event is PointerPanZoomEndEvent)
                             {
                                 PointerPanZoomEndEvent @event__as21439 = (PointerPanZoomEndEvent)@event;
-                                DartRuntimePrimitives.Assert(() => (this._pointerPanZooms.ContainsKey(((PointerPanZoomEndEvent)@event__as21439).pointer)));
-                                this._pointerPanZooms.remove(((PointerPanZoomEndEvent)@event__as21439).pointer);
+                                DartRuntimePrimitives.Assert(() => _pointerPanZooms.ContainsKey(@event__as21439.pointer));
+                                _pointerPanZooms.remove(@event__as21439.pointer);
                                 didChangeConfiguration = true;
                             }
                         }
@@ -421,7 +421,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         _updateLines();
         _update();
-        if ((!didChangeConfiguration || _reconfigure(((PointerEvent)@event).pointer)))
+        if (!didChangeConfiguration || _reconfigure(@event.pointer))
         {
             _advanceStateMachine(shouldStartIfAccepted, @event);
         }
@@ -430,109 +430,109 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _update()
     {
-        global::Doroti.Ui.Offset? previousFocalPoint = this._currentFocalPoint;
+        global::Doroti.Ui.Offset? previousFocalPoint = _currentFocalPoint;
         global::Doroti.Ui.Offset focalPointLocal = Offset.zero;
-        foreach (long pointer in this._pointerLocations.Keys)
+        foreach (long pointer in _pointerLocations.Keys)
         {
-            focalPointLocal += DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer));
+            focalPointLocal += DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointer));
         }
-        foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
+        foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)
         {
-            focalPointLocal += ((_PointerPanZoomData__scale)p).focalPoint;
+            focalPointLocal += p.focalPoint;
         }
-        _currentFocalPoint = (focalPointLocal / Math.Max(1L, (checked((long)(this._pointerLocations.Count)) + checked((long)(this._pointerPanZooms.Count)))).toDouble());
-        if ((previousFocalPoint is null))
+        _currentFocalPoint = focalPointLocal / Math.Max(1L, checked(_pointerLocations.Count) + checked((long)_pointerPanZooms.Count)).toDouble();
+        if (previousFocalPoint is null)
         {
-            _localFocalPoint = PointerEvent.transformPosition(this._lastTransform, DartRuntimePrimitives.RequireValue(this._currentFocalPoint));
+            _localFocalPoint = PointerEvent.transformPosition(_lastTransform, DartRuntimePrimitives.RequireValue(_currentFocalPoint));
             _delta = Offset.zero;
         }
         else
         {
-            global::Doroti.Ui.Offset localPreviousFocalPoint = this._localFocalPoint;
-            _localFocalPoint = PointerEvent.transformPosition(this._lastTransform, DartRuntimePrimitives.RequireValue(this._currentFocalPoint));
-            _delta = (this._localFocalPoint - localPreviousFocalPoint);
+            global::Doroti.Ui.Offset localPreviousFocalPoint = _localFocalPoint;
+            _localFocalPoint = PointerEvent.transformPosition(_lastTransform, DartRuntimePrimitives.RequireValue(_currentFocalPoint));
+            _delta = _localFocalPoint - localPreviousFocalPoint;
         }
-        long count = this._pointerLocations.Keys.Count();
+        long count = _pointerLocations.Keys.Count();
         global::Doroti.Ui.Offset pointerFocalPoint = Offset.zero;
-        foreach (long pointerLocal in this._pointerLocations.Keys)
+        foreach (long pointerLocal in _pointerLocations.Keys)
         {
-            pointerFocalPoint += DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerLocal));
+            pointerFocalPoint += DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointerLocal));
         }
-        if ((count > 0L))
+        if (count > 0L)
         {
-            pointerFocalPoint = (pointerFocalPoint / count.toDouble());
+            pointerFocalPoint = pointerFocalPoint / count.toDouble();
         }
         var totalDeviation = 0.0;
         var totalHorizontalDeviation = 0.0;
         var totalVerticalDeviation = 0.0;
-        foreach (long pointerAlternate in this._pointerLocations.Keys)
+        foreach (long pointerAlternate in _pointerLocations.Keys)
         {
-            totalDeviation += ((pointerFocalPoint - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerAlternate)))).distance;
-            totalHorizontalDeviation += ((pointerFocalPoint.dx - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerAlternate)).dx)).abs();
-            totalVerticalDeviation += ((pointerFocalPoint.dy - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerAlternate)).dy)).abs();
+            totalDeviation += (pointerFocalPoint - DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointerAlternate))).distance;
+            totalHorizontalDeviation += (pointerFocalPoint.dx - DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointerAlternate)).dx).abs();
+            totalVerticalDeviation += (pointerFocalPoint.dy - DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointerAlternate)).dy).abs();
         }
-        _currentSpan = ((count > 0L) ? (totalDeviation / count) : 0.0);
-        _currentHorizontalSpan = ((count > 0L) ? (totalHorizontalDeviation / count) : 0.0);
-        _currentVerticalSpan = ((count > 0L) ? (totalVerticalDeviation / count) : 0.0);
+        _currentSpan = (count > 0L) ? (totalDeviation / count) : 0.0;
+        _currentHorizontalSpan = (count > 0L) ? (totalHorizontalDeviation / count) : 0.0;
+        _currentVerticalSpan = (count > 0L) ? (totalVerticalDeviation / count) : 0.0;
     }
 
     internal virtual void _updateLines()
     {
-        long count = this._pointerLocations.Keys.Count();
-        DartRuntimePrimitives.Assert(() => (checked((long)(this._pointerQueue.Count)) >= count));
-        if ((count < 2L))
+        long count = _pointerLocations.Keys.Count();
+        DartRuntimePrimitives.Assert(() => checked(_pointerQueue.Count) >= count);
+        if (count < 2L)
         {
-            _initialLine = this._currentLine;
+            _initialLine = _currentLine;
         }
         else
         {
-            if ((((this._initialLine is not null) && (this._initialLine!.pointerStartId == this._pointerQueue[(int)(0L)])) && (this._initialLine!.pointerEndId == this._pointerQueue[(int)(1L)])))
+            if ((_initialLine is not null) && (_initialLine!.pointerStartId == _pointerQueue[(int)0L]) && (_initialLine!.pointerEndId == _pointerQueue[(int)1L]))
             {
-                _currentLine = new _LineBetweenPointers__scale(pointerStartId: this._pointerQueue[(int)(0L)], pointerStartLocation: DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(this._pointerQueue[(int)(0L)])), pointerEndId: this._pointerQueue[(int)(1L)], pointerEndLocation: DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(this._pointerQueue[(int)(1L)])));
+                _currentLine = new _LineBetweenPointers__scale(pointerStartId: _pointerQueue[(int)0L], pointerStartLocation: DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(_pointerQueue[(int)0L])), pointerEndId: _pointerQueue[(int)1L], pointerEndLocation: DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(_pointerQueue[(int)1L])));
             }
             else
             {
-                _initialLine = new _LineBetweenPointers__scale(pointerStartId: this._pointerQueue[(int)(0L)], pointerStartLocation: DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(this._pointerQueue[(int)(0L)])), pointerEndId: this._pointerQueue[(int)(1L)], pointerEndLocation: DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(this._pointerQueue[(int)(1L)])));
-                _currentLine = this._initialLine;
+                _initialLine = new _LineBetweenPointers__scale(pointerStartId: _pointerQueue[(int)0L], pointerStartLocation: DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(_pointerQueue[(int)0L])), pointerEndId: _pointerQueue[(int)1L], pointerEndLocation: DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(_pointerQueue[(int)1L])));
+                _currentLine = _initialLine;
             }
         }
     }
 
     internal virtual bool _reconfigure(long pointer)
     {
-        _initialFocalPoint = DartRuntimePrimitives.RequireValue(this._currentFocalPoint);
-        _initialSpan = this._currentSpan;
-        _initialLine = this._currentLine;
-        _initialHorizontalSpan = this._currentHorizontalSpan;
-        _initialVerticalSpan = this._currentVerticalSpan;
-        if ((checked((long)(this._pointerPanZooms.Count)) == 0))
+        _initialFocalPoint = DartRuntimePrimitives.RequireValue(_currentFocalPoint);
+        _initialSpan = _currentSpan;
+        _initialLine = _currentLine;
+        _initialHorizontalSpan = _currentHorizontalSpan;
+        _initialVerticalSpan = _currentVerticalSpan;
+        if (checked((long)_pointerPanZooms.Count) == 0)
         {
             _initialPanZoomScaleFactor = 1.0;
             _initialPanZoomRotationFactor = 0.0;
         }
         else
         {
-            _initialPanZoomScaleFactor = (this._scaleFactor / this._pointerScaleFactor);
-            _initialPanZoomRotationFactor = this._pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>(((x) => ((_PointerPanZoomData__scale)x).rotation)).reduce(((a, b) => (a + b)));
+            _initialPanZoomScaleFactor = _scaleFactor / _pointerScaleFactor;
+            _initialPanZoomRotationFactor = _pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>((x) => x.rotation).reduce((a, b) => a + b);
         }
-        if ((Equals(this._state, _ScaleState__scale.started)))
+        if (Equals(_state, _ScaleState__scale.started))
         {
-            if ((this.onEnd is not null))
+            if (onEnd is not null)
             {
-                VelocityTracker tracker = this._velocityTrackers.GetValueOrDefault(pointer)!;
+                VelocityTracker tracker = _velocityTrackers.GetValueOrDefault(pointer)!;
                 Velocity velocityLocal = tracker.getVelocity();
                 if (ScaleLibrary._isFlingGesture(velocityLocal))
                 {
-                    global::Doroti.Ui.Offset pixelsPerSecondLocal = ((Velocity)velocityLocal).pixelsPerSecond;
-                    if ((pixelsPerSecondLocal.distanceSquared > (ConstantsLibrary.kMaxFlingVelocity * ConstantsLibrary.kMaxFlingVelocity)))
+                    global::Doroti.Ui.Offset pixelsPerSecondLocal = velocityLocal.pixelsPerSecond;
+                    if (pixelsPerSecondLocal.distanceSquared > (ConstantsLibrary.kMaxFlingVelocity * ConstantsLibrary.kMaxFlingVelocity))
                     {
-                        velocityLocal = new Velocity(pixelsPerSecond: (((pixelsPerSecondLocal / pixelsPerSecondLocal.distance)) * ConstantsLibrary.kMaxFlingVelocity));
+                        velocityLocal = new Velocity(pixelsPerSecond: pixelsPerSecondLocal / pixelsPerSecondLocal.distance * ConstantsLibrary.kMaxFlingVelocity);
                     }
-                    invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(new ScaleEndDetails(velocity: velocityLocal, scaleVelocity: (this._scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1), pointerCount: this.pointerCount)))))(); return null; });
+                    invokeCallback<object?>("onEnd", () => { ((Action)(() => onEnd!(new ScaleEndDetails(velocity: velocityLocal, scaleVelocity: _scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1, pointerCount: pointerCount))))(); return null; });
                 }
                 else
                 {
-                    invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(new ScaleEndDetails(scaleVelocity: (this._scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1), pointerCount: this.pointerCount)))))(); return null; });
+                    invokeCallback<object?>("onEnd", () => { ((Action)(() => onEnd!(new ScaleEndDetails(scaleVelocity: _scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1, pointerCount: pointerCount))))(); return null; });
                 }
             }
             _state = _ScaleState__scale.accepted;
@@ -546,43 +546,43 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _advanceStateMachine(bool shouldStartIfAccepted, PointerEvent @event)
     {
-        if ((Equals(this._state, _ScaleState__scale.ready)))
+        if (Equals(_state, _ScaleState__scale.ready))
         {
             _state = _ScaleState__scale.possible;
         }
-        if ((Equals(this._state, _ScaleState__scale.possible)))
+        if (Equals(_state, _ScaleState__scale.possible))
         {
-            double spanDelta = ((this._currentSpan - this._initialSpan)).abs();
-            double focalPointDeltaLocal = ((DartRuntimePrimitives.RequireValue(this._currentFocalPoint) - this._initialFocalPoint)).distance;
-            if ((((spanDelta > EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDeltaLocal > EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
+            double spanDelta = (_currentSpan - _initialSpan).abs();
+            double focalPointDeltaLocal = (DartRuntimePrimitives.RequireValue(_currentFocalPoint) - _initialFocalPoint).distance;
+            if ((spanDelta > EventsLibrary.computeScaleSlop(@event.kind)) || (focalPointDeltaLocal > EventsLibrary.computePanSlop(@event.kind, gestureSettings)) || (Math.Max(_scaleFactor / _pointerScaleFactor, _pointerScaleFactor / _scaleFactor) > 1.05))
             {
                 resolve(GestureDisposition.accepted);
             }
         }
         else
         {
-            if ((FoundationRuntimePorts.EnumIndex(this._state) >= FoundationRuntimePorts.EnumIndex(_ScaleState__scale.accepted)))
+            if (FoundationRuntimePorts.EnumIndex(_state) >= FoundationRuntimePorts.EnumIndex(_ScaleState__scale.accepted))
             {
                 resolve(GestureDisposition.accepted);
             }
         }
-        if (((Equals(this._state, _ScaleState__scale.accepted)) && shouldStartIfAccepted))
+        if (Equals(_state, _ScaleState__scale.accepted) && shouldStartIfAccepted)
         {
-            _initialEventTimestamp = ((PointerEvent)@event).timeStamp;
+            _initialEventTimestamp = @event.timeStamp;
             _state = _ScaleState__scale.started;
             _dispatchOnStartCallbackIfNeeded();
         }
-        if ((Equals(this._state, _ScaleState__scale.started)))
+        if (Equals(_state, _ScaleState__scale.started))
         {
-            this._scaleVelocityTracker?.addPosition(((PointerEvent)@event).timeStamp, new global::Doroti.Ui.Offset(this._scaleFactor, 0));
-            if ((this.onUpdate is not null))
+            _scaleVelocityTracker?.addPosition(@event.timeStamp, new global::Doroti.Ui.Offset(_scaleFactor, 0));
+            if (onUpdate is not null)
             {
                 invokeCallback<object?>("onUpdate", () =>
                 {
-                    ((Action)((() =>
+                    ((Action)(() =>
                     {
-                        this.onUpdate!(new ScaleUpdateDetails(scale: this._scaleFactor, horizontalScale: this._horizontalScaleFactor, verticalScale: this._verticalScaleFactor, focalPoint: DartRuntimePrimitives.RequireValue(this._currentFocalPoint), localFocalPoint: this._localFocalPoint, rotation: _computeRotationFactor(), pointerCount: this.pointerCount, focalPointDelta: this._delta, sourceTimeStamp: ((PointerEvent)@event).timeStamp));
-                    })))(); return null;
+                        onUpdate!(new ScaleUpdateDetails(scale: _scaleFactor, horizontalScale: _horizontalScaleFactor, verticalScale: _verticalScaleFactor, focalPoint: DartRuntimePrimitives.RequireValue(_currentFocalPoint), localFocalPoint: _localFocalPoint, rotation: _computeRotationFactor(), pointerCount: pointerCount, focalPointDelta: _delta, sourceTimeStamp: @event.timeStamp));
+                    }))(); return null;
                 });
             }
         }
@@ -590,15 +590,15 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _dispatchOnStartCallbackIfNeeded()
     {
-        DartRuntimePrimitives.Assert(() => (Equals(this._state, _ScaleState__scale.started)));
-        if ((this.onStart is not null))
+        DartRuntimePrimitives.Assert(() => Equals(_state, _ScaleState__scale.started));
+        if (onStart is not null)
         {
             invokeCallback<object?>("onStart", () =>
             {
-                ((Action)((() =>
+                ((Action)(() =>
                 {
-                    this.onStart!(new ScaleStartDetails(focalPoint: DartRuntimePrimitives.RequireValue(this._currentFocalPoint), localFocalPoint: this._localFocalPoint, pointerCount: this.pointerCount, sourceTimeStamp: this._initialEventTimestamp, kind: ((checked((long)(this._pointerQueue.Count)) != 0) ? getKindForPointer(this._pointerQueue.First()) : ((checked((long)(this._pointerPanZooms.Count)) != 0) ? getKindForPointer(this._pointerPanZooms.Keys.First()) : null))));
-                })))(); return null;
+                    onStart!(new ScaleStartDetails(focalPoint: DartRuntimePrimitives.RequireValue(_currentFocalPoint), localFocalPoint: _localFocalPoint, pointerCount: pointerCount, sourceTimeStamp: _initialEventTimestamp, kind: (checked((long)_pointerQueue.Count) != 0) ? getKindForPointer(_pointerQueue.First()) : ((checked((long)_pointerPanZooms.Count) != 0) ? getKindForPointer(_pointerPanZooms.Keys.First()) : null)));
+                }))(); return null;
             });
         }
         _initialEventTimestamp = null;
@@ -606,26 +606,26 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void acceptGesture(long pointer)
     {
-        if ((Equals(this._state, _ScaleState__scale.possible)))
+        if (Equals(_state, _ScaleState__scale.possible))
         {
             _state = _ScaleState__scale.started;
             _dispatchOnStartCallbackIfNeeded();
-            if ((Equals(this.dragStartBehavior, DragStartBehavior.start)))
+            if (Equals(dragStartBehavior, DragStartBehavior.start))
             {
-                _initialFocalPoint = DartRuntimePrimitives.RequireValue(this._currentFocalPoint);
-                _initialSpan = this._currentSpan;
-                _initialLine = this._currentLine;
-                _initialHorizontalSpan = this._currentHorizontalSpan;
-                _initialVerticalSpan = this._currentVerticalSpan;
-                if ((checked((long)(this._pointerPanZooms.Count)) == 0))
+                _initialFocalPoint = DartRuntimePrimitives.RequireValue(_currentFocalPoint);
+                _initialSpan = _currentSpan;
+                _initialLine = _currentLine;
+                _initialHorizontalSpan = _currentHorizontalSpan;
+                _initialVerticalSpan = _currentVerticalSpan;
+                if (checked((long)_pointerPanZooms.Count) == 0)
                 {
                     _initialPanZoomScaleFactor = 1.0;
                     _initialPanZoomRotationFactor = 0.0;
                 }
                 else
                 {
-                    _initialPanZoomScaleFactor = (this._scaleFactor / this._pointerScaleFactor);
-                    _initialPanZoomRotationFactor = this._pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>(((x) => ((_PointerPanZoomData__scale)x).rotation)).reduce(((a, b) => (a + b)));
+                    _initialPanZoomScaleFactor = _scaleFactor / _pointerScaleFactor;
+                    _initialPanZoomRotationFactor = _pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>((x) => x.rotation).reduce((a, b) => a + b);
                 }
             }
         }
@@ -633,15 +633,15 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void rejectGesture(long pointer)
     {
-        this._pointerPanZooms.remove(pointer);
-        this._pointerLocations.remove(pointer);
-        this._pointerQueue.Remove(pointer);
+        _pointerPanZooms.remove(pointer);
+        _pointerLocations.remove(pointer);
+        _pointerQueue.Remove(pointer);
         stopTrackingPointer(pointer);
     }
 
     public override void didStopTrackingLastPointer(long pointer)
     {
-        switch (this._state)
+        switch (_state)
         {
             case _ScaleState__scale.possible:
                 {
@@ -668,7 +668,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void dispose()
     {
-        this._velocityTrackers.Clear();
+        _velocityTrackers.Clear();
         base.dispose();
     }
 

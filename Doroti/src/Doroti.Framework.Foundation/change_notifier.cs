@@ -51,7 +51,7 @@ public class ChangeNotifier : Listenable, IDisposable
         return true;
     }
 
-    public bool hasListeners => (_count > 0);
+    public bool hasListeners => _count > 0;
     public int debugListenerCount => _count;
     public static void maybeDispatchObjectCreation(ChangeNotifier @object)
     {
@@ -73,16 +73,16 @@ public class ChangeNotifier : Listenable, IDisposable
         {
             maybeDispatchObjectCreation(this);
         }
-        if ((_count == _listeners.Count))
+        if (_count == _listeners.Count)
         {
-            if ((_count == 0))
+            if (_count == 0)
             {
                 _listeners = new List<Action?>(Enumerable.Repeat<Action?>(null, 1));
             }
             else
             {
-                var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, (_listeners.Count * 2)));
-                for (var i = 0; (i < _count); i++)
+                var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, _listeners.Count * 2));
+                for (var i = 0; i < _count; i++)
                 {
                     newListeners[i] = _listeners[i];
                 }
@@ -97,24 +97,24 @@ public class ChangeNotifier : Listenable, IDisposable
     private void _removeAt(int index)
     {
         _count -= 1;
-        if (((_count * 2) <= _listeners.Count))
+        if ((_count * 2) <= _listeners.Count)
         {
             var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, _count));
-            for (var i = 0; (i < index); i++)
+            for (var i = 0; i < index; i++)
             {
                 newListeners[i] = _listeners[i];
             }
-            for (var i = index; (i < _count); i++)
+            for (var i = index; i < _count; i++)
             {
-                newListeners[i] = _listeners[(i + 1)];
+                newListeners[i] = _listeners[i + 1];
             }
             _listeners = newListeners;
         }
         else
         {
-            for (var i = index; (i < _count); i++)
+            for (var i = index; i < _count; i++)
             {
-                _listeners[i] = _listeners[(i + 1)];
+                _listeners[i] = _listeners[i + 1];
             }
             _listeners[_count] = null;
         }
@@ -122,12 +122,12 @@ public class ChangeNotifier : Listenable, IDisposable
 
     public virtual void removeListener(Action listener)
     {
-        for (var i = 0; (i < _count); i++)
+        for (var i = 0; i < _count; i++)
         {
             Action? listenerAtIndex = _listeners[i];
-            if ((listenerAtIndex == listener))
+            if (listenerAtIndex == listener)
             {
-                if ((_notificationCallStackDepth > 0))
+                if (_notificationCallStackDepth > 0)
                 {
                     _listeners[i] = null;
                     _reentrantlyRemovedListeners++;
@@ -146,7 +146,7 @@ public class ChangeNotifier : Listenable, IDisposable
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-        DartRuntimePrimitives.Assert(() => (_notificationCallStackDepth == 0));
+        DartRuntimePrimitives.Assert(() => _notificationCallStackDepth == 0);
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugDisposed = true;
@@ -169,13 +169,13 @@ public class ChangeNotifier : Listenable, IDisposable
     public void notifyListeners()
     {
         DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
-        if ((_count == 0))
+        if (_count == 0)
         {
             return;
         }
         _notificationCallStackDepth++;
         int end = _count;
-        for (var i = 0; (i < end); i++)
+        for (var i = 0; i < end; i++)
         {
             try
             {
@@ -184,21 +184,21 @@ public class ChangeNotifier : Listenable, IDisposable
             catch (Exception exception)
             {
                 var stack = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception, stack, "foundation library", new ErrorDescription($"while dispatching notifications for {this.GetType()}"), () => new List<DiagnosticsNode> { new DiagnosticsProperty<ChangeNotifier>($"The {this.GetType()} sending notification was", this, DiagnosticsTreeStyle.errorProperty) }));
+                FlutterError.reportError(new FlutterErrorDetails(exception, stack, "foundation library", new ErrorDescription($"while dispatching notifications for {GetType()}"), () => new List<DiagnosticsNode> { new DiagnosticsProperty<ChangeNotifier>($"The {GetType()} sending notification was", this, DiagnosticsTreeStyle.errorProperty) }));
             }
         }
         _notificationCallStackDepth--;
-        if (((_notificationCallStackDepth == 0) && (_reentrantlyRemovedListeners > 0)))
+        if ((_notificationCallStackDepth == 0) && (_reentrantlyRemovedListeners > 0))
         {
-            int newLength = (_count - _reentrantlyRemovedListeners);
-            if (((newLength * 2) <= _listeners.Count))
+            int newLength = _count - _reentrantlyRemovedListeners;
+            if ((newLength * 2) <= _listeners.Count)
             {
                 var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, newLength));
                 var newIndex = 0;
-                for (var i = 0; (i < _count); i++)
+                for (var i = 0; i < _count; i++)
                 {
                     Action? listener = _listeners[i];
-                    if ((listener is not null))
+                    if (listener is not null)
                     {
                         newListeners[newIndex++] = listener;
                     }
@@ -207,12 +207,12 @@ public class ChangeNotifier : Listenable, IDisposable
             }
             else
             {
-                for (var i = 0; (i < newLength); i += 1)
+                for (var i = 0; i < newLength; i += 1)
                 {
-                    if ((_listeners[i] is null))
+                    if (_listeners[i] is null)
                     {
-                        int swapIndex = (i + 1);
-                        while ((_listeners[swapIndex] is null))
+                        int swapIndex = i + 1;
+                        while (_listeners[swapIndex] is null)
                         {
                             swapIndex += 1;
                         }

@@ -54,10 +54,10 @@ public class UndoManager
     {
         string method = methodCall.method;
         var args = ((List<object>?)methodCall.arguments)!;
-        if ((method == "UndoManagerClient.handleUndo"))
+        if (method == "UndoManagerClient.handleUndo")
         {
-            DartRuntimePrimitives.Assert(() => (_currentClient is not null));
-            _currentClient!.handlePlatformUndo(_toUndoDirection(((string?)args[(int)(0L)])!));
+            DartRuntimePrimitives.Assert(() => _currentClient is not null);
+            _currentClient!.handlePlatformUndo(_toUndoDirection(((string?)args[(int)0L])!));
             return default!;
         }
         throw new MissingPluginException();
@@ -66,17 +66,17 @@ public class UndoManager
 
     internal virtual void _setUndoState(bool canUndo = false, bool canRedo = false)
     {
-        _ = _channel.invokeMethod<object?>("UndoManager.setUndoState", new DartMap<string, bool> { ["canUndo"] = canUndo, ["canRedo"] = canRedo }).then(((_) =>
+        _ = _channel.invokeMethod<object?>("UndoManager.setUndoState", new DartMap<string, bool> { ["canUndo"] = canUndo, ["canRedo"] = canRedo }).then((_) =>
         {
-        }), onError: ((error, stack) =>
+        }, onError: (error, stack) =>
         {
             FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stack, library: "services library", context: new ErrorDescription("while sending the UndoManager.setUndoState event")));
-        }));
+        });
     }
 
     internal virtual UndoDirection _toUndoDirection(string direction)
     {
-        return (direction switch { var __case4108 when Equals(__case4108, "undo") => UndoDirection.undo, var __case4144 when Equals(__case4144, "redo") => UndoDirection.redo, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown undo direction: {direction}") }) });
+        return direction switch { var __case4108 when Equals(__case4108, "undo") => UndoDirection.undo, var __case4144 when Equals(__case4144, "redo") => UndoDirection.redo, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown undo direction: {direction}") }) };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

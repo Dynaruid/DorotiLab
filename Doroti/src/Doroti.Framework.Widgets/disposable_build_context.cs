@@ -24,12 +24,12 @@ public class DisposableBuildContext<T> : IDisposableBuildContext where T : IStat
         get
         {
             DartRuntimePrimitives.Assert(() => _debugValidate());
-            return this._state?.context;
+            return _state?.context;
         }
     }
     internal virtual bool _debugValidate()
     {
-        DartRuntimePrimitives.Assert(() => ((this._state is null) || this._state!.mounted), () => (object?)"A DisposableBuildContext tried to access the BuildContext of a disposed " + "State object. This can happen when the creator of this " + "DisposableBuildContext fails to call dispose when it is disposed.");
+        DartRuntimePrimitives.Assert(() => (_state is null) || _state!.mounted, () => (object?)"A DisposableBuildContext tried to access the BuildContext of a disposed " + "State object. This can happen when the creator of this " + "DisposableBuildContext fails to call dispose when it is disposed.");
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

@@ -611,7 +611,7 @@ internal sealed partial class FrameworkCSharpLowerer
                             var needsCheckedReferenceCast = type != "var" &&
                                 !needsListConversion && !needsMapConversion &&
                                 type.TrimEnd('?') is not ("object" or "dynamic" or "void") &&
-                                initializerType.TrimEnd('?') is not ("void") &&
+                                initializerType.TrimEnd('?') is not "void" &&
                                 !IsValueType(type.TrimEnd('?')) &&
                                 !string.Equals(type.TrimEnd('?'), initializerType.TrimEnd('?'), StringComparison.Ordinal);
                             var needsRequiredValue = type != "var" &&
@@ -624,7 +624,7 @@ internal sealed partial class FrameworkCSharpLowerer
                             var wrapAwait = initializer.Kind == CoreNodeKind.AwaitExpression &&
                                 (needsListConversion || needsMapConversion);
                             var capturesVoid = type != "var" &&
-                                type.TrimEnd('?') is not ("void") &&
+                                type.TrimEnd('?') is not "void" &&
                                 (initializerType.TrimEnd('?') == "void" ||
                                  declaration.Name == "State" && name.StartsWith("result", StringComparison.Ordinal) ||
                                  name.StartsWith("debugCheckForReturnedFuture", StringComparison.Ordinal));

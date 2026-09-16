@@ -53,13 +53,13 @@ internal class _MutableTextRange
 
     public static _MutableTextRange? fromComposingRange(TextRange range)
     {
-        return ((range.isValid && !range.isCollapsed) ? new _MutableTextRange(range.start, range.end) : null);
+        return (range.isValid && !range.isCollapsed) ? new _MutableTextRange(range.start, range.end) : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static _MutableTextRange? fromTextSelection(TextSelection selection)
     {
-        return (selection.isValid ? new _MutableTextRange(selection.baseOffset, selection.extentOffset) : null);
+        return selection.isValid ? new _MutableTextRange(selection.baseOffset, selection.extentOffset) : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,8 +76,8 @@ internal class _TextEditingValueAccumulator
     internal _TextEditingValueAccumulator(TextEditingValue inputValue)
     {
         this.inputValue = inputValue;
-        this.selection = _MutableTextRange.fromTextSelection(inputValue.selection);
-        this.composingRegion = _MutableTextRange.fromComposingRange(inputValue.composing);
+        selection = _MutableTextRange.fromTextSelection(inputValue.selection);
+        composingRegion = _MutableTextRange.fromComposingRange(inputValue.composing);
     }
 
     public virtual TextEditingValue finalize()
@@ -85,7 +85,7 @@ internal class _TextEditingValueAccumulator
         debugFinalized = true;
         _MutableTextRange? selection = this.selection;
         _MutableTextRange? composingRegion = this.composingRegion;
-        return new TextEditingValue(text: stringBuffer.ToString(), composing: (((composingRegion is null) || (composingRegion.@base == composingRegion.extent)) ? TextRange.empty : new global::Doroti.Ui.TextRange(start: composingRegion.@base, end: composingRegion.extent)), selection: ((selection is null) ? TextSelection.CreateCollapsed(offset: -1L) : new TextSelection(baseOffset: selection.@base, extentOffset: selection.extent, affinity: inputValue.selection.affinity, isDirectional: inputValue.selection.isDirectional)));
+        return new TextEditingValue(text: stringBuffer.ToString(), composing: ((composingRegion is null) || (composingRegion.@base == composingRegion.extent)) ? TextRange.empty : new global::Doroti.Ui.TextRange(start: composingRegion.@base, end: composingRegion.extent), selection: (selection is null) ? TextSelection.CreateCollapsed(offset: -1L) : new TextSelection(baseOffset: selection.@base, extentOffset: selection.extent, affinity: inputValue.selection.affinity, isDirectional: inputValue.selection.isDirectional));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -124,14 +124,14 @@ public class FilteringTextInputFormatter : TextInputFormatter
         Match? previousMatch = default!;
         foreach (var match in matches)
         {
-            DartRuntimePrimitives.Assert(() => (match.end >= match.start));
-            _processRegion(allow, (previousMatch?.end ?? 0L), match.start, formatState);
+            DartRuntimePrimitives.Assert(() => match.end >= match.start);
+            _processRegion(allow, previousMatch?.end ?? 0L, match.start, formatState);
             DartRuntimePrimitives.Assert(() => !formatState.debugFinalized);
             _processRegion(!allow, match.start, match.end, formatState);
             DartRuntimePrimitives.Assert(() => !formatState.debugFinalized);
             previousMatch = match;
         }
-        _processRegion(allow, (previousMatch?.end ?? 0L), newValue.text.Length, formatState);
+        _processRegion(allow, previousMatch?.end ?? 0L, newValue.text.Length, formatState);
         DartRuntimePrimitives.Assert(() => !formatState.debugFinalized);
         return formatState.finalize();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -139,17 +139,17 @@ public class FilteringTextInputFormatter : TextInputFormatter
 
     internal virtual void _processRegion(bool isBannedRegion, long regionStart, long regionEnd, _TextEditingValueAccumulator state)
     {
-        string replacementString = (isBannedRegion ? (((regionStart == regionEnd) ? "" : this.replacementString)) : state.inputValue.text.substring(regionStart, regionEnd));
+        string replacementString = isBannedRegion ? ((regionStart == regionEnd) ? "" : this.replacementString) : state.inputValue.text.substring(regionStart, regionEnd);
         state.stringBuffer.write(replacementString);
-        if ((replacementString.Length == (regionEnd - regionStart)))
+        if (replacementString.Length == (regionEnd - regionStart))
         {
             return;
         }
         long adjustIndex(long originalIndex)
         {
-            long replacedLength = (((originalIndex <= regionStart) && (originalIndex < regionEnd)) ? 0L : replacementString.Length);
-            long removedLength = (originalIndex.clamp(regionStart, regionEnd) - regionStart);
-            return (replacedLength - removedLength);
+            long replacedLength = ((originalIndex <= regionStart) && (originalIndex < regionEnd)) ? 0L : replacementString.Length;
+            long removedLength = originalIndex.clamp(regionStart, regionEnd) - regionStart;
+            return replacedLength - removedLength;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         state.selection?.@base += adjustIndex(state.inputValue.selection.baseOffset);
@@ -169,7 +169,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
     {
         this.maxLength = maxLength;
         this.maxLengthEnforcement = maxLengthEnforcement;
-        System.Diagnostics.Debug.Assert((((maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) == -1L)) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L)));
+        System.Diagnostics.Debug.Assert((maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) == -1L) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L));
     }
 
     public static MaxLengthEnforcement getDefaultMaxLengthEnforcement(TargetPlatform? platform = null)
@@ -180,7 +180,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
         }
         else
         {
-            switch ((platform ?? PlatformLibrary.defaultTargetPlatform))
+            switch (platform ?? PlatformLibrary.defaultTargetPlatform)
             {
                 case var __case22082 when Equals(__case22082, TargetPlatform.android):
                 case var __case22119 when Equals(__case22119, TargetPlatform.windows):
@@ -202,24 +202,24 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
     public static TextEditingValue truncate(TextEditingValue value, long maxLength)
     {
         var iterator = new CharacterRange(value.text);
-        if ((value.text.characters().Count > maxLength))
+        if (value.text.characters().Count > maxLength)
         {
             iterator.expandNext(maxLength);
         }
         string truncated = iterator.Current;
-        return new TextEditingValue(text: truncated, selection: value.selection.copyWith(baseOffset: Math.Min(value.selection.start, truncated.Length), extentOffset: Math.Min(value.selection.end, truncated.Length)), composing: ((!value.composing.isCollapsed && (truncated.Length > value.composing.start)) ? new global::Doroti.Ui.TextRange(start: value.composing.start, end: Math.Min(value.composing.end, truncated.Length)) : TextRange.empty));
+        return new TextEditingValue(text: truncated, selection: value.selection.copyWith(baseOffset: Math.Min(value.selection.start, truncated.Length), extentOffset: Math.Min(value.selection.end, truncated.Length)), composing: (!value.composing.isCollapsed && (truncated.Length > value.composing.start)) ? new global::Doroti.Ui.TextRange(start: value.composing.start, end: Math.Min(value.composing.end, truncated.Length)) : TextRange.empty);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue)
     {
         long? maxLength = this.maxLength;
-        if ((((maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) == -1L)) || (newValue.text.characters().Count <= DartRuntimePrimitives.RequireValue(maxLength))))
+        if ((maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) == -1L) || (newValue.text.characters().Count <= DartRuntimePrimitives.RequireValue(maxLength)))
         {
             return newValue;
         }
-        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(maxLength) > 0L));
-        switch ((maxLengthEnforcement ?? getDefaultMaxLengthEnforcement()))
+        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(maxLength) > 0L);
+        switch (maxLengthEnforcement ?? getDefaultMaxLengthEnforcement())
         {
             case var __case23944 when Equals(__case23944, MaxLengthEnforcement.none):
                 {
@@ -227,7 +227,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 }
             case var __case24007 when Equals(__case24007, MaxLengthEnforcement.enforced):
                 {
-                    if (((oldValue.text.characters().Count == DartRuntimePrimitives.RequireValue(maxLength)) && oldValue.selection.isCollapsed))
+                    if ((oldValue.text.characters().Count == DartRuntimePrimitives.RequireValue(maxLength)) && oldValue.selection.isCollapsed)
                     {
                         return oldValue;
                     }
@@ -235,7 +235,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 }
             case var __case24396 when Equals(__case24396, MaxLengthEnforcement.truncateAfterCompositionEnds):
                 {
-                    if (((oldValue.text.characters().Count == DartRuntimePrimitives.RequireValue(maxLength)) && !oldValue.composing.isValid))
+                    if ((oldValue.text.characters().Count == DartRuntimePrimitives.RequireValue(maxLength)) && !oldValue.composing.isValid)
                     {
                         return oldValue;
                     }

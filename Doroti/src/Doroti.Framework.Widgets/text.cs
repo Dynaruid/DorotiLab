@@ -24,7 +24,7 @@ public class DefaultTextStyle : InheritedTheme
         this.maxLines = maxLines;
         this.textWidthBasis = textWidthBasis;
         this.textHeightBehavior = textHeightBehavior;
-        System.Diagnostics.Debug.Assert(((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)));
+        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
     }
 
     public static DefaultTextStyle CreateFallback(global::Doroti.Framework.Foundation.Key? key = null)
@@ -42,44 +42,44 @@ public class DefaultTextStyle : InheritedTheme
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.TextStyle? style = null, TextAlign? textAlign = null, bool? softWrap = null, global::Doroti.Framework.Painting.TextOverflow? overflow = null, long? maxLines = null, global::Doroti.Framework.Painting.TextWidthBasis? textWidthBasis = null, TextHeightBehavior? textHeightBehavior = null, Widget child = default!)
     {
-        return ((Widget)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        return new Builder(builder: (context) =>
         {
-            DefaultTextStyle parent = ((DefaultTextStyle)of(context));
-            return ((Widget)new DefaultTextStyle(key: key, style: ((DefaultTextStyle)parent).style.merge(style), textAlign: (textAlign ?? ((DefaultTextStyle)parent).textAlign), softWrap: (softWrap ?? ((DefaultTextStyle)parent).softWrap), overflow: (overflow ?? ((DefaultTextStyle)parent).overflow), maxLines: (maxLines ?? ((DefaultTextStyle)parent).maxLines), textWidthBasis: (textWidthBasis ?? ((DefaultTextStyle)parent).textWidthBasis), textHeightBehavior: (textHeightBehavior ?? ((DefaultTextStyle)parent).textHeightBehavior), child: child));
+            DefaultTextStyle parent = of(context);
+            return new DefaultTextStyle(key: key, style: parent.style.merge(style), textAlign: textAlign ?? parent.textAlign, softWrap: softWrap ?? parent.softWrap, overflow: overflow ?? parent.overflow, maxLines: maxLines ?? parent.maxLines, textWidthBasis: textWidthBasis ?? parent.textWidthBasis, textHeightBehavior: textHeightBehavior ?? parent.textHeightBehavior, child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static DefaultTextStyle of(BuildContext context)
     {
-        return (context.dependOnInheritedWidgetOfExactType<DefaultTextStyle>() ?? CreateFallback());
+        return context.dependOnInheritedWidgetOfExactType<DefaultTextStyle>() ?? CreateFallback();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (DefaultTextStyle)oldWidget;
-        return (((((((!Equals(this.style, ((DefaultTextStyle)__oldWidget).style)) || (!Equals(this.textAlign, ((DefaultTextStyle)__oldWidget).textAlign))) || (this.softWrap != ((DefaultTextStyle)__oldWidget).softWrap)) || (!Equals(this.overflow, ((DefaultTextStyle)__oldWidget).overflow))) || (this.maxLines != ((DefaultTextStyle)__oldWidget).maxLines)) || (!Equals(this.textWidthBasis, ((DefaultTextStyle)__oldWidget).textWidthBasis))) || (!Equals(this.textHeightBehavior, ((DefaultTextStyle)__oldWidget).textHeightBehavior)));
+        return (!Equals(style, __oldWidget.style)) || (!Equals(textAlign, __oldWidget.textAlign)) || (softWrap != __oldWidget.softWrap) || (!Equals(overflow, __oldWidget.overflow)) || (maxLines != __oldWidget.maxLines) || (!Equals(textWidthBasis, __oldWidget.textWidthBasis)) || (!Equals(textHeightBehavior, __oldWidget.textHeightBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
-        return ((Widget)new DefaultTextStyle(style: this.style, textAlign: this.textAlign, softWrap: DartRuntimePrimitives.RequireValue(this.softWrap), overflow: DartRuntimePrimitives.RequireValue(this.overflow), maxLines: this.maxLines, textWidthBasis: DartRuntimePrimitives.RequireValue(this.textWidthBasis), textHeightBehavior: this.textHeightBehavior, child: child));
+        return new DefaultTextStyle(style: style, textAlign: textAlign, softWrap: DartRuntimePrimitives.RequireValue(softWrap), overflow: DartRuntimePrimitives.RequireValue(overflow), maxLines: maxLines, textWidthBasis: DartRuntimePrimitives.RequireValue(textWidthBasis), textHeightBehavior: textHeightBehavior, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        this.style.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", this.overflow, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", this.maxLines, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", this.textWidthBasis, defaultValue: TextWidthBasis.parent));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
+        style.debugFillProperties(properties);
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", overflow, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", maxLines, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", textWidthBasis, defaultValue: TextWidthBasis.parent));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", textHeightBehavior, defaultValue: null));
     }
 
 }
@@ -109,43 +109,43 @@ public class DefaultTextHeightBehavior : InheritedTheme
 
     public static global::Doroti.Ui.TextHeightBehavior? maybeOf(BuildContext context)
     {
-        return ((global::Doroti.Ui.TextHeightBehavior?)context.dependOnInheritedWidgetOfExactType<DefaultTextHeightBehavior>()?.textHeightBehavior);
+        return context.dependOnInheritedWidgetOfExactType<DefaultTextHeightBehavior>()?.textHeightBehavior;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.TextHeightBehavior of(BuildContext context)
     {
-        global::Doroti.Ui.TextHeightBehavior? behavior = ((global::Doroti.Ui.TextHeightBehavior?)maybeOf(context));
+        global::Doroti.Ui.TextHeightBehavior? behavior = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((behavior is null))
+                if (behavior is null)
                 {
                     throw DartRuntimePrimitives.AsException(FlutterError.Create("DefaultTextHeightBehavior.of() was called with a context that does not contain a " + "DefaultTextHeightBehavior widget.\n" + "No DefaultTextHeightBehavior widget ancestor could be found starting from the " + "context that was passed to DefaultTextHeightBehavior.of(). This can happen " + "because you are using a widget that looks for a DefaultTextHeightBehavior " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((global::Doroti.Ui.TextHeightBehavior)behavior!);
+        return behavior!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (DefaultTextHeightBehavior)oldWidget;
-        return (!Equals(this.textHeightBehavior, ((DefaultTextHeightBehavior)__oldWidget).textHeightBehavior));
+        return !Equals(textHeightBehavior, __oldWidget.textHeightBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
-        return ((Widget)new DefaultTextHeightBehavior(textHeightBehavior: this.textHeightBehavior, child: child));
+        return new DefaultTextHeightBehavior(textHeightBehavior: textHeightBehavior, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", textHeightBehavior, defaultValue: null));
     }
 
 }
@@ -188,8 +188,8 @@ public class Text : StatelessWidget
         this.textWidthBasis = textWidthBasis;
         this.textHeightBehavior = textHeightBehavior;
         this.selectionColor = selectionColor;
-        this.textSpan = null;
-        System.Diagnostics.Debug.Assert(((textScaler is null) || (textScaleFactor is null)));
+        textSpan = null;
+        System.Diagnostics.Debug.Assert((textScaler is null) || (textScaleFactor is null));
     }
 
     public static Text CreateRich(global::Doroti.Framework.Painting.InlineSpan textSpan, global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, TextAlign? textAlign = null, TextDirection? textDirection = null, Locale? locale = null, bool? softWrap = null, global::Doroti.Framework.Painting.TextOverflow? overflow = null, double? textScaleFactor = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, long? maxLines = null, string? semanticsLabel = null, string? semanticsIdentifier = null, global::Doroti.Framework.Painting.TextWidthBasis? textWidthBasis = null, TextHeightBehavior? textHeightBehavior = null, Color? selectionColor = null)
@@ -217,11 +217,11 @@ public class Text : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DefaultTextStyle defaultTextStyle = ((DefaultTextStyle)DefaultTextStyle.of(context));
-        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = this.style;
-        if (((this.style is null) || this.style!.inherit))
+        DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = style;
+        if ((style is null) || style!.inherit)
         {
-            effectiveTextStyle = ((DefaultTextStyle)defaultTextStyle).style.merge(this.style);
+            effectiveTextStyle = defaultTextStyle.style.merge(style);
         }
         if (MediaQuery.boldTextOf(context))
         {
@@ -230,22 +230,22 @@ public class Text : StatelessWidget
         double? lineHeightScaleFactorLocal = MediaQuery.maybeLineHeightScaleFactorOverrideOf(context);
         double? letterSpacingLocal = MediaQuery.maybeLetterSpacingOverrideOf(context);
         double? wordSpacingLocal = MediaQuery.maybeWordSpacingOverrideOf(context);
-        global::Doroti.Framework.Painting.TextSpan effectiveTextSpan = ((global::Doroti.Framework.Painting.TextSpan)_OverridingTextStyleTextSpanUtils__text.applyTextSpacingOverrides(lineHeightScaleFactor: lineHeightScaleFactorLocal, letterSpacing: letterSpacingLocal, wordSpacing: wordSpacingLocal, textSpan: new global::Doroti.Framework.Painting.TextSpan(style: effectiveTextStyle, text: this.data, locale: this.locale, children: ((this.textSpan is not null) ? new List<global::Doroti.Framework.Painting.InlineSpan> { this.textSpan! } : null))));
-        global::Doroti.Framework.Painting.StrutStyle? effectiveStrutStyle = ((global::Doroti.Framework.Painting.StrutStyle?)this.strutStyle?.merge(new global::Doroti.Framework.Painting.StrutStyle(height: lineHeightScaleFactorLocal)));
-        global::Doroti.Framework.Rendering.SelectionRegistrar? registrar = ((global::Doroti.Framework.Rendering.SelectionRegistrar?)SelectionContainer.maybeOf(context));
-        global::Doroti.Framework.Painting.TextScaler textScalerLocal = ((this.textScaler, this.textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler textScalerAlternate, _) => textScalerAlternate, (null, double textScaleFactorLocal) => TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactorLocal))), (null, null) => MediaQuery.textScalerOf(context) });
+        global::Doroti.Framework.Painting.TextSpan effectiveTextSpan = _OverridingTextStyleTextSpanUtils__text.applyTextSpacingOverrides(lineHeightScaleFactor: lineHeightScaleFactorLocal, letterSpacing: letterSpacingLocal, wordSpacing: wordSpacingLocal, textSpan: new global::Doroti.Framework.Painting.TextSpan(style: effectiveTextStyle, text: data, locale: locale, children: (textSpan is not null) ? new List<global::Doroti.Framework.Painting.InlineSpan> { textSpan! } : null));
+        global::Doroti.Framework.Painting.StrutStyle? effectiveStrutStyle = strutStyle?.merge(new global::Doroti.Framework.Painting.StrutStyle(height: lineHeightScaleFactorLocal));
+        global::Doroti.Framework.Rendering.SelectionRegistrar? registrar = SelectionContainer.maybeOf(context);
+        global::Doroti.Framework.Painting.TextScaler textScalerLocal = (textScaler, textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler textScalerAlternate, _) => textScalerAlternate, (null, double textScaleFactorLocal) => TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactorLocal))), (null, null) => MediaQuery.textScalerOf(context) };
         Widget result = default!;
-        if ((registrar is not null))
+        if (registrar is not null)
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new MouseRegion(cursor: (DefaultSelectionStyle.of(context).mouseCursor ?? SystemMouseCursors.text), child: new _SelectableTextContainer__text(textAlign: ((this.textAlign ?? ((DefaultTextStyle)defaultTextStyle).textAlign) ?? TextAlign.start), textDirection: this.textDirection, locale: this.locale, softWrap: (this.softWrap ?? ((DefaultTextStyle)defaultTextStyle).softWrap), overflow: ((this.overflow ?? effectiveTextStyle?.overflow) ?? ((DefaultTextStyle)defaultTextStyle).overflow), textScaler: textScalerLocal, maxLines: (this.maxLines ?? ((DefaultTextStyle)defaultTextStyle).maxLines), strutStyle: effectiveStrutStyle, textWidthBasis: (this.textWidthBasis ?? ((DefaultTextStyle)defaultTextStyle).textWidthBasis), textHeightBehavior: (((this.textHeightBehavior ?? ((DefaultTextStyle)defaultTextStyle).textHeightBehavior) ?? (TextHeightBehavior?)DefaultTextHeightBehavior.maybeOf(context))), selectionColor: ((this.selectionColor ?? DefaultSelectionStyle.of(context).selectionColor) ?? DefaultSelectionStyle.defaultColor), text: effectiveTextSpan)));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new MouseRegion(cursor: DefaultSelectionStyle.of(context).mouseCursor ?? SystemMouseCursors.text, child: new _SelectableTextContainer__text(textAlign: (textAlign ?? defaultTextStyle.textAlign) ?? TextAlign.start, textDirection: textDirection, locale: locale, softWrap: softWrap ?? defaultTextStyle.softWrap, overflow: (overflow ?? effectiveTextStyle?.overflow) ?? defaultTextStyle.overflow, textScaler: textScalerLocal, maxLines: maxLines ?? defaultTextStyle.maxLines, strutStyle: effectiveStrutStyle, textWidthBasis: textWidthBasis ?? defaultTextStyle.textWidthBasis, textHeightBehavior: (textHeightBehavior ?? defaultTextStyle.textHeightBehavior) ?? DefaultTextHeightBehavior.maybeOf(context), selectionColor: (selectionColor ?? DefaultSelectionStyle.of(context).selectionColor) ?? DefaultSelectionStyle.defaultColor, text: effectiveTextSpan)));
         }
         else
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new RichText(textAlign: ((this.textAlign ?? ((DefaultTextStyle)defaultTextStyle).textAlign) ?? TextAlign.start), textDirection: this.textDirection, locale: this.locale, softWrap: (this.softWrap ?? ((DefaultTextStyle)defaultTextStyle).softWrap), overflow: ((this.overflow ?? effectiveTextStyle?.overflow) ?? ((DefaultTextStyle)defaultTextStyle).overflow), textScaler: textScalerLocal, maxLines: (this.maxLines ?? ((DefaultTextStyle)defaultTextStyle).maxLines), strutStyle: effectiveStrutStyle, textWidthBasis: (this.textWidthBasis ?? ((DefaultTextStyle)defaultTextStyle).textWidthBasis), textHeightBehavior: (((this.textHeightBehavior ?? ((DefaultTextStyle)defaultTextStyle).textHeightBehavior) ?? (TextHeightBehavior?)DefaultTextHeightBehavior.maybeOf(context))), selectionColor: ((this.selectionColor ?? DefaultSelectionStyle.of(context).selectionColor) ?? DefaultSelectionStyle.defaultColor), text: effectiveTextSpan));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new RichText(textAlign: (textAlign ?? defaultTextStyle.textAlign) ?? TextAlign.start, textDirection: textDirection, locale: locale, softWrap: softWrap ?? defaultTextStyle.softWrap, overflow: (overflow ?? effectiveTextStyle?.overflow) ?? defaultTextStyle.overflow, textScaler: textScalerLocal, maxLines: maxLines ?? defaultTextStyle.maxLines, strutStyle: effectiveStrutStyle, textWidthBasis: textWidthBasis ?? defaultTextStyle.textWidthBasis, textHeightBehavior: (textHeightBehavior ?? defaultTextStyle.textHeightBehavior) ?? DefaultTextHeightBehavior.maybeOf(context), selectionColor: (selectionColor ?? DefaultSelectionStyle.of(context).selectionColor) ?? DefaultSelectionStyle.defaultColor, text: effectiveTextSpan));
         }
-        if (((this.semanticsLabel is not null) || (this.semanticsIdentifier is not null)))
+        if ((semanticsLabel is not null) || (semanticsIdentifier is not null))
         {
-            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(textDirection: this.textDirection, label: this.semanticsLabel, identifier: this.semanticsIdentifier, child: new ExcludeSemantics(excluding: (this.semanticsLabel is not null), child: result)));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(textDirection: textDirection, label: semanticsLabel, identifier: semanticsIdentifier, child: new ExcludeSemantics(excluding: semanticsLabel is not null, child: result)));
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -254,28 +254,28 @@ public class Text : StatelessWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("data", this.data, showName: false));
-        if ((this.textSpan is not null))
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("data", data, showName: false));
+        if (textSpan is not null)
         {
-            properties.add(((Diagnosticable)this.textSpan!).toDiagnosticsNode(name: "textSpan", style: DiagnosticsTreeStyle.transition));
+            properties.add(((Diagnosticable)textSpan!).toDiagnosticsNode(name: "textSpan", style: DiagnosticsTreeStyle.transition));
         }
-        this.style?.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", this.locale, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", this.overflow, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("textScaleFactor", this.textScaleFactor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", this.maxLines, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", this.textWidthBasis, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
-        if ((this.semanticsLabel is not null))
+        style?.debugFillProperties(properties);
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", locale, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", overflow, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("textScaleFactor", textScaleFactor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", maxLines, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", textWidthBasis, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", textHeightBehavior, defaultValue: null));
+        if (semanticsLabel is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticsLabel", this.semanticsLabel));
+            properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticsLabel", semanticsLabel));
         }
-        if ((this.semanticsIdentifier is not null))
+        if (semanticsIdentifier is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticsIdentifier", this.semanticsIdentifier));
+            properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticsIdentifier", semanticsIdentifier));
         }
     }
 
@@ -323,18 +323,18 @@ internal class _SelectableTextContainerState__text : State<_SelectableTextContai
     public override void initState()
     {
         base.initState();
-        _selectionDelegate = new _SelectableTextContainerDelegate__text(this._textKey);
+        _selectionDelegate = new _SelectableTextContainerDelegate__text(_textKey);
     }
 
     public override void dispose()
     {
-        this._selectionDelegate.dispose();
+        _selectionDelegate.dispose();
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new SelectionContainer(@delegate: this._selectionDelegate, child: new _RichText__text(textKey: this._textKey, textAlign: ((_SelectableTextContainer__text)this.widget).textAlign, textDirection: ((_SelectableTextContainer__text)this.widget).textDirection, locale: ((_SelectableTextContainer__text)this.widget).locale, softWrap: ((_SelectableTextContainer__text)this.widget).softWrap, overflow: ((_SelectableTextContainer__text)this.widget).overflow, textScaler: ((_SelectableTextContainer__text)this.widget).textScaler, maxLines: ((_SelectableTextContainer__text)this.widget).maxLines, strutStyle: ((_SelectableTextContainer__text)this.widget).strutStyle, textWidthBasis: ((_SelectableTextContainer__text)this.widget).textWidthBasis, textHeightBehavior: ((_SelectableTextContainer__text)this.widget).textHeightBehavior, selectionColor: ((_SelectableTextContainer__text)this.widget).selectionColor, text: ((_SelectableTextContainer__text)this.widget).text)));
+        return new SelectionContainer(@delegate: _selectionDelegate, child: new _RichText__text(textKey: _textKey, textAlign: widget.textAlign, textDirection: widget.textDirection, locale: widget.locale, softWrap: widget.softWrap, overflow: widget.overflow, textScaler: widget.textScaler, maxLines: widget.maxLines, strutStyle: widget.strutStyle, textWidthBasis: widget.textWidthBasis, textHeightBehavior: widget.textHeightBehavior, selectionColor: widget.selectionColor, text: widget.text));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -375,8 +375,8 @@ internal class _RichText__text : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Rendering.SelectionRegistrar? registrar = ((global::Doroti.Framework.Rendering.SelectionRegistrar?)SelectionContainer.maybeOf(context));
-        return ((Widget)new RichText(key: this.textKey, textAlign: this.textAlign, textDirection: this.textDirection, locale: this.locale, softWrap: this.softWrap, overflow: this.overflow, textScaler: this.textScaler, maxLines: this.maxLines, strutStyle: this.strutStyle, textWidthBasis: this.textWidthBasis, textHeightBehavior: this.textHeightBehavior, selectionRegistrar: registrar, selectionColor: this.selectionColor, text: this.text));
+        global::Doroti.Framework.Rendering.SelectionRegistrar? registrar = SelectionContainer.maybeOf(context);
+        return new RichText(key: textKey, textAlign: textAlign, textDirection: textDirection, locale: locale, softWrap: softWrap, overflow: overflow, textScaler: textScaler, maxLines: maxLines, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior, selectionRegistrar: registrar, selectionColor: selectionColor, text: text);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -393,10 +393,10 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
 
     internal _SelectableTextContainerDelegate__text(GlobalKey<IState> textKey)
     {
-        this._textKey = textKey;
+        _textKey = textKey;
     }
 
-    public virtual global::Doroti.Framework.Rendering.RenderParagraph paragraph => ((global::Doroti.Framework.Rendering.RenderParagraph?)((GlobalKey<IState>)this._textKey).currentContext!.findRenderObject()!)!;
+    public virtual global::Doroti.Framework.Rendering.RenderParagraph paragraph => ((global::Doroti.Framework.Rendering.RenderParagraph?)_textKey.currentContext!.findRenderObject()!)!;
     public override global::Doroti.Framework.Rendering.SelectionResult handleSelectParagraph(global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent @event)
     {
         global::Doroti.Framework.Rendering.SelectionResult result = _handleSelectParagraph(@event);
@@ -407,28 +407,28 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
 
     internal virtual global::Doroti.Framework.Rendering.SelectionResult _handleSelectParagraph(global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent @event)
     {
-        if (((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)@event).absorb)
+        if (@event.absorb)
         {
-            for (var index = 0L; (index < checked((long)(this.selectables.Count))); index += 1L)
+            for (var index = 0L; index < checked(selectables.Count); index += 1L)
             {
-                dispatchSelectionEventToChild(this.selectables[(int)(index)], @event);
+                dispatchSelectionEventToChild(selectables[(int)index], @event);
             }
             currentSelectionStartIndex = 0L;
-            currentSelectionEndIndex = (checked((long)(this.selectables.Count)) - 1L);
+            currentSelectionEndIndex = checked(selectables.Count) - 1L;
             return SelectionResult.next;
         }
-        for (var indexLocal = 0L; (indexLocal < checked((long)(this.selectables.Count))); indexLocal += 1L)
+        for (var indexLocal = 0L; indexLocal < checked(selectables.Count); indexLocal += 1L)
         {
-            bool selectableIsPlaceholder = !this.paragraph.selectableBelongsToParagraph(this.selectables[(int)(indexLocal)]);
-            if ((selectableIsPlaceholder && Enumerable.Any(this.selectables[(int)(indexLocal)].boundingBoxes)))
+            bool selectableIsPlaceholder = !paragraph.selectableBelongsToParagraph(selectables[(int)indexLocal]);
+            if (selectableIsPlaceholder && Enumerable.Any(selectables[(int)indexLocal].boundingBoxes))
             {
-                foreach (global::Doroti.Ui.Rect rect in this.selectables[(int)(indexLocal)].boundingBoxes)
+                foreach (global::Doroti.Ui.Rect rect in selectables[(int)indexLocal].boundingBoxes)
                 {
-                    global::Doroti.Ui.Rect globalRect = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(this.selectables[(int)(indexLocal)].getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), rect));
-                    if (globalRect.contains(((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)@event).globalPosition))
+                    global::Doroti.Ui.Rect globalRect = MatrixUtils.transformRect(selectables[(int)indexLocal].getTransformTo(null), rect);
+                    if (globalRect.contains(@event.globalPosition))
                     {
                         currentSelectionStartIndex = currentSelectionEndIndex = indexLocal;
-                        return dispatchSelectionEventToChild(this.selectables[(int)(indexLocal)], @event);
+                        return dispatchSelectionEventToChild(selectables[(int)indexLocal], @event);
                     }
                 }
             }
@@ -436,15 +436,15 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         global::Doroti.Framework.Rendering.SelectionResult? lastSelectionResult = default!;
         var foundStart = false;
         long? lastNextIndex = default!;
-        for (var indexAlternate = 0L; (indexAlternate < checked((long)(this.selectables.Count))); indexAlternate += 1L)
+        for (var indexAlternate = 0L; indexAlternate < checked(selectables.Count); indexAlternate += 1L)
         {
-            if (!this.paragraph.selectableBelongsToParagraph(this.selectables[(int)(indexAlternate)]))
+            if (!paragraph.selectableBelongsToParagraph(selectables[(int)indexAlternate]))
             {
                 if (foundStart)
                 {
-                    global::Doroti.Framework.Rendering.SelectionEvent synthesizedEvent = ((global::Doroti.Framework.Rendering.SelectionEvent)new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: ((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)@event).globalPosition, absorb: true));
-                    global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(this.selectables[(int)(indexAlternate)], synthesizedEvent);
-                    if (((checked((long)(this.selectables.Count)) - 1L) == indexAlternate))
+                    global::Doroti.Framework.Rendering.SelectionEvent synthesizedEvent = new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: @event.globalPosition, absorb: true);
+                    global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(selectables[(int)indexAlternate], synthesizedEvent);
+                    if ((checked(selectables.Count) - 1L) == indexAlternate)
                     {
                         currentSelectionEndIndex = indexAlternate;
                         _flushInactiveSelections();
@@ -453,9 +453,9 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                 }
                 continue;
             }
-            global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry = this.selectables[(int)(indexAlternate)].value;
-            lastSelectionResult = dispatchSelectionEventToChild(this.selectables[(int)(indexAlternate)], @event);
-            if (((indexAlternate == (checked((long)(this.selectables.Count)) - 1L)) && (Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next))))
+            global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry = selectables[(int)indexAlternate].value;
+            lastSelectionResult = dispatchSelectionEventToChild(selectables[(int)indexAlternate], @event);
+            if ((indexAlternate == (checked(selectables.Count) - 1L)) && Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next))
             {
                 if (foundStart)
                 {
@@ -467,50 +467,50 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                 }
                 return SelectionResult.next;
             }
-            if ((Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next)))
+            if (Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next))
             {
-                if (((Equals(this.selectables[(int)(indexAlternate)].value, existingGeometry)) && !foundStart))
+                if (Equals(selectables[(int)indexAlternate].value, existingGeometry) && !foundStart)
                 {
                     lastNextIndex = indexAlternate;
                 }
-                if (((!Equals(this.selectables[(int)(indexAlternate)].value, existingGeometry)) && !foundStart))
+                if ((!Equals(selectables[(int)indexAlternate].value, existingGeometry)) && !foundStart)
                 {
-                    DartRuntimePrimitives.Assert(() => Enumerable.Any(this.selectables[(int)(indexAlternate)].boundingBoxes));
-                    DartRuntimePrimitives.Assert(() => Enumerable.Any(this.selectables[(int)(indexAlternate)].value.selectionRects));
-                    bool selectionAtStartOfSelectable = this.selectables[(int)(indexAlternate)].boundingBoxes[(int)(0L)].overlaps(this.selectables[(int)(indexAlternate)].value.selectionRects[(int)(0L)]);
+                    DartRuntimePrimitives.Assert(() => Enumerable.Any(selectables[(int)indexAlternate].boundingBoxes));
+                    DartRuntimePrimitives.Assert(() => Enumerable.Any(selectables[(int)indexAlternate].value.selectionRects));
+                    bool selectionAtStartOfSelectable = selectables[(int)indexAlternate].boundingBoxes[(int)0L].overlaps(selectables[(int)indexAlternate].value.selectionRects[(int)0L]);
                     var startIndex = 0L;
-                    if (((lastNextIndex is not null) && selectionAtStartOfSelectable))
+                    if ((lastNextIndex is not null) && selectionAtStartOfSelectable)
                     {
                         long lastNextIndex__38240__value40009 = DartRuntimePrimitives.RequireValue(lastNextIndex);
-                        startIndex = (DartRuntimePrimitives.RequireValue(lastNextIndex__38240__value40009) + 1L);
+                        startIndex = DartRuntimePrimitives.RequireValue(lastNextIndex__38240__value40009) + 1L;
                     }
                     else
                     {
-                        startIndex = (((lastNextIndex is null) && selectionAtStartOfSelectable) ? 0L : indexAlternate);
+                        startIndex = ((lastNextIndex is null) && selectionAtStartOfSelectable) ? 0L : indexAlternate;
                     }
-                    for (var i = startIndex; (i < indexAlternate); i += 1L)
+                    for (var i = startIndex; i < indexAlternate; i += 1L)
                     {
-                        global::Doroti.Framework.Rendering.SelectionEvent synthesizedEventLocal = ((global::Doroti.Framework.Rendering.SelectionEvent)new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: ((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)@event).globalPosition, absorb: true));
-                        dispatchSelectionEventToChild(this.selectables[(int)(i)], synthesizedEventLocal);
+                        global::Doroti.Framework.Rendering.SelectionEvent synthesizedEventLocal = new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: @event.globalPosition, absorb: true);
+                        dispatchSelectionEventToChild(selectables[(int)i], synthesizedEventLocal);
                     }
                     currentSelectionStartIndex = startIndex;
                     foundStart = true;
                 }
                 continue;
             }
-            if (((indexAlternate == 0L) && (Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.previous))))
+            if ((indexAlternate == 0L) && Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.previous))
             {
                 return SelectionResult.previous;
             }
-            if ((!Equals(this.selectables[(int)(indexAlternate)].value, existingGeometry)))
+            if (!Equals(selectables[(int)indexAlternate].value, existingGeometry))
             {
-                if ((!foundStart && (lastNextIndex is null)))
+                if (!foundStart && (lastNextIndex is null))
                 {
                     currentSelectionStartIndex = 0L;
-                    for (var iLocal = 0L; (iLocal < indexAlternate); iLocal += 1L)
+                    for (var iLocal = 0L; iLocal < indexAlternate; iLocal += 1L)
                     {
-                        global::Doroti.Framework.Rendering.SelectionEvent synthesizedEventAlternate = ((global::Doroti.Framework.Rendering.SelectionEvent)new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: ((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)@event).globalPosition, absorb: true));
-                        dispatchSelectionEventToChild(this.selectables[(int)(iLocal)], synthesizedEventAlternate);
+                        global::Doroti.Framework.Rendering.SelectionEvent synthesizedEventAlternate = new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: @event.globalPosition, absorb: true);
+                        dispatchSelectionEventToChild(selectables[(int)iLocal], synthesizedEventAlternate);
                     }
                 }
                 currentSelectionEndIndex = indexAlternate;
@@ -518,7 +518,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             }
             return SelectionResult.end;
         }
-        DartRuntimePrimitives.Assert(() => (lastSelectionResult is null));
+        DartRuntimePrimitives.Assert(() => lastSelectionResult is null);
         return SelectionResult.end;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -530,22 +530,22 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             {
                 if (isEnd)
                 {
-                    DartRuntimePrimitives.Assert(() => ((this.currentSelectionEndIndex < checked((long)(this.selectables.Count))) && (this.currentSelectionEndIndex >= 0L)));
+                    DartRuntimePrimitives.Assert(() => (currentSelectionEndIndex < checked(selectables.Count)) && (currentSelectionEndIndex >= 0L));
                     return true;
                 }
-                DartRuntimePrimitives.Assert(() => ((this.currentSelectionStartIndex < checked((long)(this.selectables.Count))) && (this.currentSelectionStartIndex >= 0L)));
+                DartRuntimePrimitives.Assert(() => (currentSelectionStartIndex < checked(selectables.Count)) && (currentSelectionStartIndex >= 0L));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         global::Doroti.Framework.Rendering.SelectionResult? finalResult = default!;
-        var isCurrentEdgeWithinViewport = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint is not null));
-        var isOppositeEdgeWithinViewport = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint is not null));
-        long newIndex = ((isEnd, isCurrentEdgeWithinViewport, isOppositeEdgeWithinViewport) switch { (true, true, true) => this.currentSelectionEndIndex, (true, true, false) => this.currentSelectionEndIndex, (true, false, true) => this.currentSelectionStartIndex, (true, false, false) => 0L, (false, true, true) => this.currentSelectionStartIndex, (false, true, false) => this.currentSelectionStartIndex, (false, false, true) => this.currentSelectionEndIndex, (false, false, false) => 0L });
+        var isCurrentEdgeWithinViewport = isEnd ? (value.endSelectionPoint is not null) : (value.startSelectionPoint is not null);
+        var isOppositeEdgeWithinViewport = isEnd ? (value.startSelectionPoint is not null) : (value.endSelectionPoint is not null);
+        long newIndex = (isEnd, isCurrentEdgeWithinViewport, isOppositeEdgeWithinViewport) switch { (true, true, true) => currentSelectionEndIndex, (true, true, false) => currentSelectionEndIndex, (true, false, true) => currentSelectionStartIndex, (true, false, false) => 0L, (false, true, true) => currentSelectionStartIndex, (false, true, false) => currentSelectionStartIndex, (false, false, true) => currentSelectionEndIndex, (false, false, false) => 0L };
         bool? forward = default!;
         global::Doroti.Framework.Rendering.SelectionResult currentSelectableResult = default!;
-        while ((((newIndex < checked((long)(this.selectables.Count))) && (newIndex >= 0L)) && (finalResult is null)))
+        while ((newIndex < checked(selectables.Count)) && (newIndex >= 0L) && (finalResult is null))
         {
-            currentSelectableResult = dispatchSelectionEventToChild(this.selectables[(int)(newIndex)], @event);
+            currentSelectableResult = dispatchSelectionEventToChild(selectables[(int)newIndex], @event);
             switch (currentSelectableResult)
             {
                 case SelectionResult.end:
@@ -557,14 +557,14 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                     }
                 case SelectionResult.next:
                     {
-                        if ((forward == false))
+                        if (forward == false)
                         {
                             newIndex += 1L;
                             finalResult = SelectionResult.end;
                         }
                         else
                         {
-                            if ((newIndex == (checked((long)(this.selectables.Count)) - 1L)))
+                            if (newIndex == (checked(selectables.Count) - 1L))
                             {
                                 finalResult = currentSelectableResult;
                             }
@@ -578,14 +578,14 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                     }
                 case SelectionResult.previous:
                     {
-                        if ((forward ?? false))
+                        if (forward ?? false)
                         {
                             newIndex -= 1L;
                             finalResult = SelectionResult.end;
                         }
                         else
                         {
-                            if ((newIndex == 0L))
+                            if (newIndex == 0L)
                             {
                                 finalResult = currentSelectableResult;
                             }
@@ -601,21 +601,21 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         }
         if (isEnd)
         {
-            bool forwardSelection = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
-            if (((forward is not null) && (((((!forwardSelection && DartRuntimePrimitives.RequireValue(forward)) && (newIndex >= this.currentSelectionStartIndex))) || (((forwardSelection && !DartRuntimePrimitives.RequireValue(forward)) && (newIndex <= this.currentSelectionStartIndex)))))))
+            bool forwardSelection = currentSelectionEndIndex >= currentSelectionStartIndex;
+            if ((forward is not null) && (!forwardSelection && DartRuntimePrimitives.RequireValue(forward) && (newIndex >= currentSelectionStartIndex) || forwardSelection && !DartRuntimePrimitives.RequireValue(forward) && (newIndex <= currentSelectionStartIndex)))
             {
                 bool forward__43403__value45352 = DartRuntimePrimitives.RequireValue(forward);
-                currentSelectionStartIndex = this.currentSelectionEndIndex;
+                currentSelectionStartIndex = currentSelectionEndIndex;
             }
             currentSelectionEndIndex = newIndex;
         }
         else
         {
-            bool forwardSelectionLocal = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
-            if (((forward is not null) && (((((!forwardSelectionLocal && !DartRuntimePrimitives.RequireValue(forward)) && (newIndex <= this.currentSelectionEndIndex))) || (((forwardSelectionLocal && DartRuntimePrimitives.RequireValue(forward)) && (newIndex >= this.currentSelectionEndIndex)))))))
+            bool forwardSelectionLocal = currentSelectionEndIndex >= currentSelectionStartIndex;
+            if ((forward is not null) && (!forwardSelectionLocal && !DartRuntimePrimitives.RequireValue(forward) && (newIndex <= currentSelectionEndIndex) || forwardSelectionLocal && DartRuntimePrimitives.RequireValue(forward) && (newIndex >= currentSelectionEndIndex)))
             {
                 bool forward__43403__value45778 = DartRuntimePrimitives.RequireValue(forward);
-                currentSelectionEndIndex = this.currentSelectionStartIndex;
+                currentSelectionEndIndex = currentSelectionStartIndex;
             }
             currentSelectionStartIndex = newIndex;
         }
@@ -627,10 +627,10 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
     public override Comparison<global::Doroti.Framework.Rendering.Selectable> compareOrder => new Comparison<global::Doroti.Framework.Rendering.Selectable>((left, right) => checked((int)_compareScreenOrder(left, right)));
     internal new static long _compareScreenOrder(global::Doroti.Framework.Rendering.Selectable a, global::Doroti.Framework.Rendering.Selectable b)
     {
-        global::Doroti.Ui.Rect rectA = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(a.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), ((global::Doroti.Framework.Rendering.Selectable)a).boundingBoxes.First()));
-        global::Doroti.Ui.Rect rectB = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(b.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), ((global::Doroti.Framework.Rendering.Selectable)b).boundingBoxes.First()));
+        global::Doroti.Ui.Rect rectA = MatrixUtils.transformRect(a.getTransformTo(null), a.boundingBoxes.First());
+        global::Doroti.Ui.Rect rectB = MatrixUtils.transformRect(b.getTransformTo(null), b.boundingBoxes.First());
         long result = _compareVertically(rectA, rectB);
-        if ((result != 0L))
+        if (result != 0L)
         {
             return result;
         }
@@ -640,60 +640,60 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
 
     internal new static long _compareVertically(Rect a, Rect b)
     {
-        if ((((((a.top - b.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((a.bottom - b.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold))) || ((((b.top - a.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((b.bottom - a.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold)))))
+        if (((a.top - b.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((a.bottom - b.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold) || ((b.top - a.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((b.bottom - a.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold))
         {
             return 0L;
         }
-        if ((((a.top - b.top)).abs() > Selectable_regionLibrary._kSelectableVerticalComparingThreshold))
+        if ((a.top - b.top).abs() > Selectable_regionLibrary._kSelectableVerticalComparingThreshold)
         {
-            return ((a.top > b.top) ? 1L : -1L);
+            return (a.top > b.top) ? 1L : -1L;
         }
-        return ((a.bottom > b.bottom) ? 1L : -1L);
+        return (a.bottom > b.bottom) ? 1L : -1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal new static long _compareHorizontally(Rect a, Rect b)
     {
-        if ((((a.left - b.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((a.right - b.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance)))
+        if (((a.left - b.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((a.right - b.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return -1L;
         }
-        if ((((b.left - a.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((b.right - a.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance)))
+        if (((b.left - a.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((b.right - a.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return 1L;
         }
-        if ((((a.left - b.left)).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance))
+        if ((a.left - b.left).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance)
         {
-            return ((a.left > b.left) ? 1L : -1L);
+            return (a.left > b.left) ? 1L : -1L;
         }
-        return ((a.right > b.right) ? 1L : -1L);
+        return (a.right > b.right) ? 1L : -1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual global::Doroti.Framework.Rendering.SelectedContentRange? _calculateLocalRange(List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)> selections)
     {
-        if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) || (currentSelectionEndIndex == -1L))
         {
-            return ((global::Doroti.Framework.Rendering.SelectedContentRange?)null);
+            return null;
         }
         var startOffsetLocal = 0L;
         var endOffsetLocal = 0L;
         var foundStart = false;
-        bool forwardSelection = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
-        if ((this.currentSelectionEndIndex == this.currentSelectionStartIndex))
+        bool forwardSelection = currentSelectionEndIndex >= currentSelectionStartIndex;
+        if (currentSelectionEndIndex == currentSelectionStartIndex)
         {
-            global::Doroti.Framework.Rendering.SelectedContentRange rangeAtSelectableInSelection = this.selectables[(int)(this.currentSelectionStartIndex)].getSelection()!;
-            forwardSelection = (((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection).endOffset >= ((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection).startOffset);
+            global::Doroti.Framework.Rendering.SelectedContentRange rangeAtSelectableInSelection = selectables[(int)currentSelectionStartIndex].getSelection()!;
+            forwardSelection = rangeAtSelectableInSelection.endOffset >= rangeAtSelectableInSelection.startOffset;
         }
-        for (var index = 0L; (index < checked((long)(selections.Count))); index++)
+        for (var index = 0L; index < checked(selections.Count); index++)
         {
-            (long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range) selection = selections[(int)(index)];
-            if ((selection.range is null))
+            (long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range) selection = selections[(int)index];
+            if (selection.range is null)
             {
                 if (foundStart)
                 {
-                    return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection ? startOffsetLocal : endOffsetLocal), endOffset: (forwardSelection ? endOffsetLocal : startOffsetLocal));
+                    return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: forwardSelection ? startOffsetLocal : endOffsetLocal, endOffset: forwardSelection ? endOffsetLocal : startOffsetLocal);
                 }
                 startOffsetLocal += selection.contentLength;
                 endOffsetLocal = startOffsetLocal;
@@ -703,72 +703,72 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             long selectionEndNormalized = Math.Max(selection.range!.startOffset, selection.range!.endOffset);
             if (!foundStart)
             {
-                bool shouldConsiderContentStart = ((index > 0L) && this.paragraph.selectableBelongsToParagraph(this.selectables[(int)(index)]));
-                startOffsetLocal += ((selectionStartNormalized - ((shouldConsiderContentStart ? this.paragraph.getPositionForOffset(this.selectables[(int)(index)].boundingBoxes.First().centerLeft).offset : 0L)))).abs();
-                endOffsetLocal = (startOffsetLocal + ((selectionEndNormalized - selectionStartNormalized)).abs());
+                bool shouldConsiderContentStart = (index > 0L) && paragraph.selectableBelongsToParagraph(selectables[(int)index]);
+                startOffsetLocal += (selectionStartNormalized - (shouldConsiderContentStart ? paragraph.getPositionForOffset(selectables[(int)index].boundingBoxes.First().centerLeft).offset : 0L)).abs();
+                endOffsetLocal = startOffsetLocal + (selectionEndNormalized - selectionStartNormalized).abs();
                 foundStart = true;
             }
             else
             {
-                endOffsetLocal += ((selectionEndNormalized - selectionStartNormalized)).abs();
+                endOffsetLocal += (selectionEndNormalized - selectionStartNormalized).abs();
             }
         }
         DartRuntimePrimitives.Assert(() => foundStart, () => (object?)"The start of the selection has not been found despite this selection delegate having an existing currentSelectionStartIndex and currentSelectionEndIndex.");
-        return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection ? startOffsetLocal : endOffsetLocal), endOffset: (forwardSelection ? endOffsetLocal : startOffsetLocal));
+        return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: forwardSelection ? startOffsetLocal : endOffsetLocal, endOffset: forwardSelection ? endOffsetLocal : startOffsetLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
     {
         var selections = new List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)>();
-        return ((global::Doroti.Framework.Rendering.SelectedContentRange?)_calculateLocalRange(selections));
+        return _calculateLocalRange(selections);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual void _flushInactiveSelections()
     {
-        if (((this.currentSelectionStartIndex == -1L) && (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) && (currentSelectionEndIndex == -1L))
         {
             return;
         }
-        if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) || (currentSelectionEndIndex == -1L))
         {
-            long skipIndex = ((this.currentSelectionStartIndex == -1L) ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
-            for (var i = 0L; (i < checked((long)(this.selectables.Count))); i++)
+            long skipIndex = (currentSelectionStartIndex == -1L) ? currentSelectionEndIndex : currentSelectionStartIndex;
+            for (var i = 0L; i < checked(selectables.Count); i++)
             {
-                if ((i == skipIndex))
+                if (i == skipIndex)
                 {
                     continue;
                 }
-                dispatchSelectionEventToChild(this.selectables[(int)(i)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+                dispatchSelectionEventToChild(selectables[(int)i], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
             }
             return;
         }
-        long skipStart = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        long skipEnd = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        for (var index = 0L; (index < checked((long)(this.selectables.Count))); index += 1L)
+        long skipStart = Math.Min(currentSelectionStartIndex, currentSelectionEndIndex);
+        long skipEnd = Math.Max(currentSelectionStartIndex, currentSelectionEndIndex);
+        for (var index = 0L; index < checked(selectables.Count); index += 1L)
         {
-            if (((index >= skipStart) && (index <= skipEnd)))
+            if ((index >= skipStart) && (index <= skipEnd))
             {
                 continue;
             }
-            dispatchSelectionEventToChild(this.selectables[(int)(index)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+            dispatchSelectionEventToChild(selectables[(int)index], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
         }
     }
 
     public override global::Doroti.Framework.Rendering.SelectionResult handleSelectionEdgeUpdate(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event)
     {
-        if ((!Equals(((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).granularity, TextGranularity.paragraph)))
+        if (!Equals(@event.granularity, TextGranularity.paragraph))
         {
             return base.handleSelectionEdgeUpdate(@event);
         }
-        updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition, forEnd: (Equals(@event.type, SelectionEventType.endEdgeUpdate)));
-        if ((Equals(@event.type, SelectionEventType.endEdgeUpdate)))
+        updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: @event.globalPosition, forEnd: Equals(@event.type, SelectionEventType.endEdgeUpdate));
+        if (Equals(@event.type, SelectionEventType.endEdgeUpdate))
         {
-            return ((this.currentSelectionEndIndex == -1L) ? base.handleSelectionEdgeUpdate(@event) : _adjustSelection(@event, isEnd: true));
+            return (currentSelectionEndIndex == -1L) ? base.handleSelectionEdgeUpdate(@event) : _adjustSelection(@event, isEnd: true);
         }
-        return ((this.currentSelectionStartIndex == -1L) ? base.handleSelectionEdgeUpdate(@event) : _adjustSelection(@event, isEnd: false));
+        return (currentSelectionStartIndex == -1L) ? base.handleSelectionEdgeUpdate(@event) : _adjustSelection(@event, isEnd: false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -780,25 +780,25 @@ internal class _OverridingTextStyleTextSpanUtils__text
 {
     public static global::Doroti.Framework.Painting.TextSpan applyTextSpacingOverrides(double? lineHeightScaleFactor = null, double? letterSpacing = null, double? wordSpacing = null, global::Doroti.Framework.Painting.TextSpan textSpan = default!)
     {
-        if ((((lineHeightScaleFactor is null) && (letterSpacing is null)) && (wordSpacing is null)))
+        if ((lineHeightScaleFactor is null) && (letterSpacing is null) && (wordSpacing is null))
         {
             return textSpan;
         }
-        return ((global::Doroti.Framework.Painting.TextSpan)_applyTextStyleOverrides(new global::Doroti.Framework.Painting.TextStyle(height: lineHeightScaleFactor, letterSpacing: letterSpacing, wordSpacing: wordSpacing), textSpan));
+        return _applyTextStyleOverrides(new global::Doroti.Framework.Painting.TextStyle(height: lineHeightScaleFactor, letterSpacing: letterSpacing, wordSpacing: wordSpacing), textSpan);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Framework.Painting.TextSpan _applyTextStyleOverrides(global::Doroti.Framework.Painting.TextStyle overrideTextStyle, global::Doroti.Framework.Painting.TextSpan textSpan)
     {
-        return new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Painting.TextSpan)textSpan).text, children: ((global::Doroti.Framework.Painting.TextSpan)textSpan).children?.map<global::Doroti.Framework.Painting.InlineSpan, global::Doroti.Framework.Painting.InlineSpan>(((child) =>
+        return new global::Doroti.Framework.Painting.TextSpan(text: textSpan.text, children: textSpan.children?.map<global::Doroti.Framework.Painting.InlineSpan, global::Doroti.Framework.Painting.InlineSpan>((child) =>
         {
-            if (((child is global::Doroti.Framework.Painting.TextSpan) && (Equals(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Painting.TextSpan)child)), typeof(global::Doroti.Framework.Painting.TextSpan)))))
+            if ((child is global::Doroti.Framework.Painting.TextSpan) && Equals(DartRuntimePrimitives.RuntimeType((global::Doroti.Framework.Painting.TextSpan)child), typeof(global::Doroti.Framework.Painting.TextSpan)))
             {
-                return ((global::Doroti.Framework.Painting.InlineSpan)_applyTextStyleOverrides(overrideTextStyle, ((global::Doroti.Framework.Painting.TextSpan)child)));
+                return _applyTextStyleOverrides(overrideTextStyle, (global::Doroti.Framework.Painting.TextSpan)child);
             }
             return child;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })).ToList(), style: (textSpan.style?.merge(overrideTextStyle) ?? overrideTextStyle), recognizer: ((global::Doroti.Framework.Painting.TextSpan)textSpan).recognizer, mouseCursor: ((global::Doroti.Framework.Painting.TextSpan)textSpan).mouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onExit, semanticsLabel: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsLabel, semanticsIdentifier: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsIdentifier, locale: ((global::Doroti.Framework.Painting.TextSpan)textSpan).locale, spellOut: ((global::Doroti.Framework.Painting.TextSpan)textSpan).spellOut);
+        }).ToList(), style: textSpan.style?.merge(overrideTextStyle) ?? overrideTextStyle, recognizer: textSpan.recognizer, mouseCursor: textSpan.mouseCursor, onEnter: textSpan.onEnter, onExit: textSpan.onExit, semanticsLabel: textSpan.semanticsLabel, semanticsIdentifier: textSpan.semanticsIdentifier, locale: textSpan.locale, spellOut: textSpan.spellOut);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

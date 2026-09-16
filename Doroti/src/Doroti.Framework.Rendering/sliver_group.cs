@@ -13,10 +13,10 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
 
     public override void setupParentData(RenderObject child)
     {
-        if ((((RenderObject)child).parentData is not SliverPhysicalContainerParentData))
+        if (child.parentData is not SliverPhysicalContainerParentData)
         {
             child.parentData = new SliverPhysicalContainerParentData();
-            (((SliverPhysicalParentData?)(object?)((RenderObject)child).parentData!)!).crossAxisFlex = 1L;
+            ((SliverPhysicalParentData?)(object?)child.parentData!)!.crossAxisFlex = 1L;
         }
     }
 
@@ -24,29 +24,29 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override double childCrossAxisPosition(RenderObject child)
     {
         var __child = (RenderSliver)(object)child;
-        global::Doroti.Ui.Offset paintOffsetLocal = (((SliverPhysicalParentData?)(object?)__child.parentData!)!).paintOffset;
-        return (((SliverConstraints)constraints).axis switch { Axis.vertical => paintOffsetLocal.dx, Axis.horizontal => paintOffsetLocal.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)__child.parentData!)!.paintOffset;
+        return constraints.axis switch { Axis.vertical => paintOffsetLocal.dx, Axis.horizontal => paintOffsetLocal.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        double crossAxisExtentLocal = ((SliverConstraints)constraints).crossAxisExtent;
+        double crossAxisExtentLocal = constraints.crossAxisExtent;
         DartRuntimePrimitives.Assert(() => double.IsFinite(crossAxisExtentLocal));
         var totalFlex = 0L;
         var remainingExtent = crossAxisExtentLocal;
         RenderSliver? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentData = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            long flex = (((SliverPhysicalParentData)childParentData).crossAxisFlex ?? 0L);
-            if ((flex == 0L))
+            long flex = childParentData.crossAxisFlex ?? 0L;
+            if (flex == 0L)
             {
                 DartRuntimePrimitives.Assert(() => Sliver_groupLibrary._assertOutOfExtent(remainingExtent));
                 child.layout(constraints.copyWith(crossAxisExtent: remainingExtent), parentUsesSize: true);
-                double? childCrossAxisExtent = ((RenderSliver)child).geometry!.crossAxisExtent;
-                DartRuntimePrimitives.Assert(() => (childCrossAxisExtent is not null));
-                remainingExtent = Math.Max(0.0, (remainingExtent - DartRuntimePrimitives.RequireValue(childCrossAxisExtent)));
+                double? childCrossAxisExtent = child.geometry!.crossAxisExtent;
+                DartRuntimePrimitives.Assert(() => childCrossAxisExtent is not null);
+                remainingExtent = Math.Max(0.0, remainingExtent - DartRuntimePrimitives.RequireValue(childCrossAxisExtent));
             }
             else
             {
@@ -54,26 +54,26 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
             }
             child = childAfter(child);
         }
-        double extentPerFlexValue = (remainingExtent / totalFlex);
+        double extentPerFlexValue = remainingExtent / totalFlex;
         child = firstChild;
         geometry = SliverGeometry.zero;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentDataLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            long flexLocal = (((SliverPhysicalParentData)childParentDataLocal).crossAxisFlex ?? 0L);
+            long flexLocal = childParentDataLocal.crossAxisFlex ?? 0L;
             double childExtent = default!;
-            if ((flexLocal != 0L))
+            if (flexLocal != 0L)
             {
-                childExtent = (extentPerFlexValue * flexLocal);
+                childExtent = extentPerFlexValue * flexLocal;
                 DartRuntimePrimitives.Assert(() => Sliver_groupLibrary._assertOutOfExtent(childExtent));
-                child.layout(constraints.copyWith(crossAxisExtent: (extentPerFlexValue * flexLocal)), parentUsesSize: true);
+                child.layout(constraints.copyWith(crossAxisExtent: extentPerFlexValue * flexLocal), parentUsesSize: true);
             }
             else
             {
-                childExtent = DartRuntimePrimitives.RequireValue(((RenderSliver)child).geometry!.crossAxisExtent);
+                childExtent = DartRuntimePrimitives.RequireValue(child.geometry!.crossAxisExtent);
             }
-            SliverGeometry childLayoutGeometry = ((RenderSliver)child).geometry!;
-            if ((geometry!.scrollExtent < ((SliverGeometry)childLayoutGeometry).scrollExtent))
+            SliverGeometry childLayoutGeometry = child.geometry!;
+            if (geometry!.scrollExtent < childLayoutGeometry.scrollExtent)
             {
                 geometry = childLayoutGeometry;
             }
@@ -81,14 +81,14 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
         }
         child = firstChild;
         var offset = 0.0;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentDataAlternate = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            SliverGeometry childLayoutGeometryLocal = ((RenderSliver)child).geometry!;
-            double remainingExtentLocal = (geometry!.scrollExtent - ((SliverConstraints)constraints).scrollOffset);
-            double paintCorrection = ((((SliverGeometry)childLayoutGeometryLocal).paintExtent > remainingExtentLocal) ? (((SliverGeometry)childLayoutGeometryLocal).paintExtent - remainingExtentLocal) : 0.0);
-            double childExtentLocal = (((RenderSliver)child).geometry!.crossAxisExtent ?? (extentPerFlexValue * ((((SliverPhysicalParentData)childParentDataAlternate).crossAxisFlex ?? 0L))));
-            childParentDataAlternate.paintOffset = (((SliverConstraints)constraints).axis switch { Axis.vertical => new global::Doroti.Ui.Offset(offset, -paintCorrection), Axis.horizontal => new global::Doroti.Ui.Offset(-paintCorrection, offset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            SliverGeometry childLayoutGeometryLocal = child.geometry!;
+            double remainingExtentLocal = geometry!.scrollExtent - constraints.scrollOffset;
+            double paintCorrection = (childLayoutGeometryLocal.paintExtent > remainingExtentLocal) ? (childLayoutGeometryLocal.paintExtent - remainingExtentLocal) : 0.0;
+            double childExtentLocal = child.geometry!.crossAxisExtent ?? (extentPerFlexValue * (childParentDataAlternate.crossAxisFlex ?? 0L));
+            childParentDataAlternate.paintOffset = constraints.axis switch { Axis.vertical => new global::Doroti.Ui.Offset(offset, -paintCorrection), Axis.horizontal => new global::Doroti.Ui.Offset(-paintCorrection, offset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             offset += childExtentLocal;
             child = childAfter(child);
         }
@@ -97,12 +97,12 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override void paint(PaintingContext context, Offset offset)
     {
         RenderSliver? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
-            if (((RenderSliver)child).geometry!.visible)
+            if (child.geometry!.visible)
             {
                 var childParentData = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-                context.paintChild(child, (offset + ((SliverPhysicalParentData)childParentData).paintOffset));
+                context.paintChild(child, offset + childParentData.paintOffset);
             }
             child = childAfter(child);
         }
@@ -118,10 +118,10 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
     {
         RenderSliver? child = lastChild;
-        while ((child is not null))
+        while (child is not null)
         {
-            global::Doroti.Ui.Offset paintOffsetLocal = (((SliverPhysicalParentData?)(object?)child.parentData!)!).paintOffset;
-            bool isHit = result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, paintOffset: paintOffsetLocal, mainAxisOffset: childMainAxisPosition(child), crossAxisOffset: childCrossAxisPosition(child), hitTest: (Func<SliverHitTestResult, double, double, bool>)((RenderSliver)child).hitTest);
+            global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
+            bool isHit = result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, paintOffset: paintOffsetLocal, mainAxisOffset: childMainAxisPosition(child), crossAxisOffset: childCrossAxisPosition(child), hitTest: child.hitTest);
             if (isHit)
             {
                 return true;
@@ -135,37 +135,37 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public virtual bool _debugUltimatePreviousSiblingOf(RenderSliver child, RenderSliver? equals = null)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderSliver child, RenderSliver? equals = null)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderSliver))
+                if (child is not RenderSliver)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -176,34 +176,34 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public virtual void _insertIntoChildList(RenderSliver child, RenderSliver? after = null)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((SliverPhysicalContainerParentData?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((SliverPhysicalContainerParentData?)(object?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((SliverPhysicalContainerParentData?)(object?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -213,53 +213,53 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
                 var childNextSiblingParentData = ((SliverPhysicalContainerParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderSliver child, RenderSliver? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is SliverPhysicalContainerParentData));
+        DartRuntimePrimitives.Assert(() => child.parentData is SliverPhysicalContainerParentData);
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderSliver child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderSliver>? children)
     {
-        children?.forEach(this.add);
+        children?.forEach(add);
     }
 
     public virtual void _removeFromChildList(RenderSliver child)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((SliverPhysicalContainerParentData?)(object?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -268,7 +268,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderSliver child)
@@ -279,8 +279,8 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
 
     public virtual void removeAll()
     {
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
             RenderSliver? next = childParentData.nextSibling;
@@ -289,19 +289,19 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderSliver child, RenderSliver? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -313,8 +313,8 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             child.attach(owner);
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -325,8 +325,8 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override void detach()
     {
         base.detach();
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             child.detach();
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -336,8 +336,8 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
 
     public override void redepthChildren()
     {
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -347,8 +347,8 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -356,11 +356,11 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
         }
     }
 
-    public virtual RenderSliver? firstChild => this._firstChild;
-    public virtual RenderSliver? lastChild => this._lastChild;
+    public virtual RenderSliver? firstChild => _firstChild;
+    public virtual RenderSliver? lastChild => _lastChild;
     public virtual RenderSliver? childBefore(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -368,7 +368,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
 
     public virtual RenderSliver? childAfter(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -377,14 +377,14 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderSliver child = this.firstChild!;
+            RenderSliver child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }
@@ -403,7 +403,7 @@ public static partial class Sliver_groupLibrary
 {
     internal static bool _assertOutOfExtent(double extent)
     {
-        if ((extent <= 0.0))
+        if (extent <= 0.0)
         {
             throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("SliverCrossAxisGroup ran out of extent before child could be laid out."), new ErrorDescription("SliverCrossAxisGroup lays out any slivers with a constrained cross " + "axis before laying out those which expand. In this case, cross axis " + "extent was used up before the next sliver could be laid out."), new ErrorHint("Make sure that the total amount of extent allocated by constrained " + "child slivers does not exceed the cross axis extent that is available " + "for the SliverCrossAxisGroup.") });
         }
@@ -420,7 +420,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     public override void setupParentData(RenderObject child)
     {
-        if ((((RenderObject)child).parentData is not SliverPhysicalContainerParentData))
+        if (child.parentData is not SliverPhysicalContainerParentData)
         {
             child.parentData = new SliverPhysicalContainerParentData();
         }
@@ -428,33 +428,33 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     public override double? childScrollOffset(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
-        DartRuntimePrimitives.Assert(() => (child is RenderSliver));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
+        DartRuntimePrimitives.Assert(() => child is RenderSliver);
         double extentOfPinnedSlivers = _maxScrollObstructionExtentBefore(((RenderSliver?)(object?)child)!);
-        GrowthDirection growthDirectionLocal = ((SliverConstraints)constraints).growthDirection;
+        GrowthDirection growthDirectionLocal = constraints.growthDirection;
         switch (growthDirectionLocal)
         {
             case GrowthDirection.forward:
                 {
                     var childScrollOffsetLocal = 0.0;
-                    RenderSliver? current = childBefore(((RenderSliver)child));
-                    while ((current is not null))
+                    RenderSliver? current = childBefore((RenderSliver)child);
+                    while (current is not null)
                     {
-                        childScrollOffsetLocal += ((RenderSliver)current).geometry!.scrollExtent;
+                        childScrollOffsetLocal += current.geometry!.scrollExtent;
                         current = childBefore(current);
                     }
-                    return (childScrollOffsetLocal - extentOfPinnedSlivers);
+                    return childScrollOffsetLocal - extentOfPinnedSlivers;
                 }
             case GrowthDirection.reverse:
                 {
                     var childScrollOffsetAlternate = 0.0;
-                    RenderSliver? currentLocal = childAfter(((RenderSliver)child));
-                    while ((currentLocal is not null))
+                    RenderSliver? currentLocal = childAfter((RenderSliver)child);
+                    while (currentLocal is not null)
                     {
-                        childScrollOffsetAlternate -= ((RenderSliver)currentLocal).geometry!.scrollExtent;
+                        childScrollOffsetAlternate -= currentLocal.geometry!.scrollExtent;
                         currentLocal = childAfter(currentLocal);
                     }
-                    return (childScrollOffsetAlternate - extentOfPinnedSlivers);
+                    return childScrollOffsetAlternate - extentOfPinnedSlivers;
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -462,14 +462,14 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     internal virtual double _maxScrollObstructionExtentBefore(RenderSliver child)
     {
-        GrowthDirection growthDirectionLocal = ((RenderSliver)child).constraints.growthDirection;
+        GrowthDirection growthDirectionLocal = child.constraints.growthDirection;
         switch (growthDirectionLocal)
         {
             case GrowthDirection.forward:
                 {
                     var pinnedExtent = 0.0;
                     RenderSliver? current = firstChild;
-                    while ((!Equals(current, child)))
+                    while (!Equals(current, child))
                     {
                         pinnedExtent += current!.geometry!.maxScrollObstructionExtent;
                         current = childAfter(current);
@@ -480,7 +480,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
                 {
                     var pinnedExtentLocal = 0.0;
                     RenderSliver? currentLocal = lastChild;
-                    while ((!Equals(currentLocal, child)))
+                    while (!Equals(currentLocal, child))
                     {
                         pinnedExtentLocal += currentLocal!.geometry!.maxScrollObstructionExtent;
                         currentLocal = childBefore(currentLocal);
@@ -495,7 +495,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     {
         var __child = (RenderSliver)(object)child;
         var childParentData = ((SliverPhysicalParentData?)(object?)__child.parentData!)!;
-        return (SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)__child).constraints.axisDirection, ((RenderSliver)__child).constraints.growthDirection) switch { AxisDirection.down => ((SliverPhysicalParentData)childParentData).paintOffset.dy, AxisDirection.right => ((SliverPhysicalParentData)childParentData).paintOffset.dx, AxisDirection.up => ((geometry!.paintExtent - ((RenderSliver)__child).geometry!.paintExtent) - ((SliverPhysicalParentData)childParentData).paintOffset.dy), AxisDirection.left => ((geometry!.paintExtent - ((RenderSliver)__child).geometry!.paintExtent) - ((SliverPhysicalParentData)childParentData).paintOffset.dx), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return SliverLibrary.applyGrowthDirectionToAxisDirection(__child.constraints.axisDirection, __child.constraints.growthDirection) switch { AxisDirection.down => childParentData.paintOffset.dy, AxisDirection.right => childParentData.paintOffset.dx, AxisDirection.up => geometry!.paintExtent - __child.geometry!.paintExtent - childParentData.paintOffset.dy, AxisDirection.left => geometry!.paintExtent - __child.geometry!.paintExtent - childParentData.paintOffset.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -505,80 +505,80 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
         double scrollOffsetLocal = 0;
         double layoutOffset = 0;
         double maxPaintExtentLocal = 0;
-        double paintOffsetLocal = ((SliverConstraints)constraints).overlap;
+        double paintOffsetLocal = constraints.overlap;
         double maxScrollObstructionExtentLocal = 0;
-        double cacheOriginLocal = ((SliverConstraints)constraints).cacheOrigin;
-        double remainingCacheExtentLocal = ((SliverConstraints)constraints).remainingCacheExtent;
-        var (leadingChild, advance) = (((SliverConstraints)constraints).growthDirection switch { GrowthDirection.forward => (((RenderSliver?, Func<RenderSliver, RenderSliver?>))((firstChild, childAfter))), GrowthDirection.reverse => (((RenderSliver?, Func<RenderSliver, RenderSliver?>))((lastChild, childBefore))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double cacheOriginLocal = constraints.cacheOrigin;
+        double remainingCacheExtentLocal = constraints.remainingCacheExtent;
+        var (leadingChild, advance) = constraints.growthDirection switch { GrowthDirection.forward => ((RenderSliver?, Func<RenderSliver, RenderSliver?>))(firstChild, childAfter), GrowthDirection.reverse => ((RenderSliver?, Func<RenderSliver, RenderSliver?>))(lastChild, childBefore), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var child = leadingChild;
-        while ((child is not null))
+        while (child is not null)
         {
             double beforeOffsetPaintExtent = calculatePaintOffset(constraints, from: 0.0, to: scrollOffsetLocal);
-            double childScrollOffset = Math.Max(0.0, (((SliverConstraints)constraints).scrollOffset - scrollOffsetLocal));
+            double childScrollOffset = Math.Max(0.0, constraints.scrollOffset - scrollOffsetLocal);
             double correctedCacheOrigin = Math.Max(cacheOriginLocal, -childScrollOffset);
-            double cacheExtentCorrection = (cacheOriginLocal - correctedCacheOrigin);
-            child.layout(constraints.copyWith(scrollOffset: childScrollOffset, cacheOrigin: correctedCacheOrigin, overlap: Math.Max(0.0, _fixPrecisionError((paintOffsetLocal - beforeOffsetPaintExtent))), remainingPaintExtent: _fixPrecisionError((((SliverConstraints)constraints).remainingPaintExtent - beforeOffsetPaintExtent)), remainingCacheExtent: Math.Max(0.0, _fixPrecisionError((remainingCacheExtentLocal + cacheExtentCorrection))), precedingScrollExtent: (scrollOffsetLocal + ((SliverConstraints)constraints).precedingScrollExtent)), parentUsesSize: true);
-            SliverGeometry childLayoutGeometry = ((RenderSliver)child).geometry!;
-            double? scrollOffsetCorrectionLocal = ((SliverGeometry)childLayoutGeometry).scrollOffsetCorrection;
-            if ((scrollOffsetCorrectionLocal is not null))
+            double cacheExtentCorrection = cacheOriginLocal - correctedCacheOrigin;
+            child.layout(constraints.copyWith(scrollOffset: childScrollOffset, cacheOrigin: correctedCacheOrigin, overlap: Math.Max(0.0, _fixPrecisionError(paintOffsetLocal - beforeOffsetPaintExtent)), remainingPaintExtent: _fixPrecisionError(constraints.remainingPaintExtent - beforeOffsetPaintExtent), remainingCacheExtent: Math.Max(0.0, _fixPrecisionError(remainingCacheExtentLocal + cacheExtentCorrection)), precedingScrollExtent: scrollOffsetLocal + constraints.precedingScrollExtent), parentUsesSize: true);
+            SliverGeometry childLayoutGeometry = child.geometry!;
+            double? scrollOffsetCorrectionLocal = childLayoutGeometry.scrollOffsetCorrection;
+            if (scrollOffsetCorrectionLocal is not null)
             {
                 double scrollOffsetCorrection__13115__value13194 = DartRuntimePrimitives.RequireValue(scrollOffsetCorrectionLocal);
                 geometry = new SliverGeometry(scrollOffsetCorrection: DartRuntimePrimitives.RequireValue(scrollOffsetCorrection__13115__value13194));
                 return;
             }
             DartRuntimePrimitives.Assert(() => childLayoutGeometry.debugAssertIsValid());
-            double childPaintOffset = (layoutOffset + ((SliverGeometry)childLayoutGeometry).paintOrigin);
+            double childPaintOffset = layoutOffset + childLayoutGeometry.paintOrigin;
             var childParentData = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            childParentData.paintOffset = (((SliverConstraints)constraints).axis switch { Axis.vertical => new global::Doroti.Ui.Offset(0.0, childPaintOffset), Axis.horizontal => new global::Doroti.Ui.Offset(childPaintOffset, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            scrollOffsetLocal += ((SliverGeometry)childLayoutGeometry).scrollExtent;
-            layoutOffset += ((SliverGeometry)childLayoutGeometry).layoutExtent;
-            maxPaintExtentLocal += ((SliverGeometry)childLayoutGeometry).maxPaintExtent;
-            maxScrollObstructionExtentLocal += ((SliverGeometry)childLayoutGeometry).maxScrollObstructionExtent;
-            paintOffsetLocal = Math.Max((childPaintOffset + ((SliverGeometry)childLayoutGeometry).paintExtent), paintOffsetLocal);
-            if ((((SliverGeometry)childLayoutGeometry).cacheExtent != 0.0))
+            childParentData.paintOffset = constraints.axis switch { Axis.vertical => new global::Doroti.Ui.Offset(0.0, childPaintOffset), Axis.horizontal => new global::Doroti.Ui.Offset(childPaintOffset, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            scrollOffsetLocal += childLayoutGeometry.scrollExtent;
+            layoutOffset += childLayoutGeometry.layoutExtent;
+            maxPaintExtentLocal += childLayoutGeometry.maxPaintExtent;
+            maxScrollObstructionExtentLocal += childLayoutGeometry.maxScrollObstructionExtent;
+            paintOffsetLocal = Math.Max(childPaintOffset + childLayoutGeometry.paintExtent, paintOffsetLocal);
+            if (childLayoutGeometry.cacheExtent != 0.0)
             {
-                remainingCacheExtentLocal = _fixPrecisionError(((remainingCacheExtentLocal - ((SliverGeometry)childLayoutGeometry).cacheExtent) - cacheExtentCorrection));
-                cacheOriginLocal = Math.Min((correctedCacheOrigin + ((SliverGeometry)childLayoutGeometry).cacheExtent), 0.0);
+                remainingCacheExtentLocal = _fixPrecisionError(remainingCacheExtentLocal - childLayoutGeometry.cacheExtent - cacheExtentCorrection);
+                cacheOriginLocal = Math.Min(correctedCacheOrigin + childLayoutGeometry.cacheExtent, 0.0);
             }
             child = advance(child);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (((child is not null) && double.IsInfinity(maxPaintExtentLocal)))
+                    if ((child is not null) && double.IsInfinity(maxPaintExtentLocal))
                     {
                         throw new FlutterError("Unreachable sliver found, you may have a sliver following " + "a sliver with an infinite extent. ");
                     }
                     return true;
                 });
         }
-        double remainingExtent = Math.Max(0, (scrollOffsetLocal - ((SliverConstraints)constraints).scrollOffset));
-        if ((paintOffsetLocal > remainingExtent))
+        double remainingExtent = Math.Max(0, scrollOffsetLocal - constraints.scrollOffset);
+        if (paintOffsetLocal > remainingExtent)
         {
-            bool pinnedChildrenOverflow = (maxScrollObstructionExtentLocal > (remainingExtent - ((SliverConstraints)constraints).overlap));
-            double paintCorrection = (paintOffsetLocal - remainingExtent);
+            bool pinnedChildrenOverflow = maxScrollObstructionExtentLocal > (remainingExtent - constraints.overlap);
+            double paintCorrection = paintOffsetLocal - remainingExtent;
             paintOffsetLocal = remainingExtent;
             child = firstChild;
-            while ((child is not null))
+            while (child is not null)
             {
-                SliverGeometry childLayoutGeometryLocal = ((RenderSliver)child).geometry!;
+                SliverGeometry childLayoutGeometryLocal = child.geometry!;
                 var childParentDataLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-                double childMainAxisPaintOffset = (((SliverConstraints)constraints).axis switch { Axis.vertical => ((SliverPhysicalParentData)childParentDataLocal).paintOffset.dy, Axis.horizontal => ((SliverPhysicalParentData)childParentDataLocal).paintOffset.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                double childPaintEnd = (childMainAxisPaintOffset + ((SliverGeometry)childLayoutGeometryLocal).paintExtent);
-                bool childIsPinned = (((SliverGeometry)childLayoutGeometryLocal).maxScrollObstructionExtent > 0L);
-                if (((childPaintEnd > remainingExtent) || ((pinnedChildrenOverflow && childIsPinned))))
+                double childMainAxisPaintOffset = constraints.axis switch { Axis.vertical => childParentDataLocal.paintOffset.dy, Axis.horizontal => childParentDataLocal.paintOffset.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                double childPaintEnd = childMainAxisPaintOffset + childLayoutGeometryLocal.paintExtent;
+                bool childIsPinned = childLayoutGeometryLocal.maxScrollObstructionExtent > 0L;
+                if ((childPaintEnd > remainingExtent) || pinnedChildrenOverflow && childIsPinned)
                 {
-                    childParentDataLocal.paintOffset = (((SliverConstraints)constraints).axis switch { Axis.vertical => new global::Doroti.Ui.Offset(0.0, (((SliverPhysicalParentData)childParentDataLocal).paintOffset.dy - paintCorrection)), Axis.horizontal => new global::Doroti.Ui.Offset((((SliverPhysicalParentData)childParentDataLocal).paintOffset.dx - paintCorrection), 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    childParentDataLocal.paintOffset = constraints.axis switch { Axis.vertical => new global::Doroti.Ui.Offset(0.0, childParentDataLocal.paintOffset.dy - paintCorrection), Axis.horizontal => new global::Doroti.Ui.Offset(childParentDataLocal.paintOffset.dx - paintCorrection, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
                 }
                 child = childAfter(child);
             }
         }
-        double cacheExtentLocal = calculateCacheOffset(constraints, from: Math.Min(((SliverConstraints)constraints).scrollOffset, 0), to: scrollOffsetLocal);
-        double paintExtentLocal = Dart_uiLibrary.clampDouble(paintOffsetLocal, 0, ((SliverConstraints)constraints).remainingPaintExtent);
-        geometry = new SliverGeometry(scrollExtent: scrollOffsetLocal, paintExtent: paintExtentLocal, cacheExtent: cacheExtentLocal, maxPaintExtent: maxPaintExtentLocal, hasVisualOverflow: ((scrollOffsetLocal > ((SliverConstraints)constraints).remainingPaintExtent) || (((SliverConstraints)constraints).scrollOffset > 0.0)));
+        double cacheExtentLocal = calculateCacheOffset(constraints, from: Math.Min(constraints.scrollOffset, 0), to: scrollOffsetLocal);
+        double paintExtentLocal = Dart_uiLibrary.clampDouble(paintOffsetLocal, 0, constraints.remainingPaintExtent);
+        geometry = new SliverGeometry(scrollExtent: scrollOffsetLocal, paintExtent: paintExtentLocal, cacheExtent: cacheExtentLocal, maxPaintExtent: maxPaintExtentLocal, hasVisualOverflow: (scrollOffsetLocal > constraints.remainingPaintExtent) || (constraints.scrollOffset > 0.0));
         child = leadingChild;
-        while ((child is not null))
+        while (child is not null)
         {
             var childParentDataAlternate = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            childParentDataAlternate.paintOffset = (SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((paintExtentLocal - ((SliverPhysicalParentData)childParentDataAlternate).paintOffset.dy) - ((RenderSliver)child).geometry!.paintExtent)), AxisDirection.left => new global::Doroti.Ui.Offset(((paintExtentLocal - ((SliverPhysicalParentData)childParentDataAlternate).paintOffset.dx) - ((RenderSliver)child).geometry!.paintExtent), 0.0), AxisDirection.right => ((SliverPhysicalParentData)childParentDataAlternate).paintOffset, AxisDirection.down => ((SliverPhysicalParentData)childParentDataAlternate).paintOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            childParentDataAlternate.paintOffset = SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, paintExtentLocal - childParentDataAlternate.paintOffset.dy - child.geometry!.paintExtent), AxisDirection.left => new global::Doroti.Ui.Offset(paintExtentLocal - childParentDataAlternate.paintOffset.dx - child.geometry!.paintExtent, 0.0), AxisDirection.right => childParentDataAlternate.paintOffset, AxisDirection.down => childParentDataAlternate.paintOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             child = advance(child);
         }
     }
@@ -586,12 +586,12 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public override void paint(PaintingContext context, Offset offset)
     {
         RenderSliver? child = lastChild;
-        while ((child is not null))
+        while (child is not null)
         {
-            if (((RenderSliver)child).geometry!.visible)
+            if (child.geometry!.visible)
             {
                 var childParentData = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-                context.paintChild(child, (offset + ((SliverPhysicalParentData)childParentData).paintOffset));
+                context.paintChild(child, offset + childParentData.paintOffset);
             }
             child = childBefore(child);
         }
@@ -607,10 +607,10 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
     {
         RenderSliver? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
-            global::Doroti.Ui.Offset paintOffsetLocal = (((SliverPhysicalParentData?)(object?)child.parentData!)!).paintOffset;
-            bool isHit = result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, paintOffset: paintOffsetLocal, mainAxisOffset: childMainAxisPosition(child), crossAxisOffset: childCrossAxisPosition(child), hitTest: (Func<SliverHitTestResult, double, double, bool>)((RenderSliver)child).hitTest);
+            global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
+            bool isHit = result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, paintOffset: paintOffsetLocal, mainAxisOffset: childMainAxisPosition(child), crossAxisOffset: childCrossAxisPosition(child), hitTest: child.hitTest);
             if (isHit)
             {
                 return true;
@@ -624,9 +624,9 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         RenderSliver? child = firstChild;
-        while ((child is not null))
+        while (child is not null)
         {
-            if (((((RenderSliver)child).geometry!.visible || (((RenderSliver)child).geometry!.cacheExtent > 0.0)) || ((RenderSliver)child).ensureSemantics))
+            if (child.geometry!.visible || (child.geometry!.cacheExtent > 0.0) || child.ensureSemantics)
             {
                 visitor(child);
             }
@@ -636,44 +636,44 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     internal static double _fixPrecisionError(double number)
     {
-        return ((number.abs() < Foundation.ConstantsLibrary.precisionErrorTolerance) ? 0.0 : number);
+        return (number.abs() < Foundation.ConstantsLibrary.precisionErrorTolerance) ? 0.0 : number;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderSliver child, RenderSliver? equals = null)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        while ((childParentData.previousSibling is not null))
+        while (childParentData.previousSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.previousSibling, child));
             child = childParentData.previousSibling!;
             childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderSliver child, RenderSliver? equals = null)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        while ((childParentData.nextSibling is not null))
+        while (childParentData.nextSibling is not null)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => !Equals(childParentData.nextSibling, child));
             child = childParentData.nextSibling!;
             childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         }
-        return (Equals(child, equals));
+        return Equals(child, equals);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long childCount => this._childCount;
+    public virtual long childCount => _childCount;
     public virtual bool debugValidateChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((child is not RenderSliver))
+                if (child is not RenderSliver)
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) });
                 }
                 return true;
             });
@@ -684,34 +684,34 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public virtual void _insertIntoChildList(RenderSliver child, RenderSliver? after = null)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
-        this._childCount += 1L;
-        DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
-        if ((after is null))
+        DartRuntimePrimitives.Assert(() => childParentData.nextSibling is null);
+        DartRuntimePrimitives.Assert(() => childParentData.previousSibling is null);
+        _childCount += 1L;
+        DartRuntimePrimitives.Assert(() => _childCount > 0L);
+        if (after is null)
         {
-            childParentData.nextSibling = this._firstChild;
-            if ((this._firstChild is not null))
+            childParentData.nextSibling = _firstChild;
+            if (_firstChild is not null)
             {
-                var firstChildParentData = ((SliverPhysicalContainerParentData?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((SliverPhysicalContainerParentData?)(object?)_firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
-            this._firstChild = child;
-            this._lastChild ??= child;
+            _firstChild = child;
+            _lastChild ??= child;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (this._firstChild is not null));
-            DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
-            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
-            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
+            DartRuntimePrimitives.Assert(() => _firstChild is not null);
+            DartRuntimePrimitives.Assert(() => _lastChild is not null);
+            DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: _firstChild));
+            DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: _lastChild));
             var afterParentData = ((SliverPhysicalContainerParentData?)(object?)after.parentData!)!;
-            if ((afterParentData.nextSibling is null))
+            if (afterParentData.nextSibling is null)
             {
-                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => Equals(after, _lastChild));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
-                this._lastChild = child;
+                _lastChild = child;
             }
             else
             {
@@ -721,53 +721,53 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
                 var childNextSiblingParentData = ((SliverPhysicalContainerParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => Equals(afterParentData.nextSibling, child));
             }
         }
     }
 
     public virtual void insert(RenderSliver child, RenderSliver? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _firstChild));
+        DartRuntimePrimitives.Assert(() => !Equals(child, _lastChild));
         adoptChild(child);
-        DartRuntimePrimitives.Assert(() => (child.parentData is SliverPhysicalContainerParentData));
+        DartRuntimePrimitives.Assert(() => child.parentData is SliverPhysicalContainerParentData);
         _insertIntoChildList(child, after: after);
     }
 
     public virtual void add(RenderSliver child)
     {
-        insert(child, after: this._lastChild);
+        insert(child, after: _lastChild);
     }
 
     public virtual void addAll(List<RenderSliver>? children)
     {
-        children?.forEach(this.add);
+        children?.forEach(add);
     }
 
     public virtual void _removeFromChildList(RenderSliver child)
     {
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
-        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
-        DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData.previousSibling is null))
+        DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+        DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: _lastChild));
+        DartRuntimePrimitives.Assert(() => _childCount >= 0L);
+        if (childParentData.previousSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
-            this._firstChild = childParentData.nextSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_firstChild, child));
+            _firstChild = childParentData.nextSibling;
         }
         else
         {
             var childPreviousSiblingParentData = ((SliverPhysicalContainerParentData?)(object?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData.nextSibling is null))
+        if (childParentData.nextSibling is null)
         {
-            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
-            this._lastChild = childParentData.previousSibling;
+            DartRuntimePrimitives.Assert(() => Equals(_lastChild, child));
+            _lastChild = childParentData.previousSibling;
         }
         else
         {
@@ -776,7 +776,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
         }
         childParentData.previousSibling = null;
         childParentData.nextSibling = null;
-        this._childCount -= 1L;
+        _childCount -= 1L;
     }
 
     public virtual void remove(RenderSliver child)
@@ -787,8 +787,8 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     public virtual void removeAll()
     {
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
             RenderSliver? next = childParentData.nextSibling;
@@ -797,19 +797,19 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
             dropChild(child);
             child = next;
         }
-        this._firstChild = null;
-        this._lastChild = null;
-        this._childCount = 0L;
+        _firstChild = null;
+        _lastChild = null;
+        _childCount = 0L;
     }
 
     public virtual void move(RenderSliver child, RenderSliver? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => !Equals(child, this));
+        DartRuntimePrimitives.Assert(() => !Equals(after, this));
+        DartRuntimePrimitives.Assert(() => !Equals(child, after));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
-        if ((Equals(childParentData.previousSibling, after)))
+        if (Equals(childParentData.previousSibling, after))
         {
             return;
         }
@@ -821,8 +821,8 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             child.attach(owner);
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -833,8 +833,8 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public override void detach()
     {
         base.detach();
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             child.detach();
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -844,8 +844,8 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     public override void redepthChildren()
     {
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             redepthChild(child);
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -855,8 +855,8 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderSliver? child = this._firstChild;
-        while ((child is not null))
+        RenderSliver? child = _firstChild;
+        while (child is not null)
         {
             visitor(child);
             var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
@@ -864,11 +864,11 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
         }
     }
 
-    public virtual RenderSliver? firstChild => this._firstChild;
-    public virtual RenderSliver? lastChild => this._lastChild;
+    public virtual RenderSliver? firstChild => _firstChild;
+    public virtual RenderSliver? lastChild => _lastChild;
     public virtual RenderSliver? childBefore(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -876,7 +876,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     public virtual RenderSliver? childAfter(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverPhysicalContainerParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -885,14 +885,14 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
-        if ((this.firstChild is not null))
+        if (firstChild is not null)
         {
-            RenderSliver child = this.firstChild!;
+            RenderSliver child = firstChild!;
             var count = 1L;
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((Equals(child, this.lastChild)))
+                if (Equals(child, lastChild))
                 {
                     break;
                 }

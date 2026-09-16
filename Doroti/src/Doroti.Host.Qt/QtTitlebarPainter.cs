@@ -1,5 +1,5 @@
-using SkiaSharp;
 using Doroti.Ui;
+using SkiaSharp;
 
 namespace Doroti.Host.Qt;
 
@@ -15,7 +15,7 @@ internal static class QtTitlebarPainter
         var width = surface.PixelWidth / scale;
         var height = (float)surface.TitlebarHeight;
         var dark = theme is not null ? theme.Brightness == Brightness.dark : (surface.TitlebarState & 1) != 0;
-        var background = theme is not null ? new SKColor(unchecked((uint)theme.BackgroundColor.value))
+        var background = theme is not null ? new SKColor(unchecked(theme.BackgroundColor.value))
             : dark ? new SKColor(32, 32, 32, 153) : new SKColor(245, 245, 245, 153);
         var active = (surface.TitlebarState & 2) != 0;
         var maximized = (surface.TitlebarState & 4) != 0;

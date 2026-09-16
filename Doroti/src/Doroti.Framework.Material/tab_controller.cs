@@ -17,12 +17,12 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
     public TabController(long initialIndex = 0, Duration? animationDuration = null, long length = default!, global::Doroti.Framework.Scheduler.TickerProvider vsync = default!)
     {
         this.length = length;
-        this._index = initialIndex;
-        this._previousIndex = initialIndex;
-        this._animationDuration = (animationDuration ?? ConstantsLibrary.kTabScrollDuration);
-        this._animationController = AnimationController.CreateUnbounded(value: initialIndex.toDouble(), vsync: vsync);
-        System.Diagnostics.Debug.Assert((length >= 0L));
-        System.Diagnostics.Debug.Assert(((initialIndex >= 0L) && (((DartRuntimePrimitives.RequireValue(length) == 0L) || (initialIndex < DartRuntimePrimitives.RequireValue(length))))));
+        _index = initialIndex;
+        _previousIndex = initialIndex;
+        _animationDuration = animationDuration ?? ConstantsLibrary.kTabScrollDuration;
+        _animationController = AnimationController.CreateUnbounded(value: initialIndex.toDouble(), vsync: vsync);
+        System.Diagnostics.Debug.Assert(length >= 0L);
+        System.Diagnostics.Debug.Assert((initialIndex >= 0L) && ((DartRuntimePrimitives.RequireValue(length) == 0L) || (initialIndex < DartRuntimePrimitives.RequireValue(length))));
         if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
         {
             maybeDispatchObjectCreation(this);
@@ -46,49 +46,49 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
 
     internal virtual TabController _copyWithAndDispose(long? index, long? length, long? previousIndex, Duration? animationDuration)
     {
-        if ((index is not null))
+        if (index is not null)
         {
             long index__value5320 = DartRuntimePrimitives.RequireValue(index);
-            this._animationController!.value = DartRuntimePrimitives.RequireValue(index__value5320).toDouble();
+            _animationController!.value = DartRuntimePrimitives.RequireValue(index__value5320).toDouble();
         }
-        var result = Create_(index: (index ?? this._index), length: (length ?? this.length), animationController: this._animationController, previousIndex: (previousIndex ?? this._previousIndex), animationDuration: (animationDuration ?? this._animationDuration));
+        var result = Create_(index: index ?? _index, length: length ?? this.length, animationController: _animationController, previousIndex: previousIndex ?? _previousIndex, animationDuration: animationDuration ?? _animationDuration);
         _animationController = null;
         dispose();
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double>? animation => this._animationController?.view;
-    public virtual Duration animationDuration => this._animationDuration;
+    public virtual global::Doroti.Framework.Animation.Animation<double>? animation => _animationController?.view;
+    public virtual Duration animationDuration => _animationDuration;
     internal virtual void _changeIndex(long value, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null)
     {
-        DartRuntimePrimitives.Assert(() => ((value >= 0L) && (((value < this.length) || (this.length == 0L)))));
-        DartRuntimePrimitives.Assert(() => ((duration is not null) || (curve is null)));
-        DartRuntimePrimitives.Assert(() => (this._indexIsChangingCount >= 0L));
-        if (((value == this._index) || (this.length < 2L)))
+        DartRuntimePrimitives.Assert(() => (value >= 0L) && ((value < length) || (length == 0L)));
+        DartRuntimePrimitives.Assert(() => (duration is not null) || (curve is null));
+        DartRuntimePrimitives.Assert(() => _indexIsChangingCount >= 0L);
+        if ((value == _index) || (length < 2L))
         {
             return;
         }
-        _previousIndex = this.index;
+        _previousIndex = index;
         _index = value;
-        if (((duration is not null) && (DartRuntimePrimitives.RequireValue(duration) > Duration.zero)))
+        if ((duration is not null) && (DartRuntimePrimitives.RequireValue(duration) > Duration.zero))
         {
             Duration duration__value7060 = DartRuntimePrimitives.RequireValue(duration);
             _indexIsChangingCount += 1L;
             notifyListeners();
-            this._animationController!.animateTo(this._index.toDouble(), duration: DartRuntimePrimitives.RequireValue(duration__value7060), curve: curve!).whenCompleteOrCancel(((global::System.Action)(() =>
+            _animationController!.animateTo(_index.toDouble(), duration: DartRuntimePrimitives.RequireValue(duration__value7060), curve: curve!).whenCompleteOrCancel(() =>
             {
-                if ((this._animationController is not null))
+                if (_animationController is not null)
                 {
                     _indexIsChangingCount -= 1L;
                     notifyListeners();
                 }
-            })));
+            });
         }
         else
         {
             _indexIsChangingCount += 1L;
-            this._animationController!.value = this._index.toDouble();
+            _animationController!.value = _index.toDouble();
             _indexIsChangingCount -= 1L;
             notifyListeners();
         }
@@ -96,38 +96,38 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
 
     public virtual long index
     {
-        get => this._index;
+        get => _index;
         set
         {
             var __value = value;
             _changeIndex(__value);
         }
     }
-    public virtual long previousIndex => this._previousIndex;
-    public virtual bool indexIsChanging => DartRuntimePrimitives.ConvertValue<bool>((this._indexIsChangingCount != 0L));
+    public virtual long previousIndex => _previousIndex;
+    public virtual bool indexIsChanging => DartRuntimePrimitives.ConvertValue<bool>(_indexIsChangingCount != 0L);
     public virtual void animateTo(long value, Duration? duration = null, global::Doroti.Framework.Animation.Curve curve = default!)
     {
-        _changeIndex(value, duration: (duration ?? this._animationDuration), curve: curve);
+        _changeIndex(value, duration: duration ?? _animationDuration, curve: curve);
     }
 
     public virtual double offset
     {
-        get => (this._animationController!.value - this._index.toDouble());
+        get => _animationController!.value - _index.toDouble();
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => ((__value >= -1.0) && (__value <= 1.0)));
-            DartRuntimePrimitives.Assert(() => !this.indexIsChanging);
-            if ((__value == this.offset))
+            DartRuntimePrimitives.Assert(() => (__value >= -1.0) && (__value <= 1.0));
+            DartRuntimePrimitives.Assert(() => !indexIsChanging);
+            if (__value == offset)
             {
                 return;
             }
-            this._animationController!.value = (__value + this._index.toDouble());
+            _animationController!.value = __value + _index.toDouble();
         }
     }
     public override void dispose()
     {
-        this._animationController?.dispose();
+        _animationController?.dispose();
         _animationController = null;
         base.dispose();
     }
@@ -148,7 +148,7 @@ internal class _TabControllerScope__tab_controller : global::Doroti.Framework.Wi
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
         var __old = (_TabControllerScope__tab_controller)oldWidget;
-        return ((this.enabled != ((_TabControllerScope__tab_controller)__old).enabled) || (!Equals(this.controller, ((_TabControllerScope__tab_controller)__old).controller)));
+        return (enabled != __old.enabled) || (!Equals(controller, __old.controller));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -167,8 +167,8 @@ public class DefaultTabController : global::Doroti.Framework.Widgets.StatefulWid
         this.initialIndex = initialIndex;
         this.child = child;
         this.animationDuration = animationDuration;
-        System.Diagnostics.Debug.Assert((length >= 0L));
-        System.Diagnostics.Debug.Assert(((length == 0L) || (((initialIndex >= 0L) && (initialIndex < length)))));
+        System.Diagnostics.Debug.Assert(length >= 0L);
+        System.Diagnostics.Debug.Assert((length == 0L) || (initialIndex >= 0L) && (initialIndex < length));
     }
 
     public static TabController? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
@@ -179,10 +179,10 @@ public class DefaultTabController : global::Doroti.Framework.Widgets.StatefulWid
 
     public static TabController of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TabController? controller = ((TabController?)maybeOf(context));
+        TabController? controller = maybeOf(context);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((controller is null))
+                if (controller is null)
                 {
                     throw DartRuntimePrimitives.AsException(FlutterError.Create("DefaultTabController.of() was called with a context that does not " + "contain a DefaultTabController widget.\n" + "No DefaultTabController widget ancestor could be found starting from " + "the context that was passed to DefaultTabController.of(). This can " + "happen because you are using a widget that looks for a DefaultTabController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
@@ -204,48 +204,48 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
     public override void initState()
     {
         base.initState();
-        _controller = new TabController(vsync: this, length: ((DefaultTabController)this.widget).length, initialIndex: ((DefaultTabController)this.widget).initialIndex, animationDuration: ((DefaultTabController)this.widget).animationDuration);
+        _controller = new TabController(vsync: this, length: widget.length, initialIndex: widget.initialIndex, animationDuration: widget.animationDuration);
     }
 
     public override void dispose()
     {
-        this._controller.dispose();
+        _controller.dispose();
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._ticker is null) || !this._ticker!.isActive))
+                if ((_ticker is null) || !_ticker!.isActive)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _TabControllerScope__tab_controller(controller: this._controller, enabled: TickerMode.of(context), child: ((DefaultTabController)this.widget).child));
+        return new _TabControllerScope__tab_controller(controller: _controller, enabled: TickerMode.of(context), child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didUpdateWidget(DefaultTabController oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((((DefaultTabController)oldWidget).length != ((DefaultTabController)this.widget).length))
+        if (oldWidget.length != widget.length)
         {
             long? newIndex = default!;
-            long previousIndexLocal = ((TabController)this._controller).previousIndex;
-            if ((((TabController)this._controller).index >= ((DefaultTabController)this.widget).length))
+            long previousIndexLocal = _controller.previousIndex;
+            if (_controller.index >= widget.length)
             {
-                newIndex = Math.Max(0L, (((DefaultTabController)this.widget).length - 1L));
-                previousIndexLocal = ((TabController)this._controller).index;
+                newIndex = Math.Max(0L, widget.length - 1L);
+                previousIndexLocal = _controller.index;
             }
-            _controller = this._controller._copyWithAndDispose(length: ((DefaultTabController)this.widget).length, animationDuration: ((DefaultTabController)this.widget).animationDuration, index: newIndex, previousIndex: previousIndexLocal);
+            _controller = _controller._copyWithAndDispose(length: widget.length, animationDuration: widget.animationDuration, index: newIndex, previousIndex: previousIndexLocal);
         }
-        if ((!Equals(((DefaultTabController)oldWidget).animationDuration, ((DefaultTabController)this.widget).animationDuration)))
+        if (!Equals(oldWidget.animationDuration, widget.animationDuration))
         {
-            _controller = this._controller._copyWithAndDispose(length: ((DefaultTabController)this.widget).length, animationDuration: ((DefaultTabController)this.widget).animationDuration, index: ((TabController)this._controller).index, previousIndex: ((TabController)this._controller).previousIndex);
+            _controller = _controller._copyWithAndDispose(length: widget.length, animationDuration: widget.animationDuration, index: _controller.index, previousIndex: _controller.previousIndex);
         }
     }
 
@@ -253,16 +253,16 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this._ticker is null))
+                if (_ticker is null)
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
+        _ticker = new global::Doroti.Framework.Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
         _updateTickerModeNotifier();
         _updateTicker();
-        return this._ticker!;
+        return _ticker!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -275,31 +275,31 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
 
     public virtual void _updateTicker()
     {
-        TickerModeData values = this._tickerModeNotifier!.value;
-        if ((this._ticker is not null))
+        TickerModeData values = _tickerModeNotifier!.value;
+        if (_ticker is not null)
         {
-            this._ticker!.muted = !((TickerModeData)values).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
+            _ticker!.muted = !values.enabled;
+            _ticker!.forceFrames = values.forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
-        if ((Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(this._updateTicker);
-        newNotifier.addListener(this._updateTicker);
-        this._tickerModeNotifier = newNotifier;
+        _tickerModeNotifier?.removeListener(_updateTicker);
+        newNotifier.addListener(_updateTicker);
+        _tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }

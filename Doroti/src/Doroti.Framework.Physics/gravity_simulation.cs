@@ -13,16 +13,16 @@ public class GravitySimulation : Simulation
 
     public GravitySimulation(double acceleration, double distance, double endDistance, double velocity)
     {
-        this._a = acceleration;
-        this._x = distance;
-        this._v = velocity;
-        this._end = endDistance;
-        System.Diagnostics.Debug.Assert((endDistance >= 0L));
+        _a = acceleration;
+        _x = distance;
+        _v = velocity;
+        _end = endDistance;
+        System.Diagnostics.Debug.Assert(endDistance >= 0L);
     }
 
-    public override double x(double time) => ((this._x + (this._v * time)) + (((0.5 * this._a) * time) * time));
-    public override double dx(double time) => (this._v + (time * this._a));
-    public override bool isDone(double time) => (x(time).abs() >= this._end);
-    public override string ToString() => $"{(Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GravitySimulation"))}(g: {this._a.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)}, xₘₐₓ: ±{this._end.toStringAsFixed(1L)})";
+    public override double x(double time) => _x + (_v * time) + (0.5 * _a * time * time);
+    public override double dx(double time) => _v + (time * _a);
+    public override bool isDone(double time) => x(time).abs() >= _end;
+    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GravitySimulation")}(g: {_a.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, xₘₐₓ: ±{_end.toStringAsFixed(1L)})";
 }
 

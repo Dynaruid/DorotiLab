@@ -21,13 +21,13 @@ public class TreeSliverIndentationType
 
     public TreeSliverIndentationType(double value)
     {
-        this._value = value;
+        _value = value;
     }
 
-    public virtual double value => this._value;
+    public virtual double value => _value;
     public static TreeSliverIndentationType custom(double value)
     {
-        DartRuntimePrimitives.Assert(() => (value >= 0.0));
+        DartRuntimePrimitives.Assert(() => value >= 0.0);
         return new TreeSliverIndentationType(value);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -46,17 +46,17 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public RenderTreeSliver(RenderSliverBoxChildManager childManager, ItemExtentBuilder itemExtentBuilder, DartMap<UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation> activeAnimations, double indentation) : base(childManager: childManager, itemExtentBuilder: itemExtentBuilder)
     {
-        this._activeAnimations = activeAnimations;
-        this._indentation = indentation;
+        _activeAnimations = activeAnimations;
+        _indentation = indentation;
     }
 
     public virtual DartMap<UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation> activeAnimations
     {
-        get => this._activeAnimations;
+        get => _activeAnimations;
         set
         {
             var __value = value;
-            if ((Equals(this._activeAnimations, __value)))
+            if (Equals(_activeAnimations, __value))
             {
                 return;
             }
@@ -66,42 +66,42 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
     }
     public virtual double indentation
     {
-        get => this._indentation;
+        get => _indentation;
         set
         {
             var __value = value;
-            if ((this._indentation == __value))
+            if (_indentation == __value)
             {
                 return;
             }
-            DartRuntimePrimitives.Assert(() => (this.indentation >= 0.0));
+            DartRuntimePrimitives.Assert(() => indentation >= 0.0);
             _indentation = __value;
             markNeedsLayout();
         }
     }
     internal virtual void _updateAnimationCache()
     {
-        this._animationLeadingIndices.Clear();
-        this._activeAnimations.forEach(((key, animation) =>
+        _animationLeadingIndices.Clear();
+        _activeAnimations.forEach((key, animation) =>
         {
-            this._animationLeadingIndices[(animation.fromIndex - 1L)] = key;
-        }));
-        this._animationOffsets.removeWhere(((key, _) => !this._activeAnimations.Keys.contains(key)));
-        this._clipHandles.removeWhere(((key, handle) =>
+            _animationLeadingIndices[animation.fromIndex - 1L] = key;
+        });
+        _animationOffsets.removeWhere((key, _) => !_activeAnimations.Keys.contains(key));
+        _clipHandles.removeWhere((key, handle) =>
         {
-            if (!this._activeAnimations.Keys.contains(key))
+            if (!_activeAnimations.Keys.contains(key))
             {
                 handle.layer = null;
                 return true;
             }
             return false;
-        }));
+        });
     }
 
     public override void setupParentData(RenderObject child)
     {
         var __child = (RenderBox)child;
-        if ((__child.parentData is not TreeSliverNodeParentData))
+        if (__child.parentData is not TreeSliverNodeParentData)
         {
             __child.parentData = new TreeSliverNodeParentData();
         }
@@ -109,17 +109,17 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public override void dispose()
     {
-        this._clipHandles.removeWhere(((key, handle) =>
+        _clipHandles.removeWhere((key, handle) =>
         {
             handle.layer = null;
             return true;
-        }));
+        });
         base.dispose();
     }
 
     public override void performLayout()
     {
-        DartRuntimePrimitives.Assert(() => (Equals(((SliverConstraints)constraints).axisDirection, AxisDirection.down)));
+        DartRuntimePrimitives.Assert(() => Equals(constraints.axisDirection, AxisDirection.down));
         _updateAnimationCache();
         base.performLayout();
     }
@@ -138,7 +138,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     internal virtual long _getChildIndexForScrollOffset(double scrollOffset)
     {
-        if ((scrollOffset == 0.0))
+        if (scrollOffset == 0.0)
         {
             return 0L;
         }
@@ -146,58 +146,58 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         var index = 0L;
         var totalAnimationOffset = 0.0;
         double? itemExtent = default!;
-        long? childCount = ((RenderSliverBoxChildManager)childManager).estimatedChildCount;
-        while ((position < scrollOffset))
+        long? childCount = childManager.estimatedChildCount;
+        while (position < scrollOffset)
         {
-            if (((childCount is not null) && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L))))
+            if ((childCount is not null) && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L)))
             {
                 long childCount__8482__value8577 = DartRuntimePrimitives.RequireValue(childCount);
                 break;
             }
             itemExtent = itemExtentBuilder(index, layoutDimensions);
-            if ((itemExtent is null))
+            if (itemExtent is null)
             {
                 break;
             }
-            if (this._animationLeadingIndices.Keys.contains(index))
+            if (_animationLeadingIndices.Keys.contains(index))
             {
-                UniqueKey animationKey = this._animationLeadingIndices.GetValueOrDefault(index)!;
-                if ((!this._animationOffsets.ContainsKey(animationKey)))
+                UniqueKey animationKey = _animationLeadingIndices.GetValueOrDefault(index)!;
+                if (!_animationOffsets.ContainsKey(animationKey))
                 {
                     _computeAnimationOffsetFor(animationKey, position);
                 }
-                totalAnimationOffset += (DartRuntimePrimitives.RequireValue(this._animationOffsets.GetValueOrDefault(animationKey)) * ((1L - DartRuntimePrimitives.RequireValue(this._activeAnimations.GetValueOrDefault(animationKey)).value)));
+                totalAnimationOffset += DartRuntimePrimitives.RequireValue(_animationOffsets.GetValueOrDefault(animationKey)) * (1L - DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(animationKey)).value);
             }
-            position += (DartRuntimePrimitives.RequireValue(itemExtent) - totalAnimationOffset);
+            position += DartRuntimePrimitives.RequireValue(itemExtent) - totalAnimationOffset;
             ++index;
         }
-        return (index - 1L);
+        return index - 1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _computeAnimationOffsetFor(UniqueKey key, double position)
     {
-        DartRuntimePrimitives.Assert(() => (this._activeAnimations.ContainsKey(key)));
-        double targetPosition = (((SliverConstraints)constraints).scrollOffset + ((SliverConstraints)constraints).remainingCacheExtent);
+        DartRuntimePrimitives.Assert(() => _activeAnimations.ContainsKey(key));
+        double targetPosition = constraints.scrollOffset + constraints.remainingCacheExtent;
         var currentPosition = position;
-        long startingIndex = DartRuntimePrimitives.RequireValue(this._activeAnimations.GetValueOrDefault(key)).fromIndex;
-        long lastIndex = DartRuntimePrimitives.RequireValue(this._activeAnimations.GetValueOrDefault(key)).toIndex;
+        long startingIndex = DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(key)).fromIndex;
+        long lastIndex = DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(key)).toIndex;
         var currentIndex = startingIndex;
         var totalAnimatingOffset = 0.0;
-        while (((currentIndex <= lastIndex) && (currentPosition < targetPosition)))
+        while ((currentIndex <= lastIndex) && (currentPosition < targetPosition))
         {
             double itemExtent = DartRuntimePrimitives.RequireValue(itemExtentBuilder(currentIndex, layoutDimensions));
             totalAnimatingOffset += itemExtent;
             currentPosition += itemExtent;
             currentIndex++;
         }
-        this._animationOffsets[key] = totalAnimatingOffset;
+        _animationOffsets[key] = totalAnimatingOffset;
     }
 
     public override double childCrossAxisPosition(RenderObject child)
     {
-        var parentDataLocal = ((TreeSliverNodeParentData?)((RenderObject)child).parentData!)!;
-        return (((TreeSliverNodeParentData)parentDataLocal).depth * this.indentation);
+        var parentDataLocal = ((TreeSliverNodeParentData?)child.parentData!)!;
+        return parentDataLocal.depth * indentation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -207,35 +207,35 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         var currentIndex = 0L;
         var totalAnimationOffset = 0.0;
         double? itemExtentLocal = default!;
-        long? childCount = ((RenderSliverBoxChildManager)childManager).estimatedChildCount;
-        while ((currentIndex < index))
+        long? childCount = childManager.estimatedChildCount;
+        while (currentIndex < index)
         {
-            if (((childCount is not null) && (currentIndex > (DartRuntimePrimitives.RequireValue(childCount) - 1L))))
+            if ((childCount is not null) && (currentIndex > (DartRuntimePrimitives.RequireValue(childCount) - 1L)))
             {
                 long childCount__11234__value11326 = DartRuntimePrimitives.RequireValue(childCount);
                 break;
             }
             itemExtentLocal = itemExtentBuilder(currentIndex, layoutDimensions);
-            if ((itemExtentLocal is null))
+            if (itemExtentLocal is null)
             {
                 break;
             }
-            if (this._animationLeadingIndices.Keys.contains(currentIndex))
+            if (_animationLeadingIndices.Keys.contains(currentIndex))
             {
-                UniqueKey animationKey = this._animationLeadingIndices.GetValueOrDefault(currentIndex)!;
-                DartRuntimePrimitives.Assert(() => (this._animationOffsets.ContainsKey(animationKey)));
-                totalAnimationOffset += (DartRuntimePrimitives.RequireValue(this._animationOffsets.GetValueOrDefault(animationKey)) * ((1L - DartRuntimePrimitives.RequireValue(this._activeAnimations.GetValueOrDefault(animationKey)).value)));
+                UniqueKey animationKey = _animationLeadingIndices.GetValueOrDefault(currentIndex)!;
+                DartRuntimePrimitives.Assert(() => _animationOffsets.ContainsKey(animationKey));
+                totalAnimationOffset += DartRuntimePrimitives.RequireValue(_animationOffsets.GetValueOrDefault(animationKey)) * (1L - DartRuntimePrimitives.RequireValue(_activeAnimations.GetValueOrDefault(animationKey)).value);
             }
             position += DartRuntimePrimitives.RequireValue(itemExtentLocal);
             currentIndex++;
         }
-        return (position - totalAnimationOffset);
+        return position - totalAnimationOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((firstChild is null))
+        if (firstChild is null)
         {
             return;
         }
@@ -243,12 +243,12 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         void paintUpTo(long index, RenderBox? startWith, PaintingContext context, Offset offset)
         {
             var child = startWith;
-            while (((child is not null) && (indexOf(child) <= index)))
+            while ((child is not null) && (indexOf(child) <= index))
             {
                 double mainAxisDelta = childMainAxisPosition(child);
                 var parentDataLocal = ((TreeSliverNodeParentData?)child.parentData!)!;
-                global::Doroti.Ui.Offset childOffset = (new global::Doroti.Ui.Offset((((TreeSliverNodeParentData)parentDataLocal).depth * this.indentation), (DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) - ((SliverConstraints)constraints).scrollOffset)) + offset);
-                if (((mainAxisDelta < ((SliverConstraints)constraints).remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L)))
+                global::Doroti.Ui.Offset childOffset = new global::Doroti.Ui.Offset(parentDataLocal.depth * indentation, DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) - constraints.scrollOffset) + offset;
+                if ((mainAxisDelta < constraints.remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L))
                 {
                     context.paintChild(child, childOffset);
                 }
@@ -256,7 +256,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             }
             nextChild = child;
         }
-        if ((checked((long)(this._animationLeadingIndices.Count)) == 0))
+        if (checked((long)_animationLeadingIndices.Count) == 0)
         {
             paintUpTo(indexOf(lastChild!), firstChild, context, offset);
             return;
@@ -264,32 +264,32 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         long leadingIndexLocal = indexOf(firstChild!);
         List<long> animationIndices = ((Func<List<long>>)(() =>
 {
-    var __cascade = this._animationLeadingIndices.Keys.ToList();
+    var __cascade = _animationLeadingIndices.Keys.ToList();
     __cascade.sort();
     return __cascade;
 }))();
         var paintSegments = new List<(long leadingIndex, long trailingIndex)>();
-        while ((checked((long)(animationIndices.Count)) != 0))
+        while (checked((long)animationIndices.Count) != 0)
         {
             long trailingIndexLocal = animationIndices.removeAt(0L);
             paintSegments.Add((leadingIndex: leadingIndexLocal, trailingIndex: trailingIndexLocal));
-            leadingIndexLocal = (trailingIndexLocal + 1L);
+            leadingIndexLocal = trailingIndexLocal + 1L;
         }
         paintSegments.Add((leadingIndex: leadingIndexLocal, trailingIndex: indexOf(lastChild!)));
         paintUpTo(paintSegments.removeAt(0L).trailingIndex, nextChild, context, offset);
-        while ((checked((long)(paintSegments.Count)) != 0))
+        while (checked((long)paintSegments.Count) != 0)
         {
             (long leadingIndex, long trailingIndex) segment = paintSegments.removeAt(0L);
-            long parentIndex = Math.Max((segment.leadingIndex - 1L), 0L);
-            double leadingOffset = (indexToLayoutOffset(0.0, parentIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(parentIndex, layoutDimensions)));
-            double trailingOffset = (indexToLayoutOffset(0.0, segment.trailingIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(segment.trailingIndex, layoutDimensions)));
-            var rect = Rect.fromPoints(new global::Doroti.Ui.Offset(0.0, leadingOffset), new global::Doroti.Ui.Offset(((SliverConstraints)constraints).crossAxisExtent, trailingOffset));
-            UniqueKey key = this._animationLeadingIndices.GetValueOrDefault(parentIndex)!;
-            var clipHandle = this._clipHandles.putIfAbsent(key, () => new LayerHandle<ClipRectLayer>());
-            clipHandle.layer = context.pushClipRect(needsCompositing, offset, rect, ((Action<PaintingContext, Offset>)((context, offset) =>
+            long parentIndex = Math.Max(segment.leadingIndex - 1L, 0L);
+            double leadingOffset = indexToLayoutOffset(0.0, parentIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(parentIndex, layoutDimensions));
+            double trailingOffset = indexToLayoutOffset(0.0, segment.trailingIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(segment.trailingIndex, layoutDimensions));
+            var rect = Rect.fromPoints(new global::Doroti.Ui.Offset(0.0, leadingOffset), new global::Doroti.Ui.Offset(constraints.crossAxisExtent, trailingOffset));
+            UniqueKey key = _animationLeadingIndices.GetValueOrDefault(parentIndex)!;
+            var clipHandle = _clipHandles.putIfAbsent(key, () => new LayerHandle<ClipRectLayer>());
+            clipHandle.layer = context.pushClipRect(needsCompositing, offset, rect, (context, offset) =>
             {
                 paintUpTo(segment.trailingIndex, nextChild, context, offset);
-            })), oldLayer: clipHandle.layer);
+            }, oldLayer: clipHandle.layer);
         }
     }
 

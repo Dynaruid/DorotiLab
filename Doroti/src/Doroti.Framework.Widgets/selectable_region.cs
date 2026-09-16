@@ -37,11 +37,11 @@ public class SelectableRegion : StatefulWidget
 
     public static List<ContextMenuButtonItem> getSelectableButtonItems(global::Doroti.Framework.Rendering.SelectionGeometry selectionGeometry, global::System.Action onCopy, global::System.Action onSelectAll, global::System.Action? onShare)
     {
-        var canCopy = (Equals(((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).status, SelectionStatus.uncollapsed));
-        bool canSelectAll = ((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).hasContent;
-        bool platformCanShare = (!Foundation.ConstantsLibrary.kIsWeb && (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => (Equals(((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).status, SelectionStatus.uncollapsed)), TargetPlatform.macOS or TargetPlatform.fuchsia or TargetPlatform.linux => false, TargetPlatform.windows => false, TargetPlatform.iOS => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        bool canShare = ((onShare is not null) && platformCanShare);
-        var showShareBeforeSelectAll = (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
+        var canCopy = Equals(selectionGeometry.status, SelectionStatus.uncollapsed);
+        bool canSelectAll = selectionGeometry.hasContent;
+        bool platformCanShare = !Foundation.ConstantsLibrary.kIsWeb && (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => Equals(selectionGeometry.status, SelectionStatus.uncollapsed), TargetPlatform.macOS or TargetPlatform.fuchsia or TargetPlatform.linux => false, TargetPlatform.windows => false, TargetPlatform.iOS => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool canShare = (onShare is not null) && platformCanShare;
+        var showShareBeforeSelectAll = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android);
         return new List<ContextMenuButtonItem>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -59,7 +59,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             if (!__late__actions_initialized)
             {
-                __late__actions = new DartMap<Type, dynamic> { [typeof(SelectAllTextIntent)] = _makeOverridable(new _SelectAllAction__selectable_region(this)), [typeof(CopySelectionTextIntent)] = _makeOverridable(new _CopySelectionAction__selectable_region(this)), [typeof(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent)] = _makeOverridable(new _GranularlyExtendSelectionAction__selectable_region<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(this, granularity: TextGranularity.word)), [typeof(ExpandSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _GranularlyExtendSelectionAction__selectable_region<ExpandSelectionToDocumentBoundaryIntent>(this, granularity: TextGranularity.document)), [typeof(ExpandSelectionToLineBreakIntent)] = _makeOverridable(new _GranularlyExtendSelectionAction__selectable_region<ExpandSelectionToLineBreakIntent>(this, granularity: TextGranularity.line)), [typeof(ExtendSelectionByCharacterIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionByCharacterIntent>(this, granularity: TextGranularity.character)), [typeof(ExtendSelectionToNextWordBoundaryIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionToNextWordBoundaryIntent>(this, granularity: TextGranularity.word)), [typeof(ExtendSelectionToLineBreakIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionToLineBreakIntent>(this, granularity: TextGranularity.line)), [typeof(ExtendSelectionVerticallyToAdjacentLineIntent)] = _makeOverridable(new _DirectionallyExtendCaretSelectionAction__selectable_region<ExtendSelectionVerticallyToAdjacentLineIntent>(this)), [typeof(ExtendSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionToDocumentBoundaryIntent>(this, granularity: TextGranularity.document)), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: (global::System.Func<DismissIntent, object?>)this._hideToolbarIfVisible) };
+                __late__actions = new DartMap<Type, dynamic> { [typeof(SelectAllTextIntent)] = _makeOverridable(new _SelectAllAction__selectable_region(this)), [typeof(CopySelectionTextIntent)] = _makeOverridable(new _CopySelectionAction__selectable_region(this)), [typeof(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent)] = _makeOverridable(new _GranularlyExtendSelectionAction__selectable_region<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(this, granularity: TextGranularity.word)), [typeof(ExpandSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _GranularlyExtendSelectionAction__selectable_region<ExpandSelectionToDocumentBoundaryIntent>(this, granularity: TextGranularity.document)), [typeof(ExpandSelectionToLineBreakIntent)] = _makeOverridable(new _GranularlyExtendSelectionAction__selectable_region<ExpandSelectionToLineBreakIntent>(this, granularity: TextGranularity.line)), [typeof(ExtendSelectionByCharacterIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionByCharacterIntent>(this, granularity: TextGranularity.character)), [typeof(ExtendSelectionToNextWordBoundaryIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionToNextWordBoundaryIntent>(this, granularity: TextGranularity.word)), [typeof(ExtendSelectionToLineBreakIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionToLineBreakIntent>(this, granularity: TextGranularity.line)), [typeof(ExtendSelectionVerticallyToAdjacentLineIntent)] = _makeOverridable(new _DirectionallyExtendCaretSelectionAction__selectable_region<ExtendSelectionVerticallyToAdjacentLineIntent>(this)), [typeof(ExtendSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _GranularlyExtendCaretSelectionAction__selectable_region<ExtendSelectionToDocumentBoundaryIntent>(this, granularity: TextGranularity.document)), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: _hideToolbarIfVisible) };
                 __late__actions_initialized = true;
             }
             return __late__actions;
@@ -74,7 +74,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     internal virtual global::Doroti.Framework.Rendering.Selectable? _selectable { get; set; } = default;
     internal virtual Orientation? _lastOrientation { get; set; } = default;
     internal virtual global::Doroti.Framework.Rendering.SelectedContent? _lastSelectedContent { get; set; } = default;
-    internal virtual global::Doroti.Framework.Services.ProcessTextService _processTextService { get; private set; } = ((global::Doroti.Framework.Services.ProcessTextService)new global::Doroti.Framework.Services.DefaultProcessTextService());
+    internal virtual global::Doroti.Framework.Services.ProcessTextService _processTextService { get; private set; } = new global::Doroti.Framework.Services.DefaultProcessTextService();
     internal virtual List<global::Doroti.Framework.Services.ProcessTextAction> _processTextActions { get; private set; } = new List<global::Doroti.Framework.Services.ProcessTextAction>();
     internal virtual FocusNode? _localFocusNode { get; set; } = default;
     internal virtual _SelectableRegionSelectionStatusNotifier__selectable_region _selectionStatusNotifier { get; private set; } = new _SelectableRegionSelectionStatusNotifier__selectable_region();
@@ -92,27 +92,27 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     internal virtual double? _directionalHorizontalBaseline { get; set; } = default;
     public virtual global::Doroti.Framework.Services.TextEditingValue textEditingValue { get; set; } = new global::Doroti.Framework.Services.TextEditingValue(text: "_");
 
-    internal virtual bool _hasSelectionOverlayGeometry => DartRuntimePrimitives.ConvertValue<bool>(((this._selectionDelegate.value.startSelectionPoint is not null) || (this._selectionDelegate.value.endSelectionPoint is not null)));
-    internal virtual bool _webContextMenuEnabled => DartRuntimePrimitives.ConvertValue<bool>((((Foundation.ConstantsLibrary.kIsWeb && BrowserContextMenu.enabled) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))));
-    public virtual SelectionOverlay? selectionOverlay => this._selectionOverlay;
-    internal virtual FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>((((SelectableRegion)this.widget).focusNode ?? (_localFocusNode ??= new FocusNode(debugLabel: "SelectableRegion"))));
+    internal virtual bool _hasSelectionOverlayGeometry => DartRuntimePrimitives.ConvertValue<bool>((_selectionDelegate.value.startSelectionPoint is not null) || (_selectionDelegate.value.endSelectionPoint is not null));
+    internal virtual bool _webContextMenuEnabled => DartRuntimePrimitives.ConvertValue<bool>(Foundation.ConstantsLibrary.kIsWeb && BrowserContextMenu.enabled && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)));
+    public virtual SelectionOverlay? selectionOverlay => _selectionOverlay;
+    internal virtual FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_localFocusNode ??= new FocusNode(debugLabel: "SelectableRegion")));
     public override void initState()
     {
         base.initState();
-        this._focusNode.addListener(this._handleFocusChanged);
+        _focusNode.addListener(_handleFocusChanged);
         _initMouseGestureRecognizer();
         _initTouchGestureRecognizer();
-        this._gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) =>
+        _gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this), (instance) =>
         {
-            instance.onSecondaryTapDown = (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)this._handleRightClickDown;
-        })));
+            instance.onSecondaryTapDown = _handleRightClickDown;
+        });
         DartRuntimePrimitives.Ignore(_initProcessTextActions());
     }
 
     internal async virtual Future _initProcessTextActions()
     {
-        this._processTextActions.Clear();
-        this._processTextActions.AddRange((await this._processTextService.queryTextActions()).Cast<global::Doroti.Framework.Services.ProcessTextAction>());
+        _processTextActions.Clear();
+        _processTextActions.AddRange((await _processTextService.queryTextActions()).Cast<global::Doroti.Framework.Services.ProcessTextAction>());
     }
 
     public override void didChangeDependencies()
@@ -135,39 +135,39 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
-        Orientation orientation = MediaQuery.orientationOf(this.context);
-        if ((this._lastOrientation is null))
+        Orientation orientation = MediaQuery.orientationOf(context);
+        if (_lastOrientation is null)
         {
             _lastOrientation = orientation;
             return;
         }
-        if ((!Equals(orientation, this._lastOrientation)))
+        if (!Equals(orientation, _lastOrientation))
         {
             _lastOrientation = orientation;
-            hideToolbar((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)));
+            hideToolbar(Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
         }
     }
 
     public override void didUpdateWidget(SelectableRegion oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((SelectableRegion)this.widget).focusNode, ((SelectableRegion)oldWidget).focusNode)))
+        if (!Equals(widget.focusNode, oldWidget.focusNode))
         {
-            if (((((SelectableRegion)oldWidget).focusNode is null) && (((SelectableRegion)this.widget).focusNode is not null)))
+            if ((oldWidget.focusNode is null) && (widget.focusNode is not null))
             {
-                this._localFocusNode?.removeListener(this._handleFocusChanged);
-                this._localFocusNode?.dispose();
+                _localFocusNode?.removeListener(_handleFocusChanged);
+                _localFocusNode?.dispose();
                 _localFocusNode = null;
             }
             else
             {
-                if (((((SelectableRegion)this.widget).focusNode is null) && (((SelectableRegion)oldWidget).focusNode is not null)))
+                if ((widget.focusNode is null) && (oldWidget.focusNode is not null))
                 {
-                    ((SelectableRegion)oldWidget).focusNode!.removeListener(this._handleFocusChanged);
+                    oldWidget.focusNode!.removeListener(_handleFocusChanged);
                 }
             }
-            this._focusNode.addListener(this._handleFocusChanged);
-            if ((((FocusNode)this._focusNode).hasFocus != ((SelectableRegion)oldWidget).focusNode?.hasFocus))
+            _focusNode.addListener(_handleFocusChanged);
+            if (_focusNode.hasFocus != oldWidget.focusNode?.hasFocus)
             {
                 _handleFocusChanged();
             }
@@ -176,46 +176,46 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual Action<T> _makeOverridable<T>(Action<T> defaultAction) where T : Intent
     {
-        return Action<T>.CreateOverridable(context: this.context, defaultAction: defaultAction);
+        return Action<T>.CreateOverridable(context: context, defaultAction: defaultAction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleFocusChanged()
     {
-        if (!((FocusNode)this._focusNode).hasFocus)
+        if (!_focusNode.hasFocus)
         {
             if (Foundation.ConstantsLibrary.kIsWeb)
             {
-                PlatformSelectableRegionContextMenuIo.detach(this._selectionDelegate);
+                PlatformSelectableRegionContextMenuIo.detach(_selectionDelegate);
             }
-            if ((Equals(Scheduler.SchedulerBinding.instance.lifecycleState, AppLifecycleState.resumed)))
+            if (Equals(Scheduler.SchedulerBinding.instance.lifecycleState, AppLifecycleState.resumed))
             {
                 clearSelection();
-                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                 _finalizeSelectableRegionStatus();
             }
         }
         else
         {
-            if (this._webContextMenuEnabled)
+            if (_webContextMenuEnabled)
             {
-                PlatformSelectableRegionContextMenuIo.attach(this._selectionDelegate);
+                PlatformSelectableRegionContextMenuIo.attach(_selectionDelegate);
             }
         }
     }
 
     internal virtual void _updateSelectionStatus()
     {
-        global::Doroti.Framework.Rendering.SelectionGeometry geometry = this._selectionDelegate.value;
-        global::Doroti.Framework.Services.TextSelection selectionLocal = (((global::Doroti.Framework.Rendering.SelectionGeometry)geometry).status switch { SelectionStatus.uncollapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), SelectionStatus.collapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), SelectionStatus.none => TextSelection.CreateCollapsed(offset: 1L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Framework.Rendering.SelectionGeometry geometry = _selectionDelegate.value;
+        global::Doroti.Framework.Services.TextSelection selectionLocal = geometry.status switch { SelectionStatus.uncollapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), SelectionStatus.collapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), SelectionStatus.none => TextSelection.CreateCollapsed(offset: 1L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         textEditingValue = new global::Doroti.Framework.Services.TextEditingValue(text: "__", selection: selectionLocal);
-        if (this._hasSelectionOverlayGeometry)
+        if (_hasSelectionOverlayGeometry)
         {
             _updateSelectionOverlay();
         }
         else
         {
-            this._selectionOverlay?.dispose();
+            _selectionOverlay?.dispose();
             _selectionOverlay = null;
         }
     }
@@ -244,11 +244,11 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _finalizeSelectableRegionStatus()
     {
-        if ((!Equals(((_SelectableRegionSelectionStatusNotifier__selectable_region)this._selectionStatusNotifier).value, SelectableRegionSelectionStatus.changing)))
+        if (!Equals(_selectionStatusNotifier.value, SelectableRegionSelectionStatus.changing))
         {
             return;
         }
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.finalized;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.finalized;
     }
 
     internal virtual long _getEffectiveConsecutiveTapCount(long rawCount)
@@ -259,15 +259,15 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
                 {
-                    if (((this._lastPointerDeviceKind is not null) && (!Equals(this._lastPointerDeviceKind, PointerDeviceKind.mouse))))
+                    if ((_lastPointerDeviceKind is not null) && (!Equals(_lastPointerDeviceKind, PointerDeviceKind.mouse)))
                     {
                         maxConsecutiveTap = 2L;
                     }
-                    return ((rawCount <= maxConsecutiveTap) ? rawCount : ((((rawCount % maxConsecutiveTap) == 0L) ? maxConsecutiveTap : (rawCount % maxConsecutiveTap))));
+                    return (rawCount <= maxConsecutiveTap) ? rawCount : (((rawCount % maxConsecutiveTap) == 0L) ? maxConsecutiveTap : (rawCount % maxConsecutiveTap));
                 }
             case TargetPlatform.linux:
                 {
-                    return ((rawCount <= maxConsecutiveTap) ? rawCount : ((((rawCount % maxConsecutiveTap) == 0L) ? maxConsecutiveTap : (rawCount % maxConsecutiveTap))));
+                    return (rawCount <= maxConsecutiveTap) ? rawCount : (((rawCount % maxConsecutiveTap) == 0L) ? maxConsecutiveTap : (rawCount % maxConsecutiveTap));
                 }
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
@@ -283,23 +283,23 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _initMouseGestureRecognizer()
     {
-        this._gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.mouse }))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)((instance) =>
+        _gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>(() => new global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.mouse }), (instance) =>
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() =>
             {
                 var __cascade = instance;
-                __cascade.onTapTrackStart = this._onTapTrackStart;
-                __cascade.onTapTrackReset = this._onTapTrackReset;
-                __cascade.onTapDown = this._startNewMouseSelectionGesture;
-                __cascade.onTapUp = this._handleMouseTapUp;
-                __cascade.onDragStart = this._handleMouseDragStart;
-                __cascade.onDragUpdate = this._handleMouseDragUpdate;
-                __cascade.onDragEnd = this._handleMouseDragEnd;
-                __cascade.onCancel = this.clearSelection;
+                __cascade.onTapTrackStart = _onTapTrackStart;
+                __cascade.onTapTrackReset = _onTapTrackReset;
+                __cascade.onTapDown = _startNewMouseSelectionGesture;
+                __cascade.onTapUp = _handleMouseTapUp;
+                __cascade.onDragStart = _handleMouseDragStart;
+                __cascade.onDragUpdate = _handleMouseDragUpdate;
+                __cascade.onDragEnd = _handleMouseDragEnd;
+                __cascade.onCancel = clearSelection;
                 __cascade.dragStartBehavior = DragStartBehavior.down;
                 return __cascade;
             }))());
-        })));
+        });
     }
 
     internal virtual void _onTapTrackStart()
@@ -314,47 +314,47 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _initTouchGestureRecognizer()
     {
-        this._gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: Enum.GetValues<PointerDeviceKind>().ToList().where(((device) =>
+        _gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>(() => new global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: Enum.GetValues<PointerDeviceKind>().ToList().where((device) =>
         {
-            return (!Equals(device, PointerDeviceKind.mouse));
+            return !Equals(device, PointerDeviceKind.mouse);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })).toSet()))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)((instance) =>
+        }).toSet()), (instance) =>
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() =>
             {
                 var __cascade = instance;
-                __cascade.eagerVictoryOnDrag = (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS));
-                __cascade.onTapDown = this._startNewMouseSelectionGesture;
-                __cascade.onTapUp = this._handleMouseTapUp;
-                __cascade.onDragStart = this._handleMouseDragStart;
-                __cascade.onDragUpdate = this._handleMouseDragUpdate;
-                __cascade.onDragEnd = this._handleMouseDragEnd;
-                __cascade.onCancel = this.clearSelection;
+                __cascade.eagerVictoryOnDrag = !Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS);
+                __cascade.onTapDown = _startNewMouseSelectionGesture;
+                __cascade.onTapUp = _handleMouseTapUp;
+                __cascade.onDragStart = _handleMouseDragStart;
+                __cascade.onDragUpdate = _handleMouseDragUpdate;
+                __cascade.onDragEnd = _handleMouseDragEnd;
+                __cascade.onCancel = clearSelection;
                 __cascade.dragStartBehavior = DragStartBehavior.down;
                 return __cascade;
             }))());
-        })));
-        this._gestureRecognizers[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: Selectable_regionLibrary._kLongPressSelectionDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)((instance) =>
+        });
+        _gestureRecognizers[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: Selectable_regionLibrary._kLongPressSelectionDevices), (instance) =>
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
             {
                 var __cascade = instance;
-                __cascade.onLongPressStart = this._handleTouchLongPressStart;
-                __cascade.onLongPressMoveUpdate = this._handleTouchLongPressMoveUpdate;
-                __cascade.onLongPressEnd = this._handleTouchLongPressEnd;
+                __cascade.onLongPressStart = _handleTouchLongPressStart;
+                __cascade.onLongPressMoveUpdate = _handleTouchLongPressMoveUpdate;
+                __cascade.onLongPressEnd = _handleTouchLongPressEnd;
                 return __cascade;
             }))());
-        })));
+        });
     }
 
     internal virtual void _startNewMouseSelectionGesture(global::Doroti.Framework.Gestures.TapDragDownDetails details)
     {
-        _lastPointerDeviceKind = ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind;
-        switch (_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).consecutiveTapCount))
+        _lastPointerDeviceKind = details.kind;
+        switch (_getEffectiveConsecutiveTapCount(details.consecutiveTapCount))
         {
             case 1L:
                 {
-                    this._focusNode.requestFocus();
+                    _focusNode.requestFocus();
                     switch (PlatformLibrary.defaultTargetPlatform)
                     {
                         case TargetPlatform.android:
@@ -368,16 +368,16 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.windows:
                             {
                                 hideToolbar();
-                                bool isShiftPressedValid = (this._isShiftPressed && (this._selectionDelegate.value.startSelectionPoint is not null));
+                                bool isShiftPressedValid = _isShiftPressed && (_selectionDelegate.value.startSelectionPoint is not null);
                                 if (isShiftPressedValid)
                                 {
-                                    _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
-                                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                    _selectEndTo(offset: details.globalPosition);
+                                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                     break;
                                 }
                                 clearSelection();
-                                _collapseSelectionAt(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                _collapseSelectionAt(offset: details.globalPosition);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 break;
                             }
                     }
@@ -389,14 +389,14 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                     {
                         case TargetPlatform.iOS:
                             {
-                                if (((Foundation.ConstantsLibrary.kIsWeb && (((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind is not null)) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind))))
+                                if (Foundation.ConstantsLibrary.kIsWeb && (details.kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                                 {
-                                    _doubleTapOffset = ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition;
+                                    _doubleTapOffset = details.globalPosition;
                                     break;
                                 }
-                                _selectWordAt(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
-                                if (((((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind))))
+                                _selectWordAt(offset: details.globalPosition);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                if ((details.kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                                 {
                                     _showHandles();
                                 }
@@ -408,8 +408,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.linux:
                         case TargetPlatform.windows:
                             {
-                                _selectWordAt(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                _selectWordAt(offset: details.globalPosition);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 break;
                             }
                     }
@@ -423,10 +423,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.fuchsia:
                         case TargetPlatform.iOS:
                             {
-                                if (((((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind is not null) && _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind))))
+                                if ((details.kind is not null) && _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                                 {
-                                    _selectParagraphAt(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
-                                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                    _selectParagraphAt(offset: details.globalPosition);
+                                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 }
                                 break;
                             }
@@ -434,8 +434,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.linux:
                         case TargetPlatform.windows:
                             {
-                                _selectParagraphAt(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                _selectParagraphAt(offset: details.globalPosition);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 break;
                             }
                     }
@@ -447,16 +447,16 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleMouseDragStart(global::Doroti.Framework.Gestures.TapDragStartDetails details)
     {
-        switch (_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).consecutiveTapCount))
+        switch (_getEffectiveConsecutiveTapCount(details.consecutiveTapCount))
         {
             case 1L:
                 {
-                    if (((((global::Doroti.Framework.Gestures.TapDragStartDetails)details).kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).kind))))
+                    if ((details.kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                     {
                         return;
                     }
-                    _selectStartTo(offset: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition);
-                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                    _selectStartTo(offset: details.globalPosition);
+                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                     break;
                 }
         }
@@ -465,16 +465,16 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleMouseDragUpdate(global::Doroti.Framework.Gestures.TapDragUpdateDetails details)
     {
-        switch (_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).consecutiveTapCount))
+        switch (_getEffectiveConsecutiveTapCount(details.consecutiveTapCount))
         {
             case 1L:
                 {
-                    if (((((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind))))
+                    if ((details.kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                     {
                         return;
                     }
-                    _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, continuous: true);
-                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                    _selectEndTo(offset: details.globalPosition, continuous: true);
+                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                     break;
                 }
             case 2L:
@@ -484,23 +484,23 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.android:
                         case TargetPlatform.fuchsia:
                             {
-                                if ((!Foundation.ConstantsLibrary.kIsWeb || ((((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind is not null) && _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind)))))
+                                if (!Foundation.ConstantsLibrary.kIsWeb || ((details.kind is not null) && _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind))))
                                 {
-                                    _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, continuous: true, textGranularity: TextGranularity.word);
-                                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                    _selectEndTo(offset: details.globalPosition, continuous: true, textGranularity: TextGranularity.word);
+                                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 }
                                 break;
                             }
                         case TargetPlatform.iOS:
                             {
-                                if ((((Foundation.ConstantsLibrary.kIsWeb && (((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind is not null)) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind))) && (this._doubleTapOffset is not null)))
+                                if (Foundation.ConstantsLibrary.kIsWeb && (details.kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)) && (_doubleTapOffset is not null))
                                 {
-                                    _selectWordAt(offset: DartRuntimePrimitives.RequireValue(this._doubleTapOffset));
+                                    _selectWordAt(offset: DartRuntimePrimitives.RequireValue(_doubleTapOffset));
                                     _doubleTapOffset = null;
                                 }
-                                _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, continuous: true, textGranularity: TextGranularity.word);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
-                                if (((((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind))))
+                                _selectEndTo(offset: details.globalPosition, continuous: true, textGranularity: TextGranularity.word);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                if ((details.kind is not null) && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                                 {
                                     _showHandles();
                                 }
@@ -510,8 +510,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.linux:
                         case TargetPlatform.windows:
                             {
-                                _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, continuous: true, textGranularity: TextGranularity.word);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                _selectEndTo(offset: details.globalPosition, continuous: true, textGranularity: TextGranularity.word);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 break;
                             }
                     }
@@ -525,10 +525,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.fuchsia:
                         case TargetPlatform.iOS:
                             {
-                                if (((((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind is not null) && _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind))))
+                                if ((details.kind is not null) && _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind)))
                                 {
-                                    _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, continuous: true, textGranularity: TextGranularity.paragraph);
-                                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                    _selectEndTo(offset: details.globalPosition, continuous: true, textGranularity: TextGranularity.paragraph);
+                                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 }
                                 break;
                             }
@@ -536,8 +536,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.linux:
                         case TargetPlatform.windows:
                             {
-                                _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, continuous: true, textGranularity: TextGranularity.paragraph);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                _selectEndTo(offset: details.globalPosition, continuous: true, textGranularity: TextGranularity.paragraph);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 break;
                             }
                     }
@@ -549,8 +549,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleMouseDragEnd(global::Doroti.Framework.Gestures.TapDragEndDetails details)
     {
-        DartRuntimePrimitives.Assert(() => (this._lastPointerDeviceKind is not null));
-        bool isPointerPrecise = _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(this._lastPointerDeviceKind));
+        DartRuntimePrimitives.Assert(() => _lastPointerDeviceKind is not null);
+        bool isPointerPrecise = _isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(_lastPointerDeviceKind));
         bool shouldShowSelectionOverlayOnMobile = !isPointerPrecise;
         switch (PlatformLibrary.defaultTargetPlatform)
         {
@@ -586,9 +586,9 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleMouseTapUp(global::Doroti.Framework.Gestures.TapDragUpDetails details)
     {
-        if (((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition)))
+        if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS) && _positionIsOnActiveSelection(globalPosition: details.globalPosition))
         {
-            bool toolbarIsVisibleLocal = (this._selectionOverlay?.toolbarIsVisible ?? false);
+            bool toolbarIsVisibleLocal = _selectionOverlay?.toolbarIsVisible ?? false;
             if (toolbarIsVisibleLocal)
             {
                 hideToolbar(false);
@@ -599,7 +599,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             }
             return;
         }
-        switch (_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).consecutiveTapCount))
+        switch (_getEffectiveConsecutiveTapCount(details.consecutiveTapCount))
         {
             case 1L:
                 {
@@ -610,8 +610,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case TargetPlatform.iOS:
                             {
                                 hideToolbar();
-                                _collapseSelectionAt(offset: ((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition);
-                                this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                                _collapseSelectionAt(offset: details.globalPosition);
+                                _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                                 break;
                             }
                         case TargetPlatform.macOS:
@@ -623,7 +623,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 }
             case 2L:
                 {
-                    bool isPointerPrecise = _isPrecisePointerDevice(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).kind);
+                    bool isPointerPrecise = _isPrecisePointerDevice(details.kind);
                     switch (PlatformLibrary.defaultTargetPlatform)
                     {
                         case TargetPlatform.android:
@@ -664,25 +664,25 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _updateSelectedContentIfNeeded()
     {
-        if ((((SelectableRegion)this.widget).onSelectionChanged is null))
+        if (widget.onSelectionChanged is null)
         {
             return;
         }
-        global::Doroti.Framework.Rendering.SelectedContent? content = ((global::Doroti.Framework.Rendering.SelectedContent?)this._selectable?.getSelectedContent());
-        if ((this._lastSelectedContent?.plainText != content?.plainText))
+        global::Doroti.Framework.Rendering.SelectedContent? content = _selectable?.getSelectedContent();
+        if (_lastSelectedContent?.plainText != content?.plainText)
         {
             _lastSelectedContent = content;
-            ((SelectableRegion)this.widget).onSelectionChanged!?.Invoke(this._lastSelectedContent);
+            widget.onSelectionChanged!?.Invoke(_lastSelectedContent);
         }
     }
 
     internal virtual void _handleTouchLongPressStart(global::Doroti.Framework.Gestures.LongPressStartDetails details)
     {
         DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
-        this._focusNode.requestFocus();
-        _selectWordAt(offset: ((global::Doroti.Framework.Gestures.LongPressStartDetails)details).globalPosition);
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
-        if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+        _focusNode.requestFocus();
+        _selectWordAt(offset: details.globalPosition);
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
         {
             _showHandles();
         }
@@ -691,8 +691,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleTouchLongPressMoveUpdate(global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails details)
     {
-        _selectEndTo(offset: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, textGranularity: TextGranularity.word);
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectEndTo(offset: details.globalPosition, textGranularity: TextGranularity.word);
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _updateSelectedContentIfNeeded();
     }
 
@@ -701,7 +701,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         _finalizeSelection();
         _updateSelectedContentIfNeeded();
         _finalizeSelectableRegionStatus();
-        if ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+        if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
         {
             _showHandles();
         }
@@ -710,10 +710,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual bool _positionIsOnActiveSelection(Offset globalPosition)
     {
-        foreach (global::Doroti.Ui.Rect selectionRect in this._selectionDelegate.value.selectionRects)
+        foreach (global::Doroti.Ui.Rect selectionRect in _selectionDelegate.value.selectionRects)
         {
-            Matrix4 transform = ((Matrix4)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
-            global::Doroti.Ui.Rect globalRect = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transform, selectionRect));
+            Matrix4 transform = _selectable!.getTransformTo(null);
+            global::Doroti.Ui.Rect globalRect = MatrixUtils.transformRect(transform, selectionRect);
             if (globalRect.contains(globalPosition))
             {
                 return true;
@@ -725,41 +725,41 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleRightClickDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        global::Doroti.Ui.Offset? previousSecondaryTapDownPosition = ((global::Doroti.Ui.Offset?)this._lastSecondaryTapDownPosition);
-        bool toolbarIsVisibleLocal = (this._selectionOverlay?.toolbarIsVisible ?? false);
-        _lastSecondaryTapDownPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition;
-        this._focusNode.requestFocus();
+        global::Doroti.Ui.Offset? previousSecondaryTapDownPosition = _lastSecondaryTapDownPosition;
+        bool toolbarIsVisibleLocal = _selectionOverlay?.toolbarIsVisible ?? false;
+        _lastSecondaryTapDownPosition = details.globalPosition;
+        _focusNode.requestFocus();
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.windows:
                 {
-                    bool lastSecondaryTapDownPositionWasOnActiveSelection = _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition);
+                    bool lastSecondaryTapDownPositionWasOnActiveSelection = _positionIsOnActiveSelection(globalPosition: details.globalPosition);
                     if (lastSecondaryTapDownPositionWasOnActiveSelection)
                     {
-                        _lastSecondaryTapDownPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition;
+                        _lastSecondaryTapDownPosition = details.globalPosition;
                         _showHandles();
-                        _showToolbar(location: this._lastSecondaryTapDownPosition);
+                        _showToolbar(location: _lastSecondaryTapDownPosition);
                         _updateSelectedContentIfNeeded();
                         return;
                     }
-                    _collapseSelectionAt(offset: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
+                    _collapseSelectionAt(offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition));
                     break;
                 }
             case TargetPlatform.iOS:
                 {
-                    _selectWordAt(offset: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
+                    _selectWordAt(offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition));
                     break;
                 }
             case TargetPlatform.macOS:
                 {
-                    if (((Equals(previousSecondaryTapDownPosition, this._lastSecondaryTapDownPosition)) && toolbarIsVisibleLocal))
+                    if (Equals(previousSecondaryTapDownPosition, _lastSecondaryTapDownPosition) && toolbarIsVisibleLocal)
                     {
                         hideToolbar();
                         return;
                     }
-                    _selectWordAt(offset: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
+                    _selectWordAt(offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition));
                     break;
                 }
             case TargetPlatform.linux:
@@ -769,51 +769,51 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         hideToolbar();
                         return;
                     }
-                    bool lastSecondaryTapDownPositionWasOnActiveSelectionLocal = _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition);
+                    bool lastSecondaryTapDownPositionWasOnActiveSelectionLocal = _positionIsOnActiveSelection(globalPosition: details.globalPosition);
                     if (!lastSecondaryTapDownPositionWasOnActiveSelectionLocal)
                     {
-                        _collapseSelectionAt(offset: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
+                        _collapseSelectionAt(offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition));
                     }
                     break;
                 }
         }
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _finalizeSelectableRegionStatus();
-        _lastSecondaryTapDownPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition;
+        _lastSecondaryTapDownPosition = details.globalPosition;
         _showHandles();
-        _showToolbar(location: this._lastSecondaryTapDownPosition);
+        _showToolbar(location: _lastSecondaryTapDownPosition);
         _updateSelectedContentIfNeeded();
     }
 
-    internal virtual bool _userDraggingSelectionEnd => DartRuntimePrimitives.ConvertValue<bool>((this._selectionEndPosition is not null));
+    internal virtual bool _userDraggingSelectionEnd => DartRuntimePrimitives.ConvertValue<bool>(_selectionEndPosition is not null);
     internal virtual void _triggerSelectionEndEdgeUpdate(global::Doroti.Framework.Rendering.TextGranularity? textGranularity = null)
     {
-        if ((this._scheduledSelectionEndEdgeUpdate || !this._userDraggingSelectionEnd))
+        if (_scheduledSelectionEndEdgeUpdate || !_userDraggingSelectionEnd)
         {
             return;
         }
-        if ((Equals(this._selectable?.dispatchSelectionEvent(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(this._selectionEndPosition), granularity: textGranularity)), SelectionResult.pending)))
+        if (Equals(_selectable?.dispatchSelectionEvent(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(_selectionEndPosition), granularity: textGranularity)), SelectionResult.pending))
         {
             _scheduledSelectionEndEdgeUpdate = true;
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
             {
-                if (!this._scheduledSelectionEndEdgeUpdate)
+                if (!_scheduledSelectionEndEdgeUpdate)
                 {
                     return;
                 }
                 _scheduledSelectionEndEdgeUpdate = false;
                 _triggerSelectionEndEdgeUpdate(textGranularity: textGranularity);
-            })), debugLabel: "SelectableRegion.endEdgeUpdate");
+            }, debugLabel: "SelectableRegion.endEdgeUpdate");
             return;
         }
     }
 
     internal virtual void _onAnyDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
-        bool draggingHandles = ((this._selectionOverlay is not null) && ((this._selectionOverlay!.isDraggingStartHandle || this._selectionOverlay!.isDraggingEndHandle)));
+        bool draggingHandles = (_selectionOverlay is not null) && (_selectionOverlay!.isDraggingStartHandle || _selectionOverlay!.isDraggingEndHandle);
         if (!draggingHandles)
         {
-            this._selectionOverlay!.hideMagnifier();
+            _selectionOverlay!.hideMagnifier();
             _showToolbar();
         }
         _finalizeSelection();
@@ -827,25 +827,25 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         _selectionEndPosition = null;
     }
 
-    internal virtual bool _userDraggingSelectionStart => DartRuntimePrimitives.ConvertValue<bool>((this._selectionStartPosition is not null));
+    internal virtual bool _userDraggingSelectionStart => DartRuntimePrimitives.ConvertValue<bool>(_selectionStartPosition is not null);
     internal virtual void _triggerSelectionStartEdgeUpdate(global::Doroti.Framework.Rendering.TextGranularity? textGranularity = null)
     {
-        if ((this._scheduledSelectionStartEdgeUpdate || !this._userDraggingSelectionStart))
+        if (_scheduledSelectionStartEdgeUpdate || !_userDraggingSelectionStart)
         {
             return;
         }
-        if ((Equals(this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(this._selectionStartPosition), granularity: textGranularity)), SelectionResult.pending)))
+        if (Equals(_selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(_selectionStartPosition), granularity: textGranularity)), SelectionResult.pending))
         {
             _scheduledSelectionStartEdgeUpdate = true;
-            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
             {
-                if (!this._scheduledSelectionStartEdgeUpdate)
+                if (!_scheduledSelectionStartEdgeUpdate)
                 {
                     return;
                 }
                 _scheduledSelectionStartEdgeUpdate = false;
                 _triggerSelectionStartEdgeUpdate(textGranularity: textGranularity);
-            })), debugLabel: "SelectableRegion.startEdgeUpdate");
+            }, debugLabel: "SelectableRegion.startEdgeUpdate");
             return;
         }
     }
@@ -858,130 +858,130 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleSelectionStartHandleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
-        DartRuntimePrimitives.Assert(() => (this._selectionDelegate.value.startSelectionPoint is not null));
-        global::Doroti.Ui.Offset localPositionLocal = ((global::Doroti.Ui.Offset)this._selectionDelegate.value.startSelectionPoint!.localPosition);
-        Matrix4 globalTransform = ((Matrix4)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
+        DartRuntimePrimitives.Assert(() => _selectionDelegate.value.startSelectionPoint is not null);
+        global::Doroti.Ui.Offset localPositionLocal = _selectionDelegate.value.startSelectionPoint!.localPosition;
+        Matrix4 globalTransform = _selectable!.getTransformTo(null);
         _selectionStartHandleDragPosition = MatrixUtils.transformPoint(globalTransform, localPositionLocal);
-        this._selectionOverlay!.showMagnifier(_buildInfoForMagnifier(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition, this._selectionDelegate.value.startSelectionPoint!));
+        _selectionOverlay!.showMagnifier(_buildInfoForMagnifier(details.globalPosition, _selectionDelegate.value.startSelectionPoint!));
         _updateSelectedContentIfNeeded();
     }
 
     internal virtual void _handleSelectionStartHandleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
     {
-        _selectionStartHandleDragPosition = (this._selectionStartHandleDragPosition + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta);
-        _selectionStartPosition = (this._selectionStartHandleDragPosition - new global::Doroti.Ui.Offset(0, (this._selectionDelegate.value.startSelectionPoint!.lineHeight / 2L)));
+        _selectionStartHandleDragPosition = _selectionStartHandleDragPosition + details.delta;
+        _selectionStartPosition = _selectionStartHandleDragPosition - new global::Doroti.Ui.Offset(0, _selectionDelegate.value.startSelectionPoint!.lineHeight / 2L);
         _triggerSelectionStartEdgeUpdate();
-        this._selectionOverlay!.updateMagnifier(_buildInfoForMagnifier(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, this._selectionDelegate.value.startSelectionPoint!));
+        _selectionOverlay!.updateMagnifier(_buildInfoForMagnifier(details.globalPosition, _selectionDelegate.value.startSelectionPoint!));
         _updateSelectedContentIfNeeded();
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
     }
 
     internal virtual void _handleSelectionEndHandleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
-        DartRuntimePrimitives.Assert(() => (this._selectionDelegate.value.endSelectionPoint is not null));
-        global::Doroti.Ui.Offset localPositionLocal = ((global::Doroti.Ui.Offset)this._selectionDelegate.value.endSelectionPoint!.localPosition);
-        Matrix4 globalTransform = ((Matrix4)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
+        DartRuntimePrimitives.Assert(() => _selectionDelegate.value.endSelectionPoint is not null);
+        global::Doroti.Ui.Offset localPositionLocal = _selectionDelegate.value.endSelectionPoint!.localPosition;
+        Matrix4 globalTransform = _selectable!.getTransformTo(null);
         _selectionEndHandleDragPosition = MatrixUtils.transformPoint(globalTransform, localPositionLocal);
-        this._selectionOverlay!.showMagnifier(_buildInfoForMagnifier(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition, this._selectionDelegate.value.endSelectionPoint!));
+        _selectionOverlay!.showMagnifier(_buildInfoForMagnifier(details.globalPosition, _selectionDelegate.value.endSelectionPoint!));
         _updateSelectedContentIfNeeded();
     }
 
     internal virtual void _handleSelectionEndHandleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
     {
-        _selectionEndHandleDragPosition = (this._selectionEndHandleDragPosition + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta);
-        _selectionEndPosition = (this._selectionEndHandleDragPosition - new global::Doroti.Ui.Offset(0, (this._selectionDelegate.value.endSelectionPoint!.lineHeight / 2L)));
+        _selectionEndHandleDragPosition = _selectionEndHandleDragPosition + details.delta;
+        _selectionEndPosition = _selectionEndHandleDragPosition - new global::Doroti.Ui.Offset(0, _selectionDelegate.value.endSelectionPoint!.lineHeight / 2L);
         _triggerSelectionEndEdgeUpdate();
-        this._selectionOverlay!.updateMagnifier(_buildInfoForMagnifier(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, this._selectionDelegate.value.endSelectionPoint!));
+        _selectionOverlay!.updateMagnifier(_buildInfoForMagnifier(details.globalPosition, _selectionDelegate.value.endSelectionPoint!));
         _updateSelectedContentIfNeeded();
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
     }
 
     internal virtual MagnifierInfo _buildInfoForMagnifier(Offset globalGesturePosition, global::Doroti.Framework.Rendering.SelectionPoint selectionPoint)
     {
-        Vector3 globalTransform = this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)).getTranslation();
+        Vector3 globalTransform = _selectable!.getTransformTo(null).getTranslation();
         var globalTransformAsOffset = new global::Doroti.Ui.Offset(globalTransform.x, globalTransform.y);
-        global::Doroti.Ui.Offset globalSelectionPointPosition = ((global::Doroti.Ui.Offset)(((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).localPosition + globalTransformAsOffset));
-        var caretRectLocal = Rect.fromLTWH(globalSelectionPointPosition.dx, (globalSelectionPointPosition.dy - ((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).lineHeight), 0, ((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).lineHeight);
-        return new MagnifierInfo(globalGesturePosition: globalGesturePosition, caretRect: caretRectLocal, fieldBounds: (globalTransformAsOffset & this._selectable!.size), currentLineBoundaries: (globalTransformAsOffset & this._selectable!.size));
+        global::Doroti.Ui.Offset globalSelectionPointPosition = selectionPoint.localPosition + globalTransformAsOffset;
+        var caretRectLocal = Rect.fromLTWH(globalSelectionPointPosition.dx, globalSelectionPointPosition.dy - selectionPoint.lineHeight, 0, selectionPoint.lineHeight);
+        return new MagnifierInfo(globalGesturePosition: globalGesturePosition, caretRect: caretRectLocal, fieldBounds: globalTransformAsOffset & _selectable!.size, currentLineBoundaries: globalTransformAsOffset & _selectable!.size);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _createSelectionOverlay()
     {
-        DartRuntimePrimitives.Assert(() => this._hasSelectionOverlayGeometry);
-        if ((this._selectionOverlay is not null))
+        DartRuntimePrimitives.Assert(() => _hasSelectionOverlayGeometry);
+        if (_selectionOverlay is not null)
         {
             return;
         }
-        global::Doroti.Framework.Rendering.SelectionPoint? start = this._selectionDelegate.value.startSelectionPoint;
-        global::Doroti.Framework.Rendering.SelectionPoint? end = this._selectionDelegate.value.endSelectionPoint;
-        _selectionOverlay = new SelectionOverlay(context: this.context, debugRequiredFor: this.widget, startHandleType: (start?.handleType ?? TextSelectionHandleType.collapsed), lineHeightAtStart: (start?.lineHeight ?? end!.lineHeight), onStartHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleSelectionStartHandleDragUpdate, onStartHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onAnyDragEnd, endHandleType: (end?.handleType ?? TextSelectionHandleType.collapsed), lineHeightAtEnd: (end?.lineHeight ?? start!.lineHeight), onEndHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleSelectionEndHandleDragUpdate, onEndHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onAnyDragEnd, selectionEndpoints: this.selectionEndpoints, selectionControls: ((SelectableRegion)this.widget).selectionControls, selectionDelegate: this, clipboardStatus: ((ClipboardStatusNotifier?)null), startHandleLayerLink: this._startHandleLayerLink, endHandleLayerLink: this._endHandleLayerLink, toolbarLayerLink: this._toolbarLayerLink, magnifierConfiguration: ((SelectableRegion)this.widget).magnifierConfiguration);
+        global::Doroti.Framework.Rendering.SelectionPoint? start = _selectionDelegate.value.startSelectionPoint;
+        global::Doroti.Framework.Rendering.SelectionPoint? end = _selectionDelegate.value.endSelectionPoint;
+        _selectionOverlay = new SelectionOverlay(context: context, debugRequiredFor: widget, startHandleType: start?.handleType ?? TextSelectionHandleType.collapsed, lineHeightAtStart: start?.lineHeight ?? end!.lineHeight, onStartHandleDragStart: _handleSelectionStartHandleDragStart, onStartHandleDragUpdate: _handleSelectionStartHandleDragUpdate, onStartHandleDragEnd: _onAnyDragEnd, endHandleType: end?.handleType ?? TextSelectionHandleType.collapsed, lineHeightAtEnd: end?.lineHeight ?? start!.lineHeight, onEndHandleDragStart: _handleSelectionEndHandleDragStart, onEndHandleDragUpdate: _handleSelectionEndHandleDragUpdate, onEndHandleDragEnd: _onAnyDragEnd, selectionEndpoints: selectionEndpoints, selectionControls: widget.selectionControls, selectionDelegate: this, clipboardStatus: null, startHandleLayerLink: _startHandleLayerLink, endHandleLayerLink: _endHandleLayerLink, toolbarLayerLink: _toolbarLayerLink, magnifierConfiguration: widget.magnifierConfiguration);
     }
 
     internal virtual void _updateSelectionOverlay()
     {
-        if ((this._selectionOverlay is null))
+        if (_selectionOverlay is null)
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => this._hasSelectionOverlayGeometry);
-        global::Doroti.Framework.Rendering.SelectionPoint? start = this._selectionDelegate.value.startSelectionPoint;
-        global::Doroti.Framework.Rendering.SelectionPoint? end = this._selectionDelegate.value.endSelectionPoint;
+        DartRuntimePrimitives.Assert(() => _hasSelectionOverlayGeometry);
+        global::Doroti.Framework.Rendering.SelectionPoint? start = _selectionDelegate.value.startSelectionPoint;
+        global::Doroti.Framework.Rendering.SelectionPoint? end = _selectionDelegate.value.endSelectionPoint;
         DartRuntimePrimitives.Ignore(((Func<SelectionOverlay>)(() =>
 {
-    var __cascade = this._selectionOverlay!;
-    __cascade.startHandleType = (start?.handleType ?? TextSelectionHandleType.left);
-    __cascade.lineHeightAtStart = (start?.lineHeight ?? end!.lineHeight);
-    __cascade.endHandleType = (end?.handleType ?? TextSelectionHandleType.right);
-    __cascade.lineHeightAtEnd = (end?.lineHeight ?? start!.lineHeight);
-    __cascade.selectionEndpoints = this.selectionEndpoints;
+    var __cascade = _selectionOverlay!;
+    __cascade.startHandleType = start?.handleType ?? TextSelectionHandleType.left;
+    __cascade.lineHeightAtStart = start?.lineHeight ?? end!.lineHeight;
+    __cascade.endHandleType = end?.handleType ?? TextSelectionHandleType.right;
+    __cascade.lineHeightAtEnd = end?.lineHeight ?? start!.lineHeight;
+    __cascade.selectionEndpoints = selectionEndpoints;
     return __cascade;
 }))());
     }
 
     internal virtual bool _showHandles()
     {
-        if ((this._selectionOverlay is not null))
+        if (_selectionOverlay is not null)
         {
-            this._selectionOverlay!.showHandles();
+            _selectionOverlay!.showHandles();
             return true;
         }
-        if (!this._hasSelectionOverlayGeometry)
+        if (!_hasSelectionOverlayGeometry)
         {
             return false;
         }
         _createSelectionOverlay();
-        this._selectionOverlay!.showHandles();
+        _selectionOverlay!.showHandles();
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _showToolbar(Offset? location = null)
     {
-        if ((!this._hasSelectionOverlayGeometry && (this._selectionOverlay is null)))
+        if (!_hasSelectionOverlayGeometry && (_selectionOverlay is null))
         {
             return false;
         }
-        if (this._webContextMenuEnabled)
+        if (_webContextMenuEnabled)
         {
             return false;
         }
-        if ((this._selectionOverlay is null))
+        if (_selectionOverlay is null)
         {
             _createSelectionOverlay();
         }
-        this._selectionOverlay!.toolbarLocation = location;
-        if ((((SelectableRegion)this.widget).selectionControls is not TextSelectionHandleControls))
+        _selectionOverlay!.toolbarLocation = location;
+        if (widget.selectionControls is not TextSelectionHandleControls)
         {
-            this._selectionOverlay!.showToolbar();
+            _selectionOverlay!.showToolbar();
             return true;
         }
-        this._selectionOverlay!.hideToolbar();
-        this._selectionOverlay!.showToolbar(context: this.context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>?)((context) =>
+        _selectionOverlay!.hideToolbar();
+        _selectionOverlay!.showToolbar(context: context, contextMenuBuilder: (context) =>
         {
-            return ((SelectableRegion)this.widget).contextMenuBuilder!(context, this);
+            return widget.contextMenuBuilder!(context, this);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -990,10 +990,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         if (!continuous)
         {
-            this._selectable?.dispatchSelectionEvent(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: offset, granularity: textGranularity));
+            _selectable?.dispatchSelectionEvent(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: offset, granularity: textGranularity));
             return;
         }
-        if ((!Equals(this._selectionEndPosition, offset)))
+        if (!Equals(_selectionEndPosition, offset))
         {
             _selectionEndPosition = offset;
             _triggerSelectionEndEdgeUpdate(textGranularity: textGranularity);
@@ -1004,10 +1004,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         if (!continuous)
         {
-            this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: offset, granularity: textGranularity));
+            _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: offset, granularity: textGranularity));
             return;
         }
-        if ((!Equals(this._selectionStartPosition, offset)))
+        if (!Equals(_selectionStartPosition, offset))
         {
             _selectionStartPosition = offset;
             _triggerSelectionStartEdgeUpdate(textGranularity: textGranularity);
@@ -1024,13 +1024,13 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     internal virtual void _selectWordAt(Offset offset)
     {
         _finalizeSelection();
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectWordSelectionEvent(globalPosition: offset));
+        _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectWordSelectionEvent(globalPosition: offset));
     }
 
     internal virtual void _selectParagraphAt(Offset offset)
     {
         _finalizeSelection();
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: offset));
+        _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent(globalPosition: offset));
     }
 
     internal virtual void _finalizeSelection()
@@ -1044,98 +1044,98 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         _finalizeSelection();
         _directionalHorizontalBaseline = null;
         _adjustingSelectionEnd = null;
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+        _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.ClearSelectionEvent());
         _updateSelectedContentIfNeeded();
     }
 
     internal async virtual Future _copy()
     {
-        global::Doroti.Framework.Rendering.SelectedContent? data = ((global::Doroti.Framework.Rendering.SelectedContent?)this._selectable?.getSelectedContent());
-        if ((data is null))
+        global::Doroti.Framework.Rendering.SelectedContent? data = _selectable?.getSelectedContent();
+        if (data is null)
         {
             return;
         }
-        await Clipboard.setData(new global::Doroti.Framework.Services.ClipboardData(text: ((global::Doroti.Framework.Rendering.SelectedContent)data).plainText));
+        await Clipboard.setData(new global::Doroti.Framework.Services.ClipboardData(text: data.plainText));
     }
 
     internal async virtual Future _share()
     {
-        global::Doroti.Framework.Rendering.SelectedContent? data = ((global::Doroti.Framework.Rendering.SelectedContent?)this._selectable?.getSelectedContent());
-        if ((data is null))
+        global::Doroti.Framework.Rendering.SelectedContent? data = _selectable?.getSelectedContent();
+        if (data is null)
         {
             return;
         }
-        await SystemChannels.platform.invokeMethod<object>("Share.invoke", ((global::Doroti.Framework.Rendering.SelectedContent)data).plainText);
+        await SystemChannels.platform.invokeMethod<object>("Share.invoke", data.plainText);
     }
 
     public virtual TextSelectionToolbarAnchors contextMenuAnchors
     {
         get
         {
-            if ((this._lastSecondaryTapDownPosition is not null))
+            if (_lastSecondaryTapDownPosition is not null)
             {
-                var anchors = new TextSelectionToolbarAnchors(primaryAnchor: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
+                var anchors = new TextSelectionToolbarAnchors(primaryAnchor: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition));
                 _lastSecondaryTapDownPosition = null;
                 return anchors;
             }
-            var renderBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject()!)!;
-            return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: renderBoxLocal, startGlyphHeight: this.startGlyphHeight, endGlyphHeight: this.endGlyphHeight, selectionEndpoints: this.selectionEndpoints);
+            var renderBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
+            return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: renderBoxLocal, startGlyphHeight: startGlyphHeight, endGlyphHeight: endGlyphHeight, selectionEndpoints: selectionEndpoints);
         }
     }
     internal virtual bool _determineIsAdjustingSelectionEnd(bool forward)
     {
-        if ((this._adjustingSelectionEnd is not null))
+        if (_adjustingSelectionEnd is not null)
         {
-            return DartRuntimePrimitives.RequireValue(this._adjustingSelectionEnd);
+            return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd);
         }
         bool isReversed = default!;
-        global::Doroti.Framework.Rendering.SelectionPoint start = this._selectionDelegate.value.startSelectionPoint!;
-        global::Doroti.Framework.Rendering.SelectionPoint end = this._selectionDelegate.value.endSelectionPoint!;
-        if ((((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition.dy > ((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition.dy))
+        global::Doroti.Framework.Rendering.SelectionPoint start = _selectionDelegate.value.startSelectionPoint!;
+        global::Doroti.Framework.Rendering.SelectionPoint end = _selectionDelegate.value.endSelectionPoint!;
+        if (start.localPosition.dy > end.localPosition.dy)
         {
             isReversed = true;
         }
         else
         {
-            if ((((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition.dy < ((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition.dy))
+            if (start.localPosition.dy < end.localPosition.dy)
             {
                 isReversed = false;
             }
             else
             {
-                isReversed = (((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition.dx > ((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition.dx);
+                isReversed = start.localPosition.dx > end.localPosition.dx;
             }
         }
-        return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = (forward != isReversed));
+        return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = forward != isReversed);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _granularlyExtendSelection(global::Doroti.Framework.Rendering.TextGranularity granularity, bool forward)
     {
         _directionalHorizontalBaseline = null;
-        if (!this._selectionDelegate.value.hasSelection)
+        if (!_selectionDelegate.value.hasSelection)
         {
             return;
         }
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent(forward: forward, isEnd: _determineIsAdjustingSelectionEnd(forward), granularity: granularity));
+        _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent(forward: forward, isEnd: _determineIsAdjustingSelectionEnd(forward), granularity: granularity));
         _updateSelectedContentIfNeeded();
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _finalizeSelectableRegionStatus();
     }
 
     internal virtual void _directionallyExtendSelection(bool forward)
     {
-        if (!this._selectionDelegate.value.hasSelection)
+        if (!_selectionDelegate.value.hasSelection)
         {
             return;
         }
         bool adjustingSelectionExtend = _determineIsAdjustingSelectionEnd(forward);
-        global::Doroti.Framework.Rendering.SelectionPoint baseLinePoint = (adjustingSelectionExtend ? this._selectionDelegate.value.endSelectionPoint! : this._selectionDelegate.value.startSelectionPoint!);
-        _directionalHorizontalBaseline ??= ((global::Doroti.Framework.Rendering.SelectionPoint)baseLinePoint).localPosition.dx;
-        global::Doroti.Ui.Offset globalSelectionPointOffset = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(((Matrix4)(this.context.findRenderObject()!).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null))), new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(this._directionalHorizontalBaseline), 0)));
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent(isEnd: DartRuntimePrimitives.RequireValue(this._adjustingSelectionEnd), direction: (forward ? SelectionExtendDirection.nextLine : SelectionExtendDirection.previousLine), dx: globalSelectionPointOffset.dx));
+        global::Doroti.Framework.Rendering.SelectionPoint baseLinePoint = adjustingSelectionExtend ? _selectionDelegate.value.endSelectionPoint! : _selectionDelegate.value.startSelectionPoint!;
+        _directionalHorizontalBaseline ??= baseLinePoint.localPosition.dx;
+        global::Doroti.Ui.Offset globalSelectionPointOffset = MatrixUtils.transformPoint(context.findRenderObject()!.getTransformTo(null), new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(_directionalHorizontalBaseline), 0));
+        _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent(isEnd: DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd), direction: forward ? SelectionExtendDirection.nextLine : SelectionExtendDirection.previousLine, dx: globalSelectionPointOffset.dx));
         _updateSelectedContentIfNeeded();
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _finalizeSelectableRegionStatus();
     }
 
@@ -1145,7 +1145,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             return ((Func<List<ContextMenuButtonItem>>)(() =>
 {
-    var __cascade = SelectableRegion.getSelectableButtonItems(selectionGeometry: this._selectionDelegate.value, onCopy: ((global::System.Action)(() =>
+    var __cascade = SelectableRegion.getSelectableButtonItems(selectionGeometry: _selectionDelegate.value, onCopy: () =>
     {
         DartRuntimePrimitives.Ignore(_copy());
         switch (PlatformLibrary.defaultTargetPlatform)
@@ -1154,7 +1154,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             case TargetPlatform.fuchsia:
                 {
                     clearSelection();
-                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                     _finalizeSelectableRegionStatus();
                     break;
                 }
@@ -1171,7 +1171,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                     break;
                 }
         }
-    })), onSelectAll: ((global::System.Action)(() =>
+    }, onSelectAll: () =>
     {
         switch (PlatformLibrary.defaultTargetPlatform)
         {
@@ -1191,7 +1191,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                     break;
                 }
         }
-    })), onShare: ((global::System.Action)(() =>
+    }, onShare: () =>
     {
         DartRuntimePrimitives.Ignore(_share());
         switch (PlatformLibrary.defaultTargetPlatform)
@@ -1200,7 +1200,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             case TargetPlatform.fuchsia:
                 {
                     clearSelection();
-                    this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+                    _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
                     _finalizeSelectableRegionStatus();
                     break;
                 }
@@ -1217,8 +1217,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                     break;
                 }
         }
-    })));
-    __cascade.AddRange(this._textProcessingActionButtonItems.Cast<ContextMenuButtonItem>());
+    });
+    __cascade.AddRange(_textProcessingActionButtonItems.Cast<ContextMenuButtonItem>());
     return __cascade;
 }))();
         }
@@ -1228,22 +1228,22 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         get
         {
             var buttonItems = new List<ContextMenuButtonItem>();
-            global::Doroti.Framework.Rendering.SelectedContent? data = ((global::Doroti.Framework.Rendering.SelectedContent?)this._selectable?.getSelectedContent());
-            if ((data is null))
+            global::Doroti.Framework.Rendering.SelectedContent? data = _selectable?.getSelectedContent();
+            if (data is null)
             {
                 return buttonItems;
             }
-            foreach (global::Doroti.Framework.Services.ProcessTextAction action in this._processTextActions)
+            foreach (global::Doroti.Framework.Services.ProcessTextAction action in _processTextActions)
             {
-                buttonItems.Add(new ContextMenuButtonItem(label: ((global::Doroti.Framework.Services.ProcessTextAction)action).label, onPressed: ((global::System.Action)(async () =>
+                buttonItems.Add(new ContextMenuButtonItem(label: action.label, onPressed: async () =>
                 {
-                    string selectedText = ((global::Doroti.Framework.Rendering.SelectedContent)data).plainText;
-                    if ((selectedText.Length != 0))
+                    string selectedText = data.plainText;
+                    if (selectedText.Length != 0)
                     {
-                        await this._processTextService.processTextAction(((global::Doroti.Framework.Services.ProcessTextAction)action).id, selectedText, true);
+                        await _processTextService.processTextAction(action.id, selectedText, true);
                         hideToolbar();
                     }
-                }))));
+                }));
             }
             return buttonItems;
         }
@@ -1252,26 +1252,26 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         get
         {
-            return this._selectionDelegate.value.startSelectionPoint!.lineHeight;
+            return _selectionDelegate.value.startSelectionPoint!.lineHeight;
         }
     }
     public virtual double endGlyphHeight
     {
         get
         {
-            return this._selectionDelegate.value.endSelectionPoint!.lineHeight;
+            return _selectionDelegate.value.endSelectionPoint!.lineHeight;
         }
     }
     public virtual List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints
     {
         get
         {
-            global::Doroti.Framework.Rendering.SelectionPoint? start = this._selectionDelegate.value.startSelectionPoint;
-            global::Doroti.Framework.Rendering.SelectionPoint? end = this._selectionDelegate.value.endSelectionPoint;
+            global::Doroti.Framework.Rendering.SelectionPoint? start = _selectionDelegate.value.startSelectionPoint;
+            global::Doroti.Framework.Rendering.SelectionPoint? end = _selectionDelegate.value.endSelectionPoint;
             List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = default!;
-            global::Doroti.Ui.Offset startLocalPosition = ((global::Doroti.Ui.Offset)(start?.localPosition ?? end!.localPosition));
-            global::Doroti.Ui.Offset endLocalPosition = ((global::Doroti.Ui.Offset)(end?.localPosition ?? start!.localPosition));
-            if ((startLocalPosition.dy > endLocalPosition.dy))
+            global::Doroti.Ui.Offset startLocalPosition = start?.localPosition ?? end!.localPosition;
+            global::Doroti.Ui.Offset endLocalPosition = end?.localPosition ?? start!.localPosition;
+            if (startLocalPosition.dy > endLocalPosition.dy)
             {
                 points = new List<global::Doroti.Framework.Rendering.TextSelectionPoint> { new global::Doroti.Framework.Rendering.TextSelectionPoint(endLocalPosition, TextDirection.ltr), new global::Doroti.Framework.Rendering.TextSelectionPoint(startLocalPosition, TextDirection.ltr) };
             }
@@ -1286,35 +1286,35 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     public virtual bool pasteEnabled => false;
     public virtual void hideToolbar(bool hideHandles = true)
     {
-        this._selectionOverlay?.hideToolbar();
+        _selectionOverlay?.hideToolbar();
         if (hideHandles)
         {
-            this._selectionOverlay?.hideHandles();
+            _selectionOverlay?.hideHandles();
         }
     }
 
     internal virtual object? _hideToolbarIfVisible(DismissIntent intent)
     {
-        if ((this._selectionOverlay?.toolbarIsVisible ?? false))
+        if (_selectionOverlay?.toolbarIsVisible ?? false)
         {
             hideToolbar(false);
             return null;
         }
-        return Actions.invoke(this.context, intent);
+        return Actions.invoke(context, intent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void selectAll(global::Doroti.Framework.Services.SelectionChangedCause cause = default!)
     {
         clearSelection();
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectAllSelectionEvent());
-        if ((Equals(cause, SelectionChangedCause.toolbar)))
+        _selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectAllSelectionEvent());
+        if (Equals(cause, SelectionChangedCause.toolbar))
         {
             _showHandles();
             _showToolbar();
         }
         _updateSelectedContentIfNeeded();
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _finalizeSelectableRegionStatus();
     }
 
@@ -1322,7 +1322,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         DartRuntimePrimitives.Ignore(_copy());
         clearSelection();
-        this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
+        _selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _finalizeSelectableRegionStatus();
     }
 
@@ -1346,54 +1346,54 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     public virtual void add(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        DartRuntimePrimitives.Assert(() => (this._selectable is null));
+        DartRuntimePrimitives.Assert(() => _selectable is null);
         _selectable = selectable;
-        this._selectable!.addListener(this._updateSelectionStatus);
-        this._selectable!.pushHandleLayers(this._startHandleLayerLink, this._endHandleLayerLink);
+        _selectable!.addListener(_updateSelectionStatus);
+        _selectable!.pushHandleLayers(_startHandleLayerLink, _endHandleLayerLink);
     }
 
     public virtual void remove(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(this._selectable, selectable)));
-        this._selectable!.removeListener(this._updateSelectionStatus);
-        this._selectable!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), ((global::Doroti.Framework.Rendering.LayerLink?)null));
+        DartRuntimePrimitives.Assert(() => Equals(_selectable, selectable));
+        _selectable!.removeListener(_updateSelectionStatus);
+        _selectable!.pushHandleLayers(null, null);
         _selectable = null;
     }
 
     public override void dispose()
     {
-        this._selectable?.removeListener(this._updateSelectionStatus);
-        this._selectable?.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), ((global::Doroti.Framework.Rendering.LayerLink?)null));
+        _selectable?.removeListener(_updateSelectionStatus);
+        _selectable?.pushHandleLayers(null, null);
         if (Foundation.ConstantsLibrary.kIsWeb)
         {
-            PlatformSelectableRegionContextMenuIo.detach(this._selectionDelegate);
+            PlatformSelectableRegionContextMenuIo.detach(_selectionDelegate);
         }
-        this._selectionDelegate.dispose();
-        this._selectionStatusNotifier.dispose();
-        this._selectionOverlay?.hideMagnifier();
-        this._selectionOverlay?.dispose();
+        _selectionDelegate.dispose();
+        _selectionStatusNotifier.dispose();
+        _selectionOverlay?.hideMagnifier();
+        _selectionOverlay?.dispose();
         _selectionOverlay = null;
-        ((SelectableRegion)this.widget).focusNode?.removeListener(this._handleFocusChanged);
-        this._localFocusNode?.removeListener(this._handleFocusChanged);
-        this._localFocusNode?.dispose();
+        widget.focusNode?.removeListener(_handleFocusChanged);
+        _localFocusNode?.removeListener(_handleFocusChanged);
+        _localFocusNode?.dispose();
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasOverlay(context));
-        Widget result = ((Widget)new SelectableRegionSelectionStatusScope(selectionStatusNotifier: this._selectionStatusNotifier, child: new SelectionContainer(registrar: this, @delegate: this._selectionDelegate, child: ((SelectableRegion)this.widget).child)));
-        if (this._webContextMenuEnabled)
+        Widget result = new SelectableRegionSelectionStatusScope(selectionStatusNotifier: _selectionStatusNotifier, child: new SelectionContainer(registrar: this, @delegate: _selectionDelegate, child: widget.child));
+        if (_webContextMenuEnabled)
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new PlatformSelectableRegionContextMenuIo(child: result));
         }
-        return ((Widget)new TapRegion(groupId: typeof(SelectableRegion), onTapOutside: ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)((@event) =>
+        return new TapRegion(groupId: typeof(SelectableRegion), onTapOutside: (@event) =>
         {
             if (Foundation.ConstantsLibrary.kIsWeb)
             {
-                this._focusNode.unfocus();
+                _focusNode.unfocus();
             }
-        })), child: new CompositedTransformTarget(link: this._toolbarLayerLink, child: new RawGestureDetector(gestures: this._gestureRecognizers, behavior: HitTestBehavior.translucent, excludeFromSemantics: true, child: new Actions(actions: this._actions, child: Focus.CreateWithExternalFocusNode(includeSemantics: false, focusNode: this._focusNode, child: result))))));
+        }, child: new CompositedTransformTarget(link: _toolbarLayerLink, child: new RawGestureDetector(gestures: _gestureRecognizers, behavior: HitTestBehavior.translucent, excludeFromSemantics: true, child: new Actions(actions: _actions, child: Focus.CreateWithExternalFocusNode(includeSemantics: false, focusNode: _focusNode, child: result)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1410,7 +1410,7 @@ internal abstract class _NonOverrideAction__selectable_region<T> : ContextAction
     public abstract object? invokeAction(T intent, BuildContext? context = null);
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        if (this.callingAction is Action<T> callingActionLocal)
+        if (callingAction is Action<T> callingActionLocal)
         {
             return callingActionLocal.invoke(intent);
         }
@@ -1431,7 +1431,7 @@ internal class _SelectAllAction__selectable_region : _NonOverrideAction__selecta
 
     public override object? invokeAction(SelectAllTextIntent intent, BuildContext? context = null)
     {
-        this.state.selectAll(SelectionChangedCause.keyboard);
+        state.selectAll(SelectionChangedCause.keyboard);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1448,7 +1448,7 @@ internal class _CopySelectionAction__selectable_region : _NonOverrideAction__sel
 
     public override object? invokeAction(CopySelectionTextIntent intent, BuildContext? context = null)
     {
-        DartRuntimePrimitives.Ignore(this.state._copy());
+        DartRuntimePrimitives.Ignore(state._copy());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1467,7 +1467,7 @@ internal class _GranularlyExtendSelectionAction__selectable_region<T> : _NonOver
 
     public override object? invokeAction(T intent, BuildContext? context = null)
     {
-        this.state._granularlyExtendSelection(this.granularity, ((DirectionalTextEditingIntent)intent).forward);
+        state._granularlyExtendSelection(granularity, intent.forward);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1486,11 +1486,11 @@ internal class _GranularlyExtendCaretSelectionAction__selectable_region<T> : _No
 
     public override object? invokeAction(T intent, BuildContext? context = null)
     {
-        if (((DirectionalCaretMovementIntent)intent).collapseSelection)
+        if (intent.collapseSelection)
         {
             return default!;
         }
-        this.state._granularlyExtendSelection(this.granularity, ((DirectionalTextEditingIntent)intent).forward);
+        state._granularlyExtendSelection(granularity, intent.forward);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1507,11 +1507,11 @@ internal class _DirectionallyExtendCaretSelectionAction__selectable_region<T> : 
 
     public override object? invokeAction(T intent, BuildContext? context = null)
     {
-        if (((DirectionalCaretMovementIntent)intent).collapseSelection)
+        if (intent.collapseSelection)
         {
             return default!;
         }
-        this.state._directionallyExtendSelection(((DirectionalTextEditingIntent)intent).forward);
+        state._directionallyExtendSelection(intent.forward);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1530,18 +1530,18 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         {
             case true:
                 {
-                    this._hasReceivedEndEvent.Add(selectable);
+                    _hasReceivedEndEvent.Add(selectable);
                     break;
                 }
             case false:
                 {
-                    this._hasReceivedStartEvent.Add(selectable);
+                    _hasReceivedStartEvent.Add(selectable);
                     break;
                 }
             case null:
                 {
-                    this._hasReceivedStartEvent.Add(selectable);
-                    this._hasReceivedEndEvent.Add(selectable);
+                    _hasReceivedStartEvent.Add(selectable);
+                    _hasReceivedEndEvent.Add(selectable);
                     break;
                 }
         }
@@ -1549,15 +1549,15 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public virtual void didReceiveSelectionBoundaryEvents()
     {
-        if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) || (currentSelectionEndIndex == -1L))
         {
             return;
         }
-        long start = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        long end = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        for (var index = start; (index <= end); index += 1L)
+        long start = Math.Min(currentSelectionStartIndex, currentSelectionEndIndex);
+        long end = Math.Max(currentSelectionStartIndex, currentSelectionEndIndex);
+        for (var index = start; index <= end; index += 1L)
         {
-            didReceiveSelectionEventFor(selectable: this.selectables[(int)(index)]);
+            didReceiveSelectionEventFor(selectable: selectables[(int)index]);
         }
         _updateLastSelectionEdgeLocationsFromGeometries();
     }
@@ -1576,31 +1576,31 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     internal virtual void _updateLastSelectionEdgeLocationsFromGeometries()
     {
-        if (((this.currentSelectionStartIndex != -1L) && this.selectables[(int)(this.currentSelectionStartIndex)].value.hasSelection))
+        if ((currentSelectionStartIndex != -1L) && selectables[(int)currentSelectionStartIndex].value.hasSelection)
         {
-            global::Doroti.Framework.Rendering.Selectable start = this.selectables[(int)(this.currentSelectionStartIndex)];
-            global::Doroti.Ui.Offset localStartEdge = ((global::Doroti.Ui.Offset)(start.value.startSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, (-start.value.startSelectionPoint!.lineHeight / 2L))));
-            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(start.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), localStartEdge), forEnd: false);
+            global::Doroti.Framework.Rendering.Selectable start = selectables[(int)currentSelectionStartIndex];
+            global::Doroti.Ui.Offset localStartEdge = start.value.startSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, -start.value.startSelectionPoint!.lineHeight / 2L);
+            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(start.getTransformTo(null), localStartEdge), forEnd: false);
         }
-        if (((this.currentSelectionEndIndex != -1L) && this.selectables[(int)(this.currentSelectionEndIndex)].value.hasSelection))
+        if ((currentSelectionEndIndex != -1L) && selectables[(int)currentSelectionEndIndex].value.hasSelection)
         {
-            global::Doroti.Framework.Rendering.Selectable end = this.selectables[(int)(this.currentSelectionEndIndex)];
-            global::Doroti.Ui.Offset localEndEdge = ((global::Doroti.Ui.Offset)(end.value.endSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, (-end.value.endSelectionPoint!.lineHeight / 2L))));
-            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(end.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), localEndEdge), forEnd: true);
+            global::Doroti.Framework.Rendering.Selectable end = selectables[(int)currentSelectionEndIndex];
+            global::Doroti.Ui.Offset localEndEdge = end.value.endSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, -end.value.endSelectionPoint!.lineHeight / 2L);
+            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(end.getTransformTo(null), localEndEdge), forEnd: true);
         }
     }
 
     public virtual void clearInternalSelectionState()
     {
-        this.selectables.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.Selectable>)this.clearInternalSelectionStateForSelectable)(__arg0));
+        selectables.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.Selectable>)clearInternalSelectionStateForSelectable)(__arg0));
         _lastStartEdgeUpdateGlobalPosition = null;
         _lastEndEdgeUpdateGlobalPosition = null;
     }
 
     public virtual void clearInternalSelectionStateForSelectable(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        this._hasReceivedStartEvent.Remove(selectable);
-        this._hasReceivedEndEvent.Remove(selectable);
+        _hasReceivedStartEvent.Remove(selectable);
+        _hasReceivedEndEvent.Remove(selectable);
     }
 
     public override void remove(global::Doroti.Framework.Rendering.Selectable selectable)
@@ -1643,7 +1643,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public override global::Doroti.Framework.Rendering.SelectionResult handleSelectionEdgeUpdate(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event)
     {
-        updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition, forEnd: (Equals(@event.type, SelectionEventType.endEdgeUpdate)));
+        updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: @event.globalPosition, forEnd: Equals(@event.type, SelectionEventType.endEdgeUpdate));
         return base.handleSelectionEdgeUpdate(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1656,7 +1656,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public override global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEventToChild(global::Doroti.Framework.Rendering.Selectable selectable, global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
-        switch (((global::Doroti.Framework.Rendering.SelectionEvent)@event).type)
+        switch (@event.type)
         {
             case SelectionEventType.startEdgeUpdate:
                 {
@@ -1695,19 +1695,19 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public override void ensureChildUpdated(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        if (((this._lastEndEdgeUpdateGlobalPosition is not null) && this._hasReceivedEndEvent.Add(selectable)))
+        if ((_lastEndEdgeUpdateGlobalPosition is not null) && _hasReceivedEndEvent.Add(selectable))
         {
-            var synthesizedEvent = SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(this._lastEndEdgeUpdateGlobalPosition));
-            if ((this.currentSelectionEndIndex == -1L))
+            var synthesizedEvent = SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(_lastEndEdgeUpdateGlobalPosition));
+            if (currentSelectionEndIndex == -1L)
             {
                 handleSelectionEdgeUpdate(synthesizedEvent);
             }
             selectable.dispatchSelectionEvent(synthesizedEvent);
         }
-        if (((this._lastStartEdgeUpdateGlobalPosition is not null) && this._hasReceivedStartEvent.Add(selectable)))
+        if ((_lastStartEdgeUpdateGlobalPosition is not null) && _hasReceivedStartEvent.Add(selectable))
         {
-            var synthesizedEventLocal = new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(this._lastStartEdgeUpdateGlobalPosition));
-            if ((this.currentSelectionStartIndex == -1L))
+            var synthesizedEventLocal = new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(_lastStartEdgeUpdateGlobalPosition));
+            if (currentSelectionStartIndex == -1L)
             {
                 handleSelectionEdgeUpdate(synthesizedEventLocal);
             }
@@ -1717,17 +1717,17 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public override void didChangeSelectables()
     {
-        if ((this._lastEndEdgeUpdateGlobalPosition is not null))
+        if (_lastEndEdgeUpdateGlobalPosition is not null)
         {
-            handleSelectionEdgeUpdate(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(this._lastEndEdgeUpdateGlobalPosition)));
+            handleSelectionEdgeUpdate(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(_lastEndEdgeUpdateGlobalPosition)));
         }
-        if ((this._lastStartEdgeUpdateGlobalPosition is not null))
+        if (_lastStartEdgeUpdateGlobalPosition is not null)
         {
-            handleSelectionEdgeUpdate(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(this._lastStartEdgeUpdateGlobalPosition)));
+            handleSelectionEdgeUpdate(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(_lastStartEdgeUpdateGlobalPosition)));
         }
-        HashSet<global::Doroti.Framework.Rendering.Selectable> selectableSet = this.selectables.toSet();
-        this._hasReceivedEndEvent.removeWhere(((selectable) => !selectableSet.Contains(selectable)));
-        this._hasReceivedStartEvent.removeWhere(((selectable) => !selectableSet.Contains(selectable)));
+        HashSet<global::Doroti.Framework.Rendering.Selectable> selectableSet = selectables.toSet();
+        _hasReceivedEndEvent.removeWhere((selectable) => !selectableSet.Contains(selectable));
+        _hasReceivedStartEvent.removeWhere((selectable) => !selectableSet.Contains(selectable));
         base.didChangeSelectables();
     }
 
@@ -1756,14 +1756,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public override void add(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        DartRuntimePrimitives.Assert(() => !this.selectables.Contains(selectable));
-        this._additions.Add(selectable);
+        DartRuntimePrimitives.Assert(() => !selectables.Contains(selectable));
+        _additions.Add(selectable);
         _scheduleSelectableUpdate();
     }
 
     public override void remove(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        if (this._additions.Remove(selectable))
+        if (_additions.Remove(selectable))
         {
             return;
         }
@@ -1778,19 +1778,19 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _scheduleSelectableUpdate()
     {
-        if (!this._scheduledSelectableUpdate)
+        if (!_scheduledSelectableUpdate)
         {
             _scheduledSelectableUpdate = true;
             void runScheduledTask(Duration? duration = null)
             {
-                if (!this._scheduledSelectableUpdate)
+                if (!_scheduledSelectableUpdate)
                 {
                     return;
                 }
                 _scheduledSelectableUpdate = false;
                 _updateSelectables();
             }
-            if ((Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.postFrameCallbacks)))
+            if (Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.postFrameCallbacks))
             {
                 DartAsyncRuntime.scheduleMicrotask(runScheduledTask);
             }
@@ -1803,7 +1803,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _updateSelectables()
     {
-        if (Enumerable.Any(this._additions))
+        if (Enumerable.Any(_additions))
         {
             _flushAdditions();
         }
@@ -1814,46 +1814,46 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     {
         List<global::Doroti.Framework.Rendering.Selectable> mergingSelectables = ((Func<List<global::Doroti.Framework.Rendering.Selectable>>)(() =>
 {
-    var __cascade = this._additions.ToList();
-    __cascade.sort(this.compareOrder);
+    var __cascade = _additions.ToList();
+    __cascade.sort(compareOrder);
     return __cascade;
 }))().ToList();
-        List<global::Doroti.Framework.Rendering.Selectable> existingSelectables = this.selectables.ToList();
+        List<global::Doroti.Framework.Rendering.Selectable> existingSelectables = selectables.ToList();
         selectables = new List<global::Doroti.Framework.Rendering.Selectable>();
         var mergingIndex = 0L;
         var existingIndex = 0L;
-        long selectionStartIndex = this.currentSelectionStartIndex;
-        long selectionEndIndex = this.currentSelectionEndIndex;
-        while (((mergingIndex < checked((long)(mergingSelectables.Count))) || (existingIndex < checked((long)(existingSelectables.Count)))))
+        long selectionStartIndex = currentSelectionStartIndex;
+        long selectionEndIndex = currentSelectionEndIndex;
+        while ((mergingIndex < checked(mergingSelectables.Count)) || (existingIndex < checked(existingSelectables.Count)))
         {
-            if (((mergingIndex >= checked((long)(mergingSelectables.Count))) || (((existingIndex < checked((long)(existingSelectables.Count))) && (this.compareOrder(existingSelectables[(int)(existingIndex)], mergingSelectables[(int)(mergingIndex)]) < 0L)))))
+            if ((mergingIndex >= checked(mergingSelectables.Count)) || (existingIndex < checked(existingSelectables.Count)) && (compareOrder(existingSelectables[(int)existingIndex], mergingSelectables[(int)mergingIndex]) < 0L))
             {
-                if ((existingIndex == this.currentSelectionStartIndex))
+                if (existingIndex == currentSelectionStartIndex)
                 {
-                    selectionStartIndex = checked((long)(this.selectables.Count));
+                    selectionStartIndex = checked(selectables.Count);
                 }
-                if ((existingIndex == this.currentSelectionEndIndex))
+                if (existingIndex == currentSelectionEndIndex)
                 {
-                    selectionEndIndex = checked((long)(this.selectables.Count));
+                    selectionEndIndex = checked(selectables.Count);
                 }
-                this.selectables.Add(existingSelectables[(int)(existingIndex)]);
+                selectables.Add(existingSelectables[(int)existingIndex]);
                 existingIndex += 1L;
                 continue;
             }
-            global::Doroti.Framework.Rendering.Selectable mergingSelectable = mergingSelectables[(int)(mergingIndex)];
-            if (((existingIndex < Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex)) && (existingIndex > Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex))))
+            global::Doroti.Framework.Rendering.Selectable mergingSelectable = mergingSelectables[(int)mergingIndex];
+            if ((existingIndex < Math.Max(currentSelectionStartIndex, currentSelectionEndIndex)) && (existingIndex > Math.Min(currentSelectionStartIndex, currentSelectionEndIndex)))
             {
                 ensureChildUpdated(mergingSelectable);
             }
-            mergingSelectable.addListener(this._handleSelectableGeometryChange);
-            this.selectables.Add(mergingSelectable);
+            mergingSelectable.addListener(_handleSelectableGeometryChange);
+            selectables.Add(mergingSelectable);
             mergingIndex += 1L;
         }
-        DartRuntimePrimitives.Assert(() => (((mergingIndex == checked((long)(mergingSelectables.Count))) && (existingIndex == checked((long)(existingSelectables.Count)))) && (checked((long)(this.selectables.Count)) == (existingIndex + mergingIndex))));
-        DartRuntimePrimitives.Assert(() => ((selectionStartIndex >= -1L) || (selectionStartIndex < checked((long)(this.selectables.Count)))));
-        DartRuntimePrimitives.Assert(() => ((selectionEndIndex >= -1L) || (selectionEndIndex < checked((long)(this.selectables.Count)))));
-        DartRuntimePrimitives.Assert(() => (((this.currentSelectionStartIndex == -1L)) == ((selectionStartIndex == -1L))));
-        DartRuntimePrimitives.Assert(() => (((this.currentSelectionEndIndex == -1L)) == ((selectionEndIndex == -1L))));
+        DartRuntimePrimitives.Assert(() => (mergingIndex == checked(mergingSelectables.Count)) && (existingIndex == checked(existingSelectables.Count)) && (checked(selectables.Count) == (existingIndex + mergingIndex)));
+        DartRuntimePrimitives.Assert(() => (selectionStartIndex >= -1L) || (selectionStartIndex < checked(selectables.Count)));
+        DartRuntimePrimitives.Assert(() => (selectionEndIndex >= -1L) || (selectionEndIndex < checked(selectables.Count)));
+        DartRuntimePrimitives.Assert(() => currentSelectionStartIndex == -1L == (selectionStartIndex == -1L));
+        DartRuntimePrimitives.Assert(() => currentSelectionEndIndex == -1L == (selectionEndIndex == -1L));
         currentSelectionEndIndex = selectionEndIndex;
         currentSelectionStartIndex = selectionStartIndex;
         _additions = new HashSet<global::Doroti.Framework.Rendering.Selectable>();
@@ -1861,18 +1861,18 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _removeSelectable(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        DartRuntimePrimitives.Assert(() => this.selectables.Contains(selectable), () => (object?)"The selectable is not in this registrar.");
-        long index = ((long)this.selectables.IndexOf(selectable));
-        this.selectables.removeAt(index);
-        if ((index <= this.currentSelectionEndIndex))
+        DartRuntimePrimitives.Assert(() => selectables.Contains(selectable), () => (object?)"The selectable is not in this registrar.");
+        long index = selectables.IndexOf(selectable);
+        selectables.removeAt(index);
+        if (index <= currentSelectionEndIndex)
         {
             currentSelectionEndIndex -= 1L;
         }
-        if ((index <= this.currentSelectionStartIndex))
+        if (index <= currentSelectionStartIndex)
         {
             currentSelectionStartIndex -= 1L;
         }
-        selectable.removeListener(this._handleSelectableGeometryChange);
+        selectable.removeListener(_handleSelectableGeometryChange);
     }
 
     public virtual void didChangeSelectables()
@@ -1880,11 +1880,11 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         _updateSelectionGeometry();
     }
 
-    public override global::Doroti.Framework.Rendering.SelectionGeometry value => this._selectionGeometry;
+    public override global::Doroti.Framework.Rendering.SelectionGeometry value => _selectionGeometry;
     internal virtual void _updateSelectionGeometry()
     {
-        global::Doroti.Framework.Rendering.SelectionGeometry newValue = ((global::Doroti.Framework.Rendering.SelectionGeometry)getSelectionGeometry());
-        if ((!Equals(this._selectionGeometry, newValue)))
+        global::Doroti.Framework.Rendering.SelectionGeometry newValue = getSelectionGeometry();
+        if (!Equals(_selectionGeometry, newValue))
         {
             _selectionGeometry = newValue;
             notifyListeners();
@@ -1894,10 +1894,10 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal static global::Doroti.Ui.Rect _getBoundingBox(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        global::Doroti.Ui.Rect result = ((global::Doroti.Ui.Rect)((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes.First());
-        for (var index = 1L; (index < checked((long)(((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes.Count))); index += 1L)
+        global::Doroti.Ui.Rect result = selectable.boundingBoxes.First();
+        for (var index = 1L; index < checked(selectable.boundingBoxes.Count); index += 1L)
         {
-            result = result.expandToInclude(((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes[(int)(index)]);
+            result = result.expandToInclude(selectable.boundingBoxes[(int)index]);
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1906,10 +1906,10 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     public virtual Comparison<global::Doroti.Framework.Rendering.Selectable> compareOrder => new Comparison<global::Doroti.Framework.Rendering.Selectable>((left, right) => checked((int)_compareScreenOrder(left, right)));
     internal static long _compareScreenOrder(global::Doroti.Framework.Rendering.Selectable a, global::Doroti.Framework.Rendering.Selectable b)
     {
-        global::Doroti.Ui.Rect rectA = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(a.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), _getBoundingBox(a)));
-        global::Doroti.Ui.Rect rectB = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(b.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)), _getBoundingBox(b)));
+        global::Doroti.Ui.Rect rectA = MatrixUtils.transformRect(a.getTransformTo(null), _getBoundingBox(a));
+        global::Doroti.Ui.Rect rectB = MatrixUtils.transformRect(b.getTransformTo(null), _getBoundingBox(b));
         long result = _compareVertically(rectA, rectB);
-        if ((result != 0L))
+        if (result != 0L)
         {
             return result;
         }
@@ -1919,39 +1919,39 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal static long _compareVertically(Rect a, Rect b)
     {
-        if ((((((a.top - b.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((a.bottom - b.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold))) || ((((b.top - a.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((b.bottom - a.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold)))))
+        if (((a.top - b.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((a.bottom - b.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold) || ((b.top - a.top) < Selectable_regionLibrary._kSelectableVerticalComparingThreshold) && ((b.bottom - a.bottom) > -Selectable_regionLibrary._kSelectableVerticalComparingThreshold))
         {
             return 0L;
         }
-        if ((((a.top - b.top)).abs() > Selectable_regionLibrary._kSelectableVerticalComparingThreshold))
+        if ((a.top - b.top).abs() > Selectable_regionLibrary._kSelectableVerticalComparingThreshold)
         {
-            return ((a.top > b.top) ? 1L : -1L);
+            return (a.top > b.top) ? 1L : -1L;
         }
-        return ((a.bottom > b.bottom) ? 1L : -1L);
+        return (a.bottom > b.bottom) ? 1L : -1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static long _compareHorizontally(Rect a, Rect b)
     {
-        if ((((a.left - b.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((a.right - b.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance)))
+        if (((a.left - b.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((a.right - b.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return -1L;
         }
-        if ((((b.left - a.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((b.right - a.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance)))
+        if (((b.left - a.left) < Foundation.ConstantsLibrary.precisionErrorTolerance) && ((b.right - a.right) > -Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return 1L;
         }
-        if ((((a.left - b.left)).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance))
+        if ((a.left - b.left).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance)
         {
-            return ((a.left > b.left) ? 1L : -1L);
+            return (a.left > b.left) ? 1L : -1L;
         }
-        return ((a.right > b.right) ? 1L : -1L);
+        return (a.right > b.right) ? 1L : -1L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleSelectableGeometryChange()
     {
-        if (this._isHandlingSelectionEvent)
+        if (_isHandlingSelectionEvent)
         {
             return;
         }
@@ -1960,78 +1960,78 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionGeometry getSelectionGeometry()
     {
-        if ((((this.currentSelectionEndIndex == -1L) || (this.currentSelectionStartIndex == -1L)) || !Enumerable.Any(this.selectables)))
+        if ((currentSelectionEndIndex == -1L) || (currentSelectionStartIndex == -1L) || !Enumerable.Any(selectables))
         {
-            return new global::Doroti.Framework.Rendering.SelectionGeometry(status: SelectionStatus.none, hasContent: Enumerable.Any(this.selectables));
+            return new global::Doroti.Framework.Rendering.SelectionGeometry(status: SelectionStatus.none, hasContent: Enumerable.Any(selectables));
         }
-        if (!this._extendSelectionInProgress)
+        if (!_extendSelectionInProgress)
         {
-            currentSelectionStartIndex = _adjustSelectionIndexBasedOnSelectionGeometry(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-            currentSelectionEndIndex = _adjustSelectionIndexBasedOnSelectionGeometry(this.currentSelectionEndIndex, this.currentSelectionStartIndex);
+            currentSelectionStartIndex = _adjustSelectionIndexBasedOnSelectionGeometry(currentSelectionStartIndex, currentSelectionEndIndex);
+            currentSelectionEndIndex = _adjustSelectionIndexBasedOnSelectionGeometry(currentSelectionEndIndex, currentSelectionStartIndex);
         }
-        global::Doroti.Framework.Rendering.SelectionGeometry startGeometry = this.selectables[(int)(this.currentSelectionStartIndex)].value;
-        bool forwardSelection = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
-        long startIndexWalker = this.currentSelectionStartIndex;
-        while (((startIndexWalker != this.currentSelectionEndIndex) && (((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint is null)))
+        global::Doroti.Framework.Rendering.SelectionGeometry startGeometry = selectables[(int)currentSelectionStartIndex].value;
+        bool forwardSelection = currentSelectionEndIndex >= currentSelectionStartIndex;
+        long startIndexWalker = currentSelectionStartIndex;
+        while ((startIndexWalker != currentSelectionEndIndex) && (startGeometry.startSelectionPoint is null))
         {
-            startIndexWalker += (forwardSelection ? 1L : -1L);
-            startGeometry = this.selectables[(int)(startIndexWalker)].value;
+            startIndexWalker += forwardSelection ? 1L : -1L;
+            startGeometry = selectables[(int)startIndexWalker].value;
         }
         global::Doroti.Framework.Rendering.SelectionPoint? startPoint = default!;
-        if ((((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint is not null))
+        if (startGeometry.startSelectionPoint is not null)
         {
-            Matrix4 startTransform = ((Matrix4)getTransformFrom(this.selectables[(int)(startIndexWalker)]));
-            global::Doroti.Ui.Offset start = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(startTransform, ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint!.localPosition));
+            Matrix4 startTransform = getTransformFrom(selectables[(int)startIndexWalker]);
+            global::Doroti.Ui.Offset start = MatrixUtils.transformPoint(startTransform, startGeometry.startSelectionPoint!.localPosition);
             if (start.isFinite)
             {
-                startPoint = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: start, lineHeight: ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint!.lineHeight, handleType: ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint!.handleType);
+                startPoint = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: start, lineHeight: startGeometry.startSelectionPoint!.lineHeight, handleType: startGeometry.startSelectionPoint!.handleType);
             }
         }
-        global::Doroti.Framework.Rendering.SelectionGeometry endGeometry = this.selectables[(int)(this.currentSelectionEndIndex)].value;
-        long endIndexWalker = this.currentSelectionEndIndex;
-        while (((endIndexWalker != this.currentSelectionStartIndex) && (((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint is null)))
+        global::Doroti.Framework.Rendering.SelectionGeometry endGeometry = selectables[(int)currentSelectionEndIndex].value;
+        long endIndexWalker = currentSelectionEndIndex;
+        while ((endIndexWalker != currentSelectionStartIndex) && (endGeometry.endSelectionPoint is null))
         {
-            endIndexWalker += (forwardSelection ? -1L : 1L);
-            endGeometry = this.selectables[(int)(endIndexWalker)].value;
+            endIndexWalker += forwardSelection ? -1L : 1L;
+            endGeometry = selectables[(int)endIndexWalker].value;
         }
         global::Doroti.Framework.Rendering.SelectionPoint? endPoint = default!;
-        if ((((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint is not null))
+        if (endGeometry.endSelectionPoint is not null)
         {
-            Matrix4 endTransform = ((Matrix4)getTransformFrom(this.selectables[(int)(endIndexWalker)]));
-            global::Doroti.Ui.Offset end = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(endTransform, ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint!.localPosition));
+            Matrix4 endTransform = getTransformFrom(selectables[(int)endIndexWalker]);
+            global::Doroti.Ui.Offset end = MatrixUtils.transformPoint(endTransform, endGeometry.endSelectionPoint!.localPosition);
             if (end.isFinite)
             {
-                endPoint = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: end, lineHeight: ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint!.lineHeight, handleType: ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint!.handleType);
+                endPoint = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: end, lineHeight: endGeometry.endSelectionPoint!.lineHeight, handleType: endGeometry.endSelectionPoint!.handleType);
             }
         }
         var selectionRectsLocal = new List<global::Doroti.Ui.Rect>();
-        global::Doroti.Ui.Rect? drawableArea = ((global::Doroti.Ui.Rect?)(object?)(this.hasSize ? Rect.fromLTWH(0, 0, this.containerSize.width, this.containerSize.height) : null));
-        for (long index = this.currentSelectionStartIndex; (index <= this.currentSelectionEndIndex); index++)
+        global::Doroti.Ui.Rect? drawableArea = (global::Doroti.Ui.Rect?)(object?)(hasSize ? Rect.fromLTWH(0, 0, containerSize.width, containerSize.height) : null);
+        for (long index = currentSelectionStartIndex; index <= currentSelectionEndIndex; index++)
         {
-            List<global::Doroti.Ui.Rect> currSelectableSelectionRects = this.selectables[(int)(index)].value.selectionRects.Cast<global::Doroti.Ui.Rect>().ToList();
-            List<global::Doroti.Ui.Rect> selectionRectsWithinDrawableArea = currSelectableSelectionRects.map<Rect, Rect>(((selectionRect) =>
+            List<global::Doroti.Ui.Rect> currSelectableSelectionRects = selectables[(int)index].value.selectionRects.Cast<global::Doroti.Ui.Rect>().ToList();
+            List<global::Doroti.Ui.Rect> selectionRectsWithinDrawableArea = currSelectableSelectionRects.map<Rect, Rect>((selectionRect) =>
             {
-                Matrix4 transform = ((Matrix4)getTransformFrom(this.selectables[(int)(index)]));
-                global::Doroti.Ui.Rect localRect = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transform, selectionRect));
-                return (drawableArea?.intersect(localRect) ?? localRect);
+                Matrix4 transform = getTransformFrom(selectables[(int)index]);
+                global::Doroti.Ui.Rect localRect = MatrixUtils.transformRect(transform, selectionRect);
+                return drawableArea?.intersect(localRect) ?? localRect;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })).where(((selectionRect) =>
+            }).where((selectionRect) =>
             {
-                return (selectionRect.isFinite && !selectionRect.isEmpty);
+                return selectionRect.isFinite && !selectionRect.isEmpty;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            })).ToList().Cast<global::Doroti.Ui.Rect>().ToList();
+            }).ToList().Cast<global::Doroti.Ui.Rect>().ToList();
             selectionRectsLocal.AddRange(selectionRectsWithinDrawableArea.Cast<Rect>());
         }
-        return new global::Doroti.Framework.Rendering.SelectionGeometry(startSelectionPoint: startPoint, endSelectionPoint: endPoint, selectionRects: selectionRectsLocal, status: ((!Equals(startGeometry, endGeometry)) ? SelectionStatus.uncollapsed : ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).status), hasContent: true);
+        return new global::Doroti.Framework.Rendering.SelectionGeometry(startSelectionPoint: startPoint, endSelectionPoint: endPoint, selectionRects: selectionRectsLocal, status: (!Equals(startGeometry, endGeometry)) ? SelectionStatus.uncollapsed : startGeometry.status, hasContent: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual long _adjustSelectionIndexBasedOnSelectionGeometry(long currentIndex, long towardIndex)
     {
-        bool forward = (towardIndex > currentIndex);
-        while (((currentIndex != towardIndex) && (!Equals(this.selectables[(int)(currentIndex)].value.status, SelectionStatus.uncollapsed))))
+        bool forward = towardIndex > currentIndex;
+        while ((currentIndex != towardIndex) && (!Equals(selectables[(int)currentIndex].value.status, SelectionStatus.uncollapsed)))
         {
-            currentIndex += (forward ? 1L : -1L);
+            currentIndex += forward ? 1L : -1L;
         }
         return currentIndex;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2039,7 +2039,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public override void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle)
     {
-        if (((Equals(this._startHandleLayer, startHandle)) && (Equals(this._endHandleLayer, endHandle))))
+        if (Equals(_startHandleLayer, startHandle) && Equals(_endHandleLayer, endHandle))
         {
             return;
         }
@@ -2050,48 +2050,48 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _updateHandleLayersAndOwners()
     {
-        global::Doroti.Framework.Rendering.LayerLink? effectiveStartHandle = this._startHandleLayer;
-        global::Doroti.Framework.Rendering.LayerLink? effectiveEndHandle = this._endHandleLayer;
-        if (((effectiveStartHandle is not null) || (effectiveEndHandle is not null)))
+        global::Doroti.Framework.Rendering.LayerLink? effectiveStartHandle = _startHandleLayer;
+        global::Doroti.Framework.Rendering.LayerLink? effectiveEndHandle = _endHandleLayer;
+        if ((effectiveStartHandle is not null) || (effectiveEndHandle is not null))
         {
-            global::Doroti.Ui.Rect? drawableArea = ((global::Doroti.Ui.Rect?)(object?)(this.hasSize ? Rect.fromLTWH(0, 0, this.containerSize.width, this.containerSize.height).inflate(_kSelectionHandleDrawableAreaPadding) : null));
-            bool hideStartHandle = (((((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint is null) || (drawableArea is null)) || !DartRuntimePrimitives.RequireValue(drawableArea).contains(((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint!.localPosition));
-            bool hideEndHandle = (((((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint is null) || (drawableArea is null)) || !DartRuntimePrimitives.RequireValue(drawableArea).contains(((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint!.localPosition));
-            effectiveStartHandle = (hideStartHandle ? null : this._startHandleLayer);
-            effectiveEndHandle = (hideEndHandle ? null : this._endHandleLayer);
+            global::Doroti.Ui.Rect? drawableArea = (global::Doroti.Ui.Rect?)(object?)(hasSize ? Rect.fromLTWH(0, 0, containerSize.width, containerSize.height).inflate(_kSelectionHandleDrawableAreaPadding) : null);
+            bool hideStartHandle = (value.startSelectionPoint is null) || (drawableArea is null) || !DartRuntimePrimitives.RequireValue(drawableArea).contains(value.startSelectionPoint!.localPosition);
+            bool hideEndHandle = (value.endSelectionPoint is null) || (drawableArea is null) || !DartRuntimePrimitives.RequireValue(drawableArea).contains(value.endSelectionPoint!.localPosition);
+            effectiveStartHandle = hideStartHandle ? null : _startHandleLayer;
+            effectiveEndHandle = hideEndHandle ? null : _endHandleLayer;
         }
-        if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) || (currentSelectionEndIndex == -1L))
         {
-            if ((this._startHandleLayerOwner is not null))
+            if (_startHandleLayerOwner is not null)
             {
-                this._startHandleLayerOwner!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), ((global::Doroti.Framework.Rendering.LayerLink?)null));
+                _startHandleLayerOwner!.pushHandleLayers(null, null);
                 _startHandleLayerOwner = null;
             }
-            if ((this._endHandleLayerOwner is not null))
+            if (_endHandleLayerOwner is not null)
             {
-                this._endHandleLayerOwner!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), ((global::Doroti.Framework.Rendering.LayerLink?)null));
+                _endHandleLayerOwner!.pushHandleLayers(null, null);
                 _endHandleLayerOwner = null;
             }
             return;
         }
-        if ((!Equals(this.selectables[(int)(this.currentSelectionStartIndex)], this._startHandleLayerOwner)))
+        if (!Equals(selectables[(int)currentSelectionStartIndex], _startHandleLayerOwner))
         {
-            this._startHandleLayerOwner?.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), ((global::Doroti.Framework.Rendering.LayerLink?)null));
+            _startHandleLayerOwner?.pushHandleLayers(null, null);
         }
-        if ((!Equals(this.selectables[(int)(this.currentSelectionEndIndex)], this._endHandleLayerOwner)))
+        if (!Equals(selectables[(int)currentSelectionEndIndex], _endHandleLayerOwner))
         {
-            this._endHandleLayerOwner?.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), ((global::Doroti.Framework.Rendering.LayerLink?)null));
+            _endHandleLayerOwner?.pushHandleLayers(null, null);
         }
-        _startHandleLayerOwner = this.selectables[(int)(this.currentSelectionStartIndex)];
-        if ((this.currentSelectionStartIndex == this.currentSelectionEndIndex))
+        _startHandleLayerOwner = selectables[(int)currentSelectionStartIndex];
+        if (currentSelectionStartIndex == currentSelectionEndIndex)
         {
-            _endHandleLayerOwner = this._startHandleLayerOwner;
-            this._startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle, effectiveEndHandle);
+            _endHandleLayerOwner = _startHandleLayerOwner;
+            _startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle, effectiveEndHandle);
             return;
         }
-        this._startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle, ((global::Doroti.Framework.Rendering.LayerLink?)null));
-        _endHandleLayerOwner = this.selectables[(int)(this.currentSelectionEndIndex)];
-        this._endHandleLayerOwner!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink?)null), effectiveEndHandle);
+        _startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle, null);
+        _endHandleLayerOwner = selectables[(int)currentSelectionEndIndex];
+        _endHandleLayerOwner!.pushHandleLayers(null, effectiveEndHandle);
     }
 
     public override global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent()
@@ -2099,41 +2099,41 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         var selections = new List<global::Doroti.Framework.Rendering.SelectedContent>();
         if (!Enumerable.Any(selections))
         {
-            return ((global::Doroti.Framework.Rendering.SelectedContent?)null);
+            return null;
         }
         var buffer = new StringBuffer();
         foreach (var selection in selections)
         {
-            buffer.write(((global::Doroti.Framework.Rendering.SelectedContent)selection).plainText);
+            buffer.write(selection.plainText);
         }
         return new global::Doroti.Framework.Rendering.SelectedContent(plainText: buffer.ToString());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long contentLength => Enumerable.Aggregate(this.selectables, (long)0L, ((sum, selectable) => (sum + selectable.contentLength)));
+    public override long contentLength => Enumerable.Aggregate(selectables, 0L, (sum, selectable) => sum + selectable.contentLength);
     internal virtual global::Doroti.Framework.Rendering.SelectedContentRange? _calculateLocalRange(List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)> selections)
     {
-        if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) || (currentSelectionEndIndex == -1L))
         {
-            return ((global::Doroti.Framework.Rendering.SelectedContentRange?)null);
+            return null;
         }
         var startOffsetLocal = 0L;
         var endOffsetLocal = 0L;
         var foundStart = false;
-        bool forwardSelection = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
-        if ((this.currentSelectionEndIndex == this.currentSelectionStartIndex))
+        bool forwardSelection = currentSelectionEndIndex >= currentSelectionStartIndex;
+        if (currentSelectionEndIndex == currentSelectionStartIndex)
         {
-            global::Doroti.Framework.Rendering.SelectedContentRange rangeAtSelectableInSelection = this.selectables[(int)(this.currentSelectionStartIndex)].getSelection()!;
-            forwardSelection = (((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection).endOffset >= ((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection).startOffset);
+            global::Doroti.Framework.Rendering.SelectedContentRange rangeAtSelectableInSelection = selectables[(int)currentSelectionStartIndex].getSelection()!;
+            forwardSelection = rangeAtSelectableInSelection.endOffset >= rangeAtSelectableInSelection.startOffset;
         }
-        for (var index = 0L; (index < checked((long)(selections.Count))); index++)
+        for (var index = 0L; index < checked(selections.Count); index++)
         {
-            (long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range) selection = selections[(int)(index)];
-            if ((selection.range is null))
+            (long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range) selection = selections[(int)index];
+            if (selection.range is null)
             {
                 if (foundStart)
                 {
-                    return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection ? startOffsetLocal : endOffsetLocal), endOffset: (forwardSelection ? endOffsetLocal : startOffsetLocal));
+                    return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: forwardSelection ? startOffsetLocal : endOffsetLocal, endOffset: forwardSelection ? endOffsetLocal : startOffsetLocal);
                 }
                 startOffsetLocal += selection.contentLength;
                 endOffsetLocal = startOffsetLocal;
@@ -2144,97 +2144,97 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             if (!foundStart)
             {
                 startOffsetLocal += selectionStartNormalized;
-                endOffsetLocal = (startOffsetLocal + ((selectionEndNormalized - selectionStartNormalized)).abs());
+                endOffsetLocal = startOffsetLocal + (selectionEndNormalized - selectionStartNormalized).abs();
                 foundStart = true;
             }
             else
             {
-                endOffsetLocal += ((selectionEndNormalized - selectionStartNormalized)).abs();
+                endOffsetLocal += (selectionEndNormalized - selectionStartNormalized).abs();
             }
         }
         DartRuntimePrimitives.Assert(() => foundStart, () => (object?)"The start of the selection has not been found despite this selection delegate having an existing currentSelectionStartIndex and currentSelectionEndIndex.");
-        return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection ? startOffsetLocal : endOffsetLocal), endOffset: (forwardSelection ? endOffsetLocal : startOffsetLocal));
+        return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: forwardSelection ? startOffsetLocal : endOffsetLocal, endOffset: forwardSelection ? endOffsetLocal : startOffsetLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
     {
         var selections = new List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)>();
-        return ((global::Doroti.Framework.Rendering.SelectedContentRange?)_calculateLocalRange(selections));
+        return _calculateLocalRange(selections);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _flushInactiveSelections()
     {
-        if (((this.currentSelectionStartIndex == -1L) && (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) && (currentSelectionEndIndex == -1L))
         {
             return;
         }
-        if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
+        if ((currentSelectionStartIndex == -1L) || (currentSelectionEndIndex == -1L))
         {
-            long skipIndexLocal = ((this.currentSelectionStartIndex == -1L) ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
+            long skipIndexLocal = (currentSelectionStartIndex == -1L) ? currentSelectionEndIndex : currentSelectionStartIndex;
             _clearSelectables(skipIndex: DartRuntimePrimitives.RequireValue(skipIndexLocal));
             return;
         }
-        long skipStart = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        long skipEnd = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        for (var index = 0L; (index < checked((long)(this.selectables.Count))); index += 1L)
+        long skipStart = Math.Min(currentSelectionStartIndex, currentSelectionEndIndex);
+        long skipEnd = Math.Max(currentSelectionStartIndex, currentSelectionEndIndex);
+        for (var index = 0L; index < checked(selectables.Count); index += 1L)
         {
-            if (((index >= skipStart) && (index <= skipEnd)))
+            if ((index >= skipStart) && (index <= skipEnd))
             {
                 continue;
             }
-            dispatchSelectionEventToChild(this.selectables[(int)(index)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+            dispatchSelectionEventToChild(selectables[(int)index], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
         }
     }
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleSelectAll(global::Doroti.Framework.Rendering.SelectAllSelectionEvent @event)
     {
-        foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
+        foreach (global::Doroti.Framework.Rendering.Selectable selectable in selectables)
         {
             dispatchSelectionEventToChild(selectable, @event);
         }
         currentSelectionStartIndex = 0L;
-        currentSelectionEndIndex = (checked((long)(this.selectables.Count)) - 1L);
+        currentSelectionEndIndex = checked(selectables.Count) - 1L;
         return SelectionResult.none;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _clearSelectables(long? skipIndex = null)
     {
-        for (var i = 0L; (i < checked((long)(this.selectables.Count))); i++)
+        for (var i = 0L; i < checked(selectables.Count); i++)
         {
-            if ((i == skipIndex))
+            if (i == skipIndex)
             {
                 continue;
             }
-            dispatchSelectionEventToChild(this.selectables[(int)(i)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+            dispatchSelectionEventToChild(selectables[(int)i], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
         }
     }
 
     internal virtual global::Doroti.Framework.Rendering.SelectionResult _handleSelectBoundary(global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => ((@event is global::Doroti.Framework.Rendering.SelectWordSelectionEvent) || (@event is global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)), () => (object?)"This method should only be given selection events that select text boundaries.");
-        global::Doroti.Ui.Offset effectiveGlobalPosition = (@event switch { global::Doroti.Framework.Rendering.SelectWordSelectionEvent { globalPosition: Offset globalPositionLocal } __object119052 => globalPositionLocal, global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent { globalPosition: Offset globalPositionAlternate } __object119125 => globalPositionAlternate, _ => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Unsupported selection event: {@event}")) });
+        DartRuntimePrimitives.Assert(() => (@event is global::Doroti.Framework.Rendering.SelectWordSelectionEvent) || (@event is global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent), () => (object?)"This method should only be given selection events that select text boundaries.");
+        global::Doroti.Ui.Offset effectiveGlobalPosition = @event switch { global::Doroti.Framework.Rendering.SelectWordSelectionEvent { globalPosition: Offset globalPositionLocal } __object119052 => globalPositionLocal, global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent { globalPosition: Offset globalPositionAlternate } __object119125 => globalPositionAlternate, _ => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Unsupported selection event: {@event}")) };
         global::Doroti.Framework.Rendering.SelectionResult? lastSelectionResult = default!;
         double minDistanceSquared = double.PositiveInfinity;
         var nearestIndex = 0L;
-        for (var index = 0L; (index < checked((long)(this.selectables.Count))); index += 1L)
+        for (var index = 0L; index < checked(selectables.Count); index += 1L)
         {
             var globalRectsContainPosition = false;
-            Matrix4 transform = ((Matrix4)this.selectables[(int)(index)].getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
-            foreach (global::Doroti.Ui.Rect rect in this.selectables[(int)(index)].boundingBoxes)
+            Matrix4 transform = selectables[(int)index].getTransformTo(null);
+            foreach (global::Doroti.Ui.Rect rect in selectables[(int)index].boundingBoxes)
             {
-                global::Doroti.Ui.Rect globalRect = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transform, rect));
+                global::Doroti.Ui.Rect globalRect = MatrixUtils.transformRect(transform, rect);
                 if (globalRect.contains(effectiveGlobalPosition))
                 {
                     globalRectsContainPosition = true;
                     break;
                 }
-                double dxLocal = (effectiveGlobalPosition.dx - Dart_uiLibrary.clampDouble(effectiveGlobalPosition.dx, globalRect.left, globalRect.right));
-                double dyLocal = (effectiveGlobalPosition.dy - Dart_uiLibrary.clampDouble(effectiveGlobalPosition.dy, globalRect.top, globalRect.bottom));
-                double distanceSquared = ((dxLocal * dxLocal) + (dyLocal * dyLocal));
-                if ((distanceSquared < minDistanceSquared))
+                double dxLocal = effectiveGlobalPosition.dx - Dart_uiLibrary.clampDouble(effectiveGlobalPosition.dx, globalRect.left, globalRect.right);
+                double dyLocal = effectiveGlobalPosition.dy - Dart_uiLibrary.clampDouble(effectiveGlobalPosition.dy, globalRect.top, globalRect.bottom);
+                double distanceSquared = (dxLocal * dxLocal) + (dyLocal * dyLocal);
+                if (distanceSquared < minDistanceSquared)
                 {
                     minDistanceSquared = distanceSquared;
                     nearestIndex = index;
@@ -2242,21 +2242,21 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             }
             if (globalRectsContainPosition)
             {
-                global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry = this.selectables[(int)(index)].value;
-                lastSelectionResult = dispatchSelectionEventToChild(this.selectables[(int)(index)], @event);
-                if (((index == (checked((long)(this.selectables.Count)) - 1L)) && (Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next))))
+                global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry = selectables[(int)index].value;
+                lastSelectionResult = dispatchSelectionEventToChild(selectables[(int)index], @event);
+                if ((index == (checked(selectables.Count) - 1L)) && Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next))
                 {
                     return SelectionResult.next;
                 }
-                if ((Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next)))
+                if (Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.next))
                 {
                     continue;
                 }
-                if (((index == 0L) && (Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.previous))))
+                if ((index == 0L) && Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), SelectionResult.previous))
                 {
                     return SelectionResult.previous;
                 }
-                if ((!Equals(this.selectables[(int)(index)].value, existingGeometry)))
+                if (!Equals(selectables[(int)index].value, existingGeometry))
                 {
                     _clearSelectables(skipIndex: index);
                     currentSelectionStartIndex = currentSelectionEndIndex = index;
@@ -2265,19 +2265,19 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             }
             else
             {
-                if ((Equals(lastSelectionResult, SelectionResult.next)))
+                if (Equals(lastSelectionResult, SelectionResult.next))
                 {
-                    currentSelectionStartIndex = currentSelectionEndIndex = (index - 1L);
+                    currentSelectionStartIndex = currentSelectionEndIndex = index - 1L;
                     return SelectionResult.end;
                 }
             }
         }
-        DartRuntimePrimitives.Assert(() => (lastSelectionResult is null));
-        if (Enumerable.Any(this.selectables))
+        DartRuntimePrimitives.Assert(() => lastSelectionResult is null);
+        if (Enumerable.Any(selectables))
         {
-            global::Doroti.Framework.Rendering.SelectionGeometry existingGeometryLocal = this.selectables[(int)(nearestIndex)].value;
-            dispatchSelectionEventToChild(this.selectables[(int)(nearestIndex)], @event);
-            if ((!Equals(this.selectables[(int)(nearestIndex)].value, existingGeometryLocal)))
+            global::Doroti.Framework.Rendering.SelectionGeometry existingGeometryLocal = selectables[(int)nearestIndex].value;
+            dispatchSelectionEventToChild(selectables[(int)nearestIndex], @event);
+            if (!Equals(selectables[(int)nearestIndex].value, existingGeometryLocal))
             {
                 _clearSelectables(skipIndex: nearestIndex);
                 currentSelectionStartIndex = currentSelectionEndIndex = nearestIndex;
@@ -2301,7 +2301,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleClearSelection(global::Doroti.Framework.Rendering.ClearSelectionEvent @event)
     {
-        foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
+        foreach (global::Doroti.Framework.Rendering.Selectable selectable in selectables)
         {
             dispatchSelectionEventToChild(selectable, @event);
         }
@@ -2313,41 +2313,41 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleGranularlyExtendSelection(global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (((this.currentSelectionStartIndex == -1L)) == ((this.currentSelectionEndIndex == -1L))));
-        if ((this.currentSelectionStartIndex == -1L))
+        DartRuntimePrimitives.Assert(() => currentSelectionStartIndex == -1L == (currentSelectionEndIndex == -1L));
+        if (currentSelectionStartIndex == -1L)
         {
-            if (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).forward)
+            if (@event.forward)
             {
                 currentSelectionStartIndex = currentSelectionEndIndex = 0L;
             }
             else
             {
-                currentSelectionStartIndex = currentSelectionEndIndex = (checked((long)(this.selectables.Count)) - 1L);
+                currentSelectionStartIndex = currentSelectionEndIndex = checked(selectables.Count) - 1L;
             }
         }
-        long targetIndex = (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).isEnd ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
-        global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
-        if (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).forward)
+        long targetIndex = @event.isEnd ? currentSelectionEndIndex : currentSelectionStartIndex;
+        global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(selectables[(int)targetIndex], @event);
+        if (@event.forward)
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(result, SelectionResult.previous)));
-            while (((targetIndex < (checked((long)(this.selectables.Count)) - 1L)) && (Equals(result, SelectionResult.next))))
+            DartRuntimePrimitives.Assert(() => !Equals(result, SelectionResult.previous));
+            while ((targetIndex < (checked(selectables.Count) - 1L)) && Equals(result, SelectionResult.next))
             {
                 targetIndex += 1L;
-                result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
-                DartRuntimePrimitives.Assert(() => (!Equals(result, SelectionResult.previous)));
+                result = dispatchSelectionEventToChild(selectables[(int)targetIndex], @event);
+                DartRuntimePrimitives.Assert(() => !Equals(result, SelectionResult.previous));
             }
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (!Equals(result, SelectionResult.next)));
-            while (((targetIndex > 0L) && (Equals(result, SelectionResult.previous))))
+            DartRuntimePrimitives.Assert(() => !Equals(result, SelectionResult.next));
+            while ((targetIndex > 0L) && Equals(result, SelectionResult.previous))
             {
                 targetIndex -= 1L;
-                result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
-                DartRuntimePrimitives.Assert(() => (!Equals(result, SelectionResult.next)));
+                result = dispatchSelectionEventToChild(selectables[(int)targetIndex], @event);
+                DartRuntimePrimitives.Assert(() => !Equals(result, SelectionResult.next));
             }
         }
-        if (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).isEnd)
+        if (@event.isEnd)
         {
             currentSelectionEndIndex = targetIndex;
         }
@@ -2361,39 +2361,39 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleDirectionallyExtendSelection(global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (((this.currentSelectionStartIndex == -1L)) == ((this.currentSelectionEndIndex == -1L))));
-        if ((this.currentSelectionStartIndex == -1L))
+        DartRuntimePrimitives.Assert(() => currentSelectionStartIndex == -1L == (currentSelectionEndIndex == -1L));
+        if (currentSelectionStartIndex == -1L)
         {
-            currentSelectionStartIndex = currentSelectionEndIndex = (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).direction switch { SelectionExtendDirection.previousLine => (checked((long)(this.selectables.Count)) - 1L), SelectionExtendDirection.backward => (checked((long)(this.selectables.Count)) - 1L), SelectionExtendDirection.nextLine => 0L, SelectionExtendDirection.forward => 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            currentSelectionStartIndex = currentSelectionEndIndex = @event.direction switch { SelectionExtendDirection.previousLine => checked(selectables.Count) - 1L, SelectionExtendDirection.backward => checked(selectables.Count) - 1L, SelectionExtendDirection.nextLine => 0L, SelectionExtendDirection.forward => 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
-        long targetIndex = (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).isEnd ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
-        global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
-        switch (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).direction)
+        long targetIndex = @event.isEnd ? currentSelectionEndIndex : currentSelectionStartIndex;
+        global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(selectables[(int)targetIndex], @event);
+        switch (@event.direction)
         {
             case SelectionExtendDirection.previousLine:
                 {
-                    DartRuntimePrimitives.Assert(() => ((Equals(result, SelectionResult.end)) || (Equals(result, SelectionResult.previous))));
-                    if ((Equals(result, SelectionResult.previous)))
+                    DartRuntimePrimitives.Assert(() => Equals(result, SelectionResult.end) || Equals(result, SelectionResult.previous));
+                    if (Equals(result, SelectionResult.previous))
                     {
-                        if ((targetIndex > 0L))
+                        if (targetIndex > 0L)
                         {
                             targetIndex -= 1L;
-                            result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event.copyWith(direction: SelectionExtendDirection.backward));
-                            DartRuntimePrimitives.Assert(() => (Equals(result, SelectionResult.end)));
+                            result = dispatchSelectionEventToChild(selectables[(int)targetIndex], @event.copyWith(direction: SelectionExtendDirection.backward));
+                            DartRuntimePrimitives.Assert(() => Equals(result, SelectionResult.end));
                         }
                     }
                     break;
                 }
             case SelectionExtendDirection.nextLine:
                 {
-                    DartRuntimePrimitives.Assert(() => ((Equals(result, SelectionResult.end)) || (Equals(result, SelectionResult.next))));
-                    if ((Equals(result, SelectionResult.next)))
+                    DartRuntimePrimitives.Assert(() => Equals(result, SelectionResult.end) || Equals(result, SelectionResult.next));
+                    if (Equals(result, SelectionResult.next))
                     {
-                        if ((targetIndex < (checked((long)(this.selectables.Count)) - 1L)))
+                        if (targetIndex < (checked(selectables.Count) - 1L))
                         {
                             targetIndex += 1L;
-                            result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event.copyWith(direction: SelectionExtendDirection.forward));
-                            DartRuntimePrimitives.Assert(() => (Equals(result, SelectionResult.end)));
+                            result = dispatchSelectionEventToChild(selectables[(int)targetIndex], @event.copyWith(direction: SelectionExtendDirection.forward));
+                            DartRuntimePrimitives.Assert(() => Equals(result, SelectionResult.end));
                         }
                     }
                     break;
@@ -2401,11 +2401,11 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             case SelectionExtendDirection.forward:
             case SelectionExtendDirection.backward:
                 {
-                    DartRuntimePrimitives.Assert(() => (Equals(result, SelectionResult.end)));
+                    DartRuntimePrimitives.Assert(() => Equals(result, SelectionResult.end));
                     break;
                 }
         }
-        if (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).isEnd)
+        if (@event.isEnd)
         {
             currentSelectionEndIndex = targetIndex;
         }
@@ -2419,25 +2419,25 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleSelectionEdgeUpdate(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event)
     {
-        if ((Equals(@event.type, SelectionEventType.endEdgeUpdate)))
+        if (Equals(@event.type, SelectionEventType.endEdgeUpdate))
         {
-            return ((this.currentSelectionEndIndex == -1L) ? _initSelection(@event, isEnd: true) : _adjustSelection(@event, isEnd: true));
+            return (currentSelectionEndIndex == -1L) ? _initSelection(@event, isEnd: true) : _adjustSelection(@event, isEnd: true);
         }
-        return ((this.currentSelectionStartIndex == -1L) ? _initSelection(@event, isEnd: false) : _adjustSelection(@event, isEnd: false));
+        return (currentSelectionStartIndex == -1L) ? _initSelection(@event, isEnd: false) : _adjustSelection(@event, isEnd: false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
-        var selectionWillBeInProgress = (@event is not ClearSelectionEvent);
-        if ((!this._selectionInProgress && selectionWillBeInProgress))
+        var selectionWillBeInProgress = @event is not ClearSelectionEvent;
+        if (!_selectionInProgress && selectionWillBeInProgress)
         {
-            this.selectables.sort(this.compareOrder);
+            selectables.sort(compareOrder);
         }
         _selectionInProgress = selectionWillBeInProgress;
         _isHandlingSelectionEvent = true;
         global::Doroti.Framework.Rendering.SelectionResult result = default!;
-        switch (((global::Doroti.Framework.Rendering.SelectionEvent)@event).type)
+        switch (@event.type)
         {
             case SelectionEventType.startEdgeUpdate:
             case SelectionEventType.endEdgeUpdate:
@@ -2491,9 +2491,9 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
+        foreach (global::Doroti.Framework.Rendering.Selectable selectable in selectables)
         {
-            selectable.removeListener(this._handleSelectableGeometryChange);
+            selectable.removeListener(_handleSelectableGeometryChange);
         }
         selectables = new List<global::Doroti.Framework.Rendering.Selectable>();
         _scheduledSelectableUpdate = false;
@@ -2509,22 +2509,22 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual global::Doroti.Framework.Rendering.SelectionResult _initSelection(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event, bool isEnd)
     {
-        DartRuntimePrimitives.Assert(() => (((isEnd && (this.currentSelectionEndIndex == -1L))) || ((!isEnd && (this.currentSelectionStartIndex == -1L)))));
+        DartRuntimePrimitives.Assert(() => isEnd && (currentSelectionEndIndex == -1L) || !isEnd && (currentSelectionStartIndex == -1L));
         var newIndex = -1L;
         var hasFoundEdgeIndex = false;
         global::Doroti.Framework.Rendering.SelectionResult? result = default!;
         bool? forward = default!;
-        long oppositeEdgeIndex = (isEnd ? this.currentSelectionStartIndex : this.currentSelectionEndIndex);
+        long oppositeEdgeIndex = isEnd ? currentSelectionStartIndex : currentSelectionEndIndex;
         long index = Math.Max(oppositeEdgeIndex, 0L);
-        while (((index >= 0L) && (index < checked((long)(this.selectables.Count)))))
+        while ((index >= 0L) && (index < checked(selectables.Count)))
         {
-            global::Doroti.Framework.Rendering.Selectable child = this.selectables[(int)(index)];
+            global::Doroti.Framework.Rendering.Selectable child = selectables[(int)index];
             global::Doroti.Framework.Rendering.SelectionResult childResult = dispatchSelectionEventToChild(child, @event);
             switch (childResult)
             {
                 case SelectionResult.next:
                     {
-                        if ((forward == false))
+                        if (forward == false)
                         {
                             hasFoundEdgeIndex = true;
                             result = SelectionResult.end;
@@ -2550,14 +2550,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                     }
                 case SelectionResult.previous:
                     {
-                        if ((index == 0L))
+                        if (index == 0L)
                         {
                             hasFoundEdgeIndex = true;
                             newIndex = 0L;
                             result = SelectionResult.previous;
                             break;
                         }
-                        if ((forward ?? false))
+                        if (forward ?? false)
                         {
                             hasFoundEdgeIndex = true;
                             result = SelectionResult.end;
@@ -2581,11 +2581,11 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             {
                 break;
             }
-            index += (((forward ?? true)) ? 1L : -1L);
+            index += (forward ?? true) ? 1L : -1L;
         }
-        if ((newIndex == -1L))
+        if (newIndex == -1L)
         {
-            DartRuntimePrimitives.Assert(() => !Enumerable.Any(this.selectables));
+            DartRuntimePrimitives.Assert(() => !Enumerable.Any(selectables));
             return SelectionResult.none;
         }
         if (isEnd)
@@ -2597,7 +2597,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             currentSelectionStartIndex = newIndex;
         }
         _flushInactiveSelections();
-        return (result ?? SelectionResult.next);
+        return result ?? SelectionResult.next;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2607,22 +2607,22 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             {
                 if (isEnd)
                 {
-                    DartRuntimePrimitives.Assert(() => ((this.currentSelectionEndIndex < checked((long)(this.selectables.Count))) && (this.currentSelectionEndIndex >= 0L)));
+                    DartRuntimePrimitives.Assert(() => (currentSelectionEndIndex < checked(selectables.Count)) && (currentSelectionEndIndex >= 0L));
                     return true;
                 }
-                DartRuntimePrimitives.Assert(() => ((this.currentSelectionStartIndex < checked((long)(this.selectables.Count))) && (this.currentSelectionStartIndex >= 0L)));
+                DartRuntimePrimitives.Assert(() => (currentSelectionStartIndex < checked(selectables.Count)) && (currentSelectionStartIndex >= 0L));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         global::Doroti.Framework.Rendering.SelectionResult? finalResult = default!;
-        var isCurrentEdgeWithinViewport = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).endSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).startSelectionPoint is not null));
-        var isOppositeEdgeWithinViewport = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).startSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).endSelectionPoint is not null));
-        long newIndex = ((isEnd, isCurrentEdgeWithinViewport, isOppositeEdgeWithinViewport) switch { (true, true, true) => this.currentSelectionEndIndex, (true, true, false) => this.currentSelectionEndIndex, (true, false, true) => this.currentSelectionStartIndex, (true, false, false) => 0L, (false, true, true) => this.currentSelectionStartIndex, (false, true, false) => this.currentSelectionStartIndex, (false, false, true) => this.currentSelectionEndIndex, (false, false, false) => 0L });
+        var isCurrentEdgeWithinViewport = isEnd ? (_selectionGeometry.endSelectionPoint is not null) : (_selectionGeometry.startSelectionPoint is not null);
+        var isOppositeEdgeWithinViewport = isEnd ? (_selectionGeometry.startSelectionPoint is not null) : (_selectionGeometry.endSelectionPoint is not null);
+        long newIndex = (isEnd, isCurrentEdgeWithinViewport, isOppositeEdgeWithinViewport) switch { (true, true, true) => currentSelectionEndIndex, (true, true, false) => currentSelectionEndIndex, (true, false, true) => currentSelectionStartIndex, (true, false, false) => 0L, (false, true, true) => currentSelectionStartIndex, (false, true, false) => currentSelectionStartIndex, (false, false, true) => currentSelectionEndIndex, (false, false, false) => 0L };
         bool? forward = default!;
         global::Doroti.Framework.Rendering.SelectionResult currentSelectableResult = default!;
-        while ((((newIndex < checked((long)(this.selectables.Count))) && (newIndex >= 0L)) && (finalResult is null)))
+        while ((newIndex < checked(selectables.Count)) && (newIndex >= 0L) && (finalResult is null))
         {
-            currentSelectableResult = dispatchSelectionEventToChild(this.selectables[(int)(newIndex)], @event);
+            currentSelectableResult = dispatchSelectionEventToChild(selectables[(int)newIndex], @event);
             switch (currentSelectableResult)
             {
                 case SelectionResult.end:
@@ -2634,14 +2634,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                     }
                 case SelectionResult.next:
                     {
-                        if ((forward == false))
+                        if (forward == false)
                         {
                             newIndex += 1L;
                             finalResult = SelectionResult.end;
                         }
                         else
                         {
-                            if ((newIndex == (checked((long)(this.selectables.Count)) - 1L)))
+                            if (newIndex == (checked(selectables.Count) - 1L))
                             {
                                 finalResult = currentSelectableResult;
                             }
@@ -2655,14 +2655,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                     }
                 case SelectionResult.previous:
                     {
-                        if ((forward ?? false))
+                        if (forward ?? false)
                         {
                             newIndex -= 1L;
                             finalResult = SelectionResult.end;
                         }
                         else
                         {
-                            if ((newIndex == 0L))
+                            if (newIndex == 0L)
                             {
                                 finalResult = currentSelectableResult;
                             }
@@ -2711,11 +2711,11 @@ internal class _SelectableRegionSelectionStatusNotifier__selectable_region : glo
 
     public virtual SelectableRegionSelectionStatus value
     {
-        get => this._selectableRegionSelectionStatus;
+        get => _selectableRegionSelectionStatus;
         set
         {
             var newStatus = value;
-            DartRuntimePrimitives.Assert(() => (((Equals(newStatus, SelectableRegionSelectionStatus.finalized)) && (Equals(this.value, SelectableRegionSelectionStatus.changing))) || (Equals(newStatus, SelectableRegionSelectionStatus.changing))), () => (object?)"Attempting to finalize the selection when it is already finalized.");
+            DartRuntimePrimitives.Assert(() => (Equals(newStatus, SelectableRegionSelectionStatus.finalized) && Equals(this.value, SelectableRegionSelectionStatus.changing)) || Equals(newStatus, SelectableRegionSelectionStatus.changing), () => (object?)"Attempting to finalize the selection when it is already finalized.");
             _selectableRegionSelectionStatus = newStatus;
             notifyListeners();
         }
@@ -2740,7 +2740,7 @@ public class SelectableRegionSelectionStatusScope : InheritedWidget
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (SelectableRegionSelectionStatusScope)oldWidget;
-        return (!Equals(this.selectionStatusNotifier, ((SelectableRegionSelectionStatusScope)__oldWidget).selectionStatusNotifier));
+        return !Equals(selectionStatusNotifier, __oldWidget.selectionStatusNotifier);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2770,7 +2770,7 @@ internal class _SelectionListenerState__selectable_region : State<SelectionListe
         {
             if (!__late__selectionDelegate_initialized)
             {
-                __late__selectionDelegate = new _SelectionListenerDelegate__selectable_region(selectionNotifier: ((SelectionListener)this.widget).selectionNotifier);
+                __late__selectionDelegate = new _SelectionListenerDelegate__selectable_region(selectionNotifier: widget.selectionNotifier);
                 __late__selectionDelegate_initialized = true;
             }
             return __late__selectionDelegate;
@@ -2780,21 +2780,21 @@ internal class _SelectionListenerState__selectable_region : State<SelectionListe
     public override void didUpdateWidget(SelectionListener oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!Equals(((SelectionListener)oldWidget).selectionNotifier, ((SelectionListener)this.widget).selectionNotifier)))
+        if (!Equals(oldWidget.selectionNotifier, widget.selectionNotifier))
         {
-            this._selectionDelegate._setNotifier(((SelectionListener)this.widget).selectionNotifier);
+            _selectionDelegate._setNotifier(widget.selectionNotifier);
         }
     }
 
     public override void dispose()
     {
-        this._selectionDelegate.dispose();
+        _selectionDelegate.dispose();
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new SelectionContainer(@delegate: this._selectionDelegate, child: ((SelectionListener)this.widget).child));
+        return new SelectionContainer(@delegate: _selectionDelegate, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2807,36 +2807,36 @@ internal class _SelectionListenerDelegate__selectable_region : StaticSelectionCo
 
     internal _SelectionListenerDelegate__selectable_region(SelectionListenerNotifier selectionNotifier)
     {
-        this._selectionNotifier = selectionNotifier;
+        _selectionNotifier = selectionNotifier;
     }
 
     internal virtual void _setNotifier(SelectionListenerNotifier newNotifier)
     {
-        this._selectionNotifier._unregisterSelectionListenerDelegate();
+        _selectionNotifier._unregisterSelectionListenerDelegate();
         _selectionNotifier = newNotifier;
-        this._selectionNotifier._registerSelectionListenerDelegate(this);
+        _selectionNotifier._registerSelectionListenerDelegate(this);
     }
 
     public override void notifyListeners()
     {
         base.notifyListeners();
-        if (((this._initialSelectionGeometry is null) && !((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).hasSelection))
+        if ((_initialSelectionGeometry is null) && !value.hasSelection)
         {
-            _initialSelectionGeometry = this.value;
+            _initialSelectionGeometry = value;
             return;
         }
-        this._selectionNotifier.notifyListeners();
+        _selectionNotifier.notifyListeners();
     }
 
     public override void dispose()
     {
-        this._selectionNotifier._unregisterSelectionListenerDelegate();
+        _selectionNotifier._unregisterSelectionListenerDelegate();
         _initialSelectionGeometry = null;
         base.dispose();
     }
 
     public virtual global::Doroti.Framework.Rendering.SelectedContentRange? range => getSelection();
-    public virtual global::Doroti.Framework.Rendering.SelectionStatus status => ((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).status;
+    public virtual global::Doroti.Framework.Rendering.SelectionStatus status => value.status;
 }
 
 public interface SelectionDetails
@@ -2849,11 +2849,11 @@ public class SelectionListenerNotifier : global::Doroti.Framework.Foundation.Cha
 {
     internal virtual _SelectionListenerDelegate__selectable_region? _selectionDelegate { get; set; } = default;
 
-    public virtual SelectionDetails selection => DartRuntimePrimitives.ConvertValue<SelectionDetails>((this._selectionDelegate ?? throw new Exception("Selection client has not been registered to this notifier.")));
-    public virtual bool registered => DartRuntimePrimitives.ConvertValue<bool>((this._selectionDelegate is not null));
+    public virtual SelectionDetails selection => DartRuntimePrimitives.ConvertValue<SelectionDetails>(_selectionDelegate ?? throw new Exception("Selection client has not been registered to this notifier."));
+    public virtual bool registered => DartRuntimePrimitives.ConvertValue<bool>(_selectionDelegate is not null);
     internal virtual void _registerSelectionListenerDelegate(_SelectionListenerDelegate__selectable_region selectionDelegate)
     {
-        DartRuntimePrimitives.Assert(() => !this.registered, () => (object?)"This SelectionListenerNotifier is already registered to another SelectionListener. Try providing a new SelectionListenerNotifier.");
+        DartRuntimePrimitives.Assert(() => !registered, () => (object?)"This SelectionListenerNotifier is already registered to another SelectionListener. Try providing a new SelectionListenerNotifier.");
         _selectionDelegate = selectionDelegate;
     }
 

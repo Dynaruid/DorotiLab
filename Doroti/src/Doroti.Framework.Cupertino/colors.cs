@@ -117,13 +117,13 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
 
     public static global::Doroti.Ui.Color resolve(Color resolvable, global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Ui.Color)(((resolvable is CupertinoDynamicColor)) ? ((CupertinoDynamicColor)resolvable).resolveFrom(context) : resolvable));
+        return (resolvable is CupertinoDynamicColor) ? ((CupertinoDynamicColor)resolvable).resolveFrom(context) : resolvable;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Color? maybeResolve(Color? resolvable, global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Ui.Color?)(((resolvable is CupertinoDynamicColor)) ? ((CupertinoDynamicColor)resolvable).resolveFrom(context) : resolvable));
+        return (resolvable is CupertinoDynamicColor) ? ((CupertinoDynamicColor)resolvable).resolveFrom(context) : resolvable;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -131,38 +131,38 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
     {
         get
         {
-            return ((((!Equals(this.color, this.darkColor)) || (!Equals(this.elevatedColor, this.darkElevatedColor))) || (!Equals(this.highContrastColor, this.darkHighContrastColor))) || (!Equals(this.highContrastElevatedColor, this.darkHighContrastElevatedColor)));
+            return (!Equals(color, darkColor)) || (!Equals(elevatedColor, darkElevatedColor)) || (!Equals(highContrastColor, darkHighContrastColor)) || (!Equals(highContrastElevatedColor, darkHighContrastElevatedColor));
         }
     }
     internal virtual bool _isHighContrastDependent
     {
         get
         {
-            return ((((!Equals(this.color, this.highContrastColor)) || (!Equals(this.darkColor, this.darkHighContrastColor))) || (!Equals(this.elevatedColor, this.highContrastElevatedColor))) || (!Equals(this.darkElevatedColor, this.darkHighContrastElevatedColor)));
+            return (!Equals(color, highContrastColor)) || (!Equals(darkColor, darkHighContrastColor)) || (!Equals(elevatedColor, highContrastElevatedColor)) || (!Equals(darkElevatedColor, darkHighContrastElevatedColor));
         }
     }
     internal virtual bool _isInterfaceElevationDependent
     {
         get
         {
-            return ((((!Equals(this.color, this.elevatedColor)) || (!Equals(this.darkColor, this.darkElevatedColor))) || (!Equals(this.highContrastColor, this.highContrastElevatedColor))) || (!Equals(this.darkHighContrastColor, this.darkHighContrastElevatedColor)));
+            return (!Equals(color, elevatedColor)) || (!Equals(darkColor, darkElevatedColor)) || (!Equals(highContrastColor, highContrastElevatedColor)) || (!Equals(darkHighContrastColor, darkHighContrastElevatedColor));
         }
     }
     public override Color resolveFrom<TContext>(TContext context) => resolveFrom((BuildContext)(object)context!);
 
     public virtual CupertinoDynamicColor resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Brightness brightness = (this._isPlatformBrightnessDependent ? (CupertinoTheme.maybeBrightnessOf(context) ?? Brightness.light) : Brightness.light);
-        CupertinoUserInterfaceLevelData level = (this._isInterfaceElevationDependent ? (CupertinoUserInterfaceLevel.maybeOf(context) ?? CupertinoUserInterfaceLevelData.@base) : CupertinoUserInterfaceLevelData.@base);
-        bool highContrast = (this._isHighContrastDependent && ((MediaQuery.maybeHighContrastOf(context) ?? false)));
-        global::Doroti.Ui.Color resolved = ((global::Doroti.Ui.Color)((brightness, level, highContrast) switch { (Brightness.light, var __constant47383, false) when (Equals(__constant47383, CupertinoUserInterfaceLevelData.@base)) => this.color, (Brightness.light, var __constant47463, true) when (Equals(__constant47463, CupertinoUserInterfaceLevelData.@base)) => this.highContrastColor, (Brightness.light, var __constant47554, false) when (Equals(__constant47554, CupertinoUserInterfaceLevelData.elevated)) => this.elevatedColor, (Brightness.light, var __constant47646, true) when (Equals(__constant47646, CupertinoUserInterfaceLevelData.elevated)) => this.highContrastElevatedColor, (Brightness.dark, var __constant47756, false) when (Equals(__constant47756, CupertinoUserInterfaceLevelData.@base)) => this.darkColor, (Brightness.dark, var __constant47839, true) when (Equals(__constant47839, CupertinoUserInterfaceLevelData.@base)) => this.darkHighContrastColor, (Brightness.dark, var __constant47933, false) when (Equals(__constant47933, CupertinoUserInterfaceLevelData.elevated)) => this.darkElevatedColor, (Brightness.dark, var __constant48028, true) when (Equals(__constant48028, CupertinoUserInterfaceLevelData.elevated)) => this.darkHighContrastElevatedColor, _ => this.color }));
+        global::Doroti.Ui.Brightness brightness = _isPlatformBrightnessDependent ? (CupertinoTheme.maybeBrightnessOf(context) ?? Brightness.light) : Brightness.light;
+        CupertinoUserInterfaceLevelData level = _isInterfaceElevationDependent ? (CupertinoUserInterfaceLevel.maybeOf(context) ?? CupertinoUserInterfaceLevelData.@base) : CupertinoUserInterfaceLevelData.@base;
+        bool highContrast = _isHighContrastDependent && (MediaQuery.maybeHighContrastOf(context) ?? false);
+        global::Doroti.Ui.Color resolved = (brightness, level, highContrast) switch { (Brightness.light, var __constant47383, false) when Equals(__constant47383, CupertinoUserInterfaceLevelData.@base) => color, (Brightness.light, var __constant47463, true) when Equals(__constant47463, CupertinoUserInterfaceLevelData.@base) => highContrastColor, (Brightness.light, var __constant47554, false) when Equals(__constant47554, CupertinoUserInterfaceLevelData.elevated) => elevatedColor, (Brightness.light, var __constant47646, true) when Equals(__constant47646, CupertinoUserInterfaceLevelData.elevated) => highContrastElevatedColor, (Brightness.dark, var __constant47756, false) when Equals(__constant47756, CupertinoUserInterfaceLevelData.@base) => darkColor, (Brightness.dark, var __constant47839, true) when Equals(__constant47839, CupertinoUserInterfaceLevelData.@base) => darkHighContrastColor, (Brightness.dark, var __constant47933, false) when Equals(__constant47933, CupertinoUserInterfaceLevelData.elevated) => darkElevatedColor, (Brightness.dark, var __constant48028, true) when Equals(__constant48028, CupertinoUserInterfaceLevelData.elevated) => darkHighContrastElevatedColor, _ => color };
         global::Doroti.Framework.Widgets.Element? debugContext = default!;
         DartRuntimePrimitives.Assert(() =>
             {
                 debugContext = ((global::Doroti.Framework.Widgets.Element?)context)!;
                 return true;
             });
-        return new CupertinoDynamicColor(resolved, this.color, this.darkColor, this.highContrastColor, this.darkHighContrastColor, this.elevatedColor, this.darkElevatedColor, this.highContrastElevatedColor, this.darkHighContrastElevatedColor, debugContext, this._debugLabel);
+        return new CupertinoDynamicColor(resolved, color, darkColor, highContrastColor, darkHighContrastColor, elevatedColor, darkElevatedColor, highContrastElevatedColor, darkHighContrastElevatedColor, debugContext, _debugLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -174,94 +174,94 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((__other is CupertinoDynamicColor) && (((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).value == this.value)) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).color, this.color))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).darkColor, this.darkColor))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).highContrastColor, this.highContrastColor))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).darkHighContrastColor, this.darkHighContrastColor))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).elevatedColor, this.elevatedColor))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).darkElevatedColor, this.darkElevatedColor))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).highContrastElevatedColor, this.highContrastElevatedColor))) && (Equals(((CupertinoDynamicColor)((CupertinoDynamicColor)__other)).darkHighContrastElevatedColor, this.darkHighContrastElevatedColor)));
+        return (__other is CupertinoDynamicColor) && (__other.value == value) && Equals(__other.color, color) && Equals(__other.darkColor, darkColor) && Equals(__other.highContrastColor, highContrastColor) && Equals(__other.darkHighContrastColor, darkHighContrastColor) && Equals(__other.elevatedColor, elevatedColor) && Equals(__other.darkElevatedColor, darkElevatedColor) && Equals(__other.highContrastElevatedColor, highContrastElevatedColor) && Equals(__other.darkHighContrastElevatedColor, darkHighContrastElevatedColor);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.value, this.color, this.darkColor, this.highContrastColor, this.elevatedColor, this.darkElevatedColor, this.darkHighContrastColor, this.darkHighContrastElevatedColor, this.highContrastElevatedColor));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(value, color, darkColor, highContrastColor, elevatedColor, darkElevatedColor, darkHighContrastColor, darkHighContrastElevatedColor, highContrastElevatedColor));
     public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string toString(string name, Color color)
         {
-            var marker = ((Equals(color, this._effectiveColor)) ? "*" : "");
+            var marker = Equals(color, _effectiveColor) ? "*" : "";
             return $"{marker}{name} = {color}{marker}";
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         string ToString(string name, Color color) => toString(name, color);
-        var xs = ((Func<List<string>>)(() => { var __collection49750 = new List<string>(); __collection49750.Add(toString("color", this.color)); if (this._isPlatformBrightnessDependent) { __collection49750.Add(ToString("darkColor", this.darkColor)); } if (this._isHighContrastDependent) { __collection49750.Add(ToString("highContrastColor", this.highContrastColor)); } if ((this._isPlatformBrightnessDependent && this._isHighContrastDependent)) { __collection49750.Add(ToString("darkHighContrastColor", this.darkHighContrastColor)); } if (this._isInterfaceElevationDependent) { __collection49750.Add(ToString("elevatedColor", this.elevatedColor)); } if ((this._isPlatformBrightnessDependent && this._isInterfaceElevationDependent)) { __collection49750.Add(ToString("darkElevatedColor", this.darkElevatedColor)); } if ((this._isHighContrastDependent && this._isInterfaceElevationDependent)) { __collection49750.Add(ToString("highContrastElevatedColor", this.highContrastElevatedColor)); } if (((this._isPlatformBrightnessDependent && this._isHighContrastDependent) && this._isInterfaceElevationDependent)) { __collection49750.Add(ToString("darkHighContrastElevatedColor", this.darkHighContrastElevatedColor)); } return __collection49750; }))();
-        return $"{((this._debugLabel ?? objectRuntimeTypeFunctions.objectRuntimeType(this, "CupertinoDynamicColor")))}({string.Join(", ", xs)}, resolved by: {(((object?)this._debugResolveContext?.widget ?? (object?)"UNRESOLVED"))})";
+        var xs = ((Func<List<string>>)(() => { var __collection49750 = new List<string>(); __collection49750.Add(toString("color", color)); if (_isPlatformBrightnessDependent) { __collection49750.Add(ToString("darkColor", darkColor)); } if (_isHighContrastDependent) { __collection49750.Add(ToString("highContrastColor", highContrastColor)); } if (_isPlatformBrightnessDependent && _isHighContrastDependent) { __collection49750.Add(ToString("darkHighContrastColor", darkHighContrastColor)); } if (_isInterfaceElevationDependent) { __collection49750.Add(ToString("elevatedColor", elevatedColor)); } if (_isPlatformBrightnessDependent && _isInterfaceElevationDependent) { __collection49750.Add(ToString("darkElevatedColor", darkElevatedColor)); } if (_isHighContrastDependent && _isInterfaceElevationDependent) { __collection49750.Add(ToString("highContrastElevatedColor", highContrastElevatedColor)); } if (_isPlatformBrightnessDependent && _isHighContrastDependent && _isInterfaceElevationDependent) { __collection49750.Add(ToString("darkHighContrastElevatedColor", darkHighContrastElevatedColor)); } return __collection49750; }))();
+        return $"{_debugLabel ?? objectRuntimeTypeFunctions.objectRuntimeType(this, "CupertinoDynamicColor")}({string.Join(", ", xs)}, resolved by: {(object?)_debugResolveContext?.widget ?? (object?)"UNRESOLVED"})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        if ((this._debugLabel is not null))
+        if (_debugLabel is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.MessageProperty("debugLabel", this._debugLabel));
+            properties.add(new global::Doroti.Framework.Foundation.MessageProperty("debugLabel", _debugLabel));
         }
-        properties.add(ColorsLibrary.createCupertinoColorProperty("color", this.color));
-        if (this._isPlatformBrightnessDependent)
+        properties.add(ColorsLibrary.createCupertinoColorProperty("color", color));
+        if (_isPlatformBrightnessDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("darkColor", this.darkColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("darkColor", darkColor));
         }
-        if (this._isHighContrastDependent)
+        if (_isHighContrastDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("highContrastColor", this.highContrastColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("highContrastColor", highContrastColor));
         }
-        if ((this._isPlatformBrightnessDependent && this._isHighContrastDependent))
+        if (_isPlatformBrightnessDependent && _isHighContrastDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("darkHighContrastColor", this.darkHighContrastColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("darkHighContrastColor", darkHighContrastColor));
         }
-        if (this._isInterfaceElevationDependent)
+        if (_isInterfaceElevationDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("elevatedColor", this.elevatedColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("elevatedColor", elevatedColor));
         }
-        if ((this._isPlatformBrightnessDependent && this._isInterfaceElevationDependent))
+        if (_isPlatformBrightnessDependent && _isInterfaceElevationDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("darkElevatedColor", this.darkElevatedColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("darkElevatedColor", darkElevatedColor));
         }
-        if ((this._isHighContrastDependent && this._isInterfaceElevationDependent))
+        if (_isHighContrastDependent && _isInterfaceElevationDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("highContrastElevatedColor", this.highContrastElevatedColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("highContrastElevatedColor", highContrastElevatedColor));
         }
-        if (((this._isPlatformBrightnessDependent && this._isHighContrastDependent) && this._isInterfaceElevationDependent))
+        if (_isPlatformBrightnessDependent && _isHighContrastDependent && _isInterfaceElevationDependent)
         {
-            properties.add(ColorsLibrary.createCupertinoColorProperty("darkHighContrastElevatedColor", this.darkHighContrastElevatedColor));
+            properties.add(ColorsLibrary.createCupertinoColorProperty("darkHighContrastElevatedColor", darkHighContrastElevatedColor));
         }
-        if ((this._debugResolveContext is not null))
+        if (_debugResolveContext is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Element>("last resolved", this._debugResolveContext));
+            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Element>("last resolved", _debugResolveContext));
         }
     }
 
-    public new virtual long value => this._effectiveColor.value;
-    public new virtual long toARGB32() => this._effectiveColor.toARGB32();
-    public new virtual long alpha => this._effectiveColor.alpha;
-    public new virtual long blue => this._effectiveColor.blue;
-    public new virtual double computeLuminance() => this._effectiveColor.computeLuminance();
-    public new virtual long green => this._effectiveColor.green;
-    public new virtual double opacity => this._effectiveColor.opacity;
-    public new virtual long red => this._effectiveColor.red;
-    public new virtual global::Doroti.Ui.Color withAlpha(long a) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withAlpha(a));
-    public new virtual global::Doroti.Ui.Color withBlue(long b) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withBlue(b));
-    public new virtual global::Doroti.Ui.Color withGreen(long g) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withGreen(g));
-    public new virtual global::Doroti.Ui.Color withOpacity(double opacity) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withOpacity(opacity));
-    public new virtual global::Doroti.Ui.Color withRed(long r) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withRed(r));
-    public new virtual double a => this._effectiveColor.a;
-    public new virtual double r => this._effectiveColor.r;
-    public new virtual double g => this._effectiveColor.g;
-    public new virtual double b => this._effectiveColor.b;
-    public new virtual global::Doroti.Ui.ColorSpace colorSpace => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.ColorSpace>(this._effectiveColor.colorSpace);
-    public new virtual global::Doroti.Ui.Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._effectiveColor.withValues(alpha: alpha, red: red, green: green, blue: blue, colorSpace: colorSpace));
+    public new virtual long value => _effectiveColor.value;
+    public new virtual long toARGB32() => _effectiveColor.toARGB32();
+    public new virtual long alpha => _effectiveColor.alpha;
+    public new virtual long blue => _effectiveColor.blue;
+    public new virtual double computeLuminance() => _effectiveColor.computeLuminance();
+    public new virtual long green => _effectiveColor.green;
+    public new virtual double opacity => _effectiveColor.opacity;
+    public new virtual long red => _effectiveColor.red;
+    public new virtual global::Doroti.Ui.Color withAlpha(long a) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_effectiveColor.withAlpha(a));
+    public new virtual global::Doroti.Ui.Color withBlue(long b) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_effectiveColor.withBlue(b));
+    public new virtual global::Doroti.Ui.Color withGreen(long g) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_effectiveColor.withGreen(g));
+    public new virtual global::Doroti.Ui.Color withOpacity(double opacity) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_effectiveColor.withOpacity(opacity));
+    public new virtual global::Doroti.Ui.Color withRed(long r) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_effectiveColor.withRed(r));
+    public new virtual double a => _effectiveColor.a;
+    public new virtual double r => _effectiveColor.r;
+    public new virtual double g => _effectiveColor.g;
+    public new virtual double b => _effectiveColor.b;
+    public new virtual global::Doroti.Ui.ColorSpace colorSpace => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.ColorSpace>(_effectiveColor.colorSpace);
+    public new virtual global::Doroti.Ui.Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_effectiveColor.withValues(alpha: alpha, red: red, green: green, blue: blue, colorSpace: colorSpace));
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -271,14 +271,14 @@ public static partial class ColorsLibrary
 {
     public static global::Doroti.Framework.Foundation.DiagnosticsProperty<Color> createCupertinoColorProperty(string name, Color? value, bool showName = true, object? defaultValue = default!, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, global::Doroti.Framework.Foundation.DiagnosticLevel level = DiagnosticLevel.info)
     {
-        if ((value is CupertinoDynamicColor))
+        if (value is CupertinoDynamicColor)
         {
             CupertinoDynamicColor value__as55108 = (CupertinoDynamicColor)value;
-            return ((global::Doroti.Framework.Foundation.DiagnosticsProperty<Color>)new global::Doroti.Framework.Foundation.DiagnosticsProperty<Color>(name, value__as55108, description: ((CupertinoDynamicColor)value__as55108)._debugLabel, showName: showName, defaultValue: defaultValue, style: style, level: level));
+            return new global::Doroti.Framework.Foundation.DiagnosticsProperty<Color>(name, value__as55108, description: value__as55108._debugLabel, showName: showName, defaultValue: defaultValue, style: style, level: level);
         }
         else
         {
-            return ((global::Doroti.Framework.Foundation.DiagnosticsProperty<Color>)new global::Doroti.Framework.Painting.ColorProperty(name, value, showName: showName, defaultValue: defaultValue, style: style, level: level));
+            return new global::Doroti.Framework.Painting.ColorProperty(name, value, showName: showName, defaultValue: defaultValue, style: style, level: level);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

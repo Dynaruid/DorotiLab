@@ -15,7 +15,7 @@ internal class _TooltipVisibilityScope__tooltip_visibility : global::Doroti.Fram
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
         var __old = (_TooltipVisibilityScope__tooltip_visibility)oldWidget;
-        return (((_TooltipVisibilityScope__tooltip_visibility)__old).visible != this.visible);
+        return __old.visible != visible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -34,14 +34,14 @@ public class TooltipVisibility : global::Doroti.Framework.Widgets.StatelessWidge
 
     public static bool of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _TooltipVisibilityScope__tooltip_visibility? visibility = ((_TooltipVisibilityScope__tooltip_visibility?)context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>());
-        return (visibility?.visible ?? true);
+        _TooltipVisibilityScope__tooltip_visibility? visibility = context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>();
+        return visibility?.visible ?? true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new _TooltipVisibilityScope__tooltip_visibility(visible: this.visible, child: this.child));
+        return new _TooltipVisibilityScope__tooltip_visibility(visible: visible, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

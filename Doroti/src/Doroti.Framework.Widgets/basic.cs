@@ -13,7 +13,7 @@ internal class _UbiquitousInheritedElement__basic : InheritedElement
 
     public override void setDependencies(Element dependent, object? value)
     {
-        DartRuntimePrimitives.Assert(() => (value is null));
+        DartRuntimePrimitives.Assert(() => value is null);
     }
 
     public override object? getDependencies(Element dependent)
@@ -25,21 +25,21 @@ internal class _UbiquitousInheritedElement__basic : InheritedElement
     public override void notifyClients(ProxyWidget oldWidget)
     {
         var __oldWidget = (InheritedWidget)oldWidget;
-        _recurseChildren(this, ((global::System.Action<Element>)((element) =>
+        _recurseChildren(this, (element) =>
         {
             if (element.doesDependOnInheritedElement(this))
             {
                 notifyDependent(__oldWidget, element);
             }
-        })));
+        });
     }
 
     internal static void _recurseChildren(Element element, global::System.Action<Element> visitor)
     {
-        element.visitChildren(((global::System.Action<Element>)((child) =>
+        element.visitChildren((child) =>
         {
-            _recurseChildren(child, (global::System.Action<Element>)visitor);
-        })));
+            _recurseChildren(child, visitor);
+        });
         visitor(element);
     }
 
@@ -67,22 +67,22 @@ public class Directionality : _UbiquitousInheritedWidget__basic
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
         Directionality widget = context.dependOnInheritedWidgetOfExactType<Directionality>()!;
-        return ((Directionality)widget).textDirection;
+        return widget.textDirection;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.TextDirection? maybeOf(BuildContext context)
     {
-        Directionality? widget = ((Directionality?)context.dependOnInheritedWidgetOfExactType<Directionality>());
-        return ((TextDirection?)(widget)?.textDirection);
+        Directionality? widget = context.dependOnInheritedWidgetOfExactType<Directionality>();
+        return widget?.textDirection;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.textDirection, ((Directionality)oldWidget).textDirection)));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(textDirection, ((Directionality)oldWidget).textDirection));
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection));
     }
 
 }
@@ -96,12 +96,12 @@ public class Opacity : SingleChildRenderObjectWidget
     {
         this.opacity = opacity;
         this.alwaysIncludeSemantics = alwaysIncludeSemantics;
-        System.Diagnostics.Debug.Assert(((opacity >= 0.0) && (opacity <= 1.0)));
+        System.Diagnostics.Debug.Assert((opacity >= 0.0) && (opacity <= 1.0));
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderOpacity(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
+        return new global::Doroti.Framework.Rendering.RenderOpacity(opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -111,8 +111,8 @@ public class Opacity : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderOpacity>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.opacity = this.opacity;
-    __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
+    __cascade.opacity = opacity;
+    __cascade.alwaysIncludeSemantics = alwaysIncludeSemantics;
     return __cascade;
 }))());
     }
@@ -120,8 +120,8 @@ public class Opacity : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", this.opacity));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alwaysIncludeSemantics", value: this.alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", opacity));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("alwaysIncludeSemantics", value: alwaysIncludeSemantics, ifTrue: "alwaysIncludeSemantics"));
     }
 
 }
@@ -139,7 +139,7 @@ public class ShaderMask : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderShaderMask(shaderCallback: (global::System.Func<Rect, Shader>)this.shaderCallback, blendMode: this.blendMode));
+        return new global::Doroti.Framework.Rendering.RenderShaderMask(shaderCallback: shaderCallback, blendMode: blendMode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -149,8 +149,8 @@ public class ShaderMask : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderShaderMask>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.shaderCallback = this.shaderCallback;
-    __cascade.blendMode = this.blendMode;
+    __cascade.shaderCallback = shaderCallback;
+    __cascade.blendMode = blendMode;
     return __cascade;
 }))());
     }
@@ -163,19 +163,19 @@ public class BackdropGroup : InheritedWidget
 
     public BackdropGroup(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::Doroti.Framework.Rendering.BackdropKey? backdropKey = null) : base(key: key, child: child)
     {
-        this.backdropKey = (backdropKey ?? new global::Doroti.Framework.Rendering.BackdropKey());
+        this.backdropKey = backdropKey ?? new global::Doroti.Framework.Rendering.BackdropKey();
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (BackdropGroup)oldWidget;
-        return (!Equals(((BackdropGroup)__oldWidget).backdropKey, this.backdropKey));
+        return !Equals(__oldWidget.backdropKey, backdropKey);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static BackdropGroup? of(BuildContext context)
     {
-        return ((BackdropGroup?)context.dependOnInheritedWidgetOfExactType<BackdropGroup>());
+        return context.dependOnInheritedWidgetOfExactType<BackdropGroup>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -197,9 +197,9 @@ public class BackdropFilter : SingleChildRenderObjectWidget
         this.blendMode = blendMode;
         this.enabled = enabled;
         this.backdropGroupKey = backdropGroupKey;
-        this._useSharedKey = false;
-        System.Diagnostics.Debug.Assert(((filter is not null) || (filterConfig is not null)));
-        System.Diagnostics.Debug.Assert(((filter is null) || (filterConfig is null)));
+        _useSharedKey = false;
+        System.Diagnostics.Debug.Assert((filter is not null) || (filterConfig is not null));
+        System.Diagnostics.Debug.Assert((filter is null) || (filterConfig is null));
     }
 
     public static BackdropFilter CreateGrouped(global::Doroti.Framework.Foundation.Key? key = null, ImageFilter? filter = null, global::Doroti.Framework.Rendering.ImageFilterConfig? filterConfig = null, Widget? child = null, BlendMode blendMode = BlendMode.srcOver, bool enabled = true)
@@ -216,11 +216,11 @@ public class BackdropFilter : SingleChildRenderObjectWidget
 
     internal virtual global::Doroti.Framework.Rendering.BackdropKey? _getBackdropGroupKey(BuildContext context)
     {
-        if (this._useSharedKey)
+        if (_useSharedKey)
         {
             return BackdropGroup.of(context)?.backdropKey;
         }
-        return this.backdropGroupKey;
+        return backdropGroupKey;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -228,12 +228,12 @@ public class BackdropFilter : SingleChildRenderObjectWidget
     {
         get
         {
-            return (this.filterConfig ?? ImageFilterConfig.Create(this.filter!));
+            return filterConfig ?? ImageFilterConfig.Create(filter!);
         }
     }
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderBackdropFilter(filterConfig: this._effectiveFilterConfig, blendMode: this.blendMode, enabled: this.enabled, backdropKey: _getBackdropGroupKey(context)));
+        return new global::Doroti.Framework.Rendering.RenderBackdropFilter(filterConfig: _effectiveFilterConfig, blendMode: blendMode, enabled: enabled, backdropKey: _getBackdropGroupKey(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -243,9 +243,9 @@ public class BackdropFilter : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderBackdropFilter>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.filterConfig = this._effectiveFilterConfig;
-    __cascade.enabled = this.enabled;
-    __cascade.blendMode = this.blendMode;
+    __cascade.filterConfig = _effectiveFilterConfig;
+    __cascade.enabled = enabled;
+    __cascade.blendMode = blendMode;
     __cascade.backdropKey = _getBackdropGroupKey(context);
     return __cascade;
 }))());
@@ -254,10 +254,10 @@ public class BackdropFilter : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("filter", this.filter, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ImageFilterConfig>("filterConfig", this.filterConfig, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", this.blendMode));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: this.enabled, ifTrue: "enabled"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("filter", filter, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ImageFilterConfig>("filterConfig", filterConfig, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: enabled, ifTrue: "enabled"));
     }
 
 }
@@ -277,7 +277,7 @@ public class CustomPaint : SingleChildRenderObjectWidget
         this.size = size ?? Size.zero;
         this.isComplex = isComplex;
         this.willChange = willChange;
-        System.Diagnostics.Debug.Assert((((painter is not null) || (foregroundPainter is not null)) || ((!isComplex && !willChange))));
+        System.Diagnostics.Debug.Assert((painter is not null) || (foregroundPainter is not null) || !isComplex && !willChange);
     }
 
     public CustomPaint(Size size, ToggleablePainter painter) : this(
@@ -299,7 +299,7 @@ public class CustomPaint : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderCustomPaint(painter: this.painter, foregroundPainter: this.foregroundPainter, preferredSize: this.size, isComplex: this.isComplex, willChange: this.willChange));
+        return new global::Doroti.Framework.Rendering.RenderCustomPaint(painter: painter, foregroundPainter: foregroundPainter, preferredSize: size, isComplex: isComplex, willChange: willChange);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -309,11 +309,11 @@ public class CustomPaint : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderCustomPaint>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.painter = this.painter;
-    __cascade.foregroundPainter = this.foregroundPainter;
-    __cascade.preferredSize = this.size;
-    __cascade.isComplex = this.isComplex;
-    __cascade.willChange = this.willChange;
+    __cascade.painter = painter;
+    __cascade.foregroundPainter = foregroundPainter;
+    __cascade.preferredSize = size;
+    __cascade.isComplex = isComplex;
+    __cascade.willChange = willChange;
     return __cascade;
 }))());
     }
@@ -345,7 +345,7 @@ public class ClipRect : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderClipRect(clipper: this.clipper, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderClipRect(clipper: clipper, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -355,8 +355,8 @@ public class ClipRect : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderClipRect>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.clipper = this.clipper;
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.clipper = clipper;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -370,7 +370,7 @@ public class ClipRect : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Rect>>("clipper", this.clipper, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Rect>>("clipper", clipper, defaultValue: null));
     }
 
 }
@@ -391,7 +391,7 @@ public class ClipRRect : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderClipRRect(borderRadius: this.borderRadius, clipper: this.clipper, clipBehavior: this.clipBehavior, textDirection: Directionality.maybeOf(context)));
+        return new global::Doroti.Framework.Rendering.RenderClipRRect(borderRadius: borderRadius, clipper: clipper, clipBehavior: clipBehavior, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -401,9 +401,9 @@ public class ClipRRect : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderClipRRect>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.borderRadius = this.borderRadius;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.clipper = this.clipper;
+    __cascade.borderRadius = borderRadius;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.clipper = clipper;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -412,8 +412,8 @@ public class ClipRRect : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", this.borderRadius, showName: false, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.RRect>>("clipper", this.clipper, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", borderRadius, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.RRect>>("clipper", clipper, defaultValue: null));
     }
 
 }
@@ -434,7 +434,7 @@ public class ClipRSuperellipse : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderClipRSuperellipse(borderRadius: this.borderRadius, clipBehavior: this.clipBehavior, clipper: this.clipper, textDirection: Directionality.maybeOf(context)));
+        return new global::Doroti.Framework.Rendering.RenderClipRSuperellipse(borderRadius: borderRadius, clipBehavior: clipBehavior, clipper: clipper, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -444,9 +444,9 @@ public class ClipRSuperellipse : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderClipRSuperellipse>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.borderRadius = this.borderRadius;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.clipper = this.clipper;
+    __cascade.borderRadius = borderRadius;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.clipper = clipper;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -455,8 +455,8 @@ public class ClipRSuperellipse : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", this.borderRadius, showName: false, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.RSuperellipse>>("clipper", this.clipper, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("borderRadius", borderRadius, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.RSuperellipse>>("clipper", clipper, defaultValue: null));
     }
 
 }
@@ -474,7 +474,7 @@ public class ClipOval : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderClipOval(clipper: this.clipper, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderClipOval(clipper: clipper, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -484,8 +484,8 @@ public class ClipOval : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderClipOval>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.clipper = this.clipper;
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.clipper = clipper;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -499,7 +499,7 @@ public class ClipOval : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Rect>>("clipper", this.clipper, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Rect>>("clipper", clipper, defaultValue: null));
     }
 
 }
@@ -517,17 +517,17 @@ public class ClipPath : SingleChildRenderObjectWidget
 
     public static Widget shape(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.ShapeBorder shape = default!, Clip clipBehavior = Clip.antiAlias, Widget? child = null)
     {
-        return ((Widget)new Builder(key: key, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        return new Builder(key: key, builder: (context) =>
         {
-            return ((Widget)new ClipPath(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shape, textDirection: Directionality.maybeOf(context)), clipBehavior: clipBehavior, child: child));
+            return new ClipPath(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shape, textDirection: Directionality.maybeOf(context)), clipBehavior: clipBehavior, child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderClipPath(clipper: this.clipper, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderClipPath(clipper: clipper, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -537,8 +537,8 @@ public class ClipPath : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderClipPath>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.clipper = this.clipper;
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.clipper = clipper;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -552,7 +552,7 @@ public class ClipPath : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path>>("clipper", this.clipper, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path>>("clipper", clipper, defaultValue: null));
     }
 
 }
@@ -575,12 +575,12 @@ public class PhysicalModel : SingleChildRenderObjectWidget
         this.elevation = elevation;
         this.color = color;
         this.shadowColor = __shadowColor;
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderPhysicalModel(shape: this.shape, clipBehavior: this.clipBehavior, borderRadius: this.borderRadius, elevation: this.elevation, color: this.color, shadowColor: this.shadowColor));
+        return new global::Doroti.Framework.Rendering.RenderPhysicalModel(shape: shape, clipBehavior: clipBehavior, borderRadius: borderRadius, elevation: elevation, color: color, shadowColor: shadowColor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -590,12 +590,12 @@ public class PhysicalModel : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderPhysicalModel>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.shape = this.shape;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.borderRadius = this.borderRadius;
-    __cascade.elevation = this.elevation;
-    __cascade.color = this.color;
-    __cascade.shadowColor = this.shadowColor;
+    __cascade.shape = shape;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.borderRadius = borderRadius;
+    __cascade.elevation = elevation;
+    __cascade.color = color;
+    __cascade.shadowColor = shadowColor;
     return __cascade;
 }))());
     }
@@ -603,11 +603,11 @@ public class PhysicalModel : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxShape>("shape", this.shape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius>("borderRadius", this.borderRadius));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxShape>("shape", shape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius>("borderRadius", borderRadius));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor));
     }
 
 }
@@ -628,12 +628,12 @@ public class PhysicalShape : SingleChildRenderObjectWidget
         this.elevation = elevation;
         this.color = color;
         this.shadowColor = __shadowColor;
-        System.Diagnostics.Debug.Assert((elevation >= 0.0));
+        System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderPhysicalShape(clipper: this.clipper, clipBehavior: this.clipBehavior, elevation: this.elevation, color: this.color, shadowColor: this.shadowColor));
+        return new global::Doroti.Framework.Rendering.RenderPhysicalShape(clipper: clipper, clipBehavior: clipBehavior, elevation: elevation, color: color, shadowColor: shadowColor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -643,11 +643,11 @@ public class PhysicalShape : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderPhysicalShape>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.clipper = this.clipper;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.elevation = this.elevation;
-    __cascade.color = this.color;
-    __cascade.shadowColor = this.shadowColor;
+    __cascade.clipper = clipper;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.elevation = elevation;
+    __cascade.color = color;
+    __cascade.shadowColor = shadowColor;
     return __cascade;
 }))());
     }
@@ -655,10 +655,10 @@ public class PhysicalShape : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path>>("clipper", this.clipper));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path>>("clipper", clipper));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor));
     }
 
 }
@@ -711,7 +711,7 @@ public class Transform : SingleChildRenderObjectWidget
         __instance.alignment = __alignment;
         __instance.transformHitTests = transformHitTests;
         __instance.filterQuality = filterQuality;
-        __instance.transform = Matrix4.diagonal3Values(((scale ?? scaleX) ?? 1.0), ((scale ?? scaleY) ?? 1.0), 1.0);
+        __instance.transform = Matrix4.diagonal3Values((scale ?? scaleX) ?? 1.0, (scale ?? scaleY) ?? 1.0, 1.0);
         return __instance;
     }
 
@@ -722,32 +722,32 @@ public class Transform : SingleChildRenderObjectWidget
         __instance.transformHitTests = transformHitTests;
         __instance.filterQuality = filterQuality;
         __instance.alignment = Alignment.center;
-        __instance.transform = Matrix4.diagonal3Values((flipX ? -1.0 : 1.0), (flipY ? -1.0 : 1.0), 1.0);
+        __instance.transform = Matrix4.diagonal3Values(flipX ? -1.0 : 1.0, flipY ? -1.0 : 1.0, 1.0);
         return __instance;
     }
 
     internal static Matrix4 _computeRotation(double radians)
     {
         DartRuntimePrimitives.Assert(() => double.IsFinite(radians), () => (object?)$"Cannot compute the rotation matrix for a non-finite angle: {radians}");
-        if ((radians == 0.0))
+        if (radians == 0.0)
         {
             return Matrix4.identity();
         }
         double sinLocal = Dart_mathLibrary.sin(radians);
-        if ((sinLocal == 1.0))
+        if (sinLocal == 1.0)
         {
-            return ((Matrix4)_createZRotation(1.0, 0.0));
+            return _createZRotation(1.0, 0.0);
         }
-        if ((sinLocal == -1.0))
+        if (sinLocal == -1.0)
         {
-            return ((Matrix4)_createZRotation(-1.0, 0.0));
+            return _createZRotation(-1.0, 0.0);
         }
         double cosLocal = Dart_mathLibrary.cos(radians);
-        if ((cosLocal == -1.0))
+        if (cosLocal == -1.0)
         {
-            return ((Matrix4)_createZRotation(0.0, -1.0));
+            return _createZRotation(0.0, -1.0);
         }
-        return ((Matrix4)_createZRotation(sinLocal, cosLocal));
+        return _createZRotation(sinLocal, cosLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -766,7 +766,7 @@ public class Transform : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderTransform(transform: this.transform, origin: this.origin, alignment: this.alignment, textDirection: Directionality.maybeOf(context), transformHitTests: this.transformHitTests, filterQuality: this.filterQuality));
+        return new global::Doroti.Framework.Rendering.RenderTransform(transform: transform, origin: origin, alignment: alignment, textDirection: Directionality.maybeOf(context), transformHitTests: transformHitTests, filterQuality: filterQuality);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -776,12 +776,12 @@ public class Transform : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderTransform>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.transform = this.transform;
-    __cascade.origin = this.origin;
-    __cascade.alignment = this.alignment;
+    __cascade.transform = transform;
+    __cascade.origin = origin;
+    __cascade.alignment = alignment;
     __cascade.textDirection = Directionality.maybeOf(context);
-    __cascade.transformHitTests = this.transformHitTests;
-    __cascade.filterQuality = this.filterQuality;
+    __cascade.transformHitTests = transformHitTests;
+    __cascade.filterQuality = filterQuality;
     return __cascade;
 }))());
     }
@@ -799,14 +799,14 @@ public class CompositedTransformTarget : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderLeaderLayer(link: this.link));
+        return new global::Doroti.Framework.Rendering.RenderLeaderLayer(link: link);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderLeaderLayer)renderObject;
-        __renderObject.link = this.link;
+        __renderObject.link = link;
     }
 
 }
@@ -832,7 +832,7 @@ public class CompositedTransformFollower : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderFollowerLayer(link: this.link, showWhenUnlinked: this.showWhenUnlinked, offset: this.offset, leaderAnchor: this.targetAnchor, followerAnchor: this.followerAnchor));
+        return new global::Doroti.Framework.Rendering.RenderFollowerLayer(link: link, showWhenUnlinked: showWhenUnlinked, offset: offset, leaderAnchor: targetAnchor, followerAnchor: followerAnchor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -842,11 +842,11 @@ public class CompositedTransformFollower : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderFollowerLayer>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.link = this.link;
-    __cascade.showWhenUnlinked = this.showWhenUnlinked;
-    __cascade.offset = this.offset;
-    __cascade.leaderAnchor = this.targetAnchor;
-    __cascade.followerAnchor = this.followerAnchor;
+    __cascade.link = link;
+    __cascade.showWhenUnlinked = showWhenUnlinked;
+    __cascade.offset = offset;
+    __cascade.leaderAnchor = targetAnchor;
+    __cascade.followerAnchor = followerAnchor;
     return __cascade;
 }))());
     }
@@ -869,7 +869,7 @@ public class FittedBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderFittedBox(fit: this.fit, alignment: this.alignment, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderFittedBox(fit: fit, alignment: alignment, textDirection: Directionality.maybeOf(context), clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -879,10 +879,10 @@ public class FittedBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderFittedBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.fit = this.fit;
-    __cascade.alignment = this.alignment;
+    __cascade.fit = fit;
+    __cascade.alignment = alignment;
     __cascade.textDirection = Directionality.maybeOf(context);
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -890,8 +890,8 @@ public class FittedBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
     }
 
 }
@@ -909,7 +909,7 @@ public class FractionalTranslation : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderFractionalTranslation(translation: this.translation, transformHitTests: this.transformHitTests));
+        return new global::Doroti.Framework.Rendering.RenderFractionalTranslation(translation: translation, transformHitTests: transformHitTests);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -919,8 +919,8 @@ public class FractionalTranslation : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderFractionalTranslation>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.translation = this.translation;
-    __cascade.transformHitTests = this.transformHitTests;
+    __cascade.translation = translation;
+    __cascade.transformHitTests = transformHitTests;
     return __cascade;
 }))());
     }
@@ -936,11 +936,11 @@ public class RotatedBox : SingleChildRenderObjectWidget
         this.quarterTurns = quarterTurns;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderRotatedBox(quarterTurns: this.quarterTurns));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderRotatedBox(quarterTurns: quarterTurns));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderRotatedBox)renderObject;
-        __renderObject.quarterTurns = this.quarterTurns;
+        __renderObject.quarterTurns = quarterTurns;
     }
 
 }
@@ -956,7 +956,7 @@ public class Padding : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderPadding(padding: this.padding, textDirection: Directionality.maybeOf(context)));
+        return new global::Doroti.Framework.Rendering.RenderPadding(padding: padding, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -966,7 +966,7 @@ public class Padding : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderPadding>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.padding = this.padding;
+    __cascade.padding = padding;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -975,7 +975,7 @@ public class Padding : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding));
     }
 
 }
@@ -992,13 +992,13 @@ public class Align : SingleChildRenderObjectWidget
         this.alignment = __alignment;
         this.widthFactor = widthFactor;
         this.heightFactor = heightFactor;
-        System.Diagnostics.Debug.Assert(((widthFactor is null) || (widthFactor >= 0.0)));
-        System.Diagnostics.Debug.Assert(((heightFactor is null) || (heightFactor >= 0.0)));
+        System.Diagnostics.Debug.Assert((widthFactor is null) || (widthFactor >= 0.0));
+        System.Diagnostics.Debug.Assert((heightFactor is null) || (heightFactor >= 0.0));
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderPositionedBox(alignment: this.alignment, widthFactor: this.widthFactor, heightFactor: this.heightFactor, textDirection: Directionality.maybeOf(context)));
+        return new global::Doroti.Framework.Rendering.RenderPositionedBox(alignment: alignment, widthFactor: widthFactor, heightFactor: heightFactor, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1008,9 +1008,9 @@ public class Align : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderPositionedBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.widthFactor = this.widthFactor;
-    __cascade.heightFactor = this.heightFactor;
+    __cascade.alignment = alignment;
+    __cascade.widthFactor = widthFactor;
+    __cascade.heightFactor = heightFactor;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -1019,9 +1019,9 @@ public class Align : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("widthFactor", this.widthFactor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("heightFactor", this.heightFactor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("widthFactor", widthFactor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("heightFactor", heightFactor, defaultValue: null));
     }
 
 }
@@ -1045,14 +1045,14 @@ public class CustomSingleChildLayout : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderCustomSingleChildLayoutBox(@delegate: this.@delegate));
+        return new global::Doroti.Framework.Rendering.RenderCustomSingleChildLayoutBox(@delegate: @delegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderCustomSingleChildLayoutBox)renderObject;
-        __renderObject.@delegate = this.@delegate;
+        __renderObject.@delegate = @delegate;
     }
 
 }
@@ -1061,19 +1061,19 @@ public class LayoutId : ParentDataWidget<global::Doroti.Framework.Rendering.Mult
 {
     public virtual object id { get; private set; } = default!;
 
-    public LayoutId(global::Doroti.Framework.Foundation.Key? key = null, object id = default!, Widget child = default!) : base(child: child, key: (key ?? new global::Doroti.Framework.Foundation.ValueKey<object>(id)))
+    public LayoutId(global::Doroti.Framework.Foundation.Key? key = null, object id = default!, Widget child = default!) : base(child: child, key: key ?? new global::Doroti.Framework.Foundation.ValueKey<object>(id))
     {
         this.id = id;
     }
 
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.MultiChildLayoutParentData));
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.MultiChildLayoutParentData?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
-        if ((!Equals(((global::Doroti.Framework.Rendering.MultiChildLayoutParentData)parentDataLocal).id, this.id)))
+        DartRuntimePrimitives.Assert(() => renderObject.parentData is global::Doroti.Framework.Rendering.MultiChildLayoutParentData);
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.MultiChildLayoutParentData?)renderObject.parentData!)!;
+        if (!Equals(parentDataLocal.id, id))
         {
-            parentDataLocal.id = this.id;
-            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            parentDataLocal.id = id;
+            renderObject.parent?.markNeedsLayout();
         }
     }
 
@@ -1081,7 +1081,7 @@ public class LayoutId : ParentDataWidget<global::Doroti.Framework.Rendering.Mult
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("id", this.id));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("id", id));
     }
 
 }
@@ -1097,14 +1097,14 @@ public class CustomMultiChildLayout : MultiChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderCustomMultiChildLayoutBox(@delegate: this.@delegate));
+        return new global::Doroti.Framework.Rendering.RenderCustomMultiChildLayoutBox(@delegate: @delegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderCustomMultiChildLayoutBox)renderObject;
-        __renderObject.@delegate = this.@delegate;
+        __renderObject.@delegate = @delegate;
     }
 
 }
@@ -1154,7 +1154,7 @@ public class SizedBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderConstrainedBox(additionalConstraints: this._additionalConstraints));
+        return new global::Doroti.Framework.Rendering.RenderConstrainedBox(additionalConstraints: _additionalConstraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1162,19 +1162,19 @@ public class SizedBox : SingleChildRenderObjectWidget
     {
         get
         {
-            return BoxConstraints.CreateTightFor(width: this.width, height: this.height);
+            return BoxConstraints.CreateTightFor(width: width, height: height);
         }
     }
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderConstrainedBox)renderObject;
-        __renderObject.additionalConstraints = this._additionalConstraints;
+        __renderObject.additionalConstraints = _additionalConstraints;
     }
 
     public override string toStringShort()
     {
-        string @type = ((this.width, this.height) switch { (var __constant100107, var __constant100124) when (Equals(__constant100107, double.PositiveInfinity)) && (Equals(__constant100124, double.PositiveInfinity)) => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"))}.expand", (0.0, 0.0) => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"))}.shrink", _ => objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox") });
-        return ((this.key is null) ? @type : $"{@type}-{this.key}");
+        string @type = (width, height) switch { (var __constant100107, var __constant100124) when Equals(__constant100107, double.PositiveInfinity) && Equals(__constant100124, double.PositiveInfinity) => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox")}.expand", (0.0, 0.0) => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox")}.shrink", _ => objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox") };
+        return (key is null) ? @type : $"{@type}-{key}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1182,7 +1182,7 @@ public class SizedBox : SingleChildRenderObjectWidget
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         global::Doroti.Framework.Foundation.DiagnosticLevel levelLocal = default!;
-        if (((((this.width == double.PositiveInfinity) && (this.height == double.PositiveInfinity))) || (((this.width == 0.0) && (this.height == 0.0)))))
+        if ((width == double.PositiveInfinity) && (height == double.PositiveInfinity) || (width == 0.0) && (height == 0.0))
         {
             levelLocal = DiagnosticLevel.hidden;
         }
@@ -1190,8 +1190,8 @@ public class SizedBox : SingleChildRenderObjectWidget
         {
             levelLocal = DiagnosticLevel.info;
         }
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null, level: levelLocal));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null, level: levelLocal));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null, level: levelLocal));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null, level: levelLocal));
     }
 
 }
@@ -1208,20 +1208,20 @@ public class ConstrainedBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderConstrainedBox(additionalConstraints: this.constraints));
+        return new global::Doroti.Framework.Rendering.RenderConstrainedBox(additionalConstraints: constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderConstrainedBox)renderObject;
-        __renderObject.additionalConstraints = this.constraints;
+        __renderObject.additionalConstraints = constraints;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", constraints, showName: false));
     }
 
 }
@@ -1242,7 +1242,7 @@ public class ConstraintsTransformBox : SingleChildRenderObjectWidget
         this.alignment = __alignment;
         this.constraintsTransform = constraintsTransform;
         this.clipBehavior = clipBehavior;
-        this._debugTransformLabel = debugTransformType;
+        _debugTransformLabel = debugTransformType;
     }
 
     public static global::Doroti.Framework.Rendering.BoxConstraints unmodified(global::Doroti.Framework.Rendering.BoxConstraints constraints) => constraints;
@@ -1254,7 +1254,7 @@ public class ConstraintsTransformBox : SingleChildRenderObjectWidget
     public static global::Doroti.Framework.Rendering.BoxConstraints maxUnconstrained(global::Doroti.Framework.Rendering.BoxConstraints constraints) => constraints.copyWith(maxWidth: double.PositiveInfinity, maxHeight: double.PositiveInfinity);
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderConstraintsTransformBox(textDirection: ((this.textDirection ?? Directionality.maybeOf(context))), alignment: this.alignment, constraintsTransform: (global::System.Func<global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Rendering.BoxConstraints>)this.constraintsTransform, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderConstraintsTransformBox(textDirection: textDirection ?? Directionality.maybeOf(context), alignment: alignment, constraintsTransform: constraintsTransform, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1264,10 +1264,10 @@ public class ConstraintsTransformBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderConstraintsTransformBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.textDirection = ((this.textDirection ?? Directionality.maybeOf(context)));
-    __cascade.constraintsTransform = this.constraintsTransform;
-    __cascade.alignment = this.alignment;
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.textDirection = textDirection ?? Directionality.maybeOf(context);
+    __cascade.constraintsTransform = constraintsTransform;
+    __cascade.alignment = alignment;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -1275,10 +1275,10 @@ public class ConstraintsTransformBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        string? debugTransformLabel = ((this._debugTransformLabel.Length != 0) ? this._debugTransformLabel : _debugKnownTransforms.GetValueOrDefault(this.constraintsTransform));
-        if ((debugTransformLabel is not null))
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        string? debugTransformLabel = (_debugTransformLabel.Length != 0) ? _debugTransformLabel : _debugKnownTransforms.GetValueOrDefault(constraintsTransform);
+        if (debugTransformLabel is not null)
         {
             properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("constraints transform", debugTransformLabel));
         }
@@ -1306,22 +1306,22 @@ public class UnconstrainedBox : StatelessWidget
 
     internal virtual global::System.Func<global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Rendering.BoxConstraints> _axisToTransform(global::Doroti.Framework.Painting.Axis? constrainedAxis)
     {
-        return ((global::System.Func<global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Rendering.BoxConstraints>)(constrainedAxis switch { Axis.horizontal => ConstraintsTransformBox.heightUnconstrained, Axis.vertical => ConstraintsTransformBox.widthUnconstrained, null => ConstraintsTransformBox.unconstrained, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return constrainedAxis switch { Axis.horizontal => ConstraintsTransformBox.heightUnconstrained, Axis.vertical => ConstraintsTransformBox.widthUnconstrained, null => ConstraintsTransformBox.unconstrained, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new ConstraintsTransformBox(textDirection: this.textDirection, alignment: this.alignment, clipBehavior: this.clipBehavior, constraintsTransform: _axisToTransform(this.constrainedAxis), child: this.child));
+        return new ConstraintsTransformBox(textDirection: textDirection, alignment: alignment, clipBehavior: clipBehavior, constraintsTransform: _axisToTransform(constrainedAxis), child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("constrainedAxis", this.constrainedAxis, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("constrainedAxis", constrainedAxis, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
     }
 
 }
@@ -1338,13 +1338,13 @@ public class FractionallySizedBox : SingleChildRenderObjectWidget
         this.alignment = __alignment;
         this.widthFactor = widthFactor;
         this.heightFactor = heightFactor;
-        System.Diagnostics.Debug.Assert(((widthFactor is null) || (widthFactor >= 0.0)));
-        System.Diagnostics.Debug.Assert(((heightFactor is null) || (heightFactor >= 0.0)));
+        System.Diagnostics.Debug.Assert((widthFactor is null) || (widthFactor >= 0.0));
+        System.Diagnostics.Debug.Assert((heightFactor is null) || (heightFactor >= 0.0));
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderFractionallySizedOverflowBox(alignment: this.alignment, widthFactor: this.widthFactor, heightFactor: this.heightFactor, textDirection: Directionality.maybeOf(context)));
+        return new global::Doroti.Framework.Rendering.RenderFractionallySizedOverflowBox(alignment: alignment, widthFactor: widthFactor, heightFactor: heightFactor, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1354,9 +1354,9 @@ public class FractionallySizedBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderFractionallySizedOverflowBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.widthFactor = this.widthFactor;
-    __cascade.heightFactor = this.heightFactor;
+    __cascade.alignment = alignment;
+    __cascade.widthFactor = widthFactor;
+    __cascade.heightFactor = heightFactor;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -1365,9 +1365,9 @@ public class FractionallySizedBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("widthFactor", this.widthFactor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("heightFactor", this.heightFactor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("widthFactor", widthFactor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("heightFactor", heightFactor, defaultValue: null));
     }
 
 }
@@ -1381,13 +1381,13 @@ public class LimitedBox : SingleChildRenderObjectWidget
     {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
-        System.Diagnostics.Debug.Assert((maxWidth >= 0.0));
-        System.Diagnostics.Debug.Assert((maxHeight >= 0.0));
+        System.Diagnostics.Debug.Assert(maxWidth >= 0.0);
+        System.Diagnostics.Debug.Assert(maxHeight >= 0.0);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderLimitedBox(maxWidth: this.maxWidth, maxHeight: this.maxHeight));
+        return new global::Doroti.Framework.Rendering.RenderLimitedBox(maxWidth: maxWidth, maxHeight: maxHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1397,8 +1397,8 @@ public class LimitedBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderLimitedBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.maxWidth = this.maxWidth;
-    __cascade.maxHeight = this.maxHeight;
+    __cascade.maxWidth = maxWidth;
+    __cascade.maxHeight = maxHeight;
     return __cascade;
 }))());
     }
@@ -1406,8 +1406,8 @@ public class LimitedBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxWidth", this.maxWidth, defaultValue: double.PositiveInfinity));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxHeight", this.maxHeight, defaultValue: double.PositiveInfinity));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxWidth", maxWidth, defaultValue: double.PositiveInfinity));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxHeight", maxHeight, defaultValue: double.PositiveInfinity));
     }
 
 }
@@ -1434,7 +1434,7 @@ public class OverflowBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderConstrainedOverflowBox(alignment: this.alignment, minWidth: this.minWidth, maxWidth: this.maxWidth, minHeight: this.minHeight, maxHeight: this.maxHeight, fit: this.fit, textDirection: Directionality.maybeOf(context)));
+        return new global::Doroti.Framework.Rendering.RenderConstrainedOverflowBox(alignment: alignment, minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: maxHeight, fit: fit, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1444,12 +1444,12 @@ public class OverflowBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderConstrainedOverflowBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.minWidth = this.minWidth;
-    __cascade.maxWidth = this.maxWidth;
-    __cascade.minHeight = this.minHeight;
-    __cascade.maxHeight = this.maxHeight;
-    __cascade.fit = this.fit;
+    __cascade.alignment = alignment;
+    __cascade.minWidth = minWidth;
+    __cascade.maxWidth = maxWidth;
+    __cascade.minHeight = minHeight;
+    __cascade.maxHeight = maxHeight;
+    __cascade.fit = fit;
     __cascade.textDirection = Directionality.maybeOf(context);
     return __cascade;
 }))());
@@ -1458,12 +1458,12 @@ public class OverflowBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minWidth", this.minWidth, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxWidth", this.maxWidth, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minHeight", this.minHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxHeight", this.maxHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.OverflowBoxFit>("fit", this.fit));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minWidth", minWidth, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxWidth", maxWidth, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minHeight", minHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("maxHeight", maxHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.OverflowBoxFit>("fit", fit));
     }
 
 }
@@ -1482,7 +1482,7 @@ public class SizedOverflowBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSizedOverflowBox(alignment: this.alignment, requestedSize: this.size, textDirection: Directionality.of(context)));
+        return new global::Doroti.Framework.Rendering.RenderSizedOverflowBox(alignment: alignment, requestedSize: size, textDirection: Directionality.of(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1492,8 +1492,8 @@ public class SizedOverflowBox : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSizedOverflowBox>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.requestedSize = this.size;
+    __cascade.alignment = alignment;
+    __cascade.requestedSize = size;
     __cascade.textDirection = Directionality.of(context);
     return __cascade;
 }))());
@@ -1502,8 +1502,8 @@ public class SizedOverflowBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Size>("size", this.size, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Size>("size", size, defaultValue: null));
     }
 
 }
@@ -1517,17 +1517,17 @@ public class Offstage : SingleChildRenderObjectWidget
         this.offstage = offstage;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderOffstage(offstage: this.offstage));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderOffstage(offstage: offstage));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderOffstage)renderObject;
-        __renderObject.offstage = this.offstage;
+        __renderObject.offstage = offstage;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("offstage", this.offstage));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("offstage", offstage));
     }
 
     public override SingleChildRenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<SingleChildRenderObjectElement>(new _OffstageElement__basic(this));
@@ -1541,9 +1541,9 @@ internal class _OffstageElement__basic : SingleChildRenderObjectElement
 
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
-        if (!(((Offstage?)this.widget)!).offstage)
+        if (!((Offstage?)widget)!.offstage)
         {
-            base.debugVisitOnstageChildren((global::System.Action<Element>)visitor);
+            base.debugVisitOnstageChildren(visitor);
         }
     }
 
@@ -1556,20 +1556,20 @@ public class AspectRatio : SingleChildRenderObjectWidget
     public AspectRatio(global::Doroti.Framework.Foundation.Key? key = null, double aspectRatio = default!, Widget? child = null) : base(key: key, child: child)
     {
         this.aspectRatio = aspectRatio;
-        System.Diagnostics.Debug.Assert((aspectRatio > 0.0));
+        System.Diagnostics.Debug.Assert(aspectRatio > 0.0);
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderAspectRatio(aspectRatio: this.aspectRatio));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderAspectRatio(aspectRatio: aspectRatio));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderAspectRatio)renderObject;
-        __renderObject.aspectRatio = this.aspectRatio;
+        __renderObject.aspectRatio = aspectRatio;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("aspectRatio", this.aspectRatio));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("aspectRatio", aspectRatio));
     }
 
 }
@@ -1583,15 +1583,15 @@ public class IntrinsicWidth : SingleChildRenderObjectWidget
     {
         this.stepWidth = stepWidth;
         this.stepHeight = stepHeight;
-        System.Diagnostics.Debug.Assert(((stepWidth is null) || (stepWidth >= 0.0)));
-        System.Diagnostics.Debug.Assert(((stepHeight is null) || (stepHeight >= 0.0)));
+        System.Diagnostics.Debug.Assert((stepWidth is null) || (stepWidth >= 0.0));
+        System.Diagnostics.Debug.Assert((stepHeight is null) || (stepHeight >= 0.0));
     }
 
-    internal virtual double? _stepWidth => ((this.stepWidth == 0.0) ? null : this.stepWidth);
-    internal virtual double? _stepHeight => ((this.stepHeight == 0.0) ? null : this.stepHeight);
+    internal virtual double? _stepWidth => (stepWidth == 0.0) ? null : stepWidth;
+    internal virtual double? _stepHeight => (stepHeight == 0.0) ? null : stepHeight;
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderIntrinsicWidth(stepWidth: this._stepWidth, stepHeight: this._stepHeight));
+        return new global::Doroti.Framework.Rendering.RenderIntrinsicWidth(stepWidth: _stepWidth, stepHeight: _stepHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1601,8 +1601,8 @@ public class IntrinsicWidth : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderIntrinsicWidth>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.stepWidth = this._stepWidth;
-    __cascade.stepHeight = this._stepHeight;
+    __cascade.stepWidth = _stepWidth;
+    __cascade.stepHeight = _stepHeight;
     return __cascade;
 }))());
     }
@@ -1631,7 +1631,7 @@ public class Baseline : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderBaseline(baseline: this.baseline, baselineType: this.baselineType));
+        return new global::Doroti.Framework.Rendering.RenderBaseline(baseline: baseline, baselineType: baselineType);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1641,8 +1641,8 @@ public class Baseline : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderBaseline>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.baseline = this.baseline;
-    __cascade.baselineType = this.baselineType;
+    __cascade.baseline = baseline;
+    __cascade.baselineType = baselineType;
     return __cascade;
 }))());
     }
@@ -1657,7 +1657,7 @@ public class IgnoreBaseline : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderIgnoreBaseline());
+        return new global::Doroti.Framework.Rendering.RenderIgnoreBaseline();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1683,7 +1683,7 @@ public class SliverPadding : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverPadding(padding: this.padding, textDirection: Directionality.of(context)));
+        return new global::Doroti.Framework.Rendering.RenderSliverPadding(padding: padding, textDirection: Directionality.of(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1693,7 +1693,7 @@ public class SliverPadding : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSliverPadding>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.padding = this.padding;
+    __cascade.padding = padding;
     __cascade.textDirection = Directionality.of(context);
     return __cascade;
 }))());
@@ -1702,7 +1702,7 @@ public class SliverPadding : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding));
     }
 
 }
@@ -1716,7 +1716,7 @@ public abstract class _SemanticsBase__basic : SingleChildRenderObjectWidget
     public virtual bool excludeSemantics { get; private set; } = default!;
     public virtual bool blockUserActions { get; private set; } = default!;
 
-    internal _SemanticsBase__basic(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, bool container = default!, bool explicitChildNodes = default!, bool excludeSemantics = default!, bool blockUserActions = default!, bool? enabled = default!, bool? @checked = default!, bool? mixed = default!, bool? selected = default!, bool? toggled = default!, bool? button = default!, bool? slider = default!, bool? keyboardKey = default!, bool? link = default!, DartUri? linkUrl = default!, bool? header = default!, long? headingLevel = default!, bool? textField = default!, bool? readOnly = default!, bool? focusable = default!, bool? focused = default!, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType? accessibilityFocusBlockType = default!, bool? inMutuallyExclusiveGroup = default!, bool? obscured = default!, bool? multiline = default!, bool? scopesRoute = default!, bool? namesRoute = default!, bool? hidden = default!, bool? image = default!, bool? liveRegion = default!, bool? expanded = default!, bool? isRequired = default!, long? maxValueLength = default!, long? currentValueLength = default!, string? identifier = default!, object? traversalParentIdentifier = default!, object? traversalChildIdentifier = default!, string? label = default!, global::Doroti.Framework.Semantics.AttributedString? attributedLabel = default!, string? value = default!, global::Doroti.Framework.Semantics.AttributedString? attributedValue = default!, string? increasedValue = default!, global::Doroti.Framework.Semantics.AttributedString? attributedIncreasedValue = default!, string? decreasedValue = default!, global::Doroti.Framework.Semantics.AttributedString? attributedDecreasedValue = default!, string? hint = default!, global::Doroti.Framework.Semantics.AttributedString? attributedHint = default!, string? tooltip = default!, string? onTapHint = default!, string? onLongPressHint = default!, TextDirection? textDirection = default!, global::Doroti.Framework.Semantics.SemanticsSortKey? sortKey = default!, global::Doroti.Framework.Semantics.SemanticsTag? tagForChildren = default!, global::System.Action? onTap = default!, global::System.Action? onLongPress = default!, global::System.Action? onScrollLeft = default!, global::System.Action? onScrollRight = default!, global::System.Action? onScrollUp = default!, global::System.Action? onScrollDown = default!, global::System.Action? onIncrease = default!, global::System.Action? onDecrease = default!, global::System.Action? onCopy = default!, global::System.Action? onCut = default!, global::System.Action? onPaste = default!, global::System.Action? onDismiss = default!, global::System.Action<bool>? onMoveCursorForwardByCharacter = default!, global::System.Action<bool>? onMoveCursorBackwardByCharacter = default!, global::System.Action<global::Doroti.Framework.Services.TextSelection>? onSetSelection = default!, global::System.Action<string>? onSetText = default!, global::System.Action? onDidGainAccessibilityFocus = default!, global::System.Action? onDidLoseAccessibilityFocus = default!, global::System.Action? onFocus = default!, global::System.Action? onExpand = default!, global::System.Action? onCollapse = default!, DartMap<global::Doroti.Framework.Semantics.CustomSemanticsAction, global::System.Action>? customSemanticsActions = default!, SemanticsRole? role = default!, HashSet<string>? controlsNodes = default!, SemanticsValidationResult validationResult = default!, SemanticsHitTestBehavior? hitTestBehavior = default!, SemanticsInputType? inputType = default!, Locale? localeForSubtree = default!, string? minValue = default!, string? maxValue = default!) : this(key: key, child: child, container: container, explicitChildNodes: explicitChildNodes, excludeSemantics: excludeSemantics, blockUserActions: blockUserActions, localeForSubtree: localeForSubtree, properties: new global::Doroti.Framework.Semantics.SemanticsProperties(enabled: enabled, @checked: @checked, mixed: mixed, expanded: expanded, toggled: toggled, selected: selected, button: button, slider: slider, keyboardKey: keyboardKey, link: link, linkUrl: linkUrl, header: header, headingLevel: headingLevel, textField: textField, readOnly: readOnly, focusable: focusable, focused: focused, accessibilityFocusBlockType: accessibilityFocusBlockType, inMutuallyExclusiveGroup: inMutuallyExclusiveGroup, obscured: obscured, multiline: multiline, scopesRoute: scopesRoute, namesRoute: namesRoute, hidden: hidden, image: image, liveRegion: liveRegion, isRequired: isRequired, maxValueLength: maxValueLength, currentValueLength: currentValueLength, identifier: identifier, traversalParentIdentifier: traversalParentIdentifier, traversalChildIdentifier: traversalChildIdentifier, label: label, attributedLabel: attributedLabel, value: value, attributedValue: attributedValue, increasedValue: increasedValue, attributedIncreasedValue: attributedIncreasedValue, decreasedValue: decreasedValue, attributedDecreasedValue: attributedDecreasedValue, hint: hint, attributedHint: attributedHint, tooltip: tooltip, textDirection: textDirection, sortKey: sortKey, tagForChildren: tagForChildren, onTap: onTap, onLongPress: onLongPress, onScrollLeft: onScrollLeft, onScrollRight: onScrollRight, onScrollUp: onScrollUp, onScrollDown: onScrollDown, onIncrease: onIncrease, onDecrease: onDecrease, onCopy: onCopy, onCut: onCut, onPaste: onPaste, onMoveCursorForwardByCharacter: (global::System.Action<bool>?)onMoveCursorForwardByCharacter, onMoveCursorBackwardByCharacter: (global::System.Action<bool>?)onMoveCursorBackwardByCharacter, onDidGainAccessibilityFocus: onDidGainAccessibilityFocus, onDidLoseAccessibilityFocus: onDidLoseAccessibilityFocus, onFocus: onFocus, onDismiss: onDismiss, onSetSelection: (global::System.Action<global::Doroti.Framework.Services.TextSelection>?)onSetSelection, onSetText: (global::System.Action<string>?)onSetText, onExpand: onExpand, onCollapse: onCollapse, customSemanticsActions: (DartMap<global::Doroti.Framework.Semantics.CustomSemanticsAction, global::System.Action>?)customSemanticsActions, hintOverrides: (((onTapHint is not null) || (onLongPressHint is not null)) ? new global::Doroti.Framework.Semantics.SemanticsHintOverrides(onTapHint: onTapHint, onLongPressHint: onLongPressHint) : null), role: role, controlsNodes: controlsNodes, validationResult: validationResult, hitTestBehavior: hitTestBehavior, inputType: inputType, minValue: minValue, maxValue: maxValue))
+    internal _SemanticsBase__basic(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, bool container = default!, bool explicitChildNodes = default!, bool excludeSemantics = default!, bool blockUserActions = default!, bool? enabled = default!, bool? @checked = default!, bool? mixed = default!, bool? selected = default!, bool? toggled = default!, bool? button = default!, bool? slider = default!, bool? keyboardKey = default!, bool? link = default!, DartUri? linkUrl = default!, bool? header = default!, long? headingLevel = default!, bool? textField = default!, bool? readOnly = default!, bool? focusable = default!, bool? focused = default!, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType? accessibilityFocusBlockType = default!, bool? inMutuallyExclusiveGroup = default!, bool? obscured = default!, bool? multiline = default!, bool? scopesRoute = default!, bool? namesRoute = default!, bool? hidden = default!, bool? image = default!, bool? liveRegion = default!, bool? expanded = default!, bool? isRequired = default!, long? maxValueLength = default!, long? currentValueLength = default!, string? identifier = default!, object? traversalParentIdentifier = default!, object? traversalChildIdentifier = default!, string? label = default!, global::Doroti.Framework.Semantics.AttributedString? attributedLabel = default!, string? value = default!, global::Doroti.Framework.Semantics.AttributedString? attributedValue = default!, string? increasedValue = default!, global::Doroti.Framework.Semantics.AttributedString? attributedIncreasedValue = default!, string? decreasedValue = default!, global::Doroti.Framework.Semantics.AttributedString? attributedDecreasedValue = default!, string? hint = default!, global::Doroti.Framework.Semantics.AttributedString? attributedHint = default!, string? tooltip = default!, string? onTapHint = default!, string? onLongPressHint = default!, TextDirection? textDirection = default!, global::Doroti.Framework.Semantics.SemanticsSortKey? sortKey = default!, global::Doroti.Framework.Semantics.SemanticsTag? tagForChildren = default!, global::System.Action? onTap = default!, global::System.Action? onLongPress = default!, global::System.Action? onScrollLeft = default!, global::System.Action? onScrollRight = default!, global::System.Action? onScrollUp = default!, global::System.Action? onScrollDown = default!, global::System.Action? onIncrease = default!, global::System.Action? onDecrease = default!, global::System.Action? onCopy = default!, global::System.Action? onCut = default!, global::System.Action? onPaste = default!, global::System.Action? onDismiss = default!, global::System.Action<bool>? onMoveCursorForwardByCharacter = default!, global::System.Action<bool>? onMoveCursorBackwardByCharacter = default!, global::System.Action<global::Doroti.Framework.Services.TextSelection>? onSetSelection = default!, global::System.Action<string>? onSetText = default!, global::System.Action? onDidGainAccessibilityFocus = default!, global::System.Action? onDidLoseAccessibilityFocus = default!, global::System.Action? onFocus = default!, global::System.Action? onExpand = default!, global::System.Action? onCollapse = default!, DartMap<global::Doroti.Framework.Semantics.CustomSemanticsAction, global::System.Action>? customSemanticsActions = default!, SemanticsRole? role = default!, HashSet<string>? controlsNodes = default!, SemanticsValidationResult validationResult = default!, SemanticsHitTestBehavior? hitTestBehavior = default!, SemanticsInputType? inputType = default!, Locale? localeForSubtree = default!, string? minValue = default!, string? maxValue = default!) : this(key: key, child: child, container: container, explicitChildNodes: explicitChildNodes, excludeSemantics: excludeSemantics, blockUserActions: blockUserActions, localeForSubtree: localeForSubtree, properties: new global::Doroti.Framework.Semantics.SemanticsProperties(enabled: enabled, @checked: @checked, mixed: mixed, expanded: expanded, toggled: toggled, selected: selected, button: button, slider: slider, keyboardKey: keyboardKey, link: link, linkUrl: linkUrl, header: header, headingLevel: headingLevel, textField: textField, readOnly: readOnly, focusable: focusable, focused: focused, accessibilityFocusBlockType: accessibilityFocusBlockType, inMutuallyExclusiveGroup: inMutuallyExclusiveGroup, obscured: obscured, multiline: multiline, scopesRoute: scopesRoute, namesRoute: namesRoute, hidden: hidden, image: image, liveRegion: liveRegion, isRequired: isRequired, maxValueLength: maxValueLength, currentValueLength: currentValueLength, identifier: identifier, traversalParentIdentifier: traversalParentIdentifier, traversalChildIdentifier: traversalChildIdentifier, label: label, attributedLabel: attributedLabel, value: value, attributedValue: attributedValue, increasedValue: increasedValue, attributedIncreasedValue: attributedIncreasedValue, decreasedValue: decreasedValue, attributedDecreasedValue: attributedDecreasedValue, hint: hint, attributedHint: attributedHint, tooltip: tooltip, textDirection: textDirection, sortKey: sortKey, tagForChildren: tagForChildren, onTap: onTap, onLongPress: onLongPress, onScrollLeft: onScrollLeft, onScrollRight: onScrollRight, onScrollUp: onScrollUp, onScrollDown: onScrollDown, onIncrease: onIncrease, onDecrease: onDecrease, onCopy: onCopy, onCut: onCut, onPaste: onPaste, onMoveCursorForwardByCharacter: onMoveCursorForwardByCharacter, onMoveCursorBackwardByCharacter: onMoveCursorBackwardByCharacter, onDidGainAccessibilityFocus: onDidGainAccessibilityFocus, onDidLoseAccessibilityFocus: onDidLoseAccessibilityFocus, onFocus: onFocus, onDismiss: onDismiss, onSetSelection: onSetSelection, onSetText: onSetText, onExpand: onExpand, onCollapse: onCollapse, customSemanticsActions: customSemanticsActions, hintOverrides: ((onTapHint is not null) || (onLongPressHint is not null)) ? new global::Doroti.Framework.Semantics.SemanticsHintOverrides(onTapHint: onTapHint, onLongPressHint: onLongPressHint) : null, role: role, controlsNodes: controlsNodes, validationResult: validationResult, hitTestBehavior: hitTestBehavior, inputType: inputType, minValue: minValue, maxValue: maxValue))
     {
     }
 
@@ -1732,11 +1732,11 @@ public abstract class _SemanticsBase__basic : SingleChildRenderObjectWidget
 
     internal virtual global::Doroti.Ui.TextDirection? _getTextDirection(BuildContext context)
     {
-        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).textDirection is not null))
+        if (properties.textDirection is not null)
         {
-            return ((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).textDirection;
+            return properties.textDirection;
         }
-        bool containsText = (((((((((((((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).label is not null) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedLabel is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).value is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).increasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedIncreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).decreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedDecreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).hint is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedHint is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).tooltip is not null));
+        bool containsText = (properties.label is not null) || (properties.attributedLabel is not null) || (properties.value is not null) || (properties.attributedValue is not null) || (properties.increasedValue is not null) || (properties.attributedIncreasedValue is not null) || (properties.decreasedValue is not null) || (properties.attributedDecreasedValue is not null) || (properties.hint is not null) || (properties.attributedHint is not null) || (properties.tooltip is not null);
         if (!containsText)
         {
             return null;
@@ -1764,7 +1764,7 @@ public class SliverSemantics : _SemanticsBase__basic
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverSemanticsAnnotations(container: this.container, explicitChildNodes: this.explicitChildNodes, excludeSemantics: this.excludeSemantics, blockUserActions: this.blockUserActions, properties: this.properties, localeForSubtree: this.localeForSubtree, textDirection: _getTextDirection(context)));
+        return new global::Doroti.Framework.Rendering.RenderSliverSemanticsAnnotations(container: container, explicitChildNodes: explicitChildNodes, excludeSemantics: excludeSemantics, blockUserActions: blockUserActions, properties: properties, localeForSubtree: localeForSubtree, textDirection: _getTextDirection(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1774,13 +1774,13 @@ public class SliverSemantics : _SemanticsBase__basic
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSliverSemanticsAnnotations>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.container = this.container;
-    __cascade.explicitChildNodes = this.explicitChildNodes;
-    __cascade.excludeSemantics = this.excludeSemantics;
-    __cascade.blockUserActions = this.blockUserActions;
-    __cascade.properties = this.properties;
+    __cascade.container = container;
+    __cascade.explicitChildNodes = explicitChildNodes;
+    __cascade.excludeSemantics = excludeSemantics;
+    __cascade.blockUserActions = blockUserActions;
+    __cascade.properties = properties;
     __cascade.textDirection = _getTextDirection(context);
-    __cascade.localeForSubtree = this.localeForSubtree;
+    __cascade.localeForSubtree = localeForSubtree;
     return __cascade;
 }))());
     }
@@ -1798,11 +1798,11 @@ public static partial class BasicLibrary
                     DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
                     global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
                     global::Doroti.Framework.Painting.AxisDirection axisDirection = Basic_typesLibrary.textDirectionToAxisDirection(textDirection);
-                    return (reverse ? Basic_typesLibrary.flipAxisDirection(axisDirection) : axisDirection);
+                    return reverse ? Basic_typesLibrary.flipAxisDirection(axisDirection) : axisDirection;
                 }
             case Axis.vertical:
                 {
-                    return (reverse ? AxisDirection.up : AxisDirection.down);
+                    return reverse ? AxisDirection.up : AxisDirection.down;
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -1824,13 +1824,13 @@ public class ListBody : MultiChildRenderObjectWidget
 
     internal virtual global::Doroti.Framework.Painting.AxisDirection _getDirection(BuildContext context)
     {
-        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.mainAxis, this.reverse);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, mainAxis, reverse);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderListBody(axisDirection: _getDirection(context)));
+        return new global::Doroti.Framework.Rendering.RenderListBody(axisDirection: _getDirection(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1863,10 +1863,10 @@ public class Stack : MultiChildRenderObjectWidget
 
     internal virtual bool _debugCheckHasDirectionality(BuildContext context)
     {
-        if (((this.alignment is global::Doroti.Framework.Painting.AlignmentDirectional) && (this.textDirection is null)))
+        if ((alignment is global::Doroti.Framework.Painting.AlignmentDirectional) && (textDirection is null))
         {
             global::Doroti.Framework.Painting.AlignmentDirectional alignment__as178201 = (global::Doroti.Framework.Painting.AlignmentDirectional)alignment;
-            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: ((Equals(this.alignment, AlignmentDirectional.topStart)) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null), alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as178201', or an explicit 'textDirection', to the {this.GetType()}."));
+            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: Equals(alignment, AlignmentDirectional.topStart) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null, alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as178201', or an explicit 'textDirection', to the {GetType()}."));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1875,7 +1875,7 @@ public class Stack : MultiChildRenderObjectWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderStack(alignment: this.alignment, textDirection: ((this.textDirection ?? Directionality.maybeOf(context))), fit: this.fit, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderStack(alignment: alignment, textDirection: textDirection ?? Directionality.maybeOf(context), fit: fit, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1886,10 +1886,10 @@ public class Stack : MultiChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderStack>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.alignment = this.alignment;
-    __cascade.textDirection = ((this.textDirection ?? Directionality.maybeOf(context)));
-    __cascade.fit = this.fit;
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.alignment = alignment;
+    __cascade.textDirection = textDirection ?? Directionality.maybeOf(context);
+    __cascade.fit = fit;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -1897,10 +1897,10 @@ public class Stack : MultiChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.StackFit>("fit", this.fit));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: Clip.hardEdge));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.StackFit>("fit", fit));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge));
     }
 
 }
@@ -1922,8 +1922,8 @@ public class Positioned : ParentDataWidget<global::Doroti.Framework.Rendering.St
         this.bottom = bottom;
         this.width = width;
         this.height = height;
-        System.Diagnostics.Debug.Assert((((left is null) || (right is null)) || (width is null)));
-        System.Diagnostics.Debug.Assert((((top is null) || (bottom is null)) || (height is null)));
+        System.Diagnostics.Debug.Assert((left is null) || (right is null) || (width is null));
+        System.Diagnostics.Debug.Assert((top is null) || (bottom is null) || (height is null));
     }
 
     public static Positioned CreateFromRect(global::Doroti.Framework.Foundation.Key? key = null, Rect rect = default!, Widget child = default!)
@@ -1941,10 +1941,10 @@ public class Positioned : ParentDataWidget<global::Doroti.Framework.Rendering.St
     public static Positioned CreateFromRelativeRect(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.RelativeRect rect = default!, Widget child = default!)
     {
         var __instance = new Positioned(key, default!, default!, default!, default!, default!, default!, child);
-        __instance.left = ((global::Doroti.Framework.Rendering.RelativeRect)rect).left;
-        __instance.top = ((global::Doroti.Framework.Rendering.RelativeRect)rect).top;
-        __instance.right = ((global::Doroti.Framework.Rendering.RelativeRect)rect).right;
-        __instance.bottom = ((global::Doroti.Framework.Rendering.RelativeRect)rect).bottom;
+        __instance.left = rect.left;
+        __instance.top = rect.top;
+        __instance.right = rect.right;
+        __instance.bottom = rect.bottom;
         __instance.width = null;
         __instance.height = null;
         return __instance;
@@ -1964,48 +1964,48 @@ public class Positioned : ParentDataWidget<global::Doroti.Framework.Rendering.St
 
     public static Positioned CreateDirectional(global::Doroti.Framework.Foundation.Key? key = null, TextDirection textDirection = default!, double? start = null, double? top = null, double? end = null, double? bottom = null, double? width = null, double? height = null, Widget child = default!)
     {
-        var (leftLocal, rightLocal) = (textDirection switch { TextDirection.rtl => (((double?, double?))((end, start))), TextDirection.ltr => (((double?, double?))((start, end))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (leftLocal, rightLocal) = textDirection switch { TextDirection.rtl => (end, start), TextDirection.ltr => (start, end), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         return new Positioned(key: key, left: leftLocal, top: top, right: rightLocal, bottom: bottom, width: width, height: height, child: child);
     }
 
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.StackParentData));
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.StackParentData?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        DartRuntimePrimitives.Assert(() => renderObject.parentData is global::Doroti.Framework.Rendering.StackParentData);
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.StackParentData?)renderObject.parentData!)!;
         var needsLayout = false;
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).left != this.left))
+        if (parentDataLocal.left != left)
         {
-            parentDataLocal.left = this.left;
+            parentDataLocal.left = left;
             needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).top != this.top))
+        if (parentDataLocal.top != top)
         {
-            parentDataLocal.top = this.top;
+            parentDataLocal.top = top;
             needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).right != this.right))
+        if (parentDataLocal.right != right)
         {
-            parentDataLocal.right = this.right;
+            parentDataLocal.right = right;
             needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).bottom != this.bottom))
+        if (parentDataLocal.bottom != bottom)
         {
-            parentDataLocal.bottom = this.bottom;
+            parentDataLocal.bottom = bottom;
             needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).width != this.width))
+        if (parentDataLocal.width != width)
         {
-            parentDataLocal.width = this.width;
+            parentDataLocal.width = width;
             needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).height != this.height))
+        if (parentDataLocal.height != height)
         {
-            parentDataLocal.height = this.height;
+            parentDataLocal.height = height;
             needsLayout = true;
         }
         if (needsLayout)
         {
-            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            renderObject.parent?.markNeedsLayout();
         }
     }
 
@@ -2013,12 +2013,12 @@ public class Positioned : ParentDataWidget<global::Doroti.Framework.Rendering.St
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("left", this.left, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("top", this.top, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("right", this.right, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("bottom", this.bottom, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("left", left, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("top", top, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("right", right, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("bottom", bottom, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
     }
 
 }
@@ -2046,7 +2046,7 @@ public class PositionedDirectional : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)Positioned.CreateDirectional(textDirection: Directionality.of(context), start: this.start, top: this.top, end: this.end, bottom: this.bottom, width: this.width, height: this.height, child: this.child));
+        return Positioned.CreateDirectional(textDirection: Directionality.of(context), start: start, top: top, end: end, bottom: bottom, width: width, height: height, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2075,14 +2075,14 @@ public class Flex : MultiChildRenderObjectWidget
         this.textBaseline = textBaseline;
         this.clipBehavior = clipBehavior;
         this.spacing = spacing;
-        System.Diagnostics.Debug.Assert((!DartRuntimePrimitives.Identical(crossAxisAlignment, CrossAxisAlignment.baseline) || (textBaseline is not null)));
+        System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(crossAxisAlignment, CrossAxisAlignment.baseline) || (textBaseline is not null));
     }
 
     internal virtual bool _needTextDirection
     {
         get
         {
-            switch (this.direction)
+            switch (direction)
             {
                 case Axis.horizontal:
                     {
@@ -2090,7 +2090,7 @@ public class Flex : MultiChildRenderObjectWidget
                     }
                 case Axis.vertical:
                     {
-                        return ((Equals(this.crossAxisAlignment, CrossAxisAlignment.start)) || (Equals(this.crossAxisAlignment, CrossAxisAlignment.end)));
+                        return Equals(crossAxisAlignment, CrossAxisAlignment.start) || Equals(crossAxisAlignment, CrossAxisAlignment.end);
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -2099,13 +2099,13 @@ public class Flex : MultiChildRenderObjectWidget
     }
     public virtual global::Doroti.Ui.TextDirection? getEffectiveTextDirection(BuildContext context)
     {
-        return (this.textDirection ?? ((this._needTextDirection ? Directionality.maybeOf(context) : null)));
+        return textDirection ?? (_needTextDirection ? Directionality.maybeOf(context) : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderFlex(direction: this.direction, mainAxisAlignment: this.mainAxisAlignment, mainAxisSize: this.mainAxisSize, crossAxisAlignment: this.crossAxisAlignment, textDirection: getEffectiveTextDirection(context), verticalDirection: this.verticalDirection, textBaseline: this.textBaseline, clipBehavior: this.clipBehavior, spacing: this.spacing));
+        return new global::Doroti.Framework.Rendering.RenderFlex(direction: direction, mainAxisAlignment: mainAxisAlignment, mainAxisSize: mainAxisSize, crossAxisAlignment: crossAxisAlignment, textDirection: getEffectiveTextDirection(context), verticalDirection: verticalDirection, textBaseline: textBaseline, clipBehavior: clipBehavior, spacing: spacing);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2115,15 +2115,15 @@ public class Flex : MultiChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderFlex>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.direction = this.direction;
-    __cascade.mainAxisAlignment = this.mainAxisAlignment;
-    __cascade.mainAxisSize = this.mainAxisSize;
-    __cascade.crossAxisAlignment = this.crossAxisAlignment;
+    __cascade.direction = direction;
+    __cascade.mainAxisAlignment = mainAxisAlignment;
+    __cascade.mainAxisSize = mainAxisSize;
+    __cascade.crossAxisAlignment = crossAxisAlignment;
     __cascade.textDirection = getEffectiveTextDirection(context);
-    __cascade.verticalDirection = this.verticalDirection;
-    __cascade.textBaseline = this.textBaseline;
-    __cascade.clipBehavior = this.clipBehavior;
-    __cascade.spacing = this.spacing;
+    __cascade.verticalDirection = verticalDirection;
+    __cascade.textBaseline = textBaseline;
+    __cascade.clipBehavior = clipBehavior;
+    __cascade.spacing = spacing;
     return __cascade;
 }))());
     }
@@ -2131,15 +2131,15 @@ public class Flex : MultiChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", this.direction));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("mainAxisAlignment", this.mainAxisAlignment));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisSize>("mainAxisSize", this.mainAxisSize, defaultValue: MainAxisSize.max));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.CrossAxisAlignment>("crossAxisAlignment", this.crossAxisAlignment));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", this.verticalDirection, defaultValue: VerticalDirection.down));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextBaseline>("textBaseline", this.textBaseline, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: Clip.none));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", this.spacing, defaultValue: 0.0));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", direction));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("mainAxisAlignment", mainAxisAlignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisSize>("mainAxisSize", mainAxisSize, defaultValue: MainAxisSize.max));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.CrossAxisAlignment>("crossAxisAlignment", crossAxisAlignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", verticalDirection, defaultValue: VerticalDirection.down));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextBaseline>("textBaseline", textBaseline, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: Clip.none));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", spacing, defaultValue: 0.0));
     }
 
 }
@@ -2173,22 +2173,22 @@ public class Flexible : ParentDataWidget<global::Doroti.Framework.Rendering.Flex
 
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.FlexParentData));
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.FlexParentData?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        DartRuntimePrimitives.Assert(() => renderObject.parentData is global::Doroti.Framework.Rendering.FlexParentData);
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.FlexParentData?)renderObject.parentData!)!;
         var needsLayout = false;
-        if ((((global::Doroti.Framework.Rendering.FlexParentData)parentDataLocal).flex != this.flex))
+        if (parentDataLocal.flex != flex)
         {
-            parentDataLocal.flex = this.flex;
+            parentDataLocal.flex = flex;
             needsLayout = true;
         }
-        if ((!Equals(((global::Doroti.Framework.Rendering.FlexParentData)parentDataLocal).fit, this.fit)))
+        if (!Equals(parentDataLocal.fit, fit))
         {
-            parentDataLocal.fit = this.fit;
+            parentDataLocal.fit = fit;
             needsLayout = true;
         }
         if (needsLayout)
         {
-            (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+            renderObject.parent?.markNeedsLayout();
         }
     }
 
@@ -2196,7 +2196,7 @@ public class Flexible : ParentDataWidget<global::Doroti.Framework.Rendering.Flex
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("flex", this.flex));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("flex", flex));
     }
 
 }
@@ -2236,7 +2236,7 @@ public class Wrap : MultiChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderWrap(direction: this.direction, alignment: this.alignment, spacing: this.spacing, runAlignment: this.runAlignment, runSpacing: this.runSpacing, crossAxisAlignment: this.crossAxisAlignment, textDirection: ((this.textDirection ?? Directionality.maybeOf(context))), verticalDirection: this.verticalDirection, clipBehavior: this.clipBehavior));
+        return new global::Doroti.Framework.Rendering.RenderWrap(direction: direction, alignment: alignment, spacing: spacing, runAlignment: runAlignment, runSpacing: runSpacing, crossAxisAlignment: crossAxisAlignment, textDirection: textDirection ?? Directionality.maybeOf(context), verticalDirection: verticalDirection, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2246,15 +2246,15 @@ public class Wrap : MultiChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderWrap>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.direction = this.direction;
-    __cascade.alignment = this.alignment;
-    __cascade.spacing = this.spacing;
-    __cascade.runAlignment = this.runAlignment;
-    __cascade.runSpacing = this.runSpacing;
-    __cascade.crossAxisAlignment = this.crossAxisAlignment;
-    __cascade.textDirection = ((this.textDirection ?? Directionality.maybeOf(context)));
-    __cascade.verticalDirection = this.verticalDirection;
-    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.direction = direction;
+    __cascade.alignment = alignment;
+    __cascade.spacing = spacing;
+    __cascade.runAlignment = runAlignment;
+    __cascade.runSpacing = runSpacing;
+    __cascade.crossAxisAlignment = crossAxisAlignment;
+    __cascade.textDirection = textDirection ?? Directionality.maybeOf(context);
+    __cascade.verticalDirection = verticalDirection;
+    __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))());
     }
@@ -2262,14 +2262,14 @@ public class Wrap : MultiChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", this.direction));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.WrapAlignment>("alignment", this.alignment));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", this.spacing));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.WrapAlignment>("runAlignment", this.runAlignment));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("runSpacing", this.runSpacing));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.WrapCrossAlignment>("crossAxisAlignment", this.crossAxisAlignment));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", this.verticalDirection, defaultValue: VerticalDirection.down));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", direction));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.WrapAlignment>("alignment", alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", spacing));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.WrapAlignment>("runAlignment", runAlignment));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("runSpacing", runSpacing));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.WrapCrossAlignment>("crossAxisAlignment", crossAxisAlignment));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", verticalDirection, defaultValue: VerticalDirection.down));
     }
 
 }
@@ -2295,12 +2295,12 @@ public class Flow : MultiChildRenderObjectWidget
         return __instance;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderFlow(@delegate: this.@delegate, clipBehavior: this.clipBehavior));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderFlow(@delegate: @delegate, clipBehavior: clipBehavior));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderFlow)renderObject;
-        __renderObject.@delegate = this.@delegate;
-        __renderObject.clipBehavior = this.clipBehavior;
+        __renderObject.@delegate = @delegate;
+        __renderObject.clipBehavior = clipBehavior;
     }
 
 }
@@ -2337,48 +2337,48 @@ public class RichText : MultiChildRenderObjectWidget
         this.selectionRegistrar = selectionRegistrar;
         this.selectionColor = selectionColor;
         this.textScaler = _effectiveTextScalerFrom(textScaler, textScaleFactor);
-        System.Diagnostics.Debug.Assert(((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)));
-        System.Diagnostics.Debug.Assert(((selectionRegistrar is null) || (selectionColor is not null)));
-        System.Diagnostics.Debug.Assert(((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(__textScaler, TextScaler.noScaling)));
+        System.Diagnostics.Debug.Assert((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
+        System.Diagnostics.Debug.Assert((selectionRegistrar is null) || (selectionColor is not null));
+        System.Diagnostics.Debug.Assert((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(__textScaler, TextScaler.noScaling));
     }
 
     internal static global::Doroti.Framework.Painting.TextScaler _effectiveTextScalerFrom(global::Doroti.Framework.Painting.TextScaler? textScaler, double textScaleFactor)
     {
         textScaler ??= TextScaler.noScaling;
         textScaler ??= TextScaler.noScaling;
-        return ((textScaler, textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler scaler, 1.0) => scaler, (var __constant252140, double textScaleFactorLocal) when (Equals(__constant252140, TextScaler.noScaling)) => TextScaler.CreateLinear(textScaleFactorLocal), (global::Doroti.Framework.Painting.TextScaler scalerLocal, _) => scalerLocal });
+        return (textScaler, textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler scaler, 1.0) => scaler, (var __constant252140, double textScaleFactorLocal) when Equals(__constant252140, TextScaler.noScaling) => TextScaler.CreateLinear(textScaleFactorLocal), (global::Doroti.Framework.Painting.TextScaler scalerLocal, _) => scalerLocal };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double textScaleFactor => ((global::Doroti.Framework.Painting.TextScaler)this.textScaler).textScaleFactor;
-    internal virtual double _getDevicePixelRatio(BuildContext context) => DartRuntimePrimitives.ConvertValue<double>(((MediaQuery.maybeDevicePixelRatioOf(context) ?? View.maybeOf(context)?.devicePixelRatio) ?? 1.0));
+    public virtual double textScaleFactor => textScaler.textScaleFactor;
+    internal virtual double _getDevicePixelRatio(BuildContext context) => DartRuntimePrimitives.ConvertValue<double>((MediaQuery.maybeDevicePixelRatioOf(context) ?? View.maybeOf(context)?.devicePixelRatio) ?? 1.0);
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((this.textDirection is not null) || DebugLibrary.debugCheckHasDirectionality(context)));
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderParagraph(this.text, textAlign: this.textAlign, textDirection: ((this.textDirection ?? (TextDirection)Directionality.of(context))), softWrap: this.softWrap, overflow: this.overflow, textScaler: this.textScaler, maxLines: this.maxLines, strutStyle: this.strutStyle, textWidthBasis: this.textWidthBasis, textHeightBehavior: this.textHeightBehavior, locale: (this.locale ?? Localizations.maybeLocaleOf(context)), registrar: this.selectionRegistrar, selectionColor: this.selectionColor, devicePixelRatio: _getDevicePixelRatio(context)));
+        DartRuntimePrimitives.Assert(() => (textDirection is not null) || DebugLibrary.debugCheckHasDirectionality(context));
+        return new global::Doroti.Framework.Rendering.RenderParagraph(text, textAlign: textAlign, textDirection: textDirection ?? Directionality.of(context), softWrap: softWrap, overflow: overflow, textScaler: textScaler, maxLines: maxLines, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior, locale: locale ?? Localizations.maybeLocaleOf(context), registrar: selectionRegistrar, selectionColor: selectionColor, devicePixelRatio: _getDevicePixelRatio(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderParagraph)renderObject;
-        DartRuntimePrimitives.Assert(() => ((this.textDirection is not null) || DebugLibrary.debugCheckHasDirectionality(context)));
+        DartRuntimePrimitives.Assert(() => (textDirection is not null) || DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderParagraph>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.text = this.text;
-    __cascade.textAlign = this.textAlign;
-    __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.of(context)));
-    __cascade.softWrap = this.softWrap;
-    __cascade.overflow = this.overflow;
-    __cascade.textScaler = this.textScaler;
-    __cascade.maxLines = this.maxLines;
-    __cascade.strutStyle = this.strutStyle;
-    __cascade.textWidthBasis = this.textWidthBasis;
-    __cascade.textHeightBehavior = this.textHeightBehavior;
-    __cascade.locale = (this.locale ?? Localizations.maybeLocaleOf(context));
-    __cascade.registrar = this.selectionRegistrar;
-    __cascade.selectionColor = this.selectionColor;
+    __cascade.text = text;
+    __cascade.textAlign = textAlign;
+    __cascade.textDirection = textDirection ?? Directionality.of(context);
+    __cascade.softWrap = softWrap;
+    __cascade.overflow = overflow;
+    __cascade.textScaler = textScaler;
+    __cascade.maxLines = maxLines;
+    __cascade.strutStyle = strutStyle;
+    __cascade.textWidthBasis = textWidthBasis;
+    __cascade.textHeightBehavior = textHeightBehavior;
+    __cascade.locale = locale ?? Localizations.maybeLocaleOf(context);
+    __cascade.registrar = selectionRegistrar;
+    __cascade.selectionColor = selectionColor;
     __cascade.devicePixelRatio = _getDevicePixelRatio(context);
     return __cascade;
 }))());
@@ -2387,17 +2387,17 @@ public class RichText : MultiChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: TextAlign.start));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", this.overflow, defaultValue: TextOverflow.clip));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: TextScaler.noScaling));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", this.maxLines, ifNull: "unlimited"));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", this.textWidthBasis, defaultValue: TextWidthBasis.parent));
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("text", this.text.toPlainText()));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", this.locale, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.StrutStyle>("strutStyle", this.strutStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign, defaultValue: TextAlign.start));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", overflow, defaultValue: TextOverflow.clip));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", textScaler, defaultValue: TextScaler.noScaling));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", maxLines, ifNull: "unlimited"));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", textWidthBasis, defaultValue: TextWidthBasis.parent));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("text", text.toPlainText()));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", locale, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.StrutStyle>("strutStyle", strutStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", textHeightBehavior, defaultValue: null));
     }
 
 }
@@ -2446,37 +2446,37 @@ public class RawImage : LeafRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => (((!this.matchTextDirection && (this.alignment is global::Doroti.Framework.Painting.Alignment))) || DebugLibrary.debugCheckHasDirectionality(context)));
-        DartRuntimePrimitives.Assert(() => this.image?.debugDisposed != true, () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderImage(image: this.image?.clone(), debugImageLabel: this.debugImageLabel, width: this.width, height: this.height, scale: this.scale, color: this.color, opacity: this.opacity, colorBlendMode: this.colorBlendMode, fit: this.fit, alignment: this.alignment, repeat: this.repeat, centerSlice: this.centerSlice, matchTextDirection: this.matchTextDirection, textDirection: ((this.matchTextDirection || (this.alignment is not Alignment)) ? Directionality.of(context) : null), invertColors: this.invertColors, isAntiAlias: this.isAntiAlias, filterQuality: this.filterQuality, blendMode: this.blendMode));
+        DartRuntimePrimitives.Assert(() => !matchTextDirection && (alignment is global::Doroti.Framework.Painting.Alignment) || DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => image?.debugDisposed != true, () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
+        return new global::Doroti.Framework.Rendering.RenderImage(image: image?.clone(), debugImageLabel: debugImageLabel, width: width, height: height, scale: scale, color: color, opacity: opacity, colorBlendMode: colorBlendMode, fit: fit, alignment: alignment, repeat: repeat, centerSlice: centerSlice, matchTextDirection: matchTextDirection, textDirection: (matchTextDirection || (alignment is not Alignment)) ? Directionality.of(context) : null, invertColors: invertColors, isAntiAlias: isAntiAlias, filterQuality: filterQuality, blendMode: blendMode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderImage)renderObject;
-        DartRuntimePrimitives.Assert(() => this.image?.debugDisposed != true, () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
+        DartRuntimePrimitives.Assert(() => image?.debugDisposed != true, () => (object?)"Creator of a RawImage disposed of the image when the RawImage still " + "needed it.");
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderImage>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.image = this.image?.clone();
-    __cascade.debugImageLabel = this.debugImageLabel;
-    __cascade.width = this.width;
-    __cascade.height = this.height;
-    __cascade.scale = this.scale;
-    __cascade.color = this.color;
-    __cascade.opacity = this.opacity;
-    __cascade.colorBlendMode = this.colorBlendMode;
-    __cascade.fit = this.fit;
-    __cascade.alignment = this.alignment;
-    __cascade.repeat = this.repeat;
-    __cascade.centerSlice = this.centerSlice;
-    __cascade.matchTextDirection = this.matchTextDirection;
-    __cascade.textDirection = ((this.matchTextDirection || (this.alignment is not Alignment)) ? Directionality.of(context) : null);
-    __cascade.invertColors = this.invertColors;
-    __cascade.isAntiAlias = this.isAntiAlias;
-    __cascade.filterQuality = this.filterQuality;
-    __cascade.blendMode = this.blendMode;
+    __cascade.image = image?.clone();
+    __cascade.debugImageLabel = debugImageLabel;
+    __cascade.width = width;
+    __cascade.height = height;
+    __cascade.scale = scale;
+    __cascade.color = color;
+    __cascade.opacity = opacity;
+    __cascade.colorBlendMode = colorBlendMode;
+    __cascade.fit = fit;
+    __cascade.alignment = alignment;
+    __cascade.repeat = repeat;
+    __cascade.centerSlice = centerSlice;
+    __cascade.matchTextDirection = matchTextDirection;
+    __cascade.textDirection = (matchTextDirection || (alignment is not Alignment)) ? Directionality.of(context) : null;
+    __cascade.invertColors = invertColors;
+    __cascade.isAntiAlias = isAntiAlias;
+    __cascade.filterQuality = filterQuality;
+    __cascade.blendMode = blendMode;
     return __cascade;
 }))());
     }
@@ -2490,21 +2490,21 @@ public class RawImage : LeafRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Image>("image", this.image));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("scale", this.scale, defaultValue: 1.0));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>?>("opacity", this.opacity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", this.colorBlendMode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", this.repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", this.centerSlice, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("matchTextDirection", value: this.matchTextDirection, ifTrue: "match text direction"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("invertColors", this.invertColors));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", this.blendMode, defaultValue: BlendMode.srcOver));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Image>("image", image));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("scale", scale, defaultValue: 1.0));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>?>("opacity", opacity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", centerSlice, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("invertColors", invertColors));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", filterQuality));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode, defaultValue: BlendMode.srcOver));
     }
 
 }
@@ -2520,12 +2520,12 @@ public class DefaultAssetBundle : InheritedWidget
 
     public static global::Doroti.Framework.Services.AssetBundle of(BuildContext context)
     {
-        DefaultAssetBundle? result = ((DefaultAssetBundle?)context.dependOnInheritedWidgetOfExactType<DefaultAssetBundle>());
-        return (result?.bundle ?? Asset_bundleLibrary.rootBundle);
+        DefaultAssetBundle? result = context.dependOnInheritedWidgetOfExactType<DefaultAssetBundle>();
+        return result?.bundle ?? Asset_bundleLibrary.rootBundle;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.bundle, ((DefaultAssetBundle)oldWidget).bundle)));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(bundle, ((DefaultAssetBundle)oldWidget).bundle));
 }
 
 public class WidgetToRenderBoxAdapter : LeafRenderObjectWidget
@@ -2541,17 +2541,17 @@ public class WidgetToRenderBoxAdapter : LeafRenderObjectWidget
         this.onUnmount = onUnmount;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(this.renderBox);
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(renderBox);
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderBox)renderObject;
-        this.onBuild?.Invoke();
+        onBuild?.Invoke();
     }
 
     public override void didUnmountRenderObject(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(renderObject, this.renderBox)));
-        this.onUnmount?.Invoke();
+        DartRuntimePrimitives.Assert(() => Equals(renderObject, renderBox));
+        onUnmount?.Invoke();
     }
 
 }
@@ -2585,7 +2585,7 @@ public class Listener : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderPointerListener(onPointerDown: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>?)this.onPointerDown, onPointerMove: (global::System.Action<global::Doroti.Framework.Gestures.PointerMoveEvent>?)this.onPointerMove, onPointerUp: (global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>?)this.onPointerUp, onPointerHover: (global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>?)this.onPointerHover, onPointerCancel: (global::System.Action<global::Doroti.Framework.Gestures.PointerCancelEvent>?)this.onPointerCancel, onPointerPanZoomStart: (global::System.Action<global::Doroti.Framework.Gestures.PointerPanZoomStartEvent>?)this.onPointerPanZoomStart, onPointerPanZoomUpdate: (global::System.Action<global::Doroti.Framework.Gestures.PointerPanZoomUpdateEvent>?)this.onPointerPanZoomUpdate, onPointerPanZoomEnd: (global::System.Action<global::Doroti.Framework.Gestures.PointerPanZoomEndEvent>?)this.onPointerPanZoomEnd, onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>?)this.onPointerSignal, behavior: this.behavior));
+        return new global::Doroti.Framework.Rendering.RenderPointerListener(onPointerDown: onPointerDown, onPointerMove: onPointerMove, onPointerUp: onPointerUp, onPointerHover: onPointerHover, onPointerCancel: onPointerCancel, onPointerPanZoomStart: onPointerPanZoomStart, onPointerPanZoomUpdate: onPointerPanZoomUpdate, onPointerPanZoomEnd: onPointerPanZoomEnd, onPointerSignal: onPointerSignal, behavior: behavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2595,16 +2595,16 @@ public class Listener : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderPointerListener>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.onPointerDown = this.onPointerDown;
-    __cascade.onPointerMove = this.onPointerMove;
-    __cascade.onPointerUp = this.onPointerUp;
-    __cascade.onPointerHover = this.onPointerHover;
-    __cascade.onPointerCancel = this.onPointerCancel;
-    __cascade.onPointerPanZoomStart = this.onPointerPanZoomStart;
-    __cascade.onPointerPanZoomUpdate = this.onPointerPanZoomUpdate;
-    __cascade.onPointerPanZoomEnd = this.onPointerPanZoomEnd;
-    __cascade.onPointerSignal = this.onPointerSignal;
-    __cascade.behavior = this.behavior;
+    __cascade.onPointerDown = onPointerDown;
+    __cascade.onPointerMove = onPointerMove;
+    __cascade.onPointerUp = onPointerUp;
+    __cascade.onPointerHover = onPointerHover;
+    __cascade.onPointerCancel = onPointerCancel;
+    __cascade.onPointerPanZoomStart = onPointerPanZoomStart;
+    __cascade.onPointerPanZoomUpdate = onPointerPanZoomUpdate;
+    __cascade.onPointerPanZoomEnd = onPointerPanZoomEnd;
+    __cascade.onPointerSignal = onPointerSignal;
+    __cascade.behavior = behavior;
     return __cascade;
 }))());
     }
@@ -2614,7 +2614,7 @@ public class Listener : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         var listeners = new List<string>();
         properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("listeners", listeners.Cast<string>(), ifEmpty: "<none>"));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", this.behavior));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", behavior));
     }
 
 }
@@ -2641,7 +2641,7 @@ public class MouseRegion : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderMouseRegion(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)this.onEnter, onHover: (global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>?)this.onHover, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)this.onExit, cursor: this.cursor, opaque: this.opaque, hitTestBehavior: this.hitTestBehavior));
+        return new global::Doroti.Framework.Rendering.RenderMouseRegion(onEnter: onEnter, onHover: onHover, onExit: onExit, cursor: cursor, opaque: opaque, hitTestBehavior: hitTestBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2651,12 +2651,12 @@ public class MouseRegion : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderMouseRegion>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.onEnter = this.onEnter;
-    __cascade.onHover = this.onHover;
-    __cascade.onExit = this.onExit;
-    __cascade.cursor = this.cursor;
-    __cascade.opaque = this.opaque;
-    __cascade.hitTestBehavior = this.hitTestBehavior;
+    __cascade.onEnter = onEnter;
+    __cascade.onHover = onHover;
+    __cascade.onExit = onExit;
+    __cascade.cursor = cursor;
+    __cascade.opaque = opaque;
+    __cascade.hitTestBehavior = hitTestBehavior;
     return __cascade;
 }))());
     }
@@ -2666,8 +2666,8 @@ public class MouseRegion : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         var listeners = new List<string>();
         properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("listeners", listeners.Cast<string>(), ifEmpty: "<none>"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.MouseCursor>("cursor", this.cursor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("opaque", this.opaque, defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.MouseCursor>("cursor", cursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("opaque", opaque, defaultValue: true));
     }
 
 }
@@ -2702,7 +2702,7 @@ public class IgnorePointer : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderIgnorePointer(ignoring: this.ignoring, ignoringSemantics: this.ignoringSemantics));
+        return new global::Doroti.Framework.Rendering.RenderIgnorePointer(ignoring: ignoring, ignoringSemantics: ignoringSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2712,8 +2712,8 @@ public class IgnorePointer : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderIgnorePointer>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.ignoring = this.ignoring;
-    __cascade.ignoringSemantics = this.ignoringSemantics;
+    __cascade.ignoring = ignoring;
+    __cascade.ignoringSemantics = ignoringSemantics;
     return __cascade;
 }))());
     }
@@ -2721,8 +2721,8 @@ public class IgnorePointer : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("ignoring", this.ignoring));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("ignoringSemantics", this.ignoringSemantics, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("ignoring", ignoring));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("ignoringSemantics", ignoringSemantics, defaultValue: null));
     }
 
 }
@@ -2740,7 +2740,7 @@ public class AbsorbPointer : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderAbsorbPointer(absorbing: this.absorbing, ignoringSemantics: this.ignoringSemantics));
+        return new global::Doroti.Framework.Rendering.RenderAbsorbPointer(absorbing: absorbing, ignoringSemantics: ignoringSemantics);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2750,8 +2750,8 @@ public class AbsorbPointer : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAbsorbPointer>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.absorbing = this.absorbing;
-    __cascade.ignoringSemantics = this.ignoringSemantics;
+    __cascade.absorbing = absorbing;
+    __cascade.ignoringSemantics = ignoringSemantics;
     return __cascade;
 }))());
     }
@@ -2759,8 +2759,8 @@ public class AbsorbPointer : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("absorbing", this.absorbing));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("ignoringSemantics", this.ignoringSemantics, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("absorbing", absorbing));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("ignoringSemantics", ignoringSemantics, defaultValue: null));
     }
 
 }
@@ -2778,7 +2778,7 @@ public class MetaData : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderMetaData(metaData: this.metaData, behavior: this.behavior));
+        return new global::Doroti.Framework.Rendering.RenderMetaData(metaData: metaData, behavior: behavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2788,8 +2788,8 @@ public class MetaData : SingleChildRenderObjectWidget
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderMetaData>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.metaData = this.metaData;
-    __cascade.behavior = this.behavior;
+    __cascade.metaData = metaData;
+    __cascade.behavior = behavior;
     return __cascade;
 }))());
     }
@@ -2797,8 +2797,8 @@ public class MetaData : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", this.behavior));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("metaData", this.metaData));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", behavior));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("metaData", metaData));
     }
 
 }
@@ -2820,7 +2820,7 @@ public class Semantics : _SemanticsBase__basic
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSemanticsAnnotations(container: this.container, explicitChildNodes: this.explicitChildNodes, excludeSemantics: this.excludeSemantics, blockUserActions: this.blockUserActions, properties: this.properties, localeForSubtree: this.localeForSubtree, textDirection: _getTextDirection(context)));
+        return new global::Doroti.Framework.Rendering.RenderSemanticsAnnotations(container: container, explicitChildNodes: explicitChildNodes, excludeSemantics: excludeSemantics, blockUserActions: blockUserActions, properties: properties, localeForSubtree: localeForSubtree, textDirection: _getTextDirection(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2830,13 +2830,13 @@ public class Semantics : _SemanticsBase__basic
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSemanticsAnnotations>)(() =>
 {
     var __cascade = __renderObject;
-    __cascade.container = this.container;
-    __cascade.explicitChildNodes = this.explicitChildNodes;
-    __cascade.excludeSemantics = this.excludeSemantics;
-    __cascade.blockUserActions = this.blockUserActions;
-    __cascade.properties = this.properties;
+    __cascade.container = container;
+    __cascade.explicitChildNodes = explicitChildNodes;
+    __cascade.excludeSemantics = excludeSemantics;
+    __cascade.blockUserActions = blockUserActions;
+    __cascade.properties = properties;
     __cascade.textDirection = _getTextDirection(context);
-    __cascade.localeForSubtree = this.localeForSubtree;
+    __cascade.localeForSubtree = localeForSubtree;
     return __cascade;
 }))());
     }
@@ -2844,7 +2844,7 @@ public class Semantics : _SemanticsBase__basic
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("container", this.container));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("container", container));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Semantics.SemanticsProperties>("properties", this.properties));
         this.properties.debugFillProperties(properties);
     }
@@ -2869,17 +2869,17 @@ public class BlockSemantics : SingleChildRenderObjectWidget
         this.blocking = blocking;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderBlockSemantics(blocking: this.blocking));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderBlockSemantics(blocking: blocking));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderBlockSemantics)renderObject;
-        __renderObject.blocking = this.blocking;
+        __renderObject.blocking = blocking;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("blocking", this.blocking));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("blocking", blocking));
     }
 
 }
@@ -2893,17 +2893,17 @@ public class ExcludeSemantics : SingleChildRenderObjectWidget
         this.excluding = excluding;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderExcludeSemantics(excluding: this.excluding));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderExcludeSemantics(excluding: excluding));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderExcludeSemantics)renderObject;
-        __renderObject.excluding = this.excluding;
+        __renderObject.excluding = excluding;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("excluding", this.excluding));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("excluding", excluding));
     }
 
 }
@@ -2917,17 +2917,17 @@ public class IndexedSemantics : SingleChildRenderObjectWidget
         this.index = index;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderIndexedSemantics(index: this.index));
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderIndexedSemantics(index: index));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderIndexedSemantics)renderObject;
-        __renderObject.index = this.index;
+        __renderObject.index = index;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<long>("index", this.index));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<long>("index", index));
     }
 
 }
@@ -2960,7 +2960,7 @@ public class KeyedSubtree : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Widget build(BuildContext context) => this.child;
+    public override Widget build(BuildContext context) => child;
 }
 
 public class Builder : StatelessWidget
@@ -2972,7 +2972,7 @@ public class Builder : StatelessWidget
         this.builder = builder;
     }
 
-    public override Widget build(BuildContext context) => this.builder(context);
+    public override Widget build(BuildContext context) => builder(context);
 }
 
 public delegate Widget StatefulWidgetBuilder(BuildContext context, global::System.Action<global::System.Action> setState);
@@ -2991,7 +2991,7 @@ public class StatefulBuilder : StatefulWidget
 
 internal class _StatefulBuilderState__basic : State<StatefulBuilder>
 {
-    public override Widget build(BuildContext context) => this.widget.builder(context, this.setState);
+    public override Widget build(BuildContext context) => widget.builder(context, setState);
 }
 
 public class ColoredBox : SingleChildRenderObjectWidget
@@ -3007,7 +3007,7 @@ public class ColoredBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderColoredBox__basic(color: this.color, isAntiAlias: this.isAntiAlias));
+        return new _RenderColoredBox__basic(color: color, isAntiAlias: isAntiAlias);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3015,9 +3015,9 @@ public class ColoredBox : SingleChildRenderObjectWidget
     {
         DartRuntimePrimitives.Ignore(((Func<_RenderColoredBox__basic>)(() =>
 {
-    var __cascade = (((_RenderColoredBox__basic?)renderObject)!);
-    __cascade.color = this.color;
-    __cascade.isAntiAlias = this.isAntiAlias;
+    var __cascade = ((_RenderColoredBox__basic?)renderObject)!;
+    __cascade.color = color;
+    __cascade.isAntiAlias = isAntiAlias;
     return __cascade;
 }))());
     }
@@ -3025,8 +3025,8 @@ public class ColoredBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color>("color", this.color));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("isAntiAlias", this.isAntiAlias, defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color>("color", color));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("isAntiAlias", isAntiAlias, defaultValue: true));
     }
 
 }
@@ -3038,17 +3038,17 @@ internal class _RenderColoredBox__basic : global::Doroti.Framework.Rendering.Ren
 
     internal _RenderColoredBox__basic(Color color, bool isAntiAlias) : base(behavior: HitTestBehavior.opaque)
     {
-        this._color = color;
-        this._isAntiAlias = isAntiAlias;
+        _color = color;
+        _isAntiAlias = isAntiAlias;
     }
 
     public virtual global::Doroti.Ui.Color color
     {
-        get => this._color;
+        get => _color;
         set
         {
-            var __value = (Color)value;
-            if ((Equals(__value, this._color)))
+            var __value = value;
+            if (Equals(__value, _color))
             {
                 return;
             }
@@ -3058,11 +3058,11 @@ internal class _RenderColoredBox__basic : global::Doroti.Framework.Rendering.Ren
     }
     public virtual bool isAntiAlias
     {
-        get => this._isAntiAlias;
+        get => _isAntiAlias;
         set
         {
             var __value = value;
-            if ((__value == this._isAntiAlias))
+            if (__value == _isAntiAlias)
             {
                 return;
             }
@@ -3072,19 +3072,19 @@ internal class _RenderColoredBox__basic : global::Doroti.Framework.Rendering.Ren
     }
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if ((this.size > Size.zero))
+        if (size > Size.zero)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect((offset & this.size), ((Func<Paint>)(() =>
+            context.canvas.drawRect(offset & size, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.isAntiAlias = this.isAntiAlias;
-    __cascade.color = this.color;
+    __cascade.isAntiAlias = isAntiAlias;
+    __cascade.color = color;
     return __cascade;
 }))());
         }
-        if ((this.child is not null))
+        if (child is not null)
         {
-            context.paintChild(this.child!, offset);
+            context.paintChild(child!, offset);
         }
     }
 

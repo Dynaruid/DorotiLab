@@ -51,16 +51,16 @@ public abstract class ScrollView : StatelessWidget
         this.restorationId = restorationId;
         this.clipBehavior = clipBehavior;
         this.hitTestBehavior = hitTestBehavior;
-        this.physics = (physics ?? (((((primary ?? false)) || ((((primary is null) && (controller is null)) && DartRuntimePrimitives.Identical(scrollDirection, Axis.vertical)))) ? new AlwaysScrollableScrollPhysics() : null)));
-        System.Diagnostics.Debug.Assert(!(((controller is not null) && ((primary ?? false)))));
-        System.Diagnostics.Debug.Assert((!shrinkWrap || (center is null)));
-        System.Diagnostics.Debug.Assert(((anchor >= 0.0) && (anchor <= 1.0)));
-        System.Diagnostics.Debug.Assert(((semanticChildCount is null) || (semanticChildCount >= 0L)));
+        this.physics = physics ?? (((primary ?? false) || (primary is null) && (controller is null) && DartRuntimePrimitives.Identical(scrollDirection, Axis.vertical)) ? new AlwaysScrollableScrollPhysics() : null);
+        System.Diagnostics.Debug.Assert(!((controller is not null) && (primary ?? false)));
+        System.Diagnostics.Debug.Assert(!shrinkWrap || (center is null));
+        System.Diagnostics.Debug.Assert((anchor >= 0.0) && (anchor <= 1.0));
+        System.Diagnostics.Debug.Assert((semanticChildCount is null) || (semanticChildCount >= 0L));
     }
 
     public virtual global::Doroti.Framework.Painting.AxisDirection getDirection(BuildContext context)
     {
-        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.scrollDirection, this.reverse);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, scrollDirection, reverse);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -86,40 +86,40 @@ public abstract class ScrollView : StatelessWidget
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        global::Doroti.Framework.Rendering.ScrollCacheExtent? effectiveScrollCacheExtent = (this.scrollCacheExtent ?? (((this.cacheExtent is not null) ? ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(this.cacheExtent)) : null)));
-        if (this.shrinkWrap)
+        global::Doroti.Framework.Rendering.ScrollCacheExtent? effectiveScrollCacheExtent = scrollCacheExtent ?? ((cacheExtent is not null) ? ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(cacheExtent)) : null);
+        if (shrinkWrap)
         {
-            return ((Widget)new ShrinkWrappingViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, paintOrder: this.paintOrder, clipBehavior: this.clipBehavior, scrollCacheExtent: effectiveScrollCacheExtent));
+            return new ShrinkWrappingViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: effectiveScrollCacheExtent);
         }
-        return ((Widget)new Viewport(axisDirection: axisDirection, offset: offset, slivers: slivers, scrollCacheExtent: effectiveScrollCacheExtent, center: this.center, anchor: this.anchor, paintOrder: this.paintOrder, clipBehavior: this.clipBehavior));
+        return new Viewport(axisDirection: axisDirection, offset: offset, slivers: slivers, scrollCacheExtent: effectiveScrollCacheExtent, center: center, anchor: anchor, paintOrder: paintOrder, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        List<Widget> slivers = ((List<Widget>)buildSlivers(context));
+        List<Widget> slivers = buildSlivers(context);
         global::Doroti.Framework.Painting.AxisDirection axisDirectionLocal = getDirection(context);
-        bool effectivePrimary = (this.primary ?? ((this.controller is null) && PrimaryScrollController.shouldInherit(context, this.scrollDirection)));
-        ScrollController? scrollController = (effectivePrimary ? PrimaryScrollController.maybeOf(context) : this.controller);
-        var scrollable = new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: this.physics, scrollBehavior: this.scrollBehavior, semanticChildCount: this.semanticChildCount, restorationId: this.restorationId, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+        bool effectivePrimary = primary ?? ((controller is null) && PrimaryScrollController.shouldInherit(context, scrollDirection));
+        ScrollController? scrollController = effectivePrimary ? PrimaryScrollController.maybeOf(context) : controller;
+        var scrollable = new Scrollable(dragStartBehavior: dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: physics, scrollBehavior: scrollBehavior, semanticChildCount: semanticChildCount, restorationId: restorationId, hitTestBehavior: hitTestBehavior, viewportBuilder: (context, offset) =>
         {
-            return ((Widget)buildViewport(context, offset, axisDirectionLocal, slivers));
+            return buildViewport(context, offset, axisDirectionLocal, slivers);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), clipBehavior: this.clipBehavior);
-        Widget scrollableResult = ((effectivePrimary && (scrollController is not null)) ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable);
-        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = this.keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
-        if ((Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag)))
+        }, clipBehavior: clipBehavior);
+        Widget scrollableResult = (effectivePrimary && (scrollController is not null)) ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable;
+        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
+        if (Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag))
         {
-            return ((Widget)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
+            return new NotificationListener<ScrollUpdateNotification>(child: scrollableResult, onNotification: (notification) =>
             {
-                FocusScopeNode currentScope = ((FocusScopeNode)FocusScope.of(context));
-                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope.hasPrimaryFocus) && currentScope.hasFocus))
+                FocusScopeNode currentScope = FocusScope.of(context);
+                if ((notification.dragDetails is not null) && !currentScope.hasPrimaryFocus && currentScope.hasFocus)
                 {
                     FocusManager.instance.primaryFocus?.unfocus();
                 }
                 return false;
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }))));
+            });
         }
         else
         {
@@ -131,13 +131,13 @@ public abstract class ScrollView : StatelessWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("scrollDirection", this.scrollDirection));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("reverse", value: this.reverse, ifTrue: "reversed", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", this.controller, showName: false, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("primary", value: this.primary, ifTrue: "using primary controller", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("physics", this.physics, showName: false, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("shrinkWrap", value: this.shrinkWrap, ifTrue: "shrink-wrapping", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ScrollCacheExtent>("scrollCacheExtent", this.scrollCacheExtent, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("scrollDirection", scrollDirection));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("reverse", value: reverse, ifTrue: "reversed", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", controller, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("primary", value: primary, ifTrue: "using primary controller", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("physics", physics, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("shrinkWrap", value: shrinkWrap, ifTrue: "shrink-wrapping", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent, defaultValue: null));
     }
 
 }
@@ -152,7 +152,7 @@ public class CustomScrollView : ScrollView
         this.slivers = __slivers;
     }
 
-    public override List<Widget> buildSlivers(BuildContext context) => this.slivers;
+    public override List<Widget> buildSlivers(BuildContext context) => slivers;
 }
 
 public abstract class BoxScrollView : ScrollView
@@ -166,20 +166,20 @@ public abstract class BoxScrollView : ScrollView
 
     public override List<Widget> buildSlivers(BuildContext context)
     {
-        Widget sliverLocal = ((Widget)buildChildLayout(context));
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = this.padding;
-        if ((this.padding is null))
+        Widget sliverLocal = buildChildLayout(context);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = padding;
+        if (padding is null)
         {
-            MediaQueryData? mediaQuery = ((MediaQueryData?)MediaQuery.maybeOf(context));
-            if ((mediaQuery is not null))
+            MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
+            if (mediaQuery is not null)
             {
-                global::Doroti.Framework.Painting.EdgeInsets mediaQueryHorizontalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)((MediaQueryData)mediaQuery).padding.copyWith(top: 0.0, bottom: 0.0));
-                global::Doroti.Framework.Painting.EdgeInsets mediaQueryVerticalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)((MediaQueryData)mediaQuery).padding.copyWith(left: 0.0, right: 0.0));
-                effectivePadding = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(((Equals(this.scrollDirection, Axis.vertical)) ? mediaQueryVerticalPadding : mediaQueryHorizontalPadding));
-                sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new MediaQuery(data: mediaQuery.copyWith(padding: ((Equals(this.scrollDirection, Axis.vertical)) ? mediaQueryHorizontalPadding : mediaQueryVerticalPadding)), child: sliverLocal));
+                global::Doroti.Framework.Painting.EdgeInsets mediaQueryHorizontalPadding = mediaQuery.padding.copyWith(top: 0.0, bottom: 0.0);
+                global::Doroti.Framework.Painting.EdgeInsets mediaQueryVerticalPadding = mediaQuery.padding.copyWith(left: 0.0, right: 0.0);
+                effectivePadding = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Equals(scrollDirection, Axis.vertical) ? mediaQueryVerticalPadding : mediaQueryHorizontalPadding);
+                sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new MediaQuery(data: mediaQuery.copyWith(padding: Equals(scrollDirection, Axis.vertical) ? mediaQueryHorizontalPadding : mediaQueryVerticalPadding), child: sliverLocal));
             }
         }
-        if ((effectivePadding is not null))
+        if (effectivePadding is not null)
         {
             sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: effectivePadding, sliver: sliverLocal));
         }
@@ -191,7 +191,7 @@ public abstract class BoxScrollView : ScrollView
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding, defaultValue: null));
     }
 
 }
@@ -203,14 +203,14 @@ public class ListView : BoxScrollView
     public virtual Widget? prototypeItem { get; private set; }
     public virtual SliverChildDelegate childrenDelegate { get; private set; } = default!;
 
-    public ListView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, semanticChildCount: (semanticChildCount ?? checked((long)((children ?? new List<Widget>()).Count))))
+    public ListView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, semanticChildCount: semanticChildCount ?? checked((children ?? new List<Widget>()).Count))
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.itemExtent = itemExtent;
         this.itemExtentBuilder = itemExtentBuilder;
         this.prototypeItem = prototypeItem;
-        this.childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
-        System.Diagnostics.Debug.Assert((((((itemExtent is null) && (prototypeItem is null))) || (((itemExtent is null) && (itemExtentBuilder is null)))) || (((prototypeItem is null) && (itemExtentBuilder is null)))));
+        childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        System.Diagnostics.Debug.Assert((itemExtent is null) && (prototypeItem is null) || (itemExtent is null) && (itemExtentBuilder is null) || (prototypeItem is null) && (itemExtentBuilder is null));
     }
 
     public static ListView CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
@@ -219,7 +219,7 @@ public class ListView : BoxScrollView
         __instance.itemExtent = itemExtent;
         __instance.itemExtentBuilder = itemExtentBuilder;
         __instance.prototypeItem = prototypeItem;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate((global::System.Func<BuildContext, long, Widget?>)itemBuilder, findChildIndexCallback: (global::System.Func<global::Doroti.Framework.Foundation.Key, long?>?)findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        __instance.childrenDelegate = new SliverChildBuilderDelegate(itemBuilder, findChildIndexCallback: findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
         return __instance;
     }
 
@@ -229,25 +229,25 @@ public class ListView : BoxScrollView
         __instance.itemExtent = null;
         __instance.itemExtentBuilder = null;
         __instance.prototypeItem = null;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate(((global::System.Func<BuildContext, long, Widget?>)((context, index) =>
+        __instance.childrenDelegate = new SliverChildBuilderDelegate((context, index) =>
         {
-            long itemIndex = (checked((long)(index / 2L)));
-            if (((checked((long)(index)) & 1L) == 0L))
+            long itemIndex = checked(index / 2L);
+            if ((checked(index) & 1L) == 0L)
             {
                 return itemBuilder(context, itemIndex);
             }
             return separatorBuilder(context, itemIndex);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>?)((findItemIndexCallback is not null) ? ((key) =>
+        }, findChildIndexCallback: (findItemIndexCallback is not null) ? ((key) =>
         {
             long? itemIndexLocal = findItemIndexCallback(key);
-            return ((itemIndexLocal is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndexLocal) * 2L));
+            return (itemIndexLocal is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndexLocal) * 2L);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }) : findChildIndexCallback)), childCount: _computeActualChildCount(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, semanticIndexCallback: ((global::System.Func<Widget, long, long?>)((widget, index) =>
+        }) : findChildIndexCallback, childCount: _computeActualChildCount(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, semanticIndexCallback: (widget, index) =>
         {
-            return (((checked((long)(index)) & 1L) == 0L) ? (checked((long)(index / 2L))) : null);
+            return ((checked(index) & 1L) == 0L) ? checked(index / 2L) : null;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        });
         return __instance;
     }
 
@@ -263,38 +263,38 @@ public class ListView : BoxScrollView
 
     public override Widget buildChildLayout(BuildContext context)
     {
-        if ((this.itemExtent is not null))
+        if (itemExtent is not null)
         {
             double itemExtent__value70683 = DartRuntimePrimitives.RequireValue(itemExtent);
-            return ((Widget)new SliverFixedExtentList(@delegate: this.childrenDelegate, itemExtent: DartRuntimePrimitives.RequireValue(this.itemExtent)));
+            return new SliverFixedExtentList(@delegate: childrenDelegate, itemExtent: DartRuntimePrimitives.RequireValue(itemExtent));
         }
         else
         {
-            if ((this.itemExtentBuilder is not null))
+            if (itemExtentBuilder is not null)
             {
-                return ((Widget)new SliverVariedExtentList(@delegate: this.childrenDelegate, itemExtentBuilder: this.itemExtentBuilder!));
+                return new SliverVariedExtentList(@delegate: childrenDelegate, itemExtentBuilder: itemExtentBuilder!);
             }
             else
             {
-                if ((this.prototypeItem is not null))
+                if (prototypeItem is not null)
                 {
-                    return ((Widget)new SliverPrototypeExtentList(@delegate: this.childrenDelegate, prototypeItem: this.prototypeItem!));
+                    return new SliverPrototypeExtentList(@delegate: childrenDelegate, prototypeItem: prototypeItem!);
                 }
             }
         }
-        return ((Widget)new SliverList(@delegate: this.childrenDelegate));
+        return new SliverList(@delegate: childrenDelegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("itemExtent", this.itemExtent, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("itemExtent", itemExtent, defaultValue: null));
     }
 
     internal static long _computeActualChildCount(long itemCount)
     {
-        return Math.Max(0L, ((DartRuntimePrimitives.RequireValue(itemCount) * 2L) - 1L));
+        return Math.Max(0L, (DartRuntimePrimitives.RequireValue(itemCount) * 2L) - 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -305,18 +305,18 @@ public class GridView : BoxScrollView
     public virtual global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate { get; private set; } = default!;
     public virtual SliverChildDelegate childrenDelegate { get; private set; } = default!;
 
-    public GridView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, Clip clipBehavior = Clip.hardEdge, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, clipBehavior: clipBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior, semanticChildCount: (semanticChildCount ?? checked((long)((children ?? new List<Widget>()).Count))))
+    public GridView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, List<Widget> children = default!, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, Clip clipBehavior = Clip.hardEdge, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, dragStartBehavior: dragStartBehavior, clipBehavior: clipBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior, semanticChildCount: semanticChildCount ?? checked((children ?? new List<Widget>()).Count))
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.gridDelegate = gridDelegate;
-        this.childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        childrenDelegate = new SliverChildListDelegate(children ?? new List<Widget>(), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
     }
 
     public static GridView CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque)
     {
         var __instance = new GridView(key: key, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: primary, physics: physics, shrinkWrap: shrinkWrap, padding: padding, cacheExtent: cacheExtent, scrollCacheExtent: scrollCacheExtent, semanticChildCount: semanticChildCount, dragStartBehavior: dragStartBehavior, keyboardDismissBehavior: keyboardDismissBehavior, restorationId: restorationId, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior);
         __instance.gridDelegate = gridDelegate;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate((global::System.Func<BuildContext, long, Widget?>)itemBuilder, findChildIndexCallback: (global::System.Func<global::Doroti.Framework.Foundation.Key, long?>?)findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
+        __instance.childrenDelegate = new SliverChildBuilderDelegate(itemBuilder, findChildIndexCallback: findChildIndexCallback, childCount: itemCount, addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes);
         return __instance;
     }
 
@@ -348,7 +348,7 @@ public class GridView : BoxScrollView
 
     public override Widget buildChildLayout(BuildContext context)
     {
-        return ((Widget)new SliverGrid(@delegate: this.childrenDelegate, gridDelegate: this.gridDelegate));
+        return new SliverGrid(@delegate: childrenDelegate, gridDelegate: gridDelegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

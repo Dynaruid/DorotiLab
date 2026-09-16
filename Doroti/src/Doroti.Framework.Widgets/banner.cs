@@ -17,12 +17,12 @@ public static partial class BannerLibrary
 
 public static partial class BannerLibrary
 {
-    internal static double _kBottomOffset = (_kOffset + (Dart_mathLibrary.sqrt1_2 * _kHeight));
+    internal static double _kBottomOffset = _kOffset + (Dart_mathLibrary.sqrt1_2 * _kHeight);
 }
 
 public static partial class BannerLibrary
 {
-    internal static Rect _kRect = Rect.fromLTWH(-_kOffset, (_kOffset - _kHeight), (_kOffset * 2.0), _kHeight);
+    internal static Rect _kRect = Rect.fromLTWH(-_kOffset, _kOffset - _kHeight, _kOffset * 2.0, _kHeight);
 }
 
 public static partial class BannerLibrary
@@ -37,7 +37,7 @@ public static partial class BannerLibrary
 
 public static partial class BannerLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle _kTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: (_kHeight * 0.85), fontWeight: FontWeight.w900, height: 1.0);
+    internal static global::Doroti.Framework.Painting.TextStyle _kTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: _kHeight * 0.85, fontWeight: FontWeight.w900, height: 1.0);
 }
 
 public enum BannerLocation
@@ -79,27 +79,27 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this._textPainter?.dispose();
+        _textPainter?.dispose();
         _textPainter = null;
     }
 
     internal virtual void _prepare()
     {
-        _paintShadow = this.shadow.toPaint();
+        _paintShadow = shadow.toPaint();
         _paintBanner = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color;
+    __cascade.color = color;
     return __cascade;
 }))();
-        this._textPainter?.dispose();
-        _textPainter = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: this.textStyle, text: this.message), textAlign: TextAlign.center, textDirection: this.textDirection);
+        _textPainter?.dispose();
+        _textPainter = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: textStyle, text: message), textAlign: TextAlign.center, textDirection: textDirection);
         _prepared = true;
     }
 
     public override void paint(Canvas canvas, Size size)
     {
-        if (!this._prepared)
+        if (!_prepared)
         {
             _prepare();
         }
@@ -107,33 +107,33 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
 {
     var __cascade = canvas;
     __cascade.translate(_translationX(size.width), _translationY(size.height));
-    __cascade.rotate(this._rotation);
-    __cascade.drawRect(BannerLibrary._kRect, this._paintShadow);
-    __cascade.drawRect(BannerLibrary._kRect, this._paintBanner);
+    __cascade.rotate(_rotation);
+    __cascade.drawRect(BannerLibrary._kRect, _paintShadow);
+    __cascade.drawRect(BannerLibrary._kRect, _paintBanner);
     return __cascade;
 }))());
-        double widthLocal = (BannerLibrary._kOffset * 2.0);
-        this._textPainter!.layout(minWidth: widthLocal, maxWidth: widthLocal);
-        this._textPainter!.paint(canvas, (BannerLibrary._kRect.topLeft + new global::Doroti.Ui.Offset(0.0, (((BannerLibrary._kRect.height - this._textPainter!.height)) / 2.0))));
+        double widthLocal = BannerLibrary._kOffset * 2.0;
+        _textPainter!.layout(minWidth: widthLocal, maxWidth: widthLocal);
+        _textPainter!.paint(canvas, BannerLibrary._kRect.topLeft + new global::Doroti.Ui.Offset(0.0, (BannerLibrary._kRect.height - _textPainter!.height) / 2.0));
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (BannerPainter)oldDelegate;
-        return ((((this.message != ((BannerPainter)__oldDelegate).message) || (!Equals(this.location, ((BannerPainter)__oldDelegate).location))) || (!Equals(this.color, ((BannerPainter)__oldDelegate).color))) || (!Equals(this.textStyle, ((BannerPainter)__oldDelegate).textStyle)));
+        return (message != __oldDelegate.message) || (!Equals(location, __oldDelegate.location)) || (!Equals(color, __oldDelegate.color)) || (!Equals(textStyle, __oldDelegate.textStyle));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool? hitTest(Offset position) => false;
     internal virtual double _translationX(double width)
     {
-        return ((this.layoutDirection, this.location) switch { (TextDirection.rtl, BannerLocation.topStart) => width, (TextDirection.ltr, BannerLocation.topStart) => 0.0, (TextDirection.rtl, BannerLocation.topEnd) => 0.0, (TextDirection.ltr, BannerLocation.topEnd) => width, (TextDirection.rtl, BannerLocation.bottomStart) => (width - BannerLibrary._kBottomOffset), (TextDirection.ltr, BannerLocation.bottomStart) => BannerLibrary._kBottomOffset, (TextDirection.rtl, BannerLocation.bottomEnd) => BannerLibrary._kBottomOffset, (TextDirection.ltr, BannerLocation.bottomEnd) => (width - BannerLibrary._kBottomOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (layoutDirection, location) switch { (TextDirection.rtl, BannerLocation.topStart) => width, (TextDirection.ltr, BannerLocation.topStart) => 0.0, (TextDirection.rtl, BannerLocation.topEnd) => 0.0, (TextDirection.ltr, BannerLocation.topEnd) => width, (TextDirection.rtl, BannerLocation.bottomStart) => width - BannerLibrary._kBottomOffset, (TextDirection.ltr, BannerLocation.bottomStart) => BannerLibrary._kBottomOffset, (TextDirection.rtl, BannerLocation.bottomEnd) => BannerLibrary._kBottomOffset, (TextDirection.ltr, BannerLocation.bottomEnd) => width - BannerLibrary._kBottomOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _translationY(double height)
     {
-        return (this.location switch { BannerLocation.bottomStart => (height - BannerLibrary._kBottomOffset), BannerLocation.bottomEnd => (height - BannerLibrary._kBottomOffset), BannerLocation.topStart => 0.0, BannerLocation.topEnd => 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return location switch { BannerLocation.bottomStart => height - BannerLibrary._kBottomOffset, BannerLocation.bottomEnd => height - BannerLibrary._kBottomOffset, BannerLocation.topStart => 0.0, BannerLocation.topEnd => 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -141,7 +141,7 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
     {
         get
         {
-            return ((Dart_mathLibrary.pi / 4.0) * ((this.layoutDirection, this.location) switch { (TextDirection.rtl, BannerLocation.topStart or BannerLocation.bottomEnd) => 1L, (TextDirection.ltr, BannerLocation.topStart or BannerLocation.bottomEnd) => -1L, (TextDirection.rtl, BannerLocation.bottomStart or BannerLocation.topEnd) => -1L, (TextDirection.ltr, BannerLocation.bottomStart or BannerLocation.topEnd) => 1L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            return Dart_mathLibrary.pi / 4.0 * ((layoutDirection, location) switch { (TextDirection.rtl, BannerLocation.topStart or BannerLocation.bottomEnd) => 1L, (TextDirection.ltr, BannerLocation.topStart or BannerLocation.bottomEnd) => -1L, (TextDirection.rtl, BannerLocation.bottomStart or BannerLocation.topEnd) => -1L, (TextDirection.ltr, BannerLocation.bottomStart or BannerLocation.topEnd) => 1L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
     }
 }
@@ -181,28 +181,28 @@ internal class _BannerState__banner : State<Banner>
 
     public override void dispose()
     {
-        this._painter?.dispose();
+        _painter?.dispose();
         base.dispose();
     }
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((((((Banner)this.widget).textDirection is not null) && (((Banner)this.widget).layoutDirection is not null))) || DebugLibrary.debugCheckHasDirectionality(context)));
-        this._painter?.dispose();
-        _painter = new BannerPainter(message: ((Banner)this.widget).message, textDirection: ((((Banner)this.widget).textDirection ?? (TextDirection)Directionality.of(context))), location: ((Banner)this.widget).location, layoutDirection: ((((Banner)this.widget).layoutDirection ?? (TextDirection)Directionality.of(context))), color: ((Banner)this.widget).color, textStyle: ((Banner)this.widget).textStyle, shadow: ((Banner)this.widget).shadow);
-        return ((Widget)new CustomPaint(foregroundPainter: this._painter, child: ((Banner)this.widget).child));
+        DartRuntimePrimitives.Assert(() => (widget.textDirection is not null) && (widget.layoutDirection is not null) || DebugLibrary.debugCheckHasDirectionality(context));
+        _painter?.dispose();
+        _painter = new BannerPainter(message: widget.message, textDirection: widget.textDirection ?? Directionality.of(context), location: widget.location, layoutDirection: widget.layoutDirection ?? Directionality.of(context), color: widget.color, textStyle: widget.textStyle, shadow: widget.shadow);
+        return new CustomPaint(foregroundPainter: _painter, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("message", ((Banner)this.widget).message, showName: false));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", ((Banner)this.widget).textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<BannerLocation>("location", ((Banner)this.widget).location));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("layoutDirection", ((Banner)this.widget).layoutDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", ((Banner)this.widget).color, showName: false));
-        ((Banner)this.widget).textStyle.debugFillProperties(properties, prefix: "text ");
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("message", widget.message, showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", widget.textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<BannerLocation>("location", widget.location));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("layoutDirection", widget.layoutDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", widget.color, showName: false));
+        widget.textStyle.debugFillProperties(properties, prefix: "text ");
     }
 
 }
@@ -218,7 +218,7 @@ public class CheckedModeBanner : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget result = this.child;
+        Widget result = child;
         DartRuntimePrimitives.Assert(() =>
             {
                 result = DartRuntimePrimitives.ConvertValue<Widget>(new Banner(message: "DEBUG", textDirection: TextDirection.ltr, location: BannerLocation.topEnd, child: result));

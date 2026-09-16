@@ -30,15 +30,15 @@ public class BorderSide : Diagnosticable
         this.width = width;
         this.style = style;
         this.strokeAlign = __strokeAlign;
-        System.Diagnostics.Debug.Assert((width >= 0.0));
+        System.Diagnostics.Debug.Assert(width >= 0.0);
     }
 
     public static BorderSide merge(BorderSide a, BorderSide b)
     {
         DartRuntimePrimitives.Assert(() => canMerge(a, b));
-        bool aIsNone = ((Equals(((BorderSide)a).style, BorderStyle.none)) && (((BorderSide)a).width == 0.0));
-        bool bIsNone = ((Equals(((BorderSide)b).style, BorderStyle.none)) && (((BorderSide)b).width == 0.0));
-        if ((aIsNone && bIsNone))
+        bool aIsNone = Equals(a.style, BorderStyle.none) && (a.width == 0.0);
+        bool bIsNone = Equals(b.style, BorderStyle.none) && (b.width == 0.0);
+        if (aIsNone && bIsNone)
         {
             return none;
         }
@@ -50,35 +50,35 @@ public class BorderSide : Diagnosticable
         {
             return a;
         }
-        DartRuntimePrimitives.Assert(() => (Equals(((BorderSide)a).color, ((BorderSide)b).color)));
-        DartRuntimePrimitives.Assert(() => (Equals(((BorderSide)a).style, ((BorderSide)b).style)));
-        return new BorderSide(color: ((BorderSide)a).color, width: (((BorderSide)a).width + ((BorderSide)b).width), strokeAlign: Math.Max(DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign), DartRuntimePrimitives.RequireValue(((BorderSide)b).strokeAlign)), style: ((BorderSide)a).style);
+        DartRuntimePrimitives.Assert(() => Equals(a.color, b.color));
+        DartRuntimePrimitives.Assert(() => Equals(a.style, b.style));
+        return new BorderSide(color: a.color, width: a.width + b.width, strokeAlign: Math.Max(DartRuntimePrimitives.RequireValue(a.strokeAlign), DartRuntimePrimitives.RequireValue(b.strokeAlign)), style: a.style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual BorderSide copyWith(Color? color = null, double? width = null, BorderStyle? style = null, double? strokeAlign = null)
     {
-        return new BorderSide(color: (color ?? this.color), width: (width ?? this.width), style: (style ?? this.style), strokeAlign: (strokeAlign ?? this.strokeAlign));
+        return new BorderSide(color: color ?? this.color, width: width ?? this.width, style: style ?? this.style, strokeAlign: strokeAlign ?? this.strokeAlign);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual BorderSide scale(double t)
     {
-        return new BorderSide(color: this.color, width: Math.Max(0.0, (this.width * t)), style: ((t <= 0.0) ? BorderStyle.none : this.style));
+        return new BorderSide(color: color, width: Math.Max(0.0, width * t), style: (t <= 0.0) ? BorderStyle.none : style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Paint toPaint()
     {
-        switch (this.style)
+        switch (style)
         {
             case BorderStyle.solid:
                 {
                     return ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color;
-    __cascade.strokeWidth = this.width;
+    __cascade.color = color;
+    __cascade.strokeWidth = width;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
@@ -100,11 +100,11 @@ public class BorderSide : Diagnosticable
 
     public static bool canMerge(BorderSide a, BorderSide b)
     {
-        if (((((Equals(((BorderSide)a).style, BorderStyle.none)) && (((BorderSide)a).width == 0.0))) || (((Equals(((BorderSide)b).style, BorderStyle.none)) && (((BorderSide)b).width == 0.0)))))
+        if (Equals(a.style, BorderStyle.none) && (a.width == 0.0) || Equals(b.style, BorderStyle.none) && (b.width == 0.0))
         {
             return true;
         }
-        return ((Equals(((BorderSide)a).style, ((BorderSide)b).style)) && (Equals(((BorderSide)a).color, ((BorderSide)b).color)));
+        return Equals(a.style, b.style) && Equals(a.color, b.color);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -114,36 +114,36 @@ public class BorderSide : Diagnosticable
         {
             return a;
         }
-        if ((t == 0.0))
+        if (t == 0.0)
         {
             return a;
         }
-        if ((t == 1.0))
+        if (t == 1.0)
         {
             return b;
         }
-        double widthLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BorderSide)a).width, ((BorderSide)b).width, t));
-        if ((DartRuntimePrimitives.RequireValue(widthLocal) < 0.0))
+        double widthLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.width, b.width, t));
+        if (DartRuntimePrimitives.RequireValue(widthLocal) < 0.0)
         {
             return none;
         }
-        if (((Equals(((BorderSide)a).style, ((BorderSide)b).style)) && (((BorderSide)a).strokeAlign == ((BorderSide)b).strokeAlign)))
+        if (Equals(a.style, b.style) && (a.strokeAlign == b.strokeAlign))
         {
-            return new BorderSide(color: Dart_uiLibrary.Color.lerp(((BorderSide)a).color, ((BorderSide)b).color, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), style: ((BorderSide)a).style, strokeAlign: DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign));
+            return new BorderSide(color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), style: a.style, strokeAlign: DartRuntimePrimitives.RequireValue(a.strokeAlign));
         }
-        global::Doroti.Ui.Color colorA = (((BorderSide)a).style switch { BorderStyle.solid => ((BorderSide)a).color, BorderStyle.none => ((BorderSide)a).color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Color colorB = (((BorderSide)b).style switch { BorderStyle.solid => ((BorderSide)b).color, BorderStyle.none => ((BorderSide)b).color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if ((((BorderSide)a).strokeAlign != ((BorderSide)b).strokeAlign))
+        global::Doroti.Ui.Color colorA = a.style switch { BorderStyle.solid => a.color, BorderStyle.none => a.color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        global::Doroti.Ui.Color colorB = b.style switch { BorderStyle.solid => b.color, BorderStyle.none => b.color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        if (a.strokeAlign != b.strokeAlign)
         {
-            return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign), DartRuntimePrimitives.RequireValue(((BorderSide)b).strokeAlign), t)));
+            return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(a.strokeAlign), DartRuntimePrimitives.RequireValue(b.strokeAlign), t)));
         }
-        return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign));
+        return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(a.strokeAlign));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double strokeInset => (this.width * ((1L - (((1L + this.strokeAlign)) / 2L))));
-    public virtual double strokeOutset => ((this.width * ((1L + this.strokeAlign))) / 2L);
-    public virtual double strokeOffset => (this.width * this.strokeAlign);
+    public virtual double strokeInset => width * (1L - ((1L + strokeAlign) / 2L));
+    public virtual double strokeOutset => width * (1L + strokeAlign) / 2L;
+    public virtual double strokeOffset => width * strokeAlign;
     public override bool Equals(object? other)
     {
         var __other = other as BorderSide;
@@ -152,22 +152,22 @@ public class BorderSide : Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((__other is BorderSide) && (Equals(((BorderSide)((BorderSide)__other)).color, this.color))) && (((BorderSide)((BorderSide)__other)).width == this.width)) && (Equals(((BorderSide)((BorderSide)__other)).style, this.style))) && (((BorderSide)((BorderSide)__other)).strokeAlign == this.strokeAlign));
+        return (__other is BorderSide) && Equals(__other.color, color) && (__other.width == width) && Equals(__other.style, style) && (__other.strokeAlign == strokeAlign);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.color, this.width, this.style, DartRuntimePrimitives.RequireValue(this.strokeAlign));
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, width, style, DartRuntimePrimitives.RequireValue(strokeAlign));
     public virtual string toStringShort() => "BorderSide";
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Color>("color", this.color, defaultValue: new global::Doroti.Ui.Color(4278190080L)));
-        properties.add(new DoubleProperty("width", this.width, defaultValue: 1.0));
-        properties.add(new DoubleProperty("strokeAlign", DartRuntimePrimitives.RequireValue(this.strokeAlign), defaultValue: strokeAlignInside));
-        properties.add(new EnumProperty<BorderStyle>("style", this.style, defaultValue: BorderStyle.solid));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Color>("color", color, defaultValue: new global::Doroti.Ui.Color(4278190080L)));
+        properties.add(new DoubleProperty("width", width, defaultValue: 1.0));
+        properties.add(new DoubleProperty("strokeAlign", DartRuntimePrimitives.RequireValue(strokeAlign), defaultValue: strokeAlignInside));
+        properties.add(new EnumProperty<BorderStyle>("style", style, defaultValue: BorderStyle.solid));
     }
 
 }
@@ -182,14 +182,14 @@ public abstract class ShapeBorder
     public virtual ShapeBorder? add(ShapeBorder other, bool reversed = false) => null;
     public virtual ShapeBorder op_Add(ShapeBorder other)
     {
-        return ((add(other) ?? other.add(this, reversed: true)) ?? new _CompoundBorder__borders(new List<ShapeBorder> { other, this }));
+        return (add(other) ?? other.add(this, reversed: true)) ?? new _CompoundBorder__borders(new List<ShapeBorder> { other, this });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract ShapeBorder scale(double t);
     public virtual ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is null))
+        if (a is null)
         {
             return scale(t);
         }
@@ -199,9 +199,9 @@ public abstract class ShapeBorder
 
     public virtual ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is null))
+        if (b is null)
         {
-            return scale((1.0 - t));
+            return scale(1.0 - t);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -213,8 +213,8 @@ public abstract class ShapeBorder
         {
             return a;
         }
-        ShapeBorder? result = (((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, (1.0 - t))) ?? a?.lerpFrom(b, (1.0 - t)));
-        return (result ?? (((t < 0.5) ? a : b)));
+        ShapeBorder? result = ((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, 1.0 - t)) ?? a?.lerpFrom(b, 1.0 - t);
+        return result ?? ((t < 0.5) ? a : b);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -228,7 +228,7 @@ public abstract class ShapeBorder
 
     public virtual void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        DartRuntimePrimitives.Assert(() => !this.preferPaintInterior);
+        DartRuntimePrimitives.Assert(() => !preferPaintInterior);
         DartRuntimePrimitives.Assert(() => false);
     }
 
@@ -236,7 +236,7 @@ public abstract class ShapeBorder
     public virtual void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null) { }
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ShapeBorder"))}()";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ShapeBorder")}()";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -252,12 +252,12 @@ public abstract class OutlinedBorder : ShapeBorder
         this.side = __side;
     }
 
-    public override EdgeInsetsGeometry dimensions => EdgeInsets.CreateAll(Math.Max(((BorderSide)this.side).strokeInset, 0));
+    public override EdgeInsetsGeometry dimensions => EdgeInsets.CreateAll(Math.Max(side.strokeInset, 0));
     public abstract OutlinedBorder copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null);
     public abstract override ShapeBorder scale(double t);
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is null))
+        if (a is null)
         {
             return scale(t);
         }
@@ -267,9 +267,9 @@ public abstract class OutlinedBorder : ShapeBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is null))
+        if (b is null)
         {
-            return scale((1.0 - t));
+            return scale(1.0 - t);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -281,8 +281,8 @@ public abstract class OutlinedBorder : ShapeBorder
         {
             return a;
         }
-        ShapeBorder? result = (((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, (1.0 - t))) ?? a?.lerpFrom(b, (1.0 - t)));
-        return (((OutlinedBorder?)result)! ?? (((t < 0.5) ? a : b)));
+        ShapeBorder? result = ((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, 1.0 - t)) ?? a?.lerpFrom(b, 1.0 - t);
+        return ((OutlinedBorder?)result)! ?? ((t < 0.5) ? a : b);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -295,30 +295,30 @@ internal class _CompoundBorder__borders : ShapeBorder
     internal _CompoundBorder__borders(List<ShapeBorder> borders)
     {
         this.borders = borders;
-        System.Diagnostics.Debug.Assert((checked((long)(borders.Count)) >= 2L));
-        System.Diagnostics.Debug.Assert(!borders.any(((border) => (border is _CompoundBorder__borders))));
+        System.Diagnostics.Debug.Assert(checked(borders.Count) >= 2L);
+        System.Diagnostics.Debug.Assert(!borders.any((border) => border is _CompoundBorder__borders));
     }
 
     public override EdgeInsetsGeometry dimensions
     {
         get
         {
-            return Enumerable.Aggregate(this.borders, (EdgeInsetsGeometry)EdgeInsets.zero, ((previousValue, border) =>
+            return Enumerable.Aggregate(borders, (EdgeInsetsGeometry)EdgeInsets.zero, (previousValue, border) =>
             {
-                return previousValue.add(((ShapeBorder)border).dimensions);
-            }));
+                return previousValue.add(border.dimensions);
+            });
         }
     }
     public override ShapeBorder? add(ShapeBorder other, bool reversed = false)
     {
-        if ((other is not _CompoundBorder__borders))
+        if (other is not _CompoundBorder__borders)
         {
-            ShapeBorder ours = (reversed ? this.borders.Last() : this.borders.First());
-            ShapeBorder? merged = (ours.add(other, reversed: reversed) ?? other.add(ours, reversed: !reversed));
-            if ((merged is not null))
+            ShapeBorder ours = reversed ? borders.Last() : borders.First();
+            ShapeBorder? merged = ours.add(other, reversed: reversed) ?? other.add(ours, reversed: !reversed);
+            if (merged is not null)
             {
                 var result = new List<ShapeBorder>();
-                result[(int)((reversed ? (checked((long)(result.Count)) - 1L) : 0L))] = merged;
+                result[(int)(reversed ? (checked(result.Count) - 1L) : 0L)] = merged;
                 return new _CompoundBorder__borders(result);
             }
         }
@@ -329,7 +329,7 @@ internal class _CompoundBorder__borders : ShapeBorder
 
     public override ShapeBorder scale(double t)
     {
-        return new _CompoundBorder__borders(this.borders.map<ShapeBorder, ShapeBorder>(((border) => border.scale(t))).ToList());
+        return new _CompoundBorder__borders(borders.map<ShapeBorder, ShapeBorder>((border) => border.scale(t)).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -347,31 +347,31 @@ internal class _CompoundBorder__borders : ShapeBorder
 
     public new static _CompoundBorder__borders lerp(ShapeBorder? a, ShapeBorder? b, double t)
     {
-        DartRuntimePrimitives.Assert(() => ((a is _CompoundBorder__borders) || (b is _CompoundBorder__borders)));
+        DartRuntimePrimitives.Assert(() => (a is _CompoundBorder__borders) || (b is _CompoundBorder__borders));
         IReadOnlyList<ShapeBorder?> aList = a is _CompoundBorder__borders compoundA ? (IReadOnlyList<ShapeBorder?>)compoundA.borders : [a];
         IReadOnlyList<ShapeBorder?> bList = b is _CompoundBorder__borders compoundB ? (IReadOnlyList<ShapeBorder?>)compoundB.borders : [b];
         var results = new List<ShapeBorder>();
-        long length = Math.Max(checked((long)(aList.Count)), checked((long)(bList.Count)));
-        for (var index = 0L; (index < length); index += 1L)
+        long length = Math.Max(checked(aList.Count), checked((long)bList.Count));
+        for (var index = 0L; index < length; index += 1L)
         {
-            ShapeBorder? localA = ((index < checked((long)(aList.Count))) ? aList[(int)(index)] : null);
-            ShapeBorder? localB = ((index < checked((long)(bList.Count))) ? bList[(int)(index)] : null);
-            if (((localA is not null) && (localB is not null)))
+            ShapeBorder? localA = (index < checked(aList.Count)) ? aList[(int)index] : null;
+            ShapeBorder? localB = (index < checked(bList.Count)) ? bList[(int)index] : null;
+            if ((localA is not null) && (localB is not null))
             {
-                ShapeBorder? localResult = (localA.lerpTo(localB, t) ?? localB.lerpFrom(localA, t));
-                if ((localResult is not null))
+                ShapeBorder? localResult = localA.lerpTo(localB, t) ?? localB.lerpFrom(localA, t);
+                if (localResult is not null)
                 {
                     results.Add(localResult);
                     continue;
                 }
             }
-            if ((localB is not null))
+            if (localB is not null)
             {
                 results.Add(localB.scale(t));
             }
-            if ((localA is not null))
+            if (localA is not null)
             {
-                results.Add(localA.scale((1.0 - t)));
+                results.Add(localA.scale(1.0 - t));
             }
         }
         return new _CompoundBorder__borders(results);
@@ -380,38 +380,38 @@ internal class _CompoundBorder__borders : ShapeBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        for (var index = 0L; (index < (checked((long)(this.borders.Count)) - 1L)); index += 1L)
+        for (var index = 0L; index < (checked(borders.Count) - 1L); index += 1L)
         {
-            rect = this.borders[(int)(index)].dimensions.resolve(textDirection).deflateRect(rect);
+            rect = borders[(int)index].dimensions.resolve(textDirection).deflateRect(rect);
         }
-        return this.borders.Last().getInnerPath(rect, textDirection: textDirection);
+        return borders.Last().getInnerPath(rect, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        return this.borders.First().getOuterPath(rect, textDirection: textDirection);
+        return borders.First().getOuterPath(rect, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        return this.borders.First().hitTest(rect, position, textDirection: textDirection);
+        return borders.First().hitTest(rect, position, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        this.borders.First().paintInterior(canvas, rect, paint, textDirection: textDirection);
+        borders.First().paintInterior(canvas, rect, paint, textDirection: textDirection);
     }
 
-    public override bool preferPaintInterior => this.borders.All(((border) => ((ShapeBorder)border).preferPaintInterior));
+    public override bool preferPaintInterior => borders.All((border) => border.preferPaintInterior);
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        foreach (ShapeBorder border in this.borders)
+        foreach (ShapeBorder border in borders)
         {
             border.paint(canvas, rect, textDirection: textDirection);
-            rect = ((ShapeBorder)border).dimensions.resolve(textDirection).deflateRect(rect);
+            rect = border.dimensions.resolve(textDirection).deflateRect(rect);
         }
     }
 
@@ -423,17 +423,17 @@ internal class _CompoundBorder__borders : ShapeBorder
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is _CompoundBorder__borders) && CollectionsLibrary.listEquals<ShapeBorder>(((_CompoundBorder__borders)((_CompoundBorder__borders)__other)).borders, this.borders));
+        return (__other is _CompoundBorder__borders) && CollectionsLibrary.listEquals<ShapeBorder>(__other.borders, borders);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHashAll(this.borders);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHashAll(borders);
     public override string ToString()
     {
-        return string.Join(" + ", Enumerable.Reverse(this.borders).map<ShapeBorder, string>(((border) => border.ToString())));
+        return string.Join(" + ", Enumerable.Reverse(borders).map<ShapeBorder, string>((border) => border.ToString()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -450,23 +450,23 @@ public static partial class BordersLibrary
     return __cascade;
 }))();
         var path = new global::Doroti.Ui.Path();
-        switch (((BorderSide)top).style)
+        switch (top.style)
         {
             case BorderStyle.solid:
                 {
-                    paint.color = ((BorderSide)top).color;
+                    paint.color = top.color;
                     path.reset();
                     path.moveTo(rect.left, rect.top);
                     path.lineTo(rect.right, rect.top);
-                    if ((((BorderSide)top).width == 0.0))
+                    if (top.width == 0.0)
                     {
                         paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
                         paint.style = PaintingStyle.fill;
-                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.top + ((BorderSide)top).width));
-                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.top + ((BorderSide)top).width));
+                        path.lineTo(rect.right - right.width, rect.top + top.width);
+                        path.lineTo(rect.left + left.width, rect.top + top.width);
                     }
                     canvas.drawPath(path, paint);
                     break;
@@ -476,23 +476,23 @@ public static partial class BordersLibrary
                     break;
                 }
         }
-        switch (((BorderSide)right).style)
+        switch (right.style)
         {
             case BorderStyle.solid:
                 {
-                    paint.color = ((BorderSide)right).color;
+                    paint.color = right.color;
                     path.reset();
                     path.moveTo(rect.right, rect.top);
                     path.lineTo(rect.right, rect.bottom);
-                    if ((((BorderSide)right).width == 0.0))
+                    if (right.width == 0.0)
                     {
                         paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
                         paint.style = PaintingStyle.fill;
-                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.bottom - ((BorderSide)bottom).width));
-                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.top + ((BorderSide)top).width));
+                        path.lineTo(rect.right - right.width, rect.bottom - bottom.width);
+                        path.lineTo(rect.right - right.width, rect.top + top.width);
                     }
                     canvas.drawPath(path, paint);
                     break;
@@ -502,23 +502,23 @@ public static partial class BordersLibrary
                     break;
                 }
         }
-        switch (((BorderSide)bottom).style)
+        switch (bottom.style)
         {
             case BorderStyle.solid:
                 {
-                    paint.color = ((BorderSide)bottom).color;
+                    paint.color = bottom.color;
                     path.reset();
                     path.moveTo(rect.right, rect.bottom);
                     path.lineTo(rect.left, rect.bottom);
-                    if ((((BorderSide)bottom).width == 0.0))
+                    if (bottom.width == 0.0)
                     {
                         paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
                         paint.style = PaintingStyle.fill;
-                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.bottom - ((BorderSide)bottom).width));
-                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.bottom - ((BorderSide)bottom).width));
+                        path.lineTo(rect.left + left.width, rect.bottom - bottom.width);
+                        path.lineTo(rect.right - right.width, rect.bottom - bottom.width);
                     }
                     canvas.drawPath(path, paint);
                     break;
@@ -528,23 +528,23 @@ public static partial class BordersLibrary
                     break;
                 }
         }
-        switch (((BorderSide)left).style)
+        switch (left.style)
         {
             case BorderStyle.solid:
                 {
-                    paint.color = ((BorderSide)left).color;
+                    paint.color = left.color;
                     path.reset();
                     path.moveTo(rect.left, rect.bottom);
                     path.lineTo(rect.left, rect.top);
-                    if ((((BorderSide)left).width == 0.0))
+                    if (left.width == 0.0)
                     {
                         paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
                         paint.style = PaintingStyle.fill;
-                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.top + ((BorderSide)top).width));
-                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.bottom - ((BorderSide)bottom).width));
+                        path.lineTo(rect.left + left.width, rect.top + top.width);
+                        path.lineTo(rect.left + left.width, rect.bottom - bottom.width);
                     }
                     canvas.drawPath(path, paint);
                     break;

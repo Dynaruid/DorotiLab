@@ -17,7 +17,7 @@ public abstract class Animatable<T>
         => new _CallbackAnimatable__tween<T>(callback);
 
     public abstract T transform(double t);
-    public virtual T evaluate(Animation<double> animation) => transform(((Animation<double>)animation).value);
+    public virtual T evaluate(Animation<double> animation) => transform(animation.value);
     public virtual Animation<T> animate(Animation<double> parent)
     {
         return new _AnimatedEvaluation__tween<T>(parent, this);
@@ -42,7 +42,7 @@ internal class _CallbackAnimatable__tween<T> : Animatable<T>
 
     public override T transform(double t)
     {
-        return this._callback(t);
+        return _callback(t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -59,24 +59,24 @@ internal class _AnimatedEvaluation__tween<T> : Animation<T>, AnimationWithParent
         this._evaluatable = _evaluatable;
     }
 
-    public override T value => this._evaluatable.evaluate(this.parent);
+    public override T value => _evaluatable.evaluate(parent);
     public override string ToString()
     {
-        return $"{this.parent}➩{this._evaluatable}➩{this.value}";
+        return $"{parent}➩{_evaluatable}➩{value}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string toStringDetails()
     {
-        return $"{base.toStringDetails()} {this._evaluatable}";
+        return $"{base.toStringDetails()} {_evaluatable}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void addListener(Action listener) => this.parent.addListener((Action)listener);
-    public override void removeListener(Action listener) => this.parent.removeListener((Action)listener);
-    public override void addStatusListener(AnimationStatusListener listener) => this.parent.addStatusListener((AnimationStatusListener)listener);
-    public override void removeStatusListener(AnimationStatusListener listener) => this.parent.removeStatusListener((AnimationStatusListener)listener);
-    public override AnimationStatus status => ((Animation<double>)this.parent).status;
+    public override void addListener(Action listener) => parent.addListener(listener);
+    public override void removeListener(Action listener) => parent.removeListener(listener);
+    public override void addStatusListener(AnimationStatusListener listener) => parent.addStatusListener(listener);
+    public override void removeStatusListener(AnimationStatusListener listener) => parent.removeStatusListener(listener);
+    public override AnimationStatus status => parent.status;
 }
 
 internal class _ChainedEvaluation__tween<T> : Animatable<T>
@@ -92,13 +92,13 @@ internal class _ChainedEvaluation__tween<T> : Animatable<T>
 
     public override T transform(double t)
     {
-        return this._evaluatable.transform(this._parent.transform(t));
+        return _evaluatable.transform(_parent.transform(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{this._parent}➩{this._evaluatable}";
+        return $"{_parent}➩{_evaluatable}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,29 +125,29 @@ public class Tween<T> : Animatable<T>, IDartTween
 
     public virtual T lerp(double t)
     {
-        DartRuntimePrimitives.Assert(() => (this.begin is not null));
-        DartRuntimePrimitives.Assert(() => (this.end is not null));
+        DartRuntimePrimitives.Assert(() => begin is not null);
+        DartRuntimePrimitives.Assert(() => end is not null);
         return DartRuntimePrimitives.LerpTweenValue(
-            DartRuntimePrimitives.RequireNonNull(this.begin),
-            DartRuntimePrimitives.RequireNonNull(this.end),
+            DartRuntimePrimitives.RequireNonNull(begin),
+            DartRuntimePrimitives.RequireNonNull(end),
             t);
     }
 
     public override T transform(double t)
     {
-        if ((t == 0.0))
+        if (t == 0.0)
         {
-            return ((T?)(object?)this.begin)!;
+            return ((T?)(object?)begin)!;
         }
-        if ((t == 1.0))
+        if (t == 1.0)
         {
-            return ((T?)(object?)this.end)!;
+            return ((T?)(object?)end)!;
         }
         return lerp(t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable"))}({this.begin} → {this.end})";
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable")}({begin} → {end})";
 
     object? IDartTween.begin { get => begin; set => begin = value is null ? default : DartRuntimePrimitives.ConvertValue<T>(value); }
     object? IDartTween.end { get => end; set => end = value is null ? default : DartRuntimePrimitives.ConvertValue<T>(value); }
@@ -159,12 +159,12 @@ public class ReverseTween<T> : Tween<T>
 {
     public virtual Tween<T> parent { get; private set; } = default!;
 
-    public ReverseTween(Tween<T> parent) : base(begin: ((Tween<T>)parent).end, end: ((Tween<T>)parent).begin)
+    public ReverseTween(Tween<T> parent) : base(begin: parent.end, end: parent.begin)
     {
         this.parent = parent;
     }
 
-    public override T lerp(double t) => this.parent.lerp((1.0 - t));
+    public override T lerp(double t) => parent.lerp(1.0 - t);
 }
 
 public class ColorTween : Tween<Color?>
@@ -200,7 +200,7 @@ public class IntTween : Tween<long>
     {
     }
 
-    public override long lerp(double t) => ((DartRuntimePrimitives.RequireValue(begin) + (((DartRuntimePrimitives.RequireValue(end) - DartRuntimePrimitives.RequireValue(begin))) * t))).round();
+    public override long lerp(double t) => (DartRuntimePrimitives.RequireValue(begin) + ((DartRuntimePrimitives.RequireValue(end) - DartRuntimePrimitives.RequireValue(begin)) * t)).round();
 }
 
 public class StepTween : Tween<long>
@@ -209,7 +209,7 @@ public class StepTween : Tween<long>
     {
     }
 
-    public override long lerp(double t) => ((DartRuntimePrimitives.RequireValue(begin) + (((DartRuntimePrimitives.RequireValue(end) - DartRuntimePrimitives.RequireValue(begin))) * t))).floor();
+    public override long lerp(double t) => (DartRuntimePrimitives.RequireValue(begin) + ((DartRuntimePrimitives.RequireValue(end) - DartRuntimePrimitives.RequireValue(begin)) * t)).floor();
 }
 
 public class ConstantTween<T> : Tween<T>
@@ -219,7 +219,7 @@ public class ConstantTween<T> : Tween<T>
     }
 
     public override T lerp(double t) => ((T?)(object?)begin)!;
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ConstantTween"))}(value: {begin})";
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ConstantTween")}(value: {begin})";
 }
 
 public class CurveTween : Animatable<double>
@@ -233,14 +233,14 @@ public class CurveTween : Animatable<double>
 
     public override double transform(double t)
     {
-        if (((t == 0.0) || (t == 1.0)))
+        if ((t == 0.0) || (t == 1.0))
         {
-            DartRuntimePrimitives.Assert(() => (this.curve.transform(t).round() == t));
+            DartRuntimePrimitives.Assert(() => curve.transform(t).round() == t);
             return t;
         }
-        return this.curve.transform(t);
+        return curve.transform(t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "CurveTween"))}(curve: {this.curve})";
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "CurveTween")}(curve: {curve})";
 }

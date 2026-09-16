@@ -29,34 +29,34 @@ public class TextSpan : InlineSpan, HitTestTarget
         this.semanticsIdentifier = semanticsIdentifier;
         this.locale = locale;
         this.spellOut = spellOut;
-        this.mouseCursor = (mouseCursor ?? (((recognizer is null) ? MouseCursor.defer : SystemMouseCursors.click)));
-        System.Diagnostics.Debug.Assert(!(((text is null) && (semanticsLabel is not null))));
+        this.mouseCursor = mouseCursor ?? ((recognizer is null) ? MouseCursor.defer : SystemMouseCursors.click);
+        System.Diagnostics.Debug.Assert(!((text is null) && (semanticsLabel is not null)));
     }
 
-    public virtual MouseCursor cursor => this.mouseCursor;
+    public virtual MouseCursor cursor => mouseCursor;
     public virtual bool validForMouseTracker => true;
     public virtual void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
-        if ((@event is PointerDownEvent))
+        if (@event is PointerDownEvent)
         {
             PointerDownEvent @event__as9792 = (PointerDownEvent)@event;
-            this.recognizer?.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event__as9792);
+            recognizer?.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event__as9792);
         }
     }
 
     public override void build(ParagraphBuilder builder, TextScaler textScaler = default!, List<PlaceholderDimensions>? dimensions = null)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        var hasStyle = (style is not null);
+        var hasStyle = style is not null;
         if (hasStyle)
         {
             builder.pushStyle(style!.getTextStyle(textScaler: textScaler));
         }
-        if ((this.text is not null))
+        if (text is not null)
         {
             try
             {
-                builder.addText(this.text!);
+                builder.addText(text!);
             }
             catch (DartArgumentError exceptionLocal)
             {
@@ -65,8 +65,8 @@ public class TextSpan : InlineSpan, HitTestTarget
                 builder.addText("�");
             }
         }
-        List<InlineSpan>? childrenLocal = this.children;
-        if ((childrenLocal is not null))
+        List<InlineSpan>? childrenLocal = children;
+        if (childrenLocal is not null)
         {
             foreach (InlineSpan child in childrenLocal)
             {
@@ -81,16 +81,16 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override bool visitChildren(Func<InlineSpan, bool> visitor)
     {
-        if (((this.text is not null) && !visitor(this)))
+        if ((text is not null) && !visitor(this))
         {
             return false;
         }
-        List<InlineSpan>? childrenLocal = this.children;
-        if ((childrenLocal is not null))
+        List<InlineSpan>? childrenLocal = children;
+        if (childrenLocal is not null)
         {
             foreach (InlineSpan child in childrenLocal)
             {
-                if (!child.visitChildren((Func<InlineSpan, bool>)visitor))
+                if (!child.visitChildren(visitor))
                 {
                     return false;
                 }
@@ -102,8 +102,8 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override bool visitDirectChildren(Func<InlineSpan, bool> visitor)
     {
-        List<InlineSpan>? childrenLocal = this.children;
-        if ((childrenLocal is not null))
+        List<InlineSpan>? childrenLocal = children;
+        if (childrenLocal is not null)
         {
             foreach (InlineSpan child in childrenLocal)
             {
@@ -119,15 +119,15 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override InlineSpan? getSpanForPositionVisitor(TextPosition position, Accumulator offset)
     {
-        string? textLocal = this.text;
-        if (((textLocal is null) || (textLocal.Length == 0)))
+        string? textLocal = text;
+        if ((textLocal is null) || (textLocal.Length == 0))
         {
             return null;
         }
         global::Doroti.Ui.TextAffinity affinityLocal = position.affinity;
         long targetOffset = position.offset;
-        long endOffset = (((Accumulator)offset).value + textLocal.Length);
-        if (((((((Accumulator)offset).value == targetOffset) && (Equals(affinityLocal, TextAffinity.downstream))) || ((((Accumulator)offset).value < targetOffset) && (targetOffset < endOffset))) || ((endOffset == targetOffset) && (Equals(affinityLocal, TextAffinity.upstream)))))
+        long endOffset = offset.value + textLocal.Length;
+        if (((offset.value == targetOffset) && Equals(affinityLocal, TextAffinity.downstream)) || ((offset.value < targetOffset) && (targetOffset < endOffset)) || ((endOffset == targetOffset) && Equals(affinityLocal, TextAffinity.upstream)))
         {
             return this;
         }
@@ -139,20 +139,20 @@ public class TextSpan : InlineSpan, HitTestTarget
     public override void computeToPlainText(StringBuffer buffer, bool includeSemanticsLabels = true, bool includePlaceholders = true)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        if (((this.semanticsLabel is not null) && includeSemanticsLabels))
+        if ((semanticsLabel is not null) && includeSemanticsLabels)
         {
-            buffer.write(this.semanticsLabel);
+            buffer.write(semanticsLabel);
         }
         else
         {
-            if ((this.text is not null))
+            if (text is not null)
             {
-                buffer.write(this.text);
+                buffer.write(text);
             }
         }
-        if ((this.children is not null))
+        if (children is not null)
         {
-            foreach (InlineSpan child in this.children!)
+            foreach (InlineSpan child in children!)
             {
                 child.computeToPlainText(buffer, includeSemanticsLabels: includeSemanticsLabels, includePlaceholders: includePlaceholders);
             }
@@ -162,22 +162,22 @@ public class TextSpan : InlineSpan, HitTestTarget
     public override void computeSemanticsInformation(List<InlineSpanSemanticsInformation> collector, Locale? inheritedLocale = null, bool inheritedSpellOut = false)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        global::Doroti.Ui.Locale? effectiveLocale = (this.locale ?? inheritedLocale);
-        bool effectiveSpellOut = (this.spellOut ?? inheritedSpellOut);
-        if ((this.text is not null))
+        global::Doroti.Ui.Locale? effectiveLocale = locale ?? inheritedLocale;
+        bool effectiveSpellOut = spellOut ?? inheritedSpellOut;
+        if (text is not null)
         {
-            long textLength = (this.semanticsLabel?.Length ?? this.text!.Length);
-            collector.Add(new InlineSpanSemanticsInformation(this.text!, stringAttributes: new List<global::Doroti.Ui.StringAttribute>(), semanticsLabel: this.semanticsLabel, semanticsIdentifier: this.semanticsIdentifier, recognizer: this.recognizer));
+            long textLength = semanticsLabel?.Length ?? text!.Length;
+            collector.Add(new InlineSpanSemanticsInformation(text!, stringAttributes: new List<global::Doroti.Ui.StringAttribute>(), semanticsLabel: semanticsLabel, semanticsIdentifier: semanticsIdentifier, recognizer: recognizer));
         }
-        List<InlineSpan>? childrenLocal = this.children;
-        if ((childrenLocal is not null))
+        List<InlineSpan>? childrenLocal = children;
+        if (childrenLocal is not null)
         {
             foreach (InlineSpan child in childrenLocal)
             {
-                if ((child is TextSpan))
+                if (child is TextSpan)
                 {
                     TextSpan child__14821__as14854 = (TextSpan)child;
-                    ((TextSpan)child__14821__as14854).computeSemanticsInformation(collector, inheritedLocale: effectiveLocale, inheritedSpellOut: effectiveSpellOut);
+                    child__14821__as14854.computeSemanticsInformation(collector, inheritedLocale: effectiveLocale, inheritedSpellOut: effectiveSpellOut);
                 }
                 else
                 {
@@ -189,15 +189,15 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override long? codeUnitAtVisitor(long index, Accumulator offset)
     {
-        string? textLocal = this.text;
-        if ((textLocal is null))
+        string? textLocal = text;
+        if (textLocal is null)
         {
             return null;
         }
-        long localOffset = (index - ((Accumulator)offset).value);
-        DartRuntimePrimitives.Assert(() => (localOffset >= 0L));
+        long localOffset = index - offset.value;
+        DartRuntimePrimitives.Assert(() => localOffset >= 0L);
         offset.increment(textLocal.Length);
-        return ((localOffset < textLocal.Length) ? textLocal.codeUnitAt(localOffset) : null);
+        return (localOffset < textLocal.Length) ? textLocal.codeUnitAt(localOffset) : null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -205,9 +205,9 @@ public class TextSpan : InlineSpan, HitTestTarget
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((this.children is not null))
+                if (children is not null)
                 {
-                    foreach (InlineSpan child in this.children!)
+                    foreach (InlineSpan child in children!)
                     {
                         DartRuntimePrimitives.Assert(() => child.debugAssertIsValid());
                     }
@@ -224,38 +224,38 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return RenderComparison.identical;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(other), GetType()))
         {
             return RenderComparison.layout;
         }
         var textSpan = ((TextSpan?)(object?)other)!;
-        if ((((((TextSpan)textSpan).text != this.text) || (((long?)(this.children?.Count)) != ((long?)(((TextSpan)textSpan).children?.Count)))) || (((style is null)) != ((textSpan.style is null)))))
+        if ((textSpan.text != text) || ((children?.Count) != ((long?)(textSpan.children?.Count))) || (style is null != textSpan.style is null))
         {
             return RenderComparison.layout;
         }
-        RenderComparison result = ((Equals(this.recognizer, ((TextSpan)textSpan).recognizer)) ? RenderComparison.identical : RenderComparison.metadata);
-        if ((style is not null))
+        RenderComparison result = Equals(recognizer, textSpan.recognizer) ? RenderComparison.identical : RenderComparison.metadata;
+        if (style is not null)
         {
             RenderComparison candidate = style!.compareTo(textSpan.style!);
-            if ((FoundationRuntimePorts.EnumIndex(candidate) > FoundationRuntimePorts.EnumIndex(result)))
+            if (FoundationRuntimePorts.EnumIndex(candidate) > FoundationRuntimePorts.EnumIndex(result))
             {
                 result = candidate;
             }
-            if ((Equals(result, RenderComparison.layout)))
+            if (Equals(result, RenderComparison.layout))
             {
                 return result;
             }
         }
-        if ((this.children is not null))
+        if (children is not null)
         {
-            for (var index = 0L; (index < checked((long)(this.children!.Count))); index += 1L)
+            for (var index = 0L; index < checked(children!.Count); index += 1L)
             {
-                RenderComparison candidateLocal = this.children![(int)(index)].compareTo(((TextSpan)textSpan).children![(int)(index)]);
-                if ((FoundationRuntimePorts.EnumIndex(candidateLocal) > FoundationRuntimePorts.EnumIndex(result)))
+                RenderComparison candidateLocal = children![(int)index].compareTo(textSpan.children![(int)index]);
+                if (FoundationRuntimePorts.EnumIndex(candidateLocal) > FoundationRuntimePorts.EnumIndex(result))
                 {
                     result = candidateLocal;
                 }
-                if ((Equals(result, RenderComparison.layout)))
+                if (Equals(result, RenderComparison.layout))
                 {
                     return result;
                 }
@@ -273,7 +273,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
@@ -281,38 +281,38 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return false;
         }
-        return (((((((((__other is TextSpan) && (((TextSpan)((TextSpan)__other)).text == this.text)) && (Equals(((TextSpan)((TextSpan)__other)).recognizer, this.recognizer))) && (((TextSpan)((TextSpan)__other)).semanticsLabel == this.semanticsLabel)) && (((TextSpan)((TextSpan)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (Equals((Action<PointerEnterEvent>?)this.onEnter, (Action<PointerEnterEvent>?)((TextSpan)((TextSpan)__other)).onEnter))) && (Equals((Action<PointerExitEvent>?)this.onExit, (Action<PointerExitEvent>?)((TextSpan)((TextSpan)__other)).onExit))) && (Equals(this.mouseCursor, ((TextSpan)((TextSpan)__other)).mouseCursor))) && CollectionsLibrary.listEquals<InlineSpan>(((TextSpan)((TextSpan)__other)).children, this.children));
+        return (__other is TextSpan) && (__other.text == text) && Equals(__other.recognizer, recognizer) && (__other.semanticsLabel == semanticsLabel) && (__other.semanticsIdentifier == semanticsIdentifier) && Equals(onEnter, __other.onEnter) && Equals(onExit, __other.onExit) && Equals(mouseCursor, __other.mouseCursor) && CollectionsLibrary.listEquals<InlineSpan>(__other.children, children);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(base.GetHashCode(), this.text, this.recognizer, this.semanticsLabel, this.semanticsIdentifier, this.onEnter, this.onExit, this.mouseCursor, ((this.children is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.children!)));
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(base.GetHashCode(), text, recognizer, semanticsLabel, semanticsIdentifier, onEnter, onExit, mouseCursor, (children is null) ? null : FoundationRuntimePorts.ObjectHashAll(children!));
     public virtual string toStringShort() => objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSpan");
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new StringProperty("text", this.text, showName: false, defaultValue: null));
-        if ((((style is null) && (this.text is null)) && (this.children is null)))
+        properties.add(new StringProperty("text", text, showName: false, defaultValue: null));
+        if ((style is null) && (text is null) && (children is null))
         {
             properties.add(new DiagnosticsNode("(empty)"));
         }
-        properties.add(new DiagnosticsProperty<GestureRecognizer>("recognizer", this.recognizer, description: DartRuntimePrimitives.RuntimeTypeName(this.recognizer), defaultValue: null));
-        properties.add(new FlagsSummary<Delegate?>("callbacks", new DartMap<string, Delegate?> { ["enter"] = this.onEnter, ["exit"] = this.onExit }));
-        properties.add(new DiagnosticsProperty<MouseCursor>("mouseCursor", this.cursor, defaultValue: MouseCursor.defer));
-        if ((this.semanticsLabel is not null))
+        properties.add(new DiagnosticsProperty<GestureRecognizer>("recognizer", recognizer, description: DartRuntimePrimitives.RuntimeTypeName(recognizer), defaultValue: null));
+        properties.add(new FlagsSummary<Delegate?>("callbacks", new DartMap<string, Delegate?> { ["enter"] = onEnter, ["exit"] = onExit }));
+        properties.add(new DiagnosticsProperty<MouseCursor>("mouseCursor", cursor, defaultValue: MouseCursor.defer));
+        if (semanticsLabel is not null)
         {
-            properties.add(new StringProperty("semanticsLabel", this.semanticsLabel));
+            properties.add(new StringProperty("semanticsLabel", semanticsLabel));
         }
-        if ((this.semanticsIdentifier is not null))
+        if (semanticsIdentifier is not null)
         {
-            properties.add(new StringProperty("semanticsIdentifier", this.semanticsIdentifier));
+            properties.add(new StringProperty("semanticsIdentifier", semanticsIdentifier));
         }
     }
 
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (this.children?.map<InlineSpan, DiagnosticsNode>(((child) =>
+        return children?.map<InlineSpan, DiagnosticsNode>((child) =>
         {
             return ((Diagnosticable)child).toDiagnosticsNode();
-        })).ToList() ?? new List<DiagnosticsNode>());
+        }).ToList() ?? new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

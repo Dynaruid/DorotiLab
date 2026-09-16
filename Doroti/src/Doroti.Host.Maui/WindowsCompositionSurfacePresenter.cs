@@ -1,24 +1,24 @@
 #if WINDOWS
-using Doroti.Graphics.DirectX;
-using static Doroti.Graphics.DirectX.DirectX;
-using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
-using Luid = Silk.NET.Core.Native.Luid;
-using DeviceCreationFlags = Silk.NET.Direct3D11.CreateDeviceFlag;
-using Format = Silk.NET.DXGI.Format;
-using GpuPreference = Silk.NET.DXGI.GpuPreference;
-using CommandListType = Silk.NET.Direct3D12.CommandListType;
-using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
-using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
-using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Doroti.Ui;
+using Doroti.Graphics.DirectX;
 using Doroti.Skia.Vulkan;
+using Doroti.Ui;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using SkiaSharp;
 using Windows.Foundation;
 using Windows.Graphics;
+using static Doroti.Graphics.DirectX.DirectX;
+using CommandListType = Silk.NET.Direct3D12.CommandListType;
+using CommandQueueFlags = Silk.NET.Direct3D12.CommandQueueFlags;
+using DeviceCreationFlags = Silk.NET.Direct3D11.CreateDeviceFlag;
+using FeatureLevel = Silk.NET.Core.Native.D3DFeatureLevel;
+using FenceFlags = Silk.NET.Direct3D12.FenceFlags;
+using Format = Silk.NET.DXGI.Format;
+using GpuPreference = Silk.NET.DXGI.GpuPreference;
+using Luid = Silk.NET.Core.Native.Luid;
+using ResourceStates = Silk.NET.Direct3D12.ResourceStates;
 
 namespace Doroti.Host.Maui;
 
@@ -111,7 +111,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     internal int CheckedOutResourceCount { get; private set; }
     internal int OpenDrawCount { get; private set; }
     internal string AdapterDescription => _adapterDescription;
-    internal object Context => (object?)_graphite?.ContextIdentity ?? _skiaContext ??
+    internal object Context => (_graphite?.ContextIdentity) ?? _skiaContext ??
         throw new InvalidOperationException("Composition Skia context is unavailable.");
     internal SKSurface Surface => _graphiteSurface ?? _backingStore?.Surface ??
         throw new InvalidOperationException("Composition D3D12 backing store is unavailable.");

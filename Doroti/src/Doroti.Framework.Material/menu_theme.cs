@@ -22,11 +22,11 @@ public class MenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return a;
         }
-        return new MenuThemeData(style: MenuStyle.lerp(a?.style, b?.style, t), submenuIcon: ((t < 0.5) ? a?.submenuIcon : b?.submenuIcon));
+        return new MenuThemeData(style: MenuStyle.lerp(a?.style, b?.style, t), submenuIcon: (t < 0.5) ? a?.submenuIcon : b?.submenuIcon);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.style, this.submenuIcon));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(style, submenuIcon));
     public override bool Equals(object? other)
     {
         var __other = other as MenuThemeData;
@@ -35,17 +35,17 @@ public class MenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is MenuThemeData) && (Equals(((MenuThemeData)((MenuThemeData)__other)).style, this.style))) && (Equals(((MenuThemeData)((MenuThemeData)__other)).submenuIcon, this.submenuIcon)));
+        return (__other is MenuThemeData) && Equals(__other.style, style) && Equals(__other.submenuIcon, submenuIcon);
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuStyle>("style", this.style, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Widget?>>("submenuIcon", this.submenuIcon, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuStyle>("style", style, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Widget?>>("submenuIcon", submenuIcon, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -59,13 +59,13 @@ public class MenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -82,16 +82,16 @@ public class MenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static MenuThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MenuTheme? menuThemeLocal = ((MenuTheme?)context.dependOnInheritedWidgetOfExactType<MenuTheme>());
-        return (menuThemeLocal?.data ?? Theme.of(context).menuTheme);
+        MenuTheme? menuThemeLocal = context.dependOnInheritedWidgetOfExactType<MenuTheme>();
+        return menuThemeLocal?.data ?? Theme.of(context).menuTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new MenuTheme(data: this.data, child: child));
+        return new MenuTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((MenuTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuTheme)oldWidget).data));
 }

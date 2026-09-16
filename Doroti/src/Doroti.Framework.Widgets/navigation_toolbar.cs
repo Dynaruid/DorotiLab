@@ -29,13 +29,13 @@ public class NavigationToolbar : StatelessWidget
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
         var children = new List<Widget>();
-        if (this.leading is not null)
-            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.leading, child: this.leading));
-        if (this.middle is not null)
-            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.middle, child: this.middle));
-        if (this.trailing is not null)
-            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.trailing, child: this.trailing));
-        return ((Widget)new CustomMultiChildLayout(@delegate: new _ToolbarLayout__navigation_toolbar(centerMiddle: this.centerMiddle, middleSpacing: DartRuntimePrimitives.RequireValue(this.middleSpacing), textDirection: textDirectionLocal), children: children));
+        if (leading is not null)
+            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.leading, child: leading));
+        if (middle is not null)
+            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.middle, child: middle));
+        if (trailing is not null)
+            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.trailing, child: trailing));
+        return new CustomMultiChildLayout(@delegate: new _ToolbarLayout__navigation_toolbar(centerMiddle: centerMiddle, middleSpacing: DartRuntimePrimitives.RequireValue(middleSpacing), textDirection: textDirectionLocal), children: children);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -69,42 +69,42 @@ internal class _ToolbarLayout__navigation_toolbar : global::Doroti.Framework.Ren
         {
             var constraints = new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: size.width, minHeight: size.height, maxHeight: size.height);
             leadingWidth = layoutChild(_ToolbarSlot__navigation_toolbar.leading, constraints).width;
-            double leadingX = (this.textDirection switch { TextDirection.rtl => (size.width - leadingWidth), TextDirection.ltr => 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double leadingX = textDirection switch { TextDirection.rtl => size.width - leadingWidth, TextDirection.ltr => 0.0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             positionChild(_ToolbarSlot__navigation_toolbar.leading, new global::Doroti.Ui.Offset(leadingX, 0.0));
         }
         if (hasChild(_ToolbarSlot__navigation_toolbar.trailing))
         {
             var constraintsLocal = BoxConstraints.CreateLoose(size);
-            global::Doroti.Ui.Size trailingSize = ((global::Doroti.Ui.Size)layoutChild(_ToolbarSlot__navigation_toolbar.trailing, constraintsLocal));
-            double trailingX = (this.textDirection switch { TextDirection.rtl => 0.0, TextDirection.ltr => (size.width - trailingSize.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            double trailingY = (((size.height - trailingSize.height)) / 2.0);
+            global::Doroti.Ui.Size trailingSize = layoutChild(_ToolbarSlot__navigation_toolbar.trailing, constraintsLocal);
+            double trailingX = textDirection switch { TextDirection.rtl => 0.0, TextDirection.ltr => size.width - trailingSize.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            double trailingY = (size.height - trailingSize.height) / 2.0;
             trailingWidth = trailingSize.width;
             positionChild(_ToolbarSlot__navigation_toolbar.trailing, new global::Doroti.Ui.Offset(trailingX, trailingY));
         }
         if (hasChild(_ToolbarSlot__navigation_toolbar.middle))
         {
-            double maxWidthLocal = Math.Max((((size.width - leadingWidth) - trailingWidth) - (this.middleSpacing * 2.0)), 0.0);
-            global::Doroti.Framework.Rendering.BoxConstraints constraintsAlternate = ((global::Doroti.Framework.Rendering.BoxConstraints)BoxConstraints.CreateLoose(size).copyWith(maxWidth: maxWidthLocal));
-            global::Doroti.Ui.Size middleSize = ((global::Doroti.Ui.Size)layoutChild(_ToolbarSlot__navigation_toolbar.middle, constraintsAlternate));
-            double middleStartMargin = (leadingWidth + this.middleSpacing);
+            double maxWidthLocal = Math.Max(size.width - leadingWidth - trailingWidth - (middleSpacing * 2.0), 0.0);
+            global::Doroti.Framework.Rendering.BoxConstraints constraintsAlternate = BoxConstraints.CreateLoose(size).copyWith(maxWidth: maxWidthLocal);
+            global::Doroti.Ui.Size middleSize = layoutChild(_ToolbarSlot__navigation_toolbar.middle, constraintsAlternate);
+            double middleStartMargin = leadingWidth + middleSpacing;
             var middleStart = middleStartMargin;
-            double middleY = (((size.height - middleSize.height)) / 2.0);
-            if (this.centerMiddle)
+            double middleY = (size.height - middleSize.height) / 2.0;
+            if (centerMiddle)
             {
-                middleStart = (((size.width - middleSize.width)) / 2.0);
-                if (((middleStart + middleSize.width) > (size.width - trailingWidth)))
+                middleStart = (size.width - middleSize.width) / 2.0;
+                if ((middleStart + middleSize.width) > (size.width - trailingWidth))
                 {
-                    middleStart = (((size.width - trailingWidth) - middleSize.width) - this.middleSpacing);
+                    middleStart = size.width - trailingWidth - middleSize.width - middleSpacing;
                 }
                 else
                 {
-                    if ((middleStart < middleStartMargin))
+                    if (middleStart < middleStartMargin)
                     {
                         middleStart = middleStartMargin;
                     }
                 }
             }
-            double middleX = (this.textDirection switch { TextDirection.rtl => ((size.width - middleSize.width) - middleStart), TextDirection.ltr => middleStart, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double middleX = textDirection switch { TextDirection.rtl => size.width - middleSize.width - middleStart, TextDirection.ltr => middleStart, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             positionChild(_ToolbarSlot__navigation_toolbar.middle, new global::Doroti.Ui.Offset(middleX, middleY));
         }
     }
@@ -112,7 +112,7 @@ internal class _ToolbarLayout__navigation_toolbar : global::Doroti.Framework.Ren
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_ToolbarLayout__navigation_toolbar)oldDelegate;
-        return (((((_ToolbarLayout__navigation_toolbar)__oldDelegate).centerMiddle != this.centerMiddle) || (((_ToolbarLayout__navigation_toolbar)__oldDelegate).middleSpacing != this.middleSpacing)) || (!Equals(((_ToolbarLayout__navigation_toolbar)__oldDelegate).textDirection, this.textDirection)));
+        return (__oldDelegate.centerMiddle != centerMiddle) || (__oldDelegate.middleSpacing != middleSpacing) || (!Equals(__oldDelegate.textDirection, textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

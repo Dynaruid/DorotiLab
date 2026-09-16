@@ -18,7 +18,7 @@ internal class _CombiningGestureArenaEntry__team : GestureArenaEntry
 
     public override void resolve(GestureDisposition disposition)
     {
-        this._combiner._resolve(this._member, disposition);
+        _combiner._resolve(_member, disposition);
     }
 
 }
@@ -40,25 +40,25 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
 
     public virtual void acceptGesture(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => (this._pointer == pointer));
-        DartRuntimePrimitives.Assert(() => ((this._winner is not null) || (checked((long)(this._members.Count)) != 0)));
+        DartRuntimePrimitives.Assert(() => _pointer == pointer);
+        DartRuntimePrimitives.Assert(() => (_winner is not null) || (checked((long)_members.Count) != 0));
         _close();
-        _winner ??= (((GestureArenaTeam)this._owner).captain ?? this._members[(int)(0L)]);
-        foreach (GestureArenaMember member in this._members)
+        _winner ??= (_owner.captain ?? _members[(int)0L]);
+        foreach (GestureArenaMember member in _members)
         {
-            if ((!Equals(member, this._winner)))
+            if (!Equals(member, _winner))
             {
                 member.rejectGesture(pointer);
             }
         }
-        this._winner!.acceptGesture(pointer);
+        _winner!.acceptGesture(pointer);
     }
 
     public virtual void rejectGesture(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => (this._pointer == pointer));
+        DartRuntimePrimitives.Assert(() => _pointer == pointer);
         _close();
-        foreach (GestureArenaMember member in this._members)
+        foreach (GestureArenaMember member in _members)
         {
             member.rejectGesture(pointer);
         }
@@ -66,17 +66,17 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
 
     internal virtual void _close()
     {
-        DartRuntimePrimitives.Assert(() => !this._resolved);
+        DartRuntimePrimitives.Assert(() => !_resolved);
         _resolved = true;
-        _CombiningGestureArenaMember__team? combiner = ((GestureArenaTeam)this._owner)._combiners.remove(this._pointer);
-        DartRuntimePrimitives.Assert(() => (Equals(combiner, this)));
+        _CombiningGestureArenaMember__team? combiner = _owner._combiners.remove(_pointer);
+        DartRuntimePrimitives.Assert(() => Equals(combiner, this));
     }
 
     internal virtual GestureArenaEntry _add(long pointer, GestureArenaMember member)
     {
-        DartRuntimePrimitives.Assert(() => !this._resolved);
-        DartRuntimePrimitives.Assert(() => (this._pointer == pointer));
-        this._members.Add(member);
+        DartRuntimePrimitives.Assert(() => !_resolved);
+        DartRuntimePrimitives.Assert(() => _pointer == pointer);
+        _members.Add(member);
         _entry ??= GestureBinding.instance.gestureArena.add(pointer, this);
         return new _CombiningGestureArenaEntry__team(this, member);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -84,7 +84,7 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
 
     internal virtual void _resolve(GestureArenaMember member, GestureDisposition disposition)
     {
-        if (this._resolved)
+        if (_resolved)
         {
             return;
         }
@@ -92,17 +92,17 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
         {
             case GestureDisposition.accepted:
                 {
-                    _winner ??= (((GestureArenaTeam)this._owner).captain ?? member);
-                    this._entry!.resolve(disposition);
+                    _winner ??= (_owner.captain ?? member);
+                    _entry!.resolve(disposition);
                     break;
                 }
             case GestureDisposition.rejected:
                 {
-                    this._members.Remove(member);
-                    member.rejectGesture(this._pointer);
-                    if ((checked((long)(this._members.Count)) == 0))
+                    _members.Remove(member);
+                    member.rejectGesture(_pointer);
+                    if (checked((long)_members.Count) == 0)
                     {
-                        this._entry!.resolve(disposition);
+                        _entry!.resolve(disposition);
                     }
                     break;
                 }
@@ -118,7 +118,7 @@ public class GestureArenaTeam
 
     public virtual GestureArenaEntry add(long pointer, GestureArenaMember member)
     {
-        _CombiningGestureArenaMember__team combiner = this._combiners.putIfAbsent(pointer, (() => new _CombiningGestureArenaMember__team(this, pointer)));
+        _CombiningGestureArenaMember__team combiner = _combiners.putIfAbsent(pointer, () => new _CombiningGestureArenaMember__team(this, pointer));
         return combiner._add(pointer, member);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

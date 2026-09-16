@@ -17,22 +17,22 @@ public class DeviceGestureSettings
     public static DeviceGestureSettings CreateFromView(DorotiView view)
     {
         double? physicalTouchSlopLocal = view.gestureSettings.physicalTouchSlop;
-        return new DeviceGestureSettings(touchSlop: ((physicalTouchSlopLocal is null) ? null : (DartRuntimePrimitives.RequireValue(physicalTouchSlopLocal) / view.devicePixelRatio)));
+        return new DeviceGestureSettings(touchSlop: (physicalTouchSlopLocal is null) ? null : (DartRuntimePrimitives.RequireValue(physicalTouchSlopLocal) / view.devicePixelRatio));
     }
 
-    public virtual double? panSlop => ((this.touchSlop is not null) ? ((DartRuntimePrimitives.RequireValue(this.touchSlop) * 2L)) : null);
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.touchSlop, 23L);
+    public virtual double? panSlop => (touchSlop is not null) ? (DartRuntimePrimitives.RequireValue(touchSlop) * 2L) : null;
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(touchSlop, 23L);
     public override bool Equals(object? other)
     {
         var __other = other as DeviceGestureSettings;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is DeviceGestureSettings) && (((DeviceGestureSettings)((DeviceGestureSettings)__other)).touchSlop == this.touchSlop));
+        return (__other is DeviceGestureSettings) && (__other.touchSlop == touchSlop);
     }
 
-    public override string ToString() => $"DeviceGestureSettings(touchSlop: {this.touchSlop})";
+    public override string ToString() => $"DeviceGestureSettings(touchSlop: {touchSlop})";
 }
 

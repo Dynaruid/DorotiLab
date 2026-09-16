@@ -9,12 +9,12 @@ public class Spacer : StatelessWidget
     public Spacer(global::Doroti.Framework.Foundation.Key? key = null, long flex = 1) : base(key: key)
     {
         this.flex = flex;
-        System.Diagnostics.Debug.Assert((flex > 0L));
+        System.Diagnostics.Debug.Assert(flex > 0L);
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)new Expanded(flex: this.flex, child: SizedBox.CreateShrink()));
+        return new Expanded(flex: flex, child: SizedBox.CreateShrink());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -21,7 +21,7 @@ public class MethodCall
         this.arguments = arguments;
     }
 
-    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "MethodCall"))}({method}, {arguments})";
+    public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MethodCall")}({method}, {arguments})";
 }
 
 public interface MethodCodec

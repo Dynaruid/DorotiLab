@@ -25,39 +25,39 @@ public class InkHighlight : InteractiveInkFeature
     public InkHighlight(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, TextDirection textDirection, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::System.Func<Rect>? rectCallback = null, global::System.Action? onRemoved = null, Duration? fadeDuration = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
     {
         Duration __fadeDuration = fadeDuration ?? Ink_highlightLibrary._kDefaultHighlightFadeDuration;
-        this._shape = shape;
-        this._radius = radius;
-        this._borderRadius = (borderRadius ?? BorderRadius.zero);
-        this._textDirection = textDirection;
-        this._rectCallback = rectCallback;
+        _shape = shape;
+        _radius = radius;
+        _borderRadius = borderRadius ?? BorderRadius.zero;
+        _textDirection = textDirection;
+        _rectCallback = rectCallback;
         _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: ((MaterialInkController)this.controller).vsync);
-    __cascade.addListener(((MaterialInkController)this.controller).markNeedsPaint);
-    __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: this.controller.vsync);
+    __cascade.addListener(this.controller.markNeedsPaint);
+    __cascade.addStatusListener(_handleAlphaStatusChanged);
     __cascade.forward();
     return __cascade;
 }))();
-        _alpha = this._alphaController.drive(new global::Doroti.Framework.Animation.IntTween(begin: 0L, end: this.color.alpha));
+        _alpha = _alphaController.drive(new global::Doroti.Framework.Animation.IntTween(begin: 0L, end: this.color.alpha));
         this.controller.addInkFeature(this);
     }
 
-    public virtual bool active => this._active;
+    public virtual bool active => _active;
     public virtual void activate()
     {
         _active = true;
-        this._alphaController.forward();
+        _alphaController.forward();
     }
 
     public virtual void deactivate()
     {
         _active = false;
-        this._alphaController.reverse();
+        _alphaController.reverse();
     }
 
     internal virtual void _handleAlphaStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if ((AnimationStatusMembers.isDismissed(status) && !this._active))
+        if (AnimationStatusMembers.isDismissed(status) && !_active)
         {
             dispose();
         }
@@ -65,29 +65,29 @@ public class InkHighlight : InteractiveInkFeature
 
     public override void dispose()
     {
-        this._alphaController.dispose();
+        _alphaController.dispose();
         base.dispose();
     }
 
     internal virtual void _paintHighlight(Canvas canvas, Rect rect, Paint paint)
     {
         canvas.save();
-        if ((this.customBorder is not null))
+        if (customBorder is not null)
         {
-            canvas.clipPath(this.customBorder!.getOuterPath(rect, textDirection: this._textDirection));
+            canvas.clipPath(customBorder!.getOuterPath(rect, textDirection: _textDirection));
         }
-        switch (this._shape)
+        switch (_shape)
         {
             case BoxShape.circle:
                 {
-                    canvas.drawCircle(((Offset)(rect).center), (this._radius ?? Material.defaultSplashRadius), paint);
+                    canvas.drawCircle(rect.center, _radius ?? Material.defaultSplashRadius, paint);
                     break;
                 }
             case BoxShape.rectangle:
                 {
-                    if ((!Equals(this._borderRadius, BorderRadius.zero)))
+                    if (!Equals(_borderRadius, BorderRadius.zero))
                     {
-                        var clipRRect = RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomRight);
+                        var clipRRect = RRect.fromRectAndCorners(rect, topLeft: _borderRadius.topLeft, topRight: _borderRadius.topRight, bottomLeft: _borderRadius.bottomLeft, bottomRight: _borderRadius.bottomRight);
                         canvas.drawRRect(clipRRect, paint);
                     }
                     else
@@ -105,12 +105,12 @@ public class InkHighlight : InteractiveInkFeature
         var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
+    __cascade.color = color.withAlpha(_alpha.value);
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)MatrixUtils.getAsTranslation(transform));
-        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)((this._rectCallback is not null) ? this._rectCallback() : (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size)));
-        if ((originOffset is null))
+        global::Doroti.Ui.Offset? originOffset = MatrixUtils.getAsTranslation(transform);
+        global::Doroti.Ui.Rect rect = (_rectCallback is not null) ? _rectCallback() : (Offset.zero & referenceBox.size);
+        if (originOffset is null)
         {
             canvas.save();
             canvas.transform(transform.storage);

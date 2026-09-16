@@ -19,32 +19,32 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
 
     public override void resolveStreamForKey(global::Doroti.Framework.Painting.ImageConfiguration configuration, global::Doroti.Framework.Painting.ImageStream stream, T key, global::System.Action<object, global::System.Diagnostics.StackTrace?> handleError)
     {
-        if (((((global::Doroti.Framework.Painting.ImageStream)stream).completer is not null) || PaintingBinding.instance.imageCache.containsKey(key)))
+        if ((stream.completer is not null) || PaintingBinding.instance.imageCache.containsKey(key))
         {
-            this.imageProvider.resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError);
+            imageProvider.resolveStreamForKey(configuration, stream, key, handleError);
             return;
         }
-        BuildContext? buildContext = this.context.context;
+        BuildContext? buildContext = context.context;
         if (buildContext is null)
         {
             return;
         }
         if (Scrollable.recommendDeferredLoadingForContext(buildContext))
         {
-            Scheduler.SchedulerBinding.instance.scheduleFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.scheduleFrameCallback((_) =>
             {
-                DartAsyncRuntime.scheduleMicrotask((() => { resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError); }));
-            })));
+                DartAsyncRuntime.scheduleMicrotask(() => { resolveStreamForKey(configuration, stream, key, handleError); });
+            });
             return;
         }
-        this.imageProvider.resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError);
+        imageProvider.resolveStreamForKey(configuration, stream, key, handleError);
     }
 
-    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(T key, DecoderBufferCallback decode) => this.imageProvider.loadBuffer(key, (DecoderBufferCallback)decode);
-    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(T key, ImageDecoderCallback decode) => this.imageProvider.loadImage(key, (ImageDecoderCallback)decode);
-    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(T key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) => this.imageProvider.loadBuffer(key, decode);
-    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(T key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) => this.imageProvider.loadImage(key, decode);
-    public override Future<T> obtainKey(global::Doroti.Framework.Painting.ImageConfiguration configuration) => this.imageProvider.obtainKey(configuration);
+    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(T key, DecoderBufferCallback decode) => imageProvider.loadBuffer(key, decode);
+    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(T key, ImageDecoderCallback decode) => imageProvider.loadImage(key, decode);
+    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadBuffer(T key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) => imageProvider.loadBuffer(key, decode);
+    public override global::Doroti.Framework.Painting.ImageStreamCompleter loadImage(T key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) => imageProvider.loadImage(key, decode);
+    public override Future<T> obtainKey(global::Doroti.Framework.Painting.ImageConfiguration configuration) => imageProvider.obtainKey(configuration);
     public override bool Equals(object? other)
     {
         var __other = other as ScrollAwareImageProvider<T>;
@@ -53,14 +53,14 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is ScrollAwareImageProvider<T>) && (Equals(this.context, ((ScrollAwareImageProvider<T>)__other).context))) && (Equals(this.imageProvider, ((ScrollAwareImageProvider<T>)__other).imageProvider)));
+        return (__other is ScrollAwareImageProvider<T>) && Equals(context, __other.context) && Equals(imageProvider, __other.imageProvider);
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.context, this.imageProvider));
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(context, imageProvider));
 }
 
 /// <summary>Scroll-aware wrapper for providers with an application-defined key type.</summary>

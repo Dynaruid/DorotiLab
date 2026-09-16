@@ -19,17 +19,17 @@ public class PopScope<T> : StatefulWidget
         this.canPop = canPop;
         this.onPopInvokedWithResult = onPopInvokedWithResult;
         this.onPopInvoked = onPopInvoked;
-        System.Diagnostics.Debug.Assert(((onPopInvokedWithResult is null) || (onPopInvoked is null)));
+        System.Diagnostics.Debug.Assert((onPopInvokedWithResult is null) || (onPopInvoked is null));
     }
 
     internal virtual void _callPopInvoked(bool didPop, T? result)
     {
-        if ((this.onPopInvokedWithResult is not null))
+        if (onPopInvokedWithResult is not null)
         {
-            this.onPopInvokedWithResult!(didPop, result);
+            onPopInvokedWithResult!(didPop, result);
             return;
         }
-        this.onPopInvoked?.Invoke(didPop);
+        onPopInvoked?.Invoke(didPop);
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopScopeState__pop_scope<T>());
@@ -50,40 +50,40 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
 
     public virtual void onPopInvokedWithResult(bool didPop, T? result)
     {
-        this.widget._callPopInvoked(didPop, result);
+        widget._callPopInvoked(didPop, result);
     }
 
     public override void initState()
     {
         base.initState();
-        canPopNotifier = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(((PopScope<T>)this.widget).canPop);
+        canPopNotifier = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(widget.canPop);
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        IModalRoute? nextRoute = ModalRoute<object>.untypedOf(this.context);
-        if ((!Equals(nextRoute, this._route)))
+        IModalRoute? nextRoute = ModalRoute<object>.untypedOf(context);
+        if (!Equals(nextRoute, _route))
         {
-            this._route?.unregisterPopEntry(this);
+            _route?.unregisterPopEntry(this);
             _route = nextRoute;
-            this._route?.registerPopEntry(this);
+            _route?.registerPopEntry(this);
         }
     }
 
     public override void didUpdateWidget(PopScope<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        this.canPopNotifier.value = ((PopScope<T>)this.widget).canPop;
+        canPopNotifier.value = widget.canPop;
     }
 
     public override void dispose()
     {
-        this._route?.unregisterPopEntry(this);
-        this.canPopNotifier.dispose();
+        _route?.unregisterPopEntry(this);
+        canPopNotifier.dispose();
         base.dispose();
     }
 
-    public override Widget build(BuildContext context) => ((PopScope<T>)this.widget).child;
+    public override Widget build(BuildContext context) => widget.child;
 }
 

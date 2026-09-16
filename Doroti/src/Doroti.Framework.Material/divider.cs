@@ -23,19 +23,19 @@ public class Divider : global::Doroti.Framework.Widgets.StatelessWidget
         this.endIndent = endIndent;
         this.color = color;
         this.radius = radius;
-        System.Diagnostics.Debug.Assert(((height is null) || (height >= 0.0)));
-        System.Diagnostics.Debug.Assert(((thickness is null) || (thickness >= 0.0)));
-        System.Diagnostics.Debug.Assert(((indent is null) || (indent >= 0.0)));
-        System.Diagnostics.Debug.Assert(((endIndent is null) || (endIndent >= 0.0)));
+        System.Diagnostics.Debug.Assert((height is null) || (height >= 0.0));
+        System.Diagnostics.Debug.Assert((thickness is null) || (thickness >= 0.0));
+        System.Diagnostics.Debug.Assert((indent is null) || (indent >= 0.0));
+        System.Diagnostics.Debug.Assert((endIndent is null) || (endIndent >= 0.0));
     }
 
     public static global::Doroti.Framework.Painting.BorderSide createBorderSide(global::Doroti.Framework.Widgets.BuildContext? context, Color? color = null, double? width = null)
     {
-        DividerThemeData? dividerTheme = ((context is not null) ? DividerTheme.of(context) : null);
-        DividerThemeData? defaults = ((context is not null) ? ((new _DividerDefaultsM3__divider(context))) : null);
-        global::Doroti.Ui.Color? effectiveColor = ((global::Doroti.Ui.Color?)((color ?? dividerTheme?.color) ?? defaults?.color));
-        double effectiveWidth = (((width ?? dividerTheme?.thickness) ?? defaults?.thickness) ?? 0.0);
-        if ((effectiveColor is null))
+        DividerThemeData? dividerTheme = (context is not null) ? DividerTheme.of(context) : null;
+        DividerThemeData? defaults = (context is not null) ? new _DividerDefaultsM3__divider(context) : null;
+        global::Doroti.Ui.Color? effectiveColor = (color ?? dividerTheme?.color) ?? defaults?.color;
+        double effectiveWidth = ((width ?? dividerTheme?.thickness) ?? defaults?.thickness) ?? 0.0;
+        if (effectiveColor is null)
         {
             return new global::Doroti.Framework.Painting.BorderSide(width: effectiveWidth);
         }
@@ -46,12 +46,12 @@ public class Divider : global::Doroti.Framework.Widgets.StatelessWidget
     {
         ThemeData theme = Theme.of(context);
         DividerThemeData dividerTheme = DividerTheme.of(context);
-        DividerThemeData defaults = ((new _DividerDefaultsM3__divider(context)));
-        double heightLocal = ((this.height ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space));
-        double thicknessLocal = ((this.thickness ?? dividerTheme.thickness) ?? DartRuntimePrimitives.RequireValue(defaults.thickness));
-        double indentLocal = ((this.indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent));
-        double endIndentLocal = ((this.endIndent ?? dividerTheme.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults.endIndent));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(height: DartRuntimePrimitives.RequireValue(heightLocal), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(height: DartRuntimePrimitives.RequireValue(thicknessLocal), margin: EdgeInsetsDirectional.CreateOnly(start: DartRuntimePrimitives.RequireValue(indentLocal), end: DartRuntimePrimitives.RequireValue(endIndentLocal)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: ((this.radius ?? dividerTheme.radius) ?? defaults.radius), border: new global::Doroti.Framework.Painting.Border(bottom: createBorderSide(context, color: this.color, width: DartRuntimePrimitives.RequireValue(thicknessLocal))))))));
+        DividerThemeData defaults = new _DividerDefaultsM3__divider(context);
+        double heightLocal = (height ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space);
+        double thicknessLocal = (thickness ?? dividerTheme.thickness) ?? DartRuntimePrimitives.RequireValue(defaults.thickness);
+        double indentLocal = (indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent);
+        double endIndentLocal = (endIndent ?? dividerTheme.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults.endIndent);
+        return new global::Doroti.Framework.Widgets.SizedBox(height: DartRuntimePrimitives.RequireValue(heightLocal), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(height: DartRuntimePrimitives.RequireValue(thicknessLocal), margin: EdgeInsetsDirectional.CreateOnly(start: DartRuntimePrimitives.RequireValue(indentLocal), end: DartRuntimePrimitives.RequireValue(endIndentLocal)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: (radius ?? dividerTheme.radius) ?? defaults.radius, border: new global::Doroti.Framework.Painting.Border(bottom: createBorderSide(context, color: color, width: DartRuntimePrimitives.RequireValue(thicknessLocal)))))));
     }
 
 }
@@ -73,22 +73,22 @@ public class VerticalDivider : global::Doroti.Framework.Widgets.StatelessWidget
         this.endIndent = endIndent;
         this.color = color;
         this.radius = radius;
-        System.Diagnostics.Debug.Assert(((width is null) || (width >= 0.0)));
-        System.Diagnostics.Debug.Assert(((thickness is null) || (thickness >= 0.0)));
-        System.Diagnostics.Debug.Assert(((indent is null) || (indent >= 0.0)));
-        System.Diagnostics.Debug.Assert(((endIndent is null) || (endIndent >= 0.0)));
+        System.Diagnostics.Debug.Assert((width is null) || (width >= 0.0));
+        System.Diagnostics.Debug.Assert((thickness is null) || (thickness >= 0.0));
+        System.Diagnostics.Debug.Assert((indent is null) || (indent >= 0.0));
+        System.Diagnostics.Debug.Assert((endIndent is null) || (endIndent >= 0.0));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         DividerThemeData dividerTheme = DividerTheme.of(context);
-        DividerThemeData defaults = ((new _DividerDefaultsM3__divider(context)));
-        double widthLocal = ((this.width ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space));
-        double thicknessLocal = ((this.thickness ?? dividerTheme.thickness) ?? DartRuntimePrimitives.RequireValue(defaults.thickness));
-        double indentLocal = ((this.indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent));
-        double endIndentLocal = ((this.endIndent ?? dividerTheme.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults.endIndent));
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: DartRuntimePrimitives.RequireValue(widthLocal), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(width: DartRuntimePrimitives.RequireValue(thicknessLocal), margin: EdgeInsetsDirectional.CreateOnly(top: DartRuntimePrimitives.RequireValue(indentLocal), bottom: DartRuntimePrimitives.RequireValue(endIndentLocal)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: ((this.radius ?? dividerTheme.radius) ?? defaults.radius), border: new global::Doroti.Framework.Painting.Border(left: Divider.createBorderSide(context, color: this.color, width: DartRuntimePrimitives.RequireValue(thicknessLocal))))))));
+        DividerThemeData defaults = new _DividerDefaultsM3__divider(context);
+        double widthLocal = (width ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space);
+        double thicknessLocal = (thickness ?? dividerTheme.thickness) ?? DartRuntimePrimitives.RequireValue(defaults.thickness);
+        double indentLocal = (indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent);
+        double endIndentLocal = (endIndent ?? dividerTheme.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults.endIndent);
+        return new global::Doroti.Framework.Widgets.SizedBox(width: DartRuntimePrimitives.RequireValue(widthLocal), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(width: DartRuntimePrimitives.RequireValue(thicknessLocal), margin: EdgeInsetsDirectional.CreateOnly(top: DartRuntimePrimitives.RequireValue(indentLocal), bottom: DartRuntimePrimitives.RequireValue(endIndentLocal)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: (radius ?? dividerTheme.radius) ?? defaults.radius, border: new global::Doroti.Framework.Painting.Border(left: Divider.createBorderSide(context, color: color, width: DartRuntimePrimitives.RequireValue(thicknessLocal)))))));
     }
 
 }
@@ -102,5 +102,5 @@ internal class _DividerDefaultsM3__divider : DividerThemeData
         this.context = context;
     }
 
-    public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).colorScheme.outlineVariant);
+    public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(context).colorScheme.outlineVariant);
 }

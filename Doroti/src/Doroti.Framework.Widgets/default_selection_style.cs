@@ -30,31 +30,31 @@ public class DefaultSelectionStyle : InheritedTheme
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!)
     {
-        return ((Widget)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        return new Builder(builder: (context) =>
         {
-            DefaultSelectionStyle parent = ((DefaultSelectionStyle)of(context));
-            return ((Widget)new DefaultSelectionStyle(key: key, cursorColor: (cursorColor ?? ((DefaultSelectionStyle)parent).cursorColor), selectionColor: (selectionColor ?? ((DefaultSelectionStyle)parent).selectionColor), mouseCursor: (mouseCursor ?? ((DefaultSelectionStyle)parent).mouseCursor), child: child));
+            DefaultSelectionStyle parent = of(context);
+            return new DefaultSelectionStyle(key: key, cursorColor: cursorColor ?? parent.cursorColor, selectionColor: selectionColor ?? parent.selectionColor, mouseCursor: mouseCursor ?? parent.mouseCursor, child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }))));
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static DefaultSelectionStyle of(BuildContext context)
     {
-        return (context.dependOnInheritedWidgetOfExactType<DefaultSelectionStyle>() ?? CreateFallback());
+        return context.dependOnInheritedWidgetOfExactType<DefaultSelectionStyle>() ?? CreateFallback();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
-        return ((Widget)new DefaultSelectionStyle(cursorColor: this.cursorColor, selectionColor: this.selectionColor, mouseCursor: this.mouseCursor, child: child));
+        return new DefaultSelectionStyle(cursorColor: cursorColor, selectionColor: selectionColor, mouseCursor: mouseCursor, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (DefaultSelectionStyle)oldWidget;
-        return (((!Equals(this.cursorColor, ((DefaultSelectionStyle)__oldWidget).cursorColor)) || (!Equals(this.selectionColor, ((DefaultSelectionStyle)__oldWidget).selectionColor))) || (!Equals(this.mouseCursor, ((DefaultSelectionStyle)__oldWidget).mouseCursor)));
+        return (!Equals(cursorColor, __oldWidget.cursorColor)) || (!Equals(selectionColor, __oldWidget.selectionColor)) || (!Equals(mouseCursor, __oldWidget.mouseCursor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

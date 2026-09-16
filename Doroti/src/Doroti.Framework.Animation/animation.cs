@@ -14,10 +14,10 @@ public enum AnimationStatus
 
 public static class AnimationStatusMembers
 {
-    public static bool isDismissed(this AnimationStatus value) => (Equals(value, AnimationStatus.dismissed));
-    public static bool isCompleted(this AnimationStatus value) => (Equals(value, AnimationStatus.completed));
-    public static bool isAnimating(this AnimationStatus value) => (value switch { AnimationStatus.forward => true, AnimationStatus.reverse => true, AnimationStatus.completed => false, AnimationStatus.dismissed => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-    public static bool isForwardOrCompleted(this AnimationStatus value) => (value switch { AnimationStatus.forward => true, AnimationStatus.completed => true, AnimationStatus.reverse => false, AnimationStatus.dismissed => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    public static bool isDismissed(this AnimationStatus value) => Equals(value, AnimationStatus.dismissed);
+    public static bool isCompleted(this AnimationStatus value) => Equals(value, AnimationStatus.completed);
+    public static bool isAnimating(this AnimationStatus value) => value switch { AnimationStatus.forward => true, AnimationStatus.reverse => true, AnimationStatus.completed => false, AnimationStatus.dismissed => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+    public static bool isForwardOrCompleted(this AnimationStatus value) => value switch { AnimationStatus.forward => true, AnimationStatus.completed => true, AnimationStatus.reverse => false, AnimationStatus.dismissed => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
 }
 
 public delegate void AnimationStatusListener(AnimationStatus status);
@@ -43,26 +43,26 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
         get => throw new NotSupportedException("Dart getter contract has no base implementation.");
         set => throw new NotSupportedException("Dart setter contract has no base implementation.");
     }
-    public virtual bool isDismissed => AnimationStatusMembers.isDismissed(this.status);
-    public virtual bool isCompleted => AnimationStatusMembers.isCompleted(this.status);
-    public virtual bool isAnimating => AnimationStatusMembers.isAnimating(this.status);
-    public virtual bool isForwardOrCompleted => AnimationStatusMembers.isForwardOrCompleted(this.status);
+    public virtual bool isDismissed => AnimationStatusMembers.isDismissed(status);
+    public virtual bool isCompleted => AnimationStatusMembers.isCompleted(status);
+    public virtual bool isAnimating => AnimationStatusMembers.isAnimating(status);
+    public virtual bool isForwardOrCompleted => AnimationStatusMembers.isForwardOrCompleted(status);
     public virtual Animation<U> drive<U>(Animatable<U> child)
     {
-        DartRuntimePrimitives.Assert(() => (this is Animation<double>));
+        DartRuntimePrimitives.Assert(() => this is Animation<double>);
         return child.animate(((Animation<double>?)(object?)this)!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(DiagnosticsLibrary.describeIdentity(this))}({toStringDetails()})";
+        return $"{DiagnosticsLibrary.describeIdentity(this)}({toStringDetails()})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string toStringDetails()
     {
-        return (this.status switch { AnimationStatus.forward => "▶", AnimationStatus.reverse => "◀", AnimationStatus.completed => "⏭", AnimationStatus.dismissed => "⏮", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return status switch { AnimationStatus.forward => "▶", AnimationStatus.reverse => "◀", AnimationStatus.completed => "⏭", AnimationStatus.dismissed => "⏮", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,12 +76,12 @@ internal class _ValueListenableDelegateAnimation__animation<T> : Animation<T>
     internal _ValueListenableDelegateAnimation__animation(ValueListenable<T> _listenable, Func<T, T>? transformer = null)
     {
         this._listenable = _listenable;
-        this._transformer = transformer;
+        _transformer = transformer;
     }
 
     public override void addListener(Action listener)
     {
-        this._listenable.addListener(listener);
+        _listenable.addListener(listener);
     }
 
     public override void addStatusListener(AnimationStatusListener listener)
@@ -90,7 +90,7 @@ internal class _ValueListenableDelegateAnimation__animation<T> : Animation<T>
 
     public override void removeListener(Action listener)
     {
-        this._listenable.removeListener(listener);
+        _listenable.removeListener(listener);
     }
 
     public override void removeStatusListener(AnimationStatusListener listener)
@@ -98,6 +98,6 @@ internal class _ValueListenableDelegateAnimation__animation<T> : Animation<T>
     }
 
     public override AnimationStatus status => AnimationStatus.forward;
-    public override T value => ((this._transformer is null ? this._listenable.value : this._transformer.Invoke(this._listenable.value)));
+    public override T value => _transformer is null ? _listenable.value : _transformer.Invoke(_listenable.value);
 }
 

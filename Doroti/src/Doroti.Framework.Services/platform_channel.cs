@@ -6,7 +6,7 @@ namespace Doroti.Framework.Services;
 
 public static partial class Platform_channelLibrary
 {
-    public static bool shouldProfilePlatformChannels => (kProfilePlatformChannels || ((!ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfilePlatformChannels)));
+    public static bool shouldProfilePlatformChannels => kProfilePlatformChannels || !ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfilePlatformChannels;
 }
 
 public static partial class Platform_channelLibrary
@@ -110,8 +110,8 @@ internal class _PlatformChannelStats
         _downBytes += bytes;
     }
 
-    public virtual double averageUpPayload => (_upBytes / _upCount);
-    public virtual double averageDownPayload => (_downBytes / _downCount);
+    public virtual double averageUpPayload => _upBytes / _upCount;
+    public virtual double averageDownPayload => _downBytes / _downCount;
 }
 
 public static partial class Platform_channelLibrary
@@ -131,7 +131,7 @@ public static partial class Platform_channelLibrary
             var log = new StringBuffer();
             log.writeln("Platform Channel Stats:");
             List<_PlatformChannelStats> allStats = _profilePlatformChannelsStats.Values.ToList();
-            allStats.sort(((x, y) => (((y.upBytes + y.downBytes)) - ((x.upBytes + x.downBytes)))));
+            allStats.sort((x, y) => y.upBytes + y.downBytes - (x.upBytes + x.downBytes));
             foreach (var stats in allStats)
             {
                 log.writeln($"  (name:\"{stats.channel}\" type:\"{stats.type}\" codec:\"{stats.codec}\" upBytes:{stats.upBytes} upBytes_avg:{stats.averageUpPayload.toStringAsFixed(1L)} downBytes:{stats.downBytes} downBytes_avg:{stats.averageDownPayload.toStringAsFixed(1L)})");
@@ -147,7 +147,7 @@ public static partial class Platform_channelLibrary
     internal static void _debugRecordUpStream(string channelTypeName, string name, string codecTypeName, ByteData? bytes)
     {
         _PlatformChannelStats stats = _profilePlatformChannelsStats[name] ??= new _PlatformChannelStats(name, codecTypeName, channelTypeName);
-        stats.addUpStream((bytes?.lengthInBytes ?? 0L));
+        stats.addUpStream(bytes?.lengthInBytes ?? 0L);
         _ = _debugLaunchProfilePlatformChannels();
     }
 }
@@ -157,7 +157,7 @@ public static partial class Platform_channelLibrary
     internal static void _debugRecordDownStream(string channelTypeName, string name, string codecTypeName, ByteData? bytes)
     {
         _PlatformChannelStats stats = _profilePlatformChannelsStats[name] ??= new _PlatformChannelStats(name, codecTypeName, channelTypeName);
-        stats.addDownStream((bytes?.lengthInBytes ?? 0L));
+        stats.addDownStream(bytes?.lengthInBytes ?? 0L);
         _ = _debugLaunchProfilePlatformChannels();
     }
 }
@@ -166,7 +166,7 @@ public static partial class Platform_channelLibrary
 {
     internal static BinaryMessenger _findBinaryMessenger()
     {
-        return ((!ConstantsLibrary.kIsWeb && (ServicesBinding.rootIsolateToken is null)) ? BackgroundIsolateBinaryMessenger.instance : ServicesBinding.instance.defaultBinaryMessenger);
+        return (!ConstantsLibrary.kIsWeb && (ServicesBinding.rootIsolateToken is null)) ? BackgroundIsolateBinaryMessenger.instance : ServicesBinding.instance.defaultBinaryMessenger;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -181,15 +181,15 @@ public class BasicMessageChannel<T>
     {
         this.name = name;
         this.codec = codec;
-        this._binaryMessenger = binaryMessenger;
+        _binaryMessenger = binaryMessenger;
     }
 
     public virtual BinaryMessenger binaryMessenger
     {
         get
         {
-            BinaryMessenger result = (_binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger());
-            return (Platform_channelLibrary.shouldProfilePlatformChannels ? Platform_channelLibrary._profiledBinaryMessengers[this] ??= new _ProfiledBinaryMessenger(result, this.GetType().ToString(), DartRuntimePrimitives.RuntimeTypeName(codec)) : result);
+            BinaryMessenger result = _binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger();
+            return Platform_channelLibrary.shouldProfilePlatformChannels ? Platform_channelLibrary._profiledBinaryMessengers[this] ??= new _ProfiledBinaryMessenger(result, GetType().ToString(), DartRuntimePrimitives.RuntimeTypeName(codec)) : result;
         }
     }
     public async virtual Future<T?> send(T? message)
@@ -201,16 +201,16 @@ public class BasicMessageChannel<T>
 
     public virtual void setMessageHandler(Func<T?, Future>? handler)
     {
-        if ((handler is null))
+        if (handler is null)
         {
             binaryMessenger.setMessageHandler(name, null);
         }
         else
         {
-            binaryMessenger.setMessageHandler(name, (async (message) =>
+            binaryMessenger.setMessageHandler(name, async (message) =>
             {
                 return codec.encodeMessage((T?)await DartAsyncRuntime.AwaitObject(handler(codec.decodeMessage(message))));
-            }));
+            });
         }
     }
 
@@ -226,15 +226,15 @@ public class MethodChannel
     {
         this.name = name;
         this.codec = codec ?? new StandardMethodCodec(new StandardMessageCodec());
-        this._binaryMessenger = binaryMessenger;
+        _binaryMessenger = binaryMessenger;
     }
 
     public virtual BinaryMessenger binaryMessenger
     {
         get
         {
-            BinaryMessenger result = (_binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger());
-            return (Platform_channelLibrary.shouldProfilePlatformChannels ? Platform_channelLibrary._profiledBinaryMessengers[this] ??= new _ProfiledBinaryMessenger(result, this.GetType().ToString(), DartRuntimePrimitives.RuntimeTypeName(codec)) : result);
+            BinaryMessenger result = _binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger();
+            return Platform_channelLibrary.shouldProfilePlatformChannels ? Platform_channelLibrary._profiledBinaryMessengers[this] ??= new _ProfiledBinaryMessenger(result, GetType().ToString(), DartRuntimePrimitives.RuntimeTypeName(codec)) : result;
         }
     }
     internal async virtual Future<T?> _invokeMethod<T>(string method, bool missingOk, object? arguments = null)
@@ -244,7 +244,7 @@ public class MethodChannel
             ? ((_ProfiledBinaryMessenger)binaryMessenger).sendWithPostfix(name, $"#{method}", input)
             : binaryMessenger.send(name, input);
         ByteData? result = sending is null ? null : await sending;
-        if ((result is null))
+        if (result is null)
         {
             if (missingOk)
             {
@@ -278,8 +278,8 @@ public class MethodChannel
 
     public virtual void setMethodCallHandler(Func<MethodCall, Future>? handler)
     {
-        DartRuntimePrimitives.Assert(() => ((_binaryMessenger is not null) || (BindingBase.debugBindingType() is not null)));
-        binaryMessenger.setMessageHandler(name, ((handler is null) ? null : ((message) => _handleAsMethodCall(message, handler))));
+        DartRuntimePrimitives.Assert(() => (_binaryMessenger is not null) || (BindingBase.debugBindingType() is not null));
+        binaryMessenger.setMessageHandler(name, (handler is null) ? null : ((message) => _handleAsMethodCall(message, handler)));
     }
 
     internal async virtual Future<ByteData?> _handleAsMethodCall(ByteData? message, Func<MethodCall, Future> handler)
@@ -330,19 +330,19 @@ public class EventChannel
     {
         this.name = name;
         this.codec = codec;
-        this._binaryMessenger = binaryMessenger;
+        _binaryMessenger = binaryMessenger;
     }
 
-    public virtual BinaryMessenger binaryMessenger => (_binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger());
+    public virtual BinaryMessenger binaryMessenger => _binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger();
     public virtual Stream<object?> receiveBroadcastStream(object? arguments = null)
     {
         var methodChannel = new MethodChannel(name, codec);
         StreamController<object?> controller = default!;
-        controller = new StreamController<object?>(onListen: (async () =>
+        controller = new StreamController<object?>(onListen: async () =>
         {
-            binaryMessenger.setMessageHandler(name, (async (reply) =>
+            binaryMessenger.setMessageHandler(name, async (reply) =>
             {
-                if ((reply is null))
+                if (reply is null)
                 {
                     await controller.close();
                 }
@@ -358,7 +358,7 @@ public class EventChannel
                     }
                 }
                 return null;
-            }));
+            });
             try
             {
                 await methodChannel.invokeMethod<object?>("listen", arguments);
@@ -368,7 +368,7 @@ public class EventChannel
                 var stack = new System.Diagnostics.StackTrace();
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription($"while activating platform stream on channel {name}")));
             }
-        }), onCancel: (async () =>
+        }, onCancel: async () =>
         {
             binaryMessenger.setMessageHandler(name, null);
             try
@@ -380,7 +380,7 @@ public class EventChannel
                 var stack = new System.Diagnostics.StackTrace();
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription($"while de-activating platform stream on channel {name}")));
             }
-        }));
+        });
         return controller.stream;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

@@ -4,6 +4,6 @@ namespace Doroti.Framework.Services;
 
 public static partial class FlavorLibrary
 {
-    public static string? appFlavor = ((Environment.GetEnvironmentVariable("FLUTTER_APP_FLAVOR") != "") ? Environment.GetEnvironmentVariable("FLUTTER_APP_FLAVOR") : null);
+    public static string? appFlavor = (Environment.GetEnvironmentVariable("FLUTTER_APP_FLAVOR") != "") ? Environment.GetEnvironmentVariable("FLUTTER_APP_FLAVOR") : null;
 }
 

@@ -62,7 +62,7 @@ internal static class CustomizationComposer
             {
                 var origin = origins.TryGetValue(item.Key, out var value)
                     ? value
-                    : (PortSchemas.Generated, (string?)null);
+                    : (PortSchemas.Generated, null);
                 return new PortComposedFile(item.Key, item.Value, origin.Item1, origin.Item2);
             })
             .ToArray();

@@ -23,7 +23,7 @@ internal class _CountdownZoned__multitap
     {
     }
 
-    public virtual bool timeout => this._timeout;
+    public virtual bool timeout => _timeout;
     internal virtual void _onTimeout()
     {
         _timeout = true;
@@ -45,46 +45,46 @@ internal class _TapTracker__multitap
     {
         this.entry = entry;
         this.gestureSettings = gestureSettings;
-        this.pointer = @event.pointer;
-        this._initialGlobalPosition = @event.position;
-        this.initialButtons = @event.buttons;
-        this._doubleTapMinTimeCountdown = new _CountdownZoned__multitap(duration: doubleTapMinTime);
+        pointer = @event.pointer;
+        _initialGlobalPosition = @event.position;
+        initialButtons = @event.buttons;
+        _doubleTapMinTimeCountdown = new _CountdownZoned__multitap(duration: doubleTapMinTime);
     }
 
     public virtual void startTrackingPointer(Action<PointerEvent> route, Matrix4? transform)
     {
-        if (!this._isTrackingPointer)
+        if (!_isTrackingPointer)
         {
             _isTrackingPointer = true;
-            GestureBinding.instance.pointerRouter.addRoute(this.pointer, (Action<PointerEvent>)route, transform);
+            GestureBinding.instance.pointerRouter.addRoute(pointer, route, transform);
         }
     }
 
     public virtual void stopTrackingPointer(Action<PointerEvent> route)
     {
-        if (this._isTrackingPointer)
+        if (_isTrackingPointer)
         {
             _isTrackingPointer = false;
-            GestureBinding.instance.pointerRouter.removeRoute(this.pointer, (Action<PointerEvent>)route);
+            GestureBinding.instance.pointerRouter.removeRoute(pointer, route);
         }
     }
 
     public virtual bool isWithinGlobalTolerance(PointerEvent @event, double tolerance)
     {
-        global::Doroti.Ui.Offset offset = (((PointerEvent)@event).position - this._initialGlobalPosition);
-        return (offset.distance <= tolerance);
+        global::Doroti.Ui.Offset offset = @event.position - _initialGlobalPosition;
+        return offset.distance <= tolerance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool hasElapsedMinTime()
     {
-        return ((_CountdownZoned__multitap)this._doubleTapMinTimeCountdown).timeout;
+        return _doubleTapMinTimeCountdown.timeout;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool hasSameButton(PointerDownEvent @event)
     {
-        return (@event.buttons == this.initialButtons);
+        return @event.buttons == initialButtons;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,12 +103,12 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     {
     }
 
-    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == EventsLibrary.kPrimaryButton);
+    internal new static bool _defaultButtonAcceptBehavior(long buttons) => buttons == EventsLibrary.kPrimaryButton;
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
-        if ((this._firstTap is null))
+        if (_firstTap is null)
         {
-            if ((((this.onDoubleTapDown is null) && (this.onDoubleTap is null)) && (this.onDoubleTapCancel is null)))
+            if ((onDoubleTapDown is null) && (onDoubleTap is null) && (onDoubleTapCancel is null))
             {
                 return false;
             }
@@ -124,15 +124,15 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
 
     public override void addAllowedPointer(PointerDownEvent @event)
     {
-        if ((this._firstTap is not null))
+        if (_firstTap is not null)
         {
-            if (!this._firstTap!.isWithinGlobalTolerance(@event, ConstantsLibrary.kDoubleTapSlop))
+            if (!_firstTap!.isWithinGlobalTolerance(@event, ConstantsLibrary.kDoubleTapSlop))
             {
                 return;
             }
             else
             {
-                if ((!this._firstTap!.hasElapsedMinTime() || !this._firstTap!.hasSameButton(@event)))
+                if (!_firstTap!.hasElapsedMinTime() || !_firstTap!.hasSameButton(@event))
                 {
                     _reset();
                     _trackTap(@event);
@@ -140,10 +140,10 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
                 }
                 else
                 {
-                    if ((this.onDoubleTapDown is not null))
+                    if (onDoubleTapDown is not null)
                     {
                         var details = new TapDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer));
-                        invokeCallback<object?>("onDoubleTapDown", () => { ((Action)((() => this.onDoubleTapDown!(details))))(); return null; });
+                        invokeCallback<object?>("onDoubleTapDown", () => { ((Action)(() => onDoubleTapDown!(details)))(); return null; });
                     }
                 }
             }
@@ -155,17 +155,17 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     {
         _stopDoubleTapTimer();
         var tracker = new _TapTracker__multitap(@event: @event, entry: GestureBinding.instance.gestureArena.add(@event.pointer, this), doubleTapMinTime: ConstantsLibrary.kDoubleTapMinTime, gestureSettings: gestureSettings);
-        this._trackers[@event.pointer] = tracker;
-        tracker.startTrackingPointer((Action<PointerEvent>)this._handleEvent, @event.transform);
+        _trackers[@event.pointer] = tracker;
+        tracker.startTrackingPointer(_handleEvent, @event.transform);
     }
 
     internal virtual void _handleEvent(PointerEvent @event)
     {
-        _TapTracker__multitap tracker = this._trackers.GetValueOrDefault(((PointerEvent)@event).pointer)!;
-        if ((@event is PointerUpEvent))
+        _TapTracker__multitap tracker = _trackers.GetValueOrDefault(@event.pointer)!;
+        if (@event is PointerUpEvent)
         {
             PointerUpEvent @event__as9191 = (PointerUpEvent)@event;
-            if ((this._firstTap is null))
+            if (_firstTap is null)
             {
                 _registerFirstTap(tracker);
             }
@@ -176,17 +176,17 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
         }
         else
         {
-            if ((@event is PointerMoveEvent))
+            if (@event is PointerMoveEvent)
             {
                 PointerMoveEvent @event__as9360 = (PointerMoveEvent)@event;
-                if (!tracker.isWithinGlobalTolerance(((PointerMoveEvent)@event__as9360), ConstantsLibrary.kDoubleTapTouchSlop))
+                if (!tracker.isWithinGlobalTolerance(@event__as9360, ConstantsLibrary.kDoubleTapTouchSlop))
                 {
                     _reject(tracker);
                 }
             }
             else
             {
-                if ((@event is PointerCancelEvent))
+                if (@event is PointerCancelEvent)
                 {
                     PointerCancelEvent @event__as9512 = (PointerCancelEvent)@event;
                     _reject(tracker);
@@ -201,12 +201,12 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
 
     public override void rejectGesture(long pointer)
     {
-        _TapTracker__multitap? tracker = this._trackers.GetValueOrDefault(pointer);
-        if ((((tracker is null) && (this._firstTap is not null)) && (this._firstTap!.pointer == pointer)))
+        _TapTracker__multitap? tracker = _trackers.GetValueOrDefault(pointer);
+        if ((tracker is null) && (_firstTap is not null) && (_firstTap!.pointer == pointer))
         {
-            tracker = this._firstTap;
+            tracker = _firstTap;
         }
-        if ((tracker is not null))
+        if (tracker is not null)
         {
             _reject(tracker);
         }
@@ -214,19 +214,19 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
 
     internal virtual void _reject(_TapTracker__multitap tracker)
     {
-        this._trackers.remove(((_TapTracker__multitap)tracker).pointer);
-        ((_TapTracker__multitap)tracker).entry.resolve(GestureDisposition.rejected);
+        _trackers.remove(tracker.pointer);
+        tracker.entry.resolve(GestureDisposition.rejected);
         _freezeTracker(tracker);
-        if ((this._firstTap is not null))
+        if (_firstTap is not null)
         {
-            if ((Equals(tracker, this._firstTap)))
+            if (Equals(tracker, _firstTap))
             {
                 _reset();
             }
             else
             {
                 _checkCancel();
-                if ((checked((long)(this._trackers.Count)) == 0))
+                if (checked((long)_trackers.Count) == 0)
                 {
                     _reset();
                 }
@@ -243,16 +243,16 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     internal virtual void _reset()
     {
         _stopDoubleTapTimer();
-        if ((this._firstTap is not null))
+        if (_firstTap is not null)
         {
-            if ((checked((long)(this._trackers.Count)) != 0))
+            if (checked((long)_trackers.Count) != 0)
             {
                 _checkCancel();
             }
-            _TapTracker__multitap tracker = this._firstTap!;
+            _TapTracker__multitap tracker = _firstTap!;
             _firstTap = null;
             _reject(tracker);
-            GestureBinding.instance.gestureArena.release(((_TapTracker__multitap)tracker).pointer);
+            GestureBinding.instance.gestureArena.release(tracker.pointer);
         }
         _clearTrackers();
     }
@@ -260,61 +260,61 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     internal virtual void _registerFirstTap(_TapTracker__multitap tracker)
     {
         _startDoubleTapTimer();
-        GestureBinding.instance.gestureArena.hold(((_TapTracker__multitap)tracker).pointer);
+        GestureBinding.instance.gestureArena.hold(tracker.pointer);
         _freezeTracker(tracker);
-        this._trackers.remove(((_TapTracker__multitap)tracker).pointer);
+        _trackers.remove(tracker.pointer);
         _clearTrackers();
         _firstTap = tracker;
     }
 
     internal virtual void _registerSecondTap(_TapTracker__multitap tracker)
     {
-        this._firstTap!.entry.resolve(GestureDisposition.accepted);
-        ((_TapTracker__multitap)tracker).entry.resolve(GestureDisposition.accepted);
+        _firstTap!.entry.resolve(GestureDisposition.accepted);
+        tracker.entry.resolve(GestureDisposition.accepted);
         _freezeTracker(tracker);
-        this._trackers.remove(((_TapTracker__multitap)tracker).pointer);
-        _checkUp(((_TapTracker__multitap)tracker).initialButtons);
+        _trackers.remove(tracker.pointer);
+        _checkUp(tracker.initialButtons);
         _reset();
     }
 
     internal virtual void _clearTrackers()
     {
-        this._trackers.Values.ToList().forEach(this._reject);
-        DartRuntimePrimitives.Assert(() => (checked((long)(this._trackers.Count)) == 0));
+        _trackers.Values.ToList().forEach(_reject);
+        DartRuntimePrimitives.Assert(() => checked((long)_trackers.Count) == 0);
     }
 
     internal virtual void _freezeTracker(_TapTracker__multitap tracker)
     {
-        tracker.stopTrackingPointer((Action<PointerEvent>)this._handleEvent);
+        tracker.stopTrackingPointer(_handleEvent);
     }
 
     internal virtual void _startDoubleTapTimer()
     {
-        _doubleTapTimer ??= new Timer(ConstantsLibrary.kDoubleTapTimeout, this._reset);
+        _doubleTapTimer ??= new Timer(ConstantsLibrary.kDoubleTapTimeout, _reset);
     }
 
     internal virtual void _stopDoubleTapTimer()
     {
-        if ((this._doubleTapTimer is not null))
+        if (_doubleTapTimer is not null)
         {
-            this._doubleTapTimer!.cancel();
+            _doubleTapTimer!.cancel();
             _doubleTapTimer = null;
         }
     }
 
     internal virtual void _checkUp(long buttons)
     {
-        if ((this.onDoubleTap is not null))
+        if (onDoubleTap is not null)
         {
-            invokeCallback<object?>("onDoubleTap", () => { ((Action)(this.onDoubleTap!))(); return null; });
+            invokeCallback<object?>("onDoubleTap", () => { onDoubleTap!(); return null; });
         }
     }
 
     internal virtual void _checkCancel()
     {
-        if ((this.onDoubleTapCancel is not null))
+        if (onDoubleTapCancel is not null)
         {
-            invokeCallback<object?>("onDoubleTapCancel", () => { ((Action)(this.onDoubleTapCancel!))(); return null; });
+            invokeCallback<object?>("onDoubleTapCancel", () => { onDoubleTapCancel!(); return null; });
         }
     }
 
@@ -332,38 +332,38 @@ internal class _TapGesture__multitap : _TapTracker__multitap
     internal _TapGesture__multitap(MultiTapGestureRecognizer gestureRecognizer, PointerEvent @event, Duration longTapDelay, DeviceGestureSettings? gestureSettings) : base(gestureSettings: gestureSettings, @event: ((PointerDownEvent?)(object?)@event)!, entry: GestureBinding.instance.gestureArena.add(((PointerDownEvent)@event).pointer, gestureRecognizer), doubleTapMinTime: ConstantsLibrary.kDoubleTapMinTime)
     {
         this.gestureRecognizer = gestureRecognizer;
-        this._lastPosition = OffsetPair.CreateFromEventPosition(@event);
+        _lastPosition = OffsetPair.CreateFromEventPosition(@event);
     }
 
     public virtual void handleEvent(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (((PointerEvent)@event).pointer == pointer));
-        if ((@event is PointerMoveEvent))
+        DartRuntimePrimitives.Assert(() => @event.pointer == pointer);
+        if (@event is PointerMoveEvent)
         {
             PointerMoveEvent @event__as13527 = (PointerMoveEvent)@event;
-            if (!isWithinGlobalTolerance(((PointerMoveEvent)@event__as13527), EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as13527).kind, gestureSettings)))
+            if (!isWithinGlobalTolerance(@event__as13527, EventsLibrary.computeHitSlop(@event__as13527.kind, gestureSettings)))
             {
                 cancel();
             }
             else
             {
-                _lastPosition = OffsetPair.CreateFromEventPosition(((PointerMoveEvent)@event__as13527));
+                _lastPosition = OffsetPair.CreateFromEventPosition(@event__as13527);
             }
         }
         else
         {
-            if ((@event is PointerCancelEvent))
+            if (@event is PointerCancelEvent)
             {
                 PointerCancelEvent @event__as13763 = (PointerCancelEvent)@event;
                 cancel();
             }
             else
             {
-                if ((@event is PointerUpEvent))
+                if (@event is PointerUpEvent)
                 {
                     PointerUpEvent @event__as13825 = (PointerUpEvent)@event;
-                    stopTrackingPointer((Action<PointerEvent>)this.handleEvent);
-                    _finalPosition = OffsetPair.CreateFromEventPosition(((PointerUpEvent)@event__as13825));
+                    stopTrackingPointer(handleEvent);
+                    _finalPosition = OffsetPair.CreateFromEventPosition(@event__as13825);
                     _check();
                 }
             }
@@ -372,9 +372,9 @@ internal class _TapGesture__multitap : _TapTracker__multitap
 
     public override void stopTrackingPointer(Action<PointerEvent> route)
     {
-        this._timer?.cancel();
+        _timer?.cancel();
         _timer = null;
-        base.stopTrackingPointer((Action<PointerEvent>)route);
+        base.stopTrackingPointer(route);
     }
 
     public virtual void accept()
@@ -385,13 +385,13 @@ internal class _TapGesture__multitap : _TapTracker__multitap
 
     public virtual void reject()
     {
-        stopTrackingPointer((Action<PointerEvent>)this.handleEvent);
-        this.gestureRecognizer._dispatchCancel(pointer);
+        stopTrackingPointer(handleEvent);
+        gestureRecognizer._dispatchCancel(pointer);
     }
 
     public virtual void cancel()
     {
-        if (this._wonArena)
+        if (_wonArena)
         {
             reject();
         }
@@ -403,9 +403,9 @@ internal class _TapGesture__multitap : _TapTracker__multitap
 
     internal virtual void _check()
     {
-        if ((this._wonArena && (this._finalPosition is not null)))
+        if (_wonArena && (_finalPosition is not null))
         {
-            this.gestureRecognizer._dispatchTap(pointer, this._finalPosition!);
+            gestureRecognizer._dispatchTap(pointer, _finalPosition!);
         }
     }
 
@@ -428,86 +428,86 @@ public class MultiTapGestureRecognizer : GestureRecognizer
 
     public override void addAllowedPointer(PointerDownEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => !this._gestureMap.ContainsKey(@event.pointer));
-        this._gestureMap[@event.pointer] = new _TapGesture__multitap(gestureRecognizer: this, @event: @event, longTapDelay: this.longTapDelay, gestureSettings: gestureSettings);
-        if ((this.onTapDown is not null))
+        DartRuntimePrimitives.Assert(() => !_gestureMap.ContainsKey(@event.pointer));
+        _gestureMap[@event.pointer] = new _TapGesture__multitap(gestureRecognizer: this, @event: @event, longTapDelay: longTapDelay, gestureSettings: gestureSettings);
+        if (onTapDown is not null)
         {
             invokeCallback<object?>("onTapDown", () =>
             {
-                ((Action)((() =>
+                ((Action)(() =>
                 {
-                    this.onTapDown!(@event.pointer, new TapDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: @event.kind));
-                })))(); return null;
+                    onTapDown!(@event.pointer, new TapDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: @event.kind));
+                }))(); return null;
             });
         }
     }
 
     public override void acceptGesture(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => this._gestureMap.ContainsKey(pointer));
-        this._gestureMap.GetValueOrDefault(pointer)!.accept();
+        DartRuntimePrimitives.Assert(() => _gestureMap.ContainsKey(pointer));
+        _gestureMap.GetValueOrDefault(pointer)!.accept();
     }
 
     public override void rejectGesture(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => this._gestureMap.ContainsKey(pointer));
-        this._gestureMap.GetValueOrDefault(pointer)!.reject();
-        DartRuntimePrimitives.Assert(() => !this._gestureMap.ContainsKey(pointer));
+        DartRuntimePrimitives.Assert(() => _gestureMap.ContainsKey(pointer));
+        _gestureMap.GetValueOrDefault(pointer)!.reject();
+        DartRuntimePrimitives.Assert(() => !_gestureMap.ContainsKey(pointer));
     }
 
     internal virtual void _dispatchCancel(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => this._gestureMap.ContainsKey(pointer));
-        this._gestureMap.remove(pointer);
-        if ((this.onTapCancel is not null))
+        DartRuntimePrimitives.Assert(() => _gestureMap.ContainsKey(pointer));
+        _gestureMap.remove(pointer);
+        if (onTapCancel is not null)
         {
-            invokeCallback<object?>("onTapCancel", () => { ((Action)((() => this.onTapCancel!(pointer))))(); return null; });
+            invokeCallback<object?>("onTapCancel", () => { ((Action)(() => onTapCancel!(pointer)))(); return null; });
         }
     }
 
     internal virtual void _dispatchTap(long pointer, OffsetPair position)
     {
-        DartRuntimePrimitives.Assert(() => this._gestureMap.ContainsKey(pointer));
-        this._gestureMap.remove(pointer);
-        if ((this.onTapUp is not null))
+        DartRuntimePrimitives.Assert(() => _gestureMap.ContainsKey(pointer));
+        _gestureMap.remove(pointer);
+        if (onTapUp is not null)
         {
             invokeCallback<object?>("onTapUp", () =>
             {
-                ((Action)((() =>
+                ((Action)(() =>
                 {
-                    this.onTapUp!(pointer, new TapUpDetails(kind: getKindForPointer(pointer), localPosition: ((OffsetPair)position).local, globalPosition: ((OffsetPair)position).global));
-                })))(); return null;
+                    onTapUp!(pointer, new TapUpDetails(kind: getKindForPointer(pointer), localPosition: position.local, globalPosition: position.global));
+                }))(); return null;
             });
         }
-        if ((this.onTap is not null))
+        if (onTap is not null)
         {
-            invokeCallback<object?>("onTap", () => { ((Action)((() => this.onTap!(pointer))))(); return null; });
+            invokeCallback<object?>("onTap", () => { ((Action)(() => onTap!(pointer)))(); return null; });
         }
     }
 
     internal virtual void _dispatchLongTap(long pointer, OffsetPair lastPosition)
     {
-        DartRuntimePrimitives.Assert(() => this._gestureMap.ContainsKey(pointer));
-        if ((this.onLongTapDown is not null))
+        DartRuntimePrimitives.Assert(() => _gestureMap.ContainsKey(pointer));
+        if (onLongTapDown is not null)
         {
             invokeCallback<object?>("onLongTapDown", () =>
             {
-                ((Action)((() =>
+                ((Action)(() =>
                 {
-                    this.onLongTapDown!(pointer, new TapDownDetails(globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local, kind: getKindForPointer(pointer)));
-                })))(); return null;
+                    onLongTapDown!(pointer, new TapDownDetails(globalPosition: lastPosition.global, localPosition: lastPosition.local, kind: getKindForPointer(pointer)));
+                }))(); return null;
             });
         }
     }
 
     public override void dispose()
     {
-        var localGestures = new List<_TapGesture__multitap>(DartRuntimePrimitives.ConvertEnumerable<_TapGesture__multitap>(this._gestureMap.Values));
+        var localGestures = new List<_TapGesture__multitap>(DartRuntimePrimitives.ConvertEnumerable<_TapGesture__multitap>(_gestureMap.Values));
         foreach (var gesture in localGestures)
         {
             gesture.cancel();
         }
-        DartRuntimePrimitives.Assert(() => (checked((long)(this._gestureMap.Count)) == 0));
+        DartRuntimePrimitives.Assert(() => checked((long)_gestureMap.Count) == 0);
         base.dispose();
     }
 
@@ -528,22 +528,22 @@ public class SerialTapDownDetails : PositionedGestureDetails, Diagnosticable
 
     public SerialTapDownDetails(Offset globalPosition = default, Offset? localPosition = null, PointerDeviceKind kind = default!, long buttons = 0, long count = 1)
     {
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.kind = kind;
         this.buttons = buttons;
         this.count = count;
-        this.__field_localPosition = (localPosition ?? globalPosition);
-        System.Diagnostics.Debug.Assert((count > 0L));
+        __field_localPosition = localPosition ?? globalPosition;
+        System.Diagnostics.Debug.Assert(count > 0L);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
-        properties.add(new IntProperty("buttons", this.buttons));
-        properties.add(new IntProperty("count", this.count));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new IntProperty("buttons", buttons));
+        properties.add(new IntProperty("count", count));
     }
 
 }
@@ -557,13 +557,13 @@ public class SerialTapCancelDetails : Diagnosticable
     public SerialTapCancelDetails(long count = 1)
     {
         this.count = count;
-        System.Diagnostics.Debug.Assert((count > 0L));
+        System.Diagnostics.Debug.Assert(count > 0L);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new IntProperty("count", this.count));
+        properties.add(new IntProperty("count", count));
     }
 
 }
@@ -581,20 +581,20 @@ public class SerialTapUpDetails : PositionedGestureDetails, Diagnosticable
 
     public SerialTapUpDetails(Offset globalPosition = default, Offset? localPosition = null, PointerDeviceKind? kind = null, long count = 1)
     {
-        this.__field_globalPosition = globalPosition;
+        __field_globalPosition = globalPosition;
         this.kind = kind;
         this.count = count;
-        this.__field_localPosition = (localPosition ?? globalPosition);
-        System.Diagnostics.Debug.Assert((count > 0L));
+        __field_localPosition = localPosition ?? globalPosition;
+        System.Diagnostics.Debug.Assert(count > 0L);
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", this.globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", this.localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", this.kind));
-        properties.add(new IntProperty("count", this.count));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new IntProperty("count", count));
     }
 
 }
@@ -613,10 +613,10 @@ public class SerialTapGestureRecognizer : GestureRecognizer
     {
     }
 
-    public virtual bool isTrackingPointer => (this._pendingTap is not null);
+    public virtual bool isTrackingPointer => _pendingTap is not null;
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
-        if ((((this.onSerialTapDown is null) && (this.onSerialTapCancel is null)) && (this.onSerialTapUp is null)))
+        if ((onSerialTapDown is null) && (onSerialTapCancel is null) && (onSerialTapUp is null))
         {
             return false;
         }
@@ -626,7 +626,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
 
     public override void addAllowedPointer(PointerDownEvent @event)
     {
-        if (((((checked((long)(this._completedTaps.Count)) != 0) && !_representsSameSeries(this._completedTaps.Last(), @event))) || (this._pendingTap is not null)))
+        if ((checked((long)_completedTaps.Count) != 0) && !_representsSameSeries(_completedTaps.Last(), @event) || (_pendingTap is not null))
         {
             _reset();
         }
@@ -635,47 +635,47 @@ public class SerialTapGestureRecognizer : GestureRecognizer
 
     internal virtual bool _representsSameSeries(_TapTracker__multitap tap, PointerDownEvent @event)
     {
-        return ((tap.hasElapsedMinTime() && tap.hasSameButton(@event)) && tap.isWithinGlobalTolerance(@event, ConstantsLibrary.kDoubleTapSlop));
+        return tap.hasElapsedMinTime() && tap.hasSameButton(@event) && tap.isWithinGlobalTolerance(@event, ConstantsLibrary.kDoubleTapSlop);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _trackTap(PointerDownEvent @event)
     {
         _stopSerialTapTimer();
-        if ((this.onSerialTapDown is not null))
+        if (onSerialTapDown is not null)
         {
-            var details = new SerialTapDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer), buttons: @event.buttons, count: (checked((long)(this._completedTaps.Count)) + 1L));
-            invokeCallback<object?>("onSerialTapDown", () => { ((Action)((() => this.onSerialTapDown!(details))))(); return null; });
+            var details = new SerialTapDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer), buttons: @event.buttons, count: checked(_completedTaps.Count) + 1L);
+            invokeCallback<object?>("onSerialTapDown", () => { ((Action)(() => onSerialTapDown!(details)))(); return null; });
         }
         var tracker = new _TapTracker__multitap(gestureSettings: gestureSettings, @event: @event, entry: GestureBinding.instance.gestureArena.add(@event.pointer, this), doubleTapMinTime: ConstantsLibrary.kDoubleTapMinTime);
-        DartRuntimePrimitives.Assert(() => (this._pendingTap is null));
+        DartRuntimePrimitives.Assert(() => _pendingTap is null);
         _pendingTap = tracker;
-        tracker.startTrackingPointer((Action<PointerEvent>)this._handleEvent, @event.transform);
+        tracker.startTrackingPointer(_handleEvent, @event.transform);
     }
 
     internal virtual void _handleEvent(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (this._pendingTap is not null));
-        DartRuntimePrimitives.Assert(() => (this._pendingTap!.pointer == ((PointerEvent)@event).pointer));
-        _TapTracker__multitap tracker = this._pendingTap!;
-        if ((@event is PointerUpEvent))
+        DartRuntimePrimitives.Assert(() => _pendingTap is not null);
+        DartRuntimePrimitives.Assert(() => _pendingTap!.pointer == @event.pointer);
+        _TapTracker__multitap tracker = _pendingTap!;
+        if (@event is PointerUpEvent)
         {
             PointerUpEvent @event__as32573 = (PointerUpEvent)@event;
-            _registerTap(((PointerUpEvent)@event__as32573), tracker);
+            _registerTap(@event__as32573, tracker);
         }
         else
         {
-            if ((@event is PointerMoveEvent))
+            if (@event is PointerMoveEvent)
             {
                 PointerMoveEvent @event__as32651 = (PointerMoveEvent)@event;
-                if (!tracker.isWithinGlobalTolerance(((PointerMoveEvent)@event__as32651), ConstantsLibrary.kDoubleTapTouchSlop))
+                if (!tracker.isWithinGlobalTolerance(@event__as32651, ConstantsLibrary.kDoubleTapTouchSlop))
                 {
                     _reset();
                 }
             }
             else
             {
-                if ((@event is PointerCancelEvent))
+                if (@event is PointerCancelEvent)
                 {
                     PointerCancelEvent @event__as32795 = (PointerCancelEvent)@event;
                     _reset();
@@ -686,26 +686,26 @@ public class SerialTapGestureRecognizer : GestureRecognizer
 
     public override void acceptGesture(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => (this._pendingTap is not null));
-        DartRuntimePrimitives.Assert(() => (this._pendingTap!.pointer == pointer));
-        this._gestureResolutions[pointer] = GestureDisposition.accepted;
+        DartRuntimePrimitives.Assert(() => _pendingTap is not null);
+        DartRuntimePrimitives.Assert(() => _pendingTap!.pointer == pointer);
+        _gestureResolutions[pointer] = GestureDisposition.accepted;
     }
 
     public override void rejectGesture(long pointer)
     {
-        this._gestureResolutions[pointer] = GestureDisposition.rejected;
+        _gestureResolutions[pointer] = GestureDisposition.rejected;
         _reset();
     }
 
     internal virtual void _rejectPendingTap()
     {
-        DartRuntimePrimitives.Assert(() => (this._pendingTap is not null));
-        _TapTracker__multitap tracker = this._pendingTap!;
+        DartRuntimePrimitives.Assert(() => _pendingTap is not null);
+        _TapTracker__multitap tracker = _pendingTap!;
         _pendingTap = null;
-        _checkCancel((checked((long)(this._completedTaps.Count)) + 1L));
-        if (!this._gestureResolutions.ContainsKey(((_TapTracker__multitap)tracker).pointer))
+        _checkCancel(checked(_completedTaps.Count) + 1L);
+        if (!_gestureResolutions.ContainsKey(tracker.pointer))
         {
-            ((_TapTracker__multitap)tracker).entry.resolve(GestureDisposition.rejected);
+            tracker.entry.resolve(GestureDisposition.rejected);
         }
         _stopTrackingPointer(tracker);
     }
@@ -718,67 +718,67 @@ public class SerialTapGestureRecognizer : GestureRecognizer
 
     internal virtual void _reset()
     {
-        if ((this._pendingTap is not null))
+        if (_pendingTap is not null)
         {
             _rejectPendingTap();
         }
         _pendingTap = null;
-        this._completedTaps.Clear();
-        this._gestureResolutions.Clear();
+        _completedTaps.Clear();
+        _gestureResolutions.Clear();
         _stopSerialTapTimer();
     }
 
     internal virtual void _registerTap(PointerUpEvent @event, _TapTracker__multitap tracker)
     {
-        DartRuntimePrimitives.Assert(() => (Equals(tracker, this._pendingTap)));
-        DartRuntimePrimitives.Assert(() => (((_TapTracker__multitap)tracker).pointer == @event.pointer));
+        DartRuntimePrimitives.Assert(() => Equals(tracker, _pendingTap));
+        DartRuntimePrimitives.Assert(() => tracker.pointer == @event.pointer);
         _startSerialTapTimer();
-        DartRuntimePrimitives.Assert(() => (!Equals(this._gestureResolutions.GetValueOrDefault(@event.pointer), GestureDisposition.rejected)));
-        if (!this._gestureResolutions.ContainsKey(@event.pointer))
+        DartRuntimePrimitives.Assert(() => !Equals(_gestureResolutions.GetValueOrDefault(@event.pointer), GestureDisposition.rejected));
+        if (!_gestureResolutions.ContainsKey(@event.pointer))
         {
-            ((_TapTracker__multitap)tracker).entry.resolve(GestureDisposition.accepted);
+            tracker.entry.resolve(GestureDisposition.accepted);
         }
-        DartRuntimePrimitives.Assert(() => (Equals(this._gestureResolutions.GetValueOrDefault(@event.pointer), GestureDisposition.accepted)));
+        DartRuntimePrimitives.Assert(() => Equals(_gestureResolutions.GetValueOrDefault(@event.pointer), GestureDisposition.accepted));
         _stopTrackingPointer(tracker);
         _pendingTap = null;
         _checkUp(@event, tracker);
-        this._completedTaps.Add(tracker);
+        _completedTaps.Add(tracker);
     }
 
     internal virtual void _stopTrackingPointer(_TapTracker__multitap tracker)
     {
-        tracker.stopTrackingPointer((Action<PointerEvent>)this._handleEvent);
+        tracker.stopTrackingPointer(_handleEvent);
     }
 
     internal virtual void _startSerialTapTimer()
     {
-        _serialTapTimer ??= new Timer(ConstantsLibrary.kDoubleTapTimeout, this._reset);
+        _serialTapTimer ??= new Timer(ConstantsLibrary.kDoubleTapTimeout, _reset);
     }
 
     internal virtual void _stopSerialTapTimer()
     {
-        if ((this._serialTapTimer is not null))
+        if (_serialTapTimer is not null)
         {
-            this._serialTapTimer!.cancel();
+            _serialTapTimer!.cancel();
             _serialTapTimer = null;
         }
     }
 
     internal virtual void _checkUp(PointerUpEvent @event, _TapTracker__multitap tracker)
     {
-        if ((this.onSerialTapUp is not null))
+        if (onSerialTapUp is not null)
         {
-            var details = new SerialTapUpDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(((_TapTracker__multitap)tracker).pointer), count: (checked((long)(this._completedTaps.Count)) + 1L));
-            invokeCallback<object?>("onSerialTapUp", () => { ((Action)((() => this.onSerialTapUp!(details))))(); return null; });
+            var details = new SerialTapUpDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(tracker.pointer), count: checked(_completedTaps.Count) + 1L);
+            invokeCallback<object?>("onSerialTapUp", () => { ((Action)(() => onSerialTapUp!(details)))(); return null; });
         }
     }
 
     internal virtual void _checkCancel(long count)
     {
-        if ((this.onSerialTapCancel is not null))
+        if (onSerialTapCancel is not null)
         {
             var details = new SerialTapCancelDetails(count: count);
-            invokeCallback<object?>("onSerialTapCancel", () => { ((Action)((() => this.onSerialTapCancel!(details))))(); return null; });
+            invokeCallback<object?>("onSerialTapCancel", () => { ((Action)(() => onSerialTapCancel!(details)))(); return null; });
         }
     }
 

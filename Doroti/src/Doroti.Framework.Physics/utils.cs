@@ -8,12 +8,12 @@ public static partial class UtilsLibrary
 {
     public static bool nearEqual(double? a, double? b, double epsilon)
     {
-        DartRuntimePrimitives.Assert(() => (epsilon >= 0.0));
-        if (((a is null) || (b is null)))
+        DartRuntimePrimitives.Assert(() => epsilon >= 0.0);
+        if ((a is null) || (b is null))
         {
-            return (a == b);
+            return a == b;
         }
-        return ((((DartRuntimePrimitives.RequireValue(a) > ((DartRuntimePrimitives.RequireValue(b) - epsilon)))) && ((DartRuntimePrimitives.RequireValue(a) < ((DartRuntimePrimitives.RequireValue(b) + epsilon))))) || (DartRuntimePrimitives.RequireValue(a) == DartRuntimePrimitives.RequireValue(b)));
+        return (DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b) - epsilon && DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b) + epsilon) || (DartRuntimePrimitives.RequireValue(a) == DartRuntimePrimitives.RequireValue(b));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

@@ -9,7 +9,7 @@ public static partial class Text_editing_deltaLibrary
 {
     internal static TextAffinity? _toTextAffinity(string? affinity)
     {
-        return (affinity switch { var __case576 when Equals(__case576, "TextAffinity.downstream") => TextAffinity.downstream, var __case634 when Equals(__case634, "TextAffinity.upstream") => TextAffinity.upstream, _ => null });
+        return affinity switch { var __case576 when Equals(__case576, "TextAffinity.downstream") => TextAffinity.downstream, var __case634 when Equals(__case634, "TextAffinity.upstream") => TextAffinity.upstream, _ => null };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -32,7 +32,7 @@ public static partial class Text_editing_deltaLibrary
         {
             return true;
         }
-        return ((((range.start >= 0L) && (range.start <= text.Length))) && (((range.end >= 0L) && (range.end <= text.Length))));
+        return (range.start >= 0L) && (range.start <= text.Length) && (range.end >= 0L) && (range.end <= text.Length);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -60,9 +60,9 @@ public abstract class TextEditingDelta : Diagnosticable
         var replacementSource = ((string?)encoded.GetValueOrDefault("deltaText"))!;
         var replacementSourceStart = 0L;
         long replacementSourceEnd = replacementSource.Length;
-        bool isNonTextUpdate = ((replacementDestinationStart == -1L) && (replacementDestinationStart == replacementDestinationEnd));
-        var newComposing = new global::Doroti.Ui.TextRange(start: (((long?)encoded.GetValueOrDefault("composingBase")) ?? -1L), end: (((long?)encoded.GetValueOrDefault("composingExtent")) ?? -1L));
-        var newSelection = new TextSelection(baseOffset: (((long?)encoded.GetValueOrDefault("selectionBase")) ?? -1L), extentOffset: (((long?)encoded.GetValueOrDefault("selectionExtent")) ?? -1L), affinity: (Text_editing_deltaLibrary._toTextAffinity(((string?)encoded.GetValueOrDefault("selectionAffinity"))!) ?? TextAffinity.downstream), isDirectional: (((bool?)encoded.GetValueOrDefault("selectionIsDirectional")) ?? false));
+        bool isNonTextUpdate = (replacementDestinationStart == -1L) && (replacementDestinationStart == replacementDestinationEnd);
+        var newComposing = new global::Doroti.Ui.TextRange(start: ((long?)encoded.GetValueOrDefault("composingBase")) ?? -1L, end: ((long?)encoded.GetValueOrDefault("composingExtent")) ?? -1L);
+        var newSelection = new TextSelection(baseOffset: ((long?)encoded.GetValueOrDefault("selectionBase")) ?? -1L, extentOffset: ((long?)encoded.GetValueOrDefault("selectionExtent")) ?? -1L, affinity: Text_editing_deltaLibrary._toTextAffinity(((string?)encoded.GetValueOrDefault("selectionAffinity"))!) ?? TextAffinity.downstream, isDirectional: ((bool?)encoded.GetValueOrDefault("selectionIsDirectional")) ?? false);
         if (isNonTextUpdate)
         {
             DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(newSelection, oldText));
@@ -73,48 +73,48 @@ public abstract class TextEditingDelta : Diagnosticable
         string newText = Text_editing_deltaLibrary._replace(oldText, replacementSource, new global::Doroti.Ui.TextRange(start: replacementDestinationStart, end: replacementDestinationEnd));
         DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(newSelection, newText));
         DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(newComposing, newText));
-        var isEqual = (oldText == newText);
-        bool isDeletionGreaterThanOne = ((((replacementDestinationEnd - replacementDestinationStart)) - ((replacementSourceEnd - replacementSourceStart))) > 1L);
-        bool isDeletingByReplacingWithEmpty = (((replacementSource.Length == 0) && (replacementSourceStart == 0L)) && (replacementSourceStart == replacementSourceEnd));
-        bool isReplacedByShorter = (isDeletionGreaterThanOne && (((replacementSourceEnd - replacementSourceStart) < (replacementDestinationEnd - replacementDestinationStart))));
-        bool isReplacedByLonger = ((replacementSourceEnd - replacementSourceStart) > (replacementDestinationEnd - replacementDestinationStart));
-        var isReplacedBySame = ((replacementSourceEnd - replacementSourceStart) == (replacementDestinationEnd - replacementDestinationStart));
-        bool isInsertingInsideComposingRegion = ((replacementDestinationStart + replacementSourceEnd) > replacementDestinationEnd);
-        bool isDeletingInsideComposingRegion = ((!isReplacedByShorter && !isDeletingByReplacingWithEmpty) && ((replacementDestinationStart + replacementSourceEnd) < replacementDestinationEnd));
+        var isEqual = oldText == newText;
+        bool isDeletionGreaterThanOne = (replacementDestinationEnd - replacementDestinationStart - (replacementSourceEnd - replacementSourceStart)) > 1L;
+        bool isDeletingByReplacingWithEmpty = (replacementSource.Length == 0) && (replacementSourceStart == 0L) && (replacementSourceStart == replacementSourceEnd);
+        bool isReplacedByShorter = isDeletionGreaterThanOne && (replacementSourceEnd - replacementSourceStart) < (replacementDestinationEnd - replacementDestinationStart);
+        bool isReplacedByLonger = (replacementSourceEnd - replacementSourceStart) > (replacementDestinationEnd - replacementDestinationStart);
+        var isReplacedBySame = (replacementSourceEnd - replacementSourceStart) == (replacementDestinationEnd - replacementDestinationStart);
+        bool isInsertingInsideComposingRegion = (replacementDestinationStart + replacementSourceEnd) > replacementDestinationEnd;
+        bool isDeletingInsideComposingRegion = !isReplacedByShorter && !isDeletingByReplacingWithEmpty && ((replacementDestinationStart + replacementSourceEnd) < replacementDestinationEnd);
         string newComposingText = default!;
         string originalComposingText = default!;
-        if (((isDeletingByReplacingWithEmpty || isDeletingInsideComposingRegion) || isReplacedByShorter))
+        if (isDeletingByReplacingWithEmpty || isDeletingInsideComposingRegion || isReplacedByShorter)
         {
             newComposingText = replacementSource.substring(replacementSourceStart, replacementSourceEnd);
-            originalComposingText = oldText.substring(replacementDestinationStart, (replacementDestinationStart + replacementSourceEnd));
+            originalComposingText = oldText.substring(replacementDestinationStart, replacementDestinationStart + replacementSourceEnd);
         }
         else
         {
-            newComposingText = replacementSource.substring(replacementSourceStart, (replacementSourceStart + ((replacementDestinationEnd - replacementDestinationStart))));
+            newComposingText = replacementSource.substring(replacementSourceStart, replacementSourceStart + (replacementDestinationEnd - replacementDestinationStart));
             originalComposingText = oldText.substring(replacementDestinationStart, replacementDestinationEnd);
         }
-        bool isOriginalComposingRegionTextChanged = !((originalComposingText == newComposingText));
-        bool isReplaced = (isOriginalComposingRegionTextChanged || (((isReplacedByLonger || isReplacedByShorter) || isReplacedBySame)));
+        bool isOriginalComposingRegionTextChanged = !(originalComposingText == newComposingText);
+        bool isReplaced = isOriginalComposingRegionTextChanged || isReplacedByLonger || isReplacedByShorter || isReplacedBySame;
         if (isEqual)
         {
             return new TextEditingDeltaNonTextUpdate(oldText: oldText, selection: newSelection, composing: newComposing);
         }
         else
         {
-            if ((((isDeletingByReplacingWithEmpty || isDeletingInsideComposingRegion)) && !isOriginalComposingRegionTextChanged))
+            if ((isDeletingByReplacingWithEmpty || isDeletingInsideComposingRegion) && !isOriginalComposingRegionTextChanged)
             {
                 var actualStart = replacementDestinationStart;
                 if (!isDeletionGreaterThanOne)
                 {
-                    actualStart = (replacementDestinationEnd - 1L);
+                    actualStart = replacementDestinationEnd - 1L;
                 }
                 return new TextEditingDeltaDeletion(oldText: oldText, deletedRange: new global::Doroti.Ui.TextRange(start: actualStart, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
             }
             else
             {
-                if (((((replacementDestinationStart == replacementDestinationEnd) || isInsertingInsideComposingRegion)) && !isOriginalComposingRegionTextChanged))
+                if (((replacementDestinationStart == replacementDestinationEnd) || isInsertingInsideComposingRegion) && !isOriginalComposingRegionTextChanged)
                 {
-                    return new TextEditingDeltaInsertion(oldText: oldText, textInserted: replacementSource.substring((replacementDestinationEnd - replacementDestinationStart), (((replacementDestinationEnd - replacementDestinationStart)) + ((replacementSource.Length - ((replacementDestinationEnd - replacementDestinationStart)))))), insertionOffset: replacementDestinationEnd, selection: newSelection, composing: newComposing);
+                    return new TextEditingDeltaInsertion(oldText: oldText, textInserted: replacementSource.substring(replacementDestinationEnd - replacementDestinationStart, replacementDestinationEnd - replacementDestinationStart + (replacementSource.Length - (replacementDestinationEnd - replacementDestinationStart))), insertionOffset: replacementDestinationEnd, selection: newSelection, composing: newComposing);
                 }
                 else
                 {

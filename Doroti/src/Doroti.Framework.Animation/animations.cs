@@ -75,7 +75,7 @@ public class AlwaysStoppedAnimation<T> : Animation<T>
 
     public AlwaysStoppedAnimation(T value)
     {
-        this.__field_value = value;
+        __field_value = value;
     }
 
     public override void addListener(Action listener)
@@ -97,7 +97,7 @@ public class AlwaysStoppedAnimation<T> : Animation<T>
     public override AnimationStatus status => AnimationStatus.forward;
     public override string toStringDetails()
     {
-        return $"{base.toStringDetails()} {this.value}; paused";
+        return $"{base.toStringDetails()} {value}; paused";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,37 +134,37 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public virtual Animation<double>? parent
     {
-        get => this._parent;
+        get => _parent;
         set
         {
             var __value = value;
-            if ((Equals(__value, this._parent)))
+            if (Equals(__value, _parent))
             {
                 return;
             }
-            if ((this._parent is not null))
+            if (_parent is not null)
             {
-                _status = this._parent!.status;
-                _value = this._parent!.value;
+                _status = _parent!.status;
+                _value = _parent!.value;
                 if (isListening)
                 {
                     didStopListening();
                 }
             }
             _parent = __value;
-            if ((this._parent is not null))
+            if (_parent is not null)
             {
                 if (isListening)
                 {
                     didStartListening();
                 }
-                if ((this._value != this._parent!.value))
+                if (_value != _parent!.value)
                 {
                     notifyListeners();
                 }
-                if ((!Equals(this._status, this._parent!.status)))
+                if (!Equals(_status, _parent!.status))
                 {
-                    notifyStatusListeners(this._parent!.status);
+                    notifyStatusListeners(_parent!.status);
                 }
                 _status = null;
                 _value = null;
@@ -173,64 +173,64 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
     }
     public virtual void didStartListening()
     {
-        if ((this._parent is not null))
+        if (_parent is not null)
         {
-            this._parent!.addListener((Action)notifyListeners);
-            this._parent!.addStatusListener((AnimationStatusListener)notifyStatusListeners);
+            _parent!.addListener(notifyListeners);
+            _parent!.addStatusListener(notifyStatusListeners);
         }
     }
 
     public virtual void didStopListening()
     {
-        if ((this._parent is not null))
+        if (_parent is not null)
         {
-            this._parent!.removeListener((Action)notifyListeners);
-            this._parent!.removeStatusListener((AnimationStatusListener)notifyStatusListeners);
+            _parent!.removeListener(notifyListeners);
+            _parent!.removeStatusListener(notifyStatusListeners);
         }
     }
 
-    public override AnimationStatus status => ((this._parent is not null) ? this._parent!.status : DartRuntimePrimitives.RequireValue(this._status));
-    public override double value => ((this._parent is not null) ? this._parent!.value : DartRuntimePrimitives.RequireValue(this._value));
+    public override AnimationStatus status => (_parent is not null) ? _parent!.status : DartRuntimePrimitives.RequireValue(_status);
+    public override double value => (_parent is not null) ? _parent!.value : DartRuntimePrimitives.RequireValue(_value);
     public override string ToString()
     {
-        if ((this.parent is null))
+        if (parent is null)
         {
-            return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation"))}(null; {base.toStringDetails()} {this.value.toStringAsFixed(3L)})";
+            return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation")}(null; {base.toStringDetails()} {value.toStringAsFixed(3L)})";
         }
-        return $"{this.parent}➩{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation"))}";
+        return $"{parent}➩{objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void didRegisterListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._listenerCounter >= 0L));
-        if ((this._listenerCounter == 0L))
+        DartRuntimePrimitives.Assert(() => _listenerCounter >= 0L);
+        if (_listenerCounter == 0L)
         {
             didStartListening();
         }
-        this._listenerCounter += 1L;
+        _listenerCounter += 1L;
     }
 
     public virtual void didUnregisterListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._listenerCounter >= 1L));
-        this._listenerCounter -= 1L;
-        if ((this._listenerCounter == 0L))
+        DartRuntimePrimitives.Assert(() => _listenerCounter >= 1L);
+        _listenerCounter -= 1L;
+        if (_listenerCounter == 0L)
         {
             didStopListening();
         }
     }
 
-    public virtual bool isListening => (this._listenerCounter > 0L);
+    public virtual bool isListening => _listenerCounter > 0L;
     public override void addListener(Action listener)
     {
         didRegisterListener();
-        this._listeners.add(listener);
+        _listeners.add(listener);
     }
 
     public override void removeListener(Action listener)
     {
-        bool removed = this._listeners.remove(listener);
+        bool removed = _listeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -239,23 +239,23 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public virtual void clearListeners()
     {
-        this._listeners.clear();
+        _listeners.clear();
     }
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners = this._listeners.ToList();
+        List<Action> localListeners = _listeners.ToList();
         foreach (var listener in localListeners)
         {
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener))
+                if (_listeners.contains(listener))
                 {
                     listener();
                 }
@@ -263,7 +263,7 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
             catch (Exception exceptionLocal)
             {
                 var stackLocal = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -271,12 +271,12 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
     public override void addStatusListener(AnimationStatusListener listener)
     {
         didRegisterListener();
-        this._statusListeners.add(listener);
+        _statusListeners.add(listener);
     }
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed = this._statusListeners.remove(listener);
+        bool removed = _statusListeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -285,17 +285,17 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public virtual void clearStatusListeners()
     {
-        this._statusListeners.clear();
+        _statusListeners.clear();
     }
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        List<AnimationStatusListener> localListeners = _statusListeners.ToList();
         foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener))
+                if (_statusListeners.contains(listener))
                 {
                     listener(status);
                 }
@@ -306,10 +306,10 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -330,23 +330,23 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
     public override void addListener(Action listener)
     {
         didRegisterListener();
-        this.parent.addListener((Action)listener);
+        parent.addListener(listener);
     }
 
     public override void removeListener(Action listener)
     {
-        this.parent.removeListener((Action)listener);
+        parent.removeListener(listener);
         didUnregisterListener();
     }
 
     public virtual void didStartListening()
     {
-        this.parent.addStatusListener((AnimationStatusListener)this._statusChangeHandler);
+        parent.addStatusListener(_statusChangeHandler);
     }
 
     public virtual void didStopListening()
     {
-        this.parent.removeStatusListener((AnimationStatusListener)this._statusChangeHandler);
+        parent.removeStatusListener(_statusChangeHandler);
     }
 
     internal virtual void _statusChangeHandler(AnimationStatus status)
@@ -354,50 +354,50 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
         notifyStatusListeners(_reverseStatus(status));
     }
 
-    public override AnimationStatus status => _reverseStatus(((Animation<double>)this.parent).status);
-    public override double value => (1.0 - ((Animation<double>)this.parent).value);
+    public override AnimationStatus status => _reverseStatus(parent.status);
+    public override double value => 1.0 - parent.value;
     internal virtual AnimationStatus _reverseStatus(AnimationStatus status)
     {
-        return (status switch { AnimationStatus.forward => AnimationStatus.reverse, AnimationStatus.reverse => AnimationStatus.forward, AnimationStatus.completed => AnimationStatus.dismissed, AnimationStatus.dismissed => AnimationStatus.completed, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return status switch { AnimationStatus.forward => AnimationStatus.reverse, AnimationStatus.reverse => AnimationStatus.forward, AnimationStatus.completed => AnimationStatus.dismissed, AnimationStatus.dismissed => AnimationStatus.completed, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{this.parent}➪{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ReverseAnimation"))}";
+        return $"{parent}➪{objectRuntimeTypeFunctions.objectRuntimeType(this, "ReverseAnimation")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void didRegisterListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._listenerCounter >= 0L));
-        if ((this._listenerCounter == 0L))
+        DartRuntimePrimitives.Assert(() => _listenerCounter >= 0L);
+        if (_listenerCounter == 0L)
         {
             didStartListening();
         }
-        this._listenerCounter += 1L;
+        _listenerCounter += 1L;
     }
 
     public virtual void didUnregisterListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._listenerCounter >= 1L));
-        this._listenerCounter -= 1L;
-        if ((this._listenerCounter == 0L))
+        DartRuntimePrimitives.Assert(() => _listenerCounter >= 1L);
+        _listenerCounter -= 1L;
+        if (_listenerCounter == 0L)
         {
             didStopListening();
         }
     }
 
-    public virtual bool isListening => (this._listenerCounter > 0L);
+    public virtual bool isListening => _listenerCounter > 0L;
     public override void addStatusListener(AnimationStatusListener listener)
     {
         didRegisterListener();
-        this._statusListeners.add(listener);
+        _statusListeners.add(listener);
     }
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed = this._statusListeners.remove(listener);
+        bool removed = _statusListeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -406,17 +406,17 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
 
     public virtual void clearStatusListeners()
     {
-        this._statusListeners.clear();
+        _statusListeners.clear();
     }
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        List<AnimationStatusListener> localListeners = _statusListeners.ToList();
         foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener))
+                if (_statusListeners.contains(listener))
                 {
                     listener(status);
                 }
@@ -427,10 +427,10 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -454,40 +454,40 @@ public class CurvedAnimation : Animation<double>, AnimationWithParentMixin<doubl
 
     internal virtual void _updateCurveDirection(AnimationStatus status)
     {
-        _curveDirection = (AnimationStatusMembers.isAnimating(status) ? (this._curveDirection ?? status) : null);
+        _curveDirection = AnimationStatusMembers.isAnimating(status) ? (_curveDirection ?? status) : null;
     }
 
     internal virtual bool _useForwardCurve
     {
         get
         {
-            return ((this.reverseCurve is null) || (!Equals(((this._curveDirection ?? ((Animation<double>)this.parent).status)), AnimationStatus.reverse)));
+            return (reverseCurve is null) || (!Equals(_curveDirection ?? parent.status, AnimationStatus.reverse));
         }
     }
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         isDisposed = true;
-        this.parent.removeStatusListener((AnimationStatusListener)this._updateCurveDirection);
+        parent.removeStatusListener(_updateCurveDirection);
     }
 
     public override double value
     {
         get
         {
-            Curve? activeCurve = (this._useForwardCurve ? this.curve : this.reverseCurve);
-            double t = ((Animation<double>)this.parent).value;
-            if ((activeCurve is null))
+            Curve? activeCurve = _useForwardCurve ? curve : reverseCurve;
+            double t = parent.value;
+            if (activeCurve is null)
             {
                 return t;
             }
-            if (((t == 0.0) || (t == 1.0)))
+            if ((t == 0.0) || (t == 1.0))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
                         double transformedValue = activeCurve.transform(t);
                         double roundedTransformedValue = transformedValue.round().toDouble();
-                        if ((roundedTransformedValue != t))
+                        if (roundedTransformedValue != t)
                         {
                             throw new FlutterError($"Invalid curve endpoint at {t}.\n" + "Curves must map 0.0 to near zero and 1.0 to near one but " + $"{DartRuntimePrimitives.RuntimeType(activeCurve)} mapped {t} to {transformedValue}, which " + $"is near {roundedTransformedValue}.");
                         }
@@ -500,23 +500,23 @@ public class CurvedAnimation : Animation<double>, AnimationWithParentMixin<doubl
     }
     public override string ToString()
     {
-        if ((this.reverseCurve is null))
+        if (reverseCurve is null)
         {
-            return $"{this.parent}➩{this.curve}";
+            return $"{parent}➩{curve}";
         }
-        if (this._useForwardCurve)
+        if (_useForwardCurve)
         {
-            return $"{this.parent}➩{this.curve}ₒₙ/{this.reverseCurve}";
+            return $"{parent}➩{curve}ₒₙ/{reverseCurve}";
         }
-        return $"{this.parent}➩{this.curve}/{this.reverseCurve}ₒₙ";
+        return $"{parent}➩{curve}/{reverseCurve}ₒₙ";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void addListener(Action listener) => this.parent.addListener((Action)listener);
-    public override void removeListener(Action listener) => this.parent.removeListener((Action)listener);
-    public override void addStatusListener(AnimationStatusListener listener) => this.parent.addStatusListener((AnimationStatusListener)listener);
-    public override void removeStatusListener(AnimationStatusListener listener) => this.parent.removeStatusListener((AnimationStatusListener)listener);
-    public override AnimationStatus status => ((Animation<double>)this.parent).status;
+    public override void addListener(Action listener) => parent.addListener(listener);
+    public override void removeListener(Action listener) => parent.removeListener(listener);
+    public override void addStatusListener(AnimationStatusListener listener) => parent.addStatusListener(listener);
+    public override void removeStatusListener(AnimationStatusListener listener) => parent.removeStatusListener(listener);
+    public override AnimationStatus status => parent.status;
 }
 
 internal enum _TrainHoppingMode__animations
@@ -543,64 +543,64 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
         this.onSwitchedTrain = onSwitchedTrain;
     }
 
-    public virtual Animation<double>? currentTrain => this._currentTrain;
+    public virtual Animation<double>? currentTrain => _currentTrain;
     internal virtual void _statusChangeHandler(AnimationStatus status)
     {
-        DartRuntimePrimitives.Assert(() => (this._currentTrain is not null));
-        if ((!Equals(status, this._lastStatus)))
+        DartRuntimePrimitives.Assert(() => _currentTrain is not null);
+        if (!Equals(status, _lastStatus))
         {
             notifyStatusListeners(status);
             _lastStatus = status;
         }
-        DartRuntimePrimitives.Assert(() => (this._lastStatus is not null));
+        DartRuntimePrimitives.Assert(() => _lastStatus is not null);
     }
 
-    public override AnimationStatus status => this._currentTrain!.status;
+    public override AnimationStatus status => _currentTrain!.status;
     internal virtual void _valueChangeHandler()
     {
-        DartRuntimePrimitives.Assert(() => (this._currentTrain is not null));
+        DartRuntimePrimitives.Assert(() => _currentTrain is not null);
         var hop = false;
-        if ((this._nextTrain is not null))
+        if (_nextTrain is not null)
         {
-            DartRuntimePrimitives.Assert(() => (this._mode is not null));
-            hop = (DartRuntimePrimitives.RequireValue(this._mode) switch { _TrainHoppingMode__animations.minimize => (this._nextTrain!.value <= this._currentTrain!.value), _TrainHoppingMode__animations.maximize => (this._nextTrain!.value >= this._currentTrain!.value), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            DartRuntimePrimitives.Assert(() => _mode is not null);
+            hop = DartRuntimePrimitives.RequireValue(_mode) switch { _TrainHoppingMode__animations.minimize => _nextTrain!.value <= _currentTrain!.value, _TrainHoppingMode__animations.maximize => _nextTrain!.value >= _currentTrain!.value, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             if (hop)
             {
                 ((Func<Animation<double>>)(() =>
 {
-    var __cascade = this._currentTrain!;
-    __cascade.removeStatusListener(this._statusChangeHandler);
-    __cascade.removeListener(this._valueChangeHandler);
+    var __cascade = _currentTrain!;
+    __cascade.removeStatusListener(_statusChangeHandler);
+    __cascade.removeListener(_valueChangeHandler);
     return __cascade;
 }))();
-                _currentTrain = this._nextTrain;
+                _currentTrain = _nextTrain;
                 _nextTrain = null;
-                this._currentTrain!.addStatusListener((AnimationStatusListener)this._statusChangeHandler);
-                _statusChangeHandler(this._currentTrain!.status);
+                _currentTrain!.addStatusListener(_statusChangeHandler);
+                _statusChangeHandler(_currentTrain!.status);
             }
         }
-        double newValue = this.value;
-        if ((newValue != this._lastValue))
+        double newValue = value;
+        if (newValue != _lastValue)
         {
             notifyListeners();
             _lastValue = newValue;
         }
-        DartRuntimePrimitives.Assert(() => (this._lastValue is not null));
-        if ((hop && (this.onSwitchedTrain is not null)))
+        DartRuntimePrimitives.Assert(() => _lastValue is not null);
+        if (hop && (onSwitchedTrain is not null))
         {
-            this.onSwitchedTrain!();
+            onSwitchedTrain!();
         }
     }
 
-    public override double value => this._currentTrain!.value;
+    public override double value => _currentTrain!.value;
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        DartRuntimePrimitives.Assert(() => (this._currentTrain is not null));
-        this._currentTrain!.removeStatusListener((AnimationStatusListener)this._statusChangeHandler);
-        this._currentTrain!.removeListener((Action)this._valueChangeHandler);
+        DartRuntimePrimitives.Assert(() => _currentTrain is not null);
+        _currentTrain!.removeStatusListener(_statusChangeHandler);
+        _currentTrain!.removeListener(_valueChangeHandler);
         _currentTrain = null;
-        this._nextTrain?.removeListener(this._valueChangeHandler);
+        _nextTrain?.removeListener(_valueChangeHandler);
         _nextTrain = null;
         clearListeners();
         clearStatusListeners();
@@ -608,11 +608,11 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public override string ToString()
     {
-        if ((this._nextTrain is not null))
+        if (_nextTrain is not null)
         {
-            return $"{this.currentTrain}➩{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation"))}(next: {this._nextTrain})";
+            return $"{currentTrain}➩{objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation")}(next: {_nextTrain})";
         }
-        return $"{this.currentTrain}➩{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation"))}(no next)";
+        return $"{currentTrain}➩{objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation")}(no next)";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -627,12 +627,12 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
     public override void addListener(Action listener)
     {
         didRegisterListener();
-        this._listeners.add(listener);
+        _listeners.add(listener);
     }
 
     public override void removeListener(Action listener)
     {
-        bool removed = this._listeners.remove(listener);
+        bool removed = _listeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -641,23 +641,23 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public virtual void clearListeners()
     {
-        this._listeners.clear();
+        _listeners.clear();
     }
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners = this._listeners.ToList();
+        List<Action> localListeners = _listeners.ToList();
         foreach (var listener in localListeners)
         {
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener))
+                if (_listeners.contains(listener))
                 {
                     listener();
                 }
@@ -665,7 +665,7 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
             catch (Exception exceptionLocal)
             {
                 var stackLocal = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -673,12 +673,12 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
     public override void addStatusListener(AnimationStatusListener listener)
     {
         didRegisterListener();
-        this._statusListeners.add(listener);
+        _statusListeners.add(listener);
     }
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed = this._statusListeners.remove(listener);
+        bool removed = _statusListeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -687,17 +687,17 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public virtual void clearStatusListeners()
     {
-        this._statusListeners.clear();
+        _statusListeners.clear();
     }
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        List<AnimationStatusListener> localListeners = _statusListeners.ToList();
         foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener))
+                if (_statusListeners.contains(listener))
                 {
                     listener(status);
                 }
@@ -708,10 +708,10 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -736,39 +736,39 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public virtual void didStartListening()
     {
-        this.first.addListener((Action)this._maybeNotifyListeners);
-        this.first.addStatusListener((AnimationStatusListener)this._maybeNotifyStatusListeners);
-        this.next.addListener((Action)this._maybeNotifyListeners);
-        this.next.addStatusListener((AnimationStatusListener)this._maybeNotifyStatusListeners);
+        first.addListener(_maybeNotifyListeners);
+        first.addStatusListener(_maybeNotifyStatusListeners);
+        next.addListener(_maybeNotifyListeners);
+        next.addStatusListener(_maybeNotifyStatusListeners);
     }
 
     public virtual void didStopListening()
     {
-        this.first.removeListener((Action)this._maybeNotifyListeners);
-        this.first.removeStatusListener((AnimationStatusListener)this._maybeNotifyStatusListeners);
-        this.next.removeListener((Action)this._maybeNotifyListeners);
-        this.next.removeStatusListener((AnimationStatusListener)this._maybeNotifyStatusListeners);
+        first.removeListener(_maybeNotifyListeners);
+        first.removeStatusListener(_maybeNotifyStatusListeners);
+        next.removeListener(_maybeNotifyListeners);
+        next.removeStatusListener(_maybeNotifyStatusListeners);
     }
 
-    public override AnimationStatus status => (AnimationStatusMembers.isAnimating(((Animation<T>)this.next).status) ? ((Animation<T>)this.next).status : ((Animation<T>)this.first).status);
+    public override AnimationStatus status => AnimationStatusMembers.isAnimating(next.status) ? next.status : first.status;
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "CompoundAnimation"))}({this.first}, {this.next})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "CompoundAnimation")}({first}, {next})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _maybeNotifyStatusListeners(AnimationStatus __unused0)
     {
-        if ((!Equals(this.status, this._lastStatus)))
+        if (!Equals(status, _lastStatus))
         {
-            _lastStatus = this.status;
-            notifyStatusListeners(this.status);
+            _lastStatus = status;
+            notifyStatusListeners(status);
         }
     }
 
     internal virtual void _maybeNotifyListeners()
     {
-        if (!EqualityComparer<T>.Default.Equals(value, this._lastValue))
+        if (!EqualityComparer<T>.Default.Equals(value, _lastValue))
         {
             _lastValue = value;
             notifyListeners();
@@ -777,34 +777,34 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public virtual void didRegisterListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._listenerCounter >= 0L));
-        if ((this._listenerCounter == 0L))
+        DartRuntimePrimitives.Assert(() => _listenerCounter >= 0L);
+        if (_listenerCounter == 0L)
         {
             didStartListening();
         }
-        this._listenerCounter += 1L;
+        _listenerCounter += 1L;
     }
 
     public virtual void didUnregisterListener()
     {
-        DartRuntimePrimitives.Assert(() => (this._listenerCounter >= 1L));
-        this._listenerCounter -= 1L;
-        if ((this._listenerCounter == 0L))
+        DartRuntimePrimitives.Assert(() => _listenerCounter >= 1L);
+        _listenerCounter -= 1L;
+        if (_listenerCounter == 0L)
         {
             didStopListening();
         }
     }
 
-    public virtual bool isListening => (this._listenerCounter > 0L);
+    public virtual bool isListening => _listenerCounter > 0L;
     public override void addListener(Action listener)
     {
         didRegisterListener();
-        this._listeners.add(listener);
+        _listeners.add(listener);
     }
 
     public override void removeListener(Action listener)
     {
-        bool removed = this._listeners.remove(listener);
+        bool removed = _listeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -813,23 +813,23 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public virtual void clearListeners()
     {
-        this._listeners.clear();
+        _listeners.clear();
     }
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners = this._listeners.ToList();
+        List<Action> localListeners = _listeners.ToList();
         foreach (var listener in localListeners)
         {
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener))
+                if (_listeners.contains(listener))
                 {
                     listener();
                 }
@@ -837,7 +837,7 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
             catch (Exception exceptionLocal)
             {
                 var stackLocal = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -845,12 +845,12 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
     public override void addStatusListener(AnimationStatusListener listener)
     {
         didRegisterListener();
-        this._statusListeners.add(listener);
+        _statusListeners.add(listener);
     }
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed = this._statusListeners.remove(listener);
+        bool removed = _statusListeners.remove(listener);
         if (removed)
         {
             didUnregisterListener();
@@ -859,17 +859,17 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public virtual void clearStatusListeners()
     {
-        this._statusListeners.clear();
+        _statusListeners.clear();
     }
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        List<AnimationStatusListener> localListeners = _statusListeners.ToList();
         foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener))
+                if (_statusListeners.contains(listener))
                 {
                     listener(status);
                 }
@@ -880,10 +880,10 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) };
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -896,7 +896,7 @@ public class AnimationMean : CompoundAnimation<double>
     {
     }
 
-    public override double value => (((((Animation<double>)first).value + ((Animation<double>)next).value)) / 2.0);
+    public override double value => (first.value + next.value) / 2.0;
 }
 
 public class AnimationMax<T> : CompoundAnimation<T> where T : struct
@@ -905,7 +905,7 @@ public class AnimationMax<T> : CompoundAnimation<T> where T : struct
     {
     }
 
-    public override T value => DartRuntimePrimitives.Max(((Animation<T>)first).value, ((Animation<T>)next).value);
+    public override T value => DartRuntimePrimitives.Max(first.value, next.value);
 }
 
 public class AnimationMin<T> : CompoundAnimation<T> where T : struct
@@ -914,5 +914,5 @@ public class AnimationMin<T> : CompoundAnimation<T> where T : struct
     {
     }
 
-    public override T value => DartRuntimePrimitives.Min(((Animation<T>)first).value, ((Animation<T>)next).value);
+    public override T value => DartRuntimePrimitives.Min(first.value, next.value);
 }

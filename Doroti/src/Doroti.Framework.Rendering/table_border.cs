@@ -58,34 +58,34 @@ public class TableBorder
     {
         get
         {
-            return new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)this.left).width, ((global::Doroti.Framework.Painting.BorderSide)this.top).width, ((global::Doroti.Framework.Painting.BorderSide)this.right).width, ((global::Doroti.Framework.Painting.BorderSide)this.bottom).width);
+            return new global::Doroti.Framework.Painting.EdgeInsets(left.width, top.width, right.width, bottom.width);
         }
     }
     public virtual bool isUniform
     {
         get
         {
-            return ((_allSidesMatch<global::Doroti.Ui.Color>(((Func<global::Doroti.Framework.Painting.BorderSide, Color>)((side) => ((global::Doroti.Framework.Painting.BorderSide)side).color))) && _allSidesMatch<double>(((Func<global::Doroti.Framework.Painting.BorderSide, double>)((side) => ((global::Doroti.Framework.Painting.BorderSide)side).width)))) && _allSidesMatch<global::Doroti.Framework.Painting.BorderStyle>(((Func<global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.BorderStyle>)((side) => ((global::Doroti.Framework.Painting.BorderSide)side).style))));
+            return _allSidesMatch<global::Doroti.Ui.Color>((side) => side.color) && _allSidesMatch<double>((side) => side.width) && _allSidesMatch<global::Doroti.Framework.Painting.BorderStyle>((side) => side.style);
         }
     }
     internal virtual bool _outerBorderIsUniform
     {
         get
         {
-            return ((_outerSidesMatch<global::Doroti.Ui.Color>(((Func<global::Doroti.Framework.Painting.BorderSide, Color>)((side) => ((global::Doroti.Framework.Painting.BorderSide)side).color))) && _outerSidesMatch<double>(((Func<global::Doroti.Framework.Painting.BorderSide, double>)((side) => ((global::Doroti.Framework.Painting.BorderSide)side).width)))) && _outerSidesMatch<global::Doroti.Framework.Painting.BorderStyle>(((Func<global::Doroti.Framework.Painting.BorderSide, global::Doroti.Framework.Painting.BorderStyle>)((side) => ((global::Doroti.Framework.Painting.BorderSide)side).style))));
+            return _outerSidesMatch<global::Doroti.Ui.Color>((side) => side.color) && _outerSidesMatch<double>((side) => side.width) && _outerSidesMatch<global::Doroti.Framework.Painting.BorderStyle>((side) => side.style);
         }
     }
     internal virtual bool _allSidesMatch<T>(Func<global::Doroti.Framework.Painting.BorderSide, T> selector)
     {
-        T topValue = selector(this.top);
-        return (((((Equals(selector(this.right), topValue)) && (Equals(selector(this.bottom), topValue))) && (Equals(selector(this.left), topValue))) && (Equals(selector(this.horizontalInside), topValue))) && (Equals(selector(this.verticalInside), topValue)));
+        T topValue = selector(top);
+        return Equals(selector(right), topValue) && Equals(selector(bottom), topValue) && Equals(selector(left), topValue) && Equals(selector(horizontalInside), topValue) && Equals(selector(verticalInside), topValue);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _outerSidesMatch<T>(Func<global::Doroti.Framework.Painting.BorderSide, T> selector)
     {
-        T topValue = selector(this.top);
-        return (((Equals(selector(this.right), topValue)) && (Equals(selector(this.bottom), topValue))) && (Equals(selector(this.left), topValue)));
+        T topValue = selector(top);
+        return Equals(selector(right), topValue) && Equals(selector(bottom), topValue) && Equals(selector(left), topValue);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -97,26 +97,26 @@ public class TableBorder
 
     internal virtual void _paintTableBorder(Canvas canvas, Rect rect)
     {
-        if ((this._outerBorderIsUniform && (!Equals(this.borderRadius, BorderRadius.zero))))
+        if (_outerBorderIsUniform && (!Equals(borderRadius, BorderRadius.zero)))
         {
-            global::Doroti.Ui.RRect outer = this.borderRadius.toRRect(rect);
-            global::Doroti.Ui.RRect inner = outer.deflate(((global::Doroti.Framework.Painting.BorderSide)this.top).width);
+            global::Doroti.Ui.RRect outer = borderRadius.toRRect(rect);
+            global::Doroti.Ui.RRect inner = outer.deflate(top.width);
             var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = ((global::Doroti.Framework.Painting.BorderSide)this.top).color;
+    __cascade.color = top.color;
     return __cascade;
 }))();
             canvas.drawDRRect(outer, inner, paint);
             return;
         }
         HashSet<global::Doroti.Ui.Color> visibleColors = _distinctVisibleOuterColors();
-        if (((checked((long)(visibleColors.Count)) == 1L) && (!Equals(this.borderRadius, BorderRadius.zero))))
+        if ((checked(visibleColors.Count) == 1L) && (!Equals(borderRadius, BorderRadius.zero)))
         {
-            _paintNonUniformBorderWithRadius(canvas, rect, borderRadius: this.borderRadius, top: ((Equals(((global::Doroti.Framework.Painting.BorderSide)this.top).style, BorderStyle.none)) ? BorderSide.none : this.top), right: ((Equals(((global::Doroti.Framework.Painting.BorderSide)this.right).style, BorderStyle.none)) ? BorderSide.none : this.right), bottom: ((Equals(((global::Doroti.Framework.Painting.BorderSide)this.bottom).style, BorderStyle.none)) ? BorderSide.none : this.bottom), left: ((Equals(((global::Doroti.Framework.Painting.BorderSide)this.left).style, BorderStyle.none)) ? BorderSide.none : this.left), color: visibleColors.First());
+            _paintNonUniformBorderWithRadius(canvas, rect, borderRadius: borderRadius, top: Equals(top.style, BorderStyle.none) ? BorderSide.none : top, right: Equals(right.style, BorderStyle.none) ? BorderSide.none : right, bottom: Equals(bottom.style, BorderStyle.none) ? BorderSide.none : bottom, left: Equals(left.style, BorderStyle.none) ? BorderSide.none : left, color: visibleColors.First());
             return;
         }
-        BordersLibrary.paintBorder(canvas, rect, top: this.top, right: this.right, bottom: this.bottom, left: this.left);
+        BordersLibrary.paintBorder(canvas, rect, top: top, right: right, bottom: bottom, left: left);
     }
 
     internal static void _paintNonUniformBorderWithRadius(Canvas canvas, Rect rect, global::Doroti.Framework.Painting.BorderRadius borderRadius, Color color, global::Doroti.Framework.Painting.BorderSide top, global::Doroti.Framework.Painting.BorderSide right, global::Doroti.Framework.Painting.BorderSide bottom, global::Doroti.Framework.Painting.BorderSide left)
@@ -128,14 +128,14 @@ public class TableBorder
     __cascade.color = color;
     return __cascade;
 }))();
-        global::Doroti.Ui.RRect inner = new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)left).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)top).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)right).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)bottom).strokeInset).deflateRRect(borderRect);
-        global::Doroti.Ui.RRect outer = new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)left).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)top).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)right).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)bottom).strokeOutset).inflateRRect(borderRect);
+        global::Doroti.Ui.RRect inner = new global::Doroti.Framework.Painting.EdgeInsets(left.strokeInset, top.strokeInset, right.strokeInset, bottom.strokeInset).deflateRRect(borderRect);
+        global::Doroti.Ui.RRect outer = new global::Doroti.Framework.Painting.EdgeInsets(left.strokeOutset, top.strokeOutset, right.strokeOutset, bottom.strokeOutset).inflateRRect(borderRect);
         canvas.drawDRRect(outer, inner, paint);
     }
 
     public virtual TableBorder scale(double t)
     {
-        return new TableBorder(top: this.top.scale(t), right: this.right.scale(t), bottom: this.bottom.scale(t), left: this.left.scale(t), horizontalInside: this.horizontalInside.scale(t), verticalInside: this.verticalInside.scale(t));
+        return new TableBorder(top: top.scale(t), right: right.scale(t), bottom: bottom.scale(t), left: left.scale(t), horizontalInside: horizontalInside.scale(t), verticalInside: verticalInside.scale(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -145,45 +145,45 @@ public class TableBorder
         {
             return a;
         }
-        if ((a is null))
+        if (a is null)
         {
             return b!.scale(t);
         }
-        if ((b is null))
+        if (b is null)
         {
-            return a.scale((1.0 - t));
+            return a.scale(1.0 - t);
         }
-        return new TableBorder(top: BorderSide.lerp(((TableBorder)a).top, ((TableBorder)b).top, t), right: BorderSide.lerp(((TableBorder)a).right, ((TableBorder)b).right, t), bottom: BorderSide.lerp(((TableBorder)a).bottom, ((TableBorder)b).bottom, t), left: BorderSide.lerp(((TableBorder)a).left, ((TableBorder)b).left, t), horizontalInside: BorderSide.lerp(((TableBorder)a).horizontalInside, ((TableBorder)b).horizontalInside, t), verticalInside: BorderSide.lerp(((TableBorder)a).verticalInside, ((TableBorder)b).verticalInside, t));
+        return new TableBorder(top: BorderSide.lerp(a.top, b.top, t), right: BorderSide.lerp(a.right, b.right, t), bottom: BorderSide.lerp(a.bottom, b.bottom, t), left: BorderSide.lerp(a.left, b.left, t), horizontalInside: BorderSide.lerp(a.horizontalInside, b.horizontalInside, t), verticalInside: BorderSide.lerp(a.verticalInside, b.verticalInside, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void paint(Canvas canvas, Rect rect, IEnumerable<double> rows, IEnumerable<double> columns)
     {
-        DartRuntimePrimitives.Assert(() => ((rows.Count() == 0) || (((rows.First() >= 0.0) && (rows.Last() <= rect.height)))));
-        DartRuntimePrimitives.Assert(() => ((columns.Count() == 0) || (((columns.First() >= 0.0) && (columns.Last() <= rect.width)))));
-        if (((columns.Count() != 0) || (rows.Count() != 0)))
+        DartRuntimePrimitives.Assert(() => (rows.Count() == 0) || (rows.First() >= 0.0) && (rows.Last() <= rect.height));
+        DartRuntimePrimitives.Assert(() => (columns.Count() == 0) || (columns.First() >= 0.0) && (columns.Last() <= rect.width));
+        if ((columns.Count() != 0) || (rows.Count() != 0))
         {
             var paintLocal = new global::Doroti.Ui.Paint();
             var path = new global::Doroti.Ui.Path();
-            if ((columns.Count() != 0))
+            if (columns.Count() != 0)
             {
-                switch (((global::Doroti.Framework.Painting.BorderSide)this.verticalInside).style)
+                switch (verticalInside.style)
                 {
                     case BorderStyle.solid:
                         {
                             ((Func<Paint>)(() =>
 {
     var __cascade = paintLocal;
-    __cascade.color = ((global::Doroti.Framework.Painting.BorderSide)this.verticalInside).color;
-    __cascade.strokeWidth = ((global::Doroti.Framework.Painting.BorderSide)this.verticalInside).width;
+    __cascade.color = verticalInside.color;
+    __cascade.strokeWidth = verticalInside.width;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
                             path.reset();
                             foreach (var x in columns)
                             {
-                                path.moveTo((rect.left + x), rect.top);
-                                path.lineTo((rect.left + x), rect.bottom);
+                                path.moveTo(rect.left + x, rect.top);
+                                path.lineTo(rect.left + x, rect.bottom);
                             }
                             canvas.drawPath(path, paintLocal);
                             break;
@@ -194,25 +194,25 @@ public class TableBorder
                         }
                 }
             }
-            if ((rows.Count() != 0))
+            if (rows.Count() != 0)
             {
-                switch (((global::Doroti.Framework.Painting.BorderSide)this.horizontalInside).style)
+                switch (horizontalInside.style)
                 {
                     case BorderStyle.solid:
                         {
                             ((Func<Paint>)(() =>
 {
     var __cascade = paintLocal;
-    __cascade.color = ((global::Doroti.Framework.Painting.BorderSide)this.horizontalInside).color;
-    __cascade.strokeWidth = ((global::Doroti.Framework.Painting.BorderSide)this.horizontalInside).width;
+    __cascade.color = horizontalInside.color;
+    __cascade.strokeWidth = horizontalInside.width;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
                             path.reset();
                             foreach (var y in rows)
                             {
-                                path.moveTo(rect.left, (rect.top + y));
-                                path.lineTo(rect.right, (rect.top + y));
+                                path.moveTo(rect.left, rect.top + y);
+                                path.lineTo(rect.right, rect.top + y);
                             }
                             canvas.drawPath(path, paintLocal);
                             break;
@@ -235,14 +235,14 @@ public class TableBorder
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((__other is TableBorder) && (Equals(((TableBorder)((TableBorder)__other)).top, this.top))) && (Equals(((TableBorder)((TableBorder)__other)).right, this.right))) && (Equals(((TableBorder)((TableBorder)__other)).bottom, this.bottom))) && (Equals(((TableBorder)((TableBorder)__other)).left, this.left))) && (Equals(((TableBorder)((TableBorder)__other)).horizontalInside, this.horizontalInside))) && (Equals(((TableBorder)((TableBorder)__other)).verticalInside, this.verticalInside))) && (Equals(((TableBorder)((TableBorder)__other)).borderRadius, this.borderRadius)));
+        return (__other is TableBorder) && Equals(__other.top, top) && Equals(__other.right, right) && Equals(__other.bottom, bottom) && Equals(__other.left, left) && Equals(__other.horizontalInside, horizontalInside) && Equals(__other.verticalInside, verticalInside) && Equals(__other.borderRadius, borderRadius);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.top, this.right, this.bottom, this.left, this.horizontalInside, this.verticalInside, this.borderRadius);
-    public override string ToString() => $"TableBorder({this.top}, {this.right}, {this.bottom}, {this.left}, {this.horizontalInside}, {this.verticalInside}, {this.borderRadius})";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(top, right, bottom, left, horizontalInside, verticalInside, borderRadius);
+    public override string ToString() => $"TableBorder({top}, {right}, {bottom}, {left}, {horizontalInside}, {verticalInside}, {borderRadius})";
 }
 

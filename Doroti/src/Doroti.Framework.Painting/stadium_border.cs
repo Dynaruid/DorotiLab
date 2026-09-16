@@ -14,20 +14,20 @@ public class StadiumBorder : OutlinedBorder
     public override ShapeBorder scale(double t) => new StadiumBorder(side: side.scale(t));
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is StadiumBorder))
+        if (a is StadiumBorder)
         {
             StadiumBorder a__as1170 = (StadiumBorder)a;
-            return new StadiumBorder(side: BorderSide.lerp(((StadiumBorder)a__as1170).side, side, t));
+            return new StadiumBorder(side: BorderSide.lerp(a__as1170.side, side, t));
         }
-        if ((a is CircleBorder))
+        if (a is CircleBorder)
         {
             CircleBorder a__as1274 = (CircleBorder)a;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(((CircleBorder)a__as1274).side, side, t), circularity: (1.0 - t), eccentricity: ((CircleBorder)((CircleBorder)a__as1274)).eccentricity);
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(a__as1274.side, side, t), circularity: 1.0 - t, eccentricity: a__as1274.eccentricity);
         }
-        if ((a is RoundedRectangleBorder))
+        if (a is RoundedRectangleBorder)
         {
             RoundedRectangleBorder a__as1471 = (RoundedRectangleBorder)a;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(((RoundedRectangleBorder)a__as1471).side, side, t), borderRadius: ((RoundedRectangleBorder)((RoundedRectangleBorder)a__as1471)).borderRadius, rectilinearity: (1.0 - t));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(a__as1471.side, side, t), borderRadius: a__as1471.borderRadius, rectilinearity: 1.0 - t);
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -35,20 +35,20 @@ public class StadiumBorder : OutlinedBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is StadiumBorder))
+        if (b is StadiumBorder)
         {
             StadiumBorder b__as1791 = (StadiumBorder)b;
-            return new StadiumBorder(side: BorderSide.lerp(side, ((StadiumBorder)b__as1791).side, t));
+            return new StadiumBorder(side: BorderSide.lerp(side, b__as1791.side, t));
         }
-        if ((b is CircleBorder))
+        if (b is CircleBorder)
         {
             CircleBorder b__as1895 = (CircleBorder)b;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, ((CircleBorder)b__as1895).side, t), circularity: t, eccentricity: ((CircleBorder)((CircleBorder)b__as1895)).eccentricity);
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, b__as1895.side, t), circularity: t, eccentricity: b__as1895.eccentricity);
         }
-        if ((b is RoundedRectangleBorder))
+        if (b is RoundedRectangleBorder)
         {
             RoundedRectangleBorder b__as2086 = (RoundedRectangleBorder)b;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, ((RoundedRectangleBorder)b__as2086).side, t), borderRadius: ((RoundedRectangleBorder)((RoundedRectangleBorder)b__as2086)).borderRadius, rectilinearity: t);
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, b__as2086.side, t), borderRadius: b__as2086.borderRadius, rectilinearity: t);
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -56,15 +56,15 @@ public class StadiumBorder : OutlinedBorder
 
     public override StadiumBorder copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
     {
-        return new StadiumBorder(side: (side ?? this.side));
+        return new StadiumBorder(side: side ?? this.side);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        var radius = Radius.circular((rect.shortestSide / 2.0));
+        var radius = Radius.circular(rect.shortestSide / 2.0);
         var borderRect = RRect.fromRectAndRadius(rect, radius);
-        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(((BorderSide)side).strokeInset);
+        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(side.strokeInset);
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -76,7 +76,7 @@ public class StadiumBorder : OutlinedBorder
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        var radius = Radius.circular((rect.shortestSide / 2.0));
+        var radius = Radius.circular(rect.shortestSide / 2.0);
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -88,21 +88,21 @@ public class StadiumBorder : OutlinedBorder
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        var radius = Radius.circular((rect.shortestSide / 2.0));
+        var radius = Radius.circular(rect.shortestSide / 2.0);
         return RRect.fromRectAndRadius(rect, radius).contains(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        var radius = Radius.circular((rect.shortestSide / 2.0));
+        var radius = Radius.circular(rect.shortestSide / 2.0);
         canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), paint);
     }
 
     public override bool preferPaintInterior => true;
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        switch (((BorderSide)side).style)
+        switch (side.style)
         {
             case BorderStyle.none:
                 {
@@ -110,9 +110,9 @@ public class StadiumBorder : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    var radius = Radius.circular((rect.shortestSide / 2L));
+                    var radius = Radius.circular(rect.shortestSide / 2L);
                     var borderRect = RRect.fromRectAndRadius(rect, radius);
-                    canvas.drawRRect(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                    canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2L), side.toPaint());
                     break;
                 }
         }
@@ -122,17 +122,17 @@ public class StadiumBorder : OutlinedBorder
     {
         var __other = other as StadiumBorder;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((__other is StadiumBorder) && (Equals(((StadiumBorder)__other).side, side)));
+        return (__other is StadiumBorder) && Equals(__other.side, side);
     }
 
     public override int GetHashCode() => side.GetHashCode();
     public override string ToString()
     {
-        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "StadiumBorder"))}({side})";
+        return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "StadiumBorder")}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -151,26 +151,26 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
 
     public override ShapeBorder scale(double t)
     {
-        return new _StadiumToCircleBorder__stadium_border(side: side.scale(t), circularity: t, eccentricity: this.eccentricity);
+        return new _StadiumToCircleBorder__stadium_border(side: side.scale(t), circularity: t, eccentricity: eccentricity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is StadiumBorder))
+        if (a is StadiumBorder)
         {
             StadiumBorder a__as4725 = (StadiumBorder)a;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(((StadiumBorder)a__as4725).side, side, t), circularity: (this.circularity * t), eccentricity: this.eccentricity);
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(a__as4725.side, side, t), circularity: circularity * t, eccentricity: eccentricity);
         }
-        if ((a is CircleBorder))
+        if (a is CircleBorder)
         {
             CircleBorder a__as4929 = (CircleBorder)a;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(((CircleBorder)a__as4929).side, side, t), circularity: (this.circularity + (((1.0 - this.circularity)) * ((1.0 - t)))), eccentricity: ((CircleBorder)((CircleBorder)a__as4929)).eccentricity);
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(a__as4929.side, side, t), circularity: circularity + ((1.0 - circularity) * (1.0 - t)), eccentricity: a__as4929.eccentricity);
         }
-        if ((a is _StadiumToCircleBorder__stadium_border))
+        if (a is _StadiumToCircleBorder__stadium_border)
         {
             _StadiumToCircleBorder__stadium_border a__as5164 = (_StadiumToCircleBorder__stadium_border)a;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(((_StadiumToCircleBorder__stadium_border)a__as5164).side, side, t), circularity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((_StadiumToCircleBorder__stadium_border)((_StadiumToCircleBorder__stadium_border)a__as5164)).circularity, this.circularity, t)), eccentricity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((_StadiumToCircleBorder__stadium_border)((_StadiumToCircleBorder__stadium_border)a__as5164)).eccentricity, this.eccentricity, t)));
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(a__as5164.side, side, t), circularity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a__as5164.circularity, circularity, t)), eccentricity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a__as5164.eccentricity, eccentricity, t)));
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -178,20 +178,20 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is StadiumBorder))
+        if (b is StadiumBorder)
         {
             StadiumBorder b__as5542 = (StadiumBorder)b;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, ((StadiumBorder)b__as5542).side, t), circularity: (this.circularity * ((1.0 - t))), eccentricity: this.eccentricity);
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, b__as5542.side, t), circularity: circularity * (1.0 - t), eccentricity: eccentricity);
         }
-        if ((b is CircleBorder))
+        if (b is CircleBorder)
         {
             CircleBorder b__as5754 = (CircleBorder)b;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, ((CircleBorder)b__as5754).side, t), circularity: (this.circularity + (((1.0 - this.circularity)) * t)), eccentricity: ((CircleBorder)((CircleBorder)b__as5754)).eccentricity);
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, b__as5754.side, t), circularity: circularity + ((1.0 - circularity) * t), eccentricity: b__as5754.eccentricity);
         }
-        if ((b is _StadiumToCircleBorder__stadium_border))
+        if (b is _StadiumToCircleBorder__stadium_border)
         {
             _StadiumToCircleBorder__stadium_border b__as5981 = (_StadiumToCircleBorder__stadium_border)b;
-            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, ((_StadiumToCircleBorder__stadium_border)b__as5981).side, t), circularity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.circularity, ((_StadiumToCircleBorder__stadium_border)((_StadiumToCircleBorder__stadium_border)b__as5981)).circularity, t)), eccentricity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.eccentricity, ((_StadiumToCircleBorder__stadium_border)((_StadiumToCircleBorder__stadium_border)b__as5981)).eccentricity, t)));
+            return new _StadiumToCircleBorder__stadium_border(side: BorderSide.lerp(side, b__as5981.side, t), circularity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(circularity, b__as5981.circularity, t)), eccentricity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(eccentricity, b__as5981.eccentricity, t)));
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -199,37 +199,37 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
 
     internal virtual global::Doroti.Ui.Rect _adjustRect(Rect rect)
     {
-        if (((this.circularity == 0.0) || (rect.width == rect.height)))
+        if ((circularity == 0.0) || (rect.width == rect.height))
         {
             return rect;
         }
-        if ((rect.width < rect.height))
+        if (rect.width < rect.height)
         {
-            double partialDelta = (((rect.height - rect.width)) / 2L);
-            double delta = ((this.circularity * partialDelta) * ((1.0 - this.eccentricity)));
-            return Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
+            double partialDelta = (rect.height - rect.width) / 2L;
+            double delta = circularity * partialDelta * (1.0 - eccentricity);
+            return Rect.fromLTRB(rect.left, rect.top + delta, rect.right, rect.bottom - delta);
         }
         else
         {
-            double partialDeltaLocal = (((rect.width - rect.height)) / 2L);
-            double deltaLocal = ((this.circularity * partialDeltaLocal) * ((1.0 - this.eccentricity)));
-            return Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
+            double partialDeltaLocal = (rect.width - rect.height) / 2L;
+            double deltaLocal = circularity * partialDeltaLocal * (1.0 - eccentricity);
+            return Rect.fromLTRB(rect.left + deltaLocal, rect.top, rect.right - deltaLocal, rect.bottom);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual BorderRadius _adjustBorderRadius(Rect rect)
     {
-        var circleRadius = BorderRadius.CreateCircular((rect.shortestSide / 2L));
-        if ((this.eccentricity != 0.0))
+        var circleRadius = BorderRadius.CreateCircular(rect.shortestSide / 2L);
+        if (eccentricity != 0.0)
         {
-            if ((rect.width < rect.height))
+            if (rect.width < rect.height)
             {
-                return BorderRadius.lerp(circleRadius, BorderRadius.CreateAll(Radius.elliptical((rect.width / 2L), ((((0.5 + (this.eccentricity / 2L))) * rect.height) / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
+                return BorderRadius.lerp(circleRadius, BorderRadius.CreateAll(Radius.elliptical(rect.width / 2L, (0.5 + (eccentricity / 2L)) * rect.height / 2L)), DartRuntimePrimitives.RequireValue(circularity))!;
             }
             else
             {
-                return BorderRadius.lerp(circleRadius, BorderRadius.CreateAll(Radius.elliptical(((((0.5 + (this.eccentricity / 2L))) * rect.width) / 2L), (rect.height / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
+                return BorderRadius.lerp(circleRadius, BorderRadius.CreateAll(Radius.elliptical((0.5 + (eccentricity / 2L)) * rect.width / 2L, rect.height / 2L)), DartRuntimePrimitives.RequireValue(circularity))!;
             }
         }
         return circleRadius;
@@ -241,7 +241,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRRect(_adjustBorderRadius(rect).toRRect(_adjustRect(rect)).deflate(((BorderSide)side).strokeInset));
+    __cascade.addRRect(_adjustBorderRadius(rect).toRRect(_adjustRect(rect)).deflate(side.strokeInset));
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -272,13 +272,13 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
     public override bool preferPaintInterior => true;
     public override _StadiumToCircleBorder__stadium_border copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
     {
-        return new _StadiumToCircleBorder__stadium_border(side: (side ?? this.side), circularity: (circularity ?? this.circularity), eccentricity: (eccentricity ?? this.eccentricity));
+        return new _StadiumToCircleBorder__stadium_border(side: side ?? this.side, circularity: circularity ?? this.circularity, eccentricity: eccentricity ?? this.eccentricity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        switch (((BorderSide)side).style)
+        switch (side.style)
         {
             case BorderStyle.none:
                 {
@@ -287,7 +287,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
             case BorderStyle.solid:
                 {
                     global::Doroti.Ui.RRect borderRect = _adjustBorderRadius(rect).toRRect(_adjustRect(rect));
-                    canvas.drawRRect(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                    canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2L), side.toPaint());
                     break;
                 }
         }
@@ -297,21 +297,21 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
     {
         var __other = other as _StadiumToCircleBorder__stadium_border;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is _StadiumToCircleBorder__stadium_border) && (Equals(((_StadiumToCircleBorder__stadium_border)__other).side, side))) && (((_StadiumToCircleBorder__stadium_border)((_StadiumToCircleBorder__stadium_border)__other)).circularity == this.circularity));
+        return (__other is _StadiumToCircleBorder__stadium_border) && Equals(__other.side, side) && (__other.circularity == circularity);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.circularity);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, circularity);
     public override string ToString()
     {
-        if ((this.eccentricity != 0.0))
+        if (eccentricity != 0.0)
         {
-            return $"StadiumBorder({side}, {((this.circularity * 100L)).toStringAsFixed(1L)}% of the way to being a CircleBorder that is {((this.eccentricity * 100L)).toStringAsFixed(1L)}% oval)";
+            return $"StadiumBorder({side}, {(circularity * 100L).toStringAsFixed(1L)}% of the way to being a CircleBorder that is {(eccentricity * 100L).toStringAsFixed(1L)}% oval)";
         }
-        return $"StadiumBorder({side}, {((this.circularity * 100L)).toStringAsFixed(1L)}% of the way to being a CircleBorder)";
+        return $"StadiumBorder({side}, {(circularity * 100L).toStringAsFixed(1L)}% of the way to being a CircleBorder)";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -331,26 +331,26 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
 
     public override ShapeBorder scale(double t)
     {
-        return new _StadiumToRoundedRectangleBorder__stadium_border(side: side.scale(t), borderRadius: (this.borderRadius.op_Multiply(t)), rectilinearity: t);
+        return new _StadiumToRoundedRectangleBorder__stadium_border(side: side.scale(t), borderRadius: borderRadius.op_Multiply(t), rectilinearity: t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is StadiumBorder))
+        if (a is StadiumBorder)
         {
             StadiumBorder a__as10360 = (StadiumBorder)a;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(((StadiumBorder)a__as10360).side, side, t), borderRadius: this.borderRadius, rectilinearity: (this.rectilinearity * t));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(a__as10360.side, side, t), borderRadius: borderRadius, rectilinearity: rectilinearity * t);
         }
-        if ((a is RoundedRectangleBorder))
+        if (a is RoundedRectangleBorder)
         {
             RoundedRectangleBorder a__as10580 = (RoundedRectangleBorder)a;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(((RoundedRectangleBorder)a__as10580).side, side, t), borderRadius: this.borderRadius, rectilinearity: (this.rectilinearity + (((1.0 - this.rectilinearity)) * ((1.0 - t)))));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(a__as10580.side, side, t), borderRadius: borderRadius, rectilinearity: rectilinearity + ((1.0 - rectilinearity) * (1.0 - t)));
         }
-        if ((a is _StadiumToRoundedRectangleBorder__stadium_border))
+        if (a is _StadiumToRoundedRectangleBorder__stadium_border)
         {
             _StadiumToRoundedRectangleBorder__stadium_border a__as10842 = (_StadiumToRoundedRectangleBorder__stadium_border)a;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(((_StadiumToRoundedRectangleBorder__stadium_border)a__as10842).side, side, t), borderRadius: BorderRadiusGeometry.lerp(((_StadiumToRoundedRectangleBorder__stadium_border)((_StadiumToRoundedRectangleBorder__stadium_border)a__as10842)).borderRadius, this.borderRadius, t)!, rectilinearity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((_StadiumToRoundedRectangleBorder__stadium_border)((_StadiumToRoundedRectangleBorder__stadium_border)a__as10842)).rectilinearity, this.rectilinearity, t)));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(a__as10842.side, side, t), borderRadius: BorderRadiusGeometry.lerp(a__as10842.borderRadius, borderRadius, t)!, rectilinearity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a__as10842.rectilinearity, rectilinearity, t)));
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -358,20 +358,20 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is StadiumBorder))
+        if (b is StadiumBorder)
         {
             StadiumBorder b__as11261 = (StadiumBorder)b;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, ((StadiumBorder)b__as11261).side, t), borderRadius: this.borderRadius, rectilinearity: (this.rectilinearity * ((1.0 - t))));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, b__as11261.side, t), borderRadius: borderRadius, rectilinearity: rectilinearity * (1.0 - t));
         }
-        if ((b is RoundedRectangleBorder))
+        if (b is RoundedRectangleBorder)
         {
             RoundedRectangleBorder b__as11489 = (RoundedRectangleBorder)b;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, ((RoundedRectangleBorder)b__as11489).side, t), borderRadius: this.borderRadius, rectilinearity: (this.rectilinearity + (((1.0 - this.rectilinearity)) * t)));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, b__as11489.side, t), borderRadius: borderRadius, rectilinearity: rectilinearity + ((1.0 - rectilinearity) * t));
         }
-        if ((b is _StadiumToRoundedRectangleBorder__stadium_border))
+        if (b is _StadiumToRoundedRectangleBorder__stadium_border)
         {
             _StadiumToRoundedRectangleBorder__stadium_border b__as11743 = (_StadiumToRoundedRectangleBorder__stadium_border)b;
-            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, ((_StadiumToRoundedRectangleBorder__stadium_border)b__as11743).side, t), borderRadius: BorderRadiusGeometry.lerp(this.borderRadius, ((_StadiumToRoundedRectangleBorder__stadium_border)((_StadiumToRoundedRectangleBorder__stadium_border)b__as11743)).borderRadius, t)!, rectilinearity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.rectilinearity, ((_StadiumToRoundedRectangleBorder__stadium_border)((_StadiumToRoundedRectangleBorder__stadium_border)b__as11743)).rectilinearity, t)));
+            return new _StadiumToRoundedRectangleBorder__stadium_border(side: BorderSide.lerp(side, b__as11743.side, t), borderRadius: BorderRadiusGeometry.lerp(borderRadius, b__as11743.borderRadius, t)!, rectilinearity: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(rectilinearity, b__as11743.rectilinearity, t)));
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -379,14 +379,14 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
 
     internal virtual BorderRadiusGeometry _adjustBorderRadius(Rect rect)
     {
-        return BorderRadiusGeometry.lerp(this.borderRadius, BorderRadius.CreateAll(Radius.circular((rect.shortestSide / 2.0))), (1.0 - this.rectilinearity))!;
+        return BorderRadiusGeometry.lerp(borderRadius, BorderRadius.CreateAll(Radius.circular(rect.shortestSide / 2.0)), 1.0 - rectilinearity)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
         global::Doroti.Ui.RRect borderRect = _adjustBorderRadius(rect).resolve(textDirection).toRRect(rect);
-        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BorderSide)side).width, 0L, ((BorderSide)side).strokeAlign)));
+        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)));
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -410,7 +410,7 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
         BorderRadius adjustedBorderRadius = _adjustBorderRadius(rect).resolve(textDirection);
-        if ((Equals(adjustedBorderRadius, BorderRadius.zero)))
+        if (Equals(adjustedBorderRadius, BorderRadius.zero))
         {
             return rect.contains(position);
         }
@@ -421,7 +421,7 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
         BorderRadiusGeometry adjustedBorderRadius = _adjustBorderRadius(rect);
-        if ((Equals(adjustedBorderRadius, BorderRadius.zero)))
+        if (Equals(adjustedBorderRadius, BorderRadius.zero))
         {
             canvas.drawRect(rect, paint);
         }
@@ -434,13 +434,13 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
     public override bool preferPaintInterior => true;
     public override _StadiumToRoundedRectangleBorder__stadium_border copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
     {
-        return new _StadiumToRoundedRectangleBorder__stadium_border(side: (side ?? this.side), borderRadius: (borderRadius ?? this.borderRadius), rectilinearity: (rectilinearity ?? this.rectilinearity));
+        return new _StadiumToRoundedRectangleBorder__stadium_border(side: side ?? this.side, borderRadius: borderRadius ?? this.borderRadius, rectilinearity: rectilinearity ?? this.rectilinearity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        switch (((BorderSide)side).style)
+        switch (side.style)
         {
             case BorderStyle.none:
                 {
@@ -450,7 +450,7 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
                 {
                     BorderRadiusGeometry adjustedBorderRadius = _adjustBorderRadius(rect);
                     global::Doroti.Ui.RRect borderRect = adjustedBorderRadius.resolve(textDirection).toRRect(rect);
-                    canvas.drawRRect(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                    canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2L), side.toPaint());
                     break;
                 }
         }
@@ -460,17 +460,17 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
     {
         var __other = other as _StadiumToRoundedRectangleBorder__stadium_border;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is _StadiumToRoundedRectangleBorder__stadium_border) && (Equals(((_StadiumToRoundedRectangleBorder__stadium_border)__other).side, side))) && (Equals(((_StadiumToRoundedRectangleBorder__stadium_border)((_StadiumToRoundedRectangleBorder__stadium_border)__other)).borderRadius, this.borderRadius))) && (((_StadiumToRoundedRectangleBorder__stadium_border)((_StadiumToRoundedRectangleBorder__stadium_border)__other)).rectilinearity == this.rectilinearity));
+        return (__other is _StadiumToRoundedRectangleBorder__stadium_border) && Equals(__other.side, side) && Equals(__other.borderRadius, borderRadius) && (__other.rectilinearity == rectilinearity);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius, this.rectilinearity);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, borderRadius, rectilinearity);
     public override string ToString()
     {
-        return $"StadiumBorder({side}, {this.borderRadius}, " + $"{((this.rectilinearity * 100L)).toStringAsFixed(1L)}% of the way to being a " + "RoundedRectangleBorder)";
+        return $"StadiumBorder({side}, {borderRadius}, " + $"{(rectilinearity * 100L).toStringAsFixed(1L)}% of the way to being a " + "RoundedRectangleBorder)";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

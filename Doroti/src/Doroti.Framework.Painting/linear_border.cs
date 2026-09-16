@@ -14,7 +14,7 @@ public class LinearBorderEdge
     {
         this.size = size;
         this.alignment = alignment;
-        System.Diagnostics.Debug.Assert(((size >= 0.0) && (size <= 1.0)));
+        System.Diagnostics.Debug.Assert((size >= 0.0) && (size <= 1.0));
     }
 
     public static LinearBorderEdge? lerp(LinearBorderEdge? a, LinearBorderEdge? b, double t)
@@ -24,8 +24,8 @@ public class LinearBorderEdge
             return a;
         }
         a ??= new LinearBorderEdge(alignment: b!.alignment, size: 0);
-        b ??= new LinearBorderEdge(alignment: ((LinearBorderEdge)a).alignment, size: 0);
-        return new LinearBorderEdge(size: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((LinearBorderEdge)a).size, ((LinearBorderEdge)b).size, t)), alignment: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((LinearBorderEdge)a).alignment, ((LinearBorderEdge)b).alignment, t)));
+        b ??= new LinearBorderEdge(alignment: a.alignment, size: 0);
+        return new LinearBorderEdge(size: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.size, b.size, t)), alignment: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.alignment, b.alignment, t)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -37,25 +37,25 @@ public class LinearBorderEdge
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((__other is LinearBorderEdge) && (((LinearBorderEdge)((LinearBorderEdge)__other)).size == this.size)) && (((LinearBorderEdge)((LinearBorderEdge)__other)).alignment == this.alignment));
+        return (__other is LinearBorderEdge) && (__other.size == size) && (__other.alignment == alignment);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.size, this.alignment);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(size, alignment);
     public override string ToString()
     {
-        var s = new StringBuffer($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
-        if ((this.size != 1.0))
+        var s = new StringBuffer($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge")}(");
+        if (size != 1.0)
         {
-            s.write($"size: {this.size}");
+            s.write($"size: {size}");
         }
-        if ((this.alignment != 0L))
+        if (alignment != 0L)
         {
-            var comma = ((this.size != 1.0) ? ", " : "");
-            s.write($"{comma}alignment: {this.alignment}");
+            var comma = (size != 1.0) ? ", " : "";
+            s.write($"{comma}alignment: {alignment}");
         }
         s.write(")");
         return s.ToString();
@@ -130,16 +130,16 @@ public class LinearBorder : OutlinedBorder
     {
         get
         {
-            double widthLocal = ((BorderSide)side).width;
-            return new EdgeInsetsDirectional(((this.start is null) ? 0.0 : widthLocal), ((this.top is null) ? 0.0 : widthLocal), ((this.end is null) ? 0.0 : widthLocal), ((this.bottom is null) ? 0.0 : widthLocal));
+            double widthLocal = side.width;
+            return new EdgeInsetsDirectional((start is null) ? 0.0 : widthLocal, (top is null) ? 0.0 : widthLocal, (end is null) ? 0.0 : widthLocal, (bottom is null) ? 0.0 : widthLocal);
         }
     }
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
     {
-        if ((a is LinearBorder))
+        if (a is LinearBorder)
         {
             LinearBorder a__as7474 = (LinearBorder)a;
-            return new LinearBorder(side: BorderSide.lerp(((LinearBorder)a__as7474).side, side, t), start: LinearBorderEdge.lerp(((LinearBorder)((LinearBorder)a__as7474)).start, this.start, t), end: LinearBorderEdge.lerp(((LinearBorder)((LinearBorder)a__as7474)).end, this.end, t), top: LinearBorderEdge.lerp(((LinearBorder)((LinearBorder)a__as7474)).top, this.top, t), bottom: LinearBorderEdge.lerp(((LinearBorder)((LinearBorder)a__as7474)).bottom, this.bottom, t));
+            return new LinearBorder(side: BorderSide.lerp(a__as7474.side, side, t), start: LinearBorderEdge.lerp(a__as7474.start, start, t), end: LinearBorderEdge.lerp(a__as7474.end, end, t), top: LinearBorderEdge.lerp(a__as7474.top, top, t), bottom: LinearBorderEdge.lerp(a__as7474.bottom, bottom, t));
         }
         return base.lerpFrom(a, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -147,10 +147,10 @@ public class LinearBorder : OutlinedBorder
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
     {
-        if ((b is LinearBorder))
+        if (b is LinearBorder)
         {
             LinearBorder b__as7912 = (LinearBorder)b;
-            return new LinearBorder(side: BorderSide.lerp(side, ((LinearBorder)b__as7912).side, t), start: LinearBorderEdge.lerp(this.start, ((LinearBorder)((LinearBorder)b__as7912)).start, t), end: LinearBorderEdge.lerp(this.end, ((LinearBorder)((LinearBorder)b__as7912)).end, t), top: LinearBorderEdge.lerp(this.top, ((LinearBorder)((LinearBorder)b__as7912)).top, t), bottom: LinearBorderEdge.lerp(this.bottom, ((LinearBorder)((LinearBorder)b__as7912)).bottom, t));
+            return new LinearBorder(side: BorderSide.lerp(side, b__as7912.side, t), start: LinearBorderEdge.lerp(start, b__as7912.start, t), end: LinearBorderEdge.lerp(end, b__as7912.end, t), top: LinearBorderEdge.lerp(top, b__as7912.top, t), bottom: LinearBorderEdge.lerp(bottom, b__as7912.bottom, t));
         }
         return base.lerpTo(b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -158,13 +158,13 @@ public class LinearBorder : OutlinedBorder
 
     public override LinearBorder copyWith(BorderSide? side = null, BorderRadiusGeometry? borderRadius = null, double? eccentricity = null, LinearBorderEdge? start = null, LinearBorderEdge? end = null, LinearBorderEdge? top = null, LinearBorderEdge? bottom = null, double? circularity = null, double? rectilinearity = null, double? points = null, double? innerRadiusRatio = null, double? pointRounding = null, double? valleyRounding = null, double? rotation = null, double? squash = null)
     {
-        return new LinearBorder(side: (side ?? this.side), start: (start ?? this.start), end: (end ?? this.end), top: (top ?? this.top), bottom: (bottom ?? this.bottom));
+        return new LinearBorder(side: side ?? this.side, start: start ?? this.start, end: end ?? this.end, top: top ?? this.top, bottom: bottom ?? this.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect = this.dimensions.resolve(textDirection).deflateRect(rect);
+        global::Doroti.Ui.Rect adjustedRect = dimensions.resolve(textDirection).deflateRect(rect);
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -187,8 +187,8 @@ public class LinearBorder : OutlinedBorder
 
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        EdgeInsets insets = this.dimensions.resolve(textDirection);
-        var rtlLocal = (Equals(textDirection, TextDirection.rtl));
+        EdgeInsets insets = dimensions.resolve(textDirection);
+        var rtlLocal = Equals(textDirection, TextDirection.rtl);
         var path = new global::Doroti.Ui.Path();
         var paintLocal = ((Func<Paint>)(() =>
 {
@@ -201,14 +201,14 @@ public class LinearBorder : OutlinedBorder
             paintLocal.color = color;
             path.reset();
             path.moveTo(rect.left, DartRuntimePrimitives.RequireValue(rect.top));
-            if ((rect.width == 0.0))
+            if (rect.width == 0.0)
             {
                 paintLocal.style = PaintingStyle.stroke;
                 path.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
             }
             else
             {
-                if ((rect.height == 0.0))
+                if (rect.height == 0.0)
                 {
                     paintLocal.style = PaintingStyle.stroke;
                     path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
@@ -223,41 +223,41 @@ public class LinearBorder : OutlinedBorder
             }
             canvas.drawPath(path, paintLocal);
         }
-        if ((((this.start is not null) && (this.start!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((start is not null) && (start!.size != 0.0) && (!Equals(side.style, BorderStyle.none)))
         {
-            var insetRect = Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
-            double x = (rtlLocal ? (rect.right - ((EdgeInsets)insets).right) : rect.left);
-            double widthLocal = (rtlLocal ? ((EdgeInsets)insets).right : ((EdgeInsets)insets).left);
-            double heightLocal = (insetRect.height * this.start!.size);
-            double y = (((insetRect.height - heightLocal)) * ((((this.start!.alignment + 1.0)) / 2.0)));
+            var insetRect = Rect.fromLTWH(rect.left, rect.top + insets.top, rect.width, rect.height - insets.vertical);
+            double x = rtlLocal ? (rect.right - insets.right) : rect.left;
+            double widthLocal = rtlLocal ? insets.right : insets.left;
+            double heightLocal = insetRect.height * start!.size;
+            double y = (insetRect.height - heightLocal) * ((start!.alignment + 1.0) / 2.0);
             var r = Rect.fromLTWH(x, y, widthLocal, heightLocal);
-            drawEdge(r, ((BorderSide)side).color);
+            drawEdge(r, side.color);
         }
-        if ((((this.end is not null) && (this.end!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((end is not null) && (end!.size != 0.0) && (!Equals(side.style, BorderStyle.none)))
         {
-            var insetRectLocal = Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
-            double xLocal = (rtlLocal ? rect.left : (rect.right - ((EdgeInsets)insets).right));
-            double widthAlternate = (rtlLocal ? ((EdgeInsets)insets).left : ((EdgeInsets)insets).right);
-            double heightAlternate = (insetRectLocal.height * this.end!.size);
-            double yLocal = (((insetRectLocal.height - heightAlternate)) * ((((this.end!.alignment + 1.0)) / 2.0)));
+            var insetRectLocal = Rect.fromLTWH(rect.left, rect.top + insets.top, rect.width, rect.height - insets.vertical);
+            double xLocal = rtlLocal ? rect.left : (rect.right - insets.right);
+            double widthAlternate = rtlLocal ? insets.left : insets.right;
+            double heightAlternate = insetRectLocal.height * end!.size;
+            double yLocal = (insetRectLocal.height - heightAlternate) * ((end!.alignment + 1.0) / 2.0);
             var rLocal = Rect.fromLTWH(xLocal, yLocal, widthAlternate, heightAlternate);
-            drawEdge(rLocal, ((BorderSide)side).color);
+            drawEdge(rLocal, side.color);
         }
-        if ((((this.top is not null) && (this.top!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((top is not null) && (top!.size != 0.0) && (!Equals(side.style, BorderStyle.none)))
         {
-            double widthNested = (rect.width * this.top!.size);
-            double startX = (((rect.width - widthNested)) * ((((this.top!.alignment + 1.0)) / 2.0)));
-            double xAlternate = (rtlLocal ? ((rect.width - startX) - widthNested) : startX);
-            var rAlternate = Rect.fromLTWH(xAlternate, rect.top, widthNested, ((EdgeInsets)insets).top);
-            drawEdge(rAlternate, ((BorderSide)side).color);
+            double widthNested = rect.width * top!.size;
+            double startX = (rect.width - widthNested) * ((top!.alignment + 1.0) / 2.0);
+            double xAlternate = rtlLocal ? (rect.width - startX - widthNested) : startX;
+            var rAlternate = Rect.fromLTWH(xAlternate, rect.top, widthNested, insets.top);
+            drawEdge(rAlternate, side.color);
         }
-        if ((((this.bottom is not null) && (this.bottom!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((bottom is not null) && (bottom!.size != 0.0) && (!Equals(side.style, BorderStyle.none)))
         {
-            double widthCurrent = (rect.width * this.bottom!.size);
-            double startXLocal = (((rect.width - widthCurrent)) * ((((this.bottom!.alignment + 1.0)) / 2.0)));
-            double xNested = (rtlLocal ? ((rect.width - startXLocal) - widthCurrent) : startXLocal);
-            var rNested = Rect.fromLTWH(xNested, (rect.bottom - ((EdgeInsets)insets).bottom), widthCurrent, ((BorderSide)side).width);
-            drawEdge(rNested, ((BorderSide)side).color);
+            double widthCurrent = rect.width * bottom!.size;
+            double startXLocal = (rect.width - widthCurrent) * ((bottom!.alignment + 1.0) / 2.0);
+            double xNested = rtlLocal ? (rect.width - startXLocal - widthCurrent) : startXLocal;
+            var rNested = Rect.fromLTWH(xNested, rect.bottom - insets.bottom, widthCurrent, side.width);
+            drawEdge(rNested, side.color);
         }
     }
 
@@ -269,36 +269,36 @@ public class LinearBorder : OutlinedBorder
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((__other is LinearBorder) && (Equals(((LinearBorder)__other).side, side))) && (Equals(((LinearBorder)((LinearBorder)__other)).start, this.start))) && (Equals(((LinearBorder)((LinearBorder)__other)).end, this.end))) && (Equals(((LinearBorder)((LinearBorder)__other)).top, this.top))) && (Equals(((LinearBorder)((LinearBorder)__other)).bottom, this.bottom)));
+        return (__other is LinearBorder) && Equals(__other.side, side) && Equals(__other.start, start) && Equals(__other.end, end) && Equals(__other.top, top) && Equals(__other.bottom, bottom);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.start, this.end, this.top, this.bottom);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, start, end, top, bottom);
     public override string ToString()
     {
-        if ((Equals(this, none)))
+        if (Equals(this, none))
         {
             return "LinearBorder.none";
         }
-        var s = new StringBuffer($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
-        if ((this.start is not null))
+        var s = new StringBuffer($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder")}(side: {side}");
+        if (start is not null)
         {
-            s.write($", start: {this.start}");
+            s.write($", start: {start}");
         }
-        if ((this.end is not null))
+        if (end is not null)
         {
-            s.write($", end: {this.end}");
+            s.write($", end: {end}");
         }
-        if ((this.top is not null))
+        if (top is not null)
         {
-            s.write($", top: {this.top}");
+            s.write($", top: {top}");
         }
-        if ((this.bottom is not null))
+        if (bottom is not null)
         {
-            s.write($", bottom: {this.bottom}");
+            s.write($", bottom: {bottom}");
         }
         s.write(")");
         return s.ToString();

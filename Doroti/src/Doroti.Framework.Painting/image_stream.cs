@@ -22,35 +22,35 @@ public class ImageInfo
 
     public virtual ImageInfo clone()
     {
-        return new ImageInfo(image: this.image.clone(), scale: this.scale, debugLabel: this.debugLabel);
+        return new ImageInfo(image: image.clone(), scale: scale, debugLabel: debugLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool isCloneOf(ImageInfo other)
     {
-        return ((((ImageInfo)other).image.isCloneOf(this.image) && (((ImageInfo)other).scale == this.scale)) && (((ImageInfo)other).debugLabel == this.debugLabel));
+        return other.image.isCloneOf(image) && (other.scale == scale) && (other.debugLabel == debugLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long sizeBytes => ((this.image.height * this.image.width) * 4L);
+    public virtual long sizeBytes => image.height * image.width * 4L;
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => !this.image.debugDisposed);
+        DartRuntimePrimitives.Assert(() => !image.debugDisposed);
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        this.image.dispose();
+        image.dispose();
     }
 
-    public override string ToString() => $"{((this.debugLabel is not null) ? $"{this.debugLabel} " : "")}{this.image} @ {(Foundation.DebugLibrary.debugFormatDouble(this.scale))}x";
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.image, this.scale, this.debugLabel);
+    public override string ToString() => $"{((debugLabel is not null) ? $"{debugLabel} " : "")}{image} @ {Foundation.DebugLibrary.debugFormatDouble(scale)}x";
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(image, scale, debugLabel);
     public override bool Equals(object? other)
     {
         var __other = other as ImageInfo;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((__other is ImageInfo) && (Equals(((ImageInfo)((ImageInfo)__other)).image, this.image))) && (((ImageInfo)((ImageInfo)__other)).scale == this.scale)) && (((ImageInfo)((ImageInfo)__other)).debugLabel == this.debugLabel));
+        return (__other is ImageInfo) && Equals(__other.image, image) && (__other.scale == scale) && (__other.debugLabel == debugLabel);
     }
 
 }
@@ -70,16 +70,16 @@ public class ImageStreamListener
         this.reportErrors = reportErrors;
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.onImage, this.onChunk, this.onError, this.reportErrors);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(onImage, onChunk, onError, reportErrors);
     public override bool Equals(object? other)
     {
         var __other = other as ImageStreamListener;
         if (__other is null) return false;
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return (((((__other is ImageStreamListener) && (Equals((Action<ImageInfo, bool>)((ImageStreamListener)((ImageStreamListener)__other)).onImage, (Action<ImageInfo, bool>)this.onImage))) && (Equals((Action<ImageChunkEvent>?)((ImageStreamListener)((ImageStreamListener)__other)).onChunk, (Action<ImageChunkEvent>?)this.onChunk))) && (Equals((Action<object, global::System.Diagnostics.StackTrace?>?)((ImageStreamListener)((ImageStreamListener)__other)).onError, (Action<object, global::System.Diagnostics.StackTrace?>?)this.onError))) && (((ImageStreamListener)((ImageStreamListener)__other)).reportErrors == this.reportErrors));
+        return (__other is ImageStreamListener) && Equals(__other.onImage, onImage) && Equals(__other.onChunk, onChunk) && Equals(__other.onError, onError) && (__other.reportErrors == reportErrors);
     }
 
 }
@@ -99,15 +99,15 @@ public class ImageChunkEvent : Diagnosticable
     {
         this.cumulativeBytesLoaded = cumulativeBytesLoaded;
         this.expectedTotalBytes = expectedTotalBytes;
-        System.Diagnostics.Debug.Assert((cumulativeBytesLoaded >= 0L));
-        System.Diagnostics.Debug.Assert(((expectedTotalBytes is null) || (expectedTotalBytes >= 0L)));
+        System.Diagnostics.Debug.Assert(cumulativeBytesLoaded >= 0L);
+        System.Diagnostics.Debug.Assert((expectedTotalBytes is null) || (expectedTotalBytes >= 0L));
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new IntProperty("cumulativeBytesLoaded", this.cumulativeBytesLoaded));
-        properties.add(new IntProperty("expectedTotalBytes", this.expectedTotalBytes));
+        properties.add(new IntProperty("cumulativeBytesLoaded", cumulativeBytesLoaded));
+        properties.add(new IntProperty("expectedTotalBytes", expectedTotalBytes));
     }
 
 }
@@ -121,45 +121,45 @@ public class ImageStream : Diagnosticable
     {
     }
 
-    public virtual ImageStreamCompleter? completer => this._completer;
+    public virtual ImageStreamCompleter? completer => _completer;
     public virtual void setCompleter(ImageStreamCompleter value)
     {
-        DartRuntimePrimitives.Assert(() => (this._completer is null));
+        DartRuntimePrimitives.Assert(() => _completer is null);
         _completer = value;
-        if ((this._listeners is not null))
+        if (_listeners is not null)
         {
-            List<ImageStreamListener> initialListeners = this._listeners!;
+            List<ImageStreamListener> initialListeners = _listeners!;
             _listeners = null;
-            this._completer!._addingInitialListeners = true;
-            initialListeners.forEach(this._completer!.addListener);
-            this._completer!._addingInitialListeners = false;
+            _completer!._addingInitialListeners = true;
+            initialListeners.forEach(_completer!.addListener);
+            _completer!._addingInitialListeners = false;
         }
     }
 
     public virtual void addListener(ImageStreamListener listener)
     {
-        if ((this._completer is not null))
+        if (_completer is not null)
         {
-            this._completer!.addListener(listener);
+            _completer!.addListener(listener);
             return;
         }
         _listeners ??= new List<ImageStreamListener>();
-        this._listeners!.Add(listener);
+        _listeners!.Add(listener);
     }
 
     public virtual void removeListener(ImageStreamListener listener)
     {
-        if ((this._completer is not null))
+        if (_completer is not null)
         {
-            this._completer!.removeListener(listener);
+            _completer!.removeListener(listener);
             return;
         }
-        DartRuntimePrimitives.Assert(() => (this._listeners is not null));
-        for (var i = 0L; (i < checked((long)(this._listeners!.Count))); i += 1L)
+        DartRuntimePrimitives.Assert(() => _listeners is not null);
+        for (var i = 0L; i < checked(_listeners!.Count); i += 1L)
         {
-            if ((Equals(this._listeners![(int)(i)], listener)))
+            if (Equals(_listeners![(int)i], listener))
             {
-                this._listeners!.removeAt(i);
+                _listeners!.removeAt(i);
                 break;
             }
         }
@@ -169,9 +169,9 @@ public class ImageStream : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new ObjectFlagProperty<ImageStreamCompleter>("completer", this._completer, ifPresent: ((Diagnosticable?)this._completer)?.toStringShort(), ifNull: "unresolved"));
-        properties.add(new ObjectFlagProperty<List<ImageStreamListener>>("listeners", this._listeners, ifPresent: $"{((long?)(this._listeners?.Count))} listener{((((long?)(this._listeners?.Count)) == 1L) ? "" : "s")}", ifNull: "no listeners", level: ((this._completer is not null) ? DiagnosticLevel.hidden : DiagnosticLevel.info)));
-        this._completer?.debugFillProperties(properties);
+        properties.add(new ObjectFlagProperty<ImageStreamCompleter>("completer", _completer, ifPresent: ((Diagnosticable?)_completer)?.toStringShort(), ifNull: "unresolved"));
+        properties.add(new ObjectFlagProperty<List<ImageStreamListener>>("listeners", _listeners, ifPresent: $"{(long?)(_listeners?.Count)} listener{(((_listeners?.Count) == 1L) ? "" : "s")}", ifNull: "no listeners", level: (_completer is not null) ? DiagnosticLevel.hidden : DiagnosticLevel.info));
+        _completer?.debugFillProperties(properties);
     }
 
 }
@@ -188,11 +188,11 @@ public class ImageStreamCompleterHandle
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => (this._completer is not null));
-        DartRuntimePrimitives.Assert(() => (this._completer!._keepAliveHandles > 0L));
-        DartRuntimePrimitives.Assert(() => !this._completer!._disposed);
-        this._completer!._keepAliveHandles -= 1L;
-        this._completer!._maybeDispose();
+        DartRuntimePrimitives.Assert(() => _completer is not null);
+        DartRuntimePrimitives.Assert(() => _completer!._keepAliveHandles > 0L);
+        DartRuntimePrimitives.Assert(() => !_completer!._disposed);
+        _completer!._keepAliveHandles -= 1L;
+        _completer!._maybeDispose();
         _completer = null;
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
     }
@@ -212,20 +212,20 @@ public abstract class ImageStreamCompleter : Diagnosticable
     internal virtual bool _disposed { get; set; } = false;
     internal virtual List<Action> _onLastListenerRemovedCallbacks { get; private set; } = new List<Action>();
 
-    public virtual bool hasListeners => (checked((long)(this._listeners.Count)) != 0);
+    public virtual bool hasListeners => checked((long)_listeners.Count) != 0;
     public virtual void addListener(ImageStreamListener listener)
     {
         _checkDisposed();
-        if (!((ImageStreamListener)listener).reportErrors)
+        if (!listener.reportErrors)
         {
             _hadErrorListener = true;
         }
-        this._listeners.Add(listener);
-        if ((this._currentImage is not null))
+        _listeners.Add(listener);
+        if (_currentImage is not null)
         {
             try
             {
-                listener.onImage(this._currentImage!.clone(), !this._addingInitialListeners);
+                listener.onImage(_currentImage!.clone(), !_addingInitialListeners);
             }
             catch (Exception exceptionLocal)
             {
@@ -233,16 +233,16 @@ public abstract class ImageStreamCompleter : Diagnosticable
                 reportError(context: new ErrorDescription("by a synchronously-called image listener"), exception: exceptionLocal, stack: stackLocal);
             }
         }
-        if (((this._currentError is not null) && (((ImageStreamListener)listener).onError is not null)))
+        if ((_currentError is not null) && (listener.onError is not null))
         {
             try
             {
-                ((ImageStreamListener)listener).onError!(this._currentError!.exception, this._currentError!.stack);
+                listener.onError!(_currentError!.exception, _currentError!.stack);
             }
             catch (Exception newException)
             {
                 var newStack = new System.Diagnostics.StackTrace();
-                if ((!Equals(newException, this._currentError!.exception)))
+                if (!Equals(newException, _currentError!.exception))
                 {
                     FlutterError.reportError(new FlutterErrorDetails(exception: newException, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack));
                 }
@@ -253,16 +253,16 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void addEphemeralErrorListener(Action<object, global::System.Diagnostics.StackTrace?> listener)
     {
         _checkDisposed();
-        if ((this._currentError is not null))
+        if (_currentError is not null)
         {
             try
             {
-                listener(this._currentError!.exception, this._currentError!.stack);
+                listener(_currentError!.exception, _currentError!.stack);
             }
             catch (Exception newException)
             {
                 var newStack = new System.Diagnostics.StackTrace();
-                if ((!Equals(newException, this._currentError!.exception)))
+                if (!Equals(newException, _currentError!.exception))
                 {
                     FlutterError.reportError(new FlutterErrorDetails(exception: newException, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack));
                 }
@@ -270,9 +270,9 @@ public abstract class ImageStreamCompleter : Diagnosticable
         }
         else
         {
-            if ((this._currentImage is null))
+            if (_currentImage is null)
             {
-                this._ephemeralErrorListeners.Add(listener);
+                _ephemeralErrorListeners.Add(listener);
             }
         }
     }
@@ -287,22 +287,22 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void removeListener(ImageStreamListener listener)
     {
         _checkDisposed();
-        for (var i = 0L; (i < checked((long)(this._listeners.Count))); i += 1L)
+        for (var i = 0L; i < checked(_listeners.Count); i += 1L)
         {
-            if ((Equals(this._listeners[(int)(i)], listener)))
+            if (Equals(_listeners[(int)i], listener))
             {
-                this._listeners.removeAt(i);
+                _listeners.removeAt(i);
                 break;
             }
         }
-        if ((checked((long)(this._listeners.Count)) == 0))
+        if (checked((long)_listeners.Count) == 0)
         {
-            List<Action> callbacks = this._onLastListenerRemovedCallbacks.ToList();
+            List<Action> callbacks = _onLastListenerRemovedCallbacks.ToList();
             foreach (var callback in callbacks)
             {
                 callback();
             }
-            this._onLastListenerRemovedCallbacks.Clear();
+            _onLastListenerRemovedCallbacks.Clear();
             _maybeDispose();
         }
     }
@@ -318,12 +318,12 @@ public abstract class ImageStreamCompleter : Diagnosticable
 
     internal virtual void _maybeDispose()
     {
-        if (((this._disposed || (checked((long)(this._listeners.Count)) != 0)) || (this._keepAliveHandles != 0L)))
+        if (_disposed || (checked((long)_listeners.Count) != 0) || (_keepAliveHandles != 0L))
         {
             return;
         }
-        this._ephemeralErrorListeners.Clear();
-        this._currentImage?.dispose();
+        _ephemeralErrorListeners.Clear();
+        _currentImage?.dispose();
         _currentImage = null;
         _disposed = true;
         onDisposed();
@@ -331,7 +331,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
 
     internal virtual void _checkDisposed()
     {
-        if (this._disposed)
+        if (_disposed)
         {
             throw new InvalidOperationException("Stream has been disposed.\n" + "An ImageStream is considered disposed once at least one listener has " + "been added and subsequently all listeners have been removed and no " + "handles are outstanding from the keepAlive method.\n" + "To resolve this error, maintain at least one listener on the stream, " + "or create an ImageStreamCompleterHandle from the keepAlive " + "method, or create a new stream for the image.");
         }
@@ -340,26 +340,26 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void addOnLastListenerRemovedCallback(Action callback)
     {
         _checkDisposed();
-        this._onLastListenerRemovedCallbacks.Add(callback);
+        _onLastListenerRemovedCallbacks.Add(callback);
     }
 
     public virtual void removeOnLastListenerRemovedCallback(Action callback)
     {
         _checkDisposed();
-        this._onLastListenerRemovedCallbacks.Remove(callback);
+        _onLastListenerRemovedCallbacks.Remove(callback);
     }
 
     public virtual void setImage(ImageInfo image)
     {
         _checkDisposed();
-        this._currentImage?.dispose();
+        _currentImage?.dispose();
         _currentImage = image;
-        this._ephemeralErrorListeners.Clear();
-        if ((checked((long)(this._listeners.Count)) == 0))
+        _ephemeralErrorListeners.Clear();
+        if (checked((long)_listeners.Count) == 0)
         {
             return;
         }
-        var localListeners = new List<ImageStreamListener>(this._listeners);
+        var localListeners = new List<ImageStreamListener>(_listeners);
         foreach (var listener in localListeners)
         {
             try
@@ -377,9 +377,9 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void reportError(DiagnosticsNode? context = null, object exception = default!, global::System.Diagnostics.StackTrace? stack = null, InformationCollector? informationCollector = null, bool silent = false)
     {
         _currentError = new FlutterErrorDetails(exception: exception, stack: stack, library: "image resource service", context: context, informationCollector: informationCollector, silent: silent);
-        var localErrorListeners = this._listeners.Where(listener => listener.onError is not null)
-            .Select(listener => listener.onError!).Concat(this._ephemeralErrorListeners).ToList();
-        this._ephemeralErrorListeners.Clear();
+        var localErrorListeners = _listeners.Where(listener => listener.onError is not null)
+            .Select(listener => listener.onError!).Concat(_ephemeralErrorListeners).ToList();
+        _ephemeralErrorListeners.Clear();
         var handled = false;
         foreach (var errorListener in localErrorListeners)
         {
@@ -391,7 +391,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
             catch (Exception newException)
             {
                 var newStack = new System.Diagnostics.StackTrace();
-                if ((!Equals(newException, exception)))
+                if (!Equals(newException, exception))
                 {
                     FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("when reporting an error to an image listener"), library: "image resource service", exception: newException, stack: newStack));
                 }
@@ -399,20 +399,20 @@ public abstract class ImageStreamCompleter : Diagnosticable
         }
         if (!handled)
         {
-            if (this._hadErrorListener)
+            if (_hadErrorListener)
             {
                 return;
             }
-            FlutterError.reportError(this._currentError!);
+            FlutterError.reportError(_currentError!);
         }
     }
 
     public virtual void reportImageChunkEvent(ImageChunkEvent @event)
     {
         _checkDisposed();
-        if (this.hasListeners)
+        if (hasListeners)
         {
-            List<Action<ImageChunkEvent>> localListeners = this._listeners.map<ImageStreamListener, Action<ImageChunkEvent>?>(((listener) => ((ImageStreamListener)listener).onChunk)).OfType<Action<ImageChunkEvent>>().ToList();
+            List<Action<ImageChunkEvent>> localListeners = _listeners.map<ImageStreamListener, Action<ImageChunkEvent>?>((listener) => listener.onChunk).OfType<Action<ImageChunkEvent>>().ToList();
             foreach (var listenerLocal in localListeners)
             {
                 listenerLocal(@event);
@@ -423,10 +423,10 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new DiagnosticsProperty<ImageInfo>("current", this._currentImage, ifNull: "unresolved", showName: false));
-        description.add(new ObjectFlagProperty<List<ImageStreamListener>>("listeners", this._listeners, ifPresent: $"{checked((long)(this._listeners.Count))} listener{((checked((long)(this._listeners.Count)) == 1L) ? "" : "s")}"));
-        description.add(new ObjectFlagProperty<List<Action<object, global::System.Diagnostics.StackTrace?>>>("ephemeralErrorListeners", this._ephemeralErrorListeners, ifPresent: $"{checked((long)(this._ephemeralErrorListeners.Count))} ephemeralErrorListener{((checked((long)(this._ephemeralErrorListeners.Count)) == 1L) ? "" : "s")}"));
-        description.add(new FlagProperty("disposed", value: this._disposed, ifTrue: "<disposed>"));
+        description.add(new DiagnosticsProperty<ImageInfo>("current", _currentImage, ifNull: "unresolved", showName: false));
+        description.add(new ObjectFlagProperty<List<ImageStreamListener>>("listeners", _listeners, ifPresent: $"{checked((long)_listeners.Count)} listener{((checked(_listeners.Count) == 1L) ? "" : "s")}"));
+        description.add(new ObjectFlagProperty<List<Action<object, global::System.Diagnostics.StackTrace?>>>("ephemeralErrorListeners", _ephemeralErrorListeners, ifPresent: $"{checked((long)_ephemeralErrorListeners.Count)} ephemeralErrorListener{((checked(_ephemeralErrorListeners.Count) == 1L) ? "" : "s")}"));
+        description.add(new FlagProperty("disposed", value: _disposed, ifTrue: "<disposed>"));
     }
 
 }
@@ -436,14 +436,14 @@ public class OneFrameImageStreamCompleter : ImageStreamCompleter
     public OneFrameImageStreamCompleter(Future<ImageInfo> image, InformationCollector? informationCollector = null)
     {
         _ = image.then(
-            (Action<ImageInfo>)setImage,
-            (Action<Exception, global::System.Diagnostics.StackTrace>)((error, stack) =>
+            setImage,
+            (error, stack) =>
                 reportError(
                     context: new ErrorDescription("resolving a single-frame image stream"),
                     exception: error,
                     stack: stack,
                     informationCollector: informationCollector,
-                    silent: true)));
+                    silent: true));
     }
 
 }
@@ -463,8 +463,8 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
 
     public MultiFrameImageStreamCompleter(Future<Codec> codec, double scale, string? debugLabel = null, Stream<ImageChunkEvent>? chunkEvents = null, InformationCollector? informationCollector = null)
     {
-        this._informationCollector = informationCollector;
-        this._scale = scale;
+        _informationCollector = informationCollector;
+        _scale = scale;
         this.debugLabel = debugLabel;
         _ = ObserveCodec(codec);
         if (chunkEvents is not null)
@@ -493,7 +493,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
     internal virtual void _handleCodecReady(Codec codec)
     {
         _codec = codec;
-        DartRuntimePrimitives.Assert(() => (this._codec is not null));
+        DartRuntimePrimitives.Assert(() => _codec is not null);
         if (hasListeners)
         {
             _ = _decodeNextFrameAndSchedule();
@@ -507,79 +507,79 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => (this._nextFrame is not null));
-        if ((_isFirstFrame() || _hasFrameDurationPassed(timestamp)))
+        DartRuntimePrimitives.Assert(() => _nextFrame is not null);
+        if (_isFirstFrame() || _hasFrameDurationPassed(timestamp))
         {
-            var frame = this._nextFrame!;
+            var frame = _nextFrame!;
             _nextFrame = null;
             _shownTimestamp = timestamp;
             _frameDuration = frame.duration;
             using (frame.image)
-                _emitFrame(new ImageInfo(image: frame.image.clone(), scale: this._scale, debugLabel: debugLabel));
-            if ((this._codec is null))
+                _emitFrame(new ImageInfo(image: frame.image.clone(), scale: _scale, debugLabel: debugLabel));
+            if (_codec is null)
             {
                 return;
             }
-            long completedCycles = (checked((long)(this._framesEmitted / this._codec!.frameCount)));
-            if (((this._codec!.repetitionCount == -1L) || (completedCycles <= this._codec!.repetitionCount)))
+            long completedCycles = checked(_framesEmitted / _codec!.frameCount);
+            if ((_codec!.repetitionCount == -1L) || (completedCycles <= _codec!.repetitionCount))
             {
                 _ = _decodeNextFrameAndSchedule();
                 return;
             }
-            this._codec!.dispose();
+            _codec!.dispose();
             _codec = null;
             return;
         }
-        Duration delay = (DartRuntimePrimitives.RequireValue(this._frameDuration) - ((timestamp - this._shownTimestamp)));
-        _timer = new Timer((delay * Scheduler.BindingLibrary.timeDilation), (() =>
+        Duration delay = DartRuntimePrimitives.RequireValue(_frameDuration) - (timestamp - _shownTimestamp);
+        _timer = new Timer(delay * Scheduler.BindingLibrary.timeDilation, () =>
         {
             _scheduleAppFrame();
-        }));
+        });
     }
 
     internal virtual bool _isFirstFrame()
     {
-        return (this._frameDuration is null);
+        return _frameDuration is null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _hasFrameDurationPassed(Duration timestamp)
     {
-        return ((timestamp - this._shownTimestamp) >= DartRuntimePrimitives.RequireValue(this._frameDuration));
+        return (timestamp - _shownTimestamp) >= DartRuntimePrimitives.RequireValue(_frameDuration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal async virtual Future _decodeNextFrameAndSchedule()
     {
-        this._nextFrame?.image.dispose();
+        _nextFrame?.image.dispose();
         _nextFrame = null;
         try
         {
-            _nextFrame = await this._codec!.getNextFrame();
+            _nextFrame = await _codec!.getNextFrame();
         }
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            reportError(context: new ErrorDescription("resolving an image frame"), exception: exceptionLocal, stack: stackLocal, informationCollector: (InformationCollector?)this._informationCollector, silent: true);
+            reportError(context: new ErrorDescription("resolving an image frame"), exception: exceptionLocal, stack: stackLocal, informationCollector: _informationCollector, silent: true);
             return;
         }
-        if ((this._codec is null))
+        if (_codec is null)
         {
-            this._nextFrame?.image.dispose();
+            _nextFrame?.image.dispose();
             _nextFrame = null;
             return;
         }
-        if ((this._codec!.frameCount == 1L))
+        if (_codec!.frameCount == 1L)
         {
             if (!hasListeners)
             {
                 return;
             }
-            var frame = this._nextFrame!;
+            var frame = _nextFrame!;
             _nextFrame = null;
             using (frame.image)
-                _emitFrame(new ImageInfo(image: frame.image.clone(), scale: this._scale, debugLabel: debugLabel));
-            this._codec?.dispose();
+                _emitFrame(new ImageInfo(image: frame.image.clone(), scale: _scale, debugLabel: debugLabel));
+            _codec?.dispose();
             _codec = null;
             return;
         }
@@ -588,12 +588,12 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
 
     internal virtual void _scheduleAppFrame()
     {
-        if (this._frameCallbackScheduled)
+        if (_frameCallbackScheduled)
         {
             return;
         }
         _frameCallbackScheduled = true;
-        SchedulerBinding.instance.scheduleFrameCallback(this._handleAppFrame);
+        SchedulerBinding.instance.scheduleFrameCallback(_handleAppFrame);
     }
 
     internal virtual void _emitFrame(ImageInfo imageInfo)
@@ -617,7 +617,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         base.removeListener(listener);
         if (!hasListeners)
         {
-            this._timer?.cancel();
+            _timer?.cancel();
             _timer = null;
         }
     }
@@ -627,12 +627,12 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         base._maybeDispose();
         if (_disposed)
         {
-            this._chunkSubscription?.onData(null);
-            _ = this._chunkSubscription?.cancel();
+            _chunkSubscription?.onData(null);
+            _ = _chunkSubscription?.cancel();
             _chunkSubscription = null;
-            this._codec?.dispose();
+            _codec?.dispose();
             _codec = null;
-            this._nextFrame?.image.dispose();
+            _nextFrame?.image.dispose();
             _nextFrame = null;
         }
     }

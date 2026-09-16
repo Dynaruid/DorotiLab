@@ -85,7 +85,7 @@ public class ExpansionTile : global::Doroti.Framework.Widgets.StatefulWidget
         this.expansionAnimationStyle = expansionAnimationStyle;
         this.internalAddSemanticForOnTap = internalAddSemanticForOnTap;
         this.statesController = statesController;
-        System.Diagnostics.Debug.Assert((!Equals(expandedCrossAxisAlignment, CrossAxisAlignment.baseline)));
+        System.Diagnostics.Debug.Assert(!Equals(expandedCrossAxisAlignment, CrossAxisAlignment.baseline));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ExpansionTileState__expansion_tile());
@@ -93,9 +93,9 @@ public class ExpansionTile : global::Doroti.Framework.Widgets.StatefulWidget
 
 internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Widgets.State<ExpansionTile>
 {
-    internal static global::Doroti.Framework.Animation.Animatable<double> _easeInTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeIn));
-    internal static global::Doroti.Framework.Animation.Animatable<double> _easeOutTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeOut));
-    internal static global::Doroti.Framework.Animation.Animatable<double> _halfTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.5));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _easeInTween = new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeIn);
+    internal static global::Doroti.Framework.Animation.Animatable<double> _easeOutTween = new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeOut);
+    internal static global::Doroti.Framework.Animation.Animatable<double> _halfTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.5);
     internal virtual ShapeBorderTween _borderTween { get; private set; } = new ShapeBorderTween();
     internal virtual global::Doroti.Framework.Animation.ColorTween _headerColorTween { get; private set; } = new global::Doroti.Framework.Animation.ColorTween();
     internal virtual global::Doroti.Framework.Animation.ColorTween _iconColorTween { get; private set; } = new global::Doroti.Framework.Animation.ColorTween();
@@ -117,61 +117,61 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
         base.initState();
         _curve = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Curve>(Curves.easeIn);
         _duration = Expansion_tileLibrary._kExpand;
-        _tileController = (((ExpansionTile)this.widget).controller ?? new global::Doroti.Framework.Widgets.ExpansibleController());
-        if (((ExpansionTile)this.widget).initiallyExpanded)
+        _tileController = widget.controller ?? new global::Doroti.Framework.Widgets.ExpansibleController();
+        if (widget.initiallyExpanded)
         {
-            this._tileController.expand();
+            _tileController.expand();
         }
-        this._tileController.addListener(this._onExpansionChanged);
+        _tileController.addListener(_onExpansionChanged);
     }
 
     public override void dispose()
     {
-        this._tileController.removeListener(this._onExpansionChanged);
-        if ((((ExpansionTile)this.widget).controller is null))
+        _tileController.removeListener(_onExpansionChanged);
+        if (widget.controller is null)
         {
-            this._tileController.dispose();
+            _tileController.dispose();
         }
-        this._timer?.cancel();
+        _timer?.cancel();
         _timer = null;
         base.dispose();
     }
 
     internal virtual void _onExpansionChanged()
     {
-        global::Doroti.Ui.TextDirection textDirectionLocal = ((TextDirection)(WidgetsLocalizations.of(this.context)).textDirection);
-        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(this.context));
-        string stateHint = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((MaterialLocalizations)localizations).collapsedHint : ((MaterialLocalizations)localizations).expandedHint);
-        if ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)))
+        global::Doroti.Ui.TextDirection textDirectionLocal = WidgetsLocalizations.of(context).textDirection;
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        string stateHint = _tileController.isExpanded ? localizations.collapsedHint : localizations.expandedHint;
+        if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
         {
-            this._timer?.cancel();
-            _timer = new Timer(Duration.Create(seconds: 1L), (() =>
+            _timer?.cancel();
+            _timer = new Timer(Duration.Create(seconds: 1L), () =>
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), stateHint, textDirectionLocal).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stack) =>
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(context), stateHint, textDirectionLocal).catchError((exception, stack) =>
                 {
                     FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-                }))));
-                this._timer?.cancel();
+                }));
+                _timer?.cancel();
                 _timer = null;
-            }));
+            });
         }
         else
         {
-            if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+            if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), stateHint, textDirectionLocal).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stack) =>
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(context), stateHint, textDirectionLocal).catchError((exception, stack) =>
                 {
                     FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-                }))));
+                }));
             }
         }
-        ((ExpansionTile)this.widget).onExpansionChanged?.Invoke(((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded);
+        widget.onExpansionChanged?.Invoke(_tileController.isExpanded);
     }
 
     internal virtual ListTileControlAffinity _effectiveAffinity()
     {
-        ListTileThemeData listTileTheme = ListTileTheme.of(this.context);
-        ListTileControlAffinity affinity = ((((ExpansionTile)this.widget).controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.trailing);
+        ListTileThemeData listTileTheme = ListTileTheme.of(context);
+        ListTileControlAffinity affinity = (widget.controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.trailing;
         switch (affinity)
         {
             case ListTileControlAffinity.leading:
@@ -192,118 +192,118 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
     internal virtual global::Doroti.Framework.Widgets.Widget? _buildIcon(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
         _iconTurns = animation.drive(_halfTween.chain(_easeInTween));
-        return ((global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.RotationTransition(turns: this._iconTurns, child: new global::Doroti.Framework.Widgets.Icon(Icons.expand_more)));
+        return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.RotationTransition(turns: _iconTurns, child: new global::Doroti.Framework.Widgets.Icon(Icons.expand_more));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget? _buildLeadingIcon(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        if ((!Equals(_effectiveAffinity(), ListTileControlAffinity.leading)))
+        if (!Equals(_effectiveAffinity(), ListTileControlAffinity.leading))
         {
             return null;
         }
-        return ((global::Doroti.Framework.Widgets.Widget?)_buildIcon(context, animation));
+        return _buildIcon(context, animation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget? _buildTrailingIcon(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        if ((!Equals(_effectiveAffinity(), ListTileControlAffinity.trailing)))
+        if (!Equals(_effectiveAffinity(), ListTileControlAffinity.trailing))
         {
             return null;
         }
-        return ((global::Doroti.Framework.Widgets.Widget?)_buildIcon(context, animation));
+        return _buildIcon(context, animation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildHeader(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        _iconColor = animation.drive(this._iconColorTween.chain(_easeInTween));
-        _headerColor = animation.drive(this._headerColorTween.chain(_easeInTween));
-        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
-        string onTapHintLocal = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((MaterialLocalizations)localizations).expansionTileExpandedTapHint : ((MaterialLocalizations)localizations).expansionTileCollapsedTapHint);
-        string semanticsHint = (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.iOS => (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? $"{((MaterialLocalizations)localizations).collapsedHint}\n {((MaterialLocalizations)localizations).expansionTileExpandedHint}" : $"{((MaterialLocalizations)localizations).expandedHint}\n {((MaterialLocalizations)localizations).expansionTileCollapsedHint}"), TargetPlatform.macOS => (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? $"{((MaterialLocalizations)localizations).collapsedHint}\n {((MaterialLocalizations)localizations).expansionTileExpandedHint}" : $"{((MaterialLocalizations)localizations).expandedHint}\n {((MaterialLocalizations)localizations).expansionTileCollapsedHint}"), _ => (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((MaterialLocalizations)localizations).collapsedHint : ((MaterialLocalizations)localizations).expandedHint) });
-        global::Doroti.Framework.Widgets.Widget childLocal = ListTileTheme.merge(iconColor: (((global::Doroti.Framework.Animation.Animation<Color?>)this._iconColor).value ?? this._expansionTileTheme.iconColor), textColor: ((global::Doroti.Framework.Animation.Animation<Color?>)this._headerColor).value, child: new ListTile(enabled: ((ExpansionTile)this.widget).enabled, onTap: ((global::System.Action)(((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).collapse : ((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).expand)), dense: ((ExpansionTile)this.widget).dense, splashColor: ((ExpansionTile)this.widget).splashColor, visualDensity: ((ExpansionTile)this.widget).visualDensity, enableFeedback: ((ExpansionTile)this.widget).enableFeedback, contentPadding: (((ExpansionTile)this.widget).tilePadding ?? this._expansionTileTheme.tilePadding), leading: ((((ExpansionTile)this.widget).leading ?? (global::Doroti.Framework.Widgets.Widget?)_buildLeadingIcon(context, animation))), title: ((ExpansionTile)this.widget).title, subtitle: ((ExpansionTile)this.widget).subtitle, trailing: (((ExpansionTile)this.widget).showTrailingIcon ? ((((ExpansionTile)this.widget).trailing ?? (global::Doroti.Framework.Widgets.Widget?)_buildTrailingIcon(context, animation))) : null), minTileHeight: ((ExpansionTile)this.widget).minTileHeight, internalAddSemanticForOnTap: ((ExpansionTile)this.widget).internalAddSemanticForOnTap, statesController: ((ExpansionTile)this.widget).statesController));
-        if ((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+        _iconColor = animation.drive(_iconColorTween.chain(_easeInTween));
+        _headerColor = animation.drive(_headerColorTween.chain(_easeInTween));
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        string onTapHintLocal = _tileController.isExpanded ? localizations.expansionTileExpandedTapHint : localizations.expansionTileCollapsedTapHint;
+        string semanticsHint = PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.iOS => _tileController.isExpanded ? $"{localizations.collapsedHint}\n {localizations.expansionTileExpandedHint}" : $"{localizations.expandedHint}\n {localizations.expansionTileCollapsedHint}", TargetPlatform.macOS => _tileController.isExpanded ? $"{localizations.collapsedHint}\n {localizations.expansionTileExpandedHint}" : $"{localizations.expandedHint}\n {localizations.expansionTileCollapsedHint}", _ => _tileController.isExpanded ? localizations.collapsedHint : localizations.expandedHint };
+        global::Doroti.Framework.Widgets.Widget childLocal = ListTileTheme.merge(iconColor: _iconColor.value ?? _expansionTileTheme.iconColor, textColor: _headerColor.value, child: new ListTile(enabled: widget.enabled, onTap: _tileController.isExpanded ? _tileController.collapse : _tileController.expand, dense: widget.dense, splashColor: widget.splashColor, visualDensity: widget.visualDensity, enableFeedback: widget.enableFeedback, contentPadding: widget.tilePadding ?? _expansionTileTheme.tilePadding, leading: widget.leading ?? _buildLeadingIcon(context, animation), title: widget.title, subtitle: widget.subtitle, trailing: widget.showTrailingIcon ? (widget.trailing ?? _buildTrailingIcon(context, animation)) : null, minTileHeight: widget.minTileHeight, internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap, statesController: widget.statesController));
+        if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(label: semanticsHint, liveRegion: true, accessibilityFocusBlockType: AccessibilityFocusBlockType.blockNode, child: new global::Doroti.Framework.Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: childLocal)));
+            return new global::Doroti.Framework.Widgets.Semantics(label: semanticsHint, liveRegion: true, accessibilityFocusBlockType: AccessibilityFocusBlockType.blockNode, child: new global::Doroti.Framework.Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: childLocal));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: childLocal));
+        return new global::Doroti.Framework.Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildBody(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Align(alignment: ((((ExpansionTile)this.widget).expandedAlignment ?? this._expansionTileTheme.expandedAlignment) ?? Alignment.center), child: new global::Doroti.Framework.Widgets.Padding(padding: ((((ExpansionTile)this.widget).childrenPadding ?? this._expansionTileTheme.childrenPadding) ?? EdgeInsets.zero), child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: (((ExpansionTile)this.widget).expandedCrossAxisAlignment ?? CrossAxisAlignment.center), children: ((ExpansionTile)this.widget).children))));
+        return new global::Doroti.Framework.Widgets.Align(alignment: (widget.expandedAlignment ?? _expansionTileTheme.expandedAlignment) ?? Alignment.center, child: new global::Doroti.Framework.Widgets.Padding(padding: (widget.childrenPadding ?? _expansionTileTheme.childrenPadding) ?? EdgeInsets.zero, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: widget.expandedCrossAxisAlignment ?? CrossAxisAlignment.center, children: widget.children)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildExpansible(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget header, global::Doroti.Framework.Widgets.Widget body, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        _backgroundColor = animation.drive(this._backgroundColorTween.chain(_easeOutTween));
-        _border = animation.drive(this._borderTween.chain(_easeOutTween));
-        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)((((global::Doroti.Framework.Animation.Animation<Color?>)this._backgroundColor).value ?? this._expansionTileTheme.backgroundColor) ?? Colors.transparent));
-        global::Doroti.Framework.Painting.ShapeBorder expansionTileBorder = (((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.ShapeBorder?>)this._border).value ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent), bottom: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent)));
-        global::Doroti.Ui.Clip clipBehaviorLocal = ((((ExpansionTile)this.widget).clipBehavior ?? this._expansionTileTheme.clipBehavior) ?? Clip.antiAlias);
-        global::Doroti.Framework.Painting.Decoration decorationLocal = ((global::Doroti.Framework.Painting.Decoration)new global::Doroti.Framework.Painting.ShapeDecoration(color: backgroundColorLocal, shape: expansionTileBorder));
-        global::Doroti.Framework.Widgets.Widget tile = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Padding(padding: ((global::Doroti.Framework.Painting.Decoration)decorationLocal).padding, child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(body) })));
-        bool isShapeProvided = ((((((ExpansionTile)this.widget).shape is not null) || (this._expansionTileTheme.shape is not null)) || (((ExpansionTile)this.widget).collapsedShape is not null)) || (this._expansionTileTheme.collapsedShape is not null));
+        _backgroundColor = animation.drive(_backgroundColorTween.chain(_easeOutTween));
+        _border = animation.drive(_borderTween.chain(_easeOutTween));
+        global::Doroti.Ui.Color backgroundColorLocal = (_backgroundColor.value ?? _expansionTileTheme.backgroundColor) ?? Colors.transparent;
+        global::Doroti.Framework.Painting.ShapeBorder expansionTileBorder = _border.value ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent), bottom: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent));
+        global::Doroti.Ui.Clip clipBehaviorLocal = (widget.clipBehavior ?? _expansionTileTheme.clipBehavior) ?? Clip.antiAlias;
+        global::Doroti.Framework.Painting.Decoration decorationLocal = new global::Doroti.Framework.Painting.ShapeDecoration(color: backgroundColorLocal, shape: expansionTileBorder);
+        global::Doroti.Framework.Widgets.Widget tile = new global::Doroti.Framework.Widgets.Padding(padding: decorationLocal.padding, child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(body) }));
+        bool isShapeProvided = (widget.shape is not null) || (_expansionTileTheme.shape is not null) || (widget.collapsedShape is not null) || (_expansionTileTheme.collapsedShape is not null);
         if (isShapeProvided)
         {
-            return ((global::Doroti.Framework.Widgets.Widget)new Material(clipBehavior: clipBehaviorLocal, color: backgroundColorLocal, shape: expansionTileBorder, child: tile));
+            return new Material(clipBehavior: clipBehaviorLocal, color: backgroundColorLocal, shape: expansionTileBorder, child: tile);
         }
-        if ((backgroundColorLocal.a > 0L))
+        if (backgroundColorLocal.a > 0L)
         {
             tile = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(type: MaterialType.transparency, child: tile));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: decorationLocal, child: tile));
+        return new global::Doroti.Framework.Widgets.DecoratedBox(decoration: decorationLocal, child: tile);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didUpdateWidget(ExpansionTile oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        ThemeData theme = Theme.of(this.context);
-        _expansionTileTheme = ExpansionTileTheme.of(this.context);
-        ExpansionTileThemeData defaults = ((new _ExpansionTileDefaultsM3__expansion_tile(this.context)));
-        if (((!Equals(((ExpansionTile)this.widget).collapsedShape, ((ExpansionTile)oldWidget).collapsedShape)) || (!Equals(((ExpansionTile)this.widget).shape, ((ExpansionTile)oldWidget).shape))))
+        ThemeData theme = Theme.of(context);
+        _expansionTileTheme = ExpansionTileTheme.of(context);
+        ExpansionTileThemeData defaults = new _ExpansionTileDefaultsM3__expansion_tile(context);
+        if ((!Equals(widget.collapsedShape, oldWidget.collapsedShape)) || (!Equals(widget.shape, oldWidget.shape)))
         {
             _updateShapeBorder(theme);
         }
-        if (((!Equals(((ExpansionTile)this.widget).collapsedTextColor, ((ExpansionTile)oldWidget).collapsedTextColor)) || (!Equals(((ExpansionTile)this.widget).textColor, ((ExpansionTile)oldWidget).textColor))))
+        if ((!Equals(widget.collapsedTextColor, oldWidget.collapsedTextColor)) || (!Equals(widget.textColor, oldWidget.textColor)))
         {
             _updateHeaderColor(defaults);
         }
-        if (((!Equals(((ExpansionTile)this.widget).collapsedIconColor, ((ExpansionTile)oldWidget).collapsedIconColor)) || (!Equals(((ExpansionTile)this.widget).iconColor, ((ExpansionTile)oldWidget).iconColor))))
+        if ((!Equals(widget.collapsedIconColor, oldWidget.collapsedIconColor)) || (!Equals(widget.iconColor, oldWidget.iconColor)))
         {
             _updateIconColor(defaults);
         }
-        if (((!Equals(((ExpansionTile)this.widget).backgroundColor, ((ExpansionTile)oldWidget).backgroundColor)) || (!Equals(((ExpansionTile)this.widget).collapsedBackgroundColor, ((ExpansionTile)oldWidget).collapsedBackgroundColor))))
+        if ((!Equals(widget.backgroundColor, oldWidget.backgroundColor)) || (!Equals(widget.collapsedBackgroundColor, oldWidget.collapsedBackgroundColor)))
         {
             _updateBackgroundColor();
         }
-        if ((!Equals(((ExpansionTile)this.widget).expansionAnimationStyle, ((ExpansionTile)oldWidget).expansionAnimationStyle)))
+        if (!Equals(widget.expansionAnimationStyle, oldWidget.expansionAnimationStyle))
         {
             _updateAnimationDuration();
             _updateHeightFactorCurve();
         }
-        if ((!Equals(((ExpansionTile)this.widget).controller, ((ExpansionTile)oldWidget).controller)))
+        if (!Equals(widget.controller, oldWidget.controller))
         {
-            this._tileController.removeListener(this._onExpansionChanged);
-            if ((((ExpansionTile)oldWidget).controller is null))
+            _tileController.removeListener(_onExpansionChanged);
+            if (oldWidget.controller is null)
             {
-                this._tileController.dispose();
+                _tileController.dispose();
             }
-            _tileController = (((ExpansionTile)this.widget).controller ?? new global::Doroti.Framework.Widgets.ExpansibleController());
-            this._tileController.addListener(this._onExpansionChanged);
+            _tileController = widget.controller ?? new global::Doroti.Framework.Widgets.ExpansibleController();
+            _tileController.addListener(_onExpansionChanged);
         }
     }
 
     public override void didChangeDependencies()
     {
-        ThemeData theme = Theme.of(this.context);
-        _expansionTileTheme = ExpansionTileTheme.of(this.context);
-        ExpansionTileThemeData defaults = ((new _ExpansionTileDefaultsM3__expansion_tile(this.context)));
+        ThemeData theme = Theme.of(context);
+        _expansionTileTheme = ExpansionTileTheme.of(context);
+        ExpansionTileThemeData defaults = new _ExpansionTileDefaultsM3__expansion_tile(context);
         _updateAnimationDuration();
         _updateShapeBorder(theme);
         _updateHeaderColor(defaults);
@@ -315,16 +315,16 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
 
     internal virtual void _updateAnimationDuration()
     {
-        _duration = ((((ExpansionTile)this.widget).expansionAnimationStyle?.duration ?? this._expansionTileTheme.expansionAnimationStyle?.duration) ?? Duration.Create(milliseconds: 200L));
+        _duration = (widget.expansionAnimationStyle?.duration ?? _expansionTileTheme.expansionAnimationStyle?.duration) ?? Duration.Create(milliseconds: 200L);
     }
 
     internal virtual void _updateShapeBorder(ThemeData theme)
     {
         DartRuntimePrimitives.Ignore(((Func<ShapeBorderTween>)(() =>
 {
-    var __cascade = this._borderTween;
-    __cascade.begin = ((((ExpansionTile)this.widget).collapsedShape ?? this._expansionTileTheme.collapsedShape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent), bottom: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent)));
-    __cascade.end = ((((ExpansionTile)this.widget).shape ?? this._expansionTileTheme.shape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor), bottom: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor)));
+    var __cascade = _borderTween;
+    __cascade.begin = (widget.collapsedShape ?? _expansionTileTheme.collapsedShape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent), bottom: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent));
+    __cascade.end = (widget.shape ?? _expansionTileTheme.shape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor), bottom: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor));
     return __cascade;
 }))());
     }
@@ -333,9 +333,9 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.ColorTween>)(() =>
 {
-    var __cascade = this._headerColorTween;
-    __cascade.begin = ((((ExpansionTile)this.widget).collapsedTextColor ?? this._expansionTileTheme.collapsedTextColor) ?? defaults.collapsedTextColor);
-    __cascade.end = ((((ExpansionTile)this.widget).textColor ?? this._expansionTileTheme.textColor) ?? defaults.textColor);
+    var __cascade = _headerColorTween;
+    __cascade.begin = (widget.collapsedTextColor ?? _expansionTileTheme.collapsedTextColor) ?? defaults.collapsedTextColor;
+    __cascade.end = (widget.textColor ?? _expansionTileTheme.textColor) ?? defaults.textColor;
     return __cascade;
 }))());
     }
@@ -344,9 +344,9 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.ColorTween>)(() =>
 {
-    var __cascade = this._iconColorTween;
-    __cascade.begin = ((((ExpansionTile)this.widget).collapsedIconColor ?? this._expansionTileTheme.collapsedIconColor) ?? defaults.collapsedIconColor);
-    __cascade.end = ((((ExpansionTile)this.widget).iconColor ?? this._expansionTileTheme.iconColor) ?? defaults.iconColor);
+    var __cascade = _iconColorTween;
+    __cascade.begin = (widget.collapsedIconColor ?? _expansionTileTheme.collapsedIconColor) ?? defaults.collapsedIconColor;
+    __cascade.end = (widget.iconColor ?? _expansionTileTheme.iconColor) ?? defaults.iconColor;
     return __cascade;
 }))());
     }
@@ -355,22 +355,22 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.ColorTween>)(() =>
 {
-    var __cascade = this._backgroundColorTween;
-    __cascade.begin = (((ExpansionTile)this.widget).collapsedBackgroundColor ?? this._expansionTileTheme.collapsedBackgroundColor);
-    __cascade.end = (((ExpansionTile)this.widget).backgroundColor ?? this._expansionTileTheme.backgroundColor);
+    var __cascade = _backgroundColorTween;
+    __cascade.begin = widget.collapsedBackgroundColor ?? _expansionTileTheme.collapsedBackgroundColor;
+    __cascade.end = widget.backgroundColor ?? _expansionTileTheme.backgroundColor;
     return __cascade;
 }))());
     }
 
     internal virtual void _updateHeightFactorCurve()
     {
-        _curve = ((((ExpansionTile)this.widget).expansionAnimationStyle?.curve ?? this._expansionTileTheme.expansionAnimationStyle?.curve) ?? Curves.easeIn);
-        _reverseCurve = (((ExpansionTile)this.widget).expansionAnimationStyle?.reverseCurve ?? this._expansionTileTheme.expansionAnimationStyle?.reverseCurve);
+        _curve = (widget.expansionAnimationStyle?.curve ?? _expansionTileTheme.expansionAnimationStyle?.curve) ?? Curves.easeIn;
+        _reverseCurve = widget.expansionAnimationStyle?.reverseCurve ?? _expansionTileTheme.expansionAnimationStyle?.reverseCurve;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Expansible(controller: this._tileController, curve: this._curve, duration: this._duration, reverseCurve: this._reverseCurve, maintainState: ((ExpansionTile)this.widget).maintainState, headerBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)this._buildHeader, bodyBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)this._buildBody, expansibleBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)this._buildExpansible));
+        return new global::Doroti.Framework.Widgets.Expansible(controller: _tileController, curve: _curve, duration: _duration, reverseCurve: _reverseCurve, maintainState: widget.maintainState, headerBuilder: _buildHeader, bodyBuilder: _buildBody, expansibleBuilder: _buildExpansible);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -387,7 +387,7 @@ internal class _ExpansionTileDefaultsM3__expansion_tile : ExpansionTileThemeData
         {
             if (!__late__theme_initialized)
             {
-                __late__theme = Theme.of(this.context);
+                __late__theme = Theme.of(context);
                 __late__theme_initialized = true;
             }
             return __late__theme;
@@ -401,7 +401,7 @@ internal class _ExpansionTileDefaultsM3__expansion_tile : ExpansionTileThemeData
         {
             if (!__late__colors_initialized)
             {
-                __late__colors = this._theme.colorScheme;
+                __late__colors = _theme.colorScheme;
                 __late__colors_initialized = true;
             }
             return __late__colors;
@@ -413,8 +413,8 @@ internal class _ExpansionTileDefaultsM3__expansion_tile : ExpansionTileThemeData
         this.context = context;
     }
 
-    public override global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface);
-    public override global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public override global::Doroti.Ui.Color? collapsedTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface);
-    public override global::Doroti.Ui.Color? collapsedIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurfaceVariant);
+    public override global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onSurface);
+    public override global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.primary);
+    public override global::Doroti.Ui.Color? collapsedTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onSurface);
+    public override global::Doroti.Ui.Color? collapsedIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onSurfaceVariant);
 }

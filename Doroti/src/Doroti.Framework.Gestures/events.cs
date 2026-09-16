@@ -66,22 +66,22 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static long nthMouseButton(long number) => (((kPrimaryMouseButton << (int)(((number - 1L))))) & BitfieldLibrary.kMaxUnsignedSMI);
+    public static long nthMouseButton(long number) => kPrimaryMouseButton << (int)(number - 1L) & BitfieldLibrary.kMaxUnsignedSMI;
 }
 
 public static partial class EventsLibrary
 {
-    public static long nthStylusButton(long number) => (((kPrimaryStylusButton << (int)(((number - 1L))))) & BitfieldLibrary.kMaxUnsignedSMI);
+    public static long nthStylusButton(long number) => kPrimaryStylusButton << (int)(number - 1L) & BitfieldLibrary.kMaxUnsignedSMI;
 }
 
 public static partial class EventsLibrary
 {
-    public static long smallestButton(long buttons) => (buttons & (-buttons));
+    public static long smallestButton(long buttons) => buttons & (-buttons);
 }
 
 public static partial class EventsLibrary
 {
-    public static bool isSingleButton(long buttons) => ((buttons != 0L) && ((smallestButton(buttons) == buttons)));
+    public static bool isSingleButton(long buttons) => (buttons != 0L) && smallestButton(buttons) == buttons;
 }
 
 public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagnosticable
@@ -147,14 +147,14 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
         this.original = original;
     }
 
-    public virtual global::Doroti.Ui.Offset localPosition => this.position;
-    public virtual global::Doroti.Ui.Offset localDelta => this.delta;
+    public virtual global::Doroti.Ui.Offset localPosition => position;
+    public virtual global::Doroti.Ui.Offset localDelta => delta;
     public virtual double distanceMin => 0.0;
     public abstract PointerEvent transformed(Matrix4? transform);
     public abstract PointerEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
     public static global::Doroti.Ui.Offset transformPosition(Matrix4? transform, Offset position)
     {
-        if ((transform is null))
+        if (transform is null)
         {
             return DartRuntimePrimitives.RequireValue(position);
         }
@@ -166,19 +166,19 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
 
     public static global::Doroti.Ui.Offset transformDeltaViaPositions(Offset untransformedEndPosition, Offset? transformedEndPosition = null, Offset untransformedDelta = default!, Matrix4? transform = default!)
     {
-        if ((transform is null))
+        if (transform is null)
         {
             return untransformedDelta;
         }
         transformedEndPosition ??= transformPosition(transform, untransformedEndPosition);
-        global::Doroti.Ui.Offset transformedStartPosition = transformPosition(transform, (untransformedEndPosition - untransformedDelta));
-        return (DartRuntimePrimitives.RequireValue(transformedEndPosition) - transformedStartPosition);
+        global::Doroti.Ui.Offset transformedStartPosition = transformPosition(transform, untransformedEndPosition - untransformedDelta);
+        return DartRuntimePrimitives.RequireValue(transformedEndPosition) - transformedStartPosition;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Matrix4 removePerspectiveTransform(Matrix4 transform)
     {
-        var vector = new global::System.Numerics.Vector4(checked((float)0), checked((float)0), checked((float)1), checked((float)0));
+        var vector = new global::System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0));
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = transform.clone();
@@ -214,7 +214,7 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -228,7 +228,7 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -237,32 +237,32 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
 
     public abstract override PointerEvent original { get; }
     public abstract override Matrix4? transform { get; }
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -320,11 +320,11 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerAddedEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerAddedEvent__events((((PointerAddedEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerAddedEvent__events(((PointerAddedEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -369,7 +369,7 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerAddedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerAddedEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerAddedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -389,7 +389,7 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -403,7 +403,7 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -412,43 +412,43 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
 
     internal _TransformedPointerAddedEvent__events(PointerAddedEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerAddedEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerAddedEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerAddedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerAddedEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerAddedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerRemovedEvent__events
@@ -467,11 +467,11 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
 
     public override PointerRemovedEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerRemovedEvent__events((((PointerRemovedEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerRemovedEvent__events(((PointerRemovedEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -516,7 +516,7 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
 
     public override PointerRemovedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerRemovedEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distanceMax: (distanceMax ?? this.distanceMax), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerRemovedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -536,7 +536,7 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -550,7 +550,7 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -559,43 +559,43 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
 
     internal _TransformedPointerRemovedEvent__events(PointerRemovedEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerRemovedEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerRemovedEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerRemovedEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerRemovedEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distanceMax: (distanceMax ?? this.distanceMax), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerRemovedEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerHoverEvent__events
@@ -614,11 +614,11 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerHoverEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerHoverEvent__events((((PointerHoverEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerHoverEvent__events(((PointerHoverEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -663,7 +663,7 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerHoverEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerHoverEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerHoverEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -683,7 +683,7 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -697,7 +697,7 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -706,43 +706,43 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
 
     internal _TransformedPointerHoverEvent__events(PointerHoverEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerHoverEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerHoverEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerHoverEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerHoverEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerHoverEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerEnterEvent__events
@@ -760,15 +760,15 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
         System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
     }
 
-    public static PointerEnterEvent CreateFromMouseEvent(PointerEvent @event) => new PointerEnterEvent(viewId: ((PointerEvent)@event).viewId, timeStamp: ((PointerEvent)@event).timeStamp, pointer: ((PointerEvent)@event).pointer, kind: ((PointerEvent)@event).kind, device: ((PointerEvent)@event).device, position: ((PointerEvent)@event).position, delta: ((PointerEvent)@event).delta, buttons: ((PointerEvent)@event).buttons, obscured: ((PointerEvent)@event).obscured, pressureMin: ((PointerEvent)@event).pressureMin, pressureMax: ((PointerEvent)@event).pressureMax, distance: ((PointerEvent)@event).distance, distanceMax: ((PointerEvent)@event).distanceMax, size: ((PointerEvent)@event).size, radiusMajor: ((PointerEvent)@event).radiusMajor, radiusMinor: ((PointerEvent)@event).radiusMinor, radiusMin: ((PointerEvent)@event).radiusMin, radiusMax: ((PointerEvent)@event).radiusMax, orientation: ((PointerEvent)@event).orientation, tilt: ((PointerEvent)@event).tilt, down: ((PointerEvent)@event).down, synthesized: ((PointerEvent)@event).synthesized).transformed(((PointerEvent)@event).transform);
+    public static PointerEnterEvent CreateFromMouseEvent(PointerEvent @event) => new PointerEnterEvent(viewId: @event.viewId, timeStamp: @event.timeStamp, pointer: @event.pointer, kind: @event.kind, device: @event.device, position: @event.position, delta: @event.delta, buttons: @event.buttons, obscured: @event.obscured, pressureMin: @event.pressureMin, pressureMax: @event.pressureMax, distance: @event.distance, distanceMax: @event.distanceMax, size: @event.size, radiusMajor: @event.radiusMajor, radiusMinor: @event.radiusMinor, radiusMin: @event.radiusMin, radiusMax: @event.radiusMax, orientation: @event.orientation, tilt: @event.tilt, down: @event.down, synthesized: @event.synthesized).transformed(@event.transform);
 
     public override PointerEnterEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerEnterEvent__events((((PointerEnterEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerEnterEvent__events(((PointerEnterEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -813,7 +813,7 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerEnterEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerEnterEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerEnterEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -847,7 +847,7 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -861,7 +861,7 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -870,43 +870,43 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
 
     internal _TransformedPointerEnterEvent__events(PointerEnterEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerEnterEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerEnterEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerEnterEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerEnterEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerEnterEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerExitEvent__events
@@ -924,15 +924,15 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
         System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
     }
 
-    public static PointerExitEvent CreateFromMouseEvent(PointerEvent @event) => new PointerExitEvent(viewId: ((PointerEvent)@event).viewId, timeStamp: ((PointerEvent)@event).timeStamp, pointer: ((PointerEvent)@event).pointer, kind: ((PointerEvent)@event).kind, device: ((PointerEvent)@event).device, position: ((PointerEvent)@event).position, delta: ((PointerEvent)@event).delta, buttons: ((PointerEvent)@event).buttons, obscured: ((PointerEvent)@event).obscured, pressureMin: ((PointerEvent)@event).pressureMin, pressureMax: ((PointerEvent)@event).pressureMax, distance: ((PointerEvent)@event).distance, distanceMax: ((PointerEvent)@event).distanceMax, size: ((PointerEvent)@event).size, radiusMajor: ((PointerEvent)@event).radiusMajor, radiusMinor: ((PointerEvent)@event).radiusMinor, radiusMin: ((PointerEvent)@event).radiusMin, radiusMax: ((PointerEvent)@event).radiusMax, orientation: ((PointerEvent)@event).orientation, tilt: ((PointerEvent)@event).tilt, down: ((PointerEvent)@event).down, synthesized: ((PointerEvent)@event).synthesized).transformed(((PointerEvent)@event).transform);
+    public static PointerExitEvent CreateFromMouseEvent(PointerEvent @event) => new PointerExitEvent(viewId: @event.viewId, timeStamp: @event.timeStamp, pointer: @event.pointer, kind: @event.kind, device: @event.device, position: @event.position, delta: @event.delta, buttons: @event.buttons, obscured: @event.obscured, pressureMin: @event.pressureMin, pressureMax: @event.pressureMax, distance: @event.distance, distanceMax: @event.distanceMax, size: @event.size, radiusMajor: @event.radiusMajor, radiusMinor: @event.radiusMinor, radiusMin: @event.radiusMin, radiusMax: @event.radiusMax, orientation: @event.orientation, tilt: @event.tilt, down: @event.down, synthesized: @event.synthesized).transformed(@event.transform);
 
     public override PointerExitEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerExitEvent__events((((PointerExitEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerExitEvent__events(((PointerExitEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -977,7 +977,7 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerExitEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerExitEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerExitEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1011,7 +1011,7 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1025,7 +1025,7 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1034,43 +1034,43 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
 
     internal _TransformedPointerExitEvent__events(PointerExitEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerExitEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerExitEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerExitEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerExitEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerExitEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerDownEvent__events
@@ -1090,11 +1090,11 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerDownEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerDownEvent__events((((PointerDownEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerDownEvent__events(((PointerDownEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1139,7 +1139,7 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerDownEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerDownEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressure: (pressure ?? this.pressure), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerDownEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1159,7 +1159,7 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1173,7 +1173,7 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1182,43 +1182,43 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
 
     internal _TransformedPointerDownEvent__events(PointerDownEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerDownEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerDownEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerDownEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerDownEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressure: (pressure ?? this.pressure), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerDownEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerMoveEvent__events
@@ -1238,11 +1238,11 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerMoveEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerMoveEvent__events((((PointerMoveEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerMoveEvent__events(((PointerMoveEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1287,7 +1287,7 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerMoveEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerMoveEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressure: (pressure ?? this.pressure), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerMoveEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1307,7 +1307,7 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1321,7 +1321,7 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1330,43 +1330,43 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
 
     internal _TransformedPointerMoveEvent__events(PointerMoveEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerMoveEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerMoveEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerMoveEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerMoveEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), delta: (delta ?? this.delta), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressure: (pressure ?? this.pressure), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), synthesized: (synthesized ?? this.synthesized), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerMoveEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, delta: delta ?? this.delta, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, synthesized: synthesized ?? this.synthesized, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerUpEvent__events
@@ -1386,11 +1386,11 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
 
     public override PointerUpEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerUpEvent__events((((PointerUpEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerUpEvent__events(((PointerUpEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1435,7 +1435,7 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
 
     public override PointerUpEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerUpEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressure: (pressure ?? this.pressure), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerUpEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1455,7 +1455,7 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1469,7 +1469,7 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1478,43 +1478,43 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
 
     internal _TransformedPointerUpEvent__events(PointerUpEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerUpEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerUpEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerUpEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerUpEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressure: (pressure ?? this.pressure), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerUpEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressure: pressure ?? this.pressure, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public abstract class PointerSignalEvent : PointerEvent, _RespondablePointerEvent__events
@@ -1553,16 +1553,16 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
     public PointerScrollEvent(long viewId = 0, Duration timeStamp = default, PointerDeviceKind kind = PointerDeviceKind.mouse, long device = 0, Offset position = default, Offset scrollDelta = default, long embedderId = 0, Action<bool>? onRespond = null) : base(viewId: viewId, timeStamp: timeStamp, kind: kind, device: device, position: position, embedderId: embedderId)
     {
         this.scrollDelta = scrollDelta;
-        this._onRespond = onRespond;
+        _onRespond = onRespond;
     }
 
     public override PointerScrollEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerScrollEvent__events((((PointerScrollEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerScrollEvent__events(((PointerScrollEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1597,12 +1597,12 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
         properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
         properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("scrollDelta", this.scrollDelta));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("scrollDelta", scrollDelta));
     }
 
     public override void respond(bool allowPlatformDefault)
     {
-        this._onRespond?.Invoke(allowPlatformDefault);
+        _onRespond?.Invoke(allowPlatformDefault);
     }
 
     public virtual string toStringFull()
@@ -1613,7 +1613,7 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
 
     public override PointerScrollEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerScrollEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), scrollDelta: this.scrollDelta, embedderId: (embedderId ?? this.embedderId), onRespond: (onRespond ?? (((PointerScrollEvent?)(object?)this)!).respond)).transformed(transform);
+        return new PointerScrollEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, scrollDelta: scrollDelta, embedderId: embedderId ?? this.embedderId, onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1633,7 +1633,7 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1647,7 +1647,7 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1656,56 +1656,56 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
 
     internal _TransformedPointerScrollEvent__events(PointerScrollEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override Offset scrollDelta => ((PointerScrollEvent)this.original).scrollDelta;
-    public override PointerScrollEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override Offset scrollDelta => original.scrollDelta;
+    public override PointerScrollEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("scrollDelta", this.scrollDelta));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("scrollDelta", scrollDelta));
     }
 
-    internal override Action<bool>? _onRespond => ((PointerScrollEvent)this.original)._onRespond;
+    internal override Action<bool>? _onRespond => original._onRespond;
     public override void respond(bool allowPlatformDefault)
     {
-        this.original.respond(allowPlatformDefault: allowPlatformDefault);
+        original.respond(allowPlatformDefault: allowPlatformDefault);
     }
 
     public override PointerScrollEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerScrollEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), scrollDelta: this.scrollDelta, embedderId: (embedderId ?? this.embedderId), onRespond: (onRespond ?? (((PointerScrollEvent?)(object?)this)!).respond)).transformed(transform);
+        return new PointerScrollEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, scrollDelta: scrollDelta, embedderId: embedderId ?? this.embedderId, onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerScrollInertiaCancelEvent__events
@@ -1724,11 +1724,11 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
 
     public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerScrollInertiaCancelEvent__events((((PointerScrollInertiaCancelEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerScrollInertiaCancelEvent__events(((PointerScrollInertiaCancelEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1773,7 +1773,7 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
 
     public override PointerScrollInertiaCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerScrollInertiaCancelEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerScrollInertiaCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1793,7 +1793,7 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1807,7 +1807,7 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1816,14 +1816,14 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
 
     internal _TransformedPointerScrollInertiaCancelEvent__events(PointerScrollInertiaCancelEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerScrollInertiaCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerScrollInertiaCancelEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerScrollInertiaCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1831,32 +1831,32 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
     {
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerScaleEvent__events
@@ -1878,11 +1878,11 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
 
     public override PointerScaleEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerScaleEvent__events((((PointerScaleEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerScaleEvent__events(((PointerScaleEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1927,7 +1927,7 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
 
     public override PointerScaleEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerScaleEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId), scale: (scale ?? this.scale)).transformed(transform);
+        return new PointerScaleEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, scale: scale ?? this.scale).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1947,7 +1947,7 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1961,7 +1961,7 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1970,15 +1970,15 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
 
     internal _TransformedPointerScaleEvent__events(PointerScaleEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override double scale => ((PointerScaleEvent)this.original).scale;
-    public override PointerScaleEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override double scale => original.scale;
+    public override PointerScaleEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerScaleEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerScaleEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId), scale: (scale ?? this.scale)).transformed(transform);
+        return new PointerScaleEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, scale: scale ?? this.scale).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1986,32 +1986,32 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
     {
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerPanZoomStartEvent__events
@@ -2030,11 +2030,11 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
 
     public override PointerPanZoomStartEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerPanZoomStartEvent__events((((PointerPanZoomStartEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerPanZoomStartEvent__events(((PointerPanZoomStartEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2079,8 +2079,8 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
 
     public override PointerPanZoomStartEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        DartRuntimePrimitives.Assert(() => ((kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)));
-        return new PointerPanZoomStartEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        return new PointerPanZoomStartEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2100,7 +2100,7 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2114,7 +2114,7 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2123,44 +2123,44 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
 
     internal _TransformedPointerPanZoomStartEvent__events(PointerPanZoomStartEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerPanZoomStartEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerPanZoomStartEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerPanZoomStartEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        DartRuntimePrimitives.Assert(() => ((kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)));
-        return new PointerPanZoomStartEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        return new PointerPanZoomStartEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerPanZoomUpdateEvent__events
@@ -2191,15 +2191,15 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
         this.rotation = rotation;
     }
 
-    public virtual Offset localPan => this.pan;
-    public virtual Offset localPanDelta => this.panDelta;
+    public virtual Offset localPan => pan;
+    public virtual Offset localPanDelta => panDelta;
     public override PointerPanZoomUpdateEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerPanZoomUpdateEvent__events((((PointerPanZoomUpdateEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerPanZoomUpdateEvent__events(((PointerPanZoomUpdateEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2244,8 +2244,8 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
 
     public override PointerPanZoomUpdateEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        DartRuntimePrimitives.Assert(() => ((kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)));
-        return new PointerPanZoomUpdateEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId), pan: (pan ?? this.pan), panDelta: (panDelta ?? this.panDelta), scale: (scale ?? this.scale), rotation: (rotation ?? this.rotation)).transformed(transform);
+        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        return new PointerPanZoomUpdateEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, pan: pan ?? this.pan, panDelta: panDelta ?? this.panDelta, scale: scale ?? this.scale, rotation: rotation ?? this.rotation).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2261,7 +2261,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPan_initialized)
             {
-                __late_localPan = transformPosition(this.transform, this.pan);
+                __late_localPan = transformPosition(transform, pan);
                 __late_localPan_initialized = true;
             }
             return __late_localPan;
@@ -2275,7 +2275,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPanDelta_initialized)
             {
-                __late_localPanDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.panDelta, untransformedEndPosition: this.pan, transformedEndPosition: this.localPan);
+                __late_localPanDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: panDelta, untransformedEndPosition: pan, transformedEndPosition: localPan);
                 __late_localPanDelta_initialized = true;
             }
             return __late_localPanDelta;
@@ -2293,7 +2293,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2307,7 +2307,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2316,48 +2316,48 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
 
     internal _TransformedPointerPanZoomUpdateEvent__events(PointerPanZoomUpdateEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override Offset pan => ((PointerPanZoomUpdateEvent)this.original).pan;
-    public override Offset panDelta => ((PointerPanZoomUpdateEvent)this.original).panDelta;
-    public override double scale => ((PointerPanZoomUpdateEvent)this.original).scale;
-    public override double rotation => ((PointerPanZoomUpdateEvent)this.original).rotation;
-    public override PointerPanZoomUpdateEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override Offset pan => original.pan;
+    public override Offset panDelta => original.panDelta;
+    public override double scale => original.scale;
+    public override double rotation => original.rotation;
+    public override PointerPanZoomUpdateEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerPanZoomUpdateEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        DartRuntimePrimitives.Assert(() => ((kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)));
-        return new PointerPanZoomUpdateEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId), pan: (pan ?? this.pan), panDelta: (panDelta ?? this.panDelta), scale: (scale ?? this.scale), rotation: (rotation ?? this.rotation)).transformed(transform);
+        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        return new PointerPanZoomUpdateEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId, pan: pan ?? this.pan, panDelta: panDelta ?? this.panDelta, scale: scale ?? this.scale, rotation: rotation ?? this.rotation).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerPanZoomEndEvent__events
@@ -2376,11 +2376,11 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
 
     public override PointerPanZoomEndEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerPanZoomEndEvent__events((((PointerPanZoomEndEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerPanZoomEndEvent__events(((PointerPanZoomEndEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2425,8 +2425,8 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
 
     public override PointerPanZoomEndEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        DartRuntimePrimitives.Assert(() => ((kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)));
-        return new PointerPanZoomEndEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        return new PointerPanZoomEndEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2446,7 +2446,7 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2460,7 +2460,7 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2469,44 +2469,44 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
 
     internal _TransformedPointerPanZoomEndEvent__events(PointerPanZoomEndEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerPanZoomEndEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerPanZoomEndEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerPanZoomEndEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        DartRuntimePrimitives.Assert(() => ((kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad)));
-        return new PointerPanZoomEndEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), device: (device ?? this.device), position: (position ?? this.position), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        DartRuntimePrimitives.Assert(() => (kind is null) || DartRuntimePrimitives.Identical(kind, PointerDeviceKind.trackpad));
+        return new PointerPanZoomEndEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, device: device ?? this.device, position: position ?? this.position, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }
 
 public interface _CopyPointerCancelEvent__events
@@ -2526,11 +2526,11 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
 
     public override PointerCancelEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (Equals(transform, this.transform))))
+        if ((transform is null) || Equals(transform, this.transform))
         {
             return this;
         }
-        return new _TransformedPointerCancelEvent__events((((PointerCancelEvent?)(object?)original)! ?? this), transform);
+        return new _TransformedPointerCancelEvent__events(((PointerCancelEvent?)(object?)original)! ?? this, transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2575,7 +2575,7 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
 
     public override PointerCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerCancelEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2597,7 +2597,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return (settings?.touchSlop ?? ConstantsLibrary.kTouchSlop);
+                    return settings?.touchSlop ?? ConstantsLibrary.kTouchSlop;
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2620,7 +2620,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return (settings?.panSlop ?? ConstantsLibrary.kPanSlop);
+                    return settings?.panSlop ?? ConstantsLibrary.kPanSlop;
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2664,7 +2664,7 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(transform, position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2678,7 +2678,7 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: transform, untransformedDelta: delta, untransformedEndPosition: position, transformedEndPosition: localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2687,41 +2687,41 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
 
     internal _TransformedPointerCancelEvent__events(PointerCancelEvent original, Matrix4 transform)
     {
-        this.__field_original = original;
-        this.__field_transform = transform;
+        __field_original = original;
+        __field_transform = transform;
     }
 
-    public override PointerCancelEvent transformed(Matrix4? transform) => this.original.transformed(transform);
+    public override PointerCancelEvent transformed(Matrix4? transform) => original.transformed(transform);
     public override PointerCancelEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null)
     {
-        return new PointerCancelEvent(viewId: (viewId ?? this.viewId), timeStamp: (timeStamp ?? this.timeStamp), pointer: (pointer ?? this.pointer), kind: (kind ?? this.kind), device: (device ?? this.device), position: (position ?? this.position), buttons: (buttons ?? this.buttons), obscured: (obscured ?? this.obscured), pressureMin: (pressureMin ?? this.pressureMin), pressureMax: (pressureMax ?? this.pressureMax), distance: (distance ?? this.distance), distanceMax: (distanceMax ?? this.distanceMax), size: (size ?? this.size), radiusMajor: (radiusMajor ?? this.radiusMajor), radiusMinor: (radiusMinor ?? this.radiusMinor), radiusMin: (radiusMin ?? this.radiusMin), radiusMax: (radiusMax ?? this.radiusMax), orientation: (orientation ?? this.orientation), tilt: (tilt ?? this.tilt), embedderId: (embedderId ?? this.embedderId)).transformed(transform);
+        return new PointerCancelEvent(viewId: viewId ?? this.viewId, timeStamp: timeStamp ?? this.timeStamp, pointer: pointer ?? this.pointer, kind: kind ?? this.kind, device: device ?? this.device, position: position ?? this.position, buttons: buttons ?? this.buttons, obscured: obscured ?? this.obscured, pressureMin: pressureMin ?? this.pressureMin, pressureMax: pressureMax ?? this.pressureMax, distance: distance ?? this.distance, distanceMax: distanceMax ?? this.distanceMax, size: size ?? this.size, radiusMajor: radiusMajor ?? this.radiusMajor, radiusMinor: radiusMinor ?? this.radiusMinor, radiusMin: radiusMin ?? this.radiusMin, radiusMax: radiusMax ?? this.radiusMax, orientation: orientation ?? this.orientation, tilt: tilt ?? this.tilt, embedderId: embedderId ?? this.embedderId).transformed(transform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long embedderId => ((PointerEvent)this.original).embedderId;
-    public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
-    public override long pointer => ((PointerEvent)this.original).pointer;
-    public override PointerDeviceKind kind => ((PointerEvent)this.original).kind;
-    public override long device => ((PointerEvent)this.original).device;
-    public override Offset position => ((PointerEvent)this.original).position;
-    public override Offset delta => ((PointerEvent)this.original).delta;
-    public override long buttons => ((PointerEvent)this.original).buttons;
-    public override bool down => ((PointerEvent)this.original).down;
-    public override bool obscured => ((PointerEvent)this.original).obscured;
-    public override double pressure => ((PointerEvent)this.original).pressure;
-    public override double pressureMin => ((PointerEvent)this.original).pressureMin;
-    public override double pressureMax => ((PointerEvent)this.original).pressureMax;
-    public override double distance => ((PointerEvent)this.original).distance;
+    public override long embedderId => original.embedderId;
+    public override Duration timeStamp => original.timeStamp;
+    public override long pointer => original.pointer;
+    public override PointerDeviceKind kind => original.kind;
+    public override long device => original.device;
+    public override Offset position => original.position;
+    public override Offset delta => original.delta;
+    public override long buttons => original.buttons;
+    public override bool down => original.down;
+    public override bool obscured => original.obscured;
+    public override double pressure => original.pressure;
+    public override double pressureMin => original.pressureMin;
+    public override double pressureMax => original.pressureMax;
+    public override double distance => original.distance;
     public override double distanceMin => 0.0;
-    public override double distanceMax => ((PointerEvent)this.original).distanceMax;
-    public override double size => ((PointerEvent)this.original).size;
-    public override double radiusMajor => ((PointerEvent)this.original).radiusMajor;
-    public override double radiusMinor => ((PointerEvent)this.original).radiusMinor;
-    public override double radiusMin => ((PointerEvent)this.original).radiusMin;
-    public override double radiusMax => ((PointerEvent)this.original).radiusMax;
-    public override double orientation => ((PointerEvent)this.original).orientation;
-    public override double tilt => ((PointerEvent)this.original).tilt;
-    public override long platformData => ((PointerEvent)this.original).platformData;
-    public override bool synthesized => ((PointerEvent)this.original).synthesized;
-    public override long viewId => ((PointerEvent)this.original).viewId;
+    public override double distanceMax => original.distanceMax;
+    public override double size => original.size;
+    public override double radiusMajor => original.radiusMajor;
+    public override double radiusMinor => original.radiusMinor;
+    public override double radiusMin => original.radiusMin;
+    public override double radiusMax => original.radiusMax;
+    public override double orientation => original.orientation;
+    public override double tilt => original.tilt;
+    public override long platformData => original.platformData;
+    public override bool synthesized => original.synthesized;
+    public override long viewId => original.viewId;
 }

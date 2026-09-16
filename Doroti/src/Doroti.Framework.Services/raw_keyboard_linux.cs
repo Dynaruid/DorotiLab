@@ -23,11 +23,11 @@ public class RawKeyEventDataLinux : RawKeyEventData
         this.modifiers = modifiers;
         this.isDown = isDown;
         this.specifiedLogicalKey = specifiedLogicalKey;
-        System.Diagnostics.Debug.Assert((((unicodeScalarValues & ~LogicalKeyboardKey.valueMask)) == 0L));
+        System.Diagnostics.Debug.Assert((unicodeScalarValues & ~LogicalKeyboardKey.valueMask) == 0L);
     }
 
-    public override string keyLabel => ((unicodeScalarValues == 0L) ? "" : char.ConvertFromUtf32(checked((int)unicodeScalarValues)));
-    public override PhysicalKeyboardKey physicalKey => (Keyboard_maps_gLibrary.kLinuxToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + scanCode)));
+    public override string keyLabel => (unicodeScalarValues == 0L) ? "" : char.ConvertFromUtf32(checked((int)unicodeScalarValues));
+    public override PhysicalKeyboardKey physicalKey => Keyboard_maps_gLibrary.kLinuxToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey(LogicalKeyboardKey.webPlane + scanCode);
     public override LogicalKeyboardKey logicalKey
     {
         get
@@ -35,24 +35,24 @@ public class RawKeyEventDataLinux : RawKeyEventData
             if (specifiedLogicalKey is long specifiedLogicalKey__value3838)
             {
                 long key = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3838);
-                return (LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key));
+                return LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key);
             }
             LogicalKeyboardKey? numPadKey = keyHelper.numpadKey(keyCode);
-            if ((numPadKey is not null))
+            if (numPadKey is not null)
             {
                 return numPadKey;
             }
-            if (((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel)))
+            if ((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel))
             {
-                long keyId = (LogicalKeyboardKey.unicodePlane | ((unicodeScalarValues & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
+                long keyId = LogicalKeyboardKey.unicodePlane | unicodeScalarValues & LogicalKeyboardKey.valueMask;
+                return LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId);
             }
             LogicalKeyboardKey? newKey = keyHelper.logicalKey(keyCode);
-            if ((newKey is not null))
+            if (newKey is not null)
             {
                 return newKey;
             }
-            return new LogicalKeyboardKey((keyCode | keyHelper.platformPlane));
+            return new LogicalKeyboardKey(keyCode | keyHelper.platformPlane);
         }
     }
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
@@ -87,11 +87,11 @@ public class RawKeyEventDataLinux : RawKeyEventData
         {
             return true;
         }
-        if ((!Equals(__other.GetType(), this.GetType())))
+        if (!Equals(__other.GetType(), GetType()))
         {
             return false;
         }
-        return (((((((__other is RawKeyEventDataLinux) && (Equals(((RawKeyEventDataLinux)__other).keyHelper.GetType(), keyHelper.GetType()))) && (((RawKeyEventDataLinux)__other).unicodeScalarValues == unicodeScalarValues)) && (((RawKeyEventDataLinux)__other).scanCode == scanCode)) && (((RawKeyEventDataLinux)__other).keyCode == keyCode)) && (((RawKeyEventDataLinux)__other).modifiers == modifiers)) && (((RawKeyEventDataLinux)__other).isDown == isDown));
+        return (__other is RawKeyEventDataLinux) && Equals(__other.keyHelper.GetType(), keyHelper.GetType()) && (__other.unicodeScalarValues == unicodeScalarValues) && (__other.scanCode == scanCode) && (__other.keyCode == keyCode) && (__other.modifiers == modifiers) && (__other.isDown == isDown);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(keyHelper.GetType(), unicodeScalarValues, scanCode, keyCode, modifiers, isDown);
@@ -101,13 +101,13 @@ public interface KeyHelper
 {
     public static KeyHelper Create(string toolkit)
     {
-        if ((toolkit == "glfw"))
+        if (toolkit == "glfw")
         {
             return new GLFWKeyHelper();
         }
         else
         {
-            if ((toolkit == "gtk"))
+            if (toolkit == "gtk")
             {
                 return new GtkKeyHelper();
             }
@@ -148,15 +148,15 @@ public class GLFWKeyHelper : KeyHelper
         var metaRightKeyCode = 347L;
         var capsLockKeyCode = 280L;
         var numLockKeyCode = 282L;
-        long modifierChange = (keyCode switch { var __case12068 when Equals(__case12068, shiftLeftKeyCode) || Equals(__case12068, shiftRightKeyCode) => modifierShift, var __case12130 when Equals(__case12130, controlLeftKeyCode) || Equals(__case12130, controlRightKeyCode) => modifierControl, var __case12198 when Equals(__case12198, altLeftKeyCode) || Equals(__case12198, altRightKeyCode) => modifierAlt, var __case12254 when Equals(__case12254, metaLeftKeyCode) || Equals(__case12254, metaRightKeyCode) => modifierMeta, var __case12313 when Equals(__case12313, capsLockKeyCode) => modifierCapsLock, var __case12356 when Equals(__case12356, numLockKeyCode) => modifierNumericPad, _ => 0L });
-        return (isDown ? (modifiers | modifierChange) : (modifiers & ~modifierChange));
+        long modifierChange = keyCode switch { var __case12068 when Equals(__case12068, shiftLeftKeyCode) || Equals(__case12068, shiftRightKeyCode) => modifierShift, var __case12130 when Equals(__case12130, controlLeftKeyCode) || Equals(__case12130, controlRightKeyCode) => modifierControl, var __case12198 when Equals(__case12198, altLeftKeyCode) || Equals(__case12198, altRightKeyCode) => modifierAlt, var __case12254 when Equals(__case12254, metaLeftKeyCode) || Equals(__case12254, metaRightKeyCode) => modifierMeta, var __case12313 when Equals(__case12313, capsLockKeyCode) => modifierCapsLock, var __case12356 when Equals(__case12356, numLockKeyCode) => modifierNumericPad, _ => 0L };
+        return isDown ? (modifiers | modifierChange) : (modifiers & ~modifierChange);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool isModifierPressed(ModifierKey key, long modifiers, KeyboardSide side = KeyboardSide.any, long keyCode = default!, bool isDown = default!)
     {
         modifiers = _mergeModifiers(modifiers: modifiers, keyCode: keyCode, isDown: isDown);
-        return (key switch { var __case12801 when Equals(__case12801, ModifierKey.controlModifier) => ((modifiers & modifierControl) != 0L), var __case12872 when Equals(__case12872, ModifierKey.shiftModifier) => ((modifiers & modifierShift) != 0L), var __case12939 when Equals(__case12939, ModifierKey.altModifier) => ((modifiers & modifierAlt) != 0L), var __case13002 when Equals(__case13002, ModifierKey.metaModifier) => ((modifiers & modifierMeta) != 0L), var __case13067 when Equals(__case13067, ModifierKey.capsLockModifier) => ((modifiers & modifierCapsLock) != 0L), var __case13140 when Equals(__case13140, ModifierKey.numLockModifier) => ((modifiers & modifierNumericPad) != 0L), var __case13261 when Equals(__case13261, ModifierKey.functionModifier) => false, var __case13306 when Equals(__case13306, ModifierKey.symbolModifier) => false, var __case13349 when Equals(__case13349, ModifierKey.scrollLockModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return key switch { var __case12801 when Equals(__case12801, ModifierKey.controlModifier) => (modifiers & modifierControl) != 0L, var __case12872 when Equals(__case12872, ModifierKey.shiftModifier) => (modifiers & modifierShift) != 0L, var __case12939 when Equals(__case12939, ModifierKey.altModifier) => (modifiers & modifierAlt) != 0L, var __case13002 when Equals(__case13002, ModifierKey.metaModifier) => (modifiers & modifierMeta) != 0L, var __case13067 when Equals(__case13067, ModifierKey.capsLockModifier) => (modifiers & modifierCapsLock) != 0L, var __case13140 when Equals(__case13140, ModifierKey.numLockModifier) => (modifiers & modifierNumericPad) != 0L, var __case13261 when Equals(__case13261, ModifierKey.functionModifier) => false, var __case13306 when Equals(__case13306, ModifierKey.symbolModifier) => false, var __case13349 when Equals(__case13349, ModifierKey.scrollLockModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -183,12 +183,12 @@ public class GLFWKeyHelper : KeyHelper
 
 public class GtkKeyHelper : KeyHelper
 {
-    public static long modifierShift = (1L << (int)(0L));
-    public static long modifierCapsLock = (1L << (int)(1L));
-    public static long modifierControl = (1L << (int)(2L));
-    public static long modifierMod1 = (1L << (int)(3L));
-    public static long modifierMod2 = (1L << (int)(4L));
-    public static long modifierMeta = (1L << (int)(26L));
+    public static long modifierShift = 1L << (int)0L;
+    public static long modifierCapsLock = 1L << (int)1L;
+    public static long modifierControl = 1L << (int)2L;
+    public static long modifierMod1 = 1L << (int)3L;
+    public static long modifierMod2 = 1L << (int)4L;
+    public static long modifierMeta = 1L << (int)26L;
 
     public virtual string debugToolkit => "GTK";
     internal virtual long _mergeModifiers(long modifiers, long keyCode, bool isDown)
@@ -204,15 +204,15 @@ public class GtkKeyHelper : KeyHelper
         var metaLeftKeyCode = 65515L;
         var metaRightKeyCode = 65516L;
         var numLockKeyCode = 65407L;
-        long modifierChange = (keyCode switch { var __case17133 when Equals(__case17133, shiftLeftKeyCode) || Equals(__case17133, shiftRightKeyCode) => modifierShift, var __case17195 when Equals(__case17195, controlLeftKeyCode) || Equals(__case17195, controlRightKeyCode) => modifierControl, var __case17263 when Equals(__case17263, altLeftKeyCode) || Equals(__case17263, altRightKeyCode) => modifierMod1, var __case17320 when Equals(__case17320, metaLeftKeyCode) || Equals(__case17320, metaRightKeyCode) => modifierMeta, var __case17379 when Equals(__case17379, capsLockKeyCode) || Equals(__case17379, shiftLockKeyCode) => modifierCapsLock, var __case17442 when Equals(__case17442, numLockKeyCode) => modifierMod2, _ => 0L });
-        return (isDown ? (modifiers | modifierChange) : (modifiers & ~modifierChange));
+        long modifierChange = keyCode switch { var __case17133 when Equals(__case17133, shiftLeftKeyCode) || Equals(__case17133, shiftRightKeyCode) => modifierShift, var __case17195 when Equals(__case17195, controlLeftKeyCode) || Equals(__case17195, controlRightKeyCode) => modifierControl, var __case17263 when Equals(__case17263, altLeftKeyCode) || Equals(__case17263, altRightKeyCode) => modifierMod1, var __case17320 when Equals(__case17320, metaLeftKeyCode) || Equals(__case17320, metaRightKeyCode) => modifierMeta, var __case17379 when Equals(__case17379, capsLockKeyCode) || Equals(__case17379, shiftLockKeyCode) => modifierCapsLock, var __case17442 when Equals(__case17442, numLockKeyCode) => modifierMod2, _ => 0L };
+        return isDown ? (modifiers | modifierChange) : (modifiers & ~modifierChange);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool isModifierPressed(ModifierKey key, long modifiers, KeyboardSide side = KeyboardSide.any, long keyCode = default!, bool isDown = default!)
     {
         modifiers = _mergeModifiers(modifiers: modifiers, keyCode: keyCode, isDown: isDown);
-        return (key switch { var __case17881 when Equals(__case17881, ModifierKey.controlModifier) => ((modifiers & modifierControl) != 0L), var __case17952 when Equals(__case17952, ModifierKey.shiftModifier) => ((modifiers & modifierShift) != 0L), var __case18019 when Equals(__case18019, ModifierKey.altModifier) => ((modifiers & modifierMod1) != 0L), var __case18083 when Equals(__case18083, ModifierKey.metaModifier) => ((modifiers & modifierMeta) != 0L), var __case18148 when Equals(__case18148, ModifierKey.capsLockModifier) => ((modifiers & modifierCapsLock) != 0L), var __case18221 when Equals(__case18221, ModifierKey.numLockModifier) => ((modifiers & modifierMod2) != 0L), var __case18335 when Equals(__case18335, ModifierKey.functionModifier) => false, var __case18380 when Equals(__case18380, ModifierKey.symbolModifier) => false, var __case18423 when Equals(__case18423, ModifierKey.scrollLockModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return key switch { var __case17881 when Equals(__case17881, ModifierKey.controlModifier) => (modifiers & modifierControl) != 0L, var __case17952 when Equals(__case17952, ModifierKey.shiftModifier) => (modifiers & modifierShift) != 0L, var __case18019 when Equals(__case18019, ModifierKey.altModifier) => (modifiers & modifierMod1) != 0L, var __case18083 when Equals(__case18083, ModifierKey.metaModifier) => (modifiers & modifierMeta) != 0L, var __case18148 when Equals(__case18148, ModifierKey.capsLockModifier) => (modifiers & modifierCapsLock) != 0L, var __case18221 when Equals(__case18221, ModifierKey.numLockModifier) => (modifiers & modifierMod2) != 0L, var __case18335 when Equals(__case18335, ModifierKey.functionModifier) => false, var __case18380 when Equals(__case18380, ModifierKey.symbolModifier) => false, var __case18423 when Equals(__case18423, ModifierKey.scrollLockModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -20,13 +20,13 @@ public class ClampedSimulation : Simulation
         this.xMax = xMax;
         this.dxMin = dxMin;
         this.dxMax = dxMax;
-        System.Diagnostics.Debug.Assert((xMax >= xMin));
-        System.Diagnostics.Debug.Assert((dxMax >= dxMin));
+        System.Diagnostics.Debug.Assert(xMax >= xMin);
+        System.Diagnostics.Debug.Assert(dxMax >= dxMin);
     }
 
-    public override double x(double time) => Dart_uiLibrary.clampDouble(this.simulation.x(time), this.xMin, this.xMax);
-    public override double dx(double time) => Dart_uiLibrary.clampDouble(this.simulation.dx(time), this.dxMin, this.dxMax);
-    public override bool isDone(double time) => this.simulation.isDone(time);
-    public override string ToString() => $"{(Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ClampedSimulation"))}(simulation: {this.simulation}, x: {this.xMin.toStringAsFixed(1L)}..{this.xMax.toStringAsFixed(1L)}, dx: {this.dxMin.toStringAsFixed(1L)}..{this.dxMax.toStringAsFixed(1L)})";
+    public override double x(double time) => Dart_uiLibrary.clampDouble(simulation.x(time), xMin, xMax);
+    public override double dx(double time) => Dart_uiLibrary.clampDouble(simulation.dx(time), dxMin, dxMax);
+    public override bool isDone(double time) => simulation.isDone(time);
+    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ClampedSimulation")}(simulation: {simulation}, x: {xMin.toStringAsFixed(1L)}..{xMax.toStringAsFixed(1L)}, dx: {dxMin.toStringAsFixed(1L)}..{dxMax.toStringAsFixed(1L)})";
 }
 

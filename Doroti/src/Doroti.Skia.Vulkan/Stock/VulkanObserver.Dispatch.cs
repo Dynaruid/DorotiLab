@@ -2,8 +2,8 @@
 using System.Runtime.InteropServices;
 using Silk.NET.Vulkan;
 using VkDevice = Silk.NET.Vulkan.Device;
-using VkImage = Silk.NET.Vulkan.Image;
 using VkFramebuffer = Silk.NET.Vulkan.Framebuffer;
+using VkImage = Silk.NET.Vulkan.Image;
 namespace Doroti.Skia.Vulkan;
 internal sealed unsafe partial class VulkanObserver
 {

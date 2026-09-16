@@ -1048,7 +1048,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 var scopes = DescendantsAndSelf(owner.Ast)
                     .Where(candidate =>
-                        candidate.Kind is (CoreNodeKind.FunctionExpression or CoreNodeKind.FunctionDeclarationStatement) &&
+                        candidate.Kind is CoreNodeKind.FunctionExpression or CoreNodeKind.FunctionDeclarationStatement &&
                         ContainsOffset(candidate, node.Offset))
                     .Concat(owner.Members
                         .Where(member => ContainsOffset(member.Ast, node.Offset))

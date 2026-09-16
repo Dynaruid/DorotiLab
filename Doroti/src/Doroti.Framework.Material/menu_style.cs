@@ -41,7 +41,7 @@ public class MenuStyle : global::Doroti.Framework.Foundation.Diagnosticable
 
     public override int GetHashCode()
     {
-        var values = new List<object?> { this.backgroundColor, this.shadowColor, this.surfaceTintColor, this.elevation, this.padding, this.minimumSize, this.fixedSize, this.maximumSize, this.side, this.shape, this.mouseCursor, this.visualDensity, this.alignment };
+        var values = new List<object?> { backgroundColor, shadowColor, surfaceTintColor, elevation, padding, minimumSize, fixedSize, maximumSize, side, shape, mouseCursor, visualDensity, alignment };
         return FoundationRuntimePorts.ObjectHashAll(values);
     }
     public override bool Equals(object? other)
@@ -52,26 +52,26 @@ public class MenuStyle : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if (!Equals(DartRuntimePrimitives.RuntimeType(__other), GetType()))
         {
             return false;
         }
-        return ((((((((((((((__other is MenuStyle) && (Equals(((MenuStyle)((MenuStyle)__other)).backgroundColor, this.backgroundColor))) && (Equals(((MenuStyle)((MenuStyle)__other)).shadowColor, this.shadowColor))) && (Equals(((MenuStyle)((MenuStyle)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((MenuStyle)((MenuStyle)__other)).elevation, this.elevation))) && (Equals(((MenuStyle)((MenuStyle)__other)).padding, this.padding))) && (Equals(((MenuStyle)((MenuStyle)__other)).minimumSize, this.minimumSize))) && (Equals(((MenuStyle)((MenuStyle)__other)).fixedSize, this.fixedSize))) && (Equals(((MenuStyle)((MenuStyle)__other)).maximumSize, this.maximumSize))) && (Equals(((MenuStyle)((MenuStyle)__other)).side, this.side))) && (Equals(((MenuStyle)((MenuStyle)__other)).shape, this.shape))) && (Equals(((MenuStyle)((MenuStyle)__other)).mouseCursor, this.mouseCursor))) && (Equals(((MenuStyle)((MenuStyle)__other)).visualDensity, this.visualDensity))) && (Equals(((MenuStyle)((MenuStyle)__other)).alignment, this.alignment)));
+        return (__other is MenuStyle) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.shadowColor, shadowColor) && Equals(__other.surfaceTintColor, surfaceTintColor) && Equals(__other.elevation, elevation) && Equals(__other.padding, padding) && Equals(__other.minimumSize, minimumSize) && Equals(__other.fixedSize, fixedSize) && Equals(__other.maximumSize, maximumSize) && Equals(__other.side, side) && Equals(__other.shape, shape) && Equals(__other.mouseCursor, mouseCursor) && Equals(__other.visualDensity, visualDensity) && Equals(__other.alignment, alignment);
     }
 
     public virtual MenuStyle copyWith(global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? backgroundColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? shadowColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? surfaceTintColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>? padding = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Size?>? minimumSize = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Size?>? fixedSize = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Size?>? maximumSize = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? side = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>? shape = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null)
     {
-        return new MenuStyle(backgroundColor: (backgroundColor ?? this.backgroundColor), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), elevation: (elevation ?? this.elevation), padding: (padding ?? this.padding), minimumSize: (minimumSize ?? this.minimumSize), fixedSize: (fixedSize ?? this.fixedSize), maximumSize: (maximumSize ?? this.maximumSize), side: (side ?? this.side), shape: (shape ?? this.shape), mouseCursor: (mouseCursor ?? this.mouseCursor), visualDensity: (visualDensity ?? this.visualDensity), alignment: (alignment ?? this.alignment));
+        return new MenuStyle(backgroundColor: backgroundColor ?? this.backgroundColor, shadowColor: shadowColor ?? this.shadowColor, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, elevation: elevation ?? this.elevation, padding: padding ?? this.padding, minimumSize: minimumSize ?? this.minimumSize, fixedSize: fixedSize ?? this.fixedSize, maximumSize: maximumSize ?? this.maximumSize, side: side ?? this.side, shape: shape ?? this.shape, mouseCursor: mouseCursor ?? this.mouseCursor, visualDensity: visualDensity ?? this.visualDensity, alignment: alignment ?? this.alignment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual MenuStyle merge(MenuStyle? style)
     {
-        if ((style is null))
+        if (style is null)
         {
             return this;
         }
-        return ((MenuStyle)copyWith(backgroundColor: (this.backgroundColor ?? ((MenuStyle)style).backgroundColor), shadowColor: (this.shadowColor ?? ((MenuStyle)style).shadowColor), surfaceTintColor: (this.surfaceTintColor ?? ((MenuStyle)style).surfaceTintColor), elevation: (this.elevation ?? ((MenuStyle)style).elevation), padding: (this.padding ?? ((MenuStyle)style).padding), minimumSize: (this.minimumSize ?? ((MenuStyle)style).minimumSize), fixedSize: (this.fixedSize ?? ((MenuStyle)style).fixedSize), maximumSize: (this.maximumSize ?? ((MenuStyle)style).maximumSize), side: (this.side ?? ((MenuStyle)style).side), shape: (this.shape ?? ((MenuStyle)style).shape), mouseCursor: (this.mouseCursor ?? ((MenuStyle)style).mouseCursor), visualDensity: (this.visualDensity ?? ((MenuStyle)style).visualDensity), alignment: (this.alignment ?? ((MenuStyle)style).alignment)));
+        return copyWith(backgroundColor: backgroundColor ?? style.backgroundColor, shadowColor: shadowColor ?? style.shadowColor, surfaceTintColor: surfaceTintColor ?? style.surfaceTintColor, elevation: elevation ?? style.elevation, padding: padding ?? style.padding, minimumSize: minimumSize ?? style.minimumSize, fixedSize: fixedSize ?? style.fixedSize, maximumSize: maximumSize ?? style.maximumSize, side: side ?? style.side, shape: shape ?? style.shape, mouseCursor: mouseCursor ?? style.mouseCursor, visualDensity: visualDensity ?? style.visualDensity, alignment: alignment ?? style.alignment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -81,25 +81,25 @@ public class MenuStyle : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return a;
         }
-        return new MenuStyle(backgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.backgroundColor, b?.backgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), shadowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.shadowColor, b?.shadowColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), surfaceTintColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.surfaceTintColor, b?.surfaceTintColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), elevation: WidgetStateProperty.lerp<double?>(a?.elevation, b?.elevation, t, (global::System.Func<double?, double?, double, double?>)Dart_uiLibrary.lerpDouble), padding: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(a?.padding, b?.padding, t, (global::System.Func<global::Doroti.Framework.Painting.EdgeInsetsGeometry?, global::Doroti.Framework.Painting.EdgeInsetsGeometry?, double, global::Doroti.Framework.Painting.EdgeInsetsGeometry?>)EdgeInsetsGeometry.lerp), minimumSize: WidgetStateProperty.lerp<global::Doroti.Ui.Size?>(a?.minimumSize, b?.minimumSize, t, (global::System.Func<Size?, Size?, double, Size?>)Size.lerp), fixedSize: WidgetStateProperty.lerp<global::Doroti.Ui.Size?>(a?.fixedSize, b?.fixedSize, t, (global::System.Func<Size?, Size?, double, Size?>)Size.lerp), maximumSize: WidgetStateProperty.lerp<global::Doroti.Ui.Size?>(a?.maximumSize, b?.maximumSize, t, (global::System.Func<Size?, Size?, double, Size?>)Size.lerp), side: WidgetStateBorderSide.lerp(a?.side, b?.side, t), shape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.shape, b?.shape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)OutlinedBorder.lerp), mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), visualDensity: ((t < 0.5) ? a?.visualDensity : b?.visualDensity), alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t));
+        return new MenuStyle(backgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.backgroundColor, b?.backgroundColor, t, Color.lerp), shadowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.shadowColor, b?.shadowColor, t, Color.lerp), surfaceTintColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.surfaceTintColor, b?.surfaceTintColor, t, Color.lerp), elevation: WidgetStateProperty.lerp<double?>(a?.elevation, b?.elevation, t, Dart_uiLibrary.lerpDouble), padding: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(a?.padding, b?.padding, t, EdgeInsetsGeometry.lerp), minimumSize: WidgetStateProperty.lerp<global::Doroti.Ui.Size?>(a?.minimumSize, b?.minimumSize, t, Size.lerp), fixedSize: WidgetStateProperty.lerp<global::Doroti.Ui.Size?>(a?.fixedSize, b?.fixedSize, t, Size.lerp), maximumSize: WidgetStateProperty.lerp<global::Doroti.Ui.Size?>(a?.maximumSize, b?.maximumSize, t, Size.lerp), side: WidgetStateBorderSide.lerp(a?.side, b?.side, t), shape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.shape, b?.shape, t, OutlinedBorder.lerp), mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor, visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity, alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("minimumSize", this.minimumSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("fixedSize", this.fixedSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("maximumSize", this.maximumSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>>("side", this.side, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", this.visualDensity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("shadowColor", shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>("elevation", elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>>("padding", padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("minimumSize", minimumSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("fixedSize", fixedSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("maximumSize", maximumSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>>("side", side, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>>("shape", shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", mouseCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -113,13 +113,13 @@ public class MenuStyle : global::Doroti.Framework.Foundation.Diagnosticable
                 fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString ?? (string)toStringShort()));
+        return fullString ?? toStringShort();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
