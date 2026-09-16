@@ -6,7 +6,7 @@
 
 Doroti is an experimental UI framework built with C# and .NET. Write widgets, layouts, and UI behavior directly in C#, and share application code across desktop, mobile, and the web.
 
-The project began by translating Flutter framework source code into C# and is now developed and maintained directly in C#. It brings familiar Material and Cupertino APIs together with a shared rendering pipeline and native platform integration.
+The project began by translating Flutter framework source code into C# and is now developed and maintained directly in C#. It brings familiar Material and Cupertino APIs together with a shared rendering pipeline built on SkiaSharp and native platform integration.
 
 [Get started](#get-started) · [Platforms](#platforms) · [Documentation](#documentation)
 
@@ -18,7 +18,7 @@ The project began by translating Flutter framework source code into C# and is no
 - **C# throughout your UI** — define widgets, layout, state, and interactions without XAML.
 - **Shared application code** — keep your UI in a platform-neutral library with separate runners for each target.
 - **Material and Cupertino widgets** — build on Flutter-inspired APIs implemented and maintained in C#.
-- **GPU rendering** — use Skia Graphite with Vulkan, Metal, or WebGPU through the platform's rendering backend.
+- **SkiaSharp-based GPU rendering** — access Skia Graphite from C# through SkiaSharp, using Vulkan, Metal, or WebGPU depending on the platform.
 - **Native integration** — platform hosts connect the UI to windows, input, text entry, clipboard, and accessibility services.
 - **A sample app and templates** — explore `DorotiTestbedApp` and the `doroti-app` project template.
 
