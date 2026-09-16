@@ -824,7 +824,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                         renderObject.markNeedsPaint();
                         renderObject.visitChildren(markTreeNeedsPaint);
                     }
-                    RendererBinding.instance.renderViews.forEach((__arg0) => ((System.Action<RenderObject>)markTreeNeedsPaint)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+                    RendererBinding.instance.renderViews.forEach((__arg0) => ((Action<RenderObject>)markTreeNeedsPaint)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
                 }
                 else
                 {
@@ -940,7 +940,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return;
         }
-        references.forEach((__arg0) => ((System.Action<InspectorReferenceData>)_decrementReferenceCount)(__arg0));
+        references.forEach((__arg0) => ((Action<InspectorReferenceData>)_decrementReferenceCount)(__arg0));
     }
 
     public virtual void _decrementReferenceCount(InspectorReferenceData reference)
@@ -1838,7 +1838,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         _frameStart = timeStamp;
         _frameNumber = PlatformDispatcher.instance.frameData.frameNumber;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((System.Action<Duration>)_onFrameEnd)(__arg0), debugLabel: "WidgetInspector.onFrameStart");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration>)_onFrameEnd)(__arg0), debugLabel: "WidgetInspector.onFrameStart");
     }
 
     public virtual void _onFrameEnd(Duration timeStamp)

@@ -113,7 +113,7 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

@@ -35,15 +35,15 @@ public class DataColumn
 public class DataRow
 {
     public virtual LocalKey? key { get; private set; }
-    public virtual System.Action<bool?>? onSelectChanged { get; private set; }
+    public virtual Action<bool?>? onSelectChanged { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
     public virtual bool selected { get; private set; } = default!;
     public virtual List<DataCell> cells { get; private set; } = default!;
     public virtual WidgetStateProperty<Color?>? color { get; private set; }
     public virtual WidgetStateProperty<MouseCursor?>? mouseCursor { get; private set; }
 
-    public DataRow(LocalKey? key = null, bool selected = false, System.Action<bool?>? onSelectChanged = null, Action? onLongPress = null, System.Action<bool>? onHover = null, WidgetStateProperty<Color?>? color = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, List<DataCell> cells = default!)
+    public DataRow(LocalKey? key = null, bool selected = false, Action<bool?>? onSelectChanged = null, Action? onLongPress = null, Action<bool>? onHover = null, WidgetStateProperty<Color?>? color = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, List<DataCell> cells = default!)
     {
         this.key = key;
         this.selected = selected;
@@ -55,7 +55,7 @@ public class DataRow
         this.cells = cells;
     }
 
-    public static DataRow CreateByIndex(long? index = null, bool selected = false, System.Action<bool?>? onSelectChanged = null, Action? onLongPress = null, System.Action<bool>? onHover = null, WidgetStateProperty<Color?>? color = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, List<DataCell> cells = default!)
+    public static DataRow CreateByIndex(long? index = null, bool selected = false, Action<bool?>? onSelectChanged = null, Action? onLongPress = null, Action<bool>? onHover = null, WidgetStateProperty<Color?>? color = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, List<DataCell> cells = default!)
     {
         var __instance = new DataRow(selected: selected, onSelectChanged: onSelectChanged, onLongPress: onLongPress, onHover: onHover, color: color, mouseCursor: mouseCursor, cells: cells);
         __instance.selected = selected;
@@ -81,10 +81,10 @@ public class DataCell
     public virtual Action? onTap { get; private set; }
     public virtual Action? onDoubleTap { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<Gestures.TapDownDetails>? onTapDown { get; private set; }
+    public virtual Action<Gestures.TapDownDetails>? onTapDown { get; private set; }
     public virtual Action? onTapCancel { get; private set; }
 
-    public DataCell(Widget child, bool placeholder = false, bool showEditIcon = false, Action? onTap = null, Action? onLongPress = null, System.Action<Gestures.TapDownDetails>? onTapDown = null, Action? onDoubleTap = null, Action? onTapCancel = null)
+    public DataCell(Widget child, bool placeholder = false, bool showEditIcon = false, Action? onTap = null, Action? onLongPress = null, Action<Gestures.TapDownDetails>? onTapDown = null, Action? onDoubleTap = null, Action? onTapCancel = null)
     {
         this.child = child;
         this.placeholder = placeholder;
@@ -104,7 +104,7 @@ public class DataTable : StatelessWidget
     public virtual List<DataColumn> columns { get; private set; } = default!;
     public virtual long? sortColumnIndex { get; private set; }
     public virtual bool sortAscending { get; private set; } = default!;
-    public virtual System.Action<bool?>? onSelectAll { get; private set; }
+    public virtual Action<bool?>? onSelectAll { get; private set; }
     public virtual Decoration? decoration { get; private set; }
     public virtual WidgetStateProperty<Color?>? dataRowColor { get; private set; }
     public virtual double? dataRowMinHeight { get; private set; }
@@ -131,7 +131,7 @@ public class DataTable : StatelessWidget
     internal const double _dividerThickness = 1.0;
     internal static Duration _sortArrowAnimationDuration = Duration.Create(milliseconds: 150L);
 
-    public DataTable(Key? key = null, List<DataColumn> columns = default!, long? sortColumnIndex = null, bool sortAscending = true, System.Action<bool?>? onSelectAll = null, Decoration? decoration = null, WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, TextStyle? dataTextStyle = null, WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, bool showCheckboxColumn = true, bool showBottomBorder = false, double? dividerThickness = null, List<DataRow> rows = default!, double? checkboxHorizontalMargin = null, TableBorder? border = null, Clip clipBehavior = Clip.none) : base(key: key)
+    public DataTable(Key? key = null, List<DataColumn> columns = default!, long? sortColumnIndex = null, bool sortAscending = true, Action<bool?>? onSelectAll = null, Decoration? decoration = null, WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, TextStyle? dataTextStyle = null, WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, bool showCheckboxColumn = true, bool showBottomBorder = false, double? dividerThickness = null, List<DataRow> rows = default!, double? checkboxHorizontalMargin = null, TableBorder? border = null, Clip clipBehavior = Clip.none) : base(key: key)
     {
         this.columns = columns;
         this.sortColumnIndex = sortColumnIndex;
@@ -210,7 +210,7 @@ public class DataTable : StatelessWidget
         }
     }
 
-    internal virtual Widget _buildCheckbox(BuildContext context, bool? @checked, Action? onRowTap, System.Action<bool?>? onCheckboxChanged, WidgetStateProperty<Color?>? overlayColor, bool tristate, MouseCursor? rowMouseCursor = null)
+    internal virtual Widget _buildCheckbox(BuildContext context, bool? @checked, Action? onRowTap, Action<bool?>? onCheckboxChanged, WidgetStateProperty<Color?>? overlayColor, bool tristate, MouseCursor? rowMouseCursor = null)
     {
         ThemeData themeData = Theme.of(context);
         double effectiveHorizontalMargin = (horizontalMargin ?? themeData.dataTableTheme.horizontalMargin) ?? _horizontalMargin;
@@ -242,7 +242,7 @@ public class DataTable : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual Widget _buildDataCell(BuildContext context, EdgeInsetsGeometry padding, Widget label, bool numeric, bool placeholder, bool showEditIcon, Action? onTap, Action? onSelectChanged, Action? onDoubleTap, Action? onLongPress, System.Action<Gestures.TapDownDetails>? onTapDown, Action? onTapCancel, WidgetStateProperty<Color?>? overlayColor, Action? onRowLongPress, System.Action<bool>? onRowHover, MouseCursor? mouseCursor)
+    internal virtual Widget _buildDataCell(BuildContext context, EdgeInsetsGeometry padding, Widget label, bool numeric, bool placeholder, bool showEditIcon, Action? onTap, Action? onSelectChanged, Action? onDoubleTap, Action? onLongPress, Action<Gestures.TapDownDetails>? onTapDown, Action? onTapCancel, WidgetStateProperty<Color?>? overlayColor, Action? onRowLongPress, Action<bool>? onRowHover, MouseCursor? mouseCursor)
     {
         ThemeData themeData = Theme.of(context);
         DataTableThemeData dataTableThemeLocal = DataTableTheme.of(context);
@@ -376,7 +376,7 @@ public class DataTable : StatelessWidget
 
 public class TableRowInkWell : InkResponse
 {
-    public TableRowInkWell(Key? key = null, Widget? child = null, Action? onTap = null, Action? onDoubleTap = null, Action? onLongPress = null, System.Action<bool>? onHighlightChanged = null, System.Action<bool>? onHover = null, Action? onSecondaryTap = null, System.Action<Gestures.TapDownDetails>? onSecondaryTapDown = null, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null) : base(key: key, child: child, onTap: onTap, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onHighlightChanged: onHighlightChanged, onHover: onHover, onSecondaryTap: onSecondaryTap, onSecondaryTapDown: onSecondaryTapDown, overlayColor: overlayColor, mouseCursor: mouseCursor, containedInkWell: true, highlightShape: BoxShape.rectangle)
+    public TableRowInkWell(Key? key = null, Widget? child = null, Action? onTap = null, Action? onDoubleTap = null, Action? onLongPress = null, Action<bool>? onHighlightChanged = null, Action<bool>? onHover = null, Action? onSecondaryTap = null, Action<Gestures.TapDownDetails>? onSecondaryTapDown = null, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null) : base(key: key, child: child, onTap: onTap, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onHighlightChanged: onHighlightChanged, onHover: onHover, onSecondaryTap: onSecondaryTap, onSecondaryTapDown: onSecondaryTapDown, overlayColor: overlayColor, mouseCursor: mouseCursor, containedInkWell: true, highlightShape: BoxShape.rectangle)
     {
     }
 
@@ -567,7 +567,7 @@ public class _SortArrowState__data_table : State<_SortArrow__data_table>, Ticker
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

@@ -16,16 +16,16 @@ public static partial class SliderLibrary
 public class CupertinoSlider : StatefulWidget
 {
     public virtual double value { get; private set; } = default!;
-    public virtual System.Action<double>? onChanged { get; private set; }
-    public virtual System.Action<double>? onChangeStart { get; private set; }
-    public virtual System.Action<double>? onChangeEnd { get; private set; }
+    public virtual Action<double>? onChanged { get; private set; }
+    public virtual Action<double>? onChangeStart { get; private set; }
+    public virtual Action<double>? onChangeEnd { get; private set; }
     public virtual double min { get; private set; } = default!;
     public virtual double max { get; private set; } = default!;
     public virtual long? divisions { get; private set; }
     public virtual Color? activeColor { get; private set; }
     public virtual Color thumbColor { get; private set; } = default!;
 
-    public CupertinoSlider(Key? key = null, double value = default!, System.Action<double>? onChanged = default!, System.Action<double>? onChangeStart = null, System.Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, Color? activeColor = null, Color thumbColor = default!) : base(key: key)
+    public CupertinoSlider(Key? key = null, double value = default!, Action<double>? onChanged = default!, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, Color? activeColor = null, Color thumbColor = default!) : base(key: key)
     {
         Color __thumbColor = thumbColor ?? CupertinoColors.white;
         this.value = value;
@@ -117,7 +117,7 @@ internal class _CupertinoSliderState__slider : State<CupertinoSlider>, TickerPro
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -214,11 +214,11 @@ internal class _CupertinoSliderRenderObjectWidget__slider : LeafRenderObjectWidg
     public virtual Color activeColor { get; private set; } = default!;
     public virtual Color thumbColor { get; private set; } = default!;
     public virtual Action<double, bool>? onChanged { get; private set; }
-    public virtual System.Action<double>? onChangeStart { get; private set; }
-    public virtual System.Action<double>? onChangeEnd { get; private set; }
+    public virtual Action<double>? onChangeStart { get; private set; }
+    public virtual Action<double>? onChangeEnd { get; private set; }
     public virtual Scheduler.TickerProvider vsync { get; private set; } = default!;
 
-    internal _CupertinoSliderRenderObjectWidget__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, Action<double, bool>? onChanged = null, System.Action<double>? onChangeStart = null, System.Action<double>? onChangeEnd = null, Scheduler.TickerProvider vsync = default!)
+    internal _CupertinoSliderRenderObjectWidget__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, Action<double, bool>? onChanged = null, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, Scheduler.TickerProvider vsync = default!)
     {
         this.value = value;
         this.divisions = divisions;
@@ -292,19 +292,19 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
     internal virtual Color _thumbColor { get; set; } = default!;
     internal virtual Color _trackColor { get; set; } = default!;
     internal virtual Action<double, bool>? _onChanged { get; set; } = default;
-    public virtual System.Action<double>? onChangeStart { get; set; } = default;
-    public virtual System.Action<double>? onChangeEnd { get; set; } = default;
+    public virtual Action<double>? onChangeStart { get; set; } = default;
+    public virtual Action<double>? onChangeEnd { get; set; } = default;
     internal virtual TextDirection _textDirection { get; set; } = default!;
     internal virtual AnimationController _position { get; set; } = default!;
     internal virtual Gestures.HorizontalDragGestureRecognizer _drag { get; set; } = default!;
     internal virtual double _currentDragValue { get; set; } = 0.0;
     internal virtual Duration? _lastUpdateTimestamp { get; set; } = default;
     internal virtual MouseCursor _cursor { get; set; } = default!;
-    public virtual System.Action<Gestures.PointerEnterEvent>? onEnter { get; set; } = default;
-    public virtual System.Action<Gestures.PointerHoverEvent>? onHover { get; set; } = default;
-    public virtual System.Action<Gestures.PointerExitEvent>? onExit { get; set; } = default;
+    public virtual Action<Gestures.PointerEnterEvent>? onEnter { get; set; } = default;
+    public virtual Action<Gestures.PointerHoverEvent>? onHover { get; set; } = default;
+    public virtual Action<Gestures.PointerExitEvent>? onExit { get; set; } = default;
 
-    internal _RenderCupertinoSlider__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, Color trackColor = default!, Action<double, bool>? onChanged = null, System.Action<double>? onChangeStart = null, System.Action<double>? onChangeEnd = null, Scheduler.TickerProvider vsync = default!, TextDirection textDirection = default!, MouseCursor cursor = default!) : base(additionalConstraints: BoxConstraints.CreateTightFor(width: SliderLibrary._kSliderWidth, height: SliderLibrary._kSliderHeight))
+    internal _RenderCupertinoSlider__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, Color trackColor = default!, Action<double, bool>? onChanged = null, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, Scheduler.TickerProvider vsync = default!, TextDirection textDirection = default!, MouseCursor cursor = default!) : base(additionalConstraints: BoxConstraints.CreateTightFor(width: SliderLibrary._kSliderWidth, height: SliderLibrary._kSliderHeight))
     {
         MouseCursor __cursor = cursor ?? MouseCursor.defer;
         this.onChangeStart = onChangeStart;

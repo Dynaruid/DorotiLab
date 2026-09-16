@@ -492,7 +492,7 @@ internal class _MenuAnchorState__menu_anchor : State<MenuAnchor>, SingleTickerPr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -587,9 +587,9 @@ public class MenuBar : StatelessWidget
 public class MenuItemButton : StatefulWidget
 {
     public virtual Action? onPressed { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
     public virtual bool requestFocusOnHover { get; private set; } = default!;
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual MenuSerializableShortcut? shortcut { get; private set; }
@@ -603,7 +603,7 @@ public class MenuItemButton : StatefulWidget
     public virtual Axis overflowAxis { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public MenuItemButton(Key? key = null, Action? onPressed = null, System.Action<bool>? onHover = null, bool requestFocusOnHover = true, System.Action<bool>? onFocusChange = null, FocusNode? focusNode = null, bool autofocus = false, MenuSerializableShortcut? shortcut = null, string? semanticsLabel = null, ButtonStyle? style = null, WidgetStatesController? statesController = null, Clip clipBehavior = Clip.none, Widget? leadingIcon = null, Widget? trailingIcon = null, bool closeOnActivate = true, Axis overflowAxis = Axis.horizontal, Widget? child = null) : base(key: key)
+    public MenuItemButton(Key? key = null, Action? onPressed = null, Action<bool>? onHover = null, bool requestFocusOnHover = true, Action<bool>? onFocusChange = null, FocusNode? focusNode = null, bool autofocus = false, MenuSerializableShortcut? shortcut = null, string? semanticsLabel = null, ButtonStyle? style = null, WidgetStatesController? statesController = null, Clip clipBehavior = Clip.none, Widget? leadingIcon = null, Widget? trailingIcon = null, bool closeOnActivate = true, Axis overflowAxis = Axis.horizontal, Widget? child = null) : base(key: key)
     {
         this.onPressed = onPressed;
         this.onHover = onHover;
@@ -780,9 +780,9 @@ public class CheckboxMenuButton : StatelessWidget
     public virtual bool? value { get; private set; }
     public virtual bool tristate { get; private set; } = default!;
     public virtual bool isError { get; private set; } = default!;
-    public virtual System.Action<bool?>? onChanged { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool?>? onChanged { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
     public virtual MenuSerializableShortcut? shortcut { get; private set; }
     public virtual ButtonStyle? style { get; private set; }
@@ -792,7 +792,7 @@ public class CheckboxMenuButton : StatelessWidget
     public virtual bool closeOnActivate { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public CheckboxMenuButton(Key? key = null, bool? value = default!, bool tristate = false, bool isError = false, System.Action<bool?>? onChanged = default!, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, FocusNode? focusNode = null, MenuSerializableShortcut? shortcut = null, ButtonStyle? style = null, WidgetStatesController? statesController = null, Clip clipBehavior = Clip.none, Widget? trailingIcon = null, bool closeOnActivate = true, Widget? child = default!) : base(key: key)
+    public CheckboxMenuButton(Key? key = null, bool? value = default!, bool tristate = false, bool isError = false, Action<bool?>? onChanged = default!, Action<bool>? onHover = null, Action<bool>? onFocusChange = null, FocusNode? focusNode = null, MenuSerializableShortcut? shortcut = null, ButtonStyle? style = null, WidgetStatesController? statesController = null, Clip clipBehavior = Clip.none, Widget? trailingIcon = null, bool closeOnActivate = true, Widget? child = default!) : base(key: key)
     {
         this.value = value;
         this.tristate = tristate;
@@ -844,9 +844,9 @@ public class RadioMenuButton<T> : StatelessWidget
     public virtual T value { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
     public virtual bool toggleable { get; private set; } = default!;
-    public virtual System.Action<T?>? onChanged { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<T?>? onChanged { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
     public virtual MenuSerializableShortcut? shortcut { get; private set; }
     public virtual ButtonStyle? style { get; private set; }
@@ -856,7 +856,7 @@ public class RadioMenuButton<T> : StatelessWidget
     public virtual bool closeOnActivate { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public RadioMenuButton(Key? key = null, T value = default!, T? groupValue = default!, System.Action<T?>? onChanged = default!, bool toggleable = false, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, FocusNode? focusNode = null, MenuSerializableShortcut? shortcut = null, ButtonStyle? style = null, WidgetStatesController? statesController = null, Clip clipBehavior = Clip.none, Widget? trailingIcon = null, bool closeOnActivate = true, Widget? child = default!) : base(key: key)
+    public RadioMenuButton(Key? key = null, T value = default!, T? groupValue = default!, Action<T?>? onChanged = default!, bool toggleable = false, Action<bool>? onHover = null, Action<bool>? onFocusChange = null, FocusNode? focusNode = null, MenuSerializableShortcut? shortcut = null, ButtonStyle? style = null, WidgetStatesController? statesController = null, Clip clipBehavior = Clip.none, Widget? trailingIcon = null, bool closeOnActivate = true, Widget? child = default!) : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -893,8 +893,8 @@ public class RadioMenuButton<T> : StatelessWidget
 
 public class SubmenuButton : StatefulWidget
 {
-    public virtual System.Action<bool>? onHover { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual Action? onOpen { get; private set; }
     public virtual Action? onClose { get; private set; }
     public virtual MenuController? controller { get; private set; }
@@ -914,7 +914,7 @@ public class SubmenuButton : StatefulWidget
     public virtual bool animated { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public SubmenuButton(Key? key = null, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, Action? onOpen = null, Action? onClose = null, MenuController? controller = null, ButtonStyle? style = null, MenuStyle? menuStyle = null, Offset? alignmentOffset = null, Clip clipBehavior = Clip.hardEdge, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Widget? leadingIcon = null, Widget? trailingIcon = null, WidgetStateProperty<Widget?>? submenuIcon = null, bool useRootOverlay = false, Duration hoverOpenDelay = default, bool animated = false, AnimationStatusListener? onAnimationStatusChanged = null, List<Widget> menuChildren = default!, Widget? child = default!) : base(key: key)
+    public SubmenuButton(Key? key = null, Action<bool>? onHover = null, Action<bool>? onFocusChange = null, Action? onOpen = null, Action? onClose = null, MenuController? controller = null, ButtonStyle? style = null, MenuStyle? menuStyle = null, Offset? alignmentOffset = null, Clip clipBehavior = Clip.hardEdge, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Widget? leadingIcon = null, Widget? trailingIcon = null, WidgetStateProperty<Widget?>? submenuIcon = null, bool useRootOverlay = false, Duration hoverOpenDelay = default, bool animated = false, AnimationStatusListener? onAnimationStatusChanged = null, List<Widget> menuChildren = default!, Widget? child = default!) : base(key: key)
     {
         this.onHover = onHover;
         this.onFocusChange = onFocusChange;
@@ -1674,7 +1674,7 @@ public class MenuAcceleratorLabel : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static string stripAcceleratorMarkers(string label, System.Action<long>? setIndex = null)
+    public static string stripAcceleratorMarkers(string label, Action<long>? setIndex = null)
     {
         var quotedAmpersands = 0L;
         var displayLabel = new StringBuffer();

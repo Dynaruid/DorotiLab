@@ -367,8 +367,8 @@ internal delegate Gestures.HitTestResult _HitTester__dialog(Offset location);
 
 internal class _SlidingTapGestureRecognizer__dialog : Gestures.VerticalDragGestureRecognizer
 {
-    public virtual System.Action<Offset>? onResponsiveUpdate { get; set; } = default;
-    public virtual System.Action<Offset>? onResponsiveEnd { get; set; } = default;
+    public virtual Action<Offset>? onResponsiveUpdate { get; set; } = default;
+    public virtual Action<Offset>? onResponsiveEnd { get; set; } = default;
     internal virtual long? _primaryPointer { get; set; } = default;
 
     internal _SlidingTapGestureRecognizer__dialog(object? debugOwner = null) : base(debugOwner: debugOwner)
@@ -823,10 +823,10 @@ internal class _ActionSheetButtonBackground__dialog : StatefulWidget
 {
     public virtual bool isCancel { get; private set; } = default!;
     public virtual bool pressed { get; private set; } = default!;
-    public virtual System.Action<bool>? onPressStateChange { get; private set; }
+    public virtual Action<bool>? onPressStateChange { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    internal _ActionSheetButtonBackground__dialog(bool isCancel = false, bool pressed = default!, System.Action<bool>? onPressStateChange = null, Widget child = default!)
+    internal _ActionSheetButtonBackground__dialog(bool isCancel = false, bool pressed = default!, Action<bool>? onPressStateChange = null, Widget child = default!)
     {
         this.isCancel = isCancel;
         this.pressed = pressed;
@@ -1139,12 +1139,12 @@ internal class _CupertinoAlertActionSection__dialog : StatelessWidget
 internal class _AlertDialogButtonBackground__dialog : StatefulWidget
 {
     public virtual bool pressed { get; private set; } = default!;
-    public virtual System.Action<bool>? onPressStateChange { get; private set; }
+    public virtual Action<bool>? onPressStateChange { get; private set; }
     public virtual Color idleColor { get; private set; } = default!;
     public virtual Color pressedColor { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _AlertDialogButtonBackground__dialog(Color idleColor, Color pressedColor, bool pressed, System.Action<bool>? onPressStateChange, Widget child)
+    internal _AlertDialogButtonBackground__dialog(Color idleColor, Color pressedColor, bool pressed, Action<bool>? onPressStateChange, Widget child)
     {
         this.idleColor = idleColor;
         this.pressedColor = pressedColor;
@@ -1485,7 +1485,7 @@ public class _RenderAlertDialogActionsLayout__dialog : RenderFlex
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _forEachSlot(System.Action<RenderBox> action)
+    internal virtual void _forEachSlot(Action<RenderBox> action)
     {
         DartRuntimePrimitives.Assert(() => (checked(childCount) & 1L) != 0L);
         RenderBox slot = firstChild!;

@@ -19,7 +19,7 @@ public class SliverLayoutBuilder : ConstrainedLayoutBuilder<SliverConstraints>
 internal class _RenderSliverLayoutBuilder__sliver_layout_builder : RenderSliver, RenderObjectWithChildMixin<RenderSliver>, RenderAbstractLayoutBuilderMixin<SliverConstraints, RenderSliver>, IRenderLayoutCallback
 {
     public virtual RenderSliver? _child { get; set; } = default;
-    public virtual System.Action<Constraints>? _callback { get; set; } = default;
+    public virtual Action<Constraints>? _callback { get; set; } = default;
 
     public override double childMainAxisPosition(RenderObject child)
     {
@@ -106,7 +106,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : RenderSliver,
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         if (_child is not null)
         {
@@ -120,7 +120,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : RenderSliver,
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateCallback(System.Action<Constraints> value)
+    public virtual void _updateCallback(Action<Constraints> value)
     {
         if (Equals(value, _callback))
         {

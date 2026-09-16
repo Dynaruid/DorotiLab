@@ -49,7 +49,7 @@ public static partial class CheckboxLibrary
 public class CupertinoCheckbox : StatefulWidget
 {
     public virtual bool? value { get; private set; }
-    public virtual System.Action<bool?>? onChanged { get; private set; }
+    public virtual Action<bool?>? onChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual Color? activeColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? fillColor { get; private set; }
@@ -65,7 +65,7 @@ public class CupertinoCheckbox : StatefulWidget
     public virtual string? semanticLabel { get; private set; }
     public const double width = 14.0;
 
-    public CupertinoCheckbox(Key? key = null, bool? value = default!, bool tristate = false, System.Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, Color? inactiveColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, BorderSide? side = null, OutlinedBorder? shape = null, Size? tapTargetSize = null, string? semanticLabel = null) : base(key: key)
+    public CupertinoCheckbox(Key? key = null, bool? value = default!, bool tristate = false, Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, Color? inactiveColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, BorderSide? side = null, OutlinedBorder? shape = null, Size? tapTargetSize = null, string? semanticLabel = null) : base(key: key)
     {
         this.value = value;
         this.tristate = tristate;
@@ -112,7 +112,7 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((System.Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -159,7 +159,7 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         base.dispose();
     }
 
-    public virtual System.Action<bool?>? onChanged => widget.onChanged;
+    public virtual Action<bool?>? onChanged => widget.onChanged;
     public virtual bool tristate => widget.tristate;
     public virtual bool? value => widget.value;
     internal virtual WidgetStateProperty<Color> _defaultFillColor
@@ -282,7 +282,7 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -478,13 +478,13 @@ internal class _CupertinoCheckboxState__checkbox : State<CupertinoCheckbox>, Tic
     }
 
     public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, object? painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, object? painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
     {
         return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap(null) : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd(null) : null, child: new Widgets.Semantics(enabled: isInteractive, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");

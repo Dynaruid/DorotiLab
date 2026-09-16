@@ -47,11 +47,11 @@ public class CupertinoPicker : StatefulWidget
     public virtual double itemExtent { get; private set; } = default!;
     public virtual double squeeze { get; private set; } = default!;
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
-    public virtual System.Action<long>? onSelectedItemChanged { get; private set; }
+    public virtual Action<long>? onSelectedItemChanged { get; private set; }
     public virtual ListWheelChildDelegate childDelegate { get; private set; } = default!;
     public virtual Widget? selectionOverlay { get; private set; }
 
-    public CupertinoPicker(Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, FixedExtentScrollController? scrollController = null, double? squeeze = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, System.Action<long>? onSelectedItemChanged = default!, List<Widget> children = default!, Widget? selectionOverlay = default!, bool looping = false) : base(key: key)
+    public CupertinoPicker(Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, FixedExtentScrollController? scrollController = null, double? squeeze = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, Action<long>? onSelectedItemChanged = default!, List<Widget> children = default!, Widget? selectionOverlay = default!, bool looping = false) : base(key: key)
     {
         double __diameterRatio = diameterRatio ?? PickerLibrary._kDefaultDiameterRatio;
         double __squeeze = squeeze ?? PickerLibrary._kSqueeze;
@@ -74,7 +74,7 @@ public class CupertinoPicker : StatefulWidget
         System.Diagnostics.Debug.Assert(__squeeze > 0L);
     }
 
-    public static CupertinoPicker CreateBuilder(Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, FixedExtentScrollController? scrollController = null, double? squeeze = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, System.Action<long>? onSelectedItemChanged = default!, Func<BuildContext, long, Widget?> itemBuilder = default!, long? childCount = null, Widget? selectionOverlay = default!)
+    public static CupertinoPicker CreateBuilder(Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, FixedExtentScrollController? scrollController = null, double? squeeze = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, Action<long>? onSelectedItemChanged = default!, Func<BuildContext, long, Widget?> itemBuilder = default!, long? childCount = null, Widget? selectionOverlay = default!)
     {
         var __instance = new CupertinoPicker(key: key, diameterRatio: diameterRatio, backgroundColor: backgroundColor, offAxisFraction: offAxisFraction, useMagnifier: useMagnifier, magnification: magnification, scrollController: scrollController, squeeze: squeeze, changeReportingBehavior: changeReportingBehavior, itemExtent: itemExtent, onSelectedItemChanged: onSelectedItemChanged, children: default!, selectionOverlay: selectionOverlay);
         double __diameterRatio = diameterRatio ?? PickerLibrary._kDefaultDiameterRatio;
@@ -420,9 +420,9 @@ public class _RenderCupertinoPickerSemantics__picker : RenderProxyBox
 internal class _CupertinoPickerListWheelChildDelegateWrapper__picker : ListWheelChildDelegate
 {
     internal virtual ListWheelChildDelegate _wrapped { get; private set; } = default!;
-    public virtual System.Action<long> onTappedChild { get; private set; } = default!;
+    public virtual Action<long> onTappedChild { get; private set; } = default!;
 
-    internal _CupertinoPickerListWheelChildDelegateWrapper__picker(ListWheelChildDelegate _wrapped, System.Action<long> onTappedChild)
+    internal _CupertinoPickerListWheelChildDelegateWrapper__picker(ListWheelChildDelegate _wrapped, Action<long> onTappedChild)
     {
         this._wrapped = _wrapped;
         this.onTappedChild = onTappedChild;

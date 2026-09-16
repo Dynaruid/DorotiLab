@@ -554,7 +554,7 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
         BuildContext? contextLocal = Focus_managerLibrary.primaryFocus?.context;
         if (intentLocal is not null && contextLocal is not null)
         {
-            // Action<SpecificIntent> is not Action<Intent> in C#. Use the
+            // IntentAction<SpecificIntent> is not IntentAction<Intent> in C#. Use the
             // type-erased bridge while retaining scoped dispatch and overrides.
             var action = Actions._maybeFindWithoutDependingOn(contextLocal, intentLocal, declareDependency: true);
             if (action is not null)

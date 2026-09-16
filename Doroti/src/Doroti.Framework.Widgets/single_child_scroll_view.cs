@@ -524,7 +524,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : RenderBox, R
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         if (_child is not null)
         {

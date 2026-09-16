@@ -208,7 +208,7 @@ public class _TextSelectionControlsToolbarState__text_selection : State<_TextSel
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

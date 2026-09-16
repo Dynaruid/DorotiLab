@@ -1332,7 +1332,7 @@ internal static class MaterialDynamicColors
             .ReplaceGeneratedLocalPattern("this.onStateChange?.Invoke(this._lifecycleState!)", "this.onStateChange?.Invoke(DartRuntimePrimitives.RequireValue(this._lifecycleState))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("this.widget.dragAnchorStrategy(this.widget, this.context, position)", "((dynamic)this.widget.dragAnchorStrategy)(this.widget, this.context, position)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("orElse: (() => { })", "orElse: (() => default!)", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("_makeOverridable((__arg0) => ((Action<TransposeCharactersIntent>)", "_makeOverridable<TransposeCharactersIntent>((__arg0) => ((Action<TransposeCharactersIntent>)", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("_makeOverridable((__arg0) => ((IntentAction<TransposeCharactersIntent>)", "_makeOverridable<TransposeCharactersIntent>((__arg0) => ((IntentAction<TransposeCharactersIntent>)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("((global::System.Func<object, bool>)((FocusScopeNode)nodeScope__42268)._focusedChildren.Remove)(__arg0)", "((FocusScopeNode)nodeScope__42268)._focusedChildren.Remove(DartRuntimePrimitives.ConvertValue<FocusScopeNode>(__arg0))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("(((object?)spellCheckService__128604 ?? (object?)new global::Doroti.Framework.Services.DefaultSpellCheckService()))", "DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SpellCheckService>(spellCheckService__128604 ?? new global::Doroti.Framework.Services.DefaultSpellCheckService())", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("((global::Doroti.Framework.Rendering.ContainerRenderObjectMixin<global::Doroti.Framework.Rendering.RenderObject, global::Doroti.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Framework.Rendering.RenderObject>>?)(object?)base.renderObject)!", "DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(base.renderObject)", StringComparison.Ordinal)
@@ -1396,7 +1396,7 @@ internal static class MaterialDynamicColors
         {
             source = source
                 .ReplaceGeneratedLocalPattern("__cascade.cursorHeight = this.cursorHeight", "__cascade.cursorHeight = DartRuntimePrimitives.RequireValue(this.cursorHeight)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("_makeOverridable<TransposeCharactersIntent>((__arg0) => ((Action<TransposeCharactersIntent>)this._transposeCharactersAction)(DartRuntimePrimitives.ConvertValue<TransposeCharactersIntent>(__arg0)))", "_makeOverridable<TransposeCharactersIntent>(this._transposeCharactersAction)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_makeOverridable<TransposeCharactersIntent>((__arg0) => ((IntentAction<TransposeCharactersIntent>)this._transposeCharactersAction)(DartRuntimePrimitives.ConvertValue<TransposeCharactersIntent>(__arg0)))", "_makeOverridable<TransposeCharactersIntent>(this._transposeCharactersAction)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((global::System.Action)((global::System.Func<Future>)(", "return DartRuntimePrimitives.AdaptAsyncCallback((global::System.Func<Future>?)(", StringComparison.Ordinal);
             source = Regex.Replace(
                 source,

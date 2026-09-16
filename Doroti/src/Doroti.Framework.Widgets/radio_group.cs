@@ -13,10 +13,10 @@ public static class RadioGroup
 public class RadioGroup<T> : StatefulWidget
 {
     public virtual T? groupValue { get; private set; }
-    public virtual System.Action<T?> onChanged { get; private set; } = default!;
+    public virtual Action<T?> onChanged { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public RadioGroup(Key? key = null, T? groupValue = default, System.Action<T?> onChanged = default!, Widget child = default!) : base(key: key)
+    public RadioGroup(Key? key = null, T? groupValue = default, Action<T?> onChanged = default!, Widget child = default!) : base(key: key)
     {
         this.groupValue = groupValue;
         this.onChanged = onChanged;
@@ -123,7 +123,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         }
     }
 
-    public virtual System.Action<T?> onChanged => widget.onChanged;
+    public virtual Action<T?> onChanged => widget.onChanged;
     internal virtual void _selectNextRadio() => _selectRadioInDirection(true);
     internal virtual void _selectPreviousRadio() => _selectRadioInDirection(false);
     internal virtual void _selectRadioInDirection(bool forward)
@@ -215,7 +215,7 @@ public interface RadioGroupRegistry<T>
     public T? groupValue { get; }
     public void registerClient(RadioClient<T> radio);
     public void unregisterClient(RadioClient<T> radio);
-    public System.Action<T?> onChanged { get; }
+    public Action<T?> onChanged { get; }
 }
 
 public interface RadioClient<T>

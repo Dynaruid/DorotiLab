@@ -9,12 +9,12 @@ public class UndoHistory<T> : StatefulWidget
     public virtual ValueNotifier<T> value { get; private set; } = default!;
     public virtual Func<T?, T, bool>? shouldChangeUndoStack { get; private set; }
     public virtual Func<T, T>? undoStackModifier { get; private set; }
-    public virtual System.Action<T> onTriggered { get; private set; } = default!;
+    public virtual Action<T> onTriggered { get; private set; } = default!;
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual UndoHistoryController? controller { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public UndoHistory(Key? key = null, Func<T?, T, bool>? shouldChangeUndoStack = null, ValueNotifier<T> value = default!, System.Action<T> onTriggered = default!, FocusNode focusNode = default!, Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
+    public UndoHistory(Key? key = null, Func<T?, T, bool>? shouldChangeUndoStack = null, ValueNotifier<T> value = default!, Action<T> onTriggered = default!, FocusNode focusNode = default!, Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
     {
         this.shouldChangeUndoStack = shouldChangeUndoStack;
         this.value = value;
@@ -223,7 +223,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
 
     public override Widget build(BuildContext context)
     {
-        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = Action<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((System.Action<UndoTextIntent>)_undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = Action<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((System.Action<RedoTextIntent>)_redoFromIntent)(__arg0); return default!; })) }, child: widget.child);
+        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = IntentAction<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((Action<UndoTextIntent>)_undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = IntentAction<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((Action<RedoTextIntent>)_redoFromIntent)(__arg0); return default!; })) }, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -375,7 +375,7 @@ internal delegate Timer _Throttled__undo_history<T>(T currentArg);
 
 public static partial class Undo_historyLibrary
 {
-    internal static Func<T, Timer> _throttle<T>(Duration duration, System.Action<T> function)
+    internal static Func<T, Timer> _throttle<T>(Duration duration, Action<T> function)
     {
         Timer? timer = default!;
         T arg = default!;

@@ -109,7 +109,7 @@ public interface CheckmarkableChipAttributes
 public interface SelectableChipAttributes
 {
     public bool selected { get; }
-    public System.Action<bool>? onSelected { get; }
+    public Action<bool>? onSelected { get; }
     public double? pressElevation { get; }
     public Color? selectedColor { get; }
     public Color? selectedShadowColor { get; }
@@ -227,7 +227,7 @@ public class RawChip : StatefulWidget, ChipAttributes, DeletableChipAttributes, 
     public virtual Action? onDeleted { get; private set; }
     public virtual Color? deleteIconColor { get; private set; }
     public virtual string? deleteButtonTooltipMessage { get; private set; }
-    public virtual System.Action<bool>? onSelected { get; private set; }
+    public virtual Action<bool>? onSelected { get; private set; }
     public virtual Action? onPressed { get; private set; }
     public virtual double? pressElevation { get; private set; }
     public virtual bool selected { get; private set; } = default!;
@@ -259,7 +259,7 @@ public class RawChip : StatefulWidget, ChipAttributes, DeletableChipAttributes, 
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool tapEnabled { get; private set; } = default!;
 
-    public RawChip(Key? key = null, ChipThemeData? defaultProperties = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? labelPadding = null, Widget? deleteIcon = null, Action? onDeleted = null, Color? deleteIconColor = null, string? deleteButtonTooltipMessage = null, Action? onPressed = null, System.Action<bool>? onSelected = null, double? pressElevation = null, bool tapEnabled = true, bool selected = false, bool isEnabled = true, Color? disabledColor = null, Color? selectedColor = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, ShapeBorder avatarBorder = default!, BoxConstraints? avatarBoxConstraints = null, BoxConstraints? deleteIconBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null) : base(key: key)
+    public RawChip(Key? key = null, ChipThemeData? defaultProperties = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? labelPadding = null, Widget? deleteIcon = null, Action? onDeleted = null, Color? deleteIconColor = null, string? deleteButtonTooltipMessage = null, Action? onPressed = null, Action<bool>? onSelected = null, double? pressElevation = null, bool tapEnabled = true, bool selected = false, bool isEnabled = true, Color? disabledColor = null, Color? selectedColor = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, ShapeBorder avatarBorder = default!, BoxConstraints? avatarBoxConstraints = null, BoxConstraints? deleteIconBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null) : base(key: key)
     {
         ShapeBorder __avatarBorder = avatarBorder ?? new CircleBorder();
         this.defaultProperties = defaultProperties;
@@ -620,7 +620,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
         return new Widgets.Semantics(button: widget.tapEnabled, container: true, selected: Foundation.ConstantsLibrary.kIsWeb ? null : widget.selected, @checked: Foundation.ConstantsLibrary.kIsWeb ? widget.selected : null, enabled: widget.tapEnabled ? canTap : null, child: result);
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -1459,10 +1459,10 @@ public class _RenderChip__chip : RenderBox, SlottedContainerRenderObjectMixin<_C
 
     public override void redepthChildren()
     {
-        children.forEach((__arg0) => ((System.Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        children.forEach((__arg0) => ((Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }

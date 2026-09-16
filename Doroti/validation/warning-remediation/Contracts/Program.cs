@@ -240,7 +240,44 @@ foreach (var emptyFuture in new[] { true, false })
 }
 defaultMessenger.setMessageHandler("a1-null-reply", null);
 
+// Ordinary Action<T> must resolve to the BCL delegate even with Widgets imported.
+var intentCalls = 0;
+Action<IntentActionProbeIntent> intentCallback = _ => intentCalls++;
+Check(intentCallback.GetType() == typeof(System.Action<IntentActionProbeIntent>), "Action<T> is the BCL callback.");
+Check(typeof(IntentAction<>).Assembly.GetType("Doroti.Framework.Widgets.Action`1") is null,
+    "The old framework Action<T> name must not keep shadowing BCL callbacks.");
+var probeIntent = new IntentActionProbeIntent();
+var callbackCommand = new CallbackAction<IntentActionProbeIntent>(intentCallback);
+Check(callbackCommand is IntentAction<IntentActionProbeIntent>, "Callback commands retain the renamed base contract.");
+Check(callbackCommand.invoke(probeIntent) is null && intentCalls == 1, "BCL callbacks adapt to command invocation.");
+var probeCommand = new IntentActionProbe();
+IIntentAction erasedCommand = probeCommand;
+Check(erasedCommand.IntentType == typeof(IntentActionProbeIntent), "Intent command type identity is preserved.");
+Check(!erasedCommand.IsEnabledForIntent(probeIntent, null), "Disabled commands retain their enabled-state contract.");
+probeCommand.Enabled = true;
+Check(erasedCommand.IsEnabledForIntent(probeIntent, null), "Command enablement can change.");
+Check(Equals(erasedCommand.InvokeIntent(probeIntent, null), 42), "Renamed commands preserve virtual dispatch and return values.");
+Check(erasedCommand.ToKeyEventResultForIntent(probeIntent, null) == KeyEventResult.skipRemainingHandlers,
+    "Commands retain their key-event consumption policy.");
+var commandNotifications = 0;
+Action<object> commandListener = sender => { Check(ReferenceEquals(sender, probeCommand), "Listener receives the command."); commandNotifications++; };
+probeCommand.addActionListener(commandListener);
+probeCommand.notifyActionListeners();
+probeCommand.removeActionListener(commandListener);
+probeCommand.notifyActionListeners();
+Check(commandNotifications == 1, "Command change notifications and listener removal are preserved.");
+
 Console.WriteLine($"A1 contract checks: {assertions} assertions passed.");
+
+sealed class IntentActionProbeIntent : Intent;
+
+sealed class IntentActionProbe : IntentAction<IntentActionProbeIntent>
+{
+    public bool Enabled { get; set; }
+    public override bool isEnabled(IntentActionProbeIntent intent, BuildContext? context = null) => Enabled;
+    public override bool consumesKey(IntentActionProbeIntent intent) => false;
+    public override object? invoke(IntentActionProbeIntent intent, BuildContext? context = null) => 42;
+}
 
 sealed class ContractMessenger : BinaryMessenger
 {

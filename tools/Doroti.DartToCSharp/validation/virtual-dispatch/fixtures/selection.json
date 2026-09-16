@@ -18,6 +18,11 @@
       "emissionMode": "graph-only"
     },
     {
+      "path": "renames/widgets/actions.dart",
+      "library": "renames/widgets/actions.dart",
+      "symbols": ["*"]
+    },
+    {
       "path": "contracts.dart",
       "library": "contracts.dart",
       "symbols": [

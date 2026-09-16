@@ -23,6 +23,9 @@ Build `SourceTools/SourceTools.csproj`, then invoke its DLL with one of:
 - `index <evidence-directory>`: attach enclosing syntax symbols to captured diagnostics.
 - `rename-generics <solution-or-project> <report.json>`: rename shadowed method type
   parameters with Roslyn symbols, preserving nested references and virtual slots.
+- `rename-intent-action <solution-or-project> <report.json>`: one-time symbol rename
+  of `Doroti.Framework.Widgets.Action<T>` to `IntentAction<T>`, including constructors
+  and consumers in the supplied solution. Follow with the IDE0001 fix/check pass.
 - `simplify-casts <solution-or-project> <report.json>`: remove intermediate object
   casts only when Roslyn classifies the direct conversion as identity/reference.
   Retain the outer cast and therefore the expression's static type. Exclude
@@ -67,9 +70,16 @@ supported managed hosts, tooling and shared testbed; platform runners remain in
 `Doroti.Product.slnx`. The local `.vscode/settings.json` is ignored by Git. Reload
 the editor window after changing the setting if the C# server still uses a
 temporary `roslyn-canonical-misc/Canonical.csproj` instead of the real projects.
-In that incomplete context it can suggest removing necessary qualification such
-as `System.Action<T>`, which would bind to Widgets' unrelated `Action<T>` in the
-actual project. Verify simplifications against a loaded project before applying.
+Incomplete project context can suggest removing necessary qualification. Verify
+simplifications against a loaded project before applying them.
+
+The UI command base is now `IntentAction<T>` (`T : Intent`); ordinary `Action<T>`
+resolves to the .NET callback. Migrate subclasses and command type annotations
+from the former Widgets `Action<T>` name to `IntentAction<T>`. No compatibility
+alias retains the old name, because it would restore the collision. `Actions`,
+`ContextAction<T>`, `CallbackAction<T>` and `IIntentAction` keep their names and
+command behavior. The Dart converter maps Flutter's declaration in
+`widgets/actions.dart` to the new CLR name while retaining .NET callback delegates.
 
 The strict warning guard is an exit gate: all framework pragmas must be gone.
 During work, `--baseline <baseline.json>` only checks that existing suppressions

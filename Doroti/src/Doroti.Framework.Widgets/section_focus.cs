@@ -7,13 +7,13 @@ public sealed class SectionFocusCoordinator : IDisposable
     private readonly int[] _order;
     private readonly Dictionary<int, int> _positions;
     private readonly Dictionary<int, FocusNode> _nodes = [];
-    private readonly System.Action<int> _materialize;
+    private readonly Action<int> _materialize;
     private readonly ReadingOrderTraversalPolicy _policy = new();
     private long _request;
     private bool _disposed;
     private bool _pending;
     private readonly Queue<bool> _queuedTabs = new();
-    public SectionFocusCoordinator(IEnumerable<int> order, System.Action<int> materialize)
+    public SectionFocusCoordinator(IEnumerable<int> order, Action<int> materialize)
     {
         _order = order.ToArray(); _materialize = materialize;
         if (_order.Length is < 1 or > 4096) throw new ArgumentOutOfRangeException(nameof(order));

@@ -44,7 +44,7 @@ public interface IToggleableState : IState
     public CurvedAnimation reactionFocusFade { get; }
     public Duration? reactionAnimationDuration { get; }
     public bool isInteractive { get; }
-    public System.Action<bool?>? onChanged { get; }
+    public Action<bool?>? onChanged { get; }
     public bool? value { get; }
     public bool tristate { get; }
     public new void initState();
@@ -57,7 +57,7 @@ public interface IToggleableState : IState
     public void _handleFocusHighlightChanged(bool focused);
     public void _handleHoverChanged(bool hovering);
     public HashSet<WidgetState> states { get; }
-    public Widget buildToggleableWithChild(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!);
+    public Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!);
 }
 
 public abstract class ToggleablePainter : ChangeNotifier

@@ -54,7 +54,7 @@ public class Dismissible : StatefulWidget
     public virtual Widget? secondaryBackground { get; private set; }
     public virtual Func<DismissDirection, Future<bool?>>? confirmDismiss { get; private set; }
     public virtual Action? onResize { get; private set; }
-    public virtual System.Action<DismissDirection>? onDismissed { get; private set; }
+    public virtual Action<DismissDirection>? onDismissed { get; private set; }
     public virtual DismissDirection direction { get; private set; } = default!;
     public virtual Duration? resizeDuration { get; private set; }
     public virtual DartMap<DismissDirection, double> dismissThresholds { get; private set; } = default!;
@@ -62,9 +62,9 @@ public class Dismissible : StatefulWidget
     public virtual double crossAxisEndOffset { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual HitTestBehavior behavior { get; private set; } = default!;
-    public virtual System.Action<DismissUpdateDetails>? onUpdate { get; private set; }
+    public virtual Action<DismissUpdateDetails>? onUpdate { get; private set; }
 
-    public Dismissible(Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, Func<DismissDirection, Future<bool?>>? confirmDismiss = null, Action? onResize = null, System.Action<DismissUpdateDetails>? onUpdate = null, System.Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, DragStartBehavior dragStartBehavior = DragStartBehavior.start, HitTestBehavior behavior = HitTestBehavior.opaque) : base(key: key)
+    public Dismissible(Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, Func<DismissDirection, Future<bool?>>? confirmDismiss = null, Action? onResize = null, Action<DismissUpdateDetails>? onUpdate = null, Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, DragStartBehavior dragStartBehavior = DragStartBehavior.start, HitTestBehavior behavior = HitTestBehavior.opaque) : base(key: key)
     {
         Duration? __resizeDuration = resizeDuration ?? Duration.Create(milliseconds: 300);
         DartMap<DismissDirection, double> __dismissThresholds = dismissThresholds ?? new DartMap<DismissDirection, double>();
@@ -628,7 +628,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

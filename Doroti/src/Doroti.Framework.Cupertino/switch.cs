@@ -89,7 +89,7 @@ public static partial class SwitchLibrary
 public class CupertinoSwitch : StatefulWidget
 {
     public virtual bool value { get; private set; } = default!;
-    public virtual System.Action<bool>? onChanged { get; private set; }
+    public virtual Action<bool>? onChanged { get; private set; }
     public virtual Color? activeTrackColor { get; private set; }
     public virtual Color? inactiveTrackColor { get; private set; }
     public virtual Color? thumbColor { get; private set; }
@@ -106,12 +106,12 @@ public class CupertinoSwitch : StatefulWidget
     public virtual WidgetStateProperty<Icon?>? thumbIcon { get; private set; }
     public virtual WidgetStateProperty<MouseCursor>? mouseCursor { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool? applyTheme { get; private set; }
     public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
 
-    public CupertinoSwitch(Key? key = null, bool value = default!, System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? trackColor = null, Color? activeTrackColor = null, Color? inactiveTrackColor = null, Color? thumbColor = null, Color? inactiveThumbColor = null, bool? applyTheme = null, Color? focusColor = null, Color? onLabelColor = null, Color? offLabelColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, WidgetStateProperty<MouseCursor>? mouseCursor = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start) : base(key: key)
+    public CupertinoSwitch(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? trackColor = null, Color? activeTrackColor = null, Color? inactiveTrackColor = null, Color? thumbColor = null, Color? inactiveThumbColor = null, bool? applyTheme = null, Color? focusColor = null, Color? onLabelColor = null, Color? offLabelColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, WidgetStateProperty<MouseCursor>? mouseCursor = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start) : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -148,7 +148,7 @@ public class CupertinoSwitch : StatefulWidget
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new FlagProperty("value", value: value, ifTrue: "on", ifFalse: "off", showName: true));
-        properties.add(new ObjectFlagProperty<System.Action<bool>>("onChanged", onChanged, ifNull: "disabled"));
+        properties.add(new ObjectFlagProperty<Action<bool>>("onChanged", onChanged, ifNull: "disabled"));
     }
 
 }
@@ -179,7 +179,7 @@ internal class _CupertinoSwitchState__switch : State<CupertinoSwitch>, TickerPro
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((System.Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -234,7 +234,7 @@ internal class _CupertinoSwitchState__switch : State<CupertinoSwitch>, TickerPro
         base.dispose();
     }
 
-    public virtual System.Action<bool?>? onChanged => (widget.onChanged is not null) ? _handleChanged : null;
+    public virtual Action<bool?>? onChanged => (widget.onChanged is not null) ? _handleChanged : null;
     public virtual bool tristate => false;
     public virtual bool? value => widget.value;
     internal virtual WidgetStateProperty<Color?> _widgetThumbColor
@@ -491,7 +491,7 @@ internal class _CupertinoSwitchState__switch : State<CupertinoSwitch>, TickerPro
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -687,13 +687,13 @@ internal class _CupertinoSwitchState__switch : State<CupertinoSwitch>, TickerPro
     }
 
     public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, object? painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, object? painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
     {
         return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap(null) : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd(null) : null, child: new Widgets.Semantics(enabled: isInteractive, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");

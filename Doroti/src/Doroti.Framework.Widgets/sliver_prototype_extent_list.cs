@@ -100,7 +100,7 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_prototype is not null)
         {
@@ -178,7 +178,7 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : Re
         base.redepthChildren();
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         if (_child is not null)
         {

@@ -292,7 +292,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -744,7 +744,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         }
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

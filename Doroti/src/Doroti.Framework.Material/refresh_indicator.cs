@@ -57,7 +57,7 @@ public class RefreshIndicator : StatefulWidget
     public virtual double displacement { get; private set; } = default!;
     public virtual double edgeOffset { get; private set; } = default!;
     public virtual Func<Future> onRefresh { get; private set; } = default!;
-    public virtual System.Action<RefreshIndicatorStatus?>? onStatusChange { get; private set; }
+    public virtual Action<RefreshIndicatorStatus?>? onStatusChange { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
@@ -111,7 +111,7 @@ public class RefreshIndicator : StatefulWidget
         return __instance;
     }
 
-    public static RefreshIndicator CreateNoSpinner(Key? key = null, Func<Future> onRefresh = default!, System.Action<RefreshIndicatorStatus?>? onStatusChange = null, Func<ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, Widget child = default!)
+    public static RefreshIndicator CreateNoSpinner(Key? key = null, Func<Future> onRefresh = default!, Action<RefreshIndicatorStatus?>? onStatusChange = null, Func<ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, Widget child = default!)
     {
         var __instance = new RefreshIndicator(key: key, onRefresh: onRefresh, notificationPredicate: notificationPredicate, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue, strokeWidth: RefreshProgressIndicator.defaultStrokeWidth, triggerMode: triggerMode, elevation: elevation, child: child);
         Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
@@ -556,7 +556,7 @@ public class RefreshIndicatorState : State<RefreshIndicator>, TickerProviderStat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

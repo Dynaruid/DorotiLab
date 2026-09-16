@@ -1330,12 +1330,12 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             {
                 case Axis.horizontal:
                     {
-                        gestures[typeof(_HorizontalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_HorizontalThumbDragGestureRecognizer__scrollbar>(() => new _HorizontalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((System.Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
+                        gestures[typeof(_HorizontalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_HorizontalThumbDragGestureRecognizer__scrollbar>(() => new _HorizontalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
                         break;
                     }
                 case Axis.vertical:
                     {
-                        gestures[typeof(_VerticalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_VerticalThumbDragGestureRecognizer__scrollbar>(() => new _VerticalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((System.Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
+                        gestures[typeof(_VerticalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_VerticalThumbDragGestureRecognizer__scrollbar>(() => new _VerticalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
                         break;
                     }
             }
@@ -1451,7 +1451,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
                 if ((delta != 0.0) && (targetScrollOffset != positionLocal.pixels))
                 {
-                    GestureBinding.instance.pointerSignalResolver.register(@event__as82127, (__arg0) => ((System.Action<PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)));
+                    GestureBinding.instance.pointerSignalResolver.register(@event__as82127, (__arg0) => ((Action<PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)));
                 }
             }
             else
@@ -1542,7 +1542,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

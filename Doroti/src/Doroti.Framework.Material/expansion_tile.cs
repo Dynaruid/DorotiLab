@@ -18,7 +18,7 @@ public class ExpansionTile : StatefulWidget
     public virtual Widget? leading { get; private set; }
     public virtual Widget title { get; private set; } = default!;
     public virtual Widget? subtitle { get; private set; }
-    public virtual System.Action<bool>? onExpansionChanged { get; private set; }
+    public virtual Action<bool>? onExpansionChanged { get; private set; }
     public virtual List<Widget> children { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? collapsedBackgroundColor { get; private set; }
@@ -49,7 +49,7 @@ public class ExpansionTile : StatefulWidget
     public virtual bool internalAddSemanticForOnTap { get; private set; } = default!;
     public virtual WidgetStatesController? statesController { get; private set; }
 
-    public ExpansionTile(Key? key = null, Widget? leading = null, Widget title = default!, Widget? subtitle = null, System.Action<bool>? onExpansionChanged = null, List<Widget> children = default!, Widget? trailing = null, bool showTrailingIcon = true, bool initiallyExpanded = false, bool maintainState = false, EdgeInsetsGeometry? tilePadding = null, CrossAxisAlignment? expandedCrossAxisAlignment = null, AlignmentGeometry? expandedAlignment = null, EdgeInsetsGeometry? childrenPadding = null, Color? backgroundColor = null, Color? collapsedBackgroundColor = null, Color? textColor = null, Color? collapsedTextColor = null, Color? iconColor = null, Color? collapsedIconColor = null, ShapeBorder? shape = null, ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, ListTileControlAffinity? controlAffinity = null, ExpansibleController? controller = null, bool? dense = null, Color? splashColor = null, VisualDensity? visualDensity = null, double? minTileHeight = null, bool? enableFeedback = true, bool enabled = true, AnimationStyle? expansionAnimationStyle = null, bool internalAddSemanticForOnTap = false, WidgetStatesController? statesController = null) : base(key: key)
+    public ExpansionTile(Key? key = null, Widget? leading = null, Widget title = default!, Widget? subtitle = null, Action<bool>? onExpansionChanged = null, List<Widget> children = default!, Widget? trailing = null, bool showTrailingIcon = true, bool initiallyExpanded = false, bool maintainState = false, EdgeInsetsGeometry? tilePadding = null, CrossAxisAlignment? expandedCrossAxisAlignment = null, AlignmentGeometry? expandedAlignment = null, EdgeInsetsGeometry? childrenPadding = null, Color? backgroundColor = null, Color? collapsedBackgroundColor = null, Color? textColor = null, Color? collapsedTextColor = null, Color? iconColor = null, Color? collapsedIconColor = null, ShapeBorder? shape = null, ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, ListTileControlAffinity? controlAffinity = null, ExpansibleController? controller = null, bool? dense = null, Color? splashColor = null, VisualDensity? visualDensity = null, double? minTileHeight = null, bool? enableFeedback = true, bool enabled = true, AnimationStyle? expansionAnimationStyle = null, bool internalAddSemanticForOnTap = false, WidgetStatesController? statesController = null) : base(key: key)
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.leading = leading;

@@ -22,7 +22,7 @@ public enum BottomNavigationBarLandscapeLayout
 public class BottomNavigationBar : StatefulWidget
 {
     public virtual List<BottomNavigationBarItem> items { get; private set; } = default!;
-    public virtual System.Action<long>? onTap { get; private set; }
+    public virtual Action<long>? onTap { get; private set; }
     public virtual long currentIndex { get; private set; } = default!;
     public virtual double? elevation { get; private set; }
     public virtual BottomNavigationBarType? type { get; private set; }
@@ -43,7 +43,7 @@ public class BottomNavigationBar : StatefulWidget
     public virtual BottomNavigationBarLandscapeLayout? landscapeLayout { get; private set; }
     public virtual bool useLegacyColorScheme { get; private set; } = default!;
 
-    public BottomNavigationBar(Key? key = null, List<BottomNavigationBarItem> items = default!, System.Action<long>? onTap = null, long currentIndex = 0, double? elevation = null, BottomNavigationBarType? type = null, Color? fixedColor = null, Color? backgroundColor = null, double iconSize = 24.0, Color? selectedItemColor = null, Color? unselectedItemColor = null, IconThemeData? selectedIconTheme = null, IconThemeData? unselectedIconTheme = null, double selectedFontSize = 14.0, double unselectedFontSize = 12.0, TextStyle? selectedLabelStyle = null, TextStyle? unselectedLabelStyle = null, bool? showSelectedLabels = null, bool? showUnselectedLabels = null, MouseCursor? mouseCursor = null, bool? enableFeedback = null, BottomNavigationBarLandscapeLayout? landscapeLayout = null, bool useLegacyColorScheme = true) : base(key: key)
+    public BottomNavigationBar(Key? key = null, List<BottomNavigationBarItem> items = default!, Action<long>? onTap = null, long currentIndex = 0, double? elevation = null, BottomNavigationBarType? type = null, Color? fixedColor = null, Color? backgroundColor = null, double iconSize = 24.0, Color? selectedItemColor = null, Color? unselectedItemColor = null, IconThemeData? selectedIconTheme = null, IconThemeData? unselectedIconTheme = null, double selectedFontSize = 14.0, double unselectedFontSize = 12.0, TextStyle? selectedLabelStyle = null, TextStyle? unselectedLabelStyle = null, bool? showSelectedLabels = null, bool? showUnselectedLabels = null, MouseCursor? mouseCursor = null, bool? enableFeedback = null, BottomNavigationBarLandscapeLayout? landscapeLayout = null, bool useLegacyColorScheme = true) : base(key: key)
     {
         this.items = items;
         this.onTap = onTap;
@@ -530,7 +530,7 @@ public class _BottomNavigationBarState__bottom_navigation_bar : State<BottomNavi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

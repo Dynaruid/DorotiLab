@@ -18,10 +18,10 @@ public class NavigationDrawer : StatelessWidget
     public virtual Widget? header { get; private set; }
     public virtual Widget? footer { get; private set; }
     public virtual long? selectedIndex { get; private set; }
-    public virtual System.Action<long>? onDestinationSelected { get; private set; }
+    public virtual Action<long>? onDestinationSelected { get; private set; }
     public virtual EdgeInsetsGeometry tilePadding { get; private set; } = default!;
 
-    public NavigationDrawer(Key? key = null, List<Widget> children = default!, Widget? header = null, Widget? footer = null, Color? backgroundColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, System.Action<long>? onDestinationSelected = null, long? selectedIndex = 0, EdgeInsetsGeometry tilePadding = default!) : base(key: key)
+    public NavigationDrawer(Key? key = null, List<Widget> children = default!, Widget? header = null, Widget? footer = null, Color? backgroundColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, Action<long>? onDestinationSelected = null, long? selectedIndex = 0, EdgeInsetsGeometry tilePadding = default!) : base(key: key)
     {
         EdgeInsetsGeometry __tilePadding = tilePadding ?? EdgeInsets.CreateSymmetric(horizontal: 12.0);
         this.children = children;
@@ -281,7 +281,7 @@ public class _SelectableAnimatedBuilderState__navigation_drawer : State<_Selecta
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

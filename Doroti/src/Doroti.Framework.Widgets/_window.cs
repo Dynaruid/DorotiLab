@@ -831,7 +831,7 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
     public override void initState()
     {
         base.initState();
-        widget.initialWindows.forEach((__arg0) => ((System.Action<WindowEntryIo>)_registry.register)(__arg0));
+        widget.initialWindows.forEach((__arg0) => ((Action<WindowEntryIo>)_registry.register)(__arg0));
     }
 
     public override Widget build(BuildContext context)

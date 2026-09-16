@@ -524,7 +524,7 @@ internal class _InactiveElements__framework
         _elements.Clear();
         try
         {
-            Enumerable.Reverse(elements).forEach((__arg0) => ((System.Action<Element>)_unmount)(__arg0));
+            Enumerable.Reverse(elements).forEach((__arg0) => ((Action<Element>)_unmount)(__arg0));
         }
         finally
         {
@@ -625,7 +625,7 @@ public interface BuildContext
     public T? findRootAncestorStateOfType<T>();
     public T? findAncestorRenderObjectOfType<T>();
     public void visitAncestorElements(Func<Element, bool> visitor);
-    public void visitChildElements(System.Action<Element> visitor);
+    public void visitChildElements(Action<Element> visitor);
     public void dispatchNotification(Notification notification);
     public DiagnosticsNode describeElement(string name, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty);
     public DiagnosticsNode describeWidget(string name, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty);
@@ -1509,12 +1509,12 @@ public abstract class Element : DiagnosticableTree, BuildContext
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void visitChildren(System.Action<Element> visitor)
+    public virtual void visitChildren(Action<Element> visitor)
     {
     }
 
-    public virtual void debugVisitOnstageChildren(System.Action<Element> visitor) => visitChildren(visitor);
-    public virtual void visitChildElements(System.Action<Element> visitor)
+    public virtual void debugVisitOnstageChildren(Action<Element> visitor) => visitChildren(visitor);
+    public virtual void visitChildElements(Action<Element> visitor)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1801,7 +1801,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
         DartRuntimePrimitives.Assert(() => Equals(_lifecycleState, _ElementLifecycle__framework.active) && (!Equals(newWidget, widget)) && Widget.canUpdate(widget, newWidget));
         DartRuntimePrimitives.Assert(() =>
             {
-                _debugForgottenChildrenWithGlobalKey?.forEach((__arg0) => ((System.Action<Element>)_debugRemoveGlobalKeyReservation)(__arg0));
+                _debugForgottenChildrenWithGlobalKey?.forEach((__arg0) => ((Action<Element>)_debugRemoveGlobalKeyReservation)(__arg0));
                 _debugForgottenChildrenWithGlobalKey?.Clear();
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2754,7 +2754,7 @@ public abstract class ComponentElement : Element
     }
 
     public abstract Widget build();
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_child is not null)
         {
@@ -3468,7 +3468,7 @@ public class SingleChildRenderObjectElement : RenderObjectElement
     {
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_child is not null)
         {
@@ -3567,7 +3567,7 @@ public class MultiChildRenderObjectElement : RenderObjectElement
         DartRuntimePrimitives.Assert(() => Equals(renderObjectLocal, renderObject));
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         foreach (Element child in _children)
         {

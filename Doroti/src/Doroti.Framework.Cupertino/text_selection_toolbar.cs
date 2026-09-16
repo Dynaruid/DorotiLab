@@ -508,7 +508,7 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -749,7 +749,7 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar 
         renderObject.remove(((RenderBox?)child)!);
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         slotToChild.Values.forEach((__arg0) => visitor(__arg0));
         foreach (Element child in _children)
@@ -806,7 +806,7 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar 
         }));
     }
 
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         foreach (Element childLocal in slotToChild.Values)
         {
@@ -1130,7 +1130,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar :
         });
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         if (_backButton is not null)
         {
@@ -1149,7 +1149,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar :
         }
     }
 
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         visitChildren((renderObjectChild) =>
         {
@@ -1293,7 +1293,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar :
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)

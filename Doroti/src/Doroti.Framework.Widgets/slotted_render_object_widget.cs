@@ -36,7 +36,7 @@ public interface SlottedContainerRenderObjectMixin<SlotType, ChildType> where Sl
     public void attach(PipelineOwner owner);
     public void detach();
     public void redepthChildren();
-    public void visitChildren(System.Action<RenderObject> visitor);
+    public void visitChildren(Action<RenderObject> visitor);
     public List<DiagnosticsNode> debugDescribeChildren();
     public void _addDiagnostics(ChildType child, List<DiagnosticsNode> value, string name);
     public void _setChild(ChildType? child, SlotType slot);
@@ -54,7 +54,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
     }
 
     public override RenderObject renderObject => DartRuntimePrimitives.ConvertValue<RenderObject>(((SlottedContainerRenderObjectMixin<SlotType, ChildType>?)base.renderObject)!);
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         _slotToChild.Values.forEach((__arg0) => visitor(__arg0));
     }
@@ -140,7 +140,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
                 }
             }
         }
-        oldSlotToChild.Values.forEach((__arg0) => ((System.Action<Element>)deactivateChild)(__arg0));
+        oldSlotToChild.Values.forEach((__arg0) => ((Action<Element>)deactivateChild)(__arg0));
         DartRuntimePrimitives.Assert(() => _debugDuplicateKeys(debugDuplicateKeys));
         DartRuntimePrimitives.Assert(() => _keyedChildren.Values.All(_slotToChild.Values.contains), () => (object?)$"_keyedChildren {_keyedChildren.Values} should be a subset of {_slotToChild.Values}");
     }

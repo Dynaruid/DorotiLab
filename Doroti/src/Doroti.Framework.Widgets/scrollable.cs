@@ -519,7 +519,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
             double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
             if ((delta != 0.0) && (targetScrollOffset != position.pixels))
             {
-                GestureBinding.instance.pointerSignalResolver.register(@event__as37801, (__arg0) => ((System.Action<PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)));
+                GestureBinding.instance.pointerSignalResolver.register(@event__as37801, (__arg0) => ((Action<PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)));
                 return;
             }
         }
@@ -600,7 +600,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         properties.add(new DiagnosticsProperty<ScrollPhysics>("effective physics", _physics));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -800,7 +800,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }

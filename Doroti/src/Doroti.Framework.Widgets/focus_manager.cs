@@ -784,9 +784,9 @@ public enum FocusHighlightStrategy
 
 internal class _AppLifecycleListener__focus_manager : WidgetsBindingObserver
 {
-    public virtual System.Action<AppLifecycleState> onLifecycleStateChanged { get; private set; } = default!;
+    public virtual Action<AppLifecycleState> onLifecycleStateChanged { get; private set; } = default!;
 
-    internal _AppLifecycleListener__focus_manager(System.Action<AppLifecycleState> onLifecycleStateChanged)
+    internal _AppLifecycleListener__focus_manager(Action<AppLifecycleState> onLifecycleStateChanged)
     {
         this.onLifecycleStateChanged = onLifecycleStateChanged;
     }
@@ -840,8 +840,8 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         }
     }
     public virtual FocusHighlightMode highlightMode => _highlightManager.highlightMode;
-    public virtual void addHighlightModeListener(System.Action<FocusHighlightMode> listener) => _highlightManager.addListener(listener);
-    public virtual void removeHighlightModeListener(System.Action<FocusHighlightMode> listener) => _highlightManager.removeListener(listener);
+    public virtual void addHighlightModeListener(Action<FocusHighlightMode> listener) => _highlightManager.addListener(listener);
+    public virtual void removeHighlightModeListener(Action<FocusHighlightMode> listener) => _highlightManager.removeListener(listener);
     public virtual void addEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> handler)
     {
         _highlightManager.addEarlyKeyEventHandler(handler);
@@ -1046,7 +1046,7 @@ internal class _HighlightModeManager__focus_manager
     internal virtual FocusHighlightStrategy _strategy { get; set; } = FocusHighlightStrategy.automatic;
     internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _earlyKeyEventHandlers { get; private set; } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
     internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _lateKeyEventHandlers { get; private set; } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
-    internal virtual HashedObserverList<System.Action<FocusHighlightMode>> _listeners { get; set; } = new HashedObserverList<System.Action<FocusHighlightMode>>();
+    internal virtual HashedObserverList<Action<FocusHighlightMode>> _listeners { get; set; } = new HashedObserverList<Action<FocusHighlightMode>>();
     internal const long _kAndroidSoftKeyboardFlag = 2L;
     internal static long _kAndroidVirtualKeyboardDeviceId = -1L;
 
@@ -1073,8 +1073,8 @@ internal class _HighlightModeManager__focus_manager
     public virtual void removeEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.remove(callback);
     public virtual void addLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.add(callback);
     public virtual void removeLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.remove(callback);
-    public virtual void addListener(System.Action<FocusHighlightMode> listener) => _listeners.add(listener);
-    public virtual void removeListener(System.Action<FocusHighlightMode> listener) => _listeners.remove(listener);
+    public virtual void addListener(Action<FocusHighlightMode> listener) => _listeners.add(listener);
+    public virtual void removeListener(Action<FocusHighlightMode> listener) => _listeners.remove(listener);
     public virtual void registerGlobalHandlers()
     {
         DartRuntimePrimitives.Assert(() => ServicesBinding.instance.keyEventManager.keyMessageHandler is null);
@@ -1092,7 +1092,7 @@ internal class _HighlightModeManager__focus_manager
             ServicesBinding.instance.keyEventManager.keyMessageHandler = null;
             Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener(handleSemanticsAction);
         }
-        _listeners = new HashedObserverList<System.Action<FocusHighlightMode>>();
+        _listeners = new HashedObserverList<Action<FocusHighlightMode>>();
     }
 
     public virtual void notifyListeners()
@@ -1101,7 +1101,7 @@ internal class _HighlightModeManager__focus_manager
         {
             return;
         }
-        var localListeners = new List<System.Action<FocusHighlightMode>>(_listeners);
+        var localListeners = new List<Action<FocusHighlightMode>>(_listeners);
         foreach (var listener in localListeners)
         {
             try

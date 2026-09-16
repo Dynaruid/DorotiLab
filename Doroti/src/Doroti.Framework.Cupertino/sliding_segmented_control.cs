@@ -203,7 +203,7 @@ public class _SegmentState__sliding_segmented_control<T> : State<_Segment__slidi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -338,7 +338,7 @@ public class _SegmentSeparatorState__sliding_segmented_control : State<_SegmentS
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -412,14 +412,14 @@ public class CupertinoSlidingSegmentedControl<T> : StatefulWidget where T : notn
     public virtual DartMap<T, Widget> children { get; private set; } = default!;
     public virtual HashSet<T> disabledChildren { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
-    public virtual System.Action<T?> onValueChanged { get; private set; } = default!;
+    public virtual Action<T?> onValueChanged { get; private set; } = default!;
     public virtual Color backgroundColor { get; private set; } = default!;
     public virtual bool proportionalWidth { get; private set; } = default!;
     public virtual Color thumbColor { get; private set; } = default!;
     public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual bool isMomentary { get; private set; } = default!;
 
-    public CupertinoSlidingSegmentedControl(Key? key = null, DartMap<T, Widget> children = default!, System.Action<T?> onValueChanged = default!, HashSet<T> disabledChildren = default!, T? groupValue = default, Color thumbColor = default!, EdgeInsetsGeometry padding = default!, Color backgroundColor = default!, bool proportionalWidth = false, bool isMomentary = false) : base(key: key)
+    public CupertinoSlidingSegmentedControl(Key? key = null, DartMap<T, Widget> children = default!, Action<T?> onValueChanged = default!, HashSet<T> disabledChildren = default!, T? groupValue = default, Color thumbColor = default!, EdgeInsetsGeometry padding = default!, Color backgroundColor = default!, bool proportionalWidth = false, bool isMomentary = false) : base(key: key)
     {
         HashSet<T> __disabledChildren = disabledChildren ?? new HashSet<T>();
         Color __thumbColor = thumbColor ?? Sliding_segmented_controlLibrary._kThumbColor;
@@ -870,7 +870,7 @@ public class _SegmentedControlState__sliding_segmented_control<T> : State<Cupert
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -1568,7 +1568,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T> : RenderBox, 
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -1652,7 +1652,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T> : RenderBox, 
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

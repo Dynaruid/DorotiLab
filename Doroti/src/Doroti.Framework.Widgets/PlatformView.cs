@@ -5,17 +5,17 @@ namespace Doroti.Framework.Widgets;
 /// <summary>Native direct-input view with an explicit owner and bounded layout.</summary>
 public sealed class PlatformView : StatefulWidget
 {
-    public PlatformView(DorotiView owner, PlatformViewRequest request, System.Action<PlatformViewHandle>? onCreated = null,
-        System.Action<Exception>? onError = null, Key? key = null) : base(key: key)
+    public PlatformView(DorotiView owner, PlatformViewRequest request, Action<PlatformViewHandle>? onCreated = null,
+        Action<Exception>? onError = null, Key? key = null) : base(key: key)
     { Owner = owner; Request = request; OnCreated = onCreated; OnError = onError; }
-    public PlatformView(DorotiView owner, PlatformViewDescriptor descriptor, System.Action<PlatformViewHandle>? onCreated = null,
-        System.Action<Exception>? onError = null, Key? key = null) : base(key: key)
+    public PlatformView(DorotiView owner, PlatformViewDescriptor descriptor, Action<PlatformViewHandle>? onCreated = null,
+        Action<Exception>? onError = null, Key? key = null) : base(key: key)
     { Owner = owner; Descriptor = descriptor; OnCreated = onCreated; OnError = onError; }
     public DorotiView Owner { get; }
     public PlatformViewRequest? Request { get; }
     public PlatformViewDescriptor? Descriptor { get; }
-    public System.Action<PlatformViewHandle>? OnCreated { get; }
-    public System.Action<Exception>? OnError { get; }
+    public Action<PlatformViewHandle>? OnCreated { get; }
+    public Action<Exception>? OnError { get; }
     public override IState createState() => new PlatformViewStateImpl();
 }
 
@@ -104,7 +104,7 @@ internal sealed class PlatformViewStateImpl : State<PlatformView>
         _focusNode.dispose();
         base.dispose();
     }
-    private static async Task DisposeClientAsync(PlatformViewClient client, System.Action<Exception>? onError)
+    private static async Task DisposeClientAsync(PlatformViewClient client, Action<Exception>? onError)
     {
         try { await client.DisposeAsync(); }
         catch (Exception exception)

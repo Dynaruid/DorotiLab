@@ -352,12 +352,12 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
         {
             if (_registrar is not null)
             {
-                _selectableAttachments?.Keys.forEach((__arg0) => ((System.Action<Selectable>)_registrar!.remove)(__arg0));
+                _selectableAttachments?.Keys.forEach((__arg0) => ((Action<Selectable>)_registrar!.remove)(__arg0));
             }
             _registrar = newRegistrar;
             if (_registrar is not null)
             {
-                _selectableAttachments?.Keys.forEach((__arg0) => ((System.Action<Selectable>)_registrar!.add)(__arg0));
+                _selectableAttachments?.Keys.forEach((__arg0) => ((Action<Selectable>)_registrar!.add)(__arg0));
             }
         }
     }

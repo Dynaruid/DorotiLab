@@ -164,7 +164,7 @@ internal class _StretchEffectShader__stretch_effect
 
     public static void initializeShader(
         Action? onReady = null,
-        System.Action<Exception>? onError = null)
+        Action<Exception>? onError = null)
     {
         if (_initialized && _program is not null)
         {

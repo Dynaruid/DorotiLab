@@ -674,7 +674,7 @@ internal sealed partial class FrameworkCSharpLowerer
         var type = StripLibraryPrefix(rawType);
         return type switch
         {
-            "Action<Intent>" => "Action<Intent>",
+            "Action<Intent>" => $"{MapNamedType("Action")}<{MapNamedType("Intent")}>",
             "GestureRecognizerFactory<GestureRecognizer>" => "GestureRecognizerFactory<GestureRecognizer>",
             _ => MapType(rawType),
         };
@@ -904,7 +904,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 // Dart generic classes are covariant at use sites, while these
                 // CLR classes consume T and cannot be declared variant. Preserve
                 // Dart's checked runtime dispatch at the erased supertype only;
-                // concrete Action<T>/factory declarations remain strongly typed.
+                // concrete IntentAction<T>/factory declarations remain strongly typed.
                 return "dynamic";
             }
             if (arguments.Any(argument => argument.TrimEnd('?') is "Object" or "object" or "dynamic") &&
@@ -1547,6 +1547,9 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private string EmittedTypeName(string libraryUri, string name)
     {
+        // Keep Flutter's command abstraction distinct from System.Action delegates.
+        if (name == "Action" && libraryUri.EndsWith("/widgets/actions.dart", StringComparison.Ordinal))
+            return "IntentAction";
         var safe = SafeIdentifier(name);
         if (safe.StartsWith('_'))
         {

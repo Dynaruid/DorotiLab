@@ -400,9 +400,9 @@ internal class _FullWindowDialogWrapper__dialog : StatelessWidget
 internal class _DialogPopScope__dialog : StatelessWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual System.Action<object?>? onPop { get; private set; }
+    public virtual Action<object?>? onPop { get; private set; }
 
-    internal _DialogPopScope__dialog(Widget child, System.Action<object?>? onPop = null)
+    internal _DialogPopScope__dialog(Widget child, Action<object?>? onPop = null)
     {
         this.child = child;
         this.onPop = onPop;
@@ -428,10 +428,10 @@ internal class _DialogPopScope__dialog : StatelessWidget
 
 internal class _NavigatorShim__dialog : StatelessWidget
 {
-    public virtual System.Action<object?>? onPop { get; private set; }
+    public virtual Action<object?>? onPop { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    internal _NavigatorShim__dialog(Widget child, System.Action<object?>? onPop = null)
+    internal _NavigatorShim__dialog(Widget child, Action<object?>? onPop = null)
     {
         this.child = child;
         this.onPop = onPop;

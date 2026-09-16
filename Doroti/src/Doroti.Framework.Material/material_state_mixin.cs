@@ -6,7 +6,7 @@ public interface MaterialStateMixin<T> where T : StatefulWidget
 {
     HashSet<WidgetState> materialStates { get; set; }
 
-    public System.Action<bool> updateMaterialState(WidgetState key, System.Action<bool>? onChanged = null);
+    public Action<bool> updateMaterialState(WidgetState key, Action<bool>? onChanged = null);
     public void setMaterialState(WidgetState state, bool isSet);
     public void addMaterialState(WidgetState state);
     public void removeMaterialState(WidgetState state);

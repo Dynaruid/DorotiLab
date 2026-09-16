@@ -266,7 +266,7 @@ public class _BorderContainerState__input_decorator : State<_BorderContainer__in
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -525,7 +525,7 @@ public class _HelperErrorState__input_decorator : State<_HelperError__input_deco
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -874,7 +874,7 @@ public class _RenderDecoration__input_decorator : RenderBox, SlottedContainerRen
         }
     }
     internal virtual Offset _densityOffset => DartRuntimePrimitives.ConvertValue<Offset>(decoration.visualDensity.baseSizeAdjustment);
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (icon is not null)
         {
@@ -1498,7 +1498,7 @@ public class _RenderDecoration__input_decorator : RenderBox, SlottedContainerRen
                 builder.markAsMergeUp(childConfig);
             }
         }
-        mergeGroups.Values.forEach((__arg0) => ((System.Action<List<SemanticsConfiguration>>)builder.markAsSiblingMergeGroup)(__arg0));
+        mergeGroups.Values.forEach((__arg0) => ((Action<List<SemanticsConfiguration>>)builder.markAsSiblingMergeGroup)(__arg0));
         return builder.build();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1536,10 +1536,10 @@ public class _RenderDecoration__input_decorator : RenderBox, SlottedContainerRen
 
     public override void redepthChildren()
     {
-        children.forEach((__arg0) => ((System.Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        children.forEach((__arg0) => ((Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
@@ -2124,7 +2124,7 @@ internal class _InputDecoratorState__input_decorator : State<InputDecorator>, Ti
         return result;
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

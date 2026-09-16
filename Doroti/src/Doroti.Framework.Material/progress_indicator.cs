@@ -329,7 +329,7 @@ internal class _LinearProgressIndicatorState__progress_indicator : State<LinearP
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -689,7 +689,7 @@ internal class _CircularProgressIndicatorState__progress_indicator : State<Circu
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

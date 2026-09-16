@@ -325,7 +325,7 @@ internal class _RawViewElement__view : RenderTreeRootElement
         _updateChild();
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_child is not null)
         {
@@ -548,7 +548,7 @@ internal class _MultiChildComponentElement__view : Element
         base.forgetChild(child);
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_childElement is not null)
         {

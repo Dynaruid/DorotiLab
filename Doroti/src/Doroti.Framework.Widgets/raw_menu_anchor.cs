@@ -84,7 +84,7 @@ public class RawMenuAnchor : StatefulWidget
     public virtual Action? onOpen { get; private set; }
     public virtual Action? onClose { get; private set; }
     public virtual Action<Offset?, Action> onOpenRequested { get; private set; } = default!;
-    public virtual System.Action<Action> onCloseRequested { get; private set; } = default!;
+    public virtual Action<Action> onCloseRequested { get; private set; } = default!;
     public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder { get; private set; }
     public virtual Widget? child { get; private set; }
     public virtual Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder { get; private set; } = default!;
@@ -93,10 +93,10 @@ public class RawMenuAnchor : StatefulWidget
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchor(Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, Action? onOpen = null, Action? onClose = null, Action<Offset?, Action> onOpenRequested = default!, System.Action<Action> onCloseRequested = default!, bool useRootOverlay = false, Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
+    public RawMenuAnchor(Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, Action? onOpen = null, Action? onClose = null, Action<Offset?, Action> onOpenRequested = default!, Action<Action> onCloseRequested = default!, bool useRootOverlay = false, Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
     {
         Action<Offset?, Action> __onOpenRequested = onOpenRequested ?? _defaultOnOpenRequested;
-        System.Action<Action> __onCloseRequested = onCloseRequested ?? _defaultOnCloseRequested;
+        Action<Action> __onCloseRequested = onCloseRequested ?? _defaultOnCloseRequested;
         this.childFocusNode = childFocusNode;
         this.consumeOutsideTaps = consumeOutsideTaps;
         this.onOpen = onOpen;

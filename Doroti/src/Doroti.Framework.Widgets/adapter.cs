@@ -60,7 +60,7 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
     {
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_child is not null)
         {

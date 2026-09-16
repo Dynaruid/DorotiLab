@@ -81,7 +81,7 @@ public class DropdownMenu<T> : StatefulWidget
     public virtual MenuStyle? menuStyle { get; private set; }
     public virtual TextEditingController? controller { get; private set; }
     public virtual T? initialSelection { get; private set; }
-    public virtual System.Action<T?>? onSelected { get; private set; }
+    public virtual Action<T?>? onSelected { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
     public virtual bool? requestFocusOnTap { get; private set; }
     public virtual bool selectOnly { get; private set; } = default!;
@@ -99,7 +99,7 @@ public class DropdownMenu<T> : StatefulWidget
     public virtual MenuController? menuController { get; private set; }
     public virtual EdgeInsets scrollPadding { get; private set; } = default!;
 
-    public DropdownMenu(Key? key = null, bool enabled = true, double? width = null, double? menuHeight = null, Widget? leadingIcon = null, Widget? trailingIcon = null, bool showTrailingIcon = true, FocusNode? trailingIconFocusNode = null, Widget? label = null, string? hintText = null, string? helperText = null, string? errorText = null, Widget? selectedTrailingIcon = null, bool enableFilter = false, bool enableSearch = true, TextInputType? keyboardType = null, TextStyle? textStyle = null, TextAlign textAlign = TextAlign.start, object? inputDecorationTheme = null, Func<BuildContext, MenuController, InputDecoration>? decorationBuilder = null, MenuStyle? menuStyle = null, TextEditingController? controller = null, T? initialSelection = default, System.Action<T?>? onSelected = null, FocusNode? focusNode = null, bool? requestFocusOnTap = null, bool selectOnly = false, EdgeInsetsGeometry? expandedInsets = null, Func<List<DropdownMenuEntry<T>>, string, List<DropdownMenuEntry<T>>>? filterCallback = null, Func<List<DropdownMenuEntry<T>>, string, long?>? searchCallback = null, Offset? alignmentOffset = null, List<DropdownMenuEntry<T>> dropdownMenuEntries = default!, List<TextInputFormatter>? inputFormatters = null, DropdownMenuCloseBehavior closeBehavior = DropdownMenuCloseBehavior.all, long? maxLines = 1, TextInputAction? textInputAction = null, double? cursorHeight = null, string? restorationId = null, MenuController? menuController = null, EdgeInsets scrollPadding = default!) : base(key: key)
+    public DropdownMenu(Key? key = null, bool enabled = true, double? width = null, double? menuHeight = null, Widget? leadingIcon = null, Widget? trailingIcon = null, bool showTrailingIcon = true, FocusNode? trailingIconFocusNode = null, Widget? label = null, string? hintText = null, string? helperText = null, string? errorText = null, Widget? selectedTrailingIcon = null, bool enableFilter = false, bool enableSearch = true, TextInputType? keyboardType = null, TextStyle? textStyle = null, TextAlign textAlign = TextAlign.start, object? inputDecorationTheme = null, Func<BuildContext, MenuController, InputDecoration>? decorationBuilder = null, MenuStyle? menuStyle = null, TextEditingController? controller = null, T? initialSelection = default, Action<T?>? onSelected = null, FocusNode? focusNode = null, bool? requestFocusOnTap = null, bool selectOnly = false, EdgeInsetsGeometry? expandedInsets = null, Func<List<DropdownMenuEntry<T>>, string, List<DropdownMenuEntry<T>>>? filterCallback = null, Func<List<DropdownMenuEntry<T>>, string, long?>? searchCallback = null, Offset? alignmentOffset = null, List<DropdownMenuEntry<T>> dropdownMenuEntries = default!, List<TextInputFormatter>? inputFormatters = null, DropdownMenuCloseBehavior closeBehavior = DropdownMenuCloseBehavior.all, long? maxLines = 1, TextInputAction? textInputAction = null, double? cursorHeight = null, string? restorationId = null, MenuController? menuController = null, EdgeInsets scrollPadding = default!) : base(key: key)
     {
         EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
         this.enabled = enabled;
@@ -613,7 +613,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             menuAnchor = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: paddingLocal.clamp(EdgeInsets.zero, EdgeInsets.CreateOnly(left: double.PositiveInfinity, right: double.PositiveInfinity).add(EdgeInsetsDirectional.CreateOnly(end: double.PositiveInfinity, start: double.PositiveInfinity))), child: menuAnchor));
         }
         menuAnchor = DartRuntimePrimitives.ConvertValue<Widget>(new Align(alignment: AlignmentDirectional.topStart, widthFactor: 1.0, heightFactor: 1.0, child: menuAnchor));
-        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(_ArrowUpIntent__dropdown_menu)] = new CallbackAction<_ArrowUpIntent__dropdown_menu>(onInvoke: (__arg0) => { ((System.Action<_ArrowUpIntent__dropdown_menu>)handleUpKey)(__arg0); return default!; }), [typeof(_ArrowDownIntent__dropdown_menu)] = new CallbackAction<_ArrowDownIntent__dropdown_menu>(onInvoke: (__arg0) => { ((System.Action<_ArrowDownIntent__dropdown_menu>)handleDownKey)(__arg0); return default!; }), [typeof(_EnterIntent__dropdown_menu)] = new CallbackAction<_EnterIntent__dropdown_menu>(onInvoke: (__arg0) => { ((System.Action<_EnterIntent__dropdown_menu>)handleEnterKey)(__arg0); return default!; }), [typeof(DismissIntent)] = new DismissMenuAction(controller: _controller) }, child: new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Shortcuts(shortcuts: new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new _ArrowUpIntent__dropdown_menu(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new _ArrowDownIntent__dropdown_menu(), [new SingleActivator(LogicalKeyboardKey.enter)] = new _EnterIntent__dropdown_menu(), [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent() }, child: new Focus(focusNode: _internalFocusNode, skipTraversal: true, child: SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<Widget>(menuAnchor) }));
+        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(_ArrowUpIntent__dropdown_menu)] = new CallbackAction<_ArrowUpIntent__dropdown_menu>(onInvoke: (__arg0) => { ((Action<_ArrowUpIntent__dropdown_menu>)handleUpKey)(__arg0); return default!; }), [typeof(_ArrowDownIntent__dropdown_menu)] = new CallbackAction<_ArrowDownIntent__dropdown_menu>(onInvoke: (__arg0) => { ((Action<_ArrowDownIntent__dropdown_menu>)handleDownKey)(__arg0); return default!; }), [typeof(_EnterIntent__dropdown_menu)] = new CallbackAction<_EnterIntent__dropdown_menu>(onInvoke: (__arg0) => { ((Action<_EnterIntent__dropdown_menu>)handleEnterKey)(__arg0); return default!; }), [typeof(DismissIntent)] = new DismissMenuAction(controller: _controller) }, child: new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Shortcuts(shortcuts: new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new _ArrowUpIntent__dropdown_menu(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new _ArrowDownIntent__dropdown_menu(), [new SingleActivator(LogicalKeyboardKey.enter)] = new _EnterIntent__dropdown_menu(), [new SingleActivator(LogicalKeyboardKey.escape)] = new DismissIntent() }, child: new Focus(focusNode: _internalFocusNode, skipTraversal: true, child: SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<Widget>(menuAnchor) }));
     }
 
     internal virtual InputDecoration _buildDefaultDecoration(BuildContext context, MenuController controller)
@@ -891,7 +891,7 @@ public class _RenderDropdownMenuBody__dropdown_menu : RenderBox, ContainerRender
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         visitChildren((renderObjectChild) =>
         {
@@ -1008,7 +1008,7 @@ public class _RenderDropdownMenuBody__dropdown_menu : RenderBox, ContainerRender
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -1116,7 +1116,7 @@ public class _RenderDropdownMenuBody__dropdown_menu : RenderBox, ContainerRender
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

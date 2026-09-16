@@ -23,13 +23,13 @@ public class InteractiveViewer : StatefulWidget
     public virtual double maxScale { get; private set; } = default!;
     public virtual double minScale { get; private set; } = default!;
     public virtual double interactionEndFrictionCoefficient { get; private set; } = default!;
-    public virtual System.Action<ScaleEndDetails>? onInteractionEnd { get; private set; }
-    public virtual System.Action<ScaleStartDetails>? onInteractionStart { get; private set; }
-    public virtual System.Action<ScaleUpdateDetails>? onInteractionUpdate { get; private set; }
+    public virtual Action<ScaleEndDetails>? onInteractionEnd { get; private set; }
+    public virtual Action<ScaleStartDetails>? onInteractionStart { get; private set; }
+    public virtual Action<ScaleUpdateDetails>? onInteractionUpdate { get; private set; }
     public virtual TransformationController? transformationController { get; private set; }
     internal const double _kDrag = 0.0000135;
 
-    public InteractiveViewer(Key? key = null, Clip clipBehavior = Clip.hardEdge, PanAxis panAxis = PanAxis.free, EdgeInsets boundaryMargin = default!, bool constrained = true, double maxScale = 2.5, double minScale = 0.8, double? interactionEndFrictionCoefficient = null, System.Action<ScaleEndDetails>? onInteractionEnd = null, System.Action<ScaleStartDetails>? onInteractionStart = null, System.Action<ScaleUpdateDetails>? onInteractionUpdate = null, bool panEnabled = true, bool scaleEnabled = true, double? scaleFactor = null, TransformationController? transformationController = null, Alignment? alignment = null, bool trackpadScrollCausesScale = false, Widget child = default!) : base(key: key)
+    public InteractiveViewer(Key? key = null, Clip clipBehavior = Clip.hardEdge, PanAxis panAxis = PanAxis.free, EdgeInsets boundaryMargin = default!, bool constrained = true, double maxScale = 2.5, double minScale = 0.8, double? interactionEndFrictionCoefficient = null, Action<ScaleEndDetails>? onInteractionEnd = null, Action<ScaleStartDetails>? onInteractionStart = null, Action<ScaleUpdateDetails>? onInteractionUpdate = null, bool panEnabled = true, bool scaleEnabled = true, double? scaleFactor = null, TransformationController? transformationController = null, Alignment? alignment = null, bool trackpadScrollCausesScale = false, Widget child = default!) : base(key: key)
     {
         EdgeInsets __boundaryMargin = boundaryMargin ?? EdgeInsets.zero;
         double __interactionEndFrictionCoefficient = interactionEndFrictionCoefficient ?? _kDrag;
@@ -61,7 +61,7 @@ public class InteractiveViewer : StatefulWidget
         System.Diagnostics.Debug.Assert(double.IsInfinity(__boundaryMargin.horizontal) && double.IsInfinity(__boundaryMargin.vertical) || double.IsFinite(__boundaryMargin.top) && double.IsFinite(__boundaryMargin.right) && double.IsFinite(__boundaryMargin.bottom) && double.IsFinite(__boundaryMargin.left));
     }
 
-    public static InteractiveViewer CreateBuilder(Key? key = null, Clip clipBehavior = Clip.hardEdge, PanAxis panAxis = PanAxis.free, EdgeInsets boundaryMargin = default!, double maxScale = 2.5, double minScale = 0.8, double? interactionEndFrictionCoefficient = null, System.Action<ScaleEndDetails>? onInteractionEnd = null, System.Action<ScaleStartDetails>? onInteractionStart = null, System.Action<ScaleUpdateDetails>? onInteractionUpdate = null, bool panEnabled = true, bool scaleEnabled = true, double scaleFactor = 200.0, TransformationController? transformationController = null, Alignment? alignment = null, bool trackpadScrollCausesScale = false, Func<BuildContext, Quad, Widget> builder = default!)
+    public static InteractiveViewer CreateBuilder(Key? key = null, Clip clipBehavior = Clip.hardEdge, PanAxis panAxis = PanAxis.free, EdgeInsets boundaryMargin = default!, double maxScale = 2.5, double minScale = 0.8, double? interactionEndFrictionCoefficient = null, Action<ScaleEndDetails>? onInteractionEnd = null, Action<ScaleStartDetails>? onInteractionStart = null, Action<ScaleUpdateDetails>? onInteractionUpdate = null, bool panEnabled = true, bool scaleEnabled = true, double scaleFactor = 200.0, TransformationController? transformationController = null, Alignment? alignment = null, bool trackpadScrollCausesScale = false, Func<BuildContext, Quad, Widget> builder = default!)
     {
         var __instance = new InteractiveViewer(key, clipBehavior, panAxis, boundaryMargin, default!, maxScale, minScale, interactionEndFrictionCoefficient, onInteractionEnd, onInteractionStart, onInteractionUpdate, panEnabled, scaleEnabled, scaleFactor, transformationController, alignment, trackpadScrollCausesScale, default!);
         EdgeInsets __boundaryMargin = boundaryMargin ?? EdgeInsets.zero;
@@ -657,7 +657,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

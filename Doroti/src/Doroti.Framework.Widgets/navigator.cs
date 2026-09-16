@@ -602,7 +602,7 @@ public class Navigator : StatefulWidget
     internal static readonly List<Page<object?>> _defaultPages = new();
     public virtual List<Page<object?>> pages { get; private set; } = default!;
     public virtual Func<dynamic, object?, bool>? onPopPage { get; private set; }
-    public virtual System.Action<Page<object?>>? onDidRemovePage { get; private set; }
+    public virtual Action<Page<object?>>? onDidRemovePage { get; private set; }
     public virtual TransitionDelegate<object> transitionDelegate { get; private set; } = default!;
     public virtual string? initialRoute { get; private set; }
     public virtual Func<RouteSettings, dynamic?>? onGenerateRoute { get; private set; }
@@ -617,7 +617,7 @@ public class Navigator : StatefulWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual bool requestFocus { get; private set; } = default!;
 
-    public Navigator(Key? key = null, List<Page<object?>> pages = default!, Func<dynamic, object?, bool>? onPopPage = null, string? initialRoute = null, Func<NavigatorState, string, List<dynamic>> onGenerateInitialRoutes = default!, Func<RouteSettings, dynamic?>? onGenerateRoute = null, Func<RouteSettings, dynamic?>? onUnknownRoute = null, TransitionDelegate<object> transitionDelegate = default!, bool reportsRouteUpdateToEngine = false, Clip clipBehavior = Clip.hardEdge, List<NavigatorObserver> observers = default!, bool requestFocus = true, string? restorationScopeId = null, TraversalEdgeBehavior? routeTraversalEdgeBehavior = null, TraversalEdgeBehavior? routeDirectionalTraversalEdgeBehavior = null, System.Action<Page<object?>>? onDidRemovePage = null) : base(key: key)
+    public Navigator(Key? key = null, List<Page<object?>> pages = default!, Func<dynamic, object?, bool>? onPopPage = null, string? initialRoute = null, Func<NavigatorState, string, List<dynamic>> onGenerateInitialRoutes = default!, Func<RouteSettings, dynamic?>? onGenerateRoute = null, Func<RouteSettings, dynamic?>? onUnknownRoute = null, TransitionDelegate<object> transitionDelegate = default!, bool reportsRouteUpdateToEngine = false, Clip clipBehavior = Clip.hardEdge, List<NavigatorObserver> observers = default!, bool requestFocus = true, string? restorationScopeId = null, TraversalEdgeBehavior? routeTraversalEdgeBehavior = null, TraversalEdgeBehavior? routeDirectionalTraversalEdgeBehavior = null, Action<Page<object?>>? onDidRemovePage = null) : base(key: key)
     {
         List<Page<object?>> __pages = pages ?? _defaultPages;
         Func<NavigatorState, string, List<dynamic>> __onGenerateInitialRoutes = onGenerateInitialRoutes ?? defaultGenerateInitialRoutes;
@@ -2289,12 +2289,12 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         while (Enumerable.Any(_observedRouteAdditions))
         {
             _NavigatorObservation__navigator observation = _observedRouteAdditions.removeLast();
-            _effectiveObservers.forEach((__arg0) => ((System.Action<NavigatorObserver>)observation.notify)(__arg0));
+            _effectiveObservers.forEach((__arg0) => ((Action<NavigatorObserver>)observation.notify)(__arg0));
         }
         while (Enumerable.Any(_observedRouteDeletions))
         {
             _NavigatorObservation__navigator observationLocal = _observedRouteDeletions.Dequeue();
-            _effectiveObservers.forEach((__arg0) => ((System.Action<NavigatorObserver>)observationLocal.notify)(__arg0));
+            _effectiveObservers.forEach((__arg0) => ((Action<NavigatorObserver>)observationLocal.notify)(__arg0));
         }
     }
 
@@ -3052,7 +3052,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 absorber?.absorbing = true;
             });
         }
-        _activePointers.ToList().forEach((__arg0) => ((System.Action<long>)WidgetsBinding.instance.cancelPointer)(__arg0));
+        _activePointers.ToList().forEach((__arg0) => ((Action<long>)WidgetsBinding.instance.cancelPointer)(__arg0));
     }
 
     internal virtual _RouteEntry__navigator? _firstRouteEntryWhereOrNull(Func<_RouteEntry__navigator, bool> test)
@@ -3093,7 +3093,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -3287,7 +3287,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -3650,12 +3650,12 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
 {
     public virtual Func<BuildContext, NavigatorState> navigatorFinder { get; private set; } = default!;
     public virtual Func<NavigatorState, object?, string> onPresent { get; private set; } = default!;
-    public virtual System.Action<T>? onComplete { get; private set; }
+    public virtual Action<T>? onComplete { get; private set; }
     internal virtual Route<T>? _route { get; set; } = default;
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual bool _disposed { get; set; } = false;
 
-    public RestorableRouteFuture(Func<BuildContext, NavigatorState> navigatorFinder = default!, Func<NavigatorState, object?, string> onPresent = default!, System.Action<T>? onComplete = null)
+    public RestorableRouteFuture(Func<BuildContext, NavigatorState> navigatorFinder = default!, Func<NavigatorState, object?, string> onPresent = default!, Action<T>? onComplete = null)
     {
         Func<BuildContext, NavigatorState> __navigatorFinder = navigatorFinder ?? _defaultNavigatorFinder;
         this.navigatorFinder = __navigatorFinder;
@@ -3719,7 +3719,7 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
         _route = _navigator._getRouteById<T>(id);
         DartRuntimePrimitives.Assert(() => _route is not null);
         route!.restorationScopeId.addListener(notifyListeners);
-        DartRuntimePrimitives.Ignore(route!.popped.then((System.Action<object>)((result) =>
+        DartRuntimePrimitives.Ignore(route!.popped.then((Action<object>)((result) =>
         {
             if (_disposed)
             {

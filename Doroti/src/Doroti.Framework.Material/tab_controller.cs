@@ -249,7 +249,7 @@ internal class _DefaultTabControllerState__tab_controller : State<DefaultTabCont
         }
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

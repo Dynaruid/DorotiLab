@@ -297,7 +297,7 @@ public class _HeroFlightManifest__heroes
 
 internal class _HeroFlight__heroes
 {
-    public virtual System.Action<_HeroFlight__heroes> onFlightEnded { get; private set; } = default!;
+    public virtual Action<_HeroFlight__heroes> onFlightEnded { get; private set; } = default!;
     public virtual Tween<Rect?> heroRectTween { get; set; } = default!;
     public virtual Widget? shuttle { get; set; } = default;
     internal virtual Animation<double> _heroOpacity { get; set; } = AnimationsLibrary.kAlwaysCompleteAnimation;
@@ -308,7 +308,7 @@ internal class _HeroFlight__heroes
     internal static Animatable<double> _reverseTween = new Tween<double>(begin: 1.0, end: 0.0);
     internal virtual bool _scheduledPerformAnimationUpdate { get; set; } = false;
 
-    internal _HeroFlight__heroes(System.Action<_HeroFlight__heroes> onFlightEnded)
+    internal _HeroFlight__heroes(Action<_HeroFlight__heroes> onFlightEnded)
     {
         this.onFlightEnded = onFlightEnded;
     }

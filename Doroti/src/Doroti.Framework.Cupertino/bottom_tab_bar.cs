@@ -24,7 +24,7 @@ public static partial class Bottom_tab_barLibrary
 public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
 {
     public virtual List<BottomNavigationBarItem> items { get; private set; } = default!;
-    public virtual System.Action<long>? onTap { get; private set; }
+    public virtual Action<long>? onTap { get; private set; }
     public virtual long currentIndex { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? activeColor { get; private set; }
@@ -33,7 +33,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
     public virtual double height { get; private set; } = default!;
     public virtual Border? border { get; private set; }
 
-    public CupertinoTabBar(Key? key = null, List<BottomNavigationBarItem> items = default!, System.Action<long>? onTap = null, long currentIndex = 0, Color? backgroundColor = null, Color? activeColor = null, Color inactiveColor = default!, double iconSize = 30.0, double? height = null, Border? border = default!) : base(key: key)
+    public CupertinoTabBar(Key? key = null, List<BottomNavigationBarItem> items = default!, Action<long>? onTap = null, long currentIndex = 0, Color? backgroundColor = null, Color? activeColor = null, Color inactiveColor = default!, double iconSize = 30.0, double? height = null, Border? border = default!) : base(key: key)
     {
         Color __inactiveColor = inactiveColor ?? Bottom_tab_barLibrary._kDefaultTabBarInactiveColor;
         double __height = height ?? Bottom_tab_barLibrary._kTabBarHeight;
@@ -114,7 +114,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual CupertinoTabBar copyWith(Key? key = null, List<BottomNavigationBarItem>? items = null, Color? backgroundColor = null, Color? activeColor = null, Color? inactiveColor = null, double? iconSize = null, double? height = null, Border? border = null, long? currentIndex = null, System.Action<long>? onTap = null)
+    public virtual CupertinoTabBar copyWith(Key? key = null, List<BottomNavigationBarItem>? items = null, Color? backgroundColor = null, Color? activeColor = null, Color? inactiveColor = null, double? iconSize = null, double? height = null, Border? border = null, long? currentIndex = null, Action<long>? onTap = null)
     {
         return new CupertinoTabBar(key: key ?? this.key, items: items ?? this.items, backgroundColor: backgroundColor ?? this.backgroundColor, activeColor: activeColor ?? this.activeColor, inactiveColor: inactiveColor ?? this.inactiveColor, iconSize: iconSize ?? this.iconSize, height: height ?? this.height, border: border ?? this.border, currentIndex: currentIndex ?? this.currentIndex, onTap: onTap ?? this.onTap);
         throw new InvalidOperationException("Dart control flow completed without a value.");

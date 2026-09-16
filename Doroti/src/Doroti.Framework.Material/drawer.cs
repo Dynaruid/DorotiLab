@@ -95,7 +95,7 @@ public class DrawerController : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
     public virtual DrawerAlignment alignment { get; private set; } = default!;
-    public virtual System.Action<bool>? drawerCallback { get; private set; }
+    public virtual Action<bool>? drawerCallback { get; private set; }
     public virtual bool drawerBarrierDismissible { get; private set; } = default!;
     public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual Color? scrimColor { get; private set; }
@@ -103,7 +103,7 @@ public class DrawerController : StatefulWidget
     public virtual double? edgeDragWidth { get; private set; }
     public virtual bool isDrawerOpen { get; private set; } = default!;
 
-    public DrawerController(GlobalKeyBase? key = null, Widget child = default!, DrawerAlignment alignment = default!, bool isDrawerOpen = false, System.Action<bool>? drawerCallback = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, Color? scrimColor = null, double? edgeDragWidth = null, bool enableOpenDragGesture = true, bool drawerBarrierDismissible = true) : base(key: key)
+    public DrawerController(GlobalKeyBase? key = null, Widget child = default!, DrawerAlignment alignment = default!, bool isDrawerOpen = false, Action<bool>? drawerCallback = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, Color? scrimColor = null, double? edgeDragWidth = null, bool enableOpenDragGesture = true, bool drawerBarrierDismissible = true) : base(key: key)
     {
         this.child = child;
         this.alignment = alignment;
@@ -371,7 +371,7 @@ public class DrawerControllerState : State<DrawerController>, SingleTickerProvid
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

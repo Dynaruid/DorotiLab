@@ -13,7 +13,7 @@ public class PaginatedDataTable : StatefulWidget
     public virtual List<DataColumn> columns { get; private set; } = default!;
     public virtual long? sortColumnIndex { get; private set; }
     public virtual bool sortAscending { get; private set; } = default!;
-    public virtual System.Action<bool?>? onSelectAll { get; private set; }
+    public virtual Action<bool?>? onSelectAll { get; private set; }
     public virtual double? dataRowMinHeight { get; private set; }
     public virtual double? dataRowMaxHeight { get; private set; }
     public virtual double headingRowHeight { get; private set; } = default!;
@@ -23,11 +23,11 @@ public class PaginatedDataTable : StatefulWidget
     public virtual bool showFirstLastButtons { get; private set; } = default!;
     public virtual long? initialFirstRowIndex { get; private set; }
     public virtual double? dividerThickness { get; private set; }
-    public virtual System.Action<long>? onPageChanged { get; private set; }
+    public virtual Action<long>? onPageChanged { get; private set; }
     public virtual long rowsPerPage { get; private set; } = default!;
     public const long defaultRowsPerPage = 10L;
     public virtual List<long> availableRowsPerPage { get; private set; } = default!;
-    public virtual System.Action<long?>? onRowsPerPageChanged { get; private set; }
+    public virtual Action<long?>? onRowsPerPageChanged { get; private set; }
     public virtual DataTableSource source { get; private set; } = default!;
     public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual double? checkboxHorizontalMargin { get; private set; }
@@ -37,7 +37,7 @@ public class PaginatedDataTable : StatefulWidget
     public virtual WidgetStateProperty<Color?>? headingRowColor { get; private set; }
     public virtual bool showEmptyRows { get; private set; } = default!;
 
-    public PaginatedDataTable(Key? key = null, Widget? header = null, List<Widget>? actions = null, List<DataColumn> columns = default!, long? sortColumnIndex = null, bool sortAscending = true, System.Action<bool?>? onSelectAll = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, double headingRowHeight = 56.0, double horizontalMargin = 24.0, double columnSpacing = 56.0, bool showCheckboxColumn = true, bool showFirstLastButtons = false, long? initialFirstRowIndex = 0, System.Action<long>? onPageChanged = null, long? rowsPerPage = null, List<long> availableRowsPerPage = default!, System.Action<long?>? onRowsPerPageChanged = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, Color? arrowHeadColor = null, DataTableSource source = default!, double? checkboxHorizontalMargin = null, ScrollController? controller = null, bool? primary = null, WidgetStateProperty<Color?>? headingRowColor = null, double? dividerThickness = null, bool showEmptyRows = true) : base(key: key)
+    public PaginatedDataTable(Key? key = null, Widget? header = null, List<Widget>? actions = null, List<DataColumn> columns = default!, long? sortColumnIndex = null, bool sortAscending = true, Action<bool?>? onSelectAll = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, double headingRowHeight = 56.0, double horizontalMargin = 24.0, double columnSpacing = 56.0, bool showCheckboxColumn = true, bool showFirstLastButtons = false, long? initialFirstRowIndex = 0, Action<long>? onPageChanged = null, long? rowsPerPage = null, List<long> availableRowsPerPage = default!, Action<long?>? onRowsPerPageChanged = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, Color? arrowHeadColor = null, DataTableSource source = default!, double? checkboxHorizontalMargin = null, ScrollController? controller = null, bool? primary = null, WidgetStateProperty<Color?>? headingRowColor = null, double? dividerThickness = null, bool showEmptyRows = true) : base(key: key)
     {
         long __rowsPerPage = rowsPerPage ?? defaultRowsPerPage;
         List<long> __availableRowsPerPage = availableRowsPerPage ?? new List<long> { defaultRowsPerPage, defaultRowsPerPage * 2, defaultRowsPerPage * 5, defaultRowsPerPage * 10 };

@@ -2175,10 +2175,10 @@ public class FocusTraversalGroup : StatefulWidget
     public virtual bool descendantsAreFocusable { get; private set; } = default!;
     public virtual bool descendantsAreTraversable { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
-    public virtual System.Action<FocusNode>? onFocusNodeCreated { get; private set; }
+    public virtual Action<FocusNode>? onFocusNodeCreated { get; private set; }
     public virtual FocusNode? parentNode { get; private set; }
 
-    public FocusTraversalGroup(Key? key = null, FocusTraversalPolicy? policy = null, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, System.Action<FocusNode>? onFocusNodeCreated = null, FocusNode? parentNode = null, Widget child = default!) : base(key: key)
+    public FocusTraversalGroup(Key? key = null, FocusTraversalPolicy? policy = null, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, Action<FocusNode>? onFocusNodeCreated = null, FocusNode? parentNode = null, Widget child = default!) : base(key: key)
     {
         this.descendantsAreFocusable = descendantsAreFocusable;
         this.descendantsAreTraversable = descendantsAreTraversable;
@@ -2342,7 +2342,7 @@ public class RequestFocusIntent : Intent
 
 }
 
-public class RequestFocusAction : Action<RequestFocusIntent>
+public class RequestFocusAction : IntentAction<RequestFocusIntent>
 {
     public override object? invoke(RequestFocusIntent intent, BuildContext? context = null)
     {
@@ -2360,7 +2360,7 @@ public class NextFocusIntent : Intent
 
 }
 
-public class NextFocusAction : Action<NextFocusIntent>
+public class NextFocusAction : IntentAction<NextFocusIntent>
 {
     public override object? invoke(NextFocusIntent intent, BuildContext? context = null)
     {
@@ -2385,7 +2385,7 @@ public class PreviousFocusIntent : Intent
 
 }
 
-public class PreviousFocusAction : Action<PreviousFocusIntent>
+public class PreviousFocusAction : IntentAction<PreviousFocusIntent>
 {
     public override object? invoke(PreviousFocusIntent intent, BuildContext? context = null)
     {
@@ -2421,7 +2421,7 @@ public class DirectionalFocusIntent : Intent
 
 }
 
-public class DirectionalFocusAction : Action<DirectionalFocusIntent>
+public class DirectionalFocusAction : IntentAction<DirectionalFocusIntent>
 {
     internal virtual bool _isForTextField { get; private set; } = default!;
 

@@ -92,7 +92,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
         renderObject._removeChild(__child, __slot);
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         _vicinityToChild.Values.forEach((__arg0) => visitor(__arg0));
     }
@@ -568,10 +568,10 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         {
             child.redepthChildren();
         }
-        _keepAliveBucket.Values.forEach((__arg0) => ((System.Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        _keepAliveBucket.Values.forEach((__arg0) => ((Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)
@@ -582,7 +582,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         _keepAliveBucket.Values.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

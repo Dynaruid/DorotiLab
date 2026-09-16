@@ -143,7 +143,7 @@ public class Stepper : StatefulWidget
     public virtual ScrollController? controller { get; private set; }
     public virtual StepperType type { get; private set; } = default!;
     public virtual long currentStep { get; private set; } = default!;
-    public virtual System.Action<long>? onStepTapped { get; private set; }
+    public virtual Action<long>? onStepTapped { get; private set; }
     public virtual Action? onStepContinue { get; private set; }
     public virtual Action? onStepCancel { get; private set; }
     public virtual Func<BuildContext, ControlsDetails, Widget>? controlsBuilder { get; private set; }
@@ -159,7 +159,7 @@ public class Stepper : StatefulWidget
     public virtual EdgeInsetsGeometry? headerPadding { get; private set; }
     public virtual EdgeInsetsGeometry? contentPadding { get; private set; }
 
-    public Stepper(Key? key = null, List<Step> steps = default!, ScrollController? controller = null, ScrollPhysics? physics = null, StepperType type = StepperType.vertical, long currentStep = 0, System.Action<long>? onStepTapped = null, Action? onStepContinue = null, Action? onStepCancel = null, Func<BuildContext, ControlsDetails, Widget>? controlsBuilder = null, double? elevation = null, EdgeInsetsGeometry? margin = null, WidgetStateProperty<Color>? connectorColor = null, double? connectorThickness = null, Func<long, StepState, Widget?>? stepIconBuilder = null, double? stepIconHeight = null, double? stepIconWidth = null, EdgeInsets? stepIconMargin = null, Clip clipBehavior = Clip.none, EdgeInsetsGeometry? headerPadding = null, EdgeInsetsGeometry? contentPadding = null) : base(key: key)
+    public Stepper(Key? key = null, List<Step> steps = default!, ScrollController? controller = null, ScrollPhysics? physics = null, StepperType type = StepperType.vertical, long currentStep = 0, Action<long>? onStepTapped = null, Action? onStepContinue = null, Action? onStepCancel = null, Func<BuildContext, ControlsDetails, Widget>? controlsBuilder = null, double? elevation = null, EdgeInsetsGeometry? margin = null, WidgetStateProperty<Color>? connectorColor = null, double? connectorThickness = null, Func<long, StepState, Widget?>? stepIconBuilder = null, double? stepIconHeight = null, double? stepIconWidth = null, EdgeInsets? stepIconMargin = null, Clip clipBehavior = Clip.none, EdgeInsetsGeometry? headerPadding = null, EdgeInsetsGeometry? contentPadding = null) : base(key: key)
     {
         this.steps = steps;
         this.controller = controller;
@@ -542,7 +542,7 @@ widget.onStepTapped?.Invoke(i);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

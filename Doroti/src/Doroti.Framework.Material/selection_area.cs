@@ -11,10 +11,10 @@ public class SelectionArea : StatefulWidget
     public virtual FocusNode? focusNode { get; private set; }
     public virtual TextSelectionControls? selectionControls { get; private set; }
     public virtual Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder { get; private set; }
-    public virtual System.Action<SelectedContent?>? onSelectionChanged { get; private set; }
+    public virtual Action<SelectedContent?>? onSelectionChanged { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public SelectionArea(Key? key = null, FocusNode? focusNode = null, TextSelectionControls? selectionControls = null, Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder = default!, TextMagnifierConfiguration? magnifierConfiguration = null, System.Action<SelectedContent?>? onSelectionChanged = null, Widget child = default!) : base(key: key)
+    public SelectionArea(Key? key = null, FocusNode? focusNode = null, TextSelectionControls? selectionControls = null, Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder = default!, TextMagnifierConfiguration? magnifierConfiguration = null, Action<SelectedContent?>? onSelectionChanged = null, Widget child = default!) : base(key: key)
     {
         Func<BuildContext, SelectableRegionState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
         this.focusNode = focusNode;

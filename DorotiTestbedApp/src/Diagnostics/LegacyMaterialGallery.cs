@@ -31,11 +31,11 @@ internal static class DemoTheme
 }
 
 internal sealed class MaterialGallery(
-    System.Action<MaterialGalleryState> mounted,
-    System.Action<Material.Scaffold> scaffoldBuilt) : StatefulWidget
+    Action<MaterialGalleryState> mounted,
+    Action<Material.Scaffold> scaffoldBuilt) : StatefulWidget
 {
-    internal System.Action<MaterialGalleryState> Mounted { get; } = mounted;
-    internal System.Action<Material.Scaffold> ScaffoldBuilt { get; } = scaffoldBuilt;
+    internal Action<MaterialGalleryState> Mounted { get; } = mounted;
+    internal Action<Material.Scaffold> ScaffoldBuilt { get; } = scaffoldBuilt;
     public override IState createState() => new MaterialGalleryState();
 }
 
@@ -154,7 +154,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         EffectInteractionCount++;
     });
 
-    private void Mutate(System.Action mutation) => setState(() =>
+    private void Mutate(Action mutation) => setState(() =>
     {
         mutation();
         InteractionCount++;
@@ -178,7 +178,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         }
     }
 
-    private Widget ActionSemantics(string label, Widget child, System.Action action, string value) => new Semantics(
+    private Widget ActionSemantics(string label, Widget child, Action action, string value) => new Semantics(
         container: true,
         excludeSemantics: true,
         identifier: label.Replace(' ', '-').ToLowerInvariant(),

@@ -85,7 +85,7 @@ public class CupertinoRadio<T> : StatefulWidget
 {
     public virtual T value { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
-    public virtual System.Action<T?>? onChanged { get; private set; }
+    public virtual Action<T?>? onChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool toggleable { get; private set; } = default!;
     public virtual bool useCheckmarkStyle { get; private set; } = default!;
@@ -98,7 +98,7 @@ public class CupertinoRadio<T> : StatefulWidget
     public virtual RadioGroupRegistry<T>? groupRegistry { get; private set; }
     public virtual bool? enabled { get; private set; }
 
-    public CupertinoRadio(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, Color? inactiveColor = null, Color? fillColor = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, bool useCheckmarkStyle = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null) : base(key: key)
+    public CupertinoRadio(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, Color? inactiveColor = null, Color? fillColor = null, Color? focusColor = null, FocusNode? focusNode = null, bool autofocus = false, bool useCheckmarkStyle = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null) : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -176,7 +176,7 @@ internal class _RadioRegistry__radio<T> : RadioGroupRegistry<T>
     }
 
     public virtual T? groupValue => state.widget.groupValue;
-    public virtual System.Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<System.Action<T?>>(state.widget.onChanged!);
+    public virtual Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<Action<T?>>(state.widget.onChanged!);
     public virtual void registerClient(RadioClient<T> radio)
     {
     }

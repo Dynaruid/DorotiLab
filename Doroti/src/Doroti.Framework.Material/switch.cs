@@ -15,7 +15,7 @@ public enum _SwitchType__switch
 public class Switch : StatelessWidget
 {
     public virtual bool value { get; private set; } = default!;
-    public virtual System.Action<bool>? onChanged { get; private set; }
+    public virtual Action<bool>? onChanged { get; private set; }
     public virtual Color? activeColor { get; private set; }
     public virtual Color? activeThumbColor { get; private set; }
     public virtual Color? activeTrackColor { get; private set; }
@@ -40,11 +40,11 @@ public class Switch : StatelessWidget
     public virtual WidgetStateProperty<Color?>? overlayColor { get; private set; }
     public virtual double? splashRadius { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual EdgeInsetsGeometry? padding { get; private set; }
 
-    public Switch(Key? key = null, bool value = default!, System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, EdgeInsetsGeometry? padding = null) : base(key: key)
+    public Switch(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, EdgeInsetsGeometry? padding = null) : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -79,7 +79,7 @@ public class Switch : StatelessWidget
         System.Diagnostics.Debug.Assert((inactiveThumbImage is not null) || (onInactiveThumbImageError is null));
     }
 
-    public static Switch CreateAdaptive(Key? key = null, bool value = default!, System.Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, MaterialTapTargetSize? materialTapTargetSize = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, EdgeInsetsGeometry? padding = null, bool? applyCupertinoTheme = null)
+    public static Switch CreateAdaptive(Key? key = null, bool value = default!, Action<bool>? onChanged = default!, Color? activeColor = null, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, MaterialTapTargetSize? materialTapTargetSize = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, EdgeInsetsGeometry? padding = null, bool? applyCupertinoTheme = null)
     {
         var __instance = new Switch(key: key, value: value, onChanged: onChanged, activeColor: activeColor, activeThumbColor: activeThumbColor, activeTrackColor: activeTrackColor, inactiveThumbColor: inactiveThumbColor, inactiveTrackColor: inactiveTrackColor, activeThumbImage: activeThumbImage, onActiveThumbImageError: onActiveThumbImageError, inactiveThumbImage: inactiveThumbImage, onInactiveThumbImageError: onInactiveThumbImageError, thumbColor: thumbColor, trackColor: trackColor, trackOutlineColor: trackOutlineColor, trackOutlineWidth: trackOutlineWidth, thumbIcon: thumbIcon, materialTapTargetSize: materialTapTargetSize, dragStartBehavior: dragStartBehavior, mouseCursor: mouseCursor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, padding: padding);
         __instance.value = value;
@@ -171,7 +171,7 @@ public class Switch : StatelessWidget
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new FlagProperty("value", value: value, ifTrue: "on", ifFalse: "off", showName: true));
-        properties.add(new ObjectFlagProperty<System.Action<bool>>("onChanged", onChanged, ifNull: "disabled"));
+        properties.add(new ObjectFlagProperty<Action<bool>>("onChanged", onChanged, ifNull: "disabled"));
     }
 
 }
@@ -179,7 +179,7 @@ public class Switch : StatelessWidget
 public class _MaterialSwitch__switch : StatefulWidget
 {
     public virtual bool value { get; private set; } = default!;
-    public virtual System.Action<bool>? onChanged { get; private set; }
+    public virtual Action<bool>? onChanged { get; private set; }
     public virtual Color? activeThumbColor { get; private set; }
     public virtual Color? activeTrackColor { get; private set; }
     public virtual Color? inactiveThumbColor { get; private set; }
@@ -201,13 +201,13 @@ public class _MaterialSwitch__switch : StatefulWidget
     public virtual WidgetStateProperty<Color?>? overlayColor { get; private set; }
     public virtual double? splashRadius { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual Size size { get; private set; } = default!;
     public virtual bool? applyCupertinoTheme { get; private set; }
     public virtual _SwitchType__switch switchType { get; private set; } = default!;
 
-    internal _MaterialSwitch__switch(bool value, System.Action<bool>? onChanged, Size size, _SwitchType__switch switchType, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, bool? applyCupertinoTheme = null)
+    internal _MaterialSwitch__switch(bool value, Action<bool>? onChanged, Size size, _SwitchType__switch switchType, Color? activeThumbColor = null, Color? activeTrackColor = null, Color? inactiveThumbColor = null, Color? inactiveTrackColor = null, IImageProvider? activeThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onActiveThumbImageError = null, IImageProvider? inactiveThumbImage = null, Action<object, System.Diagnostics.StackTrace?>? onInactiveThumbImageError = null, WidgetStateProperty<Color?>? thumbColor = null, WidgetStateProperty<Color?>? trackColor = null, WidgetStateProperty<Color?>? trackOutlineColor = null, WidgetStateProperty<double?>? trackOutlineWidth = null, WidgetStateProperty<Icon?>? thumbIcon = null, MaterialTapTargetSize? materialTapTargetSize = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, bool? applyCupertinoTheme = null)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -268,7 +268,7 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((System.Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -339,7 +339,7 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
         base.dispose();
     }
 
-    public virtual System.Action<bool?>? onChanged => (widget.onChanged is not null) ? _handleChanged : null;
+    public virtual Action<bool?>? onChanged => (widget.onChanged is not null) ? _handleChanged : null;
     public virtual bool tristate => false;
     public virtual bool? value => widget.value;
     public virtual Duration? reactionAnimationDuration => ConstantsLibrary.kRadialReactionDuration;
@@ -660,7 +660,7 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
 }))()))));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -868,13 +868,13 @@ internal class _MaterialSwitchState__switch : State<_MaterialSwitch__switch>, Ti
     }
 
     public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
     {
         return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap() : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd() : null, child: new Widgets.Semantics(enabled: isInteractive, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");

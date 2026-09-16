@@ -63,7 +63,7 @@ public delegate void TooltipTriggeredCallback();
 
 internal class _ExclusiveMouseRegion__raw_tooltip : MouseRegion
 {
-    internal _ExclusiveMouseRegion__raw_tooltip(System.Action<Gestures.PointerEnterEvent>? onEnter = null, System.Action<Gestures.PointerExitEvent>? onExit = null, Widget? child = null) : base(onEnter: onEnter, onExit: onExit, child: child)
+    internal _ExclusiveMouseRegion__raw_tooltip(Action<Gestures.PointerEnterEvent>? onEnter = null, Action<Gestures.PointerExitEvent>? onExit = null, Widget? child = null) : base(onEnter: onEnter, onExit: onExit, child: child)
     {
     }
 
@@ -80,7 +80,7 @@ public class _RenderExclusiveMouseRegion__raw_tooltip : RenderMouseRegion
     public static bool isOutermostMouseRegion = true;
     public static bool foundInnermostMouseRegion = false;
 
-    internal _RenderExclusiveMouseRegion__raw_tooltip(System.Action<Gestures.PointerEnterEvent>? onEnter = null, System.Action<Gestures.PointerExitEvent>? onExit = null) : base(onEnter: onEnter, onExit: onExit)
+    internal _RenderExclusiveMouseRegion__raw_tooltip(Action<Gestures.PointerEnterEvent>? onEnter = null, Action<Gestures.PointerExitEvent>? onExit = null) : base(onEnter: onEnter, onExit: onExit)
     {
     }
 
@@ -468,7 +468,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

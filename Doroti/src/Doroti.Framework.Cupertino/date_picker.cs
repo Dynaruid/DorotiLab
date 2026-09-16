@@ -194,7 +194,7 @@ public class CupertinoDatePicker : StatefulWidget
     public virtual long minuteInterval { get; private set; } = default!;
     public virtual bool use24hFormat { get; private set; } = default!;
     public virtual DatePickerDateOrder? dateOrder { get; private set; }
-    public virtual System.Action<DateTime> onDateTimeChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onDateTimeChanged { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual bool showDayOfWeek { get; private set; } = default!;
     public virtual bool showTimeSeparator { get; private set; } = default!;
@@ -203,7 +203,7 @@ public class CupertinoDatePicker : StatefulWidget
     public virtual SelectionOverlayBuilder? selectionOverlayBuilder { get; private set; }
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public CupertinoDatePicker(Key? key = null, CupertinoDatePickerMode mode = CupertinoDatePickerMode.dateAndTime, System.Action<DateTime> onDateTimeChanged = default!, DateTime? initialDateTime = null, DateTime? minimumDate = null, DateTime? maximumDate = null, long minimumYear = 1, long? maximumYear = null, long minuteInterval = 1, bool use24hFormat = false, DatePickerDateOrder? dateOrder = null, Color? backgroundColor = null, bool showDayOfWeek = false, bool showTimeSeparator = false, double? itemExtent = null, SelectionOverlayBuilder? selectionOverlayBuilder = null, Func<DateTime, bool>? selectableDayPredicate = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate) : base(key: key)
+    public CupertinoDatePicker(Key? key = null, CupertinoDatePickerMode mode = CupertinoDatePickerMode.dateAndTime, Action<DateTime> onDateTimeChanged = default!, DateTime? initialDateTime = null, DateTime? minimumDate = null, DateTime? maximumDate = null, long minimumYear = 1, long? maximumYear = null, long minuteInterval = 1, bool use24hFormat = false, DatePickerDateOrder? dateOrder = null, Color? backgroundColor = null, bool showDayOfWeek = false, bool showTimeSeparator = false, double? itemExtent = null, SelectionOverlayBuilder? selectionOverlayBuilder = null, Func<DateTime, bool>? selectableDayPredicate = null, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate) : base(key: key)
     {
         double __itemExtent = itemExtent ?? Date_pickerLibrary._kItemExtent;
         this.mode = mode;
@@ -1429,14 +1429,14 @@ public class CupertinoTimerPicker : StatefulWidget
     public virtual Duration initialTimerDuration { get; private set; } = default!;
     public virtual long minuteInterval { get; private set; } = default!;
     public virtual long secondInterval { get; private set; } = default!;
-    public virtual System.Action<Duration> onTimerDurationChanged { get; private set; } = default!;
+    public virtual Action<Duration> onTimerDurationChanged { get; private set; } = default!;
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual double itemExtent { get; private set; } = default!;
     public virtual SelectionOverlayBuilder? selectionOverlayBuilder { get; private set; }
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public CupertinoTimerPicker(Key? key = null, CupertinoTimerPickerMode mode = CupertinoTimerPickerMode.hms, Duration initialTimerDuration = default, long minuteInterval = 1, long secondInterval = 1, AlignmentGeometry alignment = default!, Color? backgroundColor = null, double? itemExtent = null, System.Action<Duration> onTimerDurationChanged = default!, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, SelectionOverlayBuilder? selectionOverlayBuilder = null) : base(key: key)
+    public CupertinoTimerPicker(Key? key = null, CupertinoTimerPickerMode mode = CupertinoTimerPickerMode.hms, Duration initialTimerDuration = default, long minuteInterval = 1, long secondInterval = 1, AlignmentGeometry alignment = default!, Color? backgroundColor = null, double? itemExtent = null, Action<Duration> onTimerDurationChanged = default!, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, SelectionOverlayBuilder? selectionOverlayBuilder = null) : base(key: key)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         double __itemExtent = itemExtent ?? Date_pickerLibrary._kItemExtent;

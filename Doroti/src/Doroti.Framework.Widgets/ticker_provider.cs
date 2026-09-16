@@ -147,7 +147,7 @@ public interface SingleTickerProviderStateMixin<T> : Scheduler.TickerProvider wh
     Scheduler.Ticker? _ticker { get; set; }
     ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
 
-    public new Scheduler.Ticker createTicker(System.Action<Duration> onTick);
+    public new Scheduler.Ticker createTicker(Action<Duration> onTick);
     public void dispose();
     public void activate();
     public void _updateTicker();
@@ -165,7 +165,7 @@ public interface TickerProviderStateMixin<T> : Scheduler.TickerProvider, WidgetT
     HashSet<Scheduler.Ticker>? _tickers { get; set; }
     ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
 
-    public new Scheduler.Ticker createTicker(System.Action<Duration> onTick);
+    public new Scheduler.Ticker createTicker(Action<Duration> onTick);
     public new void _removeTicker(_WidgetTicker__ticker_provider ticker);
     public void activate();
     public void _updateTickers();
@@ -178,7 +178,7 @@ public class _WidgetTicker__ticker_provider : Scheduler.Ticker
 {
     internal virtual WidgetTickerCreator _creator { get; private set; } = default!;
 
-    public _WidgetTicker__ticker_provider(System.Action<Duration> onTick, WidgetTickerCreator _creator, string? debugLabel = null) : base(onTick, debugLabel: debugLabel ?? _creator.GetType().Name)
+    public _WidgetTicker__ticker_provider(Action<Duration> onTick, WidgetTickerCreator _creator, string? debugLabel = null) : base(onTick, debugLabel: debugLabel ?? _creator.GetType().Name)
     {
         this._creator = _creator;
     }

@@ -878,6 +878,11 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return matches[0];
         }
+        if (simpleName == "IntentAction" && _semanticIndex.DeclarationsBySimpleName.TryGetValue("Action", out var actions))
+        {
+            return actions.FirstOrDefault(d => LibraryUriFromElementId(d.Element.CanonicalId)
+                .EndsWith("/widgets/actions.dart", StringComparison.Ordinal));
+        }
         return _semanticIndex.FindEmittedDeclaration(simpleName);
     }
 

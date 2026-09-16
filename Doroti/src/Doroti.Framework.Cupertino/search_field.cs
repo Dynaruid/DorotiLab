@@ -19,8 +19,8 @@ public static partial class Search_fieldLibrary
 public class CupertinoSearchTextField : StatefulWidget
 {
     public virtual TextEditingController? controller { get; private set; }
-    public virtual System.Action<string>? onChanged { get; private set; }
-    public virtual System.Action<string>? onSubmitted { get; private set; }
+    public virtual Action<string>? onChanged { get; private set; }
+    public virtual Action<string>? onSubmitted { get; private set; }
     public virtual TextStyle? style { get; private set; }
     public virtual string? placeholder { get; private set; }
     public virtual TextStyle? placeholderStyle { get; private set; }
@@ -52,7 +52,7 @@ public class CupertinoSearchTextField : StatefulWidget
     public virtual bool cursorOpacityAnimates { get; private set; } = default!;
     public virtual Color? cursorColor { get; private set; }
 
-    public CupertinoSearchTextField(Key? key = null, TextEditingController? controller = null, System.Action<string>? onChanged = null, System.Action<string>? onSubmitted = null, TextStyle? style = null, string? placeholder = null, TextStyle? placeholderStyle = null, BoxDecoration? decoration = null, Color? backgroundColor = null, BorderRadius? borderRadius = null, TextInputType? keyboardType = default!, EdgeInsetsGeometry padding = default!, Color itemColor = default!, double itemSize = 20.0, EdgeInsetsGeometry prefixInsets = default!, Widget prefixIcon = default!, EdgeInsetsGeometry suffixInsets = default!, Icon suffixIcon = default!, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.editing, Action? onSuffixTap = null, string? restorationId = null, FocusNode? focusNode = null, SmartQuotesType? smartQuotesType = null, SmartDashesType? smartDashesType = null, bool enableIMEPersonalizedLearning = true, bool autofocus = false, Action? onTap = null, bool autocorrect = true, bool? enabled = null, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null) : base(key: key)
+    public CupertinoSearchTextField(Key? key = null, TextEditingController? controller = null, Action<string>? onChanged = null, Action<string>? onSubmitted = null, TextStyle? style = null, string? placeholder = null, TextStyle? placeholderStyle = null, BoxDecoration? decoration = null, Color? backgroundColor = null, BorderRadius? borderRadius = null, TextInputType? keyboardType = default!, EdgeInsetsGeometry padding = default!, Color itemColor = default!, double itemSize = 20.0, EdgeInsetsGeometry prefixInsets = default!, Widget prefixIcon = default!, EdgeInsetsGeometry suffixInsets = default!, Icon suffixIcon = default!, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.editing, Action? onSuffixTap = null, string? restorationId = null, FocusNode? focusNode = null, SmartQuotesType? smartQuotesType = null, SmartDashesType? smartDashesType = null, bool enableIMEPersonalizedLearning = true, bool autofocus = false, Action? onTap = null, bool autocorrect = true, bool? enabled = null, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null) : base(key: key)
     {
         TextInputType? __keyboardType = keyboardType ?? TextInputType.text;
         EdgeInsetsGeometry __padding = padding ?? EdgeInsetsGeometry.CreateFromSTEB(5.5, 8, 5.5, 8);
@@ -441,7 +441,7 @@ internal class _CupertinoSearchTextFieldState__search_field : State<CupertinoSea
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }

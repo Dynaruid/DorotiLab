@@ -9,7 +9,7 @@ namespace Doroti.Framework.Widgets;
 public class AndroidView : StatefulWidget
 {
     public virtual string viewType { get; private set; } = default!;
-    public virtual System.Action<long>? onPlatformViewCreated { get; private set; }
+    public virtual Action<long>? onPlatformViewCreated { get; private set; }
     public virtual PlatformViewHitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual TextDirection? layoutDirection { get; private set; }
     public virtual HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers { get; private set; }
@@ -17,7 +17,7 @@ public class AndroidView : StatefulWidget
     public virtual MessageCodec<object>? creationParamsCodec { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public AndroidView(Key? key = null, string viewType = default!, System.Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public AndroidView(Key? key = null, string viewType = default!, Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, Clip clipBehavior = Clip.hardEdge) : base(key: key)
     {
         this.viewType = viewType;
         this.onPlatformViewCreated = onPlatformViewCreated;
@@ -36,14 +36,14 @@ public class AndroidView : StatefulWidget
 public abstract class _DarwinView__platform_view : StatefulWidget
 {
     public virtual string viewType { get; private set; } = default!;
-    public virtual System.Action<long>? onPlatformViewCreated { get; private set; }
+    public virtual Action<long>? onPlatformViewCreated { get; private set; }
     public virtual PlatformViewHitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual TextDirection? layoutDirection { get; private set; }
     public virtual object? creationParams { get; private set; } = default!;
     public virtual MessageCodec<object>? creationParamsCodec { get; private set; }
     public virtual HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers { get; private set; }
 
-    internal _DarwinView__platform_view(Key? key = null, string viewType = default!, System.Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key)
+    internal _DarwinView__platform_view(Key? key = null, string viewType = default!, Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key)
     {
         this.viewType = viewType;
         this.onPlatformViewCreated = onPlatformViewCreated;
@@ -61,7 +61,7 @@ public class UiKitView : _DarwinView__platform_view
 {
     public virtual UiKitViewGestureBlockingPolicy gestureBlockingPolicy { get; private set; } = default!;
 
-    public UiKitView(Key? key = null, string viewType = default!, UiKitViewGestureBlockingPolicy gestureBlockingPolicy = UiKitViewGestureBlockingPolicy.fallbackToPluginDefault, System.Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
+    public UiKitView(Key? key = null, string viewType = default!, UiKitViewGestureBlockingPolicy gestureBlockingPolicy = UiKitViewGestureBlockingPolicy.fallbackToPluginDefault, Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
     {
         this.gestureBlockingPolicy = gestureBlockingPolicy;
         System.Diagnostics.Debug.Assert((creationParams is null) || (creationParamsCodec is not null));
@@ -72,7 +72,7 @@ public class UiKitView : _DarwinView__platform_view
 
 public class AppKitView : _DarwinView__platform_view
 {
-    public AppKitView(Key? key = null, string viewType = default!, System.Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
+    public AppKitView(Key? key = null, string viewType = default!, Action<long>? onPlatformViewCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, MessageCodec<object>? creationParamsCodec = null, HashSet<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
     {
     }
 
@@ -84,11 +84,11 @@ public delegate void ElementCreatedCallback(object element);
 public class HtmlElementView : StatelessWidget
 {
     public virtual string viewType { get; private set; } = default!;
-    public virtual System.Action<long>? onPlatformViewCreated { get; private set; }
+    public virtual Action<long>? onPlatformViewCreated { get; private set; }
     public virtual object? creationParams { get; private set; }
     public virtual PlatformViewHitTestBehavior hitTestBehavior { get; private set; } = default!;
 
-    public HtmlElementView(Key? key = null, string viewType = default!, System.Action<long>? onPlatformViewCreated = null, object? creationParams = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque) : base(key: key)
+    public HtmlElementView(Key? key = null, string viewType = default!, Action<long>? onPlatformViewCreated = null, object? creationParams = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque) : base(key: key)
     {
         this.viewType = viewType;
         this.onPlatformViewCreated = onPlatformViewCreated;
@@ -96,7 +96,7 @@ public class HtmlElementView : StatelessWidget
         this.hitTestBehavior = hitTestBehavior;
     }
 
-    public static HtmlElementView CreateFromTagName(Key? key = null, string tagName = default!, bool isVisible = true, System.Action<object>? onElementCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque) => throw new NotSupportedException("HtmlElementView is only available on Flutter Web");
+    public static HtmlElementView CreateFromTagName(Key? key = null, string tagName = default!, bool isVisible = true, Action<object>? onElementCreated = null, PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque) => throw new NotSupportedException("HtmlElementView is only available on Flutter Web");
 
     public override Widget build(BuildContext context) => new RegisteredHtmlElementView(this);
 }
@@ -469,10 +469,10 @@ public class PlatformViewCreationParams
 {
     public virtual long id { get; private set; } = default!;
     public virtual string viewType { get; private set; } = default!;
-    public virtual System.Action<long> onPlatformViewCreated { get; private set; } = default!;
-    public virtual System.Action<bool> onFocusChanged { get; private set; } = default!;
+    public virtual Action<long> onPlatformViewCreated { get; private set; } = default!;
+    public virtual Action<bool> onFocusChanged { get; private set; } = default!;
 
-    public PlatformViewCreationParams(long id, string viewType, System.Action<long> onPlatformViewCreated, System.Action<bool> onFocusChanged)
+    public PlatformViewCreationParams(long id, string viewType, Action<long> onPlatformViewCreated, Action<bool> onFocusChanged)
     {
         this.id = id;
         this.viewType = viewType;

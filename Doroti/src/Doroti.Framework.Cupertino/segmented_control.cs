@@ -30,7 +30,7 @@ public class CupertinoSegmentedControl<T> : StatefulWidget where T : notnull
 {
     public virtual DartMap<T, Widget> children { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
-    public virtual System.Action<T> onValueChanged { get; private set; } = default!;
+    public virtual Action<T> onValueChanged { get; private set; } = default!;
     public virtual Color? unselectedColor { get; private set; }
     public virtual Color? selectedColor { get; private set; }
     public virtual Color? borderColor { get; private set; }
@@ -40,7 +40,7 @@ public class CupertinoSegmentedControl<T> : StatefulWidget where T : notnull
     public virtual EdgeInsetsGeometry? padding { get; private set; }
     public virtual HashSet<T> disabledChildren { get; private set; } = default!;
 
-    public CupertinoSegmentedControl(Key? key = null, DartMap<T, Widget> children = default!, System.Action<T> onValueChanged = default!, T? groupValue = default, Color? unselectedColor = null, Color? selectedColor = null, Color? borderColor = null, Color? pressedColor = null, Color? disabledColor = null, Color? disabledTextColor = null, EdgeInsetsGeometry? padding = null, HashSet<T> disabledChildren = default!) : base(key: key)
+    public CupertinoSegmentedControl(Key? key = null, DartMap<T, Widget> children = default!, Action<T> onValueChanged = default!, T? groupValue = default, Color? unselectedColor = null, Color? selectedColor = null, Color? borderColor = null, Color? pressedColor = null, Color? disabledColor = null, Color? disabledTextColor = null, EdgeInsetsGeometry? padding = null, HashSet<T> disabledChildren = default!) : base(key: key)
     {
         HashSet<T> __disabledChildren = disabledChildren ?? new HashSet<T>();
         this.children = children;
@@ -435,7 +435,7 @@ public class _SegmentedControlState__segmented_control<T> : State<CupertinoSegme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -981,7 +981,7 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -1089,7 +1089,7 @@ public class _RenderSegmentedControl__segmented_control<T> : RenderBox, Containe
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

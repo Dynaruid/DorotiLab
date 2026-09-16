@@ -60,15 +60,15 @@ public class Draggable<T> : StatefulWidget
     public virtual Axis? affinity { get; private set; }
     public virtual long? maxSimultaneousDrags { get; private set; }
     public virtual Action? onDragStarted { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onDragUpdate { get; private set; }
+    public virtual Action<DragUpdateDetails>? onDragUpdate { get; private set; }
     public virtual Action<Velocity, Offset>? onDraggableCanceled { get; private set; }
     public virtual Action? onDragCompleted { get; private set; }
-    public virtual System.Action<DraggableDetails>? onDragEnd { get; private set; }
+    public virtual Action<DraggableDetails>? onDragEnd { get; private set; }
     public virtual bool rootOverlay { get; private set; } = default!;
     public virtual HitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual Func<long, bool>? allowedButtonsFilter { get; private set; }
 
-    public Draggable(Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, Func<Draggable<T>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, Axis? affinity = null, long? maxSimultaneousDrags = null, Action? onDragStarted = null, System.Action<DragUpdateDetails>? onDragUpdate = null, Action<Velocity, Offset>? onDraggableCanceled = null, System.Action<DraggableDetails>? onDragEnd = null, Action? onDragCompleted = null, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, bool rootOverlay = false, HitTestBehavior hitTestBehavior = HitTestBehavior.deferToChild, Func<long, bool>? allowedButtonsFilter = null) : base(key: key)
+    public Draggable(Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, Func<Draggable<T>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, Axis? affinity = null, long? maxSimultaneousDrags = null, Action? onDragStarted = null, Action<DragUpdateDetails>? onDragUpdate = null, Action<Velocity, Offset>? onDraggableCanceled = null, Action<DraggableDetails>? onDragEnd = null, Action? onDragCompleted = null, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, bool rootOverlay = false, HitTestBehavior hitTestBehavior = HitTestBehavior.deferToChild, Func<long, bool>? allowedButtonsFilter = null) : base(key: key)
     {
         Func<Draggable<T>, BuildContext, Offset, Offset> __dragAnchorStrategy = dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy;
         this.child = child;
@@ -112,7 +112,7 @@ public class LongPressDraggable<T> : Draggable<T>
     public virtual bool hapticFeedbackOnStart { get; private set; } = default!;
     public virtual Duration delay { get; private set; } = default!;
 
-    public LongPressDraggable(Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, Func<Draggable<T>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, long? maxSimultaneousDrags = null, Action? onDragStarted = null, System.Action<DragUpdateDetails>? onDragUpdate = null, Action<Velocity, Offset>? onDraggableCanceled = null, System.Action<DraggableDetails>? onDragEnd = null, Action? onDragCompleted = null, bool hapticFeedbackOnStart = true, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, Duration? delay = null, Func<long, bool>? allowedButtonsFilter = null, HitTestBehavior hitTestBehavior = HitTestBehavior.deferToChild, bool rootOverlay = false) : base(key: key, child: child, feedback: feedback, data: data, axis: DartRuntimePrimitives.RequireValue(axis), childWhenDragging: childWhenDragging, feedbackOffset: feedbackOffset, dragAnchorStrategy: dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy, maxSimultaneousDrags: DartRuntimePrimitives.RequireValue(maxSimultaneousDrags), onDragStarted: onDragStarted, onDragUpdate: onDragUpdate, onDraggableCanceled: onDraggableCanceled, onDragEnd: onDragEnd, onDragCompleted: onDragCompleted, ignoringFeedbackSemantics: ignoringFeedbackSemantics, ignoringFeedbackPointer: ignoringFeedbackPointer, allowedButtonsFilter: allowedButtonsFilter, hitTestBehavior: hitTestBehavior, rootOverlay: rootOverlay)
+    public LongPressDraggable(Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, Func<Draggable<T>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, long? maxSimultaneousDrags = null, Action? onDragStarted = null, Action<DragUpdateDetails>? onDragUpdate = null, Action<Velocity, Offset>? onDraggableCanceled = null, Action<DraggableDetails>? onDragEnd = null, Action? onDragCompleted = null, bool hapticFeedbackOnStart = true, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, Duration? delay = null, Func<long, bool>? allowedButtonsFilter = null, HitTestBehavior hitTestBehavior = HitTestBehavior.deferToChild, bool rootOverlay = false) : base(key: key, child: child, feedback: feedback, data: data, axis: DartRuntimePrimitives.RequireValue(axis), childWhenDragging: childWhenDragging, feedbackOffset: feedbackOffset, dragAnchorStrategy: dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy, maxSimultaneousDrags: DartRuntimePrimitives.RequireValue(maxSimultaneousDrags), onDragStarted: onDragStarted, onDragUpdate: onDragUpdate, onDraggableCanceled: onDraggableCanceled, onDragEnd: onDragEnd, onDragCompleted: onDragCompleted, ignoringFeedbackSemantics: ignoringFeedbackSemantics, ignoringFeedbackPointer: ignoringFeedbackPointer, allowedButtonsFilter: allowedButtonsFilter, hitTestBehavior: hitTestBehavior, rootOverlay: rootOverlay)
     {
         Duration __delay = delay ?? Gestures.ConstantsLibrary.kLongPressTimeout;
         this.hapticFeedbackOnStart = hapticFeedbackOnStart;
@@ -277,13 +277,13 @@ public class DragTarget<T> : StatefulWidget
     public virtual Func<BuildContext, List<T?>, List<object?>, Widget> builder { get; private set; } = default!;
     public virtual Func<T?, bool>? onWillAccept { get; private set; }
     public virtual Func<DragTargetDetails<T>, bool>? onWillAcceptWithDetails { get; private set; }
-    public virtual System.Action<T>? onAccept { get; private set; }
-    public virtual System.Action<DragTargetDetails<T>>? onAcceptWithDetails { get; private set; }
-    public virtual System.Action<T?>? onLeave { get; private set; }
-    public virtual System.Action<DragTargetDetails<T>>? onMove { get; private set; }
+    public virtual Action<T>? onAccept { get; private set; }
+    public virtual Action<DragTargetDetails<T>>? onAcceptWithDetails { get; private set; }
+    public virtual Action<T?>? onLeave { get; private set; }
+    public virtual Action<DragTargetDetails<T>>? onMove { get; private set; }
     public virtual HitTestBehavior hitTestBehavior { get; private set; } = default!;
 
-    public DragTarget(Key? key = null, Func<BuildContext, List<T?>, List<object?>, Widget> builder = default!, Func<T?, bool>? onWillAccept = null, Func<DragTargetDetails<T>, bool>? onWillAcceptWithDetails = null, System.Action<T>? onAccept = null, System.Action<DragTargetDetails<T>>? onAcceptWithDetails = null, System.Action<T?>? onLeave = null, System.Action<DragTargetDetails<T>>? onMove = null, HitTestBehavior hitTestBehavior = HitTestBehavior.translucent) : base(key: key)
+    public DragTarget(Key? key = null, Func<BuildContext, List<T?>, List<object?>, Widget> builder = default!, Func<T?, bool>? onWillAccept = null, Func<DragTargetDetails<T>, bool>? onWillAcceptWithDetails = null, Action<T>? onAccept = null, Action<DragTargetDetails<T>>? onAcceptWithDetails = null, Action<T?>? onLeave = null, Action<DragTargetDetails<T>>? onMove = null, HitTestBehavior hitTestBehavior = HitTestBehavior.translucent) : base(key: key)
     {
         this.builder = builder;
         this.onWillAccept = onWillAccept;
@@ -430,7 +430,7 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
     public virtual Offset dragStartPoint { get; private set; } = default!;
     public virtual Widget? feedback { get; private set; }
     public virtual Offset feedbackOffset { get; private set; } = default!;
-    public virtual System.Action<DragUpdateDetails>? onDragUpdate { get; private set; }
+    public virtual Action<DragUpdateDetails>? onDragUpdate { get; private set; }
     public virtual Action<Velocity, Offset, bool>? onDragEnd { get; private set; }
     public virtual OverlayState overlayState { get; private set; } = default!;
     public virtual bool ignoringFeedbackSemantics { get; private set; } = default!;
@@ -443,7 +443,7 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
     internal virtual Offset _overlayOffset { get; set; } = default!;
     internal virtual OverlayEntry? _entry { get; set; } = default;
 
-    internal _DragAvatar__drag_target(OverlayState overlayState, T? data = default, Axis? axis = null, Offset initialPosition = default!, Offset dragStartPoint = default, Widget? feedback = null, Offset feedbackOffset = default, System.Action<DragUpdateDetails>? onDragUpdate = null, Action<Velocity, Offset, bool>? onDragEnd = null, bool ignoringFeedbackSemantics = default!, bool ignoringFeedbackPointer = default!, long viewId = default!)
+    internal _DragAvatar__drag_target(OverlayState overlayState, T? data = default, Axis? axis = null, Offset initialPosition = default!, Offset dragStartPoint = default, Widget? feedback = null, Offset feedbackOffset = default, Action<DragUpdateDetails>? onDragUpdate = null, Action<Velocity, Offset, bool>? onDragEnd = null, bool ignoringFeedbackSemantics = default!, bool ignoringFeedbackPointer = default!, long viewId = default!)
     {
         this.overlayState = overlayState;
         this.data = data;

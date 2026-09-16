@@ -11,7 +11,7 @@ public class PageController : ScrollController
     public virtual bool keepPage { get; private set; } = default!;
     public virtual double viewportFraction { get; private set; } = default!;
 
-    public PageController(long initialPage = 0, bool keepPage = true, double viewportFraction = 1.0, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null) : base(onAttach: onAttach, onDetach: onDetach)
+    public PageController(long initialPage = 0, bool keepPage = true, double viewportFraction = 1.0, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null) : base(onAttach: onAttach, onDetach: onDetach)
     {
         this.initialPage = initialPage;
         this.keepPage = keepPage;
@@ -401,7 +401,7 @@ public class PageView : StatefulWidget
     public virtual PageController? controller { get; private set; }
     public virtual ScrollPhysics? physics { get; private set; }
     public virtual bool pageSnapping { get; private set; } = default!;
-    public virtual System.Action<long>? onPageChanged { get; private set; }
+    public virtual Action<long>? onPageChanged { get; private set; }
     public virtual SliverChildDelegate childrenDelegate { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
@@ -409,7 +409,7 @@ public class PageView : StatefulWidget
     public virtual ScrollBehavior? scrollBehavior { get; private set; }
     public virtual bool padEnds { get; private set; } = default!;
 
-    public PageView(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, System.Action<long>? onPageChanged = null, List<Widget> children = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true) : base(key: key)
+    public PageView(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, Action<long>? onPageChanged = null, List<Widget> children = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true) : base(key: key)
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.scrollDirection = scrollDirection;
@@ -430,7 +430,7 @@ public class PageView : StatefulWidget
         System.Diagnostics.Debug.Assert((scrollCacheExtent is null) || (scrollCacheExtent.value > 0.0 == allowImplicitScrolling));
     }
 
-    public static PageView CreateBuilder(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, System.Action<long>? onPageChanged = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
+    public static PageView CreateBuilder(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, Action<long>? onPageChanged = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
     {
         var __instance = new PageView(key, scrollDirection, reverse, controller, physics, pageSnapping, onPageChanged, default!, dragStartBehavior, allowImplicitScrolling, scrollCacheExtent, restorationId, clipBehavior, hitTestBehavior, scrollBehavior, padEnds);
         __instance.scrollDirection = scrollDirection;
@@ -451,7 +451,7 @@ public class PageView : StatefulWidget
         return __instance;
     }
 
-    public static PageView CreateCustom(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, System.Action<long>? onPageChanged = null, SliverChildDelegate childrenDelegate = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
+    public static PageView CreateCustom(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, Action<long>? onPageChanged = null, SliverChildDelegate childrenDelegate = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
     {
         var __instance = new PageView(key, scrollDirection, reverse, controller, physics, pageSnapping, onPageChanged, default!, dragStartBehavior, allowImplicitScrolling, scrollCacheExtent, restorationId, clipBehavior, hitTestBehavior, scrollBehavior, padEnds);
         __instance.scrollDirection = scrollDirection;

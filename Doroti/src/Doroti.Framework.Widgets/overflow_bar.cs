@@ -599,7 +599,7 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -707,7 +707,7 @@ internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObje
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

@@ -1336,7 +1336,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (opToken == "=" && activeAssignmentOwner.Name == "PrioritizedAction" &&
             left.Text(CoreProperty.name) == "_selectedAction")
         {
-            mappedLeftType = "Action<Intent>";
+            mappedLeftType = "IntentAction<Intent>";
         }
         else if (opToken == "=" && activeAssignmentOwner.Name == "_HighlightModeManager" &&
             left.Text(CoreProperty.name) == "_listeners")

@@ -11,9 +11,9 @@ public delegate void PaintRangeValueIndicator(PaintingContext context, Offset of
 public class RangeSlider : StatefulWidget
 {
     public virtual RangeValues values { get; private set; } = default!;
-    public virtual System.Action<RangeValues>? onChanged { get; private set; }
-    public virtual System.Action<RangeValues>? onChangeStart { get; private set; }
-    public virtual System.Action<RangeValues>? onChangeEnd { get; private set; }
+    public virtual Action<RangeValues>? onChanged { get; private set; }
+    public virtual Action<RangeValues>? onChangeStart { get; private set; }
+    public virtual Action<RangeValues>? onChangeEnd { get; private set; }
     public virtual double min { get; private set; } = default!;
     public virtual double max { get; private set; } = default!;
     public virtual long? divisions { get; private set; }
@@ -27,7 +27,7 @@ public class RangeSlider : StatefulWidget
     public virtual bool? year2023 { get; private set; }
     internal static double _minTouchTargetWidth = Widgets.ConstantsLibrary.kMinInteractiveDimension;
 
-    public RangeSlider(Key? key = null, RangeValues values = default!, System.Action<RangeValues>? onChanged = default!, System.Action<RangeValues>? onChangeStart = null, System.Action<RangeValues>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, RangeLabels? labels = null, Color? activeColor = null, Color? inactiveColor = null, WidgetStateProperty<Color?>? overlayColor = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, SemanticFormatterCallback? semanticFormatterCallback = null, EdgeInsetsGeometry? padding = null, bool? year2023 = null) : base(key: key)
+    public RangeSlider(Key? key = null, RangeValues values = default!, Action<RangeValues>? onChanged = default!, Action<RangeValues>? onChangeStart = null, Action<RangeValues>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, RangeLabels? labels = null, Color? activeColor = null, Color? inactiveColor = null, WidgetStateProperty<Color?>? overlayColor = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, SemanticFormatterCallback? semanticFormatterCallback = null, EdgeInsetsGeometry? padding = null, bool? year2023 = null) : base(key: key)
     {
         this.values = values;
         this.onChanged = onChanged;
@@ -57,9 +57,9 @@ public class RangeSlider : StatefulWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("valueStart", values.start));
         properties.add(new DoubleProperty("valueEnd", values.end));
-        properties.add(new ObjectFlagProperty<System.Action<RangeValues>>("onChanged", onChanged, ifNull: "disabled"));
-        properties.add(ObjectFlagProperty<System.Action<RangeValues>>.CreateHas("onChangeStart", onChangeStart));
-        properties.add(ObjectFlagProperty<System.Action<RangeValues>>.CreateHas("onChangeEnd", onChangeEnd));
+        properties.add(new ObjectFlagProperty<Action<RangeValues>>("onChanged", onChanged, ifNull: "disabled"));
+        properties.add(ObjectFlagProperty<Action<RangeValues>>.CreateHas("onChangeStart", onChangeStart));
+        properties.add(ObjectFlagProperty<Action<RangeValues>>.CreateHas("onChangeEnd", onChangeEnd));
         properties.add(new DoubleProperty("min", min));
         properties.add(new DoubleProperty("max", max));
         properties.add(new IntProperty("divisions", divisions));
@@ -308,7 +308,7 @@ public class _RangeSliderState__range_slider : State<RangeSlider>, TickerProvide
         return showValueIndicator switch { var __constant32003 when Equals(__constant32003, ShowValueIndicator.never) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink()),var __constant32062 when Equals(__constant32062, ShowValueIndicator.onlyForDiscrete) => (widget.divisions is not null) ? valueIndicator : SizedBox.CreateShrink(),var __constant32183 when Equals(__constant32183, ShowValueIndicator.onlyForContinuous) => (widget.divisions is null) ? valueIndicator : SizedBox.CreateShrink(),var __logical32306 when Equals(__logical32306, ShowValueIndicator.alwaysVisible) || Equals(__logical32306, ShowValueIndicator.always) => valueIndicator,var __constant32383 when Equals(__constant32383, ShowValueIndicator.onDrag) => valueIndicator,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -385,14 +385,14 @@ internal class _RangeSliderRenderObjectWidget__range_slider : LeafRenderObjectWi
     public virtual SliderThemeData sliderTheme { get; private set; } = default!;
     public virtual double textScaleFactor { get; private set; } = default!;
     public virtual Size screenSize { get; private set; } = default!;
-    public virtual System.Action<RangeValues>? onChanged { get; private set; }
-    public virtual System.Action<RangeValues>? onChangeStart { get; private set; }
-    public virtual System.Action<RangeValues>? onChangeEnd { get; private set; }
+    public virtual Action<RangeValues>? onChanged { get; private set; }
+    public virtual Action<RangeValues>? onChangeStart { get; private set; }
+    public virtual Action<RangeValues>? onChangeEnd { get; private set; }
     public virtual SemanticFormatterCallback? semanticFormatterCallback { get; private set; }
     public virtual _RangeSliderState__range_slider state { get; private set; } = default!;
     public virtual bool hovering { get; private set; } = default!;
 
-    internal _RangeSliderRenderObjectWidget__range_slider(RangeValues values, long? divisions, RangeLabels? labels, SliderThemeData sliderTheme, double textScaleFactor, Size screenSize, System.Action<RangeValues>? onChanged, System.Action<RangeValues>? onChangeStart, System.Action<RangeValues>? onChangeEnd, _RangeSliderState__range_slider state, SemanticFormatterCallback? semanticFormatterCallback, bool hovering)
+    internal _RangeSliderRenderObjectWidget__range_slider(RangeValues values, long? divisions, RangeLabels? labels, SliderThemeData sliderTheme, double textScaleFactor, Size screenSize, Action<RangeValues>? onChanged, Action<RangeValues>? onChangeStart, Action<RangeValues>? onChangeEnd, _RangeSliderState__range_slider state, SemanticFormatterCallback? semanticFormatterCallback, bool hovering)
     {
         this.values = values;
         this.divisions = divisions;
@@ -470,9 +470,9 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
     internal virtual ThemeData? _theme { get; set; } = default;
     internal virtual double _textScaleFactor { get; set; } = default!;
     internal virtual Size _screenSize { get; set; } = default!;
-    internal virtual System.Action<RangeValues>? _onChanged { get; set; } = default;
-    public virtual System.Action<RangeValues>? onChangeStart { get; set; } = default;
-    public virtual System.Action<RangeValues>? onChangeEnd { get; set; } = default;
+    internal virtual Action<RangeValues>? _onChanged { get; set; } = default;
+    public virtual Action<RangeValues>? onChangeStart { get; set; } = default;
+    public virtual Action<RangeValues>? onChangeEnd { get; set; } = default;
     internal virtual TextDirection _textDirection { get; set; } = default!;
     internal virtual bool _hovering { get; set; } = default!;
     internal virtual bool _hoveringStartThumb { get; set; } = false;
@@ -481,7 +481,7 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
     internal virtual SemanticsNode? _endSemanticsNode { get; set; } = default;
     public virtual bool _hasPendingSystemFontsDidChangeCallBack { get; set; } = false;
 
-    internal _RenderRangeSlider__range_slider(RangeValues values, long? divisions, RangeLabels? labels, SliderThemeData sliderTheme, ThemeData? theme, double textScaleFactor, Size screenSize, TargetPlatform platform, System.Action<RangeValues>? onChanged, SemanticFormatterCallback? semanticFormatterCallback, System.Action<RangeValues>? onChangeStart, System.Action<RangeValues>? onChangeEnd, _RangeSliderState__range_slider state, TextDirection textDirection, bool hovering, Gestures.DeviceGestureSettings gestureSettings)
+    internal _RenderRangeSlider__range_slider(RangeValues values, long? divisions, RangeLabels? labels, SliderThemeData sliderTheme, ThemeData? theme, double textScaleFactor, Size screenSize, TargetPlatform platform, Action<RangeValues>? onChanged, SemanticFormatterCallback? semanticFormatterCallback, Action<RangeValues>? onChangeStart, Action<RangeValues>? onChangeEnd, _RangeSliderState__range_slider state, TextDirection textDirection, bool hovering, Gestures.DeviceGestureSettings gestureSettings)
     {
         this.onChangeStart = onChangeStart;
         this.onChangeEnd = onChangeEnd;
@@ -691,7 +691,7 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
             markNeedsPaint();
         }
     }
-    public virtual System.Action<RangeValues>? onChanged
+    public virtual Action<RangeValues>? onChanged
     {
         get => _onChanged;
         set

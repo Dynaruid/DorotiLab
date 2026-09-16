@@ -85,14 +85,14 @@ internal sealed class SampleAppState : State<SampleApp>
     public override void dispose() { _revision++; base.dispose(); }
     public override Widget build(BuildContext context) => new M.MaterialApp(
         title: "Doroti Material 3", debugShowCheckedModeBanner: false,
-        locale: new Doroti.Ui.Locale("en", "US"), themeFactory: LightTheme, darkThemeFactory: DarkTheme, themeMode: _mode,
+        locale: new Locale("en", "US"), themeFactory: LightTheme, darkThemeFactory: DarkTheme, themeMode: _mode,
         home: new SampleHome(_seed, _image, _fromImage, _loading, _error,
             () => setState(() => _mode = (_mode == M.ThemeMode.dark || (_mode == M.ThemeMode.system && View.of(context).platformDispatcher.platformBrightness == Brightness.dark)) ? M.ThemeMode.light : M.ThemeMode.dark),
             SelectSeed, SelectImage, _acrylic, widget.AcrylicAvailable ? ToggleAcrylic : null));
 }
 
 internal sealed class SampleHome(int seed, int image, bool fromImage, bool loading, string? error,
-    Action brightness, System.Action<int> selectSeed, System.Action<int> selectImage,
+    Action brightness, Action<int> selectSeed, Action<int> selectImage,
     bool acrylic = false, Action? toggleAcrylic = null) : StatefulWidget
 {
     internal int Seed => seed;
@@ -103,8 +103,8 @@ internal sealed class SampleHome(int seed, int image, bool fromImage, bool loadi
     internal Action Brightness => brightness;
     internal bool Acrylic => acrylic;
     internal Action? ToggleAcrylic => toggleAcrylic;
-    internal System.Action<int> SelectSeed => selectSeed;
-    internal System.Action<int> SelectImage => selectImage;
+    internal Action<int> SelectSeed => selectSeed;
+    internal Action<int> SelectImage => selectImage;
     public override IState createState() => new SampleHomeState();
 }
 
@@ -112,7 +112,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
 {
     private Doroti.Framework.Scheduler.Ticker? _ticker;
     private ValueListenable<TickerModeData>? _tickerMode;
-    public Doroti.Framework.Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public Doroti.Framework.Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_ticker is not null) throw new InvalidOperationException("Home owns one navigation ticker.");
         _ticker = new Doroti.Framework.Scheduler.Ticker(onTick);

@@ -191,10 +191,10 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header : RenderSlive
 
     public override void redepthChildren()
     {
-        children.forEach((__arg0) => ((System.Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        children.forEach((__arg0) => ((Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }

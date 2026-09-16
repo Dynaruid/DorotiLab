@@ -15,7 +15,7 @@ internal enum _CheckboxType__checkbox
 public class Checkbox : StatefulWidget
 {
     public virtual bool? value { get; private set; }
-    public virtual System.Action<bool?>? onChanged { get; private set; }
+    public virtual Action<bool?>? onChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual Color? activeColor { get; private set; }
     public virtual WidgetStateProperty<Color?>? fillColor { get; private set; }
@@ -36,7 +36,7 @@ public class Checkbox : StatefulWidget
     public const double width = 18.0;
     internal virtual _CheckboxType__checkbox _checkboxType { get; private set; } = default!;
 
-    public Checkbox(Key? key = null, bool? value = default!, bool tristate = false, System.Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, OutlinedBorder? shape = null, BorderSide? side = null, bool isError = false, string? semanticLabel = null) : base(key: key)
+    public Checkbox(Key? key = null, bool? value = default!, bool tristate = false, Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, OutlinedBorder? shape = null, BorderSide? side = null, bool isError = false, string? semanticLabel = null) : base(key: key)
     {
         this.value = value;
         this.tristate = tristate;
@@ -61,7 +61,7 @@ public class Checkbox : StatefulWidget
         System.Diagnostics.Debug.Assert(tristate || (value is not null));
     }
 
-    public static Checkbox CreateAdaptive(Key? key = null, bool? value = default!, bool tristate = false, System.Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, OutlinedBorder? shape = null, BorderSide? side = null, bool isError = false, string? semanticLabel = null)
+    public static Checkbox CreateAdaptive(Key? key = null, bool? value = default!, bool tristate = false, Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, OutlinedBorder? shape = null, BorderSide? side = null, bool isError = false, string? semanticLabel = null)
     {
         var __instance = new Checkbox(key: key, value: value, tristate: tristate, onChanged: onChanged, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, visualDensity: visualDensity, focusNode: focusNode, autofocus: autofocus, shape: shape, side: side, isError: isError, semanticLabel: semanticLabel);
         __instance.value = value;
@@ -113,7 +113,7 @@ internal class _CheckboxState__checkbox : State<Checkbox>, TickerProviderStateMi
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((System.Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -161,7 +161,7 @@ internal class _CheckboxState__checkbox : State<Checkbox>, TickerProviderStateMi
         base.dispose();
     }
 
-    public virtual System.Action<bool?>? onChanged => widget.onChanged;
+    public virtual Action<bool?>? onChanged => widget.onChanged;
     public virtual bool tristate => widget.tristate;
     public virtual bool? value => widget.value;
     public virtual Duration? reactionAnimationDuration => ConstantsLibrary.kRadialReactionDuration;
@@ -344,7 +344,7 @@ internal class _CheckboxState__checkbox : State<Checkbox>, TickerProviderStateMi
 }))()));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -539,13 +539,13 @@ internal class _CheckboxState__checkbox : State<Checkbox>, TickerProviderStateMi
     }
 
     public virtual HashSet<WidgetState> states => ((Func<HashSet<WidgetState>>)(() => { var __collection10795 = new HashSet<WidgetState>(); if (!isInteractive) { __collection10795.Add(WidgetState.disabled); } if (_hovering) { __collection10795.Add(WidgetState.hovered); } if (_focused) { __collection10795.Add(WidgetState.focused); } if (value ?? true) { __collection10795.Add(WidgetState.selected); } return __collection10795; }))();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
     {
         return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap(null) : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd(null) : null, child: new Widgets.Semantics(enabled: isInteractive, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");

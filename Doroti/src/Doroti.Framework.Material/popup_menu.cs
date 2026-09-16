@@ -88,9 +88,9 @@ internal class _PopupMenuDividerState__popup_menu : State<PopupMenuDivider>
 
 internal class _MenuItem__popup_menu : SingleChildRenderObjectWidget
 {
-    public virtual System.Action<Size> onLayout { get; private set; } = default!;
+    public virtual Action<Size> onLayout { get; private set; } = default!;
 
-    internal _MenuItem__popup_menu(System.Action<Size> onLayout, Widget? child) : base(child: child)
+    internal _MenuItem__popup_menu(Action<Size> onLayout, Widget? child) : base(child: child)
     {
         this.onLayout = onLayout;
     }
@@ -111,9 +111,9 @@ internal class _MenuItem__popup_menu : SingleChildRenderObjectWidget
 
 public class _RenderMenuItem__popup_menu : RenderShiftedBox
 {
-    public virtual System.Action<Size> onLayout { get; set; } = default!;
+    public virtual Action<Size> onLayout { get; set; } = default!;
 
-    internal _RenderMenuItem__popup_menu(System.Action<Size> onLayout, RenderBox? child = null) : base(child)
+    internal _RenderMenuItem__popup_menu(Action<Size> onLayout, RenderBox? child = null) : base(child)
     {
         this.onLayout = onLayout;
     }
@@ -300,7 +300,7 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
         return (Widget?)new IgnorePointer(child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, child: new ListTile(enabled: widget.enabled, titleTextStyle: effectiveLabelTextStyle?.resolve(states), leading: new FadeTransition(opacity: _opacity, child: new Icon(_controller.isDismissed ? null : Icons.done)), title: widget.child)));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -719,7 +719,7 @@ public class PopupMenuButton<T> : StatefulWidget
     public virtual Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder { get; private set; } = default!;
     public virtual T? initialValue { get; private set; }
     public virtual Action? onOpened { get; private set; }
-    public virtual System.Action<T>? onSelected { get; private set; }
+    public virtual Action<T>? onSelected { get; private set; }
     public virtual Action? onCanceled { get; private set; }
     public virtual string? tooltip { get; private set; }
     public virtual double? elevation { get; private set; }
@@ -747,7 +747,7 @@ public class PopupMenuButton<T> : StatefulWidget
     public virtual ButtonStyle? style { get; private set; }
     public virtual bool? requestFocus { get; private set; }
 
-    public PopupMenuButton(Key? key = null, Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder = default!, T? initialValue = default, Action? onOpened = null, System.Action<T>? onSelected = null, Action? onCanceled = null, string? tooltip = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, EdgeInsetsGeometry padding = default!, EdgeInsetsGeometry? menuPadding = null, Widget? child = null, BorderRadius? borderRadius = null, double? splashRadius = null, Widget? icon = null, double? iconSize = null, Offset offset = default, bool enabled = true, ShapeBorder? shape = null, Color? color = null, Color? iconColor = null, bool? enableFeedback = null, BoxConstraints? constraints = null, PopupMenuPosition? position = null, Clip clipBehavior = Clip.none, bool useRootNavigator = false, AnimationStyle? popUpAnimationStyle = null, RouteSettings? routeSettings = null, ButtonStyle? style = null, bool? requestFocus = null) : base(key: key)
+    public PopupMenuButton(Key? key = null, Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder = default!, T? initialValue = default, Action? onOpened = null, Action<T>? onSelected = null, Action? onCanceled = null, string? tooltip = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, EdgeInsetsGeometry padding = default!, EdgeInsetsGeometry? menuPadding = null, Widget? child = null, BorderRadius? borderRadius = null, double? splashRadius = null, Widget? icon = null, double? iconSize = null, Offset offset = default, bool enabled = true, ShapeBorder? shape = null, Color? color = null, Color? iconColor = null, bool? enableFeedback = null, BoxConstraints? constraints = null, PopupMenuPosition? position = null, Clip clipBehavior = Clip.none, bool useRootNavigator = false, AnimationStyle? popUpAnimationStyle = null, RouteSettings? routeSettings = null, ButtonStyle? style = null, bool? requestFocus = null) : base(key: key)
     {
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
         this.itemBuilder = itemBuilder;

@@ -271,7 +271,7 @@ internal class _TableElement__table : RenderObjectElement
         }).ToList().Cast<RenderBox?>().ToList());
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         foreach (Element child in _children.expand((row) => row.children))
         {

@@ -129,7 +129,7 @@ public interface WidgetsBinding
     PlatformDispatcher platformDispatcher { get; }
     AppLifecycleState? lifecycleState { get; }
     bool debugCheckZone(string entryPoint);
-    void addPostFrameCallback(System.Action<Duration> callback, string debugLabel = "callback");
+    void addPostFrameCallback(Action<Duration> callback, string debugLabel = "callback");
     void scheduleWarmUpFrame();
     IEnumerable<RenderView> renderViews { get; }
     void hitTestInView(HitTestResult result, Offset position, long viewId);
@@ -247,7 +247,7 @@ public class RootElement : Element, RootElementMixin
     {
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_child is not null)
         {
@@ -343,7 +343,7 @@ public class WidgetsFlutterBinding : GestureBinding, PaintingBinding, Framework.
             return __late__semanticsEnabled;
         }
     }
-    public virtual ObserverList<System.Action<SemanticsActionEvent>> _semanticsActionListeners { get; set; } = new ObserverList<System.Action<SemanticsActionEvent>>();
+    public virtual ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; set; } = new ObserverList<Action<SemanticsActionEvent>>();
     public virtual long _outstandingHandles { get; set; } = 0L;
     public virtual SemanticsHandle? _semanticsHandle { get; set; } = default;
     public virtual AccessibilityFeatures _accessibilityFeatures { get; set; } = default!;
@@ -536,12 +536,12 @@ public class WidgetsFlutterBinding : GestureBinding, PaintingBinding, Framework.
         _semanticsEnabled.removeListener(listener);
     }
 
-    public virtual void addSemanticsActionListener(System.Action<SemanticsActionEvent> listener)
+    public virtual void addSemanticsActionListener(Action<SemanticsActionEvent> listener)
     {
         _semanticsActionListeners.add(listener);
     }
 
-    public virtual void removeSemanticsActionListener(System.Action<SemanticsActionEvent> listener)
+    public virtual void removeSemanticsActionListener(Action<SemanticsActionEvent> listener)
     {
         _semanticsActionListeners.remove(listener);
     }
@@ -583,7 +583,7 @@ public class WidgetsFlutterBinding : GestureBinding, PaintingBinding, Framework.
     {
         object? argumentsLocal = action.arguments;
         SemanticsActionEvent decodedAction = (argumentsLocal is ByteData) ? action.copyWith(arguments: new StandardMessageCodec().decodeMessage((ByteData)argumentsLocal)) : action;
-        List<System.Action<SemanticsActionEvent>> localListeners = _semanticsActionListeners.toList();
+        List<Action<SemanticsActionEvent>> localListeners = _semanticsActionListeners.toList();
         foreach (var listener in localListeners)
         {
             if (_semanticsActionListeners.contains(listener))
@@ -1102,7 +1102,7 @@ public class WidgetsFlutterBinding : GestureBinding, PaintingBinding, Framework.
 
     public virtual Future _forceRepaint()
     {
-        System.Action<RenderObject> visitor = default!;
+        Action<RenderObject> visitor = default!;
         visitor = (child) =>
         {
             child.markNeedsPaint();

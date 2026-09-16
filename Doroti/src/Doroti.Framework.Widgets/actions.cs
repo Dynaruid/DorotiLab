@@ -60,8 +60,8 @@ public delegate void ActionListenerCallback(object action);
 
 public interface IActionListenerSource
 {
-    void addActionListener(System.Action<object> listener);
-    void removeActionListener(System.Action<object> listener);
+    void addActionListener(Action<object> listener);
+    void removeActionListener(Action<object> listener);
 }
 
 public interface IIntentAction : IActionListenerSource
@@ -78,16 +78,16 @@ public interface IIntentAction : IActionListenerSource
     void UpdateCallingAction(IIntentAction? value);
 }
 
-public abstract class Action<T> : Diagnosticable, IActionListenerSource, IIntentAction where T : Intent
+public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, IIntentAction where T : Intent
 {
-    internal virtual ObserverList<System.Action<object>> _listeners { get; private set; } = new ObserverList<System.Action<object>>();
+    internal virtual ObserverList<Action<object>> _listeners { get; private set; } = new ObserverList<Action<object>>();
     internal virtual IIntentAction? _currentCallingAction { get; set; }
 
-    protected Action()
+    protected IntentAction()
     {
     }
 
-    public static Action<T> CreateOverridable(Action<T> defaultAction, BuildContext context)
+    public static IntentAction<T> CreateOverridable(IntentAction<T> defaultAction, BuildContext context)
     {
         return defaultAction._makeOverridableAction(context);
     }
@@ -105,7 +105,7 @@ public abstract class Action<T> : Diagnosticable, IActionListenerSource, IIntent
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Action<T>? callingAction => ((Action<T>?)_currentCallingAction)!;
+    public virtual IntentAction<T>? callingAction => ((IntentAction<T>?)_currentCallingAction)!;
     public virtual Type intentType => typeof(T);
     public virtual bool isEnabled(T intent, BuildContext? context = null) => isActionEnabled;
     internal virtual bool _isEnabled(T intent, BuildContext? context) => this switch { ContextAction<T> action => action.isEnabled(intent, context), _ => isEnabled(intent) };
@@ -128,21 +128,21 @@ public abstract class Action<T> : Diagnosticable, IActionListenerSource, IIntent
     bool IIntentAction.ConsumesKeyForIntent(Intent intent) => consumesKey((T)intent);
     KeyEventResult IIntentAction.ToKeyEventResultForIntent(Intent intent, object? invokeResult) => toKeyEventResult((T)intent, invokeResult);
     void IIntentAction.UpdateCallingAction(IIntentAction? value) => _updateCallingAction(value);
-    public virtual void addActionListener(System.Action<object> listener) => _listeners.add(listener);
-    public virtual void removeActionListener(System.Action<object> listener) => _listeners.remove(listener);
+    public virtual void addActionListener(Action<object> listener) => _listeners.add(listener);
+    public virtual void removeActionListener(Action<object> listener) => _listeners.remove(listener);
     public virtual void notifyActionListeners()
     {
         if (!Enumerable.Any(_listeners))
         {
             return;
         }
-        var localListeners = new List<System.Action<object>>(_listeners);
+        var localListeners = new List<Action<object>>(_listeners);
         foreach (var listener in localListeners)
         {
             InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<Action<T>>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) };
+                    collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<IntentAction<T>>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) };
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
@@ -161,7 +161,7 @@ public abstract class Action<T> : Diagnosticable, IActionListenerSource, IIntent
         }
     }
 
-    internal virtual Action<T> _makeOverridableAction(BuildContext context)
+    internal virtual IntentAction<T> _makeOverridableAction(BuildContext context)
     {
         return new _OverridableAction__actions<T>(defaultAction: this, lookupContext: context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -197,12 +197,12 @@ public abstract class Action<T> : Diagnosticable, IActionListenerSource, IIntent
 
 public class ActionListener : StatefulWidget
 {
-    public virtual System.Action<object> listener { get; private set; } = default!;
+    public virtual Action<object> listener { get; private set; } = default!;
     public virtual dynamic action { get; private set; } = default!;
     internal virtual IActionListenerSource listenerSource { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public ActionListener(Key? key = null, System.Action<object> listener = default!, dynamic action = default!, Widget child = default!) : base(key: key)
+    public ActionListener(Key? key = null, Action<object> listener = default!, dynamic action = default!, Widget child = default!) : base(key: key)
     {
         this.listener = listener;
         this.action = action;
@@ -241,7 +241,7 @@ internal class _ActionListenerState__actions : State<ActionListener>
     public override Widget build(BuildContext context) => widget.child;
 }
 
-public abstract class ContextAction<T> : Action<T> where T : Intent
+public abstract class ContextAction<T> : IntentAction<T> where T : Intent
 {
     public override bool isEnabled(T intent, BuildContext? context = null) => base.isEnabled(intent);
     public abstract override object? invoke(T intent, BuildContext? context = null);
@@ -255,7 +255,7 @@ public abstract class ContextAction<T> : Action<T> where T : Intent
 
 public delegate object? OnInvokeCallback<T>(T intent) where T : Intent;
 
-public class CallbackAction<T> : Action<T> where T : Intent
+public class CallbackAction<T> : IntentAction<T> where T : Intent
 {
     public virtual Func<T, object?> onInvoke { get; private set; } = default!;
 
@@ -264,12 +264,12 @@ public class CallbackAction<T> : Action<T> where T : Intent
         this.onInvoke = onInvoke;
     }
 
-    public CallbackAction(System.Action<Intent?> onInvoke)
+    public CallbackAction(Action<Intent?> onInvoke)
     {
         this.onInvoke = intent => { onInvoke(intent); return null; };
     }
 
-    public CallbackAction(System.Action<T> onInvoke)
+    public CallbackAction(Action<T> onInvoke)
     {
         this.onInvoke = intent => { onInvoke(intent); return null; };
     }
@@ -426,9 +426,9 @@ public class Actions : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Action<T> find<T>(BuildContext context, T? intent = default) where T : Intent
+    public static IntentAction<T> find<T>(BuildContext context, T? intent = default) where T : Intent
     {
-        Action<T>? action = maybeFind(context, intent: intent);
+        IntentAction<T>? action = maybeFind(context, intent: intent);
         DartRuntimePrimitives.Assert(() =>
             {
                 if (action is null)
@@ -443,7 +443,7 @@ public class Actions : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Action<T>? maybeFind<T>(BuildContext context, T? intent = default) where T : Intent
+    public static IntentAction<T>? maybeFind<T>(BuildContext context, T? intent = default) where T : Intent
     {
         IIntentAction? action = default;
         _visitActionsAncestors(context, (element) =>
@@ -459,7 +459,7 @@ public class Actions : StatefulWidget
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        if (action is Action<T> actionLocal)
+        if (action is IntentAction<T> actionLocal)
         {
             return actionLocal;
         }
@@ -656,14 +656,14 @@ public class FocusableActionDetector : StatefulWidget
     public virtual bool descendantsAreTraversable { get; private set; } = default!;
     public virtual DartMap<Type, dynamic>? actions { get; private set; }
     public virtual DartMap<ShortcutActivator, Intent>? shortcuts { get; private set; }
-    public virtual System.Action<bool>? onShowFocusHighlight { get; private set; }
-    public virtual System.Action<bool>? onShowHoverHighlight { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onShowFocusHighlight { get; private set; }
+    public virtual Action<bool>? onShowHoverHighlight { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual MouseCursor mouseCursor { get; private set; } = default!;
     public virtual bool includeFocusSemantics { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public FocusableActionDetector(Key? key = null, bool enabled = true, FocusNode? focusNode = null, bool autofocus = false, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, System.Action<bool>? onShowFocusHighlight = null, System.Action<bool>? onShowHoverHighlight = null, System.Action<bool>? onFocusChange = null, MouseCursor mouseCursor = default!, bool includeFocusSemantics = true, Widget child = default!) : base(key: key)
+    public FocusableActionDetector(Key? key = null, bool enabled = true, FocusNode? focusNode = null, bool autofocus = false, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, Action<bool>? onShowFocusHighlight = null, Action<bool>? onShowHoverHighlight = null, Action<bool>? onFocusChange = null, MouseCursor mouseCursor = default!, bool includeFocusSemantics = true, Widget child = default!) : base(key: key)
     {
         MouseCursor __mouseCursor = mouseCursor ?? MouseCursor.defer;
         this.enabled = enabled;
@@ -833,7 +833,7 @@ public class VoidCallbackIntent : Intent
 
 }
 
-public class VoidCallbackAction : Action<VoidCallbackIntent>
+public class VoidCallbackAction : IntentAction<VoidCallbackIntent>
 {
     public override object? invoke(VoidCallbackIntent intent, BuildContext? context = null)
     {
@@ -866,7 +866,7 @@ public class DoNothingAndStopPropagationIntent : Intent
 
 }
 
-public class DoNothingAction : Action<Intent>
+public class DoNothingAction : IntentAction<Intent>
 {
     internal virtual bool _consumesKey { get; private set; } = default!;
 
@@ -899,7 +899,7 @@ public class ButtonActivateIntent : Intent
 
 }
 
-public abstract class ActivateAction : Action<ActivateIntent>
+public abstract class ActivateAction : IntentAction<ActivateIntent>
 {
 }
 
@@ -911,7 +911,7 @@ public class SelectIntent : Intent
 
 }
 
-public abstract class SelectAction : Action<SelectIntent>
+public abstract class SelectAction : IntentAction<SelectIntent>
 {
 }
 
@@ -923,7 +923,7 @@ public class DismissIntent : Intent
 
 }
 
-public abstract class DismissAction : Action<DismissIntent>
+public abstract class DismissAction : IntentAction<DismissIntent>
 {
 }
 
@@ -979,7 +979,7 @@ internal interface _OverridableActionMixin__actions<T> where T : Intent
     bool _debugAssertIsEnabledMutuallyRecursive { get; set; }
     bool _debugAssertConsumeKeyMutuallyRecursive { get; set; }
 
-    public Action<T> _defaultAction { get; }
+    public IntentAction<T> _defaultAction { get; }
     public BuildContext _lookupContext { get; }
     public object? _invokeDefaultAction(T intent, IIntentAction? fromAction, BuildContext? context);
     public IIntentAction? _getOverrideAction<U>(U? intent, bool declareDependency = false);
@@ -995,14 +995,14 @@ internal interface _OverridableActionMixin__actions<T> where T : Intent
 
 internal class _OverridableAction__actions<T> : ContextAction<T> where T : Intent
 {
-    internal virtual Action<T> _defaultAction { get; private set; } = default!;
+    internal virtual IntentAction<T> _defaultAction { get; private set; } = default!;
     internal virtual BuildContext _lookupContext { get; private set; } = default!;
     public virtual bool _debugAssertMutuallyRecursive { get; set; } = false;
     public virtual bool _debugAssertIsActionEnabledMutuallyRecursive { get; set; } = false;
     public virtual bool _debugAssertIsEnabledMutuallyRecursive { get; set; } = false;
     public virtual bool _debugAssertConsumeKeyMutuallyRecursive { get; set; } = false;
 
-    internal _OverridableAction__actions(Action<T> defaultAction, BuildContext lookupContext)
+    internal _OverridableAction__actions(IntentAction<T> defaultAction, BuildContext lookupContext)
     {
         _lookupContext = lookupContext;
         _defaultAction = defaultAction;
@@ -1153,7 +1153,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<Action<T>>("defaultAction", _defaultAction));
+        properties.add(new DiagnosticsProperty<IntentAction<T>>("defaultAction", _defaultAction));
     }
 
 }
@@ -1184,7 +1184,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         DartRuntimePrimitives.Assert(() => overrideAction.DebugCanHandleIntent(intent));
-        Action<T> wrappedDefault = new _ContextActionToActionAdapter__actions<T>(invokeContext: context!, action: _defaultAction);
+        IntentAction<T> wrappedDefault = new _ContextActionToActionAdapter__actions<T>(invokeContext: context!, action: _defaultAction);
         overrideAction.UpdateCallingAction(wrappedDefault);
         object? returnValue = overrideAction.InvokeIntent(intent, context);
         overrideAction.UpdateCallingAction(null);
@@ -1321,12 +1321,12 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<Action<T>>("defaultAction", _defaultAction));
+        properties.add(new DiagnosticsProperty<IntentAction<T>>("defaultAction", _defaultAction));
     }
 
 }
 
-internal class _ContextActionToActionAdapter__actions<T> : Action<T> where T : Intent
+internal class _ContextActionToActionAdapter__actions<T> : IntentAction<T> where T : Intent
 {
     public virtual BuildContext invokeContext { get; private set; } = default!;
     public virtual ContextAction<T> action { get; private set; } = default!;
@@ -1342,17 +1342,17 @@ internal class _ContextActionToActionAdapter__actions<T> : Action<T> where T : I
         action._updateCallingAction(value);
     }
 
-    public override Action<T>? callingAction => action.callingAction;
+    public override IntentAction<T>? callingAction => action.callingAction;
     public override bool isEnabled(T intent, BuildContext? context = null) => action.isEnabled(intent, invokeContext);
     public override bool isActionEnabled => action.isActionEnabled;
     public override bool consumesKey(T intent) => action.consumesKey(intent);
-    public override void addActionListener(System.Action<object> listener)
+    public override void addActionListener(Action<object> listener)
     {
         base.addActionListener(listener);
         action.addActionListener(listener);
     }
 
-    public override void removeActionListener(System.Action<object> listener)
+    public override void removeActionListener(Action<object> listener)
     {
         base.removeActionListener(listener);
         action.removeActionListener(listener);

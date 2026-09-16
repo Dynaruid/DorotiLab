@@ -38,9 +38,9 @@ public delegate void GestureRecognizerFactoryInitializer<T>(T instance) where T 
 public class GestureRecognizerFactoryWithHandlers<T> : GestureRecognizerFactory<T> where T : GestureRecognizer
 {
     internal virtual Func<T> _constructor { get; private set; } = default!;
-    internal virtual System.Action<T> _initializer { get; private set; } = default!;
+    internal virtual Action<T> _initializer { get; private set; } = default!;
 
-    public GestureRecognizerFactoryWithHandlers(Func<T> _constructor, System.Action<T> _initializer)
+    public GestureRecognizerFactoryWithHandlers(Func<T> _constructor, Action<T> _initializer)
     {
         this._constructor = _constructor;
         this._initializer = _initializer;
@@ -53,64 +53,64 @@ public class GestureRecognizerFactoryWithHandlers<T> : GestureRecognizerFactory<
 public class GestureDetector : StatelessWidget
 {
     public virtual Widget? child { get; private set; }
-    public virtual System.Action<TapDownDetails>? onTapDown { get; private set; }
-    public virtual System.Action<TapUpDetails>? onTapUp { get; private set; }
+    public virtual Action<TapDownDetails>? onTapDown { get; private set; }
+    public virtual Action<TapUpDetails>? onTapUp { get; private set; }
     public virtual Action? onTap { get; private set; }
-    public virtual System.Action<TapMoveDetails>? onTapMove { get; private set; }
+    public virtual Action<TapMoveDetails>? onTapMove { get; private set; }
     public virtual Action? onTapCancel { get; private set; }
     public virtual Action? onSecondaryTap { get; private set; }
-    public virtual System.Action<TapDownDetails>? onSecondaryTapDown { get; private set; }
-    public virtual System.Action<TapUpDetails>? onSecondaryTapUp { get; private set; }
+    public virtual Action<TapDownDetails>? onSecondaryTapDown { get; private set; }
+    public virtual Action<TapUpDetails>? onSecondaryTapUp { get; private set; }
     public virtual Action? onSecondaryTapCancel { get; private set; }
-    public virtual System.Action<TapDownDetails>? onTertiaryTapDown { get; private set; }
-    public virtual System.Action<TapUpDetails>? onTertiaryTapUp { get; private set; }
+    public virtual Action<TapDownDetails>? onTertiaryTapDown { get; private set; }
+    public virtual Action<TapUpDetails>? onTertiaryTapUp { get; private set; }
     public virtual Action? onTertiaryTapCancel { get; private set; }
-    public virtual System.Action<TapDownDetails>? onDoubleTapDown { get; private set; }
+    public virtual Action<TapDownDetails>? onDoubleTapDown { get; private set; }
     public virtual Action? onDoubleTap { get; private set; }
     public virtual Action? onDoubleTapCancel { get; private set; }
-    public virtual System.Action<LongPressDownDetails>? onLongPressDown { get; private set; }
+    public virtual Action<LongPressDownDetails>? onLongPressDown { get; private set; }
     public virtual Action? onLongPressCancel { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<LongPressStartDetails>? onLongPressStart { get; private set; }
-    public virtual System.Action<LongPressMoveUpdateDetails>? onLongPressMoveUpdate { get; private set; }
+    public virtual Action<LongPressStartDetails>? onLongPressStart { get; private set; }
+    public virtual Action<LongPressMoveUpdateDetails>? onLongPressMoveUpdate { get; private set; }
     public virtual Action? onLongPressUp { get; private set; }
-    public virtual System.Action<LongPressEndDetails>? onLongPressEnd { get; private set; }
-    public virtual System.Action<LongPressDownDetails>? onSecondaryLongPressDown { get; private set; }
+    public virtual Action<LongPressEndDetails>? onLongPressEnd { get; private set; }
+    public virtual Action<LongPressDownDetails>? onSecondaryLongPressDown { get; private set; }
     public virtual Action? onSecondaryLongPressCancel { get; private set; }
     public virtual Action? onSecondaryLongPress { get; private set; }
-    public virtual System.Action<LongPressStartDetails>? onSecondaryLongPressStart { get; private set; }
-    public virtual System.Action<LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate { get; private set; }
+    public virtual Action<LongPressStartDetails>? onSecondaryLongPressStart { get; private set; }
+    public virtual Action<LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate { get; private set; }
     public virtual Action? onSecondaryLongPressUp { get; private set; }
-    public virtual System.Action<LongPressEndDetails>? onSecondaryLongPressEnd { get; private set; }
-    public virtual System.Action<LongPressDownDetails>? onTertiaryLongPressDown { get; private set; }
+    public virtual Action<LongPressEndDetails>? onSecondaryLongPressEnd { get; private set; }
+    public virtual Action<LongPressDownDetails>? onTertiaryLongPressDown { get; private set; }
     public virtual Action? onTertiaryLongPressCancel { get; private set; }
     public virtual Action? onTertiaryLongPress { get; private set; }
-    public virtual System.Action<LongPressStartDetails>? onTertiaryLongPressStart { get; private set; }
-    public virtual System.Action<LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate { get; private set; }
+    public virtual Action<LongPressStartDetails>? onTertiaryLongPressStart { get; private set; }
+    public virtual Action<LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate { get; private set; }
     public virtual Action? onTertiaryLongPressUp { get; private set; }
-    public virtual System.Action<LongPressEndDetails>? onTertiaryLongPressEnd { get; private set; }
-    public virtual System.Action<DragDownDetails>? onVerticalDragDown { get; private set; }
-    public virtual System.Action<DragStartDetails>? onVerticalDragStart { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onVerticalDragUpdate { get; private set; }
-    public virtual System.Action<DragEndDetails>? onVerticalDragEnd { get; private set; }
+    public virtual Action<LongPressEndDetails>? onTertiaryLongPressEnd { get; private set; }
+    public virtual Action<DragDownDetails>? onVerticalDragDown { get; private set; }
+    public virtual Action<DragStartDetails>? onVerticalDragStart { get; private set; }
+    public virtual Action<DragUpdateDetails>? onVerticalDragUpdate { get; private set; }
+    public virtual Action<DragEndDetails>? onVerticalDragEnd { get; private set; }
     public virtual Action? onVerticalDragCancel { get; private set; }
-    public virtual System.Action<DragDownDetails>? onHorizontalDragDown { get; private set; }
-    public virtual System.Action<DragStartDetails>? onHorizontalDragStart { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onHorizontalDragUpdate { get; private set; }
-    public virtual System.Action<DragEndDetails>? onHorizontalDragEnd { get; private set; }
+    public virtual Action<DragDownDetails>? onHorizontalDragDown { get; private set; }
+    public virtual Action<DragStartDetails>? onHorizontalDragStart { get; private set; }
+    public virtual Action<DragUpdateDetails>? onHorizontalDragUpdate { get; private set; }
+    public virtual Action<DragEndDetails>? onHorizontalDragEnd { get; private set; }
     public virtual Action? onHorizontalDragCancel { get; private set; }
-    public virtual System.Action<DragDownDetails>? onPanDown { get; private set; }
-    public virtual System.Action<DragStartDetails>? onPanStart { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onPanUpdate { get; private set; }
-    public virtual System.Action<DragEndDetails>? onPanEnd { get; private set; }
+    public virtual Action<DragDownDetails>? onPanDown { get; private set; }
+    public virtual Action<DragStartDetails>? onPanStart { get; private set; }
+    public virtual Action<DragUpdateDetails>? onPanUpdate { get; private set; }
+    public virtual Action<DragEndDetails>? onPanEnd { get; private set; }
     public virtual Action? onPanCancel { get; private set; }
-    public virtual System.Action<ScaleStartDetails>? onScaleStart { get; private set; }
-    public virtual System.Action<ScaleUpdateDetails>? onScaleUpdate { get; private set; }
-    public virtual System.Action<ScaleEndDetails>? onScaleEnd { get; private set; }
-    public virtual System.Action<ForcePressDetails>? onForcePressStart { get; private set; }
-    public virtual System.Action<ForcePressDetails>? onForcePressPeak { get; private set; }
-    public virtual System.Action<ForcePressDetails>? onForcePressUpdate { get; private set; }
-    public virtual System.Action<ForcePressDetails>? onForcePressEnd { get; private set; }
+    public virtual Action<ScaleStartDetails>? onScaleStart { get; private set; }
+    public virtual Action<ScaleUpdateDetails>? onScaleUpdate { get; private set; }
+    public virtual Action<ScaleEndDetails>? onScaleEnd { get; private set; }
+    public virtual Action<ForcePressDetails>? onForcePressStart { get; private set; }
+    public virtual Action<ForcePressDetails>? onForcePressPeak { get; private set; }
+    public virtual Action<ForcePressDetails>? onForcePressUpdate { get; private set; }
+    public virtual Action<ForcePressDetails>? onForcePressEnd { get; private set; }
     public virtual HitTestBehavior? behavior { get; private set; }
     public virtual bool excludeFromSemantics { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
@@ -118,7 +118,7 @@ public class GestureDetector : StatelessWidget
     public virtual bool trackpadScrollCausesScale { get; private set; } = default!;
     public virtual Offset trackpadScrollToScaleFactor { get; private set; } = default!;
 
-    public GestureDetector(Key? key = null, Widget? child = null, System.Action<TapDownDetails>? onTapDown = null, System.Action<TapUpDetails>? onTapUp = null, Action? onTap = null, System.Action<TapMoveDetails>? onTapMove = null, Action? onTapCancel = null, Action? onSecondaryTap = null, System.Action<TapDownDetails>? onSecondaryTapDown = null, System.Action<TapUpDetails>? onSecondaryTapUp = null, Action? onSecondaryTapCancel = null, System.Action<TapDownDetails>? onTertiaryTapDown = null, System.Action<TapUpDetails>? onTertiaryTapUp = null, Action? onTertiaryTapCancel = null, System.Action<TapDownDetails>? onDoubleTapDown = null, Action? onDoubleTap = null, Action? onDoubleTapCancel = null, System.Action<LongPressDownDetails>? onLongPressDown = null, Action? onLongPressCancel = null, Action? onLongPress = null, System.Action<LongPressStartDetails>? onLongPressStart = null, System.Action<LongPressMoveUpdateDetails>? onLongPressMoveUpdate = null, Action? onLongPressUp = null, System.Action<LongPressEndDetails>? onLongPressEnd = null, System.Action<LongPressDownDetails>? onSecondaryLongPressDown = null, Action? onSecondaryLongPressCancel = null, Action? onSecondaryLongPress = null, System.Action<LongPressStartDetails>? onSecondaryLongPressStart = null, System.Action<LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate = null, Action? onSecondaryLongPressUp = null, System.Action<LongPressEndDetails>? onSecondaryLongPressEnd = null, System.Action<LongPressDownDetails>? onTertiaryLongPressDown = null, Action? onTertiaryLongPressCancel = null, Action? onTertiaryLongPress = null, System.Action<LongPressStartDetails>? onTertiaryLongPressStart = null, System.Action<LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate = null, Action? onTertiaryLongPressUp = null, System.Action<LongPressEndDetails>? onTertiaryLongPressEnd = null, System.Action<DragDownDetails>? onVerticalDragDown = null, System.Action<DragStartDetails>? onVerticalDragStart = null, System.Action<DragUpdateDetails>? onVerticalDragUpdate = null, System.Action<DragEndDetails>? onVerticalDragEnd = null, Action? onVerticalDragCancel = null, System.Action<DragDownDetails>? onHorizontalDragDown = null, System.Action<DragStartDetails>? onHorizontalDragStart = null, System.Action<DragUpdateDetails>? onHorizontalDragUpdate = null, System.Action<DragEndDetails>? onHorizontalDragEnd = null, Action? onHorizontalDragCancel = null, System.Action<ForcePressDetails>? onForcePressStart = null, System.Action<ForcePressDetails>? onForcePressPeak = null, System.Action<ForcePressDetails>? onForcePressUpdate = null, System.Action<ForcePressDetails>? onForcePressEnd = null, System.Action<DragDownDetails>? onPanDown = null, System.Action<DragStartDetails>? onPanStart = null, System.Action<DragUpdateDetails>? onPanUpdate = null, System.Action<DragEndDetails>? onPanEnd = null, Action? onPanCancel = null, System.Action<ScaleStartDetails>? onScaleStart = null, System.Action<ScaleUpdateDetails>? onScaleUpdate = null, System.Action<ScaleEndDetails>? onScaleEnd = null, HitTestBehavior? behavior = null, bool excludeFromSemantics = false, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool trackpadScrollCausesScale = false, Offset? trackpadScrollToScaleFactor = null, HashSet<PointerDeviceKind>? supportedDevices = null) : base(key: key)
+    public GestureDetector(Key? key = null, Widget? child = null, Action<TapDownDetails>? onTapDown = null, Action<TapUpDetails>? onTapUp = null, Action? onTap = null, Action<TapMoveDetails>? onTapMove = null, Action? onTapCancel = null, Action? onSecondaryTap = null, Action<TapDownDetails>? onSecondaryTapDown = null, Action<TapUpDetails>? onSecondaryTapUp = null, Action? onSecondaryTapCancel = null, Action<TapDownDetails>? onTertiaryTapDown = null, Action<TapUpDetails>? onTertiaryTapUp = null, Action? onTertiaryTapCancel = null, Action<TapDownDetails>? onDoubleTapDown = null, Action? onDoubleTap = null, Action? onDoubleTapCancel = null, Action<LongPressDownDetails>? onLongPressDown = null, Action? onLongPressCancel = null, Action? onLongPress = null, Action<LongPressStartDetails>? onLongPressStart = null, Action<LongPressMoveUpdateDetails>? onLongPressMoveUpdate = null, Action? onLongPressUp = null, Action<LongPressEndDetails>? onLongPressEnd = null, Action<LongPressDownDetails>? onSecondaryLongPressDown = null, Action? onSecondaryLongPressCancel = null, Action? onSecondaryLongPress = null, Action<LongPressStartDetails>? onSecondaryLongPressStart = null, Action<LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate = null, Action? onSecondaryLongPressUp = null, Action<LongPressEndDetails>? onSecondaryLongPressEnd = null, Action<LongPressDownDetails>? onTertiaryLongPressDown = null, Action? onTertiaryLongPressCancel = null, Action? onTertiaryLongPress = null, Action<LongPressStartDetails>? onTertiaryLongPressStart = null, Action<LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate = null, Action? onTertiaryLongPressUp = null, Action<LongPressEndDetails>? onTertiaryLongPressEnd = null, Action<DragDownDetails>? onVerticalDragDown = null, Action<DragStartDetails>? onVerticalDragStart = null, Action<DragUpdateDetails>? onVerticalDragUpdate = null, Action<DragEndDetails>? onVerticalDragEnd = null, Action? onVerticalDragCancel = null, Action<DragDownDetails>? onHorizontalDragDown = null, Action<DragStartDetails>? onHorizontalDragStart = null, Action<DragUpdateDetails>? onHorizontalDragUpdate = null, Action<DragEndDetails>? onHorizontalDragEnd = null, Action? onHorizontalDragCancel = null, Action<ForcePressDetails>? onForcePressStart = null, Action<ForcePressDetails>? onForcePressPeak = null, Action<ForcePressDetails>? onForcePressUpdate = null, Action<ForcePressDetails>? onForcePressEnd = null, Action<DragDownDetails>? onPanDown = null, Action<DragStartDetails>? onPanStart = null, Action<DragUpdateDetails>? onPanUpdate = null, Action<DragEndDetails>? onPanEnd = null, Action? onPanCancel = null, Action<ScaleStartDetails>? onScaleStart = null, Action<ScaleUpdateDetails>? onScaleUpdate = null, Action<ScaleEndDetails>? onScaleEnd = null, HitTestBehavior? behavior = null, bool excludeFromSemantics = false, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool trackpadScrollCausesScale = false, Offset? trackpadScrollToScaleFactor = null, HashSet<PointerDeviceKind>? supportedDevices = null) : base(key: key)
     {
         Offset __trackpadScrollToScaleFactor = trackpadScrollToScaleFactor ?? ScaleLibrary.kDefaultTrackpadScrollToScaleFactor;
         this.child = child;
@@ -582,9 +582,9 @@ internal delegate void _AssignSemantics__gesture_detector(RenderSemanticsGesture
 internal class _GestureSemantics__gesture_detector : SingleChildRenderObjectWidget
 {
     public virtual HitTestBehavior behavior { get; private set; } = default!;
-    public virtual System.Action<RenderSemanticsGestureHandler> assignSemantics { get; private set; } = default!;
+    public virtual Action<RenderSemanticsGestureHandler> assignSemantics { get; private set; } = default!;
 
-    internal _GestureSemantics__gesture_detector(Widget? child = null, HitTestBehavior behavior = default!, System.Action<RenderSemanticsGestureHandler> assignSemantics = default!) : base(child: child)
+    internal _GestureSemantics__gesture_detector(Widget? child = null, HitTestBehavior behavior = default!, Action<RenderSemanticsGestureHandler> assignSemantics = default!) : base(child: child)
     {
         this.behavior = behavior;
         this.assignSemantics = assignSemantics;
@@ -702,11 +702,11 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual System.Action<DragUpdateDetails>? _getHorizontalDragUpdateHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
+    internal virtual Action<DragUpdateDetails>? _getHorizontalDragUpdateHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
     {
         var horizontal = ((HorizontalDragGestureRecognizer?)recognizers.GetValueOrDefault(typeof(HorizontalDragGestureRecognizer)))!;
         var pan = ((PanGestureRecognizer?)recognizers.GetValueOrDefault(typeof(PanGestureRecognizer)))!;
-        System.Action<DragUpdateDetails>? horizontalHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((horizontal is null) ? null : ((details) =>
+        Action<DragUpdateDetails>? horizontalHandler = DartRuntimePrimitives.ConvertValue<Action<DragUpdateDetails>>((Action<DragUpdateDetails>?)((horizontal is null) ? null : ((details) =>
         {
             Offset localCenter = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
             Offset globalCenter = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenter));
@@ -717,7 +717,7 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
             horizontal.onUpdate?.Invoke(details);
             horizontal.onEnd?.Invoke(new DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset, globalPosition: newGlobalOffset));
         })));
-        System.Action<DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((pan is null) ? null : ((details) =>
+        Action<DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<Action<DragUpdateDetails>>((Action<DragUpdateDetails>?)((pan is null) ? null : ((details) =>
         {
             Offset localCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
             Offset globalCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenterLocal));
@@ -740,11 +740,11 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual System.Action<DragUpdateDetails>? _getVerticalDragUpdateHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
+    internal virtual Action<DragUpdateDetails>? _getVerticalDragUpdateHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
     {
         var vertical = ((VerticalDragGestureRecognizer?)recognizers.GetValueOrDefault(typeof(VerticalDragGestureRecognizer)))!;
         var pan = ((PanGestureRecognizer?)recognizers.GetValueOrDefault(typeof(PanGestureRecognizer)))!;
-        System.Action<DragUpdateDetails>? verticalHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((vertical is null) ? null : ((details) =>
+        Action<DragUpdateDetails>? verticalHandler = DartRuntimePrimitives.ConvertValue<Action<DragUpdateDetails>>((Action<DragUpdateDetails>?)((vertical is null) ? null : ((details) =>
         {
             Offset localCenter = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
             Offset globalCenter = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenter));
@@ -755,7 +755,7 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
             vertical.onUpdate?.Invoke(details);
             vertical.onEnd?.Invoke(new DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset, globalPosition: newGlobalOffset));
         })));
-        System.Action<DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((pan is null) ? null : ((details) =>
+        Action<DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<Action<DragUpdateDetails>>((Action<DragUpdateDetails>?)((pan is null) ? null : ((details) =>
         {
             Offset localCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
             Offset globalCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenterLocal));

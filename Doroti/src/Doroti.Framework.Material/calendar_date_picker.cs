@@ -107,13 +107,13 @@ public class CalendarDatePicker : StatefulWidget
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual DateTime currentDate { get; private set; } = default!;
-    public virtual System.Action<DateTime> onDateChanged { get; private set; } = default!;
-    public virtual System.Action<DateTime>? onDisplayedMonthChanged { get; private set; }
+    public virtual Action<DateTime> onDateChanged { get; private set; } = default!;
+    public virtual Action<DateTime>? onDisplayedMonthChanged { get; private set; }
     public virtual DatePickerMode initialCalendarMode { get; private set; } = default!;
     public virtual Func<DateTime, bool>? selectableDayPredicate { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public CalendarDatePicker(Key? key = null, DateTime? initialDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, System.Action<DateTime> onDateChanged = default!, System.Action<DateTime>? onDisplayedMonthChanged = null, DatePickerMode initialCalendarMode = DatePickerMode.day, Func<DateTime, bool>? selectableDayPredicate = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public CalendarDatePicker(Key? key = null, DateTime? initialDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, Action<DateTime> onDateChanged = default!, Action<DateTime>? onDisplayedMonthChanged = null, DatePickerMode initialCalendarMode = DatePickerMode.day, Func<DateTime, bool>? selectableDayPredicate = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
         this.onDateChanged = onDateChanged;
@@ -402,7 +402,7 @@ public class _DatePickerModeToggleButtonState__calendar_date_picker : State<_Dat
         base.dispose();
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -464,12 +464,12 @@ internal class _MonthPicker__calendar_date_picker : StatefulWidget
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual DateTime? selectedDate { get; private set; }
-    public virtual System.Action<DateTime> onChanged { get; private set; } = default!;
-    public virtual System.Action<DateTime> onDisplayedMonthChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onDisplayedMonthChanged { get; private set; } = default!;
     public virtual Func<DateTime, bool>? selectableDayPredicate { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _MonthPicker__calendar_date_picker(Key? key = null, DateTime initialMonth = default!, DateTime currentDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? selectedDate = default!, System.Action<DateTime> onChanged = default!, System.Action<DateTime> onDisplayedMonthChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Func<DateTime, bool>? selectableDayPredicate = null) : base(key: key)
+    internal _MonthPicker__calendar_date_picker(Key? key = null, DateTime initialMonth = default!, DateTime currentDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? selectedDate = default!, Action<DateTime> onChanged = default!, Action<DateTime> onDisplayedMonthChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Func<DateTime, bool>? selectableDayPredicate = null) : base(key: key)
     {
         this.initialMonth = initialMonth;
         this.currentDate = currentDate;
@@ -771,14 +771,14 @@ internal class _DayPicker__calendar_date_picker : StatefulWidget
 {
     public virtual DateTime? selectedDate { get; private set; }
     public virtual DateTime currentDate { get; private set; } = default!;
-    public virtual System.Action<DateTime> onChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onChanged { get; private set; } = default!;
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual DateTime displayedMonth { get; private set; } = default!;
     public virtual Func<DateTime, bool>? selectableDayPredicate { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _DayPicker__calendar_date_picker(Key? key = null, DateTime currentDate = default!, DateTime displayedMonth = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? selectedDate = default!, System.Action<DateTime> onChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Func<DateTime, bool>? selectableDayPredicate = null) : base(key: key)
+    internal _DayPicker__calendar_date_picker(Key? key = null, DateTime currentDate = default!, DateTime displayedMonth = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? selectedDate = default!, Action<DateTime> onChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Func<DateTime, bool>? selectableDayPredicate = null) : base(key: key)
     {
         this.currentDate = currentDate;
         this.displayedMonth = displayedMonth;
@@ -881,11 +881,11 @@ internal class _Day__calendar_date_picker : StatefulWidget
     public virtual bool isDisabled { get; private set; } = default!;
     public virtual bool isSelectedDay { get; private set; } = default!;
     public virtual bool isToday { get; private set; } = default!;
-    public virtual System.Action<DateTime> onChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onChanged { get; private set; } = default!;
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _Day__calendar_date_picker(DateTime day, Key? key = null, bool isDisabled = default!, bool isSelectedDay = default!, bool isToday = default!, System.Action<DateTime> onChanged = default!, FocusNode focusNode = default!, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    internal _Day__calendar_date_picker(DateTime day, Key? key = null, bool isDisabled = default!, bool isSelectedDay = default!, bool isToday = default!, Action<DateTime> onChanged = default!, FocusNode focusNode = default!, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
         this.day = day;
         this.isDisabled = isDisabled;
@@ -985,11 +985,11 @@ public class YearPicker : StatefulWidget
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual DateTime? selectedDate { get; private set; }
-    public virtual System.Action<DateTime> onChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onChanged { get; private set; } = default!;
     public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public YearPicker(Key? key = null, DateTime? currentDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? initialDate = null, DateTime? selectedDate = default!, System.Action<DateTime> onChanged = default!, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public YearPicker(Key? key = null, DateTime? currentDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? initialDate = null, DateTime? selectedDate = default!, Action<DateTime> onChanged = default!, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
         this.firstDate = firstDate;

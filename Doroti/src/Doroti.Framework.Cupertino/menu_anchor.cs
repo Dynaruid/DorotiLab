@@ -443,7 +443,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAncho
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -847,7 +847,7 @@ internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -1397,8 +1397,8 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
     public virtual Widget? trailing { get; private set; }
     public virtual Widget? subtitle { get; private set; }
     public virtual Action? onPressed { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual bool requestFocusOnHover { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
     public virtual FocusNode? focusNode { get; private set; }
@@ -1427,7 +1427,7 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
     internal static TextStyle _kTrailingDefaultTextStyle = new TextStyle(fontSize: 21);
     internal static IconThemeData _kTrailingDefaultIconTheme = new IconThemeData(size: 21, applyTextScaling: true);
 
-    public CupertinoMenuItem(Key? key = null, Widget child = default!, Widget? subtitle = null, Widget? leading = null, double? leadingWidth = null, AlignmentGeometry? leadingMidpointAlignment = null, Widget? trailing = null, double? trailingWidth = null, AlignmentGeometry? trailingMidpointAlignment = null, EdgeInsetsGeometry? padding = null, BoxConstraints? constraints = null, bool autofocus = false, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, System.Action<bool>? onHover = null, Action? onPressed = null, WidgetStateProperty<BoxDecoration>? decoration = null, WidgetStateProperty<MouseCursor>? mouseCursor = null, HitTestBehavior behavior = HitTestBehavior.opaque, bool requestCloseOnActivate = true, bool requestFocusOnHover = true, bool isDestructiveAction = false) : base(key: key)
+    public CupertinoMenuItem(Key? key = null, Widget child = default!, Widget? subtitle = null, Widget? leading = null, double? leadingWidth = null, AlignmentGeometry? leadingMidpointAlignment = null, Widget? trailing = null, double? trailingWidth = null, AlignmentGeometry? trailingMidpointAlignment = null, EdgeInsetsGeometry? padding = null, BoxConstraints? constraints = null, bool autofocus = false, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, Action<bool>? onHover = null, Action? onPressed = null, WidgetStateProperty<BoxDecoration>? decoration = null, WidgetStateProperty<MouseCursor>? mouseCursor = null, HitTestBehavior behavior = HitTestBehavior.opaque, bool requestCloseOnActivate = true, bool requestFocusOnHover = true, bool isDestructiveAction = false) : base(key: key)
     {
         this.child = child;
         this.subtitle = subtitle;
@@ -1703,9 +1703,9 @@ public class _RenderAlignMidpoint__menu_anchor : RenderPositionedBox
 
 public class _CupertinoMenuItemInteractionHandler__menu_anchor : StatefulWidget
 {
-    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
     public virtual Action? onPressed { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool requestFocusOnHover { get; private set; } = default!;
@@ -1714,7 +1714,7 @@ public class _CupertinoMenuItemInteractionHandler__menu_anchor : StatefulWidget
     public virtual WidgetStateProperty<BoxDecoration> decoration { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _CupertinoMenuItemInteractionHandler__menu_anchor(System.Action<bool>? onHover, Action? onPressed, System.Action<bool>? onFocusChange, FocusNode? focusNode, bool autofocus, bool requestFocusOnHover, HitTestBehavior behavior, WidgetStateProperty<MouseCursor> mouseCursor, WidgetStateProperty<BoxDecoration> decoration, Widget child)
+    internal _CupertinoMenuItemInteractionHandler__menu_anchor(Action<bool>? onHover, Action? onPressed, Action<bool>? onFocusChange, FocusNode? focusNode, bool autofocus, bool requestFocusOnHover, HitTestBehavior behavior, WidgetStateProperty<MouseCursor> mouseCursor, WidgetStateProperty<BoxDecoration> decoration, Widget child)
     {
         this.onHover = onHover;
         this.onPressed = onPressed;
@@ -2027,10 +2027,10 @@ internal class _SwipeScope__menu_anchor : InheritedWidget
 public class _SwipeRegion__menu_anchor : StatefulWidget
 {
     public virtual bool enabled { get; private set; } = default!;
-    public virtual System.Action<double> onDistanceChanged { get; private set; } = default!;
+    public virtual Action<double> onDistanceChanged { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _SwipeRegion__menu_anchor(bool enabled = true, System.Action<double> onDistanceChanged = default!, Widget child = default!)
+    internal _SwipeRegion__menu_anchor(bool enabled = true, Action<double> onDistanceChanged = default!, Widget child = default!)
     {
         this.enabled = enabled;
         this.onDistanceChanged = onDistanceChanged;
@@ -2273,12 +2273,12 @@ internal class _SwipeHandle__menu_anchor : Gestures.Drag
 {
     public virtual long viewId { get; private set; } = default!;
     internal virtual List<_SwipeTarget__menu_anchor> _enteredTargets { get; private set; } = new List<_SwipeTarget__menu_anchor>();
-    public virtual System.Action<Gestures.DragUpdateDetails> onSwipeUpdate { get; private set; } = default!;
-    public virtual System.Action<Gestures.DragEndDetails> onSwipeEnd { get; private set; } = default!;
+    public virtual Action<Gestures.DragUpdateDetails> onSwipeUpdate { get; private set; } = default!;
+    public virtual Action<Gestures.DragEndDetails> onSwipeEnd { get; private set; } = default!;
     public virtual Action onSwipeCanceled { get; private set; } = default!;
     internal virtual Offset _position { get; set; } = default!;
 
-    internal _SwipeHandle__menu_anchor(Offset initialPosition, long viewId, System.Action<Gestures.DragEndDetails> onSwipeEnd, System.Action<Gestures.DragUpdateDetails> onSwipeUpdate, Action onSwipeCanceled)
+    internal _SwipeHandle__menu_anchor(Offset initialPosition, long viewId, Action<Gestures.DragEndDetails> onSwipeEnd, Action<Gestures.DragUpdateDetails> onSwipeUpdate, Action onSwipeCanceled)
     {
         this.viewId = viewId;
         this.onSwipeEnd = onSwipeEnd;

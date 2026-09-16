@@ -7,10 +7,10 @@ public class KeyboardListener : StatelessWidget
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool includeSemantics { get; private set; } = default!;
-    public virtual System.Action<KeyEvent>? onKeyEvent { get; private set; }
+    public virtual Action<KeyEvent>? onKeyEvent { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public KeyboardListener(Key? key = null, FocusNode focusNode = default!, bool autofocus = false, bool includeSemantics = true, System.Action<KeyEvent>? onKeyEvent = null, Widget child = default!) : base(key: key)
+    public KeyboardListener(Key? key = null, FocusNode focusNode = default!, bool autofocus = false, bool includeSemantics = true, Action<KeyEvent>? onKeyEvent = null, Widget child = default!) : base(key: key)
     {
         this.focusNode = focusNode;
         this.autofocus = autofocus;

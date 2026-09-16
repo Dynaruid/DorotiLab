@@ -10,7 +10,7 @@ public class RawMaterialButton : StatefulWidget
 {
     public virtual Action? onPressed { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<bool>? onHighlightChanged { get; private set; }
+    public virtual Action<bool>? onHighlightChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual TextStyle? textStyle { get; private set; }
     public virtual Color? fillColor { get; private set; }
@@ -35,7 +35,7 @@ public class RawMaterialButton : StatefulWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual bool enableFeedback { get; private set; } = default!;
 
-    public RawMaterialButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHighlightChanged = null, MouseCursor? mouseCursor = null, TextStyle? textStyle = null, Color? fillColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, double elevation = 2.0, double focusElevation = 4.0, double hoverElevation = 4.0, double highlightElevation = 8.0, double disabledElevation = 0.0, EdgeInsetsGeometry padding = default!, VisualDensity visualDensity = default!, BoxConstraints constraints = default!, ShapeBorder shape = default!, Duration? animationDuration = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, Widget? child = null, bool enableFeedback = true) : base(key: key)
+    public RawMaterialButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, Action<bool>? onHighlightChanged = null, MouseCursor? mouseCursor = null, TextStyle? textStyle = null, Color? fillColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, double elevation = 2.0, double focusElevation = 4.0, double hoverElevation = 4.0, double highlightElevation = 8.0, double disabledElevation = 0.0, EdgeInsetsGeometry padding = default!, VisualDensity visualDensity = default!, BoxConstraints constraints = default!, ShapeBorder shape = default!, Duration? animationDuration = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, Widget? child = null, bool enableFeedback = true) : base(key: key)
     {
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.zero;
         VisualDensity __visualDensity = visualDensity ?? VisualDensity.standard;
@@ -150,7 +150,7 @@ internal class _RawMaterialButtonState__button : State<RawMaterialButton>, Mater
         return new Widgets.Semantics(container: true, button: true, enabled: widget.enabled, child: new _InputPadding__button(minSize: minSizeLocal, child: result));
     }
 
-    public virtual System.Action<bool> updateMaterialState(WidgetState key, System.Action<bool>? onChanged = null)
+    public virtual Action<bool> updateMaterialState(WidgetState key, Action<bool>? onChanged = null)
     {
         return (value) =>
         {

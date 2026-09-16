@@ -66,12 +66,12 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             if (!oldWidget._disabled)
             {
                 oldWidget.@delegate!._selectionContainerContext = null;
-                _listeners.forEach((__arg0) => ((System.Action<Action>)oldWidget.@delegate!.removeListener)(__arg0));
+                _listeners.forEach((__arg0) => ((Action<Action>)oldWidget.@delegate!.removeListener)(__arg0));
             }
             if (!widget._disabled)
             {
                 widget.@delegate!._selectionContainerContext = context;
-                _listeners.forEach((__arg0) => ((System.Action<Action>)widget.@delegate!.addListener)(__arg0));
+                _listeners.forEach((__arg0) => ((Action<Action>)widget.@delegate!.addListener)(__arg0));
             }
             if (!Equals(oldWidget.@delegate?.value, widget.@delegate?.value))
             {
@@ -171,7 +171,7 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
         if (!widget._disabled)
         {
             widget.@delegate!._selectionContainerContext = null;
-            _listeners.forEach((__arg0) => ((System.Action<Action>)widget.@delegate!.removeListener)(__arg0));
+            _listeners.forEach((__arg0) => ((Action<Action>)widget.@delegate!.removeListener)(__arg0));
         }
         _removeSelectionRegistrarSubscription();
         base.dispose();

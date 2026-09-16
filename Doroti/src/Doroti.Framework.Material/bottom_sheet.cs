@@ -49,7 +49,7 @@ public class BottomSheet : StatefulWidget
     public virtual bool? showDragHandle { get; private set; }
     public virtual Color? dragHandleColor { get; private set; }
     public virtual Size? dragHandleSize { get; private set; }
-    public virtual System.Action<Gestures.DragStartDetails>? onDragStart { get; private set; }
+    public virtual Action<Gestures.DragStartDetails>? onDragStart { get; private set; }
     public virtual BottomSheetDragEndHandler? onDragEnd { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? shadowColor { get; private set; }
@@ -58,7 +58,7 @@ public class BottomSheet : StatefulWidget
     public virtual Clip? clipBehavior { get; private set; }
     public virtual BoxConstraints? constraints { get; private set; }
 
-    public BottomSheet(Key? key = null, AnimationController? animationController = null, bool enableDrag = true, bool? showDragHandle = null, Color? dragHandleColor = null, Size? dragHandleSize = null, System.Action<Gestures.DragStartDetails>? onDragStart = null, BottomSheetDragEndHandler? onDragEnd = null, Color? backgroundColor = null, Color? shadowColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? clipBehavior = null, BoxConstraints? constraints = null, Action onClosing = default!, Func<BuildContext, Widget> builder = default!) : base(key: key)
+    public BottomSheet(Key? key = null, AnimationController? animationController = null, bool enableDrag = true, bool? showDragHandle = null, Color? dragHandleColor = null, Size? dragHandleSize = null, Action<Gestures.DragStartDetails>? onDragStart = null, BottomSheetDragEndHandler? onDragEnd = null, Color? backgroundColor = null, Color? shadowColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? clipBehavior = null, BoxConstraints? constraints = null, Action onClosing = default!, Func<BuildContext, Widget> builder = default!) : base(key: key)
     {
         this.animationController = animationController;
         this.enableDrag = enableDrag;
@@ -228,12 +228,12 @@ internal class _BottomSheetState__bottom_sheet : State<BottomSheet>
 internal class _DragHandle__bottom_sheet : StatelessWidget
 {
     public virtual Action? onSemanticsTap { get; private set; }
-    public virtual System.Action<bool> handleHover { get; private set; } = default!;
+    public virtual Action<bool> handleHover { get; private set; } = default!;
     public virtual HashSet<WidgetState> states { get; private set; } = default!;
     public virtual Color? dragHandleColor { get; private set; }
     public virtual Size? dragHandleSize { get; private set; }
 
-    internal _DragHandle__bottom_sheet(Action? onSemanticsTap, System.Action<bool> handleHover, HashSet<WidgetState> states, Color? dragHandleColor = null, Size? dragHandleSize = null)
+    internal _DragHandle__bottom_sheet(Action? onSemanticsTap, Action<bool> handleHover, HashSet<WidgetState> states, Color? dragHandleColor = null, Size? dragHandleSize = null)
     {
         this.onSemanticsTap = onSemanticsTap;
         this.handleHover = handleHover;
@@ -255,12 +255,12 @@ internal class _DragHandle__bottom_sheet : StatelessWidget
 
 internal class _BottomSheetLayoutWithSizeListener__bottom_sheet : SingleChildRenderObjectWidget
 {
-    public virtual System.Action<Size> onChildSizeChanged { get; private set; } = default!;
+    public virtual Action<Size> onChildSizeChanged { get; private set; } = default!;
     public virtual double animationValue { get; private set; } = default!;
     public virtual bool isScrollControlled { get; private set; } = default!;
     public virtual double scrollControlDisabledMaxHeightRatio { get; private set; } = default!;
 
-    internal _BottomSheetLayoutWithSizeListener__bottom_sheet(System.Action<Size> onChildSizeChanged, double animationValue, bool isScrollControlled, double scrollControlDisabledMaxHeightRatio, Widget? child = null) : base(child: child)
+    internal _BottomSheetLayoutWithSizeListener__bottom_sheet(Action<Size> onChildSizeChanged, double animationValue, bool isScrollControlled, double scrollControlDisabledMaxHeightRatio, Widget? child = null) : base(child: child)
     {
         this.onChildSizeChanged = onChildSizeChanged;
         this.animationValue = animationValue;
@@ -288,12 +288,12 @@ internal class _BottomSheetLayoutWithSizeListener__bottom_sheet : SingleChildRen
 public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : RenderShiftedBox
 {
     internal virtual Size _lastSize { get; set; } = Size.zero;
-    internal virtual System.Action<Size> _onChildSizeChanged { get; set; } = default!;
+    internal virtual Action<Size> _onChildSizeChanged { get; set; } = default!;
     internal virtual double _animationValue { get; set; } = default!;
     internal virtual bool _isScrollControlled { get; set; } = default!;
     internal virtual double _scrollControlDisabledMaxHeightRatio { get; set; } = default!;
 
-    internal _RenderBottomSheetLayoutWithSizeListener__bottom_sheet(RenderBox? child = null, System.Action<Size> onChildSizeChanged = default!, double animationValue = default!, bool isScrollControlled = default!, double scrollControlDisabledMaxHeightRatio = default!) : base(child)
+    internal _RenderBottomSheetLayoutWithSizeListener__bottom_sheet(RenderBox? child = null, Action<Size> onChildSizeChanged = default!, double animationValue = default!, bool isScrollControlled = default!, double scrollControlDisabledMaxHeightRatio = default!) : base(child)
     {
         _onChildSizeChanged = onChildSizeChanged;
         _animationValue = animationValue;
@@ -301,7 +301,7 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : RenderShif
         _scrollControlDisabledMaxHeightRatio = scrollControlDisabledMaxHeightRatio;
     }
 
-    public virtual System.Action<Size> onChildSizeChanged
+    public virtual Action<Size> onChildSizeChanged
     {
         get => _onChildSizeChanged;
         set
@@ -662,11 +662,11 @@ public static partial class Bottom_sheetLibrary
 internal class _BottomSheetGestureDetector__bottom_sheet : StatelessWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual System.Action<Gestures.DragStartDetails> onVerticalDragStart { get; private set; } = default!;
-    public virtual System.Action<Gestures.DragUpdateDetails> onVerticalDragUpdate { get; private set; } = default!;
-    public virtual System.Action<Gestures.DragEndDetails> onVerticalDragEnd { get; private set; } = default!;
+    public virtual Action<Gestures.DragStartDetails> onVerticalDragStart { get; private set; } = default!;
+    public virtual Action<Gestures.DragUpdateDetails> onVerticalDragUpdate { get; private set; } = default!;
+    public virtual Action<Gestures.DragEndDetails> onVerticalDragEnd { get; private set; } = default!;
 
-    internal _BottomSheetGestureDetector__bottom_sheet(Widget child, System.Action<Gestures.DragStartDetails> onVerticalDragStart, System.Action<Gestures.DragUpdateDetails> onVerticalDragUpdate, System.Action<Gestures.DragEndDetails> onVerticalDragEnd)
+    internal _BottomSheetGestureDetector__bottom_sheet(Widget child, Action<Gestures.DragStartDetails> onVerticalDragStart, Action<Gestures.DragUpdateDetails> onVerticalDragUpdate, Action<Gestures.DragEndDetails> onVerticalDragEnd)
     {
         this.child = child;
         this.onVerticalDragStart = onVerticalDragStart;

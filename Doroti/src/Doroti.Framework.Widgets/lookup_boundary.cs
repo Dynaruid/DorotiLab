@@ -126,7 +126,7 @@ public class LookupBoundary : InheritedWidget
         });
     }
 
-    public static void visitChildElements(BuildContext context, System.Action<Element> visitor)
+    public static void visitChildElements(BuildContext context, Action<Element> visitor)
     {
         context.visitChildElements((child) =>
         {

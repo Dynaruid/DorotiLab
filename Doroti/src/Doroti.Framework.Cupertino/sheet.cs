@@ -275,7 +275,7 @@ internal class _CupertinoSheetTransitionState__sheet : State<CupertinoSheetTrans
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -724,11 +724,11 @@ public class _CupertinoDragGestureController__sheet<T>
 internal class _CupertinoSheetScrollController__sheet : ScrollController
 {
     public virtual Action onDragStart { get; private set; } = default!;
-    public virtual System.Action<double> onDragUpdate { get; private set; } = default!;
-    public virtual System.Action<double> onDragEnd { get; private set; } = default!;
+    public virtual Action<double> onDragUpdate { get; private set; } = default!;
+    public virtual Action<double> onDragEnd { get; private set; } = default!;
     public virtual Func<bool> sheetIsDraggedDown { get; private set; } = default!;
 
-    internal _CupertinoSheetScrollController__sheet(Action onDragStart, System.Action<double> onDragUpdate, System.Action<double> onDragEnd, Func<bool> sheetIsDraggedDown)
+    internal _CupertinoSheetScrollController__sheet(Action onDragStart, Action<double> onDragUpdate, Action<double> onDragEnd, Func<bool> sheetIsDraggedDown)
     {
         this.onDragStart = onDragStart;
         this.onDragUpdate = onDragUpdate;
@@ -749,11 +749,11 @@ public class _CupertinoSheetScrollPosition__sheet : ScrollPositionWithSingleCont
     internal virtual Action? _dragCancelCallback { get; set; } = default;
     internal virtual HashSet<AnimationController> _ballisticControllers { get; private set; } = new HashSet<AnimationController>();
     public virtual Action onDragStart { get; private set; } = default!;
-    public virtual System.Action<double> onDragUpdate { get; private set; } = default!;
-    public virtual System.Action<double> onDragEnd { get; private set; } = default!;
+    public virtual Action<double> onDragUpdate { get; private set; } = default!;
+    public virtual Action<double> onDragEnd { get; private set; } = default!;
     public virtual Func<bool> sheetIsDraggedDown { get; private set; } = default!;
 
-    internal _CupertinoSheetScrollPosition__sheet(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition = null, Action onDragStart = default!, System.Action<double> onDragUpdate = default!, System.Action<double> onDragEnd = default!, Func<bool> sheetIsDraggedDown = default!) : base(physics: physics, context: context, oldPosition: oldPosition)
+    internal _CupertinoSheetScrollPosition__sheet(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition = null, Action onDragStart = default!, Action<double> onDragUpdate = default!, Action<double> onDragEnd = default!, Func<bool> sheetIsDraggedDown = default!) : base(physics: physics, context: context, oldPosition: oldPosition)
     {
         this.onDragStart = onDragStart;
         this.onDragUpdate = onDragUpdate;

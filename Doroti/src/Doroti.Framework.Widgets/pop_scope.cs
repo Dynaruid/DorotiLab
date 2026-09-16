@@ -10,10 +10,10 @@ public class PopScope<T> : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
     public virtual Action<bool, T?>? onPopInvokedWithResult { get; private set; }
-    public virtual System.Action<bool>? onPopInvoked { get; private set; }
+    public virtual Action<bool>? onPopInvoked { get; private set; }
     public virtual bool canPop { get; private set; } = default!;
 
-    public PopScope(Key? key = null, Widget child = default!, bool canPop = true, Action<bool, T?>? onPopInvokedWithResult = null, System.Action<bool>? onPopInvoked = null) : base(key: key)
+    public PopScope(Key? key = null, Widget child = default!, bool canPop = true, Action<bool, T?>? onPopInvokedWithResult = null, Action<bool>? onPopInvoked = null) : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;

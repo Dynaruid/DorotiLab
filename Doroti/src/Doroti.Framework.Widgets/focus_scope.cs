@@ -10,7 +10,7 @@ public class Focus : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     internal virtual Func<FocusNode, KeyEvent, KeyEventResult>? _onKeyEvent { get; private set; }
     internal virtual Func<FocusNode, RawKeyEvent, KeyEventResult>? _onKey { get; private set; }
     internal virtual bool? _canRequestFocus { get; private set; }
@@ -28,7 +28,7 @@ public class Focus : StatefulWidget
             : null;
     internal virtual string? _debugLabel { get; private set; }
 
-    public Focus(Key? key = null, Widget child = default!, FocusNode? focusNode = null, FocusNode? parentNode = null, bool autofocus = false, System.Action<bool>? onFocusChange = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, bool? canRequestFocus = null, bool? skipTraversal = null, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null, bool includeSemantics = true, string? debugLabel = null) : base(key: key)
+    public Focus(Key? key = null, Widget child = default!, FocusNode? focusNode = null, FocusNode? parentNode = null, bool autofocus = false, Action<bool>? onFocusChange = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, bool? canRequestFocus = null, bool? skipTraversal = null, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null, bool includeSemantics = true, string? debugLabel = null) : base(key: key)
     {
         this.child = child;
         this.focusNode = focusNode;
@@ -45,7 +45,7 @@ public class Focus : StatefulWidget
         _debugLabel = debugLabel;
     }
 
-    public static Focus CreateWithExternalFocusNode(Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = default!, System.Action<bool>? onFocusChange = null, bool includeSemantics = default!)
+    public static Focus CreateWithExternalFocusNode(Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = default!, Action<bool>? onFocusChange = null, bool includeSemantics = default!)
         => new _FocusWithExternalFocusNode__focus_scope(key, child, focusNode, parentNode, autofocus, onFocusChange, includeSemantics);
 
     internal virtual bool _usingExternalFocus => false;
@@ -106,7 +106,7 @@ public class Focus : StatefulWidget
 
 internal class _FocusWithExternalFocusNode__focus_scope : Focus
 {
-    internal _FocusWithExternalFocusNode__focus_scope(Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = false, System.Action<bool>? onFocusChange = null, bool includeSemantics = true) : base(key: key, child: child, focusNode: focusNode, parentNode: parentNode, autofocus: autofocus, onFocusChange: onFocusChange, includeSemantics: includeSemantics)
+    internal _FocusWithExternalFocusNode__focus_scope(Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = false, Action<bool>? onFocusChange = null, bool includeSemantics = true) : base(key: key, child: child, focusNode: focusNode, parentNode: parentNode, autofocus: autofocus, onFocusChange: onFocusChange, includeSemantics: includeSemantics)
     {
     }
 
@@ -308,11 +308,11 @@ internal class _FocusState__focus_scope : State<Focus>
 
 public class FocusScope : Focus
 {
-    public FocusScope(Key? key = null, FocusScopeNode? node = null, FocusNode? parentNode = null, Widget child = default!, bool autofocus = false, System.Action<bool>? onFocusChange = null, bool? canRequestFocus = null, bool? skipTraversal = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, string? debugLabel = null, bool includeSemantics = true, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null) : base(key: key, parentNode: parentNode, child: child, autofocus: autofocus, onFocusChange: onFocusChange, canRequestFocus: canRequestFocus, skipTraversal: skipTraversal, onKeyEvent: onKeyEvent, onKey: onKey, debugLabel: debugLabel, includeSemantics: includeSemantics, descendantsAreFocusable: descendantsAreFocusable, descendantsAreTraversable: descendantsAreTraversable, focusNode: node)
+    public FocusScope(Key? key = null, FocusScopeNode? node = null, FocusNode? parentNode = null, Widget child = default!, bool autofocus = false, Action<bool>? onFocusChange = null, bool? canRequestFocus = null, bool? skipTraversal = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, string? debugLabel = null, bool includeSemantics = true, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null) : base(key: key, parentNode: parentNode, child: child, autofocus: autofocus, onFocusChange: onFocusChange, canRequestFocus: canRequestFocus, skipTraversal: skipTraversal, onKeyEvent: onKeyEvent, onKey: onKey, debugLabel: debugLabel, includeSemantics: includeSemantics, descendantsAreFocusable: descendantsAreFocusable, descendantsAreTraversable: descendantsAreTraversable, focusNode: node)
     {
     }
 
-    public static FocusScope CreateWithExternalFocusNode(Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = default!, bool includeSemantics = default!, System.Action<bool>? onFocusChange = null)
+    public static FocusScope CreateWithExternalFocusNode(Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = default!, bool includeSemantics = default!, Action<bool>? onFocusChange = null)
         => new _FocusScopeWithExternalFocusNode__focus_scope(key, child, focusScopeNode, parentNode, autofocus, includeSemantics, onFocusChange);
 
     public static FocusScopeNode of(BuildContext context, bool createDependency = true)
@@ -326,7 +326,7 @@ public class FocusScope : Focus
 
 internal class _FocusScopeWithExternalFocusNode__focus_scope : FocusScope
 {
-    internal _FocusScopeWithExternalFocusNode__focus_scope(Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = false, bool includeSemantics = true, System.Action<bool>? onFocusChange = null) : base(key: key, child: child, parentNode: parentNode, autofocus: autofocus, includeSemantics: includeSemantics, onFocusChange: onFocusChange, node: focusScopeNode)
+    internal _FocusScopeWithExternalFocusNode__focus_scope(Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = false, bool includeSemantics = true, Action<bool>? onFocusChange = null) : base(key: key, child: child, parentNode: parentNode, autofocus: autofocus, includeSemantics: includeSemantics, onFocusChange: onFocusChange, node: focusScopeNode)
     {
     }
 

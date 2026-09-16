@@ -457,7 +457,7 @@ public class ScaffoldMessengerState : State<ScaffoldMessenger>, TickerProviderSt
         base.dispose();
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -1111,7 +1111,7 @@ public class _FloatingActionButtonTransitionState__scaffold : State<_FloatingAct
         widget.geometryNotifier._updateWith(floatingActionButtonScale: scale);
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -1194,9 +1194,9 @@ public class Scaffold : StatefulWidget
     public virtual AlignmentDirectional persistentFooterAlignment { get; private set; } = default!;
     public virtual BoxDecoration? persistentFooterDecoration { get; private set; }
     public virtual Widget? drawer { get; private set; }
-    public virtual System.Action<bool>? onDrawerChanged { get; private set; }
+    public virtual Action<bool>? onDrawerChanged { get; private set; }
     public virtual Widget? endDrawer { get; private set; }
-    public virtual System.Action<bool>? onEndDrawerChanged { get; private set; }
+    public virtual Action<bool>? onEndDrawerChanged { get; private set; }
     public virtual Color? drawerScrimColor { get; private set; }
     public virtual Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
@@ -1210,7 +1210,7 @@ public class Scaffold : StatefulWidget
     public virtual bool endDrawerEnableOpenDragGesture { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public Scaffold(Key? key = null, PreferredSizeWidget? appBar = null, Widget? body = null, Widget? floatingActionButton = null, FloatingActionButtonLocation? floatingActionButtonLocation = null, FloatingActionButtonAnimator? floatingActionButtonAnimator = null, List<Widget>? persistentFooterButtons = null, AlignmentDirectional persistentFooterAlignment = default!, BoxDecoration? persistentFooterDecoration = null, Widget? drawer = null, System.Action<bool>? onDrawerChanged = null, Widget? endDrawer = null, System.Action<bool>? onEndDrawerChanged = null, Widget? bottomNavigationBar = null, Widget? bottomSheet = null, Color? backgroundColor = null, bool? resizeToAvoidBottomInset = null, bool primary = true, Gestures.DragStartBehavior drawerDragStartBehavior = Gestures.DragStartBehavior.start, bool extendBody = false, bool drawerBarrierDismissible = true, bool extendBodyBehindAppBar = false, Color? drawerScrimColor = null, Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder = default!, double? drawerEdgeDragWidth = null, bool drawerEnableOpenDragGesture = true, bool endDrawerEnableOpenDragGesture = true, string? restorationId = null) : base(key: key)
+    public Scaffold(Key? key = null, PreferredSizeWidget? appBar = null, Widget? body = null, Widget? floatingActionButton = null, FloatingActionButtonLocation? floatingActionButtonLocation = null, FloatingActionButtonAnimator? floatingActionButtonAnimator = null, List<Widget>? persistentFooterButtons = null, AlignmentDirectional persistentFooterAlignment = default!, BoxDecoration? persistentFooterDecoration = null, Widget? drawer = null, Action<bool>? onDrawerChanged = null, Widget? endDrawer = null, Action<bool>? onEndDrawerChanged = null, Widget? bottomNavigationBar = null, Widget? bottomSheet = null, Color? backgroundColor = null, bool? resizeToAvoidBottomInset = null, bool primary = true, Gestures.DragStartBehavior drawerDragStartBehavior = Gestures.DragStartBehavior.start, bool extendBody = false, bool drawerBarrierDismissible = true, bool extendBodyBehindAppBar = false, Color? drawerScrimColor = null, Func<BuildContext, Animation<double>, Widget?> bottomSheetScrimBuilder = default!, double? drawerEdgeDragWidth = null, bool drawerEnableOpenDragGesture = true, bool endDrawerEnableOpenDragGesture = true, string? restorationId = null) : base(key: key)
     {
         AlignmentDirectional __persistentFooterAlignment = persistentFooterAlignment ?? AlignmentDirectional.centerEnd;
         Func<BuildContext, Animation<double>, Widget?> __bottomSheetScrimBuilder = bottomSheetScrimBuilder ?? _defaultBottomSheetScrimBuilder;
@@ -1949,7 +1949,7 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -2145,7 +2145,7 @@ public class ScaffoldState : State<Scaffold>, TickerProviderStateMixin<Scaffold>
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -2213,9 +2213,9 @@ public class ScaffoldFeatureController<T, U> where T : Widget
     internal virtual T _widget { get; private set; } = default!;
     internal virtual Completer<U> _completer { get; private set; } = default!;
     public virtual Action close { get; private set; } = default!;
-    public virtual System.Action<Action>? setState { get; private set; }
+    public virtual Action<Action>? setState { get; private set; }
 
-    public ScaffoldFeatureController(T _widget, Completer<U> _completer, Action close, System.Action<Action>? setState)
+    public ScaffoldFeatureController(T _widget, Completer<U> _completer, Action close, Action<Action>? setState)
     {
         this._widget = _widget;
         this._completer = _completer;
@@ -2349,7 +2349,7 @@ public class PersistentBottomSheetController : ScaffoldFeatureController<_Standa
 {
     internal virtual bool _isLocalHistoryEntry { get; private set; } = default!;
 
-    internal PersistentBottomSheetController(_StandardBottomSheet__scaffold widget, Completer<object?> completer, Action close, System.Action<Action> setState, bool _isLocalHistoryEntry) : base(widget, completer, close, setState)
+    internal PersistentBottomSheetController(_StandardBottomSheet__scaffold widget, Completer<object?> completer, Action close, Action<Action> setState, bool _isLocalHistoryEntry) : base(widget, completer, close, setState)
     {
         this._isLocalHistoryEntry = _isLocalHistoryEntry;
     }

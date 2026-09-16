@@ -15,12 +15,12 @@ public class Form : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Func<Future<bool>>? onWillPop { get; private set; }
     public virtual bool? canPop { get; private set; }
-    public virtual System.Action<bool>? onPopInvoked { get; private set; }
+    public virtual Action<bool>? onPopInvoked { get; private set; }
     public virtual Action<bool, object?>? onPopInvokedWithResult { get; private set; }
     public virtual Action? onChanged { get; private set; }
     public virtual AutovalidateMode autovalidateMode { get; private set; } = default!;
 
-    public Form(Key? key = null, Widget child = default!, bool? canPop = null, System.Action<bool>? onPopInvoked = null, Action<bool, object?>? onPopInvokedWithResult = null, Func<Future<bool>>? onWillPop = null, Action? onChanged = null, AutovalidateMode? autovalidateMode = null) : base(key: key)
+    public Form(Key? key = null, Widget child = default!, bool? canPop = null, Action<bool>? onPopInvoked = null, Action<bool, object?>? onPopInvokedWithResult = null, Func<Future<bool>>? onWillPop = null, Action? onChanged = null, AutovalidateMode? autovalidateMode = null) : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;
@@ -286,7 +286,7 @@ public delegate Widget FormFieldBuilder<T>(FormFieldState<T> field);
 public class FormField<T> : StatefulWidget
 {
     public virtual Func<FormFieldState<T>, Widget> builder { get; private set; } = default!;
-    public virtual System.Action<T?>? onSaved { get; private set; }
+    public virtual Action<T?>? onSaved { get; private set; }
     public virtual Action? onReset { get; private set; }
     public virtual string? forceErrorText { get; private set; }
     public virtual Func<T?, string?>? validator { get; private set; }
@@ -296,7 +296,7 @@ public class FormField<T> : StatefulWidget
     public virtual AutovalidateMode autovalidateMode { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public FormField(Key? key = null, Func<FormFieldState<T>, Widget> builder = default!, System.Action<T?>? onSaved = null, Action? onReset = null, string? forceErrorText = null, Func<T?, string?>? validator = null, Func<BuildContext, string, Widget>? errorBuilder = null, T? initialValue = default, bool enabled = true, AutovalidateMode? autovalidateMode = null, string? restorationId = null) : base(key: key)
+    public FormField(Key? key = null, Func<FormFieldState<T>, Widget> builder = default!, Action<T?>? onSaved = null, Action? onReset = null, string? forceErrorText = null, Func<T?, string?>? validator = null, Func<BuildContext, string, Widget>? errorBuilder = null, T? initialValue = default, bool enabled = true, AutovalidateMode? autovalidateMode = null, string? restorationId = null) : base(key: key)
     {
         this.builder = builder;
         this.onSaved = onSaved;
@@ -697,7 +697,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }

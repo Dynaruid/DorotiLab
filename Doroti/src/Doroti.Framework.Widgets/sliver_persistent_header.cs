@@ -212,7 +212,7 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
         renderObject.child = null;
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (child is not null)
         {

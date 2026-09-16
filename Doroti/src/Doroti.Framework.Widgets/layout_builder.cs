@@ -85,7 +85,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
         }
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         if (_child is not null)
         {
@@ -200,9 +200,9 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
 
 public interface RenderAbstractLayoutBuilderMixin<LayoutInfoType, out ChildType> where ChildType : RenderObject
 {
-    System.Action<Constraints>? _callback { get; set; }
+    Action<Constraints>? _callback { get; set; }
 
-    public void _updateCallback(System.Action<Constraints> value);
+    public void _updateCallback(Action<Constraints> value);
     public void layoutCallback();
     public LayoutInfoType layoutInfo { get; }
 }
@@ -221,7 +221,7 @@ public class LayoutBuilder : ConstrainedLayoutBuilder<BoxConstraints>
 internal class _RenderLayoutBuilder__layout_builder : RenderBox, RenderObjectWithChildMixin<RenderBox>, RenderAbstractLayoutBuilderMixin<BoxConstraints, RenderBox>, IRenderLayoutCallback
 {
     public virtual RenderBox? _child { get; set; } = default;
-    public virtual System.Action<Constraints>? _callback { get; set; } = default;
+    public virtual Action<Constraints>? _callback { get; set; } = default;
 
     public override double computeMinIntrinsicWidth(double height)
     {
@@ -367,7 +367,7 @@ internal class _RenderLayoutBuilder__layout_builder : RenderBox, RenderObjectWit
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         if (_child is not null)
         {
@@ -381,7 +381,7 @@ internal class _RenderLayoutBuilder__layout_builder : RenderBox, RenderObjectWit
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateCallback(System.Action<Constraints> value)
+    public virtual void _updateCallback(Action<Constraints> value)
     {
         if (Equals(value, _callback))
         {

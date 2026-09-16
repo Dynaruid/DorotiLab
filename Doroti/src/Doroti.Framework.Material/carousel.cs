@@ -20,17 +20,17 @@ public class CarouselView : StatefulWidget
     public virtual Axis scrollDirection { get; private set; } = default!;
     public virtual bool reverse { get; private set; } = default!;
     public virtual bool consumeMaxWeight { get; private set; } = default!;
-    public virtual System.Action<long>? onTap { get; private set; }
+    public virtual Action<long>? onTap { get; private set; }
     public virtual bool enableSplash { get; private set; } = default!;
     public virtual double? itemExtent { get; private set; }
     public virtual List<long>? flexWeights { get; private set; }
     public virtual List<Widget> children { get; private set; } = default!;
-    public virtual System.Action<long>? onIndexChanged { get; private set; }
+    public virtual Action<long>? onIndexChanged { get; private set; }
     public virtual Func<BuildContext, long, Widget?>? itemBuilder { get; private set; }
     public virtual long? itemCount { get; private set; }
     public virtual bool infinite { get; private set; } = default!;
 
-    public CarouselView(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, System.Action<long>? onTap = null, bool enableSplash = true, bool infinite = false, double itemExtent = default!, List<Widget> children = default!, System.Action<long>? onIndexChanged = null) : base(key: key)
+    public CarouselView(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, Action<long>? onTap = null, bool enableSplash = true, bool infinite = false, double itemExtent = default!, List<Widget> children = default!, Action<long>? onIndexChanged = null) : base(key: key)
     {
         this.padding = padding;
         this.backgroundColor = backgroundColor;
@@ -55,7 +55,7 @@ public class CarouselView : StatefulWidget
         itemCount = null;
     }
 
-    public static CarouselView CreateWeighted(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, bool consumeMaxWeight = true, System.Action<long>? onTap = null, bool enableSplash = true, bool infinite = false, List<long> flexWeights = default!, List<Widget> children = default!, System.Action<long>? onIndexChanged = null)
+    public static CarouselView CreateWeighted(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, bool consumeMaxWeight = true, Action<long>? onTap = null, bool enableSplash = true, bool infinite = false, List<long> flexWeights = default!, List<Widget> children = default!, Action<long>? onIndexChanged = null)
     {
         var __instance = new CarouselView(key: key, padding: padding, backgroundColor: backgroundColor, elevation: elevation, shape: shape, itemClipBehavior: itemClipBehavior, overlayColor: overlayColor, itemSnapping: itemSnapping, shrinkExtent: shrinkExtent, controller: controller, scrollDirection: scrollDirection, reverse: reverse, onTap: onTap, enableSplash: enableSplash, infinite: infinite, itemExtent: default!, children: children, onIndexChanged: onIndexChanged);
         __instance.padding = padding;
@@ -82,7 +82,7 @@ public class CarouselView : StatefulWidget
         return __instance;
     }
 
-    public static CarouselView CreateBuilder(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, System.Action<long>? onTap = null, bool enableSplash = true, double itemExtent = default!, Func<BuildContext, long, Widget?>? itemBuilder = default!, long? itemCount = null, System.Action<long>? onIndexChanged = null, bool infinite = false)
+    public static CarouselView CreateBuilder(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, Action<long>? onTap = null, bool enableSplash = true, double itemExtent = default!, Func<BuildContext, long, Widget?>? itemBuilder = default!, long? itemCount = null, Action<long>? onIndexChanged = null, bool infinite = false)
     {
         var __instance = new CarouselView(key: key, padding: padding, backgroundColor: backgroundColor, elevation: elevation, shape: shape, itemClipBehavior: itemClipBehavior, overlayColor: overlayColor, itemSnapping: itemSnapping, shrinkExtent: shrinkExtent, controller: controller, scrollDirection: scrollDirection, reverse: reverse, onTap: onTap, enableSplash: enableSplash, infinite: infinite, itemExtent: itemExtent, children: default!, onIndexChanged: onIndexChanged);
         __instance.padding = padding;
@@ -109,7 +109,7 @@ public class CarouselView : StatefulWidget
         return __instance;
     }
 
-    public static CarouselView CreateWeightedBuilder(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, bool consumeMaxWeight = true, System.Action<long>? onTap = null, bool enableSplash = true, List<long> flexWeights = default!, Func<BuildContext, long, Widget?>? itemBuilder = default!, long? itemCount = null, System.Action<long>? onIndexChanged = null, bool infinite = false)
+    public static CarouselView CreateWeightedBuilder(Key? key = null, EdgeInsets? padding = null, Color? backgroundColor = null, double? elevation = null, ShapeBorder? shape = null, Clip? itemClipBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, bool itemSnapping = false, double shrinkExtent = 0.0, CarouselController? controller = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, bool consumeMaxWeight = true, Action<long>? onTap = null, bool enableSplash = true, List<long> flexWeights = default!, Func<BuildContext, long, Widget?>? itemBuilder = default!, long? itemCount = null, Action<long>? onIndexChanged = null, bool infinite = false)
     {
         var __instance = new CarouselView(key: key, padding: padding, backgroundColor: backgroundColor, elevation: elevation, shape: shape, itemClipBehavior: itemClipBehavior, overlayColor: overlayColor, itemSnapping: itemSnapping, shrinkExtent: shrinkExtent, controller: controller, scrollDirection: scrollDirection, reverse: reverse, onTap: onTap, enableSplash: enableSplash, infinite: infinite, itemExtent: default!, children: default!, onIndexChanged: onIndexChanged);
         __instance.padding = padding;

@@ -90,7 +90,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "PrioritizedAction" && field.Name == "_selectedAction")
         {
-            type = "Action<Intent>";
+            type = "IntentAction<Intent>";
         }
         if (DisplacedStructuralSuperclass(declaration) is not null &&
             field.Name is "original" or "transform")

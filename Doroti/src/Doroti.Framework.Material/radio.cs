@@ -26,7 +26,7 @@ public class Radio<T> : StatefulWidget
 {
     public virtual T value { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
-    public virtual System.Action<T?>? onChanged { get; private set; }
+    public virtual Action<T?>? onChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool toggleable { get; private set; } = default!;
     public virtual Color? activeColor { get; private set; }
@@ -47,7 +47,7 @@ public class Radio<T> : StatefulWidget
     public virtual BorderSide? side { get; private set; }
     public virtual WidgetStateProperty<double?>? innerRadius { get; private set; }
 
-    public Radio(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null) : base(key: key)
+    public Radio(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null) : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -73,7 +73,7 @@ public class Radio<T> : StatefulWidget
         useCupertinoCheckmarkStyle = false;
     }
 
-    public static Radio<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, bool useCupertinoCheckmarkStyle = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null)
+    public static Radio<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? focusColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, bool autofocus = false, bool useCupertinoCheckmarkStyle = false, bool? enabled = null, RadioGroupRegistry<T>? groupRegistry = null, WidgetStateProperty<Color?>? backgroundColor = null, BorderSide? side = null, WidgetStateProperty<double?>? innerRadius = null)
     {
         var __instance = new Radio<T>(key: key, value: value, groupValue: groupValue, onChanged: onChanged, mouseCursor: mouseCursor, toggleable: toggleable, activeColor: activeColor, fillColor: fillColor, focusColor: focusColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, visualDensity: visualDensity, focusNode: focusNode, autofocus: autofocus, enabled: enabled, groupRegistry: groupRegistry, backgroundColor: backgroundColor, side: side, innerRadius: innerRadius);
         __instance.value = value;
@@ -192,7 +192,7 @@ internal class _RadioRegistry__radio<T> : RadioGroupRegistry<T>
     }
 
     public virtual T? groupValue => state.widget.groupValue;
-    public virtual System.Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<System.Action<T?>>(state.widget.onChanged!);
+    public virtual Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<Action<T?>>(state.widget.onChanged!);
     public virtual void registerClient(RadioClient<T> radio)
     {
     }

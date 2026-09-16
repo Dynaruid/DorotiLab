@@ -10,8 +10,8 @@ public class InputDatePickerFormField : StatefulWidget
     public virtual DateTime? initialDate { get; private set; }
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
-    public virtual System.Action<DateTime>? onDateSubmitted { get; private set; }
-    public virtual System.Action<DateTime>? onDateSaved { get; private set; }
+    public virtual Action<DateTime>? onDateSubmitted { get; private set; }
+    public virtual Action<DateTime>? onDateSaved { get; private set; }
     public virtual Func<DateTime, bool>? selectableDayPredicate { get; private set; }
     public virtual string? errorFormatText { get; private set; }
     public virtual string? errorInvalidText { get; private set; }
@@ -23,7 +23,7 @@ public class InputDatePickerFormField : StatefulWidget
     public virtual FocusNode? focusNode { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public InputDatePickerFormField(Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, System.Action<DateTime>? onDateSubmitted = null, System.Action<DateTime>? onDateSaved = null, Func<DateTime, bool>? selectableDayPredicate = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, bool autofocus = false, bool acceptEmptyDate = false, FocusNode? focusNode = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public InputDatePickerFormField(Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Action<DateTime>? onDateSubmitted = null, Action<DateTime>? onDateSaved = null, Func<DateTime, bool>? selectableDayPredicate = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, bool autofocus = false, bool acceptEmptyDate = false, FocusNode? focusNode = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
         this.onDateSubmitted = onDateSubmitted;
@@ -147,7 +147,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : St
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _updateDate(string? text, System.Action<DateTime>? callback)
+    internal virtual void _updateDate(string? text, Action<DateTime>? callback)
     {
         DateTime? date = _parseDate(text);
         if (_isValidAcceptableDate(date))

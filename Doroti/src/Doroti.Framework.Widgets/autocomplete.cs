@@ -9,7 +9,7 @@ public delegate object AutocompleteOptionsBuilder<T>(TextEditingValue textEditin
 
 public delegate void AutocompleteOnSelected<T>(T option);
 
-public delegate Widget AutocompleteOptionsViewBuilder<T>(BuildContext context, System.Action<T> onSelected, IEnumerable<T> options);
+public delegate Widget AutocompleteOptionsViewBuilder<T>(BuildContext context, Action<T> onSelected, IEnumerable<T> options);
 
 public delegate Widget AutocompleteFieldViewBuilder(BuildContext context, TextEditingController textEditingController, FocusNode focusNode, Action onFieldSubmitted);
 
@@ -26,15 +26,15 @@ public class RawAutocomplete<T> : StatefulWidget
 {
     public virtual Func<BuildContext, TextEditingController, FocusNode, Action, Widget>? fieldViewBuilder { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
-    public virtual Func<BuildContext, System.Action<T>, IEnumerable<T>, Widget> optionsViewBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, Action<T>, IEnumerable<T>, Widget> optionsViewBuilder { get; private set; } = default!;
     public virtual OptionsViewOpenDirection optionsViewOpenDirection { get; private set; } = default!;
     public virtual Func<T, string> displayStringForOption { get; private set; } = default!;
-    public virtual System.Action<T>? onSelected { get; private set; }
+    public virtual Action<T>? onSelected { get; private set; }
     public virtual Func<TextEditingValue, object> optionsBuilder { get; private set; } = default!;
     public virtual TextEditingController? textEditingController { get; private set; }
     public virtual TextEditingValue? initialValue { get; private set; }
 
-    public RawAutocomplete(Key? key = null, Func<BuildContext, System.Action<T>, IEnumerable<T>, Widget> optionsViewBuilder = default!, Func<TextEditingValue, object> optionsBuilder = default!, OptionsViewOpenDirection optionsViewOpenDirection = OptionsViewOpenDirection.down, Func<T, string> displayStringForOption = default!, Func<BuildContext, TextEditingController, FocusNode, Action, Widget>? fieldViewBuilder = null, FocusNode? focusNode = null, System.Action<T>? onSelected = null, TextEditingController? textEditingController = null, TextEditingValue? initialValue = null) : base(key: key)
+    public RawAutocomplete(Key? key = null, Func<BuildContext, Action<T>, IEnumerable<T>, Widget> optionsViewBuilder = default!, Func<TextEditingValue, object> optionsBuilder = default!, OptionsViewOpenDirection optionsViewOpenDirection = OptionsViewOpenDirection.down, Func<T, string> displayStringForOption = default!, Func<BuildContext, TextEditingController, FocusNode, Action, Widget>? fieldViewBuilder = null, FocusNode? focusNode = null, Action<T>? onSelected = null, TextEditingController? textEditingController = null, TextEditingValue? initialValue = null) : base(key: key)
     {
         Func<T, string> __displayStringForOption = displayStringForOption ?? new Func<T, string>((__option) => defaultStringForOption(__option));
         this.optionsViewBuilder = optionsViewBuilder;
@@ -82,7 +82,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, IIntentAction> { [typeof(AutocompletePreviousOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousOptionIntent>(onInvoke: (__arg0) => { ((System.Action<AutocompletePreviousOptionIntent>)_highlightPreviousOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteNextOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteNextOptionIntent>(onInvoke: (__arg0) => { ((System.Action<AutocompleteNextOptionIntent>)_highlightNextOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteFirstOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteFirstOptionIntent>(onInvoke: (__arg0) => { ((System.Action<AutocompleteFirstOptionIntent>)_highlightFirstOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteLastOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteLastOptionIntent>(onInvoke: (__arg0) => { ((System.Action<AutocompleteLastOptionIntent>)_highlightLastOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteNextPageOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteNextPageOptionIntent>(onInvoke: (__arg0) => { ((System.Action<AutocompleteNextPageOptionIntent>)_highlightNextPageOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompletePreviousPageOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousPageOptionIntent>(onInvoke: (__arg0) => { ((System.Action<AutocompletePreviousPageOptionIntent>)_highlightPreviousPageOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: _hideOptions) };
+                __late__actionMap = new DartMap<Type, IIntentAction> { [typeof(AutocompletePreviousOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousOptionIntent>(onInvoke: (__arg0) => { ((Action<AutocompletePreviousOptionIntent>)_highlightPreviousOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteNextOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteNextOptionIntent>(onInvoke: (__arg0) => { ((Action<AutocompleteNextOptionIntent>)_highlightNextOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteFirstOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteFirstOptionIntent>(onInvoke: (__arg0) => { ((Action<AutocompleteFirstOptionIntent>)_highlightFirstOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteLastOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteLastOptionIntent>(onInvoke: (__arg0) => { ((Action<AutocompleteLastOptionIntent>)_highlightLastOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompleteNextPageOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompleteNextPageOptionIntent>(onInvoke: (__arg0) => { ((Action<AutocompleteNextPageOptionIntent>)_highlightNextPageOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(AutocompletePreviousPageOptionIntent)] = new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousPageOptionIntent>(onInvoke: (__arg0) => { ((Action<AutocompletePreviousPageOptionIntent>)_highlightPreviousPageOption)(__arg0); return default!; }, isEnabledCallback: () => _canShowOptionsView), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: _hideOptions) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;

@@ -31,7 +31,7 @@ public class SegmentedButton<T> : StatefulWidget where T : notnull
     public virtual List<ButtonSegment<T>> segments { get; private set; } = default!;
     public virtual Axis direction { get; private set; } = default!;
     public virtual HashSet<T> selected { get; private set; } = default!;
-    public virtual System.Action<HashSet<T>>? onSelectionChanged { get; private set; }
+    public virtual Action<HashSet<T>>? onSelectionChanged { get; private set; }
     public virtual bool multiSelectionEnabled { get; private set; } = default!;
     public virtual bool emptySelectionAllowed { get; private set; } = default!;
     public virtual EdgeInsets? expandedInsets { get; private set; }
@@ -39,7 +39,7 @@ public class SegmentedButton<T> : StatefulWidget where T : notnull
     public virtual bool showSelectedIcon { get; private set; } = default!;
     public virtual Widget? selectedIcon { get; private set; }
 
-    public SegmentedButton(Key? key = null, List<ButtonSegment<T>> segments = default!, HashSet<T> selected = default!, System.Action<HashSet<T>>? onSelectionChanged = null, bool multiSelectionEnabled = false, bool emptySelectionAllowed = false, EdgeInsets? expandedInsets = null, ButtonStyle? style = null, bool showSelectedIcon = true, Widget? selectedIcon = null, Axis direction = Axis.horizontal) : base(key: key)
+    public SegmentedButton(Key? key = null, List<ButtonSegment<T>> segments = default!, HashSet<T> selected = default!, Action<HashSet<T>>? onSelectionChanged = null, bool multiSelectionEnabled = false, bool emptySelectionAllowed = false, EdgeInsets? expandedInsets = null, ButtonStyle? style = null, bool showSelectedIcon = true, Widget? selectedIcon = null, Axis direction = Axis.horizontal) : base(key: key)
     {
         this.segments = segments;
         this.selected = selected;
@@ -886,7 +886,7 @@ public class _RenderSegmentedButton__segmented_button<T> : RenderBox, ContainerR
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -994,7 +994,7 @@ public class _RenderSegmentedButton__segmented_button<T> : RenderBox, ContainerR
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

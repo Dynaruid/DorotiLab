@@ -180,7 +180,7 @@ public class TreeSliver<T> : StatefulWidget
     public virtual Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder { get; private set; } = default!;
     public virtual Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder { get; private set; } = default!;
     public virtual TreeSliverController? controller { get; private set; }
-    public virtual System.Action<TreeSliverNode<T>>? onNodeToggle { get; private set; }
+    public virtual Action<TreeSliverNode<T>>? onNodeToggle { get; private set; }
     public virtual AnimationStyle? toggleAnimationStyle { get; private set; }
     public virtual TreeSliverIndentationType indentation { get; private set; } = default!;
     public virtual bool addAutomaticKeepAlives { get; private set; } = default!;
@@ -193,7 +193,7 @@ public class TreeSliver<T> : StatefulWidget
     public static Curve defaultAnimationCurve = Curves.linear;
     public static Duration defaultAnimationDuration = Duration.Create(milliseconds: 150L);
 
-    public TreeSliver(Key? key = null, List<TreeSliverNode<T>> tree = default!, Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder = default!, Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder = default!, TreeSliverController? controller = null, System.Action<TreeSliverNode<T>>? onNodeToggle = null, AnimationStyle? toggleAnimationStyle = null, TreeSliverIndentationType indentation = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0, Func<Key, long?>? findChildIndexCallback = null) : base(key: key)
+    public TreeSliver(Key? key = null, List<TreeSliverNode<T>> tree = default!, Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> treeNodeBuilder = default!, Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> treeRowExtentBuilder = default!, TreeSliverController? controller = null, Action<TreeSliverNode<T>>? onNodeToggle = null, AnimationStyle? toggleAnimationStyle = null, TreeSliverIndentationType indentation = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0, Func<Key, long?>? findChildIndexCallback = null) : base(key: key)
     {
         Func<BuildContext, TreeSliverNode<T>, AnimationStyle, Widget> __treeNodeBuilder = treeNodeBuilder ?? TreeSliver<T>.defaultTreeNodeBuilder;
         Func<TreeSliverNode<T>, SliverLayoutDimensions, double?> __treeRowExtentBuilder = treeRowExtentBuilder ?? ((node, dimensions) => TreeSliver<T>.defaultTreeRowExtentBuilder(node, dimensions));
@@ -443,7 +443,7 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     {
         var activeNodesToExpand = new List<TreeSliverNode<T>>();
         _expandAll(widget.tree, activeNodesToExpand);
-        Enumerable.Reverse(activeNodesToExpand).forEach((__arg0) => ((System.Action<TreeSliverNode<T>>)toggleNode)(__arg0));
+        Enumerable.Reverse(activeNodesToExpand).forEach((__arg0) => ((Action<TreeSliverNode<T>>)toggleNode)(__arg0));
     }
 
     internal virtual void _expandAll(List<TreeSliverNode<T>> tree, List<TreeSliverNode<T>> activeNodesToExpand)
@@ -472,7 +472,7 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
     {
         var activeNodesToCollapse = new List<TreeSliverNode<T>>();
         _collapseAll(widget.tree, activeNodesToCollapse);
-        Enumerable.Reverse(activeNodesToCollapse).forEach((__arg0) => ((System.Action<TreeSliverNode<T>>)toggleNode)(__arg0));
+        Enumerable.Reverse(activeNodesToCollapse).forEach((__arg0) => ((Action<TreeSliverNode<T>>)toggleNode)(__arg0));
     }
 
     internal virtual void _collapseAll(List<TreeSliverNode<T>> tree, List<TreeSliverNode<T>> activeNodesToCollapse)
@@ -597,7 +597,7 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
         });
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

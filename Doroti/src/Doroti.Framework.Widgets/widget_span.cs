@@ -420,7 +420,7 @@ public class _RenderScaledInlineWidget__widget_span : RenderBox, RenderObjectWit
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         if (_child is not null)
         {

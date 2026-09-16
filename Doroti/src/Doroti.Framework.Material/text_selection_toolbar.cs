@@ -113,7 +113,7 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar : St
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -369,7 +369,7 @@ public class _TextSelectionToolbarItemsLayoutElement__text_selection_toolbar : M
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         children.where(_shouldPaint).forEach((__arg0) => visitor(__arg0));
     }
@@ -684,7 +684,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : Re
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         visitChildren((renderObjectChild) =>
         {
@@ -802,7 +802,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : Re
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -910,7 +910,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar : Re
         }
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)

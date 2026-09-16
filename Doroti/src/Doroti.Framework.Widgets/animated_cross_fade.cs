@@ -214,7 +214,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
         description.add(new EnumProperty<Clip>("clipBehavior", widget.clipBehavior, defaultValue: Clip.hardEdge));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

@@ -16,7 +16,7 @@ public class RadioListTile<T> : StatefulWidget
 {
     public virtual T value { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
-    public virtual System.Action<T?>? onChanged { get; private set; }
+    public virtual Action<T?>? onChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool toggleable { get; private set; } = default!;
     public virtual Color? activeColor { get; private set; }
@@ -40,7 +40,7 @@ public class RadioListTile<T> : StatefulWidget
     public virtual VisualDensity? visualDensity { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
     public virtual WidgetStatesController? statesController { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
     public virtual double? horizontalTitleGap { get; private set; }
     public virtual double? minVerticalPadding { get; private set; }
@@ -56,7 +56,7 @@ public class RadioListTile<T> : StatefulWidget
     public virtual BorderSide? radioSide { get; private set; }
     public virtual WidgetStateProperty<double?>? radioInnerRadius { get; private set; }
 
-    public RadioListTile(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool? enabled = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null) : base(key: key)
+    public RadioListTile(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool? enabled = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null) : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -102,7 +102,7 @@ public class RadioListTile<T> : StatefulWidget
         System.Diagnostics.Debug.Assert((isThreeLine != true) || (subtitle is not null));
     }
 
-    public static RadioListTile<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, bool? enabled = null, bool useCupertinoCheckmarkStyle = false, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null)
+    public static RadioListTile<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, bool? enabled = null, bool useCupertinoCheckmarkStyle = false, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null)
     {
         var __instance = new RadioListTile<T>(key: key, value: value, groupValue: groupValue, onChanged: onChanged, mouseCursor: mouseCursor, toggleable: toggleable, activeColor: activeColor, fillColor: fillColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, title: title, subtitle: subtitle, isThreeLine: isThreeLine, dense: dense, secondary: secondary, selected: selected, controlAffinity: controlAffinity, autofocus: autofocus, contentPadding: contentPadding, shape: shape, tileColor: tileColor, selectedTileColor: selectedTileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, radioScaleFactor: radioScaleFactor, titleAlignment: titleAlignment, enabled: enabled, internalAddSemanticForOnTap: internalAddSemanticForOnTap, radioBackgroundColor: radioBackgroundColor, radioSide: radioSide, radioInnerRadius: radioInnerRadius);
         __instance.value = value;
@@ -282,7 +282,7 @@ internal class _RadioRegistry__radio_list_tile<T> : RadioGroupRegistry<T>
     }
 
     public virtual T? groupValue => state.effectiveGroupValue;
-    public virtual System.Action<T?> onChanged => state.handleChange;
+    public virtual Action<T?> onChanged => state.handleChange;
     public virtual void registerClient(RadioClient<T> radio)
     {
     }

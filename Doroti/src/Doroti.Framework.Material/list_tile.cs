@@ -62,7 +62,7 @@ public class ListTile : StatelessWidget
     public virtual bool enabled { get; private set; } = default!;
     public virtual Action? onTap { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool selected { get; private set; } = default!;
     public virtual Color? focusColor { get; private set; }
@@ -81,7 +81,7 @@ public class ListTile : StatelessWidget
     public virtual bool internalAddSemanticForOnTap { get; private set; } = default!;
     public virtual WidgetStatesController? statesController { get; private set; }
 
-    public ListTile(Key? key = null, Widget? leading = null, Widget? title = null, Widget? subtitle = null, Widget? trailing = null, bool? isThreeLine = null, bool? dense = null, VisualDensity? visualDensity = null, ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, TextStyle? titleTextStyle = null, TextStyle? subtitleTextStyle = null, TextStyle? leadingAndTrailingTextStyle = null, EdgeInsetsGeometry? contentPadding = null, bool enabled = true, Action? onTap = null, Action? onLongPress = null, System.Action<bool>? onFocusChange = null, MouseCursor? mouseCursor = null, bool selected = false, Color? focusColor = null, Color? hoverColor = null, Color? splashColor = null, FocusNode? focusNode = null, bool autofocus = false, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = true, WidgetStatesController? statesController = null) : base(key: key)
+    public ListTile(Key? key = null, Widget? leading = null, Widget? title = null, Widget? subtitle = null, Widget? trailing = null, bool? isThreeLine = null, bool? dense = null, VisualDensity? visualDensity = null, ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, TextStyle? titleTextStyle = null, TextStyle? subtitleTextStyle = null, TextStyle? leadingAndTrailingTextStyle = null, EdgeInsetsGeometry? contentPadding = null, bool enabled = true, Action? onTap = null, Action? onLongPress = null, Action<bool>? onFocusChange = null, MouseCursor? mouseCursor = null, bool selected = false, Color? focusColor = null, Color? hoverColor = null, Color? splashColor = null, FocusNode? focusNode = null, bool autofocus = false, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = true, WidgetStatesController? statesController = null) : base(key: key)
     {
         this.leading = leading;
         this.title = title;
@@ -833,10 +833,10 @@ public class _RenderListTile__list_tile : RenderBox, SlottedContainerRenderObjec
 
     public override void redepthChildren()
     {
-        children.forEach((__arg0) => ((System.Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+        children.forEach((__arg0) => ((Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }

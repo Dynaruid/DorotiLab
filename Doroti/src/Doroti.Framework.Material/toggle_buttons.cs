@@ -11,7 +11,7 @@ public class ToggleButtons : StatelessWidget
     internal const double _defaultBorderWidth = 1.0;
     public virtual List<Widget> children { get; private set; } = default!;
     public virtual List<bool> isSelected { get; private set; } = default!;
-    public virtual System.Action<long>? onPressed { get; private set; }
+    public virtual Action<long>? onPressed { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual MaterialTapTargetSize? tapTargetSize { get; private set; }
     public virtual TextStyle? textStyle { get; private set; }
@@ -34,7 +34,7 @@ public class ToggleButtons : StatelessWidget
     public virtual Axis direction { get; private set; } = default!;
     public virtual VerticalDirection verticalDirection { get; private set; } = default!;
 
-    public ToggleButtons(Key? key = null, List<Widget> children = default!, List<bool> isSelected = default!, System.Action<long>? onPressed = null, MouseCursor? mouseCursor = null, MaterialTapTargetSize? tapTargetSize = null, TextStyle? textStyle = null, BoxConstraints? constraints = null, Color? color = null, Color? selectedColor = null, Color? disabledColor = null, Color? fillColor = null, Color? focusColor = null, Color? highlightColor = null, Color? hoverColor = null, Color? splashColor = null, List<FocusNode>? focusNodes = null, bool renderBorder = true, Color? borderColor = null, Color? selectedBorderColor = null, Color? disabledBorderColor = null, BorderRadius? borderRadius = null, double? borderWidth = null, Axis direction = Axis.horizontal, VerticalDirection verticalDirection = VerticalDirection.down) : base(key: key)
+    public ToggleButtons(Key? key = null, List<Widget> children = default!, List<bool> isSelected = default!, Action<long>? onPressed = null, MouseCursor? mouseCursor = null, MaterialTapTargetSize? tapTargetSize = null, TextStyle? textStyle = null, BoxConstraints? constraints = null, Color? color = null, Color? selectedColor = null, Color? disabledColor = null, Color? fillColor = null, Color? focusColor = null, Color? highlightColor = null, Color? hoverColor = null, Color? splashColor = null, List<FocusNode>? focusNodes = null, bool renderBorder = true, Color? borderColor = null, Color? selectedBorderColor = null, Color? disabledBorderColor = null, BorderRadius? borderRadius = null, double? borderWidth = null, Axis direction = Axis.horizontal, VerticalDirection verticalDirection = VerticalDirection.down) : base(key: key)
     {
         this.children = children;
         this.isSelected = isSelected;

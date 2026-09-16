@@ -22,9 +22,9 @@ public class SelectableRegion : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder { get; private set; }
     public virtual TextSelectionControls selectionControls { get; private set; } = default!;
-    public virtual System.Action<SelectedContent?>? onSelectionChanged { get; private set; }
+    public virtual Action<SelectedContent?>? onSelectionChanged { get; private set; }
 
-    public SelectableRegion(Key? key = null, Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder = null, FocusNode? focusNode = null, TextMagnifierConfiguration magnifierConfiguration = default!, System.Action<SelectedContent?>? onSelectionChanged = null, TextSelectionControls selectionControls = default!, Widget child = default!) : base(key: key)
+    public SelectableRegion(Key? key = null, Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder = null, FocusNode? focusNode = null, TextMagnifierConfiguration magnifierConfiguration = default!, Action<SelectedContent?>? onSelectionChanged = null, TextSelectionControls selectionControls = default!, Widget child = default!) : base(key: key)
     {
         TextMagnifierConfiguration __magnifierConfiguration = magnifierConfiguration ?? TextMagnifierConfiguration.disabled;
         this.contextMenuBuilder = contextMenuBuilder;
@@ -174,9 +174,9 @@ public class SelectableRegionState : State<SelectableRegion>, TextSelectionDeleg
         }
     }
 
-    internal virtual Action<T> _makeOverridable<T>(Action<T> defaultAction) where T : Intent
+    internal virtual IntentAction<T> _makeOverridable<T>(IntentAction<T> defaultAction) where T : Intent
     {
-        return Action<T>.CreateOverridable(context: context, defaultAction: defaultAction);
+        return IntentAction<T>.CreateOverridable(context: context, defaultAction: defaultAction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1410,7 +1410,7 @@ internal abstract class _NonOverrideAction__selectable_region<T> : ContextAction
     public abstract object? invokeAction(T intent, BuildContext? context = null);
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        if (callingAction is Action<T> callingActionLocal)
+        if (callingAction is IntentAction<T> callingActionLocal)
         {
             return callingActionLocal.invoke(intent);
         }
@@ -1592,7 +1592,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public virtual void clearInternalSelectionState()
     {
-        selectables.forEach((__arg0) => ((System.Action<Selectable>)clearInternalSelectionStateForSelectable)(__arg0));
+        selectables.forEach((__arg0) => ((Action<Selectable>)clearInternalSelectionStateForSelectable)(__arg0));
         _lastStartEdgeUpdateGlobalPosition = null;
         _lastEndEdgeUpdateGlobalPosition = null;
     }
@@ -1796,7 +1796,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             }
             else
             {
-                Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((System.Action<Duration?>)runScheduledTask)(DartRuntimePrimitives.ConvertValue<Duration>(__arg0)), debugLabel: "SelectionContainer.runScheduledTask");
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration?>)runScheduledTask)(DartRuntimePrimitives.ConvertValue<Duration>(__arg0)), debugLabel: "SelectionContainer.runScheduledTask");
             }
         }
     }

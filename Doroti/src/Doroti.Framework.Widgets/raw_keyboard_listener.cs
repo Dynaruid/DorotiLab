@@ -9,10 +9,10 @@ public class RawKeyboardListener : StatefulWidget
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool includeSemantics { get; private set; } = default!;
-    public virtual System.Action<RawKeyEvent>? onKey { get; private set; }
+    public virtual Action<RawKeyEvent>? onKey { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public RawKeyboardListener(Key? key = null, FocusNode focusNode = default!, bool autofocus = false, bool includeSemantics = true, System.Action<RawKeyEvent>? onKey = null, Widget child = default!) : base(key: key)
+    public RawKeyboardListener(Key? key = null, FocusNode focusNode = default!, bool autofocus = false, bool includeSemantics = true, Action<RawKeyEvent>? onKey = null, Widget child = default!) : base(key: key)
     {
         this.focusNode = focusNode;
         this.autofocus = autofocus;

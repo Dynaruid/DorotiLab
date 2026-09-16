@@ -14,7 +14,7 @@ public class InputChip : StatelessWidget, ChipAttributes, DeletableChipAttribute
     public virtual EdgeInsetsGeometry? labelPadding { get; private set; }
     public virtual bool selected { get; private set; } = default!;
     public virtual bool isEnabled { get; private set; } = default!;
-    public virtual System.Action<bool>? onSelected { get; private set; }
+    public virtual Action<bool>? onSelected { get; private set; }
     public virtual Widget? deleteIcon { get; private set; }
     public virtual Action? onDeleted { get; private set; }
     public virtual Color? deleteIconColor { get; private set; }
@@ -47,7 +47,7 @@ public class InputChip : StatelessWidget, ChipAttributes, DeletableChipAttribute
     public virtual ChipAnimationStyle? chipAnimationStyle { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
 
-    public InputChip(Key? key = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, bool selected = false, bool isEnabled = true, System.Action<bool>? onSelected = null, Widget? deleteIcon = null, Action? onDeleted = null, Color? deleteIconColor = null, string? deleteButtonTooltipMessage = null, Action? onPressed = null, double? pressElevation = null, Color? disabledColor = null, Color? selectedColor = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, ShapeBorder avatarBorder = default!, BoxConstraints? avatarBoxConstraints = null, BoxConstraints? deleteIconBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null) : base(key: key)
+    public InputChip(Key? key = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, bool selected = false, bool isEnabled = true, Action<bool>? onSelected = null, Widget? deleteIcon = null, Action? onDeleted = null, Color? deleteIconColor = null, string? deleteButtonTooltipMessage = null, Action? onPressed = null, double? pressElevation = null, Color? disabledColor = null, Color? selectedColor = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, ShapeBorder avatarBorder = default!, BoxConstraints? avatarBoxConstraints = null, BoxConstraints? deleteIconBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null) : base(key: key)
     {
         ShapeBorder __avatarBorder = avatarBorder ?? new CircleBorder();
         this.avatar = avatar;

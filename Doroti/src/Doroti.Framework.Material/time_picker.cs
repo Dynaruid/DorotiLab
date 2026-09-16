@@ -80,18 +80,18 @@ internal class _TimePickerModel__time_picker : InheritedModel<_TimePickerAspect_
 {
     public virtual TimePickerEntryMode entryMode { get; private set; } = default!;
     public virtual _HourMinuteMode__time_picker hourMinuteMode { get; private set; } = default!;
-    public virtual System.Action<_HourMinuteMode__time_picker> onHourMinuteModeChanged { get; private set; } = default!;
+    public virtual Action<_HourMinuteMode__time_picker> onHourMinuteModeChanged { get; private set; } = default!;
     public virtual Action onHourDoubleTapped { get; private set; } = default!;
     public virtual Action onMinuteDoubleTapped { get; private set; } = default!;
     public virtual TimeOfDay selectedTime { get; private set; } = default!;
-    public virtual System.Action<TimeOfDay> onSelectedTimeChanged { get; private set; } = default!;
+    public virtual Action<TimeOfDay> onSelectedTimeChanged { get; private set; } = default!;
     public virtual bool use24HourFormat { get; private set; } = default!;
     public virtual _HourDialType__time_picker hourDialType { get; private set; } = default!;
     public virtual Orientation orientation { get; private set; } = default!;
     public virtual TimePickerThemeData theme { get; private set; } = default!;
     public virtual _TimePickerDefaults__time_picker defaultTheme { get; private set; } = default!;
 
-    internal _TimePickerModel__time_picker(TimePickerEntryMode entryMode, _HourMinuteMode__time_picker hourMinuteMode, System.Action<_HourMinuteMode__time_picker> onHourMinuteModeChanged, Action onHourDoubleTapped, Action onMinuteDoubleTapped, TimeOfDay selectedTime, System.Action<TimeOfDay> onSelectedTimeChanged, bool use24HourFormat, _HourDialType__time_picker hourDialType, Orientation orientation, TimePickerThemeData theme, _TimePickerDefaults__time_picker defaultTheme, Widget child) : base(child: child)
+    internal _TimePickerModel__time_picker(TimePickerEntryMode entryMode, _HourMinuteMode__time_picker hourMinuteMode, Action<_HourMinuteMode__time_picker> onHourMinuteModeChanged, Action onHourDoubleTapped, Action onMinuteDoubleTapped, TimeOfDay selectedTime, Action<TimeOfDay> onSelectedTimeChanged, bool use24HourFormat, _HourDialType__time_picker hourDialType, Orientation orientation, TimePickerThemeData theme, _TimePickerDefaults__time_picker defaultTheme, Widget child) : base(child: child)
     {
         this.entryMode = entryMode;
         this.hourMinuteMode = hourMinuteMode;
@@ -339,9 +339,9 @@ internal class _DialMinuteControl__time_picker : StatelessWidget
 
 internal class _DayPeriodControl__time_picker : StatelessWidget
 {
-    public virtual System.Action<TimeOfDay>? onPeriodChanged { get; private set; }
+    public virtual Action<TimeOfDay>? onPeriodChanged { get; private set; }
 
-    internal _DayPeriodControl__time_picker(System.Action<TimeOfDay>? onPeriodChanged = null)
+    internal _DayPeriodControl__time_picker(Action<TimeOfDay>? onPeriodChanged = null)
     {
         this.onPeriodChanged = onPeriodChanged;
     }
@@ -829,10 +829,10 @@ public class _Dial__time_picker : StatefulWidget
     public virtual TimeOfDay selectedTime { get; private set; } = default!;
     public virtual _HourMinuteMode__time_picker hourMinuteMode { get; private set; } = default!;
     public virtual _HourDialType__time_picker hourDialType { get; private set; } = default!;
-    public virtual System.Action<TimeOfDay>? onChanged { get; private set; }
+    public virtual Action<TimeOfDay>? onChanged { get; private set; }
     public virtual Action? onHourSelected { get; private set; }
 
-    internal _Dial__time_picker(TimeOfDay selectedTime, _HourMinuteMode__time_picker hourMinuteMode, _HourDialType__time_picker hourDialType, System.Action<TimeOfDay>? onChanged, Action? onHourSelected)
+    internal _Dial__time_picker(TimeOfDay selectedTime, _HourMinuteMode__time_picker hourMinuteMode, _HourDialType__time_picker hourDialType, Action<TimeOfDay>? onChanged, Action? onHourSelected)
     {
         this.selectedTime = selectedTime;
         this.hourMinuteMode = hourMinuteMode;
@@ -1306,7 +1306,7 @@ public class _DialState__time_picker : State<_Dial__time_picker>, SingleTickerPr
         return new GestureDetector(excludeFromSemantics: true, onPanStart: _handlePanStart, onPanUpdate: _handlePanUpdate, onPanEnd: _handlePanEnd, onTapUp: _handleTapUp, child: new CustomPaint(painter: painter));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1725,7 +1725,7 @@ internal class _TimePickerInputState__time_picker : State<_TimePickerInput__time
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -1766,13 +1766,13 @@ internal class _HourTextField__time_picker : StatelessWidget
     public virtual bool? autofocus { get; private set; }
     public virtual TextInputAction inputAction { get; private set; } = default!;
     public virtual Func<string?, string?> validator { get; private set; } = default!;
-    public virtual System.Action<string?> onSavedSubmitted { get; private set; } = default!;
-    public virtual System.Action<string> onChanged { get; private set; } = default!;
+    public virtual Action<string?> onSavedSubmitted { get; private set; } = default!;
+    public virtual Action<string> onChanged { get; private set; } = default!;
     public virtual string? hourLabelText { get; private set; }
     public virtual string? restorationId { get; private set; }
     public virtual bool emptyInitialTime { get; private set; } = default!;
 
-    internal _HourTextField__time_picker(TimeOfDay selectedTime, TextStyle style, bool? autofocus, TextInputAction inputAction, Func<string?, string?> validator, System.Action<string?> onSavedSubmitted, System.Action<string> onChanged, string? hourLabelText, bool emptyInitialTime, string? restorationId = null)
+    internal _HourTextField__time_picker(TimeOfDay selectedTime, TextStyle style, bool? autofocus, TextInputAction inputAction, Func<string?, string?> validator, Action<string?> onSavedSubmitted, Action<string> onChanged, string? hourLabelText, bool emptyInitialTime, string? restorationId = null)
     {
         this.selectedTime = selectedTime;
         this.style = style;
@@ -1801,12 +1801,12 @@ internal class _MinuteTextField__time_picker : StatelessWidget
     public virtual bool? autofocus { get; private set; }
     public virtual TextInputAction inputAction { get; private set; } = default!;
     public virtual Func<string?, string?> validator { get; private set; } = default!;
-    public virtual System.Action<string?> onSavedSubmitted { get; private set; } = default!;
+    public virtual Action<string?> onSavedSubmitted { get; private set; } = default!;
     public virtual string? minuteLabelText { get; private set; }
     public virtual string? restorationId { get; private set; }
     public virtual bool emptyInitialTime { get; private set; } = default!;
 
-    internal _MinuteTextField__time_picker(TimeOfDay selectedTime, TextStyle style, bool? autofocus, TextInputAction inputAction, Func<string?, string?> validator, System.Action<string?> onSavedSubmitted, string? minuteLabelText, bool emptyInitialTime, string? restorationId = null)
+    internal _MinuteTextField__time_picker(TimeOfDay selectedTime, TextStyle style, bool? autofocus, TextInputAction inputAction, Func<string?, string?> validator, Action<string?> onSavedSubmitted, string? minuteLabelText, bool emptyInitialTime, string? restorationId = null)
     {
         this.selectedTime = selectedTime;
         this.style = style;
@@ -1836,12 +1836,12 @@ internal class _HourMinuteTextField__time_picker : StatefulWidget
     public virtual TextStyle style { get; private set; } = default!;
     public virtual string semanticHintText { get; private set; } = default!;
     public virtual Func<string?, string?> validator { get; private set; } = default!;
-    public virtual System.Action<string?> onSavedSubmitted { get; private set; } = default!;
-    public virtual System.Action<string>? onChanged { get; private set; }
+    public virtual Action<string?> onSavedSubmitted { get; private set; } = default!;
+    public virtual Action<string>? onChanged { get; private set; }
     public virtual string? restorationId { get; private set; }
     public virtual bool emptyInitialTime { get; private set; } = default!;
 
-    internal _HourMinuteTextField__time_picker(TimeOfDay selectedTime, bool isHour, bool? autofocus, TextInputAction inputAction, TextStyle style, string semanticHintText, Func<string?, string?> validator, System.Action<string?> onSavedSubmitted, string? restorationId = null, bool emptyInitialTime = default!, System.Action<string>? onChanged = null)
+    internal _HourMinuteTextField__time_picker(TimeOfDay selectedTime, bool isHour, bool? autofocus, TextInputAction inputAction, TextStyle style, string semanticHintText, Func<string?, string?> validator, Action<string?> onSavedSubmitted, string? restorationId = null, bool emptyInitialTime = default!, Action<string>? onChanged = null)
     {
         this.selectedTime = selectedTime;
         this.isHour = isHour;
@@ -2110,7 +2110,7 @@ internal class _HourMinuteTextFieldState__time_picker : State<_HourMinuteTextFie
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -2158,12 +2158,12 @@ public class TimePickerDialog : StatefulWidget
     public virtual string? restorationId { get; private set; }
     public virtual TimePickerEntryMode initialEntryMode { get; private set; } = default!;
     public virtual Orientation? orientation { get; private set; }
-    public virtual System.Action<TimePickerEntryMode>? onEntryModeChanged { get; private set; }
+    public virtual Action<TimePickerEntryMode>? onEntryModeChanged { get; private set; }
     public virtual Icon? switchToInputEntryModeIcon { get; private set; }
     public virtual Icon? switchToTimerEntryModeIcon { get; private set; }
     public virtual bool emptyInitialInput { get; private set; } = default!;
 
-    public TimePickerDialog(Key? key = null, TimeOfDay initialTime = default!, string? cancelText = null, string? confirmText = null, string? helpText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, string? restorationId = null, TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial, Orientation? orientation = null, System.Action<TimePickerEntryMode>? onEntryModeChanged = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = false) : base(key: key)
+    public TimePickerDialog(Key? key = null, TimeOfDay initialTime = default!, string? cancelText = null, string? confirmText = null, string? helpText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, string? restorationId = null, TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial, Orientation? orientation = null, Action<TimePickerEntryMode>? onEntryModeChanged = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = false) : base(key: key)
     {
         this.initialTime = initialTime;
         this.cancelText = cancelText;
@@ -2649,7 +2649,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -2694,14 +2694,14 @@ public class _TimePicker__time_picker : StatefulWidget
     public virtual string? restorationId { get; private set; }
     public virtual TimePickerEntryMode entryMode { get; private set; } = default!;
     public virtual TimeOfDay time { get; private set; } = default!;
-    public virtual System.Action<TimeOfDay>? onTimeChanged { get; private set; }
+    public virtual Action<TimeOfDay>? onTimeChanged { get; private set; }
     public virtual Orientation? orientation { get; private set; }
-    public virtual System.Action<TimePickerEntryMode>? onEntryModeChanged { get; private set; }
+    public virtual Action<TimePickerEntryMode>? onEntryModeChanged { get; private set; }
     public virtual Icon? switchToInputEntryModeIcon { get; private set; }
     public virtual Icon? switchToTimerEntryModeIcon { get; private set; }
     public virtual bool emptyInitialInput { get; private set; } = default!;
 
-    internal _TimePicker__time_picker(TimeOfDay time, System.Action<TimeOfDay>? onTimeChanged, string? helpText = null, string? cancelText = null, string? confirmText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, string? restorationId = null, TimePickerEntryMode entryMode = TimePickerEntryMode.dial, Orientation? orientation = null, System.Action<TimePickerEntryMode>? onEntryModeChanged = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = default!)
+    internal _TimePicker__time_picker(TimeOfDay time, Action<TimeOfDay>? onTimeChanged, string? helpText = null, string? cancelText = null, string? confirmText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, string? restorationId = null, TimePickerEntryMode entryMode = TimePickerEntryMode.dial, Orientation? orientation = null, Action<TimePickerEntryMode>? onEntryModeChanged = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = default!)
     {
         this.time = time;
         this.onTimeChanged = onTimeChanged;
@@ -3113,7 +3113,7 @@ internal class _TimePickerState__time_picker : State<_TimePicker__time_picker>, 
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -3149,7 +3149,7 @@ internal class _TimePickerState__time_picker : State<_TimePicker__time_picker>, 
 
 public static partial class Time_pickerLibrary
 {
-    public static async Future<TimeOfDay?> showTimePicker(BuildContext context, TimeOfDay initialTime, Func<BuildContext, Widget?, Widget>? builder = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial, string? cancelText = null, string? confirmText = null, string? helpText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, RouteSettings? routeSettings = null, System.Action<TimePickerEntryMode>? onEntryModeChanged = null, Offset? anchorPoint = null, Orientation? orientation = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = false)
+    public static async Future<TimeOfDay?> showTimePicker(BuildContext context, TimeOfDay initialTime, Func<BuildContext, Widget?, Widget>? builder = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial, string? cancelText = null, string? confirmText = null, string? helpText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, RouteSettings? routeSettings = null, Action<TimePickerEntryMode>? onEntryModeChanged = null, Offset? anchorPoint = null, Orientation? orientation = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = false)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         Widget dialog = new TimePickerDialog(initialTime: initialTime, initialEntryMode: initialEntryMode, cancelText: cancelText, confirmText: confirmText, helpText: helpText, errorInvalidText: errorInvalidText, hourLabelText: hourLabelText, minuteLabelText: minuteLabelText, orientation: orientation, onEntryModeChanged: onEntryModeChanged, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToTimerEntryModeIcon: switchToTimerEntryModeIcon, emptyInitialInput: emptyInitialInput);

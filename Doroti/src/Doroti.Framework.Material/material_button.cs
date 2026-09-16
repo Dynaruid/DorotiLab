@@ -10,7 +10,7 @@ public class MaterialButton : StatelessWidget
 {
     public virtual Action? onPressed { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<bool>? onHighlightChanged { get; private set; }
+    public virtual Action<bool>? onHighlightChanged { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual ButtonTextTheme? textTheme { get; private set; }
     public virtual Color? textColor { get; private set; }
@@ -40,7 +40,7 @@ public class MaterialButton : StatelessWidget
     public virtual double? height { get; private set; }
     public virtual bool enableFeedback { get; private set; } = default!;
 
-    public MaterialButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHighlightChanged = null, MouseCursor? mouseCursor = null, ButtonTextTheme? textTheme = null, Color? textColor = null, Color? disabledTextColor = null, Color? color = null, Color? disabledColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Brightness? colorBrightness = null, double? elevation = null, double? focusElevation = null, double? hoverElevation = null, double? highlightElevation = null, double? disabledElevation = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, ShapeBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, Duration? animationDuration = null, double? minWidth = null, double? height = null, bool enableFeedback = true, Widget? child = null) : base(key: key)
+    public MaterialButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, Action<bool>? onHighlightChanged = null, MouseCursor? mouseCursor = null, ButtonTextTheme? textTheme = null, Color? textColor = null, Color? disabledTextColor = null, Color? color = null, Color? disabledColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Brightness? colorBrightness = null, double? elevation = null, double? focusElevation = null, double? hoverElevation = null, double? highlightElevation = null, double? disabledElevation = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, ShapeBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, Duration? animationDuration = null, double? minWidth = null, double? height = null, bool enableFeedback = true, Widget? child = null) : base(key: key)
     {
         this.onPressed = onPressed;
         this.onLongPress = onLongPress;

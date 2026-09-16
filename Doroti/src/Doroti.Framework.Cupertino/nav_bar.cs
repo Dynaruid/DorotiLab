@@ -435,7 +435,7 @@ public class CupertinoSliverNavigationBar : StatefulWidget
     public virtual object heroTag { get; private set; } = default!;
     public virtual PreferredSizeWidget? bottom { get; private set; }
     public virtual NavigationBarBottomMode? bottomMode { get; private set; }
-    public virtual System.Action<bool>? onSearchableBottomTap { get; private set; }
+    public virtual Action<bool>? onSearchableBottomTap { get; private set; }
     public virtual bool stretch { get; private set; } = default!;
     public virtual Widget? searchField { get; private set; }
     internal virtual bool _searchable { get; private set; } = default!;
@@ -470,7 +470,7 @@ public class CupertinoSliverNavigationBar : StatefulWidget
         System.Diagnostics.Debug.Assert((bottomMode is null) || (bottom is not null));
     }
 
-    public static CupertinoSliverNavigationBar CreateSearch(Key? key = null, Widget searchField = default!, Widget? largeTitle = null, Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, bool alwaysShowMiddle = true, string? previousPageTitle = null, Widget? middle = null, Widget? trailing = null, Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, bool stretch = false, NavigationBarBottomMode? bottomMode = NavigationBarBottomMode.automatic, System.Action<bool>? onSearchableBottomTap = null)
+    public static CupertinoSliverNavigationBar CreateSearch(Key? key = null, Widget searchField = default!, Widget? largeTitle = null, Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, bool alwaysShowMiddle = true, string? previousPageTitle = null, Widget? middle = null, Widget? trailing = null, Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, bool stretch = false, NavigationBarBottomMode? bottomMode = NavigationBarBottomMode.automatic, Action<bool>? onSearchableBottomTap = null)
     {
         var __instance = new CupertinoSliverNavigationBar(key: key, largeTitle: largeTitle, leading: leading, automaticallyImplyLeading: automaticallyImplyLeading, automaticallyImplyTitle: automaticallyImplyTitle, alwaysShowMiddle: alwaysShowMiddle, previousPageTitle: previousPageTitle, middle: middle, trailing: trailing, border: border, backgroundColor: backgroundColor, automaticBackgroundVisibility: automaticBackgroundVisibility, enableBackgroundFilterBlur: enableBackgroundFilterBlur, brightness: brightness, padding: padding, transitionBetweenRoutes: transitionBetweenRoutes, heroTag: heroTag, stretch: stretch, bottomMode: bottomMode);
         Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
@@ -691,7 +691,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : State<CupertinoSliv
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

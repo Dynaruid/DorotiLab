@@ -93,7 +93,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         base.didUpdateWidget(oldWidget);
         if (!Equals(widget.transitionBuilder, oldWidget.transitionBuilder))
         {
-            _outgoingEntries.forEach((__arg0) => ((System.Action<_ChildEntry__animated_switcher>)_updateTransitionForEntry)(__arg0));
+            _outgoingEntries.forEach((__arg0) => ((Action<_ChildEntry__animated_switcher>)_updateTransitionForEntry)(__arg0));
             if (_currentEntry is not null)
             {
                 _updateTransitionForEntry(_currentEntry!);
@@ -225,7 +225,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

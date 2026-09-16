@@ -260,7 +260,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
     {
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

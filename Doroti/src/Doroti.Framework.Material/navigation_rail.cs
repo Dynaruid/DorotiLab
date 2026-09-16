@@ -26,7 +26,7 @@ public class NavigationRail : StatefulWidget
     public virtual Widget? trailing { get; private set; }
     public virtual List<NavigationRailDestination> destinations { get; private set; } = default!;
     public virtual long? selectedIndex { get; private set; }
-    public virtual System.Action<long>? onDestinationSelected { get; private set; }
+    public virtual Action<long>? onDestinationSelected { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual double? groupAlignment { get; private set; }
     public virtual NavigationRailLabelType? labelType { get; private set; }
@@ -44,7 +44,7 @@ public class NavigationRail : StatefulWidget
     public virtual bool scrollable { get; private set; } = default!;
     public virtual MainAxisAlignment? mainAxisAlignment { get; private set; }
 
-    public NavigationRail(Key? key = null, Color? backgroundColor = null, bool extended = false, Widget? leading = null, Widget? trailing = null, List<NavigationRailDestination> destinations = default!, long? selectedIndex = default!, System.Action<long>? onDestinationSelected = null, double? elevation = null, double? groupAlignment = null, NavigationRailLabelType? labelType = null, TextStyle? unselectedLabelTextStyle = null, TextStyle? selectedLabelTextStyle = null, IconThemeData? unselectedIconTheme = null, IconThemeData? selectedIconTheme = null, double? minWidth = null, double? minExtendedWidth = null, bool? useIndicator = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, bool leadingAtTop = true, bool trailingAtBottom = false, bool scrollable = false, MainAxisAlignment? mainAxisAlignment = null) : base(key: key)
+    public NavigationRail(Key? key = null, Color? backgroundColor = null, bool extended = false, Widget? leading = null, Widget? trailing = null, List<NavigationRailDestination> destinations = default!, long? selectedIndex = default!, Action<long>? onDestinationSelected = null, double? elevation = null, double? groupAlignment = null, NavigationRailLabelType? labelType = null, TextStyle? unselectedLabelTextStyle = null, TextStyle? selectedLabelTextStyle = null, IconThemeData? unselectedIconTheme = null, IconThemeData? selectedIconTheme = null, double? minWidth = null, double? minExtendedWidth = null, bool? useIndicator = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, bool leadingAtTop = true, bool trailingAtBottom = false, bool scrollable = false, MainAxisAlignment? mainAxisAlignment = null) : base(key: key)
     {
         this.backgroundColor = backgroundColor;
         this.extended = extended;
@@ -248,7 +248,7 @@ internal class _NavigationRailState__navigation_rail : State<NavigationRail>, Ti
         });
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

@@ -26,9 +26,9 @@ public class Slider : StatefulWidget
 {
     public virtual double value { get; private set; } = default!;
     public virtual double? secondaryTrackValue { get; private set; }
-    public virtual System.Action<double>? onChanged { get; private set; }
-    public virtual System.Action<double>? onChangeStart { get; private set; }
-    public virtual System.Action<double>? onChangeEnd { get; private set; }
+    public virtual Action<double>? onChanged { get; private set; }
+    public virtual Action<double>? onChangeStart { get; private set; }
+    public virtual Action<double>? onChangeEnd { get; private set; }
     public virtual double min { get; private set; } = default!;
     public virtual double max { get; private set; } = default!;
     public virtual long? divisions { get; private set; }
@@ -48,7 +48,7 @@ public class Slider : StatefulWidget
     public virtual bool? year2023 { get; private set; }
     internal virtual _SliderType__slider _sliderType { get; private set; } = default!;
 
-    public Slider(Key? key = null, double value = default!, double? secondaryTrackValue = null, System.Action<double>? onChanged = default!, System.Action<double>? onChangeStart = null, System.Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, string? label = null, Color? activeColor = null, Color? inactiveColor = null, Color? secondaryActiveColor = null, Color? thumbColor = null, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, SemanticFormatterCallback? semanticFormatterCallback = null, FocusNode? focusNode = null, bool autofocus = false, SliderInteraction? allowedInteraction = null, EdgeInsetsGeometry? padding = null, ShowValueIndicator? showValueIndicator = null, bool? year2023 = null) : base(key: key)
+    public Slider(Key? key = null, double value = default!, double? secondaryTrackValue = null, Action<double>? onChanged = default!, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, string? label = null, Color? activeColor = null, Color? inactiveColor = null, Color? secondaryActiveColor = null, Color? thumbColor = null, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, SemanticFormatterCallback? semanticFormatterCallback = null, FocusNode? focusNode = null, bool autofocus = false, SliderInteraction? allowedInteraction = null, EdgeInsetsGeometry? padding = null, ShowValueIndicator? showValueIndicator = null, bool? year2023 = null) : base(key: key)
     {
         this.value = value;
         this.secondaryTrackValue = secondaryTrackValue;
@@ -79,7 +79,7 @@ public class Slider : StatefulWidget
         System.Diagnostics.Debug.Assert((divisions is null) || (DartRuntimePrimitives.RequireValue(divisions) > 0L));
     }
 
-    public static Slider CreateAdaptive(Key? key = null, double value = default!, double? secondaryTrackValue = null, System.Action<double>? onChanged = default!, System.Action<double>? onChangeStart = null, System.Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, string? label = null, MouseCursor? mouseCursor = null, Color? activeColor = null, Color? inactiveColor = null, Color? secondaryActiveColor = null, Color? thumbColor = null, WidgetStateProperty<Color?>? overlayColor = null, SemanticFormatterCallback? semanticFormatterCallback = null, FocusNode? focusNode = null, bool autofocus = false, SliderInteraction? allowedInteraction = null, ShowValueIndicator? showValueIndicator = null, bool? year2023 = null)
+    public static Slider CreateAdaptive(Key? key = null, double value = default!, double? secondaryTrackValue = null, Action<double>? onChanged = default!, Action<double>? onChangeStart = null, Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, string? label = null, MouseCursor? mouseCursor = null, Color? activeColor = null, Color? inactiveColor = null, Color? secondaryActiveColor = null, Color? thumbColor = null, WidgetStateProperty<Color?>? overlayColor = null, SemanticFormatterCallback? semanticFormatterCallback = null, FocusNode? focusNode = null, bool autofocus = false, SliderInteraction? allowedInteraction = null, ShowValueIndicator? showValueIndicator = null, bool? year2023 = null)
     {
         var __instance = new Slider(key: key, value: value, secondaryTrackValue: secondaryTrackValue, onChanged: onChanged, onChangeStart: onChangeStart, onChangeEnd: onChangeEnd, min: min, max: max, divisions: divisions, label: label, activeColor: activeColor, inactiveColor: inactiveColor, secondaryActiveColor: secondaryActiveColor, thumbColor: thumbColor, overlayColor: overlayColor, mouseCursor: mouseCursor, semanticFormatterCallback: semanticFormatterCallback, focusNode: focusNode, autofocus: autofocus, allowedInteraction: allowedInteraction, showValueIndicator: showValueIndicator, year2023: year2023);
         __instance.value = value;
@@ -114,9 +114,9 @@ public class Slider : StatefulWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DoubleProperty("value", value));
         properties.add(new DoubleProperty("secondaryTrackValue", secondaryTrackValue));
-        properties.add(new ObjectFlagProperty<System.Action<double>>("onChanged", onChanged, ifNull: "disabled"));
-        properties.add(ObjectFlagProperty<System.Action<double>>.CreateHas("onChangeStart", onChangeStart));
-        properties.add(ObjectFlagProperty<System.Action<double>>.CreateHas("onChangeEnd", onChangeEnd));
+        properties.add(new ObjectFlagProperty<Action<double>>("onChanged", onChanged, ifNull: "disabled"));
+        properties.add(ObjectFlagProperty<Action<double>>.CreateHas("onChangeStart", onChangeStart));
+        properties.add(ObjectFlagProperty<Action<double>>.CreateHas("onChangeEnd", onChangeEnd));
         properties.add(new DoubleProperty("min", min));
         properties.add(new DoubleProperty("max", max));
         properties.add(new IntProperty("divisions", divisions));
@@ -171,7 +171,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         positionController = new AnimationController(duration: Duration.zero, vsync: this);
         enableController.value = (widget.onChanged is not null) ? 1.0 : 0.0;
         positionController.value = _convert(widget.value);
-        _actionMap = new DartMap<Type, dynamic> { [typeof(_AdjustSliderIntent__slider)] = new CallbackAction<_AdjustSliderIntent__slider>(onInvoke: (__arg0) => { ((System.Action<_AdjustSliderIntent__slider>)_actionHandler)(__arg0); return default!; }) };
+        _actionMap = new DartMap<Type, dynamic> { [typeof(_AdjustSliderIntent__slider)] = new CallbackAction<_AdjustSliderIntent__slider>(onInvoke: (__arg0) => { ((Action<_AdjustSliderIntent__slider>)_actionHandler)(__arg0); return default!; }) };
         if (widget.focusNode is null)
         {
             _focusNode ??= new FocusNode();
@@ -432,7 +432,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         return showValueIndicator switch { var __constant40364 when Equals(__constant40364, ShowValueIndicator.never) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink()),var __constant40423 when Equals(__constant40423, ShowValueIndicator.onlyForDiscrete) => (widget.divisions is not null) ? valueIndicator : SizedBox.CreateShrink(),var __constant40544 when Equals(__constant40544, ShowValueIndicator.onlyForContinuous) => (widget.divisions is null) ? valueIndicator : SizedBox.CreateShrink(),var __logical40667 when Equals(__logical40667, ShowValueIndicator.alwaysVisible) || Equals(__logical40667, ShowValueIndicator.always) => valueIndicator,var __constant40744 when Equals(__constant40744, ShowValueIndicator.onDrag) => valueIndicator,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -510,9 +510,9 @@ internal class _SliderRenderObjectWidget__slider : LeafRenderObjectWidget
     public virtual SliderThemeData sliderTheme { get; private set; } = default!;
     public virtual double textScaleFactor { get; private set; } = default!;
     public virtual Size screenSize { get; private set; } = default!;
-    public virtual System.Action<double>? onChanged { get; private set; }
-    public virtual System.Action<double>? onChangeStart { get; private set; }
-    public virtual System.Action<double>? onChangeEnd { get; private set; }
+    public virtual Action<double>? onChanged { get; private set; }
+    public virtual Action<double>? onChangeStart { get; private set; }
+    public virtual Action<double>? onChangeEnd { get; private set; }
     public virtual SemanticFormatterCallback? semanticFormatterCallback { get; private set; }
     public virtual Action? onDidGainAccessibilityFocus { get; private set; }
     public virtual _SliderState__slider state { get; private set; } = default!;
@@ -520,7 +520,7 @@ internal class _SliderRenderObjectWidget__slider : LeafRenderObjectWidget
     public virtual bool hovering { get; private set; } = default!;
     public virtual SliderInteraction allowedInteraction { get; private set; } = default!;
 
-    internal _SliderRenderObjectWidget__slider(Key? key = null, double value = default!, double? secondaryTrackValue = default!, long? divisions = default!, string? label = default!, SliderThemeData sliderTheme = default!, double textScaleFactor = default!, Size screenSize = default!, System.Action<double>? onChanged = default!, System.Action<double>? onChangeStart = default!, System.Action<double>? onChangeEnd = default!, _SliderState__slider state = default!, SemanticFormatterCallback? semanticFormatterCallback = default!, Action? onDidGainAccessibilityFocus = default!, bool hasFocus = default!, bool hovering = default!, SliderInteraction allowedInteraction = default!) : base(key: key)
+    internal _SliderRenderObjectWidget__slider(Key? key = null, double value = default!, double? secondaryTrackValue = default!, long? divisions = default!, string? label = default!, SliderThemeData sliderTheme = default!, double textScaleFactor = default!, Size screenSize = default!, Action<double>? onChanged = default!, Action<double>? onChangeStart = default!, Action<double>? onChangeEnd = default!, _SliderState__slider state = default!, SemanticFormatterCallback? semanticFormatterCallback = default!, Action? onDidGainAccessibilityFocus = default!, bool hasFocus = default!, bool hovering = default!, SliderInteraction allowedInteraction = default!) : base(key: key)
     {
         this.value = value;
         this.secondaryTrackValue = secondaryTrackValue;
@@ -601,9 +601,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
     internal virtual SliderThemeData _sliderTheme { get; set; } = default!;
     internal virtual double _textScaleFactor { get; set; } = default!;
     internal virtual Size _screenSize { get; set; } = default!;
-    internal virtual System.Action<double>? _onChanged { get; set; } = default;
-    public virtual System.Action<double>? onChangeStart { get; set; } = default;
-    public virtual System.Action<double>? onChangeEnd { get; set; } = default;
+    internal virtual Action<double>? _onChanged { get; set; } = default;
+    public virtual Action<double>? onChangeStart { get; set; } = default;
+    public virtual Action<double>? onChangeEnd { get; set; } = default;
     internal virtual TextDirection _textDirection { get; set; } = default!;
     internal virtual bool _hasFocus { get; set; } = default!;
     internal virtual bool _hovering { get; set; } = default!;
@@ -611,7 +611,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
     internal virtual SliderInteraction _allowedInteraction { get; set; } = default!;
     public virtual bool _hasPendingSystemFontsDidChangeCallBack { get; set; } = false;
 
-    internal _RenderSlider__slider(double value, double? secondaryTrackValue, long? divisions, string? label, SliderThemeData sliderTheme, double textScaleFactor, Size screenSize, TargetPlatform platform, System.Action<double>? onChanged, SemanticFormatterCallback? semanticFormatterCallback, Action? onDidGainAccessibilityFocus, System.Action<double>? onChangeStart, System.Action<double>? onChangeEnd, _SliderState__slider state, TextDirection textDirection, bool hasFocus, bool hovering, Gestures.DeviceGestureSettings gestureSettings, SliderInteraction allowedInteraction)
+    internal _RenderSlider__slider(double value, double? secondaryTrackValue, long? divisions, string? label, SliderThemeData sliderTheme, double textScaleFactor, Size screenSize, TargetPlatform platform, Action<double>? onChanged, SemanticFormatterCallback? semanticFormatterCallback, Action? onDidGainAccessibilityFocus, Action<double>? onChangeStart, Action<double>? onChangeEnd, _SliderState__slider state, TextDirection textDirection, bool hasFocus, bool hovering, Gestures.DeviceGestureSettings gestureSettings, SliderInteraction allowedInteraction)
     {
         this.onDidGainAccessibilityFocus = onDidGainAccessibilityFocus;
         this.onChangeStart = onChangeStart;
@@ -819,7 +819,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             markNeedsPaint();
         }
     }
-    public virtual System.Action<double>? onChanged
+    public virtual Action<double>? onChanged
     {
         get => _onChanged;
         set

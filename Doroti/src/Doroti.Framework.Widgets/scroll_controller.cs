@@ -10,12 +10,12 @@ public class ScrollController : ChangeNotifier
 {
     internal virtual double _initialScrollOffset { get; private set; } = default!;
     public virtual bool keepScrollOffset { get; private set; } = default!;
-    public virtual System.Action<ScrollPosition>? onAttach { get; private set; }
-    public virtual System.Action<ScrollPosition>? onDetach { get; private set; }
+    public virtual Action<ScrollPosition>? onAttach { get; private set; }
+    public virtual Action<ScrollPosition>? onDetach { get; private set; }
     public virtual string? debugLabel { get; private set; }
     internal virtual List<ScrollPosition> _positions { get; private set; } = new List<ScrollPosition>();
 
-    public ScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null)
+    public ScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null)
     {
         this.keepScrollOffset = keepScrollOffset;
         this.debugLabel = debugLabel;
@@ -134,7 +134,7 @@ public class TrackingScrollController : ScrollController
     internal virtual ScrollPosition? _lastUpdated { get; set; } = default;
     internal virtual double? _lastUpdatedOffset { get; set; } = default;
 
-    public TrackingScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null) : base(initialScrollOffset: initialScrollOffset, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
+    public TrackingScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null) : base(initialScrollOffset: initialScrollOffset, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
     {
     }
 

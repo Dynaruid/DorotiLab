@@ -312,15 +312,15 @@ public class TapRegion : SingleChildRenderObjectWidget
 {
     public virtual bool enabled { get; private set; } = default!;
     public virtual HitTestBehavior behavior { get; private set; } = default!;
-    public virtual System.Action<Gestures.PointerDownEvent>? onTapOutside { get; private set; }
-    public virtual System.Action<Gestures.PointerDownEvent>? onTapInside { get; private set; }
-    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpOutside { get; private set; }
-    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpInside { get; private set; }
+    public virtual Action<Gestures.PointerDownEvent>? onTapOutside { get; private set; }
+    public virtual Action<Gestures.PointerDownEvent>? onTapInside { get; private set; }
+    public virtual Action<Gestures.PointerUpEvent>? onTapUpOutside { get; private set; }
+    public virtual Action<Gestures.PointerUpEvent>? onTapUpInside { get; private set; }
     public virtual object? groupId { get; private set; }
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual string? debugLabel { get; private set; }
 
-    public TapRegion(Key? key = null, Widget? child = default!, bool enabled = true, HitTestBehavior behavior = HitTestBehavior.deferToChild, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapInside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpInside = null, object? groupId = null, bool consumeOutsideTaps = false, string? debugLabel = null) : base(key: key, child: child)
+    public TapRegion(Key? key = null, Widget? child = default!, bool enabled = true, HitTestBehavior behavior = HitTestBehavior.deferToChild, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapInside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, Action<Gestures.PointerUpEvent>? onTapUpInside = null, object? groupId = null, bool consumeOutsideTaps = false, string? debugLabel = null) : base(key: key, child: child)
     {
         this.enabled = enabled;
         this.behavior = behavior;
@@ -378,17 +378,17 @@ public class TapRegion : SingleChildRenderObjectWidget
 public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
 {
     internal virtual bool _isRegistered { get; set; } = false;
-    public virtual System.Action<Gestures.PointerDownEvent>? onTapOutside { get; set; } = default;
-    public virtual System.Action<Gestures.PointerDownEvent>? onTapInside { get; set; } = default;
-    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpOutside { get; set; } = default;
-    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpInside { get; set; } = default;
+    public virtual Action<Gestures.PointerDownEvent>? onTapOutside { get; set; } = default;
+    public virtual Action<Gestures.PointerDownEvent>? onTapInside { get; set; } = default;
+    public virtual Action<Gestures.PointerUpEvent>? onTapUpOutside { get; set; } = default;
+    public virtual Action<Gestures.PointerUpEvent>? onTapUpInside { get; set; } = default;
     public virtual string? debugLabel { get; set; } = default;
     internal virtual bool _enabled { get; set; } = default!;
     internal virtual bool _consumeOutsideTaps { get; set; } = default!;
     internal virtual object? _groupId { get; set; } = default;
     internal virtual TapRegionRegistry? _registry { get; set; } = default;
 
-    public RenderTapRegion(TapRegionRegistry? registry = null, bool enabled = true, bool consumeOutsideTaps = false, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapInside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpInside = null, HitTestBehavior behavior = HitTestBehavior.deferToChild, object? groupId = null, string? debugLabel = null) : base(behavior: behavior)
+    public RenderTapRegion(TapRegionRegistry? registry = null, bool enabled = true, bool consumeOutsideTaps = false, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapInside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, Action<Gestures.PointerUpEvent>? onTapUpInside = null, HitTestBehavior behavior = HitTestBehavior.deferToChild, object? groupId = null, string? debugLabel = null) : base(behavior: behavior)
     {
         this.onTapOutside = onTapOutside;
         this.onTapInside = onTapInside;
@@ -503,7 +503,7 @@ public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
 
 public class TextFieldTapRegion : TapRegion
 {
-    public TextFieldTapRegion(Key? key = null, Widget? child = default!, bool enabled = true, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapInside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpInside = null, bool consumeOutsideTaps = false, string? debugLabel = null, object? groupId = default!) : base(key: key, child: child, enabled: enabled, onTapOutside: onTapOutside, onTapInside: onTapInside, onTapUpOutside: onTapUpOutside, onTapUpInside: onTapUpInside, consumeOutsideTaps: consumeOutsideTaps, debugLabel: debugLabel, groupId: groupId ?? typeof(EditableText))
+    public TextFieldTapRegion(Key? key = null, Widget? child = default!, bool enabled = true, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerDownEvent>? onTapInside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, Action<Gestures.PointerUpEvent>? onTapUpInside = null, bool consumeOutsideTaps = false, string? debugLabel = null, object? groupId = default!) : base(key: key, child: child, enabled: enabled, onTapOutside: onTapOutside, onTapInside: onTapInside, onTapUpOutside: onTapUpOutside, onTapUpInside: onTapUpInside, consumeOutsideTaps: consumeOutsideTaps, debugLabel: debugLabel, groupId: groupId ?? typeof(EditableText))
     {
     }
 

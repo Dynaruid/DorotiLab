@@ -11,7 +11,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
 {
     internal virtual AppLifecycleState? _lifecycleState { get; set; } = default;
     public virtual WidgetsBinding binding { get; private set; } = default!;
-    public virtual System.Action<AppLifecycleState>? onStateChange { get; private set; }
+    public virtual Action<AppLifecycleState>? onStateChange { get; private set; }
     public virtual Action? onInactive { get; private set; }
     public virtual Action? onResume { get; private set; }
     public virtual Action? onHide { get; private set; }
@@ -22,7 +22,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
     public virtual Action? onDetach { get; private set; }
     internal virtual bool _debugDisposed { get; set; } = false;
 
-    public AppLifecycleListener(WidgetsBinding? binding = null, Action? onResume = null, Action? onInactive = null, Action? onHide = null, Action? onShow = null, Action? onPause = null, Action? onRestart = null, Action? onDetach = null, Func<Future<AppExitResponse>>? onExitRequested = null, System.Action<AppLifecycleState>? onStateChange = null)
+    public AppLifecycleListener(WidgetsBinding? binding = null, Action? onResume = null, Action? onInactive = null, Action? onHide = null, Action? onShow = null, Action? onPause = null, Action? onRestart = null, Action? onDetach = null, Func<Future<AppExitResponse>>? onExitRequested = null, Action<AppLifecycleState>? onStateChange = null)
     {
         this.onResume = onResume;
         this.onInactive = onInactive;

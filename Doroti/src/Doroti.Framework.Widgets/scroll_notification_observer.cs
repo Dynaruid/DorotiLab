@@ -20,9 +20,9 @@ internal class _ScrollNotificationObserverScope__scroll_notification_observer : 
 
 internal class _ListenerEntry__scroll_notification_observer : DartLinkedListEntry<_ListenerEntry__scroll_notification_observer>
 {
-    public virtual System.Action<ScrollNotification> listener { get; private set; } = default!;
+    public virtual Action<ScrollNotification> listener { get; private set; } = default!;
 
-    internal _ListenerEntry__scroll_notification_observer(System.Action<ScrollNotification> listener)
+    internal _ListenerEntry__scroll_notification_observer(Action<ScrollNotification> listener)
     {
         this.listener = listener;
     }
@@ -82,13 +82,13 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void addListener(System.Action<ScrollNotification> listener)
+    public virtual void addListener(Action<ScrollNotification> listener)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         _listeners!.add(new _ListenerEntry__scroll_notification_observer(listener));
     }
 
-    public virtual void removeListener(System.Action<ScrollNotification> listener)
+    public virtual void removeListener(Action<ScrollNotification> listener)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         foreach (_ListenerEntry__scroll_notification_observer entry in _listeners!)

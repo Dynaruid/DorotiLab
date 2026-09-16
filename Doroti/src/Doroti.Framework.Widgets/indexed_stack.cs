@@ -100,7 +100,7 @@ internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectEleme
     }
 
     public override _RawIndexedStack__indexed_stack widget => ((_RawIndexedStack__indexed_stack?)base.widget)!;
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         long? indexLocal = widget.index;
         if ((indexLocal is not null) && Enumerable.Any(children))
@@ -393,7 +393,7 @@ public class _RenderVisibility__indexed_stack : RenderProxyBox
             markNeedsSemanticsUpdate();
         }
     }
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (maintainSemantics || visible)
         {
@@ -482,7 +482,7 @@ public class _RenderSliverVisibility__indexed_stack : RenderProxySliver
             markNeedsSemanticsUpdate();
         }
     }
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         if (maintainSemantics || visible)
         {

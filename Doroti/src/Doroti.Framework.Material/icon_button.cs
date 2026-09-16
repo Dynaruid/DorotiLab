@@ -34,7 +34,7 @@ public class IconButton : StatelessWidget
     public virtual Color? highlightColor { get; private set; }
     public virtual Color? disabledColor { get; private set; }
     public virtual Action? onPressed { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
     public virtual Action? onLongPress { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
@@ -48,7 +48,7 @@ public class IconButton : StatelessWidget
     public virtual WidgetStatesController? statesController { get; private set; }
     internal virtual _IconButtonVariant__icon_button _variant { get; private set; } = default!;
 
-    public IconButton(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, System.Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!) : base(key: key)
+    public IconButton(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!) : base(key: key)
     {
         this.iconSize = iconSize;
         this.visualDensity = visualDensity;
@@ -79,7 +79,7 @@ public class IconButton : StatelessWidget
         System.Diagnostics.Debug.Assert((splashRadius is null) || (DartRuntimePrimitives.RequireValue(splashRadius) > 0L));
     }
 
-    public static IconButton CreateFilled(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, System.Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
+    public static IconButton CreateFilled(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
     {
         var __instance = new IconButton(key: key, iconSize: iconSize, visualDensity: visualDensity, padding: padding, alignment: alignment, splashRadius: splashRadius, color: color, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, disabledColor: disabledColor, onPressed: onPressed, onHover: onHover, onLongPress: onLongPress, mouseCursor: mouseCursor, focusNode: focusNode, autofocus: autofocus, tooltip: tooltip, enableFeedback: enableFeedback, constraints: constraints, style: style, isSelected: isSelected, selectedIcon: selectedIcon, statesController: statesController, icon: icon);
         __instance.iconSize = iconSize;
@@ -111,7 +111,7 @@ public class IconButton : StatelessWidget
         return __instance;
     }
 
-    public static IconButton CreateFilledTonal(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, System.Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
+    public static IconButton CreateFilledTonal(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
     {
         var __instance = new IconButton(key: key, iconSize: iconSize, visualDensity: visualDensity, padding: padding, alignment: alignment, splashRadius: splashRadius, color: color, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, disabledColor: disabledColor, onPressed: onPressed, onHover: onHover, onLongPress: onLongPress, mouseCursor: mouseCursor, focusNode: focusNode, autofocus: autofocus, tooltip: tooltip, enableFeedback: enableFeedback, constraints: constraints, style: style, isSelected: isSelected, selectedIcon: selectedIcon, statesController: statesController, icon: icon);
         __instance.iconSize = iconSize;
@@ -143,7 +143,7 @@ public class IconButton : StatelessWidget
         return __instance;
     }
 
-    public static IconButton CreateOutlined(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, System.Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
+    public static IconButton CreateOutlined(Key? key = null, double? iconSize = null, VisualDensity? visualDensity = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null, double? splashRadius = null, Color? color = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, Color? disabledColor = null, Action? onPressed = default!, Action<bool>? onHover = null, Action? onLongPress = null, MouseCursor? mouseCursor = null, FocusNode? focusNode = null, bool autofocus = false, string? tooltip = null, bool? enableFeedback = null, BoxConstraints? constraints = null, ButtonStyle? style = null, bool? isSelected = null, Widget? selectedIcon = null, WidgetStatesController? statesController = null, Widget icon = default!)
     {
         var __instance = new IconButton(key: key, iconSize: iconSize, visualDensity: visualDensity, padding: padding, alignment: alignment, splashRadius: splashRadius, color: color, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, disabledColor: disabledColor, onPressed: onPressed, onHover: onHover, onLongPress: onLongPress, mouseCursor: mouseCursor, focusNode: focusNode, autofocus: autofocus, tooltip: tooltip, enableFeedback: enableFeedback, constraints: constraints, style: style, isSelected: isSelected, selectedIcon: selectedIcon, statesController: statesController, icon: icon);
         __instance.iconSize = iconSize;
@@ -216,7 +216,7 @@ public class IconButton : StatelessWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new StringProperty("tooltip", tooltip, defaultValue: null, quoted: false));
         properties.add(new ObjectFlagProperty<Action>("onPressed", onPressed, ifNull: "disabled"));
-        properties.add(new ObjectFlagProperty<System.Action<bool>>("onHover", onHover, ifNull: "disabled"));
+        properties.add(new ObjectFlagProperty<Action<bool>>("onHover", onHover, ifNull: "disabled"));
         properties.add(new ObjectFlagProperty<Action>("onLongPress", onLongPress, ifNull: "disabled"));
         properties.add(new ColorProperty("color", color, defaultValue: null));
         properties.add(new ColorProperty("disabledColor", disabledColor, defaultValue: null));
@@ -241,10 +241,10 @@ public class _SelectableIconButton__icon_button : StatefulWidget
     public virtual string? tooltip { get; private set; }
     public virtual Widget child { get; private set; } = default!;
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
     public virtual WidgetStatesController? statesController { get; private set; }
 
-    internal _SelectableIconButton__icon_button(bool? isSelected = null, ButtonStyle? style = null, FocusNode? focusNode = null, Action? onLongPress = null, System.Action<bool>? onHover = null, WidgetStatesController? statesController = null, _IconButtonVariant__icon_button variant = default!, bool autofocus = default!, Action? onPressed = default!, string? tooltip = null, Widget child = default!)
+    internal _SelectableIconButton__icon_button(bool? isSelected = null, ButtonStyle? style = null, FocusNode? focusNode = null, Action? onLongPress = null, Action<bool>? onHover = null, WidgetStatesController? statesController = null, _IconButtonVariant__icon_button variant = default!, bool autofocus = default!, Action? onPressed = default!, string? tooltip = null, Widget child = default!)
     {
         this.isSelected = isSelected;
         this.style = style;
@@ -325,7 +325,7 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
     public virtual _IconButtonVariant__icon_button variant { get; private set; } = default!;
     public virtual bool toggleable { get; private set; } = default!;
 
-    internal _IconButtonM3__icon_button(Action? onPressed, ButtonStyle? style = null, FocusNode? focusNode = null, System.Action<bool>? onHover = null, Action? onLongPress = null, bool autofocus = false, WidgetStatesController? statesController = null, _IconButtonVariant__icon_button variant = default!, bool toggleable = default!, string? tooltip = null, Widget child = default!) : base(onPressed: onPressed, style: style, focusNode: focusNode, onHover: onHover, onLongPress: onLongPress, autofocus: autofocus, statesController: statesController, tooltip: tooltip, child: child, onFocusChange: null, clipBehavior: Clip.none)
+    internal _IconButtonM3__icon_button(Action? onPressed, ButtonStyle? style = null, FocusNode? focusNode = null, Action<bool>? onHover = null, Action? onLongPress = null, bool autofocus = false, WidgetStatesController? statesController = null, _IconButtonVariant__icon_button variant = default!, bool toggleable = default!, string? tooltip = null, Widget child = default!) : base(onPressed: onPressed, style: style, focusNode: focusNode, onHover: onHover, onLongPress: onLongPress, autofocus: autofocus, statesController: statesController, tooltip: tooltip, child: child, onFocusChange: null, clipBehavior: Clip.none)
     {
         this.variant = variant;
         this.toggleable = toggleable;

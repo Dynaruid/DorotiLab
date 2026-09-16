@@ -143,7 +143,7 @@ public class WidgetsApp : StatefulWidget
     {
         var actions = new DartMap<Type, dynamic>();
         actions.AddRange(defaultActions);
-        actions[typeof(ScrollIntent)] = Action<ScrollIntent>.CreateOverridable(context: context, defaultAction: new ScrollAction());
+        actions[typeof(ScrollIntent)] = IntentAction<ScrollIntent>.CreateOverridable(context: context, defaultAction: new ScrollAction());
         return actions;
     }
 

@@ -8,7 +8,7 @@ using M = Doroti.Framework.Material;
 // The opt-in native runner probe changes the same widget state as these visible controls.
 public static class PlatformViewFixtureProbe
 {
-    public static System.Action<int>? SetStage { get; internal set; }
+    public static Action<int>? SetStage { get; internal set; }
     public static int Stage { get; internal set; } = 5;
     public static int ForegroundClicks { get; internal set; }
 }
@@ -312,7 +312,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         {
                             new M.TextButton(
                                 onPressed: () =>
-                                    Navigator.push<object>(
+                                    Navigator.push(
                                         context,
                                         new PageRouteBuilder<object>(
                                             pageBuilder: (_, _, _) => new PlatformEffectFixture(),

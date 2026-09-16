@@ -17,8 +17,8 @@ public class ReorderableList : StatefulWidget
     public virtual long itemCount { get; private set; } = default!;
     public virtual Action<long, long>? onReorder { get; private set; }
     public virtual Action<long, long>? onReorderItem { get; private set; }
-    public virtual System.Action<long>? onReorderStart { get; private set; }
-    public virtual System.Action<long>? onReorderEnd { get; private set; }
+    public virtual Action<long>? onReorderStart { get; private set; }
+    public virtual Action<long>? onReorderEnd { get; private set; }
     public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
     public virtual EdgeInsetsGeometry? padding { get; private set; }
     public virtual Axis scrollDirection { get; private set; } = default!;
@@ -40,7 +40,7 @@ public class ReorderableList : StatefulWidget
     public virtual double? autoScrollerVelocityScalar { get; private set; }
     public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
 
-    public ReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, System.Action<long>? onReorderStart = null, System.Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, EdgeInsetsGeometry? padding = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null) : base(key: key)
+    public ReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, Action<long>? onReorderStart = null, Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, EdgeInsetsGeometry? padding = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null) : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.itemCount = itemCount;
@@ -143,8 +143,8 @@ public class SliverReorderableList : StatefulWidget
     public virtual long itemCount { get; private set; } = default!;
     public virtual Action<long, long>? onReorder { get; private set; }
     public virtual Action<long, long>? onReorderItem { get; private set; }
-    public virtual System.Action<long>? onReorderStart { get; private set; }
-    public virtual System.Action<long>? onReorderEnd { get; private set; }
+    public virtual Action<long>? onReorderStart { get; private set; }
+    public virtual Action<long>? onReorderEnd { get; private set; }
     public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
     public virtual double? itemExtent { get; private set; }
     public virtual ItemExtentBuilder? itemExtentBuilder { get; private set; }
@@ -152,7 +152,7 @@ public class SliverReorderableList : StatefulWidget
     public virtual double autoScrollerVelocityScalar { get; private set; } = default!;
     public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
 
-    public SliverReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, System.Action<long>? onReorderStart = null, System.Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, double? autoScrollerVelocityScalar = null) : base(key: key)
+    public SliverReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, Action<long>? onReorderStart = null, Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, double? autoScrollerVelocityScalar = null) : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.findChildIndexCallback = findChildIndexCallback;
@@ -697,7 +697,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -1018,8 +1018,8 @@ internal class _DragInfo__reorderable_list : Drag
 {
     public virtual Axis scrollDirection { get; private set; } = default!;
     public virtual Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate { get; private set; }
-    public virtual System.Action<_DragInfo__reorderable_list>? onEnd { get; private set; }
-    public virtual System.Action<_DragInfo__reorderable_list>? onCancel { get; private set; }
+    public virtual Action<_DragInfo__reorderable_list>? onEnd { get; private set; }
+    public virtual Action<_DragInfo__reorderable_list>? onCancel { get; private set; }
     public virtual Action? onDropCompleted { get; private set; }
     public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
     public virtual Scheduler.TickerProvider tickerProvider { get; private set; } = default!;
@@ -1037,7 +1037,7 @@ internal class _DragInfo__reorderable_list : Drag
     internal virtual AnimationController? _proxyAnimation { get; set; } = default;
     internal virtual Offset _rawDragPosition { get; set; } = default!;
 
-    internal _DragInfo__reorderable_list(_ReorderableItemState__reorderable_list item, Offset initialPosition = default, Axis scrollDirection = Axis.vertical, Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate = null, System.Action<_DragInfo__reorderable_list>? onEnd = null, System.Action<_DragInfo__reorderable_list>? onCancel = null, Action? onDropCompleted = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Scheduler.TickerProvider tickerProvider = default!)
+    internal _DragInfo__reorderable_list(_ReorderableItemState__reorderable_list item, Offset initialPosition = default, Axis scrollDirection = Axis.vertical, Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate = null, Action<_DragInfo__reorderable_list>? onEnd = null, Action<_DragInfo__reorderable_list>? onCancel = null, Action? onDropCompleted = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Scheduler.TickerProvider tickerProvider = default!)
     {
         this.scrollDirection = scrollDirection;
         this.onUpdate = onUpdate;

@@ -352,7 +352,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                 }
             }
             renderObject.debugChildIntegrityEnabled = false;
-            newChildren.Keys.forEach((__arg0) => ((System.Action<long>)processElement)(__arg0));
+            newChildren.Keys.forEach((__arg0) => ((Action<long>)processElement)(__arg0));
             if (!childrenUpdated && _didUnderflow)
             {
                 long lastKey = DartCollectionRuntime.LastKeyOrNull(_childElements) ?? -1L;
@@ -582,13 +582,13 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
         renderObject.remove(((RenderBox?)child)!);
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         DartRuntimePrimitives.Assert(() => !_childElements.Values.any((child) => child is null));
         _childElements.Values.cast<Element>().ToList().forEach((__arg0) => visitor(__arg0));
     }
 
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         _childElements.Values.cast<Element>().where((child) =>
         {
@@ -709,7 +709,7 @@ internal class _SliverOffstageElement__sliver : SingleChildRenderObjectElement
     {
     }
 
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         if (!((SliverOffstage?)widget)!.offstage)
         {
@@ -888,7 +888,7 @@ internal class _SliverMainAxisGroupElement__sliver : MultiChildRenderObjectEleme
     {
     }
 
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         children.where((e) =>
         {

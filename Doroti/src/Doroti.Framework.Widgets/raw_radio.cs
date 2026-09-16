@@ -55,7 +55,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((System.Action<Intent?>)_handleTap)(__arg0); return default!; }) };
+                __late__actionMap = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: (__arg0) => { ((Action<Intent?>)_handleTap)(__arg0); return default!; }) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
@@ -121,7 +121,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         registry = null;
     }
 
-    public virtual System.Action<bool?>? onChanged => (registry is not null) ? _handleChanged : null;
+    public virtual Action<bool?>? onChanged => (registry is not null) ? _handleChanged : null;
     public virtual bool tristate => widget.toggleable;
     public virtual bool? value => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(widget.value, DartRuntimePrimitives.NullAware(registry, __target => __target.groupValue)));
     public virtual bool isInteractive => widget.enabled;
@@ -156,7 +156,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -351,18 +351,18 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     }
 
     public virtual HashSet<WidgetState> states => new HashSet<WidgetState>();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, CustomPainter painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, CustomPainter painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new SizedBox(width: size.width, height: size.height));
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<MouseCursor>? mouseCursor = null, Widget child = default!)
     {
         return new FocusableActionDetector(actions: _actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: onFocusChange, enabled: isInteractive, onShowFocusHighlight: _handleFocusHighlightChanged, onShowHoverHighlight: _handleHoverChanged, mouseCursor: mouseCursor?.resolve(states) ?? SystemMouseCursors.basic, child: new GestureDetector(excludeFromSemantics: !isInteractive, onTapDown: isInteractive ? _handleTapDown : null, onTap: isInteractive ? () => _handleTap(null) : null, onTapUp: isInteractive ? _handleTapEnd : null, onTapCancel: isInteractive ? () => _handleTapEnd(null) : null, child: new Semantics(enabled: isInteractive, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");

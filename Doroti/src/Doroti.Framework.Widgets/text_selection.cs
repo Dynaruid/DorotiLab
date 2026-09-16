@@ -553,17 +553,17 @@ public class SelectionOverlay
     internal virtual bool _startHandleDragInProgress { get; set; } = false;
     internal virtual bool _isDraggingStartHandle { get; set; } = false;
     public virtual ValueListenable<bool>? startHandlesVisible { get; private set; }
-    public virtual System.Action<DragStartDetails>? onStartHandleDragStart { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onStartHandleDragUpdate { get; private set; }
-    public virtual System.Action<DragEndDetails>? onStartHandleDragEnd { get; private set; }
+    public virtual Action<DragStartDetails>? onStartHandleDragStart { get; private set; }
+    public virtual Action<DragUpdateDetails>? onStartHandleDragUpdate { get; private set; }
+    public virtual Action<DragEndDetails>? onStartHandleDragEnd { get; private set; }
     internal virtual TextSelectionHandleType _endHandleType { get; set; } = default!;
     internal virtual double _lineHeightAtEnd { get; set; } = default!;
     internal virtual bool _endHandleDragInProgress { get; set; } = false;
     internal virtual bool _isDraggingEndHandle { get; set; } = false;
     public virtual ValueListenable<bool>? endHandlesVisible { get; private set; }
-    public virtual System.Action<DragStartDetails>? onEndHandleDragStart { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onEndHandleDragUpdate { get; private set; }
-    public virtual System.Action<DragEndDetails>? onEndHandleDragEnd { get; private set; }
+    public virtual Action<DragStartDetails>? onEndHandleDragStart { get; private set; }
+    public virtual Action<DragUpdateDetails>? onEndHandleDragUpdate { get; private set; }
+    public virtual Action<DragEndDetails>? onEndHandleDragEnd { get; private set; }
     public virtual ValueListenable<bool>? toolbarVisible { get; private set; }
     internal virtual List<TextSelectionPoint> _selectionEndpoints { get; set; } = default!;
     public virtual Widget? debugRequiredFor { get; private set; }
@@ -583,7 +583,7 @@ public class SelectionOverlay
     internal virtual ContextMenuController _spellCheckToolbarController { get; private set; } = new ContextMenuController();
     internal virtual bool _buildScheduled { get; set; } = false;
 
-    public SelectionOverlay(BuildContext context, Widget? debugRequiredFor = null, TextSelectionHandleType startHandleType = default!, double lineHeightAtStart = default!, ValueListenable<bool>? startHandlesVisible = null, System.Action<DragStartDetails>? onStartHandleDragStart = null, System.Action<DragUpdateDetails>? onStartHandleDragUpdate = null, System.Action<DragEndDetails>? onStartHandleDragEnd = null, TextSelectionHandleType endHandleType = default!, double lineHeightAtEnd = default!, ValueListenable<bool>? endHandlesVisible = null, System.Action<DragStartDetails>? onEndHandleDragStart = null, System.Action<DragUpdateDetails>? onEndHandleDragUpdate = null, System.Action<DragEndDetails>? onEndHandleDragEnd = null, ValueListenable<bool>? toolbarVisible = null, List<TextSelectionPoint> selectionEndpoints = default!, TextSelectionControls? selectionControls = default!, TextSelectionDelegate? selectionDelegate = default!, ClipboardStatusNotifier? clipboardStatus = default!, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, LayerLink toolbarLayerLink = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, Action? onSelectionHandleTapped = null, Offset? toolbarLocation = null, TextMagnifierConfiguration magnifierConfiguration = default!)
+    public SelectionOverlay(BuildContext context, Widget? debugRequiredFor = null, TextSelectionHandleType startHandleType = default!, double lineHeightAtStart = default!, ValueListenable<bool>? startHandlesVisible = null, Action<DragStartDetails>? onStartHandleDragStart = null, Action<DragUpdateDetails>? onStartHandleDragUpdate = null, Action<DragEndDetails>? onStartHandleDragEnd = null, TextSelectionHandleType endHandleType = default!, double lineHeightAtEnd = default!, ValueListenable<bool>? endHandlesVisible = null, Action<DragStartDetails>? onEndHandleDragStart = null, Action<DragUpdateDetails>? onEndHandleDragUpdate = null, Action<DragEndDetails>? onEndHandleDragEnd = null, ValueListenable<bool>? toolbarVisible = null, List<TextSelectionPoint> selectionEndpoints = default!, TextSelectionControls? selectionControls = default!, TextSelectionDelegate? selectionDelegate = default!, ClipboardStatusNotifier? clipboardStatus = default!, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, LayerLink toolbarLayerLink = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, Action? onSelectionHandleTapped = null, Offset? toolbarLocation = null, TextMagnifierConfiguration magnifierConfiguration = default!)
     {
         TextMagnifierConfiguration __magnifierConfiguration = magnifierConfiguration ?? TextMagnifierConfiguration.disabled;
         this.context = context;
@@ -1160,7 +1160,7 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1220,16 +1220,16 @@ public class _SelectionHandleOverlay__text_selection : StatefulWidget
 {
     public virtual LayerLink handleLayerLink { get; private set; } = default!;
     public virtual Action? onSelectionHandleTapped { get; private set; }
-    public virtual System.Action<DragStartDetails>? onSelectionHandleDragStart { get; private set; }
-    public virtual System.Action<DragUpdateDetails>? onSelectionHandleDragUpdate { get; private set; }
-    public virtual System.Action<DragEndDetails>? onSelectionHandleDragEnd { get; private set; }
+    public virtual Action<DragStartDetails>? onSelectionHandleDragStart { get; private set; }
+    public virtual Action<DragUpdateDetails>? onSelectionHandleDragUpdate { get; private set; }
+    public virtual Action<DragEndDetails>? onSelectionHandleDragEnd { get; private set; }
     public virtual TextSelectionControls selectionControls { get; private set; } = default!;
     public virtual ValueListenable<bool>? visibility { get; private set; }
     public virtual double preferredLineHeight { get; private set; } = default!;
     public virtual TextSelectionHandleType type { get; private set; } = default!;
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
 
-    internal _SelectionHandleOverlay__text_selection(TextSelectionHandleType type, LayerLink handleLayerLink, Action? onSelectionHandleTapped = null, System.Action<DragStartDetails>? onSelectionHandleDragStart = null, System.Action<DragUpdateDetails>? onSelectionHandleDragUpdate = null, System.Action<DragEndDetails>? onSelectionHandleDragEnd = null, TextSelectionControls selectionControls = default!, ValueListenable<bool>? visibility = null, double preferredLineHeight = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start)
+    internal _SelectionHandleOverlay__text_selection(TextSelectionHandleType type, LayerLink handleLayerLink, Action? onSelectionHandleTapped = null, Action<DragStartDetails>? onSelectionHandleDragStart = null, Action<DragUpdateDetails>? onSelectionHandleDragUpdate = null, Action<DragEndDetails>? onSelectionHandleDragEnd = null, TextSelectionControls selectionControls = default!, ValueListenable<bool>? visibility = null, double preferredLineHeight = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start)
     {
         this.type = type;
         this.handleLayerLink = handleLayerLink;
@@ -1332,7 +1332,7 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -2271,28 +2271,28 @@ public class TextSelectionGestureDetector : StatefulWidget
 {
     public virtual Action? onTapTrackStart { get; private set; }
     public virtual Action? onTapTrackReset { get; private set; }
-    public virtual System.Action<TapDragDownDetails>? onTapDown { get; private set; }
-    public virtual System.Action<ForcePressDetails>? onForcePressStart { get; private set; }
-    public virtual System.Action<ForcePressDetails>? onForcePressEnd { get; private set; }
+    public virtual Action<TapDragDownDetails>? onTapDown { get; private set; }
+    public virtual Action<ForcePressDetails>? onForcePressStart { get; private set; }
+    public virtual Action<ForcePressDetails>? onForcePressEnd { get; private set; }
     public virtual Action? onSecondaryTap { get; private set; }
-    public virtual System.Action<TapDownDetails>? onSecondaryTapDown { get; private set; }
-    public virtual System.Action<TapDragUpDetails>? onSingleTapUp { get; private set; }
+    public virtual Action<TapDownDetails>? onSecondaryTapDown { get; private set; }
+    public virtual Action<TapDragUpDetails>? onSingleTapUp { get; private set; }
     public virtual Action? onSingleTapCancel { get; private set; }
     public virtual Action? onUserTap { get; private set; }
-    public virtual System.Action<LongPressStartDetails>? onSingleLongTapStart { get; private set; }
-    public virtual System.Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate { get; private set; }
-    public virtual System.Action<LongPressEndDetails>? onSingleLongTapEnd { get; private set; }
+    public virtual Action<LongPressStartDetails>? onSingleLongTapStart { get; private set; }
+    public virtual Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate { get; private set; }
+    public virtual Action<LongPressEndDetails>? onSingleLongTapEnd { get; private set; }
     public virtual Action? onSingleLongTapCancel { get; private set; }
-    public virtual System.Action<TapDragDownDetails>? onDoubleTapDown { get; private set; }
-    public virtual System.Action<TapDragDownDetails>? onTripleTapDown { get; private set; }
-    public virtual System.Action<TapDragStartDetails>? onDragSelectionStart { get; private set; }
-    public virtual System.Action<TapDragUpdateDetails>? onDragSelectionUpdate { get; private set; }
-    public virtual System.Action<TapDragEndDetails>? onDragSelectionEnd { get; private set; }
+    public virtual Action<TapDragDownDetails>? onDoubleTapDown { get; private set; }
+    public virtual Action<TapDragDownDetails>? onTripleTapDown { get; private set; }
+    public virtual Action<TapDragStartDetails>? onDragSelectionStart { get; private set; }
+    public virtual Action<TapDragUpdateDetails>? onDragSelectionUpdate { get; private set; }
+    public virtual Action<TapDragEndDetails>? onDragSelectionEnd { get; private set; }
     public virtual bool onUserTapAlwaysCalled { get; private set; } = default!;
     public virtual HitTestBehavior? behavior { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public TextSelectionGestureDetector(Key? key = null, Action? onTapTrackStart = null, Action? onTapTrackReset = null, System.Action<TapDragDownDetails>? onTapDown = null, System.Action<ForcePressDetails>? onForcePressStart = null, System.Action<ForcePressDetails>? onForcePressEnd = null, Action? onSecondaryTap = null, System.Action<TapDownDetails>? onSecondaryTapDown = null, System.Action<TapDragUpDetails>? onSingleTapUp = null, Action? onSingleTapCancel = null, Action? onUserTap = null, System.Action<LongPressStartDetails>? onSingleLongTapStart = null, System.Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate = null, System.Action<LongPressEndDetails>? onSingleLongTapEnd = null, Action? onSingleLongTapCancel = null, System.Action<TapDragDownDetails>? onDoubleTapDown = null, System.Action<TapDragDownDetails>? onTripleTapDown = null, System.Action<TapDragStartDetails>? onDragSelectionStart = null, System.Action<TapDragUpdateDetails>? onDragSelectionUpdate = null, System.Action<TapDragEndDetails>? onDragSelectionEnd = null, bool onUserTapAlwaysCalled = false, HitTestBehavior? behavior = null, Widget child = default!) : base(key: key)
+    public TextSelectionGestureDetector(Key? key = null, Action? onTapTrackStart = null, Action? onTapTrackReset = null, Action<TapDragDownDetails>? onTapDown = null, Action<ForcePressDetails>? onForcePressStart = null, Action<ForcePressDetails>? onForcePressEnd = null, Action? onSecondaryTap = null, Action<TapDownDetails>? onSecondaryTapDown = null, Action<TapDragUpDetails>? onSingleTapUp = null, Action? onSingleTapCancel = null, Action? onUserTap = null, Action<LongPressStartDetails>? onSingleLongTapStart = null, Action<LongPressMoveUpdateDetails>? onSingleLongTapMoveUpdate = null, Action<LongPressEndDetails>? onSingleLongTapEnd = null, Action? onSingleLongTapCancel = null, Action<TapDragDownDetails>? onDoubleTapDown = null, Action<TapDragDownDetails>? onTripleTapDown = null, Action<TapDragStartDetails>? onDragSelectionStart = null, Action<TapDragUpdateDetails>? onDragSelectionUpdate = null, Action<TapDragEndDetails>? onDragSelectionEnd = null, bool onUserTapAlwaysCalled = false, HitTestBehavior? behavior = null, Widget child = default!) : base(key: key)
     {
         this.onTapTrackStart = onTapTrackStart;
         this.onTapTrackReset = onTapTrackReset;

@@ -10,7 +10,7 @@ public class ExpandIcon : StatefulWidget
 {
     public virtual bool isExpanded { get; private set; } = default!;
     public virtual double size { get; private set; } = default!;
-    public virtual System.Action<bool>? onPressed { get; private set; }
+    public virtual Action<bool>? onPressed { get; private set; }
     public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual Color? color { get; private set; }
     public virtual Color? disabledColor { get; private set; }
@@ -18,7 +18,7 @@ public class ExpandIcon : StatefulWidget
     public virtual Color? splashColor { get; private set; }
     public virtual Color? highlightColor { get; private set; }
 
-    public ExpandIcon(Key? key = null, bool isExpanded = false, double size = 24.0, System.Action<bool>? onPressed = default!, EdgeInsetsGeometry padding = default!, Color? color = null, Color? disabledColor = null, Color? expandedColor = null, Color? splashColor = null, Color? highlightColor = null) : base(key: key)
+    public ExpandIcon(Key? key = null, bool isExpanded = false, double size = 24.0, Action<bool>? onPressed = default!, EdgeInsetsGeometry padding = default!, Color? color = null, Color? disabledColor = null, Color? expandedColor = null, Color? splashColor = null, Color? highlightColor = null) : base(key: key)
     {
         EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
         this.isExpanded = isExpanded;
@@ -116,7 +116,7 @@ internal class _ExpandIconState__expand_icon : State<ExpandIcon>, SingleTickerPr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

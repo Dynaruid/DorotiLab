@@ -26,7 +26,7 @@ public class NavigationBar : StatelessWidget
     public virtual Duration? animationDuration { get; private set; }
     public virtual long selectedIndex { get; private set; } = default!;
     public virtual List<Widget> destinations { get; private set; } = default!;
-    public virtual System.Action<long>? onDestinationSelected { get; private set; }
+    public virtual Action<long>? onDestinationSelected { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
@@ -40,7 +40,7 @@ public class NavigationBar : StatelessWidget
     public virtual EdgeInsetsGeometry? labelPadding { get; private set; }
     public virtual bool maintainBottomViewPadding { get; private set; } = default!;
 
-    public NavigationBar(Key? key = null, Duration? animationDuration = null, long selectedIndex = 0, List<Widget> destinations = default!, System.Action<long>? onDestinationSelected = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, double? height = null, NavigationDestinationLabelBehavior? labelBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, WidgetStateProperty<TextStyle?>? labelTextStyle = null, EdgeInsetsGeometry? labelPadding = null, bool maintainBottomViewPadding = false) : base(key: key)
+    public NavigationBar(Key? key = null, Duration? animationDuration = null, long selectedIndex = 0, List<Widget> destinations = default!, Action<long>? onDestinationSelected = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, double? height = null, NavigationDestinationLabelBehavior? labelBehavior = null, WidgetStateProperty<Color?>? overlayColor = null, WidgetStateProperty<TextStyle?>? labelTextStyle = null, EdgeInsetsGeometry? labelPadding = null, bool maintainBottomViewPadding = false) : base(key: key)
     {
         this.animationDuration = animationDuration;
         this.selectedIndex = selectedIndex;
@@ -534,7 +534,7 @@ public class _SelectableAnimatedBuilderState__navigation_bar : State<_Selectable
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

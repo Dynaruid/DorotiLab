@@ -30,10 +30,10 @@ public static partial class Editable_textLibrary
 
 internal class _CompositionCallback__editable_text : SingleChildRenderObjectWidget
 {
-    public virtual System.Action<Layer> compositeCallback { get; private set; } = default!;
+    public virtual Action<Layer> compositeCallback { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    internal _CompositionCallback__editable_text(System.Action<Layer> compositeCallback, bool enabled, Widget? child = null) : base(child: child)
+    internal _CompositionCallback__editable_text(Action<Layer> compositeCallback, bool enabled, Widget? child = null) : base(child: child)
     {
         this.compositeCallback = compositeCallback;
         this.enabled = enabled;
@@ -57,11 +57,11 @@ internal class _CompositionCallback__editable_text : SingleChildRenderObjectWidg
 
 public class _RenderCompositionCallback__editable_text : RenderProxyBox
 {
-    public virtual System.Action<Layer> compositeCallback { get; private set; } = default!;
+    public virtual Action<Layer> compositeCallback { get; private set; } = default!;
     internal virtual Action? _cancelCallback { get; set; } = default;
     internal virtual bool _enabled { get; set; } = false;
 
-    internal _RenderCompositionCallback__editable_text(System.Action<Layer> compositeCallback, bool _enabled)
+    internal _RenderCompositionCallback__editable_text(Action<Layer> compositeCallback, bool _enabled)
     {
         this.compositeCallback = compositeCallback;
         this._enabled = _enabled;
@@ -196,10 +196,10 @@ public class ToolbarOptions
 
 public class ContentInsertionConfiguration
 {
-    public virtual System.Action<KeyboardInsertedContent> onContentInserted { get; private set; } = default!;
+    public virtual Action<KeyboardInsertedContent> onContentInserted { get; private set; } = default!;
     public virtual List<string> allowedMimeTypes { get; private set; } = default!;
 
-    public ContentInsertionConfiguration(System.Action<KeyboardInsertedContent> onContentInserted, List<string> allowedMimeTypes = default!)
+    public ContentInsertionConfiguration(Action<KeyboardInsertedContent> onContentInserted, List<string> allowedMimeTypes = default!)
     {
         List<string> __allowedMimeTypes = allowedMimeTypes ?? Editable_textLibrary.kDefaultContentInsertionMimeTypes;
         this.onContentInserted = onContentInserted;
@@ -325,15 +325,15 @@ public class EditableText : StatefulWidget
     public virtual TextSelectionControls? selectionControls { get; private set; }
     public virtual TextInputType keyboardType { get; private set; } = default!;
     public virtual TextInputAction? textInputAction { get; private set; }
-    public virtual System.Action<string>? onChanged { get; private set; }
+    public virtual Action<string>? onChanged { get; private set; }
     public virtual Action? onEditingComplete { get; private set; }
-    public virtual System.Action<string>? onSubmitted { get; private set; }
+    public virtual Action<string>? onSubmitted { get; private set; }
     public virtual Action<string, DartMap<string, object?>>? onAppPrivateCommand { get; private set; }
     public virtual Action<TextSelection, SelectionChangedCause?>? onSelectionChanged { get; private set; }
     public virtual Action? onSelectionHandleTapped { get; private set; }
     public virtual object groupId { get; private set; } = default!;
-    public virtual System.Action<Gestures.PointerDownEvent>? onTapOutside { get; private set; }
-    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpOutside { get; private set; }
+    public virtual Action<Gestures.PointerDownEvent>? onTapOutside { get; private set; }
+    public virtual Action<Gestures.PointerUpEvent>? onTapUpOutside { get; private set; }
     public virtual List<TextInputFormatter>? inputFormatters { get; private set; }
     public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool rendererIgnoresPointer { get; private set; } = default!;
@@ -369,7 +369,7 @@ public class EditableText : StatefulWidget
     public virtual bool? enableInlinePrediction { get; private set; }
     public const bool defaultStylusHandwritingEnabled = true;
 
-    public EditableText(Key? key = null, TextEditingController controller = default!, FocusNode focusNode = default!, bool readOnly = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = null, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, TextStyle style = default!, Painting.StrutStyle? strutStyle = null, Color cursorColor = default!, Color backgroundCursorColor = default!, TextAlign textAlign = TextAlign.start, TextDirection? textDirection = null, Locale? locale = null, double? textScaleFactor = null, TextScaler? textScaler = null, long? maxLines = 1, long? minLines = null, bool expands = false, bool forceLine = true, TextHeightBehavior? textHeightBehavior = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, bool autofocus = false, bool? showCursor = null, bool showSelectionHandles = false, Color? selectionColor = null, TextSelectionControls? selectionControls = null, TextInputType? keyboardType = null, TextInputAction? textInputAction = null, TextCapitalization textCapitalization = TextCapitalization.none, System.Action<string>? onChanged = null, Action? onEditingComplete = null, System.Action<string>? onSubmitted = null, Action<string, DartMap<string, object?>>? onAppPrivateCommand = null, Action<TextSelection, SelectionChangedCause?>? onSelectionChanged = null, Action? onSelectionHandleTapped = null, object groupId = default!, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, List<TextInputFormatter>? inputFormatters = null, MouseCursor? mouseCursor = null, bool rendererIgnoresPointer = false, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = false, Offset? cursorOffset = null, bool paintCursorAboveText = false, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, EdgeInsets scrollPadding = default!, Brightness keyboardAppearance = Brightness.light, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, ScrollController? scrollController = null, ScrollPhysics? scrollPhysics = null, Color? autocorrectionTextRectColor = null, ToolbarOptions? toolbarOptions = null, IEnumerable<string>? autofillHints = default!, AutofillClient? autofillClient = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, ScrollBehavior? scrollBehavior = null, bool scribbleEnabled = true, bool? stylusHandwritingEnabled = null, bool enableIMEPersonalizedLearning = true, ContentInsertionConfiguration? contentInsertionConfiguration = null, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = null, SpellCheckConfiguration? spellCheckConfiguration = null, TextMagnifierConfiguration magnifierConfiguration = default!, UndoHistoryController? undoController = null, List<Locale>? hintLocales = null, bool? enableInlinePrediction = null) : base(key: key)
+    public EditableText(Key? key = null, TextEditingController controller = default!, FocusNode focusNode = default!, bool readOnly = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = null, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, TextStyle style = default!, Painting.StrutStyle? strutStyle = null, Color cursorColor = default!, Color backgroundCursorColor = default!, TextAlign textAlign = TextAlign.start, TextDirection? textDirection = null, Locale? locale = null, double? textScaleFactor = null, TextScaler? textScaler = null, long? maxLines = 1, long? minLines = null, bool expands = false, bool forceLine = true, TextHeightBehavior? textHeightBehavior = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, bool autofocus = false, bool? showCursor = null, bool showSelectionHandles = false, Color? selectionColor = null, TextSelectionControls? selectionControls = null, TextInputType? keyboardType = null, TextInputAction? textInputAction = null, TextCapitalization textCapitalization = TextCapitalization.none, Action<string>? onChanged = null, Action? onEditingComplete = null, Action<string>? onSubmitted = null, Action<string, DartMap<string, object?>>? onAppPrivateCommand = null, Action<TextSelection, SelectionChangedCause?>? onSelectionChanged = null, Action? onSelectionHandleTapped = null, object groupId = default!, Action<Gestures.PointerDownEvent>? onTapOutside = null, Action<Gestures.PointerUpEvent>? onTapUpOutside = null, List<TextInputFormatter>? inputFormatters = null, MouseCursor? mouseCursor = null, bool rendererIgnoresPointer = false, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = false, Offset? cursorOffset = null, bool paintCursorAboveText = false, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, EdgeInsets scrollPadding = default!, Brightness keyboardAppearance = Brightness.light, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, ScrollController? scrollController = null, ScrollPhysics? scrollPhysics = null, Color? autocorrectionTextRectColor = null, ToolbarOptions? toolbarOptions = null, IEnumerable<string>? autofillHints = default!, AutofillClient? autofillClient = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, ScrollBehavior? scrollBehavior = null, bool scribbleEnabled = true, bool? stylusHandwritingEnabled = null, bool enableIMEPersonalizedLearning = true, ContentInsertionConfiguration? contentInsertionConfiguration = null, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = null, SpellCheckConfiguration? spellCheckConfiguration = null, TextMagnifierConfiguration magnifierConfiguration = default!, UndoHistoryController? undoController = null, List<Locale>? hintLocales = null, bool? enableInlinePrediction = null) : base(key: key)
     {
         object __groupId = groupId ?? typeof(EditableText);
         EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
@@ -747,42 +747,42 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual long? _viewId { get; set; } = default;
     internal virtual TextRange? _currentPromptRectRange { get; set; } = default;
     private bool __late__transposeCharactersAction_initialized;
-    private Action<TransposeCharactersIntent> __late__transposeCharactersAction = default!;
-    internal virtual Action<TransposeCharactersIntent> _transposeCharactersAction
+    private IntentAction<TransposeCharactersIntent> __late__transposeCharactersAction = default!;
+    internal virtual IntentAction<TransposeCharactersIntent> _transposeCharactersAction
     {
         get
         {
             if (!__late__transposeCharactersAction_initialized)
             {
-                __late__transposeCharactersAction = new CallbackAction<TransposeCharactersIntent>(onInvoke: (__arg0) => { ((System.Action<TransposeCharactersIntent>)_transposeCharacters)(__arg0); return default!; });
+                __late__transposeCharactersAction = new CallbackAction<TransposeCharactersIntent>(onInvoke: (__arg0) => { ((Action<TransposeCharactersIntent>)_transposeCharacters)(__arg0); return default!; });
                 __late__transposeCharactersAction_initialized = true;
             }
             return __late__transposeCharactersAction;
         }
     }
     private bool __late__replaceTextAction_initialized;
-    private Action<ReplaceTextIntent> __late__replaceTextAction = default!;
-    internal virtual Action<ReplaceTextIntent> _replaceTextAction
+    private IntentAction<ReplaceTextIntent> __late__replaceTextAction = default!;
+    internal virtual IntentAction<ReplaceTextIntent> _replaceTextAction
     {
         get
         {
             if (!__late__replaceTextAction_initialized)
             {
-                __late__replaceTextAction = new CallbackAction<ReplaceTextIntent>(onInvoke: (__arg0) => { ((System.Action<ReplaceTextIntent>)_replaceText)(__arg0); return default!; });
+                __late__replaceTextAction = new CallbackAction<ReplaceTextIntent>(onInvoke: (__arg0) => { ((Action<ReplaceTextIntent>)_replaceText)(__arg0); return default!; });
                 __late__replaceTextAction_initialized = true;
             }
             return __late__replaceTextAction;
         }
     }
     private bool __late__updateSelectionAction_initialized;
-    private Action<UpdateSelectionIntent> __late__updateSelectionAction = default!;
-    internal virtual Action<UpdateSelectionIntent> _updateSelectionAction
+    private IntentAction<UpdateSelectionIntent> __late__updateSelectionAction = default!;
+    internal virtual IntentAction<UpdateSelectionIntent> _updateSelectionAction
     {
         get
         {
             if (!__late__updateSelectionAction_initialized)
             {
-                __late__updateSelectionAction = new CallbackAction<UpdateSelectionIntent>(onInvoke: (__arg0) => { ((System.Action<UpdateSelectionIntent>)_updateSelection)(__arg0); return default!; });
+                __late__updateSelectionAction = new CallbackAction<UpdateSelectionIntent>(onInvoke: (__arg0) => { ((Action<UpdateSelectionIntent>)_updateSelection)(__arg0); return default!; });
                 __late__updateSelectionAction_initialized = true;
             }
             return __late__updateSelectionAction;
@@ -810,7 +810,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             if (!__late__actions_initialized)
             {
-                __late__actions = new DartMap<Type, dynamic> { [typeof(DoNothingAndStopPropagationTextIntent)] = new DoNothingAction(consumesKey: false), [typeof(ReplaceTextIntent)] = _replaceTextAction, [typeof(UpdateSelectionIntent)] = _updateSelectionAction, [typeof(DirectionalFocusIntent)] = DirectionalFocusAction.CreateForTextField(), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: _hideToolbarIfVisible), [typeof(DeleteCharacterIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteCharacterIntent>(this, _characterBoundary, _moveBeyondTextBoundary)), [typeof(DeleteToNextWordBoundaryIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToNextWordBoundaryIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary)), [typeof(DeleteToLineBreakIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToLineBreakIntent>(this, _linebreak, _moveToTextBoundary)), [typeof(ExtendSelectionByCharacterIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionByCharacterIntent>(this, _characterBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: false)), [typeof(ExtendSelectionToNextWordBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextParagraphBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryIntent>(this, _paragraphBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToLineBreakIntent>(this, _linebreak, _moveToTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionVerticallyToAdjacentLineIntent)] = _makeOverridable(_verticalSelectionUpdateAction), [typeof(ExtendSelectionVerticallyToAdjacentPageIntent)] = _makeOverridable(_verticalSelectionUpdateAction), [typeof(ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent>(this, _paragraphBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToDocumentBoundaryIntent>(this, _documentBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ScrollToDocumentBoundaryIntent)] = _makeOverridable(new _WebComposingDisablingCallbackAction__editable_text<ScrollToDocumentBoundaryIntent>(this, onInvoke: (__arg0) => { ((System.Action<ScrollToDocumentBoundaryIntent>)_scrollToDocumentBoundary)(__arg0); return default!; })), [typeof(ScrollIntent)] = new CallbackAction<ScrollIntent>(onInvoke: (__arg0) => { ((System.Action<ScrollIntent>)_scroll)(__arg0); return default!; }), [typeof(ExpandSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToLineBreakIntent>(this, _linebreak, _moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true)), [typeof(ExpandSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToDocumentBoundaryIntent>(this, _documentBoundary, _moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true, extentAtIndex: true)), [typeof(SelectAllTextIntent)] = _makeOverridable(new _SelectAllAction__editable_text(this)), [typeof(CopySelectionTextIntent)] = _makeOverridable(new _CopySelectionAction__editable_text(this)), [typeof(PasteTextIntent)] = _makeOverridable(new _PasteSelectionAction__editable_text(this)), [typeof(TransposeCharactersIntent)] = _makeOverridable(_transposeCharactersAction), [typeof(EditableTextTapOutsideIntent)] = _makeOverridable(new _EditableTextTapOutsideAction__editable_text()), [typeof(EditableTextTapUpOutsideIntent)] = _makeOverridable(new _EditableTextTapUpOutsideAction__editable_text()) };
+                __late__actions = new DartMap<Type, dynamic> { [typeof(DoNothingAndStopPropagationTextIntent)] = new DoNothingAction(consumesKey: false), [typeof(ReplaceTextIntent)] = _replaceTextAction, [typeof(UpdateSelectionIntent)] = _updateSelectionAction, [typeof(DirectionalFocusIntent)] = DirectionalFocusAction.CreateForTextField(), [typeof(DismissIntent)] = new CallbackAction<DismissIntent>(onInvoke: _hideToolbarIfVisible), [typeof(DeleteCharacterIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteCharacterIntent>(this, _characterBoundary, _moveBeyondTextBoundary)), [typeof(DeleteToNextWordBoundaryIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToNextWordBoundaryIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary)), [typeof(DeleteToLineBreakIntent)] = _makeOverridable(new _DeleteTextAction__editable_text<DeleteToLineBreakIntent>(this, _linebreak, _moveToTextBoundary)), [typeof(ExtendSelectionByCharacterIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionByCharacterIntent>(this, _characterBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: false)), [typeof(ExtendSelectionToNextWordBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextParagraphBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryIntent>(this, _paragraphBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToLineBreakIntent>(this, _linebreak, _moveToTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionVerticallyToAdjacentLineIntent)] = _makeOverridable(_verticalSelectionUpdateAction), [typeof(ExtendSelectionVerticallyToAdjacentPageIntent)] = _makeOverridable(_verticalSelectionUpdateAction), [typeof(ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent>(this, _paragraphBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToDocumentBoundaryIntent>(this, _documentBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExtendSelectionToNextWordBoundaryOrCaretLocationIntent>(this, _nextWordBoundary, _moveBeyondTextBoundary, ignoreNonCollapsedSelection: true)), [typeof(ScrollToDocumentBoundaryIntent)] = _makeOverridable(new _WebComposingDisablingCallbackAction__editable_text<ScrollToDocumentBoundaryIntent>(this, onInvoke: (__arg0) => { ((Action<ScrollToDocumentBoundaryIntent>)_scrollToDocumentBoundary)(__arg0); return default!; })), [typeof(ScrollIntent)] = new CallbackAction<ScrollIntent>(onInvoke: (__arg0) => { ((Action<ScrollIntent>)_scroll)(__arg0); return default!; }), [typeof(ExpandSelectionToLineBreakIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToLineBreakIntent>(this, _linebreak, _moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true)), [typeof(ExpandSelectionToDocumentBoundaryIntent)] = _makeOverridable(new _UpdateTextSelectionAction__editable_text<ExpandSelectionToDocumentBoundaryIntent>(this, _documentBoundary, _moveToTextBoundary, ignoreNonCollapsedSelection: true, isExpand: true, extentAtIndex: true)), [typeof(SelectAllTextIntent)] = _makeOverridable(new _SelectAllAction__editable_text(this)), [typeof(CopySelectionTextIntent)] = _makeOverridable(new _CopySelectionAction__editable_text(this)), [typeof(PasteTextIntent)] = _makeOverridable(new _PasteSelectionAction__editable_text(this)), [typeof(TransposeCharactersIntent)] = _makeOverridable(_transposeCharactersAction), [typeof(EditableTextTapOutsideIntent)] = _makeOverridable(new _EditableTextTapOutsideAction__editable_text()), [typeof(EditableTextTapUpOutsideIntent)] = _makeOverridable(new _EditableTextTapUpOutsideAction__editable_text()) };
                 __late__actions_initialized = true;
             }
             return __late__actions;
@@ -1991,7 +1991,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 }
             }
         }
-        System.Action<string>? onSubmittedLocal = widget.onSubmitted;
+        Action<string>? onSubmittedLocal = widget.onSubmitted;
         if (onSubmittedLocal is null)
         {
             return;
@@ -2395,7 +2395,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                     case Scheduler.SchedulerPhase.midFrameMicrotasks:
                     case Scheduler.SchedulerPhase.persistentCallbacks:
                         {
-                            Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((System.Action<Duration>)scheduleToolbar)(__arg0), debugLabel: "EditableText.scheduleToolbar");
+                            Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration>)scheduleToolbar)(__arg0), debugLabel: "EditableText.scheduleToolbar");
                             break;
                         }
                 }
@@ -2870,7 +2870,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         _updateSelectionRects();
         _updateComposingRectIfNeeded();
         _updateCaretRectIfNeeded();
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((System.Action<Duration?>)_schedulePeriodicPostFrameCallbacks)(DartRuntimePrimitives.ConvertValue<Duration>(__arg0)), debugLabel: "EditableText.postFrameCallbacks");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration?>)_schedulePeriodicPostFrameCallbacks)(DartRuntimePrimitives.ConvertValue<Duration>(__arg0)), debugLabel: "EditableText.postFrameCallbacks");
     }
 
     internal virtual void _updateSelectionRects(bool force = false)
@@ -3208,9 +3208,9 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual TextBoundary _linebreak() => widget.obscureText ? _documentBoundary() : new LineBoundary(renderEditable);
     internal virtual TextBoundary _paragraphBoundary() => DartRuntimePrimitives.ConvertValue<TextBoundary>(new ParagraphBoundary(_value.text));
     internal virtual TextBoundary _documentBoundary() => DartRuntimePrimitives.ConvertValue<TextBoundary>(new DocumentBoundary(_value.text));
-    internal virtual Action<T> _makeOverridable<T>(Action<T> defaultAction) where T : Intent
+    internal virtual IntentAction<T> _makeOverridable<T>(IntentAction<T> defaultAction) where T : Intent
     {
-        return Action<T>.CreateOverridable(context: context, defaultAction: defaultAction);
+        return IntentAction<T>.CreateOverridable(context: context, defaultAction: defaultAction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3531,7 +3531,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         base.deactivate();
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

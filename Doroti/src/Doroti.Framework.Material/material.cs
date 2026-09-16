@@ -148,7 +148,7 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
         return new _MaterialInterior__material(curve: Curves.fastOutSlowIn, duration: widget.animationDuration, shape: shapeLocal, borderOnForeground: widget.borderOnForeground, clipBehavior: widget.clipBehavior, elevation: widget.elevation, color: backgroundColor!, shadowColor: modelShadowColor, surfaceTintColor: widget.surfaceTintColor, child: contents);
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

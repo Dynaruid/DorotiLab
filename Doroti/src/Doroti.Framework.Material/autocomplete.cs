@@ -10,15 +10,15 @@ public class Autocomplete<T> : StatelessWidget where T : notnull
     public virtual Func<T, string> displayStringForOption { get; private set; } = default!;
     public virtual Func<BuildContext, TextEditingController, FocusNode, Action, Widget> fieldViewBuilder { get; private set; } = default!;
     public virtual FocusNode? focusNode { get; private set; }
-    public virtual System.Action<T>? onSelected { get; private set; }
+    public virtual Action<T>? onSelected { get; private set; }
     public virtual Func<TextEditingValue, object> optionsBuilder { get; private set; } = default!;
-    public virtual Func<BuildContext, System.Action<T>, IEnumerable<T>, Widget>? optionsViewBuilder { get; private set; }
+    public virtual Func<BuildContext, Action<T>, IEnumerable<T>, Widget>? optionsViewBuilder { get; private set; }
     public virtual OptionsViewOpenDirection optionsViewOpenDirection { get; private set; } = default!;
     public virtual double optionsMaxHeight { get; private set; } = default!;
     public virtual TextEditingController? textEditingController { get; private set; }
     public virtual TextEditingValue? initialValue { get; private set; }
 
-    public Autocomplete(Key? key = null, Func<TextEditingValue, object> optionsBuilder = default!, Func<T, string> displayStringForOption = default!, Func<BuildContext, TextEditingController, FocusNode, Action, Widget> fieldViewBuilder = default!, FocusNode? focusNode = null, System.Action<T>? onSelected = null, double optionsMaxHeight = 200.0, Func<BuildContext, System.Action<T>, IEnumerable<T>, Widget>? optionsViewBuilder = null, OptionsViewOpenDirection optionsViewOpenDirection = OptionsViewOpenDirection.down, TextEditingController? textEditingController = null, TextEditingValue? initialValue = null) : base(key: key)
+    public Autocomplete(Key? key = null, Func<TextEditingValue, object> optionsBuilder = default!, Func<T, string> displayStringForOption = default!, Func<BuildContext, TextEditingController, FocusNode, Action, Widget> fieldViewBuilder = default!, FocusNode? focusNode = null, Action<T>? onSelected = null, double optionsMaxHeight = 200.0, Func<BuildContext, Action<T>, IEnumerable<T>, Widget>? optionsViewBuilder = null, OptionsViewOpenDirection optionsViewOpenDirection = OptionsViewOpenDirection.down, TextEditingController? textEditingController = null, TextEditingValue? initialValue = null) : base(key: key)
     {
         Func<T, string> __displayStringForOption = displayStringForOption ?? (__option => RawAutocomplete<T>.defaultStringForOption(__option));
         Func<BuildContext, TextEditingController, FocusNode, Action, Widget> __fieldViewBuilder = fieldViewBuilder ?? _defaultFieldViewBuilder;
@@ -79,12 +79,12 @@ internal class _AutocompleteField__autocomplete : StatelessWidget
 internal class _AutocompleteOptions__autocomplete<T> : StatelessWidget where T : notnull
 {
     public virtual Func<T, string> displayStringForOption { get; private set; } = default!;
-    public virtual System.Action<T> onSelected { get; private set; } = default!;
+    public virtual Action<T> onSelected { get; private set; } = default!;
     public virtual OptionsViewOpenDirection openDirection { get; private set; } = default!;
     public virtual IEnumerable<T> options { get; private set; } = default!;
     public virtual double optionsMaxHeight { get; private set; } = default!;
 
-    internal _AutocompleteOptions__autocomplete(Key? key = null, Func<T, string> displayStringForOption = default!, System.Action<T> onSelected = default!, OptionsViewOpenDirection openDirection = default!, IEnumerable<T> options = default!, double optionsMaxHeight = default!) : base(key: key)
+    internal _AutocompleteOptions__autocomplete(Key? key = null, Func<T, string> displayStringForOption = default!, Action<T> onSelected = default!, OptionsViewOpenDirection openDirection = default!, IEnumerable<T> options = default!, double optionsMaxHeight = default!) : base(key: key)
     {
         this.displayStringForOption = displayStringForOption;
         this.onSelected = onSelected;
@@ -106,10 +106,10 @@ public class _AutocompleteOptionsList__autocomplete<T> : StatefulWidget where T 
 {
     public virtual Func<T, string> displayStringForOption { get; private set; } = default!;
     public virtual long highlightedIndex { get; private set; } = default!;
-    public virtual System.Action<T> onSelected { get; private set; } = default!;
+    public virtual Action<T> onSelected { get; private set; } = default!;
     public virtual IEnumerable<T> options { get; private set; } = default!;
 
-    internal _AutocompleteOptionsList__autocomplete(Func<T, string> displayStringForOption, long highlightedIndex, System.Action<T> onSelected, IEnumerable<T> options)
+    internal _AutocompleteOptionsList__autocomplete(Func<T, string> displayStringForOption, long highlightedIndex, Action<T> onSelected, IEnumerable<T> options)
     {
         this.displayStringForOption = displayStringForOption;
         this.highlightedIndex = highlightedIndex;

@@ -37,12 +37,12 @@ public class CupertinoButton : StatefulWidget
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
     public virtual Color? focusColor { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual MouseCursor? mouseCursor { get; private set; }
     internal virtual _CupertinoButtonStyle__button _style { get; private set; } = default!;
 
-    public CupertinoButton(Key? key = null, Widget child = default!, CupertinoButtonSize sizeStyle = CupertinoButtonSize.large, EdgeInsetsGeometry? padding = null, Color? color = null, Color? foregroundColor = null, Color disabledColor = default!, double? minSize = null, Size? minimumSize = null, double? pressedOpacity = 0.4, BorderRadius? borderRadius = null, AlignmentGeometry alignment = default!, Color? focusColor = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, MouseCursor? mouseCursor = null, Action? onLongPress = null, Action? onPressed = default!) : base(key: key)
+    public CupertinoButton(Key? key = null, Widget child = default!, CupertinoButtonSize sizeStyle = CupertinoButtonSize.large, EdgeInsetsGeometry? padding = null, Color? color = null, Color? foregroundColor = null, Color disabledColor = default!, double? minSize = null, Size? minimumSize = null, double? pressedOpacity = 0.4, BorderRadius? borderRadius = null, AlignmentGeometry alignment = default!, Color? focusColor = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, MouseCursor? mouseCursor = null, Action? onLongPress = null, Action? onPressed = default!) : base(key: key)
     {
         Color __disabledColor = disabledColor ?? CupertinoColors.quaternarySystemFill;
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
@@ -69,7 +69,7 @@ public class CupertinoButton : StatefulWidget
         System.Diagnostics.Debug.Assert((minimumSize is null) || (minSize is null));
     }
 
-    public static CupertinoButton CreateTinted(Key? key = null, Widget child = default!, CupertinoButtonSize sizeStyle = CupertinoButtonSize.large, EdgeInsetsGeometry? padding = null, Color? color = null, Color? foregroundColor = null, Color disabledColor = default!, double? minSize = null, Size? minimumSize = null, double? pressedOpacity = 0.4, BorderRadius? borderRadius = null, AlignmentGeometry alignment = default!, Color? focusColor = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, MouseCursor? mouseCursor = null, Action? onLongPress = null, Action? onPressed = default!)
+    public static CupertinoButton CreateTinted(Key? key = null, Widget child = default!, CupertinoButtonSize sizeStyle = CupertinoButtonSize.large, EdgeInsetsGeometry? padding = null, Color? color = null, Color? foregroundColor = null, Color disabledColor = default!, double? minSize = null, Size? minimumSize = null, double? pressedOpacity = 0.4, BorderRadius? borderRadius = null, AlignmentGeometry alignment = default!, Color? focusColor = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, MouseCursor? mouseCursor = null, Action? onLongPress = null, Action? onPressed = default!)
     {
         var __instance = new CupertinoButton(key: key, child: child, sizeStyle: sizeStyle, padding: padding, color: color, foregroundColor: foregroundColor, disabledColor: disabledColor, minSize: minSize, minimumSize: minimumSize, pressedOpacity: pressedOpacity, borderRadius: borderRadius, alignment: alignment, focusColor: focusColor, focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, onLongPress: onLongPress, onPressed: onPressed);
         Color __disabledColor = disabledColor ?? CupertinoColors.tertiarySystemFill;
@@ -96,7 +96,7 @@ public class CupertinoButton : StatefulWidget
         return __instance;
     }
 
-    public static CupertinoButton CreateFilled(Key? key = null, Widget child = default!, CupertinoButtonSize sizeStyle = CupertinoButtonSize.large, EdgeInsetsGeometry? padding = null, Color? color = null, Color disabledColor = default!, Color? foregroundColor = null, double? minSize = null, Size? minimumSize = null, double? pressedOpacity = 0.4, BorderRadius? borderRadius = null, AlignmentGeometry alignment = default!, Color? focusColor = null, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, bool autofocus = false, MouseCursor? mouseCursor = null, Action? onLongPress = null, Action? onPressed = default!)
+    public static CupertinoButton CreateFilled(Key? key = null, Widget child = default!, CupertinoButtonSize sizeStyle = CupertinoButtonSize.large, EdgeInsetsGeometry? padding = null, Color? color = null, Color disabledColor = default!, Color? foregroundColor = null, double? minSize = null, Size? minimumSize = null, double? pressedOpacity = 0.4, BorderRadius? borderRadius = null, AlignmentGeometry alignment = default!, Color? focusColor = null, FocusNode? focusNode = null, Action<bool>? onFocusChange = null, bool autofocus = false, MouseCursor? mouseCursor = null, Action? onLongPress = null, Action? onPressed = default!)
     {
         var __instance = new CupertinoButton(key: key, child: child, sizeStyle: sizeStyle, padding: padding, color: color, foregroundColor: foregroundColor, disabledColor: disabledColor, minSize: minSize, minimumSize: minimumSize, pressedOpacity: pressedOpacity, borderRadius: borderRadius, alignment: alignment, focusColor: focusColor, focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, onLongPress: onLongPress, onPressed: onPressed);
         Color __disabledColor = disabledColor ?? CupertinoColors.tertiarySystemFill;
@@ -328,7 +328,7 @@ internal class _CupertinoButtonState__button : State<CupertinoButton>, SingleTic
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {

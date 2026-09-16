@@ -82,6 +82,23 @@ if (workspace.Diagnostics.Any(d => d.Kind == WorkspaceDiagnosticKind.Failure))
     throw new InvalidOperationException("Workspace contains load failures.");
 
 var projectIds = workspace.CurrentSolution.GetProjectDependencyGraph().GetTopologicallySortedProjects().ToArray();
+if (args[0] == "rename-intent-action")
+{
+    var project = workspace.CurrentSolution.Projects.Single(p => p.Name == "Doroti.Framework.Widgets");
+    var compilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException();
+    var symbol = compilation.GetTypeByMetadataName("Doroti.Framework.Widgets.Action`1")
+        ?? throw new InvalidOperationException("The framework Action<T> declaration was not found.");
+    if (!symbol.Locations.Any(l => l.IsInSource)) throw new InvalidOperationException("Expected a source declaration.");
+    var before = workspace.CurrentSolution;
+    var renamed = await Renamer.RenameSymbolAsync(before, symbol, new SymbolRenameOptions(), "IntentAction");
+    var files = renamed.GetChanges(before).GetProjectChanges().SelectMany(p => p.GetChangedDocuments())
+        .Select(id => renamed.GetDocument(id)!.FilePath).Distinct().Order().ToArray();
+    if (!workspace.TryApplyChanges(renamed)) throw new InvalidOperationException("IntentAction rename could not be applied.");
+    File.WriteAllText(args[2], JsonSerializer.Serialize(files, new JsonSerializerOptions { WriteIndented = true }));
+    Console.WriteLine($"Renamed framework Action<T> to IntentAction<T>: {files.Length} files.");
+    return;
+}
+
 if (args[0] == "simplify-icon-data-names")
 {
     var report = new List<object>();

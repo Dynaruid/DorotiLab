@@ -91,7 +91,7 @@ public static partial class Date_pickerLibrary
 
 public static partial class Date_pickerLibrary
 {
-    public static async Future<DateTime?> showDatePicker(BuildContext context, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, Func<DateTime, bool>? selectableDayPredicate = null, string? helpText = null, string? cancelText = null, string? confirmText = null, Locale? locale = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, RouteSettings? routeSettings = null, TextDirection? textDirection = null, Func<BuildContext, Widget?, Widget>? builder = null, DatePickerMode initialDatePickerMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, Offset? anchorPoint = null, System.Action<DatePickerEntryMode>? onDatePickerModeChange = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, CalendarDelegate<DateTime> calendarDelegate = default!)
+    public static async Future<DateTime?> showDatePicker(BuildContext context, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, Func<DateTime, bool>? selectableDayPredicate = null, string? helpText = null, string? cancelText = null, string? confirmText = null, Locale? locale = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, RouteSettings? routeSettings = null, TextDirection? textDirection = null, Func<BuildContext, Widget?, Widget>? builder = null, DatePickerMode initialDatePickerMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, Offset? anchorPoint = null, Action<DatePickerEntryMode>? onDatePickerModeChange = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, CalendarDelegate<DateTime> calendarDelegate = default!)
     {
         calendarDelegate ??= new GregorianCalendarDelegate();
         initialDate = (initialDate is null) ? null : calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate)));
@@ -148,13 +148,13 @@ public class DatePickerDialog : StatefulWidget
     public virtual string? fieldLabelText { get; private set; }
     public virtual TextInputType? keyboardType { get; private set; }
     public virtual string? restorationId { get; private set; }
-    public virtual System.Action<DatePickerEntryMode>? onDatePickerModeChange { get; private set; }
+    public virtual Action<DatePickerEntryMode>? onDatePickerModeChange { get; private set; }
     public virtual Icon? switchToInputEntryModeIcon { get; private set; }
     public virtual Icon? switchToCalendarEntryModeIcon { get; private set; }
     public virtual EdgeInsets insetPadding { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public DatePickerDialog(Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, Func<DateTime, bool>? selectableDayPredicate = null, string? cancelText = null, string? confirmText = null, string? helpText = null, DatePickerMode initialCalendarMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, string? restorationId = null, System.Action<DatePickerEntryMode>? onDatePickerModeChange = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, EdgeInsets insetPadding = default!, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public DatePickerDialog(Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, Func<DateTime, bool>? selectableDayPredicate = null, string? cancelText = null, string? confirmText = null, string? helpText = null, DatePickerMode initialCalendarMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, TextInputType? keyboardType = null, string? restorationId = null, Action<DatePickerEntryMode>? onDatePickerModeChange = null, Icon? switchToInputEntryModeIcon = null, Icon? switchToCalendarEntryModeIcon = null, EdgeInsets insetPadding = default!, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
         EdgeInsets __insetPadding = insetPadding ?? EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
@@ -578,7 +578,7 @@ internal class _DatePickerDialogState__date_picker : State<DatePickerDialog>, Re
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -1020,7 +1020,7 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
             case DatePickerEntryMode.calendar:
             case DatePickerEntryMode.calendarOnly:
                 {
-                    contents = DartRuntimePrimitives.ConvertValue<Widget>(new _CalendarRangePickerDialog__date_picker(key: _calendarPickerKey, calendarDelegate: widget.calendarDelegate, selectedStartDate: _selectedStart.value, selectedEndDate: _selectedEnd.value, firstDate: widget.firstDate, lastDate: widget.lastDate, selectableDayPredicate: widget.selectableDayPredicate, currentDate: widget.currentDate, onStartDateChanged: (__arg0) => ((System.Action<DateTime?>)_handleStartDateChanged)(DartRuntimePrimitives.ConvertValue<DateTime>(__arg0)), onEndDateChanged: _handleEndDateChanged, onConfirm: _hasSelectedDateRange ? _handleOk : null, onCancel: () => _handleCancel(), entryModeButton: showEntryModeButton ? new IconButton(icon: widget.switchToInputEntryModeIcon ?? new Icon(Icons.edit_outlined), padding: EdgeInsets.zero, tooltip: localizations.inputDateModeButtonLabel, onPressed: _handleEntryModeToggle) : null, confirmText: widget.saveText ?? localizations.saveButtonLabel, helpText: widget.helpText ?? localizations.dateRangePickerHelpText));
+                    contents = DartRuntimePrimitives.ConvertValue<Widget>(new _CalendarRangePickerDialog__date_picker(key: _calendarPickerKey, calendarDelegate: widget.calendarDelegate, selectedStartDate: _selectedStart.value, selectedEndDate: _selectedEnd.value, firstDate: widget.firstDate, lastDate: widget.lastDate, selectableDayPredicate: widget.selectableDayPredicate, currentDate: widget.currentDate, onStartDateChanged: (__arg0) => ((Action<DateTime?>)_handleStartDateChanged)(DartRuntimePrimitives.ConvertValue<DateTime>(__arg0)), onEndDateChanged: _handleEndDateChanged, onConfirm: _hasSelectedDateRange ? _handleOk : null, onCancel: () => _handleCancel(), entryModeButton: showEntryModeButton ? new IconButton(icon: widget.switchToInputEntryModeIcon ?? new Icon(Icons.edit_outlined), padding: EdgeInsets.zero, tooltip: localizations.inputDateModeButtonLabel, onPressed: _handleEntryModeToggle) : null, confirmText: widget.saveText ?? localizations.saveButtonLabel, helpText: widget.helpText ?? localizations.dateRangePickerHelpText));
                     size = MediaQuery.sizeOf(context);
                     insetPaddingLocal = EdgeInsets.zero;
                     elevationLocal = datePickerTheme.rangePickerElevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.rangePickerElevation);
@@ -1210,7 +1210,7 @@ internal class _DateRangePickerDialogState__date_picker : State<DateRangePickerD
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -1252,8 +1252,8 @@ internal class _CalendarRangePickerDialog__date_picker : StatelessWidget
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
     public virtual DateTime? currentDate { get; private set; }
-    public virtual System.Action<DateTime> onStartDateChanged { get; private set; } = default!;
-    public virtual System.Action<DateTime?> onEndDateChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onStartDateChanged { get; private set; } = default!;
+    public virtual Action<DateTime?> onEndDateChanged { get; private set; } = default!;
     public virtual Action? onConfirm { get; private set; }
     public virtual Action? onCancel { get; private set; }
     public virtual string confirmText { get; private set; } = default!;
@@ -1261,7 +1261,7 @@ internal class _CalendarRangePickerDialog__date_picker : StatelessWidget
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
     public virtual Widget? entryModeButton { get; private set; }
 
-    internal _CalendarRangePickerDialog__date_picker(Key? key = null, DateTime? selectedStartDate = default!, DateTime? selectedEndDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = default!, System.Action<DateTime> onStartDateChanged = default!, System.Action<DateTime?> onEndDateChanged = default!, Action? onConfirm = default!, Action? onCancel = default!, string confirmText = default!, string helpText = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Widget? entryModeButton = null) : base(key: key)
+    internal _CalendarRangePickerDialog__date_picker(Key? key = null, DateTime? selectedStartDate = default!, DateTime? selectedEndDate = default!, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = default!, Action<DateTime> onStartDateChanged = default!, Action<DateTime?> onEndDateChanged = default!, Action? onConfirm = default!, Action? onCancel = default!, string confirmText = default!, string helpText = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, Widget? entryModeButton = null) : base(key: key)
     {
         this.selectedStartDate = selectedStartDate;
         this.selectedEndDate = selectedEndDate;
@@ -1351,11 +1351,11 @@ internal class _CalendarDateRangePicker__date_picker : StatefulWidget
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
     public virtual DateTime currentDate { get; private set; } = default!;
-    public virtual System.Action<DateTime>? onStartDateChanged { get; private set; }
-    public virtual System.Action<DateTime?>? onEndDateChanged { get; private set; }
+    public virtual Action<DateTime>? onStartDateChanged { get; private set; }
+    public virtual Action<DateTime?>? onEndDateChanged { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _CalendarDateRangePicker__date_picker(DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, DateTime? currentDate = null, System.Action<DateTime>? onStartDateChanged = default!, System.Action<DateTime?>? onEndDateChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!)
+    internal _CalendarDateRangePicker__date_picker(DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, DateTime? currentDate = null, Action<DateTime>? onStartDateChanged = default!, Action<DateTime?>? onEndDateChanged = default!, CalendarDelegate<DateTime> calendarDelegate = default!)
     {
         this.selectableDayPredicate = selectableDayPredicate;
         this.onStartDateChanged = onStartDateChanged;
@@ -1767,14 +1767,14 @@ internal class _MonthItem__date_picker : StatefulWidget
     public virtual DateTime? selectedDateStart { get; private set; }
     public virtual DateTime? selectedDateEnd { get; private set; }
     public virtual DateTime currentDate { get; private set; } = default!;
-    public virtual System.Action<DateTime> onChanged { get; private set; } = default!;
+    public virtual Action<DateTime> onChanged { get; private set; } = default!;
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
     public virtual DateTime displayedMonth { get; private set; } = default!;
     public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _MonthItem__date_picker(DateTime? selectedDateStart, DateTime? selectedDateEnd, DateTime currentDate, System.Action<DateTime> onChanged, DateTime firstDate, DateTime lastDate, DateTime displayedMonth, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate, CalendarDelegate<DateTime> calendarDelegate)
+    internal _MonthItem__date_picker(DateTime? selectedDateStart, DateTime? selectedDateEnd, DateTime currentDate, Action<DateTime> onChanged, DateTime firstDate, DateTime lastDate, DateTime displayedMonth, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate, CalendarDelegate<DateTime> calendarDelegate)
     {
         this.selectedDateStart = selectedDateStart;
         this.selectedDateEnd = selectedDateEnd;
@@ -1936,8 +1936,8 @@ internal class _DayItem__date_picker : StatefulWidget
 {
     public virtual DateTime day { get; private set; } = default!;
     public virtual FocusNode focusNode { get; private set; } = default!;
-    public virtual System.Action<DateTime> onChanged { get; private set; } = default!;
-    public virtual System.Action<bool> onFocusChange { get; private set; } = default!;
+    public virtual Action<DateTime> onChanged { get; private set; } = default!;
+    public virtual Action<bool> onFocusChange { get; private set; } = default!;
     public virtual Color highlightColor { get; private set; } = default!;
     public virtual bool isDisabled { get; private set; } = default!;
     public virtual bool isRangeSelected { get; private set; } = default!;
@@ -1948,7 +1948,7 @@ internal class _DayItem__date_picker : StatefulWidget
     public virtual bool isToday { get; private set; } = default!;
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _DayItem__date_picker(DateTime day, FocusNode focusNode, System.Action<DateTime> onChanged, System.Action<bool> onFocusChange, Color highlightColor, bool isDisabled, bool isRangeSelected, bool isSelectedDayStart, bool isSelectedDayEnd, bool isInRange, bool isOneDayRange, bool isToday, CalendarDelegate<DateTime> calendarDelegate)
+    internal _DayItem__date_picker(DateTime day, FocusNode focusNode, Action<DateTime> onChanged, Action<bool> onFocusChange, Color highlightColor, bool isDisabled, bool isRangeSelected, bool isSelectedDayStart, bool isSelectedDayEnd, bool isInRange, bool isOneDayRange, bool isToday, CalendarDelegate<DateTime> calendarDelegate)
     {
         this.day = day;
         this.focusNode = focusNode;
@@ -2226,8 +2226,8 @@ internal class _InputDateRangePicker__date_picker : StatefulWidget
     public virtual DateTime? initialEndDate { get; private set; }
     public virtual DateTime firstDate { get; private set; } = default!;
     public virtual DateTime lastDate { get; private set; } = default!;
-    public virtual System.Action<DateTime?>? onStartDateChanged { get; private set; }
-    public virtual System.Action<DateTime?>? onEndDateChanged { get; private set; }
+    public virtual Action<DateTime?>? onStartDateChanged { get; private set; }
+    public virtual Action<DateTime?>? onEndDateChanged { get; private set; }
     public virtual string? helpText { get; private set; }
     public virtual string? errorFormatText { get; private set; }
     public virtual string? errorInvalidText { get; private set; }
@@ -2242,7 +2242,7 @@ internal class _InputDateRangePicker__date_picker : StatefulWidget
     public virtual Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    internal _InputDateRangePicker__date_picker(Key? key = null, DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, System.Action<DateTime?>? onStartDateChanged = default!, System.Action<DateTime?>? onEndDateChanged = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, string? helpText = null, string? errorFormatText = null, string? errorInvalidText = null, string? errorInvalidRangeText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, bool autofocus = false, bool autovalidate = false, TextInputType keyboardType = default!) : base(key: key)
+    internal _InputDateRangePicker__date_picker(Key? key = null, DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, Action<DateTime?>? onStartDateChanged = default!, Action<DateTime?>? onEndDateChanged = default!, Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, string? helpText = null, string? errorFormatText = null, string? errorInvalidText = null, string? errorInvalidRangeText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, bool autofocus = false, bool autovalidate = false, TextInputType keyboardType = default!) : base(key: key)
     {
         TextInputType __keyboardType = keyboardType ?? TextInputType.datetime;
         this.onStartDateChanged = onStartDateChanged;

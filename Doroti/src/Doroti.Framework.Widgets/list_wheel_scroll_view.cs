@@ -118,7 +118,7 @@ public class FixedExtentScrollController : ScrollController
 {
     public virtual long initialItem { get; private set; } = default!;
 
-    public FixedExtentScrollController(long initialItem = 0, bool keepScrollOffset = true, string? debugLabel = null, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null) : base(keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
+    public FixedExtentScrollController(long initialItem = 0, bool keepScrollOffset = true, string? debugLabel = null, Action<ScrollPosition>? onAttach = null, Action<ScrollPosition>? onDetach = null) : base(keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
     {
         this.initialItem = initialItem;
     }
@@ -302,7 +302,7 @@ public class ListWheelScrollView : StatefulWidget
     public virtual double overAndUnderCenterOpacity { get; private set; } = default!;
     public virtual double itemExtent { get; private set; } = default!;
     public virtual double squeeze { get; private set; } = default!;
-    public virtual System.Action<long>? onSelectedItemChanged { get; private set; }
+    public virtual Action<long>? onSelectedItemChanged { get; private set; }
     public virtual bool renderChildrenOutsideViewport { get; private set; } = default!;
     public virtual ListWheelChildDelegate childDelegate { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
@@ -312,7 +312,7 @@ public class ListWheelScrollView : StatefulWidget
     public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public ListWheelScrollView(Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, System.Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, List<Widget> children = default!) : base(key: key)
+    public ListWheelScrollView(Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, List<Widget> children = default!) : base(key: key)
     {
         double __diameterRatio = diameterRatio ?? RenderListWheelViewport.defaultDiameterRatio;
         double __perspective = perspective ?? RenderListWheelViewport.defaultPerspective;
@@ -345,7 +345,7 @@ public class ListWheelScrollView : StatefulWidget
         System.Diagnostics.Debug.Assert(!renderChildrenOutsideViewport || Equals(clipBehavior, Clip.none));
     }
 
-    public static ListWheelScrollView CreateUseDelegate(Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, System.Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, ListWheelChildDelegate childDelegate = default!)
+    public static ListWheelScrollView CreateUseDelegate(Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, ListWheelChildDelegate childDelegate = default!)
     {
         var __instance = new ListWheelScrollView(key, controller, physics, diameterRatio, perspective, offAxisFraction, useMagnifier, magnification, overAndUnderCenterOpacity, itemExtent, squeeze, onSelectedItemChanged, renderChildrenOutsideViewport, clipBehavior, hitTestBehavior, restorationId, scrollBehavior, dragStartBehavior, changeReportingBehavior, default!);
         double __diameterRatio = diameterRatio ?? RenderListWheelViewport.defaultDiameterRatio;
@@ -580,7 +580,7 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
         renderObject.remove(((RenderBox?)child)!);
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         _childElements.forEach((key, child) =>
         {

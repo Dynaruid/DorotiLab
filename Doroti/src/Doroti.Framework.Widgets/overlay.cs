@@ -524,7 +524,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
         properties.add(new DiagnosticsProperty<List<OverlayEntry>>("entries", _entries));
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
@@ -749,7 +749,7 @@ public class _TheaterElement__overlay : MultiChildRenderObjectElement
             });
     }
 
-    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(Action<Element> visitor)
     {
         var theater = ((_Theater__overlay?)widget)!;
         DartRuntimePrimitives.Assert(() => children.Count() >= theater.skipCount);
@@ -788,7 +788,7 @@ internal class _TheaterParentData__overlay : StackParentData
 
     public virtual IEnumerator<_RenderDeferredLayoutBox__overlay>? paintOrderIterator => overlayEntry?._overlayEntryStateNotifier?.value!._paintOrderIterable.GetEnumerator();
     public virtual IEnumerator<_RenderDeferredLayoutBox__overlay>? hitTestOrderIterator => overlayEntry?._overlayEntryStateNotifier?.value!._hitTestOrderIterable.GetEnumerator();
-    public virtual void visitOverlayPortalChildrenOnOverlayEntry(System.Action<RenderObject> visitor) => overlayEntry?._overlayEntryStateNotifier?.value!._paintOrderIterable.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
+    public virtual void visitOverlayPortalChildrenOnOverlayEntry(Action<RenderObject> visitor) => overlayEntry?._overlayEntryStateNotifier?.value!._paintOrderIterable.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
 }
 
 public class _RenderTheater__overlay : RenderBox, ContainerRenderObjectMixin<RenderBox, StackParentData>, _RenderTheaterMixin__overlay
@@ -1142,7 +1142,7 @@ public class _RenderTheater__overlay : RenderBox, ContainerRenderObjectMixin<Ren
         base.dispose();
     }
 
-    public override void visitChildren(System.Action<RenderObject> visitor)
+    public override void visitChildren(Action<RenderObject> visitor)
     {
         RenderBox? child = firstChild;
         while (child is not null)
@@ -1154,7 +1154,7 @@ public class _RenderTheater__overlay : RenderBox, ContainerRenderObjectMixin<Ren
         }
     }
 
-    public override void visitChildrenForSemantics(System.Action<RenderObject> visitor)
+    public override void visitChildrenForSemantics(Action<RenderObject> visitor)
     {
         RenderBox? child = _firstOnstageChild;
         while (child is not null)
@@ -1344,7 +1344,7 @@ public class _RenderTheater__overlay : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -1951,7 +1951,7 @@ internal class _OverlayPortalElement__overlay : RenderObjectElement
         base.forgetChild(child);
     }
 
-    public override void visitChildren(System.Action<Element> visitor)
+    public override void visitChildren(Action<Element> visitor)
     {
         Element? child = _child;
         Element? overlayChild = _overlayChild;
@@ -2138,7 +2138,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         if (shouldAddToDirtyList)
         {
-            treewalkParent.invokeLayoutCallback((System.Action<BoxConstraints>)((_) =>
+            treewalkParent.invokeLayoutCallback((Action<BoxConstraints>)((_) =>
             {
                 markNeedsLayout();
             }));
@@ -2362,7 +2362,7 @@ internal class _RenderLayoutBuilder__overlay : RenderProxyBox, _RenderTheaterMix
     internal virtual OverlayChildLayoutInfo? _layoutInfo { get; set; } = default;
     internal virtual long? _callbackId { get; set; } = default;
     internal const string _speculativeLayoutErrorMessage = "This RenderObject should not be reachable in intrinsic dimension calculations.";
-    public virtual System.Action<Constraints>? _callback { get; set; } = default;
+    public virtual Action<Constraints>? _callback { get; set; } = default;
 
     public virtual IEnumerable<RenderBox> _childrenInPaintOrder()
     {
@@ -2559,7 +2559,7 @@ internal class _RenderLayoutBuilder__overlay : RenderProxyBox, _RenderTheaterMix
         }
     }
 
-    public virtual void _updateCallback(System.Action<Constraints> value)
+    public virtual void _updateCallback(Action<Constraints> value)
     {
         if (Equals(value, _callback))
         {

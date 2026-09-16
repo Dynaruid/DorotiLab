@@ -16,8 +16,8 @@ public abstract class ButtonStyleButton : StatefulWidget
 {
     public virtual Action? onPressed { get; private set; }
     public virtual Action? onLongPress { get; private set; }
-    public virtual System.Action<bool>? onHover { get; private set; }
-    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Action<bool>? onHover { get; private set; }
+    public virtual Action<bool>? onFocusChange { get; private set; }
     public virtual ButtonStyle? style { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
     public virtual FocusNode? focusNode { get; private set; }
@@ -28,7 +28,7 @@ public abstract class ButtonStyleButton : StatefulWidget
     public virtual string? tooltip { get; private set; }
     public virtual Widget? child { get; private set; }
 
-    protected ButtonStyleButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = default!, System.Action<bool>? onHover = default!, System.Action<bool>? onFocusChange = default!, ButtonStyle? style = default!, FocusNode? focusNode = default!, bool autofocus = default!, Clip? clipBehavior = default!, WidgetStatesController? statesController = null, bool? isSemanticButton = true, IconAlignment? iconAlignment = null, string? tooltip = null, Widget? child = default!) : base(key: key)
+    protected ButtonStyleButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = default!, Action<bool>? onHover = default!, Action<bool>? onFocusChange = default!, ButtonStyle? style = default!, FocusNode? focusNode = default!, bool autofocus = default!, Clip? clipBehavior = default!, WidgetStatesController? statesController = null, bool? isSemanticButton = true, IconAlignment? iconAlignment = null, string? tooltip = null, Widget? child = default!) : base(key: key)
     {
         this.onPressed = onPressed;
         this.onLongPress = onLongPress;
@@ -288,7 +288,7 @@ internal class _ButtonStyleState__button_style_button : State<ButtonStyleButton>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {

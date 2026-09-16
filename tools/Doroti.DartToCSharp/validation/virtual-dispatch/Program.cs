@@ -71,6 +71,17 @@ try
     throw new InvalidOperationException("Invalid covariant input was accepted");
 }
 catch (TargetInvocationException error) when (error.InnerException is InvalidCastException) { }
+var renamedBase = Type("IntentAction`1").MakeGenericType(Type("RenameIntent"));
+Require(Type("RenameAction").BaseType == renamedBase, "Flutter Action<T> references target IntentAction<T>");
+var renamedIntent = Activator.CreateInstance(Type("RenameIntent"), [73L]);
+Require(Equals(renamedBase.GetMethod("invoke")!.Invoke(Create("RenameAction"), [renamedIntent]), 73L),
+    "IntentAction rename preserves generated virtual dispatch");
+Require(Type("ErasedRenameAction").BaseType == Type("IntentAction`1").MakeGenericType(Type("Intent")),
+    "Action<Intent> inheritance uses the renamed command base");
+Require(Type("IntentCallbacks").GetProperty("callback")!.PropertyType.GetGenericTypeDefinition() == typeof(Action<>),
+    "Dart void callbacks still map to System.Action<T>");
+Require(!trees.SelectMany(t => t.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>())
+    .Any(c => c.Identifier.ValueText == "Action"), "Generated commands do not reintroduce the Action<T> collision");
 var unresolved = new DartCompiler().Compile(Path.Combine(fixture, "missing-base-selection.json"), Path.Combine(repo, ".doroti/compiler-dispatch-unresolved"), Path.Combine(repo, ".doroti/compiler-dispatch-cache"));
 Require(!unresolved.Success && unresolved.Diagnostics.Any(d => d.Code == "DOTCONV902"), "incomplete base graph is rejected rather than silently hiding overrides");
 var deterministicOutput = Path.Combine(repo, ".doroti/compiler-dispatch-deterministic");

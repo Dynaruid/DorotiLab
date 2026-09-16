@@ -199,7 +199,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         }
         DartRuntimePrimitives.Assert(() => _currentIntentionToReport is not null);
         _routeInformationReportingTaskScheduled = true;
-        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((System.Action<Duration>)_reportRouteInformation)(__arg0), debugLabel: "Router.reportRouteInfo");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((Action<Duration>)_reportRouteInformation)(__arg0), debugLabel: "Router.reportRouteInfo");
     }
 
     internal virtual void _reportRouteInformation(Duration timestamp)
@@ -546,7 +546,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
